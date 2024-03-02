@@ -1,0 +1,522 @@
+﻿;-------------------------------------------------------------------------------
+;絶頂系の処理など
+;-------------------------------------------------
+;絶頂処理
+;-------------------------------------------------
+@ORGASM_ADD(奴隷,調教者=0)
+#DIM 奴隷
+#DIM 調教者
+#DIM 絶頂要求係数
+#DIM 総合快感値
+#DIM 部位快感値
+#DIM 絶頂候補
+#DIM Ａ绝顶強度
+#DIM Ｂ绝顶強度
+#DIM Ｃ绝顶強度
+#DIM Ｖ绝顶強度
+#DIM 浮気快楽強度
+
+絶頂候補 = 0
+絶頂候補 += ((CUP:奴隷:快Ｃ + PALAM:奴隷:快Ｃ) >= PALAMLV:4)
+絶頂候補 += ((CUP:奴隷:快Ｖ + PALAM:奴隷:快Ｖ) >= PALAMLV:4)
+絶頂候補 += ((CUP:奴隷:快Ａ + PALAM:奴隷:快Ａ) >= PALAMLV:4)
+絶頂候補 += ((CUP:奴隷:快Ｂ + PALAM:奴隷:快Ｂ) >= PALAMLV:4)
+SELECTCASE 絶頂候補
+	CASE 4
+		総合快感値 = 7000
+	CASE 3
+		総合快感値 = 5000
+	CASE 2
+		総合快感値 = 3000
+	CASE 1
+		総合快感値 = 2000
+ENDSELECT
+;視認性の問題で残しておく
+Ｃ绝顶強度 = 0
+Ｖ绝顶強度 = 0
+Ａ绝顶強度 = 0
+Ｂ绝顶強度 = 0
+
+;訪問者以外の調教で、快乐刻印よりも浮気快乐刻印のレベルが高い場合、絶頂しづらくなる
+IF 調教者 != 998 && GET_MARK_LEVEL(奴隷,刻印番号_快乐刻印,調教者) < MARK:奴隷:浮気快乐刻印
+	絶頂要求係数 = MAX( 100 * MARK:奴隷:浮気快乐刻印 / MAX(1,GET_MARK_LEVEL(奴隷,刻印番号_快乐刻印,調教者)) , 100 )
+ELSE
+	絶頂要求係数 = 100
+ENDIF
+
+;-------------------------------------------------------------------
+;絶頂Ｃ
+部位快感値 = (CUP:奴隷:快Ｃ > 0) * 総合快感値
+IF CUP:奴隷:快Ｃ + PALAM:奴隷:快Ｃ + 部位快感値 >= PALAMLV:4 * 2 * 絶頂要求係数 / 100
+	Ｃ绝顶強度 = 2
+	CDOWN:奴隷:快Ｃ = PALAMLV:4 * 2 - 部位快感値
+ELSEIF CUP:奴隷:快Ｃ + PALAM:奴隷:快Ｃ + 部位快感値 >= PALAMLV:4 * 絶頂要求係数 / 100
+	Ｃ绝顶強度 = 1
+	CDOWN:奴隷:快Ｃ = PALAMLV:4 - 部位快感値
+ELSEIF CUP:奴隷:快Ｃ + PALAM:奴隷:快Ｃ + 部位快感値 >= PALAMLV:4
+	;イけるはずなのにイけなかった場合
+	NOWEX:奴隷:绝顶演技++
+ENDIF
+;CDOWN:奴隷:快Ｃで下げても絶頂以上なら
+;その値-1になるように調整（10000で絶頂なら9999）
+SIF CUP:奴隷:快Ｃ + PALAM:奴隷:快Ｃ - CDOWN:奴隷:快Ｃ >= PALAMLV:4
+	CDOWN:奴隷:快Ｃ = CUP:奴隷:快Ｃ + PALAM:奴隷:快Ｃ - PALAMLV:4 + 1
+;-------------------------------------------------------------------
+;絶頂Ｖ
+部位快感値 = (CUP:奴隷:快Ｖ > 0) * 総合快感値
+IF CUP:奴隷:快Ｖ + PALAM:奴隷:快Ｖ + 部位快感値 >= PALAMLV:4 * 2 * 絶頂要求係数 / 100
+	Ｖ绝顶強度 = 2
+	CDOWN:奴隷:快Ｖ = PALAMLV:4 * 2 - 部位快感値
+ELSEIF CUP:奴隷:快Ｖ + PALAM:奴隷:快Ｖ + 部位快感値 >= PALAMLV:4 * 絶頂要求係数 / 100
+	Ｖ绝顶強度 = 1
+	CDOWN:奴隷:快Ｖ = PALAMLV:4 - 部位快感値
+ELSEIF CUP:奴隷:快Ｖ + PALAM:奴隷:快Ｖ + 部位快感値 >= PALAMLV:4
+	;イけるはずなのにイけなかった場合
+	NOWEX:奴隷:绝顶演技++
+ENDIF
+;CDOWN:奴隷:快Ｖで下げても絶頂以上なら
+;その値-1になるように調整（10000で絶頂なら9999）
+SIF CUP:奴隷:快Ｖ + PALAM:奴隷:快Ｖ - CDOWN:奴隷:快Ｖ >= PALAMLV:4
+	CDOWN:奴隷:快Ｖ = CUP:奴隷:快Ｖ + PALAM:奴隷:快Ｖ - PALAMLV:4 + 1
+;-------------------------------------------------------------------
+;絶頂Ａ
+部位快感値 = (CUP:奴隷:快Ａ > 0) * 総合快感値
+IF CUP:奴隷:快Ａ + PALAM:奴隷:快Ａ + 部位快感値 >= PALAMLV:4 * 2 * 絶頂要求係数 / 100
+	Ａ绝顶強度 = 2
+	CDOWN:奴隷:快Ａ = PALAMLV:4 * 2 - 部位快感値
+ELSEIF CUP:奴隷:快Ａ + PALAM:奴隷:快Ａ + 部位快感値 >= PALAMLV:4 * 絶頂要求係数 / 100
+	Ａ绝顶強度 = 1
+	CDOWN:奴隷:快Ａ = PALAMLV:4 - 部位快感値
+ELSEIF CUP:奴隷:快Ａ + PALAM:奴隷:快Ａ + 部位快感値 >= PALAMLV:4
+	;イけるはずなのにイけなかった場合
+	NOWEX:奴隷:绝顶演技++
+ENDIF
+;CDOWN:奴隷:快Ａで下げても絶頂以上なら
+;その値-1になるように調整（10000で絶頂なら9999）
+SIF CUP:奴隷:快Ａ + PALAM:奴隷:快Ａ - CDOWN:奴隷:快Ａ >= PALAMLV:4
+	CDOWN:奴隷:快Ａ = CUP:奴隷:快Ａ + PALAM:奴隷:快Ａ - PALAMLV:4 + 1
+;-------------------------------------------------------------------
+;絶頂Ｂ
+部位快感値 = (CUP:奴隷:快Ｂ > 0) * 総合快感値
+IF CUP:奴隷:快Ｂ + PALAM:奴隷:快Ｂ + 部位快感値 >= PALAMLV:4 * 2 * 絶頂要求係数 / 100
+	Ｂ绝顶強度 = 2
+	CDOWN:奴隷:快Ｂ = (PALAMLV:4 * 2 - 1000) - 部位快感値
+ELSEIF CUP:奴隷:快Ｂ + PALAM:奴隷:快Ｂ + 部位快感値 >= PALAMLV:4 * 絶頂要求係数 / 100
+	Ｂ绝顶強度 = 1
+	CDOWN:奴隷:快Ｂ = (PALAMLV:4 - 1000) - 部位快感値
+ELSEIF CUP:奴隷:快Ｂ + PALAM:奴隷:快Ｂ + 部位快感値 >= PALAMLV:4
+	;イけるはずなのにイけなかった場合
+	NOWEX:奴隷:绝顶演技++
+ENDIF
+;CDOWN:奴隷:快Ｂで下げても絶頂以上なら
+;その値-1になるように調整（10000で絶頂なら9999）
+SIF CUP:奴隷:快Ｂ + PALAM:奴隷:快Ｂ - CDOWN:奴隷:快Ｂ >= PALAMLV:4
+	CDOWN:奴隷:快Ｂ = CUP:奴隷:快Ｂ + PALAM:奴隷:快Ｂ - PALAMLV:4 + 1
+;-------------------------------------------------
+;絶頂時の追加処理
+;-------------------------------------------------
+;快乐刻印の処理
+;絶頂の部位と強度の合計が一定以上で刻印を取得する
+LOCAL = Ｃ绝顶強度 + Ｖ绝顶強度 * 2 + Ａ绝顶強度 * 2 + Ｂ绝顶強度
+;Rが4以上で快乐刻印３に相当
+IF LOCAL >= 3 && MARK:奴隷:快乐刻印 < 3
+	TCVAR:奴隷:快楽強度 = 3
+	;Rが3以上で快乐刻印２に相当
+ELSEIF LOCAL >= 2 && MARK:奴隷:快乐刻印 < 2
+	TCVAR:奴隷:快楽強度 = 2
+	;Rが2以上で快乐刻印１に相当
+ELSEIF LOCAL >= 1 && MARK:奴隷:快乐刻印 < 1
+	TCVAR:奴隷:快楽強度 = 1
+ELSE
+	TCVAR:奴隷:快楽強度 = 0
+ENDIF
+IF Ｃ绝顶強度 && Ｖ绝顶強度 && Ａ绝顶強度 && Ｂ绝顶強度
+	Ｃ绝顶強度 *= 8
+	Ｖ绝顶強度 *= 8
+	Ａ绝顶強度 *= 8
+	Ｂ绝顶強度 *= 8
+	NOWEX:奴隷:四重绝顶 = 1
+ELSEIF Ｃ绝顶強度 && Ｖ绝顶強度 && Ａ绝顶強度
+	Ｃ绝顶強度 *= 4
+	Ｖ绝顶強度 *= 4
+	Ａ绝顶強度 *= 4
+	NOWEX:奴隷:三重绝顶 = 1
+ELSEIF Ｂ绝顶強度 && Ｖ绝顶強度 && Ａ绝顶強度
+	Ｂ绝顶強度 *= 4
+	Ｖ绝顶強度 *= 4
+	Ａ绝顶強度 *= 4
+	NOWEX:奴隷:三重绝顶 = 2
+ELSEIF Ｃ绝顶強度 && Ｂ绝顶強度 && Ａ绝顶強度
+	Ｃ绝顶強度 *= 4
+	Ｂ绝顶強度 *= 4
+	Ａ绝顶強度 *= 4
+	NOWEX:奴隷:三重绝顶 = 3
+ELSEIF Ｃ绝顶強度 && Ｖ绝顶強度 && Ｂ绝顶強度
+	Ｃ绝顶強度 *= 4
+	Ｖ绝顶強度 *= 4
+	Ｂ绝顶強度 *= 4
+	NOWEX:奴隷:三重绝顶 = 4
+ELSEIF Ｃ绝顶強度 && Ｖ绝顶強度
+	Ｃ绝顶強度 *= 2
+	Ｖ绝顶強度 *= 2
+	NOWEX:奴隷:二重绝顶 = 1
+ELSEIF Ｃ绝顶強度 && Ａ绝顶強度
+	Ｃ绝顶強度 *= 2
+	Ａ绝顶強度 *= 2
+	NOWEX:奴隷:二重绝顶 = 2
+ELSEIF Ｖ绝顶強度 && Ａ绝顶強度
+	Ｖ绝顶強度 *= 2
+	Ａ绝顶強度 *= 2
+	NOWEX:奴隷:二重绝顶 = 3
+ELSEIF Ｃ绝顶強度 && Ｂ绝顶強度
+	Ｃ绝顶強度 *= 2
+	Ｂ绝顶強度 *= 2
+	NOWEX:奴隷:二重绝顶 = 4
+ELSEIF Ｖ绝顶強度 && Ｂ绝顶強度
+	Ｖ绝顶強度 *= 2
+	Ｂ绝顶強度 *= 2
+	NOWEX:奴隷:二重绝顶 = 5
+ELSEIF Ａ绝顶強度 && Ｂ绝顶強度
+	Ａ绝顶強度 *= 2
+	Ｂ绝顶強度 *= 2
+	NOWEX:奴隷:二重绝顶 = 6
+ENDIF
+IF Ｃ绝顶強度
+	SOURCE:奴隷:露出 += 500 * Ｃ绝顶強度
+	SOURCE:奴隷:屈从 += 200 * Ｃ绝顶強度
+	SOURCE:奴隷:反感 += 150 * Ｃ绝顶強度
+	DOWNBASE:奴隷:体力 += 20
+	DOWNBASE:奴隷:气力 += 10
+ENDIF
+IF Ｖ绝顶強度
+	SOURCE:奴隷:欲情 += 800 * Ｖ绝顶強度
+	SOURCE:奴隷:恭顺 += 500 * Ｖ绝顶強度
+	SOURCE:奴隷:露出 += 700 * Ｖ绝顶強度
+	SOURCE:奴隷:屈从 += 400 * Ｖ绝顶強度
+	SOURCE:奴隷:反感 += 300 * Ｖ绝顶強度
+	DOWNBASE:奴隷:体力 += 40
+	DOWNBASE:奴隷:气力 += 20
+ENDIF
+IF Ａ绝顶強度
+	SOURCE:奴隷:欲情 += 500 * Ａ绝顶強度
+	SOURCE:奴隷:恭顺 += 700 * Ａ绝顶強度
+	SOURCE:奴隷:露出 += 900 * Ａ绝顶強度
+	SOURCE:奴隷:屈从 += 500 * Ａ绝顶強度
+	SOURCE:奴隷:反感 += 400 * Ａ绝顶強度
+	DOWNBASE:奴隷:体力 += 60
+	DOWNBASE:奴隷:气力 += 30
+ENDIF
+IF Ｂ绝顶強度
+	SOURCE:奴隷:露出 += 500 * Ｂ绝顶強度
+	SOURCE:奴隷:屈从 += 200 * Ｂ绝顶強度
+	SOURCE:奴隷:反感 += 150 * Ｂ绝顶強度
+	DOWNBASE:奴隷:体力 += 20
+	DOWNBASE:奴隷:气力 += 10
+ENDIF
+;NOWEXにデータを入れる（絶頂時口上に使う）
+NOWEX:奴隷:Ｃ绝顶 = Ｃ绝顶強度
+NOWEX:奴隷:Ｖ绝顶 = Ｖ绝顶強度
+NOWEX:奴隷:Ａ绝顶 = Ａ绝顶強度
+NOWEX:奴隷:Ｂ绝顶 = Ｂ绝顶強度
+;絶頂回数を増やす
+EX:奴隷:Ｃ绝顶 += Ｃ绝顶強度
+EX:奴隷:Ｖ绝顶 += Ｖ绝顶強度
+EX:奴隷:Ａ绝顶 += Ａ绝顶強度
+EX:奴隷:Ｂ绝顶 += Ｂ绝顶強度
+;绝顶经验を増
+IF 調教者 == 人物_訪問者 || (調教者 != 0 && 調教者 >= CHARANUM && (TALENT:奴隷:恋慕 || TALENT:奴隷:亲爱 || TALENT:奴隷:人妻 || TALENT:奴隷:恋人))
+	CALL NTR_EXP_ADD_C_EX(奴隷,Ｃ绝顶強度)
+	CALL NTR_EXP_ADD_V_EX(奴隷,Ｖ绝顶強度)
+	CALL NTR_EXP_ADD_A_EX(奴隷,Ａ绝顶強度)
+	CALL NTR_EXP_ADD_B_EX(奴隷,Ｂ绝顶強度)
+ELSE
+	EXP:奴隷:绝顶经验 += Ｃ绝顶強度 + Ｖ绝顶強度 + Ａ绝顶強度 + Ｂ绝顶強度
+	EXP:奴隷:Ｃ绝顶经验 += Ｃ绝顶強度
+	EXP:奴隷:Ｖ绝顶经验 += Ｖ绝顶強度
+	EXP:奴隷:Ａ绝顶经验 += Ａ绝顶強度
+	EXP:奴隷:Ｂ绝顶经验 += Ｂ绝顶強度
+ENDIF
+;ビデオ
+IF TEQUIP:奴隷:录像摄影
+	IF NOWEX:奴隷:四重绝顶
+		LOCALS = O2/O3/O4/
+		TSTR:视频摄影记录 += LOCALS
+	ENDIF
+	IF NOWEX:奴隷:三重绝顶
+		LOCALS = O2/O3/
+		TSTR:视频摄影记录 += LOCALS
+	ENDIF
+	IF NOWEX:奴隷:二重绝顶
+		LOCALS = O2/
+		TSTR:视频摄影记录 += LOCALS
+	ENDIF
+	IF NOWEX:奴隷:Ｃ绝顶 == 2
+		LOCALS = C/C/
+		TSTR:视频摄影记录 += LOCALS
+	ELSEIF NOWEX:奴隷:Ｃ绝顶 == 1
+		LOCALS = C/
+		TSTR:视频摄影记录 += LOCALS
+	ENDIF
+	IF NOWEX:奴隷:Ｖ绝顶 == 2
+		LOCALS = V/V/
+		TSTR:视频摄影记录 += LOCALS
+	ELSEIF NOWEX:奴隷:Ｖ绝顶 == 1
+		LOCALS = V/
+		TSTR:视频摄影记录 += LOCALS
+	ENDIF
+	IF NOWEX:奴隷:Ａ绝顶 == 2
+		LOCALS = A/A/
+		TSTR:视频摄影记录 += LOCALS
+	ELSEIF NOWEX:奴隷:Ａ绝顶 == 1
+		LOCALS = A/
+		TSTR:视频摄影记录 += LOCALS
+	ENDIF
+	IF NOWEX:奴隷:Ｂ绝顶 == 2
+		LOCALS = B/B/
+		TSTR:视频摄影记录 += LOCALS
+	ELSEIF NOWEX:奴隷:Ｂ绝顶 == 1
+		LOCALS = B/
+		TSTR:视频摄影记录 += LOCALS
+	ENDIF
+ENDIF
+
+RETURN LOCAL
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@MESSAGE_PALAMCNG_B2
+IF NOWEX:6
+	IF !GETBIT(CFLAG:3,2)
+		EXP:异常经验 ++
+		SETBIT CFLAG:异常经验,2
+	ENDIF
+	PRINTFORML %"四 重 絶 頂"%
+	PRINTFORML %"(8倍的珠获得)"%
+ELSEIF NOWEX:5
+	SELECTCASE NOWEX:5
+		CASE 1
+			PRINTFORML %"Ｃ＆Ｖ＆Ａ绝顶"%
+			PRINTFORML %"(4倍的珠获得)"%
+		CASE 2
+			PRINTFORML %"Ｂ＆Ｖ＆Ａ绝顶"%
+			PRINTFORML %"(4倍的珠获得)"%
+		CASE 3
+			PRINTFORML %"Ｃ＆Ｂ＆Ａ绝顶"%
+			PRINTFORML %"(4倍的珠获得)"%
+		CASE 4
+			PRINTFORML %"Ｃ＆Ｖ＆Ｂ绝顶"%
+			PRINTFORML %"(4倍的珠获得)"%
+	ENDSELECT
+ELSEIF NOWEX:4
+	SELECTCASE NOWEX:4
+		CASE 1
+			PRINTFORML %"Ｃ＆Ｖ绝顶"%
+			PRINTFORML %"(2倍的珠获得)"%
+		CASE 2
+			PRINTFORML %"Ｃ＆Ａ绝顶"%
+			PRINTFORML %"(2倍的珠获得)"%
+		CASE 3
+			PRINTFORML %"Ｖ＆Ａ绝顶"%
+			PRINTFORML %"(2倍的珠获得)"%
+		CASE 4
+			PRINTFORML %"Ｃ＆Ｂ绝顶"%
+			PRINTFORML %"(2倍的珠获得)"%
+		CASE 5
+			PRINTFORML %"Ｖ＆Ｂ绝顶"%
+			PRINTFORML %"(2倍的珠获得)"%
+		CASE 6
+			PRINTFORML %"Ａ＆Ｂ绝顶"%
+			PRINTFORML %"(2倍的珠获得)"%
+	ENDSELECT
+ELSEIF NOWEX:3
+	IF NOWEX:3 == 2
+		PRINTFORML %"強絶頂Ｂ"%
+	ELSE
+		PRINTFORML %"絶頂Ｂ"%
+	ENDIF
+ELSEIF NOWEX:2
+	IF NOWEX:2 == 2
+		PRINTFORML %"強絶頂Ａ"%
+	ELSE
+		PRINTFORML %"絶頂Ａ"%
+	ENDIF
+ELSEIF NOWEX:1
+	IF NOWEX:1 == 2
+		PRINTFORML %"強絶頂Ｖ"%
+	ELSE
+		PRINTFORML %"絶頂Ｖ"%
+	ENDIF
+ELSEIF NOWEX:0
+	IF NOWEX:0 == 2
+		PRINTFORML %"強絶頂Ｃ"%
+	ELSE
+		PRINTFORML %"絶頂Ｃ"%
+	ENDIF
+ENDIF
+;絶頂による欲望ＬＶアップ
+LOCAL = 0
+SIF NOWEX:0 >= 2 || NOWEX:Ｂ绝顶 >= 2 || NOWEX:Ｖ绝顶 || NOWEX:Ａ绝顶
+	LOCAL = 1
+SIF NOWEX:1 >= 2 || NOWEX:Ａ绝顶 >= 2
+	LOCAL = 2
+SIF (NOWEX:0 >= 2 || NOWEX:Ｂ绝顶 >= 2) && NOWEX:4
+	LOCAL = 2
+SIF NOWEX:5
+	LOCAL = 3
+SIF NOWEX:6
+	LOCAL = 4
+;自制心があると１下がる
+SIF TALENT:自制心
+	LOCAL -= 1
+IF ABL:欲望 < LOCAL
+	ABL:欲望 ++
+	PRINTFORML そして欲望がLV{LOCAL}になった
+	;欲望の上昇による[抑圧]の消滅をチェック
+	CALL YOKUBO_UP_CHECK
+ENDIF
+PRINTL 
+
+;-------------------------------------------------
+;調教対象の喷乳チェック
+;-------------------------------------------------
+@TARGET_MILK_CHECK(奴隷)
+#DIM 奴隷
+#DIM 母乳蓄積基準値
+#DIM 母乳噴出量
+#DIM 母乳蓄積量
+
+SIF !TALENT:奴隷:泌乳体质
+	RETURN 0
+
+;場合によってはMAXBASE未設定のまま来る事があるので0なら強制設定する
+IF MAXBASE:奴隷:母乳 == 0
+	MAXBASE:奴隷:母乳 = 5000+5000*(!TALENT:奴隷:淫乳)
+ENDIF
+
+;快感の上昇量から母乳蓄積基準値を決定
+母乳蓄積基準値 = CUP:奴隷:快Ｃ/5 + CUP:奴隷:快Ｖ/5 + CUP:奴隷:快Ａ/5 + CUP:奴隷:快Ｂ*3
+
+;蓄積基準値が0、つまり刺激がなければ突然噴き出したりはしない
+IF (母乳蓄積基準値 == 0)
+	RETURN 0
+ENDIF
+
+;最大でも150%しか増えないようにする（大量喷乳を減らす）
+母乳蓄積量 = MIN(母乳蓄積基準値,MAXBASE:奴隷:母乳*3/2)
+
+;自制心持ちなら母乳が貯まりづらい
+SIF TALENT:奴隷:自制心
+	母乳蓄積量 /= 2
+;快感に素直なら母乳が貯まりやすい
+SIF TALENT:奴隷:快感应答 > 0
+	TIMES 母乳蓄積量 , 1.20
+;快感の否定なら母乳が貯まりづらい（淫乱、娼婦で無効）
+SIF TALENT:奴隷:快感应答 < 0 && !TALENT:奴隷:淫乱
+	TIMES 母乳蓄積量 , 0.80
+;B敏感なら母乳が貯まりやすい
+SIF TALENT:奴隷:Ｂ感度 > 0
+	TIMES 母乳蓄積量 , 1.20
+;媚药状態なら母乳が貯まりやすい
+SIF TEQUIP:奴隷:媚药
+	母乳蓄積量 *= 2
+;利尿剂状態なら母乳が貯まりづらい（水分が膀胱に回るから？）
+SIF TEQUIP:奴隷:利尿剂
+	母乳蓄積量 /= 2
+;調教者が幼児退行なら母乳が貯まりやすい
+SIF TALENT:PLAYER:幼儿／幼儿退行
+	TIMES 母乳蓄積量 , 1.20
+;調教者が幼稚なら母乳が貯まりやすい
+SIF TALENT:PLAYER:幼稚
+	TIMES 母乳蓄積量 , 1.20
+;貧乳なら母乳が貯まりづらい
+SIF TALENT:奴隷:胸部尺寸 < 0
+	TIMES 母乳蓄積量 , 0.50
+
+BASE:奴隷:母乳 += 母乳蓄積量
+
+;噴出チェック、100%以上貯まっていれば必ず、そうでなければ量と今回受けた刺激に応じて噴出率が変わる
+IF (BASE:奴隷:母乳 > MAXBASE:奴隷:母乳)
+	;噴出後の母乳量が50%未満になるようにする(連続噴出防止)
+	母乳噴出量 = MAX( RAND(BASE:奴隷:母乳), (BASE:奴隷:母乳-MAXBASE:奴隷:母乳/2) )
+ELSEIF 	( RAND(MAX(CUP:奴隷:快Ｂ,1)) > (MAXBASE:奴隷:母乳-BASE:奴隷:母乳) )
+	;100%超えていない場合は量は知れてる
+	母乳噴出量 = MAX(RAND(BASE:奴隷:母乳),0)
+ENDIF
+母乳噴出量 = MIN(母乳噴出量, BASE:奴隷:母乳)
+
+IF 母乳噴出量 < 1
+	RETURN 0
+ENDIF
+
+DOWNBASE:奴隷:体力 += 20 * MAX(母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+DOWNBASE:奴隷:气力 += 50 * MAX(母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+
+IF EXP:奴隷:喷乳经验 < EXPLV:1
+	SOURCE:奴隷:露出 += MAX(10000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:屈从 += MAX( 5000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:肮脏 += MAX( 2000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+ELSEIF EXP:奴隷:喷乳经验 < EXPLV:2
+	SOURCE:奴隷:露出 += MAX( 5000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:屈从 += MAX( 3000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:肮脏 += MAX( 1500 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+ELSEIF EXP:奴隷:喷乳经验 < EXPLV:3
+	SOURCE:奴隷:露出 += MAX( 3000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:屈从 += MAX( 1500 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:肮脏 += MAX( 1000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+ELSEIF EXP:奴隷:喷乳经验 < EXPLV:4
+	SOURCE:奴隷:露出 += MAX( 1500 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:屈从 += MAX(  800 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:肮脏 += MAX(  700 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+ELSEIF EXP:奴隷:喷乳经验 < EXPLV:5
+	SOURCE:奴隷:露出 += MAX( 1000 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:屈从 += MAX(  500 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:肮脏 += MAX(  400 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+ELSE
+	SOURCE:奴隷:露出 += MAX(  500 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+	SOURCE:奴隷:屈从 += MAX(  300 * 母乳噴出量 / MAXBASE:奴隷:母乳, 1)
+ENDIF
+
+SELECTCASE 母乳噴出量
+	CASE IS > MAXBASE:奴隷:母乳
+		PRINTFORML %CALLNAME:奴隷+"的乳头喷出了大量的母乳"%
+		EXP:奴隷:异常经验 += (EXP:奴隷:喷乳经验==0)
+		EXP:奴隷:喷乳经验 += 3
+		NOWEX:奴隷:喷乳 += 3
+		EX:奴隷:喷乳 += 3
+	CASE IS > (MAXBASE:奴隷:母乳/2)
+		PRINTFORML %CALLNAME:奴隷+"的乳头喷出了母乳"%
+		EXP:奴隷:异常经验 += (EXP:奴隷:喷乳经验==0)
+		EXP:奴隷:喷乳经验 += 2
+		NOWEX:奴隷:喷乳 += 2
+		EX:奴隷:喷乳 += 2
+	CASE IS > (MAXBASE:奴隷:母乳/4)
+		;125%以上貯まっていた
+		PRINTFORML %CALLNAME:奴隷+"的乳头溢出了母乳"%
+		EXP:奴隷:异常经验 += (EXP:奴隷:喷乳经验==0)
+		EXP:奴隷:喷乳经验 += 1
+		NOWEX:奴隷:喷乳 += 1
+		EX:奴隷:喷乳 += 1
+	CASEELSE
+		PRINTFORML %CALLNAME:奴隷+"的乳头渗出了母乳"%
+ENDSELECT
+
+;Ｂに母乳汚れを付ける
+STAIN:奴隷:Ｂ |= 汚れ_母乳
+
+;母乳を減らす
+BASE:奴隷:母乳 -= 母乳噴出量
+;万一の為に最大母乳-1になるように調整
+BASE:奴隷:母乳 = MIN(BASE:奴隷:母乳, MAXBASE:奴隷:母乳 - 1)
+
+;录像摄影判定
+IF TEQUIP:奴隷:录像摄影
+	IF NOWEX:奴隷:喷乳 == 1
+		LOCALS = MILK/
+	ELSEIF NOWEX:奴隷:喷乳 == 2
+		LOCALS = MILK/MILK/
+	ENDIF
+	TSTR:视频摄影记录 += LOCALS
+ENDIF
+
+WAIT

@@ -1,0 +1,1721 @@
+﻿;-------------------------------------------------
+;寝取られパッチ用蕾米莉亚口上ファイル：お持ち帰り関係
+;方针：蕾米莉亚は自尊心が高いので怯えた顔とかあまり見せないように。
+;      小恶魔と違い奔放というわけではないけどわがままという面もあるので、寝取られ寸前の
+;      時点である程度積極的な言動もありかと。
+;寝取られパッチ用咲夜口上ファイルを元に改造
+;お好きなように埋めまくってください
+;そしてあわよくばうｐしてください
+;いやマジで
+;注意：この口上が呼ばれるのは対象が主人から見える位置に居る状態か
+;　　　筒抜けコマンド(デバグ用)を実行した場合に限ります
+;　　　対象は気づいてない事が前提なので書く際にはご注意を
+;-------------------------------------------------
+;各状態のコンセプト
+;
+;蕾米莉亚は自尊心が高く高慢ということで、訪問者に押し倒されても泣いて助けを求めるイメージではなく
+;むしろ余裕を持って自分からコトに臨むようなイメージで。
+;あと施虐狂持ちということであなたが覗いている時には積極的に見せ付けてくる感じで。
+;
+;寝取られ
+;完全に堕とされ自ら望んでエロいことしている状態
+;
+;寝取られ寸前
+;陥落寸前で、恋人であるあなたのことは眼中にないくらいの状態
+;
+;寝取られそう
+;恋人であるあなたのことを気にしてはいるけど背徳感を満喫している状態
+;
+;主人より高い
+;余裕をもって訪問者との逢瀬を愉しんでいる状態
+;あなたのことも気にしてますが、背徳感を愉しんでいるほうが大きい？
+;この時点でセックスも許容
+;
+;↑　ここの落差が激しすぎるのが難点。
+;↓　間にもう一段階おくべきだろうか・・・。
+;
+;恋慕
+;あなたのことを優先するも隙を突かれて犯されてしまう状態
+;さすがにセックスは許容せず
+;
+;非恋慕
+;なめてかかっていた相手に隙を突かれて犯されてしまう状態
+;
+;==================================================
+;訪問者宅から帰ってきた際
+;==================================================
+@NTR_KOJO_K5_0(奴隷)
+#DIM 奴隷
+#DIM DYNAMIC 精子量 = 0
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML 企图掩盖起宅邸主人的污秽身影，悄悄地走了回来
+	PRINTDATAL
+		DATAFORM 也可以虚张声势堂堂地回来。但是那样反而会让大家担心吧。
+		DATAFORM 可能有几个妖精女仆主要注意到了。但是每个人都装作没看见。
+		DATAFORM 与其诅咒%NTR_NAME(0)%、不如先想想怎么洗干净身子吧。
+	ENDDATA
+	PRINTFORML 宅邸的人们，特别是%CALLNAME:MASTER%而回到了房间。
+
+	;公众便所
+ELSEIF TALENT:奴隷:公众便所
+
+	PRINTFORML 巴不得真是这脏样的样子，就堂堂正正地回来了
+	IF TALENT:奴隷:恋慕
+		PRINTFORML %CALLNAME:奴隷%来到你身边、说自己是从%NTR_NAME(0)%的地方回来的。
+		CALL NTR_KOJO_K5_0_TalkBack0(奴隷)
+		IF EXP:奴隷:前回浮気人数 > 0
+			PRINTFORML 「是啊、从%NTR_NAME(4)%的那边回来的。这不是明摆着的吗？」
+			PRINTFORML 「当然啦，不光只是%NTR_NAME(3)%、还有其他人抱着我哦。」
+			PRINTFORML %CALLNAME:奴隷%妖艳地微笑着、说出了昨天和{EXP:奴隷:前回浮気人数}名客人一起上床了。
+		ELSE
+			;前回浮気人数が0の時は訪問者に抱かれたものとする
+			CALL NTR_KOJO_K5_0_TalkBack1(奴隷)
+		ENDIF
+		;精子量
+		FOR LOCAL, 0, 301
+			REPEAT 9
+				IF TA:奴隷:LOCAL:COUNT > 0
+					精子量 += TA:奴隷:LOCAL:COUNT
+				ENDIF
+			REND
+		NEXT
+		IF 精子量 > 0
+			CALL NTR_KOJO_K5_0_TalkSamen(奴隷)
+		ENDIF
+		PRINTFORML %MSG_LOVER(奴隷)%在的你耳边这样低语之后、虽然被凌辱和污秽、尽管如此、她仍然带着微暗的微笑回到了房间。
+	ELSE
+		PRINTFORML 虽然被凌辱和污秽、尽管如此、她仍然带着微暗的微笑回到了房间。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML 这座洋馆的主人毫不掩饰这脏样的样子就回屋里去了。
+
+ELSE
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:浮気公認 >= 4
+			PRINTFORML %CALLNAME:奴隷%来到你身边、说自己是从%NTR_NAME(0)%的地方回来的。
+			CALL NTR_KOJO_K5_0_TalkBack0(奴隷)
+			CALL NTR_KOJO_K5_0_TalkBack1(奴隷)
+			;精子量
+			FOR LOCAL, 0, 301
+				REPEAT 9
+					IF TA:奴隷:LOCAL:COUNT > 0
+						精子量 += TA:奴隷:LOCAL:COUNT
+					ENDIF
+				REND
+			NEXT
+			IF 精子量 > 0
+				CALL NTR_KOJO_K5_0_TalkSamen(奴隷)
+			ENDIF
+			PRINTFORML %MSG_LOVER(奴隷)%在你的耳边这样低语之后，她回到了自己的房间。
+		ELSEIF TALENT:奴隷:浮気公認
+			PRINTFORML %CALLNAME:奴隷%来到你身边、说自己是从%NTR_NAME(0)%的地方回来的。
+			CALL NTR_KOJO_K5_0_TalkBack0(奴隷)
+			CALL NTR_KOJO_K5_0_TalkBack1(奴隷)
+			PRINTFORML %MSG_LOVER(奴隷)%在你的耳边这样低语之后、她回到了自己的房间。
+		ELSE
+			PRINTFORML 宅邸里的人们、特别是%CALLNAME:MASTER%为了不看见而回到了房间内。
+		ENDIF
+	ELSE
+		PRINTFORML 为了不让宅里的人们看见就回屋里去了。
+	ENDIF
+ENDIF
+RETURN 0
+
+; 帰宅時挨拶
+@NTR_KOJO_K5_0_TalkBack0(奴隷)
+#DIM 奴隷
+
+PRINTDATAL
+	DATAFORM 「我回来了。现在回来了」
+	DATAFORM 「现在回来了」
+	DATAFORM 「我回来了。我不在的时候，没有偷懒吧？」
+ENDDATA
+RETURN 0
+
+; 帰宅時挨拶追い打ち
+; 　わざわざ報告してくる状況なので、前提として恋慕かつ浮気公認 == 外泊公認
+@NTR_KOJO_K5_0_TalkBack1(奴隷)
+#DIM 奴隷
+
+PRINTFORML 「是啊、从%NTR_NAME(4)%的那边回来的。这不是明摆着的吗？」
+PRINTDATAL
+	DATAFORM 「当然了、被他们热情的招待了」
+	DATAFORM 「玩得开心吗？花样很多啊」
+	DATAFORM 「我玩得很开心、呼呼」
+ENDDATA
+RETURN 0
+
+; 精液汚れ報告
+; 　わざわざ報告してくる状況なので、前提として恋慕かつ浮気公認
+@NTR_KOJO_K5_0_TalkSamen(奴隷)
+#DIM 奴隷
+
+PRINTFORML 「有件好事可以告诉%CALLNAME:MASTER%，现在我的小穴已经被精液弄脏了，就像%CALLNAME:MASTER%所希望的那样・・」
+IF GETBIT(CFLAG:奴隷:淫纹, 淫纹_右頬)
+	CALL COM417_GetFillingRateByPublicSperm(奴隷)
+	SELECTCASE (RESULT:1 * RESULT:0)
+		CASE IS >= 200	; 淫纹が鮮やかなピンク色
+			PRINTFORML 微笑着的%CALLNAME:奴隷%的脸上刻着的淫纹已经变成了鲜艳的粉红色、
+			PRINTFORML 从这个颜色上来看，%CALLNAME:奴隷%的子宫被填充了大量的精液，可以看到小腹都因此鼓起不少.
+		CASE IS >= 100	; 淫纹がピンク色
+			PRINTFORML 微笑着的%CALLNAME:奴隷%，脸上可以看到已经变成粉红色的淫纹、
+			PRINTFORML 这个颜色表示她的子宫里已经充满了精液。
+		CASE 50 TO 99	; 淫纹が赤
+			PRINTFORML %CALLNAME:奴隷%微笑的脸颊上可以看见淫纹变成了赤色、
+			PRINTFORML 这个颜色表示她的子宫里已经填充了一半多的精液。
+		CASE 1 TO 49	; 淫纹が赤紫
+			PRINTFORML %CALLNAME:奴隷%微笑的脸颊上刻着的淫纹变成了赤紫色的。
+		CASEELSE		; 淫纹が紫
+			PRINTFORML %CALLNAME:奴隷%微笑的脸颊上刻着的淫纹是紫色的。
+	ENDSELECT
+ELSE
+	PRINTFORML %CALLNAME:奴隷%露出淫靡的微笑。
+ENDIF
+RETURN 0
+
+;==================================================
+;お持ち帰り
+;==================================================
+;==================================================
+;客情報生成（お持ち帰り時に実行）
+;==================================================
+@NTR_KOJO_K5_MAKE_CLIENT(奴隷)
+#DIM 奴隷
+
+;亲爱なし公众便所の場合実行
+IF !TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+	CFLAG:奴隷:持帰分岐 = RAND:3
+ENDIF
+RETURN
+;==================================================
+;訪問者宅へ(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_10_0(奴隷)
+#DIM 奴隷
+
+IF TALENT:奴隷:浮気公認 == 5
+	PRINTFORML 带着项圈的%CALLNAME:奴隷%就像宠物一样被饲养在%NTR_NAME(0)%的家中。
+	PRINTFORML 作为人妻的工作就是用身体侍奉男人。
+	PRINTFORML 无论对象是%NTR_NAME(0)%还是别的什么人，只要尽好人妻的职责就好了。
+	PRINTFORML 所以%CALLNAME:奴隷%现在也正愉快地等待着今天份的工作。
+
+	;亲爱かつ公众便所の場合は売春强迫
+ELSEIF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML %CALLNAME:奴隷%被带到平时的房间。
+	PRINTFORML 外表上看上去很奢华，却是个令人作呕的恶趣味的房间。
+	PRINTFORML 极度的恶趣味、%NTR_NAME(0)%把%CALLNAME:奴隷%的项圈用房间里从的墙壁延伸下来的锁链系上。
+	PRINTFORML 拴住可怜奴隶的%NTR_NAME(0)%离开了房间、与之替换的是买了她的男人进来了。
+	PRINTFORML 至少是虚张声势・・%CALLNAME:奴隷%不逃避也不隐藏、故意露出笑容。
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTDATAL
+		DATAFORM 「不、不要啊啊啊！ 救命、救命啊%CALLNAME:MASTER%！！」
+		DATAFORM 「不、不要啊啊啊！ 你要做什么、离我远点啊！」
+		DATAFORM 「不要啊啊啊！ 呜啊、离我远点啊！」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%所束缚，被绑架到%NTR_NAME(4)%的家中。
+	PRINTFORML 被锁链连在地下室的墙壁的%CALLNAME:奴隷%衣服被撕开、%NTR_NAME(0)%露出卑鄙的笑容。
+
+ELSEIF TALENT:奴隷:公众便所
+
+	PRINTFORML 在%NTR_NAME(0)%的宅门前、%CALLNAME:奴隷%用手指着项圈询问。
+	IF CALLNAME:奴隷 == "蕾米莉亚"
+		PRINTFORML 只要佩戴这个项圈、在这里的就不是红魔馆的主人%CALLNAME:奴隷%、而是只有性服务的精液便所。
+	ELSE
+		PRINTFORML 只要佩戴这个项圈，她就是各种性服务的精液便所。
+	ENDIF
+	PRINTFORML 「那么，今天的客人想要什么服务呢？」
+	PRINTFORML 看着满脸通红地询问对进一步快乐的期待的%CALLNAME:奴隷%、%NTR_NAME(0)%告诉了她今天的订单。
+	PRINTFORML ：
+	CALL NTR_KOJO_K5_GET_ORDER(奴隷)
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML 在%NTR_NAME(0)%的宅门前、%CALLNAME:奴隷%自己带上了交给自己的项圈。
+	PRINTFORML 把从项圈上伸出的锁链交在%NTR_NAME(0)%的手里、这是献出自己的誓言。
+	IF CALLNAME:奴隷 == "蕾米莉亚"
+		PRINTFORML 现在在这里的不是红魔馆的主人。只是一只乞求主人怜爱的母狗罢了。
+	ELSE
+		PRINTFORML 现在在这里的只是一只乞求主人怜爱的母狗罢了。
+	ENDIF
+	PRINTFORML %NTR_NAME(0)%从%CALLNAME:奴隷%手上接过锁链、%CALLNAME:奴隷%被他的牵着穿过门。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	IF TALENT:奴隷:恋慕
+		PRINTDATAL
+			DATAFORM 「你打算把有%MSG_LOVER(奴隷)%的女人带到这种地方、今晚不打算回去吗？」
+			DATAFORM 「邀请有%MSG_LOVER(奴隷)%的女人到这种地方、今晚不打算回去吗？」
+			DATAFORM 「在%MSG_LOVER(奴隷)%看不见的地方去其他男人家的女人・・是吗？」
+		ENDDATA
+		PRINTFORML 在%NTR_NAME(0)%的宅门前、%CALLNAME:奴隷%微笑着。
+		PRINTFORML %NTR_NAME(0)%以像恋人一样的态度对%CALLNAME:奴隷%伸出手臂、%CALLNAME:奴隷%抱住他的手臂，很高兴地穿过了大门。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「把我带到这种地方、今晚不打算回去吗？」
+			DATAFORM 「邀请我到这种地方、今晚不打算回去吗？」
+			DATAFORM 「库库库・・能让我感到愉悦呢？」
+		ENDDATA
+		PRINTFORML 在%NTR_NAME(0)%的宅门前、%CALLNAME:奴隷%微笑着。
+		PRINTFORML %NTR_NAME(0)%故意对%CALLNAME:奴隷%伸出手、%CALLNAME:奴隷%在他的陪衬下兴高采烈地穿过大门。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	IF TALENT:奴隷:恋慕
+		PRINTDATAL
+			DATAFORM 「把有%MSG_LOVER(奴隷)%的女人带到这样的地方、今晚不打算回去吗？」
+			DATAFORM 「邀请有%MSG_LOVER(奴隷)%的女人到这种地方、今晚不打算回去吗？」
+			DATAFORM 「在%MSG_LOVER(奴隷)%看不见的地方去其他男人家的女人・・是吗？」
+		ENDDATA
+		PRINTFORML 在%NTR_NAME(0)%的宅门前、%CALLNAME:奴隷%微笑着。
+		PRINTFORML %NTR_NAME(0)%以像恋人一样的态度对%CALLNAME:奴隷%伸出手臂、%CALLNAME:奴隷%抱着他的胳膊穿过大门。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「把我带到这种地方、今晚不打算回去吗？」
+			DATAFORM 「邀请我到这种地方、今晚不打算回去吗？」
+			DATAFORM 「库库库・・能让我感到愉悦呢？」
+		ENDDATA
+		PRINTFORML 在%NTR_NAME(0)%的宅门前、%CALLNAME:奴隷%微笑着。
+		PRINTFORML %NTR_NAME(0)%故意对%CALLNAME:奴隷%伸出手、%CALLNAME:奴隷%在他的陪衬下兴高采烈地穿过大门。
+	ENDIF
+
+ELSE
+
+	SELECTCASE TALENT:奴隷:浮気公認
+		CASE IS >= 浮気_外泊公認
+			PRINTFORML 「好啊、我们走吧。呼呼、好期待啊」
+			PRINTFORML %CALLNAME:奴隷%与%NTR_NAME(0)%交叉手臂行向%NTR_NAME(4)%的家走去。
+			PRINTFORML 外宿的事%MSG_LOVER(奴隷)%也知道、但她已经没有感到内疚了。
+			PRINTFORML （・・%CALLNAME:MASTER%・・等回去以后、会说给你听的・・库库库、好期待啊）
+		CASE IS >= 浮気_浮気公認
+			PRINTFORML 「好啊、我们走吧」
+			PRINTFORML %CALLNAME:奴隷%与%NTR_NAME(0)%交叉手臂行向%NTR_NAME(4)%的家走去。
+			PRINTFORML （・・%CALLNAME:MASTER%・・等回去以后、会说给你听的・・库库库、好期待啊）
+		CASEELSE		; 非公認
+			PRINTFORML 「哼，是潮湿的地方啊・・」
+			PRINTFORML %NTR_NAME(0)%被带入宅的%CALLNAME:奴隷%提出不满。
+			PRINTFORML 比起对%NTR_NAME(0)%的房子的不满、对女士没有礼貌等抱怨似乎更多。
+	ENDSELECT
+
+ENDIF
+
+RETURN 0
+
+;==================================================
+;公众便所オーダー取得時会话(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_GET_ORDER(奴隷)
+#DIM 奴隷
+
+SELECTCASE CFLAG:奴隷:持帰分岐
+		;Sコース
+	CASE 1
+		PRINTFORML 在%NTR_NAME(0)%宅的休息室、%CALLNAME:奴隷%穿着黑色的皮革服装。
+		PRINTFORML 「今天顾客想要的主题是女王、啊」
+		PRINTFORML 「想向这样的小姑娘下跪，真是世界末日啊」
+		PRINTFORML 高跟鞋的脚步声也很清脆、%CALLNAME:奴隷%进入了游戏室。
+		;Mコース
+	CASE 2
+		PRINTFORML 在%NTR_NAME(0)%宅的地下室、%CALLNAME:奴隷%被锁链将手脚连接在地板上。
+		PRINTFORML 今天被命令当做买下她的客人的母狗。
+		PRINTFORML 客人、不对、她的主人走进了游戏室。
+		PRINTFORML 「欢迎光临主人大人。今晚请随意使用这个身体」
+		;その他（通常）
+	CASEELSE
+		PRINTFORML 「啊啊・・・今天能为几位客人服务呢・・・」
+		PRINTFORML 作为肉便器、面对陌生男人们的喜悦使%CALLNAME:奴隷%颤抖
+ENDSELECT
+
+RETURN 0
+
+;==================================================
+;訪問者と会话(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_10_1(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML %CALLNAME:奴隷%坐在客人的旁边进行对话。
+	PRINTFORML 和房间内部装修一样、有一张奢侈而恶趣味的沙发、坐起来并不舒服。
+	PRINTFORML 但%CALLNAME:奴隷%被锁链锁住、对方是花钱买下她身体的客人。
+	PRINTFORML 采取从容的态度，有时连笑容都浮现出来对%CALLNAME:奴隷%来说只是痛苦的时间。
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTDATAL
+		DATAFORM 「咕・・、别、别过来・・！」
+		DATAFORM 「戚、别靠近我！」
+		DATAFORM 「没想到我会为这种事而屈服・・！」
+	ENDDATA
+	IF 客の人数 > 1
+		PRINTFORML 感到浮现出下流笑容的男人们的危险、但是%CALLNAME:奴隷%连锁链都挣脱不掉。
+	ELSE
+		PRINTFORML 对浮现出下流笑容的男人感到危险、但是%CALLNAME:奴隷%连锁链都挣脱不掉。
+	ENDIF
+
+ELSEIF TALENT:奴隷:公众便所 &&調教者 == 人物_客
+
+	SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+		CASE 1
+			PRINTFORML 「没错・・给我好好舔一舔・・」
+			PRINTFORML %CALLNAME:奴隷%站在跪着的客人面前、让他舔着穿着高跟鞋的脚尖。
+			;Mコース
+		CASE 2
+			PRINTFORML 「・・好・・让我给你侍奉把・・」
+			PRINTFORML %CALLNAME:奴隷%跪在客人面前、舔着他的脚尖。
+			;その他（通常）
+		CASEELSE
+			IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
+				PRINTFORML 「没错・・因为你买了、所以我的第一次是客人的东西」
+				PRINTFORML 「库库库・・究竟会以怎样的方式被夺走呢？」
+				PRINTFORML %CALLNAME:奴隷%坐在客人旁边、用甜蜜的声音诱惑着。
+			ELSE
+				PRINTFORML 「呼呼・・那样也挺开心的・・」
+				IF 客の人数 > 1
+					PRINTFORML %CALLNAME:奴隷%被客人夹在中间坐着，用甜蜜的声音诱惑着。
+				ELSE
+					PRINTFORML %CALLNAME:奴隷%坐在客人旁边、用甜蜜的声音诱惑着。
+				ENDIF
+			ENDIF
+	ENDSELECT
+
+	;公众便所ではない売春
+ELSEIF 調教者 == 人物_客
+
+	;IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
+	;	PRINTFORML 「没错・・因为你买了、所以我的第一次是客人的东西」
+	;	PRINTFORML 「库库库・・究竟会以怎样的方式被夺走呢？」
+	;	PRINTFORML %CALLNAME:奴隷%坐在客人旁边、用甜蜜的声音诱惑着。
+	;ELSE
+	PRINTFORML 「呼呼・・那样也挺开心的・・」
+	PRINTFORML %CALLNAME:奴隷%坐在客人旁边、用甜蜜的声音诱惑着。
+	;ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTDATAL
+		DATAFORM 「呼呼・・那样也挺开心的・・」
+		DATAFORM 「想要更刺激的事情・・？ 没关系。你想怎么做都可以」
+		DATAFORM 「呐、我有想做的事、不、我有一件事想让你做・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%坐在%NTR_NAME(0)%的膝上、浮现出迷人的笑容与他说话。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	PRINTDATAL
+		DATAFORM 「库库库・・怎样才能让我感到快乐呢・・？」
+		DATAFORM 「想要更刺激的事情・・？ 没关系。你想怎么做都可以」
+		DATAFORM 「呐、我有想做的事、不、我有一件事想让你做・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%坐在%NTR_NAME(0)%的旁边、一边沉浸在身体上一边和他说话。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 对于%ANATA_LOVER(奴隷)%的事情似乎已经连想都没有想过了。
+	ELSE
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTDATAL
+		DATAFORM 「库库库・・怎样才能让我感到快乐呢・・？」
+		DATAFORM 「想要更刺激的事情・・？ 是啊、我只听你说」
+		DATAFORM 「呐、我有想做的事、不、我有一件事想让你做・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%坐在%NTR_NAME(0)%的旁边、身体靠在他身上说话。。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 对%ANATA_LOVER(奴隷)%的思念，化为倒错的喜悦的调料。
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML 回到馆里后、打算把这次的情事告诉%MSG_LOVER(奴隷)%。
+		ELSE
+			PRINTFORML 在%MSG_LOVER(奴隷)%不知道的地方与其它的%NTR_NAME(3)%一起享受着时间。
+		ENDIF
+	ELSE
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:浮気公認
+			PRINTDATAL
+				DATAFORM 「库库库・・怎样才能让我感到快乐呢・・？」
+				DATAFORM 「没关系。跟上来的是我。但是、无聊的话我先回去了？」
+				DATAFORM 「看来你很有自信让我玩得开心呢？」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%坐在%NTR_NAME(0)%的旁边、诱惑的微笑着
+		ELSE
+			PRINTDATAL
+				DATAFORM 「然后呢？ 有什么开心的事吗？」
+				DATAFORM 「无聊的话就回去吧？」
+				DATAFORM 「咕、快放手・・・」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%坐在%NTR_NAME(0)%的旁边、露出了威胁般的微笑
+		ENDIF
+	ELSE
+		PRINTDATAL
+			DATAFORM 「然后呢？ 有什么开心的事吗？」
+			DATAFORM 「无聊的话就回去吧？」
+			DATAFORM 「咕、快放手・・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%坐在%NTR_NAME(0)%的旁边、露出了威胁般的微笑
+	ENDIF
+
+ENDIF
+RETURN 0
+
+;==================================================
+;訪問者とキス(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_10_2(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTDATAL
+		DATAFORM 「嗯！唔姆！・・嗯、嗯・・嗯！」
+		DATAFORM 「不、不要・・嗯、嗯嗯・・姆呜！」
+		DATAFORM 「嗯嗯！ 嗯・・受不了了・・」
+	ENDDATA
+	IF 客の人数 > 1
+		PRINTFORML %CALLNAME:奴隷%被男人们夺走了嘴唇，轮流缠绕着舌头。
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%被男人夺去嘴唇，舌头交织在一起。
+	ENDIF
+	PRINTDATAL
+		DATAFORM 勉勉强强地响应对方的行为，自己也使用舌头。
+		DATAFORM 把嘴里流下来的唾液硬吞下去。
+		DATAFORM 拥抱对方，自己用舌头把对方的口腔舔了个遍
+	ENDDATA
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTDATAL
+		DATAFORM 「嗯！唔姆！・・嗯、嗯・・不要啊・・嗯！」
+		DATAFORM 「不、不要啊・・嗯、嗯嗯・・姆呜！」
+		DATAFORM 「嗯嗯！ 放、放开我・・嗯嗯嗯！」
+	ENDDATA
+	IF 客の人数 > 1
+		PRINTFORML %CALLNAME:奴隷%被男人们强行夺走嘴唇、交替地缠绕着舌头。
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%被男人强行夺走了嘴唇，舌头相互缠绕。
+	ENDIF
+
+ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
+
+	SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+		CASE 1
+			PRINTDATAL
+				DATAFORM 「呼呼・・喝吧」
+				DATAFORM 「你想让我吻你吗・・？ 太奢侈了。用这个忍着吧」
+				DATAFORM 「喝下我的口水吧」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%在跪下的客人的嘴上伸长舌头、把唾液滴到他嘴里。
+			;Mコース
+		CASE 2
+			PRINTDATAL
+				DATAFORM 「嗯・・啾・・嗯・・」
+				DATAFORM 「嗯嗯・・姆・・啾・・」
+				DATAFORM 「啾・・啾啪・・嗯・・」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%被客人夺走嘴唇，在口中随心所欲的蹂躏着。
+			;その他（通常）
+		CASEELSE
+			PRINTDATAL
+				DATAFORM 「嗯・・啾・・嗯・・」
+				DATAFORM 「嗯嗯・・姆・・啾・・」
+				DATAFORM 「啾・・啾啪・・嗯・・」
+			ENDDATA
+			IF 客の人数 > 2
+				PRINTFORML %CALLNAME:奴隷%与客人们交替地缠绕着舌头。
+			ELSEIF 客の人数 == 2
+				PRINTFORML %CALLNAME:奴隷%与两个客人交替地缠绕着舌头。
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%靠在客人身上、继续深吻。
+			ENDIF
+			IF TALENT:奴隷:恋慕
+				PRINTFORML 本应被%MSG_LOVER(奴隷)%允许的嘴唇上重叠着不知名男子的嘴唇，连舌头也互相缠绕着。
+			ENDIF
+
+	ENDSELECT
+
+	;公众便所ではない売春
+ELSEIF 調教者 == 人物_客
+
+	PRINTDATAL
+		DATAFORM 「嗯・・啾・・嗯・・」
+		DATAFORM 「嗯嗯・・姆・・啾・・」
+		DATAFORM 「啾・・啾啪・・嗯・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%靠在客人身上、继续深吻。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 本应被%MSG_LOVER(奴隷)%允许的嘴唇上重叠着不知名男子的嘴唇，连舌头也互相缠绕着。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTDATAL
+		DATAFORM 「嗯・・啾・・嗯・・」
+		DATAFORM 「嗯嗯・・姆・・啾・・」
+		DATAFORM 「啾・・啾啪・・嗯・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%靠在%NTR_NAME(0)%身上紧紧抱住、继续深吻。
+	PRINTFORML 与%NTR_NAME(2)%的接吻、享受毒品一样的甜美。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	PRINTDATAL
+		DATAFORM 「嗯・・啾・・嗯・・」
+		DATAFORM 「嗯嗯・・姆・・啾・・」
+		DATAFORM 「啾・・啾啪・・嗯・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%与%NTR_NAME(0)%重叠嘴唇、自己将舌头缠绕上去。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 与%NTR_NAME_1_2(奴隷)%的接吻、享受毒品一样的甜美。
+		PRINTFORML 只允许%MSG_LOVER(奴隷)%使用的嘴唇、已经变成了%NTR_NAME(0)%的专用品了。
+	ELSE
+		PRINTFORML 与%NTR_NAME(2)%的接吻、享受毒品一样的甜美。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	IF TALENT:奴隷:浮気公認
+		PRINTDATAL
+			DATAFORM 「嗯・・啾・・嗯・・」
+			DATAFORM 「嗯嗯・・姆・・啾・・」
+			DATAFORM 「啾・・啾啪・・嗯・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%与%NTR_NAME(0)%重叠嘴唇、自己将舌头缠绕上去。
+		PRINTFORML 只允许%MSG_LOVER(奴隷)%使用的嘴唇、已经变成了%NTR_NAME(0)%的专用品了。
+	ELSE
+		IF TALENT:奴隷:恋慕
+			PRINTDATAL
+				DATAFORM 「唔姆・・啾・・嗯・・」
+				DATAFORM 「嗯嗯・・嗯・・啾・・」
+				DATAFORM 「啾・・啾啪・・嗯・・」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%被强行夺走了嘴唇、但没有转过脸而是继续接吻。
+			PRINTFORML 只允许%MSG_LOVER(奴隷)%使用的嘴唇、已经变成了%NTR_NAME(0)%的专用品了。
+		ELSE
+			PRINTDATAL
+				DATAFORM 「唔姆・・啾・・嗯・・」
+				DATAFORM 「嗯嗯・・嗯・・啾・・」
+				DATAFORM 「啾・・啾啪・・嗯・・」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%被强行夺走了嘴唇、但没有转过脸而是继续接吻。
+		ENDIF
+	ENDIF
+
+ELSE
+
+	PRINTDATAL
+		DATAFORM 「唔姆・・啾・・嗯・・」
+		DATAFORM 「嗯嗯・・嗯・・啾・・」
+		DATAFORM 「啾・・啾啪・・嗯・・」
+	ENDDATA
+	IF TALENT:奴隷:浮気公認
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%夺走嘴唇，却毫不拒绝地伸出舌头。
+		PRINTFORML 只有%MSG_LOVER(奴隷)%才允许的嘴唇、被%NTR_NAME(0)%用自己的脸贪婪的舔舐着。
+	ELSE
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%被强行夺走嘴唇，转过脸去。
+			PRINTFORML 只有%MSG_LOVER(奴隷)%才允许的嘴唇、%NTR_NAME(0)%用自己的脸贪婪的舔舐着。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%被强行夺走了嘴唇。
+		ENDIF
+	ENDIF
+
+ENDIF
+
+RETURN 0
+
+;==================================================
+;訪問者と六九式(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_10_3(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTDATAL
+		DATAFORM 「呜・・呜咕・・唔姆・・！！」
+		DATAFORM 「呜呜・・啊、啊啊・・咕呜！」
+		DATAFORM 「嗯・・唔姆・・那、那里・・啊啊！」
+	ENDDATA
+	IF 客の人数 > 1
+		PRINTFORML %CALLNAME:奴隷%被放在仰卧的男子身上、被迫的用六九式服务着
+		PRINTFORML 用小嘴吞着肉棒的%CALLNAME:奴隷%的秘所被男人舔着、其他男人则是在舔在她的菊门。
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%被男人压住、把阴茎塞进嘴里。
+		PRINTFORML 男人一边侵犯着%CALLNAME:奴隷%的嘴巴、一边舔舐着她湿润的腿间。
+	ENDIF
+	IF CHK_NTR_SATISFACTORY(奴隷) && RAND:3 == 0
+		PRINTFORML 与%CALLNAME:奴隷%的意愿相反，她的身体接受了快乐，逐渐做出了淫荡的反应。
+	ENDIF
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTDATAL
+		DATAFORM 「呜・・呜咕・・唔姆・・！！」
+		DATAFORM 「呜呜・・啊、啊啊・・咕呜！」
+		DATAFORM 「嗯・・唔姆・・那、那里・・啊啊！」
+	ENDDATA
+	IF 客の人数 > 1
+		PRINTFORML %CALLNAME:奴隷%被放在仰卧的男子身上、被迫的用六九式服务着
+		PRINTFORML 男人一边用肉棒侵犯%CALLNAME:奴隷%的嘴巴、一边舔着她的秘所、其他男人则是在舔在她的菊门。
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%被男人强行压住，把阴茎塞进嘴里。
+		PRINTFORML 男人一边侵犯着%CALLNAME:奴隷%的嘴巴、一边舔舐着她湿润的腿间。
+	ENDIF
+
+ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
+
+	SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+		CASE 1
+			PRINTFORML %CALLNAME:奴隷%打开服装股间的拉链露出股间的同时，坐在仰卧的客人的脸上。
+			PRINTFORML 「咬紧嘴巴。如果你想插进你那低贱的东西、好好努力把这里弄湿吧」
+			PRINTFORML 客人高兴地开始舔舐被压在脸上的幼小的生殖器。
+			PRINTFORML 「库库库・・只是舔它就让你勃起了・・这下流的东西看来需要惩罚呢」
+			PRINTFORML 「甚至不能插进我里面、只是靠我的手和嘴就能把你给榨干了」
+			PRINTFORML %CALLNAME:奴隷%改变姿势后，一边操纵客人的阴茎一边开始用嘴巴吞吐起来
+
+			;Mコース
+		CASE 2
+			PRINTFORML %CALLNAME:奴隷%被命令仰卧，就以这样的姿势被侵犯了。
+			PRINTFORML 「呜呜、呜、啾、呜嗯」
+			PRINTFORML 客人像对待阴道一样来回摆动着腰抽插着娇小的嘴巴、同时贪婪的舔舐着%CALLNAME:奴隷%的股间。
+
+			;その他（通常）
+		CASEELSE
+			PRINTDATAL
+				DATAFORM 「呼呼・・好大啊・・啾库・・你也来爱抚我吧？」
+				DATAFORM 「啊啊・・好厉害・・可以把它们全部吸出来吗？」
+				DATAFORM 「啾・・啾啪・・哈、我的也要、快点・・」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%把客人的阴茎贴在嘴巴上，把湿透了的秘所压在他脸上。
+			IF 客の人数 > 2
+				PRINTFORML 剩下的两个客人则是抚摸着%CALLNAME:奴隷%的胸和屁股。
+			ELSEIF 客の人数 == 2
+				PRINTFORML 另一位客人把脸埋进了%CALLNAME:奴隷%的股间、用舌头玩弄着菊门。
+			ELSE
+			ENDIF
+	ENDSELECT
+
+	;公众便所ではない売春
+ELSEIF 調教者 == 人物_客
+
+	PRINTDATAL
+		DATAFORM 「呼呼・・好大啊・・啾库・・你也来爱抚我吧？」
+		DATAFORM 「啊啊・・好厉害・・可以把它们全部吸出来吗？」
+		DATAFORM 「啾・・啾啪・・哈、我的也要、快点・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%把客人的阴茎贴在嘴巴上，把湿透了的秘所压在他脸上。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTDATAL
+		DATAFORM 「呼呼・・好大啊・・啾库・・你也来爱抚我吧？」
+		DATAFORM 「啊啊・・好厉害・・可以把它们全部吸出来吗？」
+		DATAFORM 「啾・・啾啪・・哈、我的也要、快点・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%把嘴巴贴在了%NTR_NAME(0)%的阴茎上、把湿透了的秘所压在他脸上。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	PRINTDATAL
+		DATAFORM 「呼呼・・好大啊・・啾库・・你也来爱抚我吧？」
+		DATAFORM 「啊啊・・好厉害・・可以把它们全部吸出来吗？」
+		DATAFORM 「啾・・啾啪・・哈、我的也要、快点・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%把嘴巴贴在了%NTR_NAME(0)%的阴茎上、把湿透了的秘所压在他脸上。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 其嘴唇和湿润的秘缝、%CALLNAME:奴隷%的这些不是%MSG_LOVER(奴隷)%的、现在已经是%NTR_NAME(0)%的东西了。
+	ELSE
+		PRINTFORML 其嘴唇和湿润的秘缝、%CALLNAME:奴隷%的全部现在已经是%NTR_NAME(0)%的东西了。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTDATAL
+		DATAFORM 「嗯・・啾・・啾・・啾・・」
+		DATAFORM 「啊啊・・没・・没错・・更多、更多一点・・」
+		DATAFORM 「啾・・啾啪・・没、没错・・啊・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%一边吞吐着%NTR_NAME(0)%的阴茎、一边自发地把秘所弄湿。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 其嘴唇、湿润的秘裂、%CALLNAME:奴隷%的全部都陷入了%NTR_NAME(0)%的手中。而不是%MSG_LOVER(奴隷)%
+	ELSE
+		PRINTFORML 其嘴唇、湿润的秘裂、%CALLNAME:奴隷%的全部都陷入了%NTR_NAME(0)%的手中。
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:浮気公認 
+		PRINTDATAL
+			DATAFORM 「嗯・・啾・・啾・・啾・・」
+			DATAFORM 「啊啊・・没・・没错・・更多、更多一点・・」
+			DATAFORM 「啾・・啾啪・・没、没错・・啊・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%一边吞吐着%NTR_NAME(0)%一边自发地把秘所弄湿、发出了甜美的声音。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「咕、我想咬你一口・・・啊啊、嗯」
+			DATAFORM 「呼、那么紧张・・哈啊啊啊！ 唔噗！」
+			DATAFORM 「呼、随便你了・・啊啊啊！ 嗯嗯啊！！」
+		ENDDATA
+		PRINTFORML 虽然%CALLNAME:奴隷%试图反抗、但是阴蒂被男人吸了起来、在试图发出声音的时候、被阴茎被插了进去。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 被%NTR_NAME_1_2(奴隷)%侵犯嘴唇、%CALLNAME:奴隷%的秘所滴下了淫荡的蜜汁。
+		ELSE
+			PRINTFORML 被%NTR_NAME(2)%侵犯嘴唇、%CALLNAME:奴隷%的秘所滴下了淫荡的蜜汁。
+		ENDIF
+	ENDIF
+
+ENDIF
+
+RETURN 0
+
+;==================================================
+;訪問者と性交(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_10_4(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+
+IF 客の人数 > 1
+	;2人以上のとき輪姦。分岐が長くなるので別関数
+	CALL NTR_KOJO_K_10_4_MULTI(奴隷, 調教者, 客の人数)
+ELSEIF TFLAG:輪姦内容 == 輪姦_1A
+	;菊花セックス分岐
+	CALL NTR_KOJO_K5_10_4_A(奴隷, 調教者, 客の人数)
+ELSE
+	;通常
+	CALL NTR_KOJO_K5_10_4_V(奴隷, 調教者, 客の人数)
+ENDIF
+RETURN 0
+
+;訪問者とＶ性交(お持ち帰り)
+@NTR_KOJO_K5_10_4_V(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
+		PRINTFORML 「・・你、你说什么・・」
+		PRINTFORML 男人要求%CALLNAME:奴隷%、用骑乘位的姿态交合。她的纯洁、要求她亲手献上
+		PRINTFORML （要在、他身上・・！）
+		PRINTFORML 虽然咬紧牙关。但是现在她的对面是用金钱买下了她身体的人。 受誓约束的身体是无法抗拒的。
+		PRINTFORML 骑在仰面的男子身上、用手扶住已经勃起的阴茎、贴在已经湿润的秘缝上。
+		PRINTFORML 那一瞬间
+		PRINTFORML %MSG_LOVER(奴隷)%的，在爱着的%CALLNAME:MASTER%所不知道的地方，将处女献给这样的对象。
+		PRINTFORML （事已至此、就算袭击他、也应该和那家伙打个招呼才对啊・・）
+		PRINTFORML %CALLNAME:奴隷%闭上眼睛，努力不考虑任何事情，把那小小的腰落了下去。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊啊！ 不、不要啊！！」
+			DATAFORM 「咕、这、这样・・的・・」
+			DATAFORM 「感、感觉・・啊・・啊啊・・」
+		ENDDATA
+		PRINTFORML 男人将%CALLNAME:奴隷%娇小的身体压在地板上、强行将勃起的东西硬塞进去。
+		PRINTFORML 拳头紧握、紧咬牙关、%CALLNAME:奴隷%承受着多次被捅进的痛苦和快乐，比这些更重要的是所带来的屈辱。
+		IF CHK_NTR_SATISFACTORY(奴隷) && RAND:3 == 0
+			PRINTFORML 但是、被刻下了快乐的肉体甚至对并不爱的男人的肉棒做出了反应、无意识地动了动腰部。
+			PRINTFORML （不行・・不行啊・・这个感觉・・不行！）
+		ENDIF
+	ENDIF
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTDATAL
+		DATAFORM 「不要啊・・放开我・・！！ 啊啊啊啊！！」
+		DATAFORM 「不、不行的・・！ 不要啊啊啊啊！！」
+		DATAFORM 「啊啊！ 不行、不行的啊！ 啊啊啊啊！！」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%被男性向阴道中挤压着肉棒。
+
+ELSEIF TALENT:奴隷:公众便所 &&調教者 == 人物_客
+
+	SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+		CASE 1
+			PRINTFORML 「啊啊・・好啊・・真是意外的大呢・・好啊、我会给你一些奖励的・・」
+			PRINTFORML %CALLNAME:奴隷%骑在客人身上就一下子用阴道吞下了他的东西、用阴道中的大量皱褶紧束着他的阴茎。
+			;Mコース
+		CASE 2
+			PRINTFORML 「啊啊・・那里、啊啊、呼、好深・・哈啊啊啊啊！」
+			PRINTFORML %CALLNAME:奴隷%保持着四肢爬行的姿势，像狗一样被侵犯。
+			PRINTFORML 客人的阴茎毫不留情地闯进了%CALLNAME:奴隷%的深处、与锁链相连的她简直就是发情期的牝犬。
+			;その他（通常）
+		CASEELSE
+			IF TALENT:奴隷:处女
+				PRINTFORML 「好的・・这是我的第一次・・是客人您的了・・啊・・啊啊啊！！」
+				PRINTFORML %CALLNAME:奴隷%は名も知らぬ客に处女を捧げた。
+			ELSEIF CFLAG:奴隷:处女喪失中
+				PRINTFORML 「啊啊・・没关系、更多、更多的进来吧！！」
+				PRINTFORML %CALLNAME:奴隷%被客人包围着，每一次插入都会发出甜美的声音。
+				PRINTFORML 大腿张开缠住客人、以寻求更进一步的插入。
+			ELSE
+				PRINTFORML 「啊啊！ 那里！ 那里！ 更加、更加地深入吧！」
+				PRINTFORML %CALLNAME:奴隷%被客人包围着，每一次插入都会发出甜美的声音。
+				PRINTFORML 大腿张开缠住客人、以寻求更进一步的插入。
+			ENDIF
+	ENDSELECT
+
+	;公众便所ではない売春
+ELSEIF 調教者 == 人物_客
+
+	IF TALENT:奴隷:处女
+		PRINTFORML 「好的・・这是我的第一次・・是客人您的了・・啊・・啊啊啊！！」
+		PRINTFORML %CALLNAME:奴隷%把处女献给了无名的客人。
+	ELSEIF CFLAG:奴隷:处女喪失中
+		PRINTFORML 「啊啊っ・・没关系、更多、更多的进来吧！！」
+		PRINTFORML %CALLNAME:奴隷%被客人包围着，每一次插入都会发出甜美的声音。
+		PRINTFORML 大腿张开缠住客人、以寻求更进一步的插入。
+	ELSE
+		PRINTFORML 「啊啊！ 那里！ 那里！ 更加、更加地深入吧！」
+		PRINTFORML %CALLNAME:奴隷%被客人包围着，每一次插入都会发出甜美的声音。
+		PRINTFORML 大腿张开缠住客人、以寻求更进一步的插入。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	IF TALENT:奴隷:处女
+
+		PRINTFORML 「呼呼・・这是我的第一次、你要感谢我啊・・啊啊！」
+		PRINTFORML %CALLNAME:奴隷%向%NTR_NAME(0)%献上了处女。
+
+	ELSEIF CFLAG:奴隷:处女喪失中
+
+		PRINTFORML 「啊・・・哈啊・・嗯・・呜啊・・」
+		PRINTFORML %CALLNAME:奴隷%淫乱的难以想象她之前还是个处女。
+
+		;非处女
+	ELSE
+
+		PRINTFORML 「呜・・啊・・好大！・・・这个肉棒太大了啊！」
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%的阴茎在阴道内徘徊的快感所困扰。
+
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	IF TALENT:奴隷:处女
+
+		PRINTFORML 「呼呼・・这是我的第一次、你要感谢我啊・・啊啊！」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%向%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%献上了处女。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%向%NTR_NAME(0)%献上了处女。
+		ENDIF
+
+	ELSEIF CFLAG:奴隷:处女喪失中
+
+		PRINTFORML 「嗯・・啊・・没错、啊、继续・・」
+		PRINTFORML %CALLNAME:奴隷%好像开始感觉到了。
+
+		;非处女
+	ELSE
+
+		PRINTFORML 「啊啊・・哈啊・・没错、就是那里、继续・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%每次抽插都会发出甜美的叫声。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%每次抽插都会发出甜美的叫声。
+		ENDIF
+
+	ENDIF
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	IF TALENT:奴隷:处女
+		PRINTFORML 「呼呼・・这是我的第一次、你要感谢我啊・・啊啊！」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%向%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%献上了处女。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%向%NTR_NAME(0)%献上了处女。
+		ENDIF
+	ELSEIF CFLAG:奴隷:处女喪失中
+		PRINTFORML 「嗯・・啊・・没错、啊、继续・・」
+		PRINTFORML %CALLNAME:奴隷%好像开始感觉到了。
+		;非处女
+	ELSE
+		PRINTFORML 「啊啊・・哈啊・・没错、就是那里、继续・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%每次抽插都会发出甜美的叫声。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%每次抽插都会发出甜美的叫声。
+		ENDIF
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:浮気公認
+		IF TALENT:奴隷:处女
+			PRINTFORML 「呼呼・・这是我的第一次、你要感谢我啊・・啊啊！」
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %CALLNAME:奴隷%向%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%献上了处女。
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%向%NTR_NAME(0)%献上了处女。
+			ENDIF
+		ELSEIF CFLAG:奴隷:处女喪失中
+			PRINTFORML 「嗯・・啊・・没错、啊、继续・・」
+			PRINTFORML %CALLNAME:奴隷%开始感觉到了。
+			;非处女
+		ELSE
+			PRINTFORML 「啊啊・・哈啊・・没错、就是那里、继续・・」
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %CALLNAME:奴隷%被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%每次抽插都会发出甜美的叫声。
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%每次抽插都会发出甜美的叫声。
+			ENDIF
+		ENDIF
+	ELSE
+		IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
+			IF TALENT:奴隷:恋慕
+				PRINTFORML 「好疼啊！？・・啊啊、我的第一次・・・是要给%CALLNAME:MASTER%的啊・・」
+				PRINTFORML %CALLNAME:奴隷%因被%NTR_NAME_1_2(奴隷)%夺去了处女而哭泣。
+			ELSE
+				PRINTFORML 「好疼啊！！？・・这、这家伙・・啊啊」
+				PRINTFORML %CALLNAME:奴隷%因被%NTR_NAME(2)%夺去了处女而哭泣。
+			ENDIF
+			;非处女
+		ELSE
+			IF TALENT:奴隷:恋慕
+				PRINTFORML 「不要啊啊・・%CALLNAME:MASTER%！・・・%CALLNAME:MASTER%っ！！・・」
+				PRINTFORML %CALLNAME:奴隷%虽然被侵犯、但仍在喊着%CALLNAME:MASTER%的名字。
+			ELSE
+				PRINTFORML 「不要啊啊・・住手・・住手啊啊啊！！・・」
+				PRINTFORML %CALLNAME:奴隷%虽然被侵犯、但仍在反抗。
+			ENDIF
+		ENDIF
+	ENDIF
+
+ENDIF
+RETURN 0
+
+;訪問者とＡ性交(お持ち帰り)
+@NTR_KOJO_K5_10_4_A(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTDATAL
+		DATAFORM 「不要啊・・住手・・住手啊！！・・」
+		DATAFORM 「啊啊啊啊・・那里・・哈・・啊・・等一下啊・・！」
+		DATAFORM 「不・・不行・・呼・・不要・・！」
+	ENDDATA
+	PRINTFORML 客人抓住了趴在地上的%CALLNAME:奴隷%的娇小屁股、把肉棒塞进了她隐秘的后穴。
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTDATAL
+		DATAFORM 「不要・・不要啊・・！！ 啊啊啊啊！！」
+		DATAFORM 「住、住手・・！ 不要啊啊啊啊！！」
+		DATAFORM 「啊啊！ 停下来、不要！ 啊啊啊啊！！」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%被男性包围、肉棒被强行塞进菊穴里。
+
+ELSEIF TALENT:奴隷:公众便所 &&調教者 == 人物_客
+
+	SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+		CASE 1
+			PRINTFORML 「啊啊・・好啊・・尺码意外的很大嘛・・来吧、我会给你一些奖励的・・」
+			PRINTFORML %CALLNAME:奴隷%骑在客人身上时、用菊穴吞下他的那个东西、一边用肠壁勒住他的肉棒，一边上下移动着腰部。
+			;Mコース
+		CASE 2
+			PRINTFORML 「啊啊・・那里、啊啊、呼、好深・・哈啊啊啊！」
+			PRINTFORML 现在%CALLNAME:奴隷%是四肢爬行的姿势、像狗一样被侵犯。
+			PRINTFORML 客人的阴茎毫不留情地闯进了%CALLNAME:奴隷%的深处、与锁链相连的她简直就是发情期的牝犬。
+			;その他（通常）
+		CASEELSE
+			PRINTFORML 「啊啊！ 那里！那里！ 更多的、更多的深入吧！」
+			PRINTFORML %CALLNAME:奴隷%被客人包围着、每一次抽插菊穴时都会发出甜美的声音。
+			PRINTFORML 大腿张开缠住客人、以寻求更进一步的插入。
+	ENDSELECT
+
+	;公众便所ではない売春
+ELSEIF 調教者 == 人物_客
+
+	PRINTFORML 「啊啊！ 那里！那里！ 更多的、更多的深入吧！」
+	PRINTFORML %CALLNAME:奴隷%被客人包围着、每一次抽插菊穴时都会发出甜美的声音。
+	PRINTFORML 大腿张开缠住客人、以寻求更进一步的插入。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML 「呜・・啊・・好大！・・・这个肉棒太大了啊！」
+	PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%的阴茎在肠内徘徊的快感所困扰。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	PRINTFORML 「呜・・啊・・好大！・・・这个肉棒太大了啊！」
+	IF TALENT:奴隷:恋慕
+		PRINTFORML %CALLNAME:奴隷%被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%插入菊穴每次的抽插都会发出甜美的声音。
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%插入菊穴每次的抽插都会发出甜美的声音。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTFORML 「哈啊啊啊・・啊啊・・没错、啊、继续、继续下去・・」
+	IF TALENT:奴隷:恋慕
+		PRINTFORML %CALLNAME:奴隷%被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%每次的抽插都会发出甜美的声音。
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%每次的抽插都会发出甜美的声音。
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:浮気公認
+		PRINTFORML 「哈啊啊啊・・啊啊・・没错、啊、继续、继续下去・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%插入菊穴每次的抽插都会发出甜美的声音。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%插入菊穴每次的抽插都会发出甜美的声音。
+		ENDIF
+	ELSE
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 「不要啊啊啊・・%CALLNAME:MASTER%！・・・%CALLNAME:MASTER%っ！！・・」
+			PRINTFORML %CALLNAME:奴隷%一边被侵犯菊穴，一边喊着%CALLNAME:MASTER%的名字。
+		ELSE
+			PRINTFORML 「不要啊・・住手・・住手啊！！・・」
+			PRINTFORML %CALLNAME:奴隷%被侵犯着菊穴、但是仍然在反抗。
+		ENDIF
+	ENDIF
+
+ENDIF
+RETURN 0
+
+;==================================================
+;訪問者の射精(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_10_5(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+
+IF 客の人数 > 1
+	;2人以上のとき輪姦。分岐が長くなるので別関数
+	CALL NTR_KOJO_K_10_5_MULTI(奴隷, 調教者, 客の人数)
+ELSEIF TFLAG:輪姦内容 == 輪姦_1A
+	;菊花セックス分岐
+	CALL NTR_KOJO_K5_10_5_A(奴隷, 調教者, 客の人数)
+ELSE
+	;通常
+	CALL NTR_KOJO_K5_10_5_V(奴隷, 調教者, 客の人数)
+ENDIF
+RETURN 0
+
+;訪問者のＶ射精(お持ち帰り)
+@NTR_KOJO_K5_10_5_V(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+#DIMS 悲鳴
+
+IF TALENT:奴隷:危险日
+	悲鳴 = 「啊啊啊！到里面、射到里面来了・・让我怀孕吧！」
+ELSE
+	悲鳴 = 「啊啊啊！到里面、射到里面来了！！」
+ENDIF
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTDATAL
+		DATAFORM 「咕・・怎么会・・射、射进来了・・！？」
+		DATAFORM 「啊啊・・这、这家伙・・进・・进来了！！」
+		DATAFORM 「不行、不行！ 里面、不能到里面・・！！」
+	ENDDATA
+	PRINTDATAL
+		DATAFORM 客人把%CALLNAME:奴隷%的身体压在地上、将肉根推到最里面然后准备射精
+		DATAFORM 察觉到男人已经到极限的%CALLNAME:奴隷%想要逃跑、但是对方却比她更快的在她体内释放了出来。
+		DATAFORM 蹂躏着%CALLNAME:奴隷%生殖器的男人、就这样在她的阴道深处射出了浓厚的白浊。
+	ENDDATA
+	IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
+		PRINTFORML 本应献给%ANATA_LOVER(奴隷)%的纯洁被撕裂，被剥夺了处女的%CALLNAME:奴隷%咬牙忍耐。
+		PRINTFORML （这・・这就是、命中注定的吗・・？）
+	ENDIF
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTFORML 「不、不要啊啊啊！ 进、射进来了啊啊啊啊啊啊！！」
+	PRINTFORML 男人毫不留情地在%CALLNAME:奴隷%的阴道里射精、灌满了她的深处。
+
+ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
+
+	SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+		CASE 1
+			PRINTFORML 「呼呼・・就这么着急想要射精吗、库库库・・」
+			PRINTFORML %CALLNAME:奴隷%紧紧地勒紧客人的阴茎、在不允许射精的前提下、一直挑逗着他。
+			PRINTFORML 「想当奴隶吗？ 那你就好好求我吧！」
+			PRINTFORML 屈服于快乐的客人，向%CALLNAME:奴隷%请求着让自己射出来。
+			PRINTFORML 「啊哈哈哈哈哈！没有自尊心的男人可是猪啊！ 比猪还要低贱！ 来吧，用比猪还要低贱的肮脏精液弄脏我！！」
+			PRINTFORML 在%CALLNAME:奴隷%放松的瞬间、从客人的阴茎里喷出炽热的白浊、冲进了她的子宫里。
+			PRINTFORML %CALLNAME:奴隷%因为胎内被白浊污染的快乐而绝顶了。
+			;Mコース
+		CASE 2
+			PRINTFORML %CALLNAME:奴隷%在被客人包围的状态下被一次又一次地插入，一直被侵犯到最里面。
+			PRINTFORML 客人一边激烈的突刺着、一边告诉她要射进最里面。
+			PRINTFORML 「好的、给我吧、把灼热的精液、注入到里面来吧！ 啊啊！ 啊啊啊ーーーっ！」
+			PRINTFORML 在%CALLNAME:奴隷%说出淫乱话语的瞬间，就被所希望的滚烫白浊所注入了。
+			PRINTFORML %CALLNAME:奴隷%的娇小生殖器在被精液射的满满的同时达到了绝顶。
+			;その他（通常）
+		CASEELSE
+			PRINTFORML 「哈啊哈啊・・进来了！ 一滴不剩的进来了啊！！」
+			PRINTFORML 客人在两脚紧紧缠绕他的%CALLNAME:奴隷%的阴道深处射精了。
+			PRINTFORML 又热又浓的精液充满着娇小的子宫、而且从幼小的性器里咕嘟咕嘟地溢出来。
+	ENDSELECT
+
+	;公众便所ではない売春
+ELSEIF 調教者 == 人物_客
+
+	PRINTFORML 「哈啊哈啊・・进来了！ 一滴不剩的进来了啊！！」
+	PRINTFORML 客人在两脚紧紧缠绕他的%CALLNAME:奴隷%的阴道深处射精了。
+	PRINTFORML 又热又浓的精液充满着娇小的子宫、而且从幼小的性器里咕嘟咕嘟地溢出来
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML 「哈啊哈啊・・进来了！ 一滴不剩的进来了啊！！」
+	PRINTFORML %NTR_NAME(0)%在两脚紧紧缠绕他的%CALLNAME:奴隷%的阴道深处射精了。
+	PRINTFORML 又热又浓的精液充满着娇小的子宫、而且从幼小的性器里咕嘟咕嘟地溢出来
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	PRINTFORML %悲鳴%
+	PRINTFORML 感到被灌得满满的胎内白浊的热度使%CALLNAME:奴隷%发出悲鸣。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 从注入的精液中被漂白的意识里、正在逐渐消除对%CALLNAME:MASTER%的思念。
+	ELSE
+		PRINTFORML 在注入的精液中%CALLNAME:奴隷%的意识被漂为白色。
+	ENDIF
+	IF TALENT:奴隷:危险日
+		PRINTFORML 「呼呼・・射进还在危险日的女性身体里・・你打算承担责任吧？」
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTFORML %悲鳴%
+	PRINTFORML 感到被灌得满满的胎内白浊的热度使%CALLNAME:奴隷%发出悲鸣。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 从注入的精液中被漂白的意识里、正在逐渐消除对%CALLNAME:MASTER%的思念。
+	ELSE
+		PRINTFORML 在注入的精液中%CALLNAME:奴隷%的意识被漂为白色。
+	ENDIF
+	IF TALENT:奴隷:危险日
+		PRINTFORML 「呼呼・・射进还在危险日的女性身体里・・你打算承担责任吧？」
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:浮気公認
+		PRINTFORML %悲鳴%
+		PRINTFORML 感到被灌得满满的胎内白浊的热度使%CALLNAME:奴隷%发出悲鸣。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 从注入的精液中被漂白的意识里、正在逐渐消除对%CALLNAME:MASTER%的思念。
+		ELSE
+			PRINTFORML 在注入的精液中%CALLNAME:奴隷%的意识被漂为白色。
+		ENDIF
+	ELSE
+		PRINTFORML %NTR_NAME(0)%在絶頂时的%CALLNAME:奴隷%的子宫口、毫不留情的释放了白浊的欲望。
+		PRINTFORML 「咕・・怎么会・・进、进来了・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 被%CALLNAME:MASTER%以外的%NTR_NAME(3)%的精子射入可能怀孕而感到不安、%CALLNAME:奴隷%因为不安而脸色发青。
+		ELSE
+			PRINTFORML 被%NTR_NAME(2)%的精子射入可能怀孕而感到不安、%CALLNAME:奴隷%因为不安而脸色发青。
+		ENDIF
+	ENDIF
+
+ENDIF
+RETURN 0
+
+;訪問者のＡ射精(お持ち帰り)
+@NTR_KOJO_K5_10_5_A(奴隷, 調教者, 客の人数)
+#DIM 奴隷
+#DIM 調教者
+#DIM 客の人数
+#DIMS 悲鳴
+
+悲鳴 = 「啊啊！屁股、屁股里面被射入了啊啊啊！！」
+
+;亲爱かつ公众便所の場合は売春强迫
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML 「不、不要！住手啊！ 那里、在那个地方！！」
+	PRINTFORML 男人毫不留情地射精到%CALLNAME:奴隷%的肠内、射进了她的最深处。
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTFORML 「不、不要！住手啊！ 那里、在那个地方！！」
+	PRINTFORML 男人毫不留情地射精到%CALLNAME:奴隷%的肠内、射进了她的最深处。
+
+ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
+
+	SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+		CASE 1
+			PRINTFORML 「呼呼・・就这么着急想要射精吗、库库库・・」
+			PRINTFORML %CALLNAME:奴隷%紧紧地勒紧客人的阴茎、在不允许射精的前提下、一直挑逗着他。
+			PRINTFORML 「想当奴隶吗？ 那你就好好求我吧！」
+			PRINTFORML 屈服于快乐的客人，向%CALLNAME:奴隷%请求着让自己射出来。
+			PRINTFORML 「啊哈哈哈哈哈！没有自尊心的男人可是猪啊！ 比猪还要低贱！ 来吧，用比猪还要低贱的肮脏精液弄脏我！！」
+			PRINTFORML 在%CALLNAME:奴隷%放松的瞬间、从客人的阴茎里喷出炽热的白浊、冲进了她的肠道里面。
+			;Mコース
+		CASE 2
+			PRINTFORML %CALLNAME:奴隷%在被客人包围的状态下被一次又一次地插入，一直被侵犯到最里面。
+			PRINTFORML 客人一边激烈的突刺着、一边告诉她要射进最里面。
+			PRINTFORML 「好的、给我吧、把灼热的精液、注入到里面来吧！ 啊啊！ 啊啊啊ーーーっ！」
+			PRINTFORML %CALLNAME:奴隷%说出淫乱话语的瞬间，就被所希望的滚烫白浊所注入了。
+			PRINTFORML %CALLNAME:奴隷%在直肠被射入而感到满足的瞬间绝顶了。
+			;その他（通常）
+		CASEELSE
+			PRINTFORML 「哈啊哈啊・・出来了！ 一滴不剩的射进肠道里面了！！」
+			PRINTFORML 客人在两脚紧紧缠绕他的%CALLNAME:奴隷%的肠道深处射精了。
+			PRINTFORML 又热又浓的精液充满着直肠、而且从幼小的菊穴里咕嘟咕嘟地溢出来。
+	ENDSELECT
+
+	;公众便所ではない売春
+ELSEIF 調教者 == 人物_客
+
+	PRINTFORML 「哈啊哈啊・・出来了！ 一滴不剩的射进肠道里面了！！」
+	PRINTFORML 客人在两脚紧紧缠绕他的%CALLNAME:奴隷%的肠道深处射精了。
+	PRINTFORML 又热又浓的精液充满着直肠、而且从幼小的菊穴里咕嘟咕嘟地溢出来。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML 「哈啊哈啊・・出来了！ 一滴不剩的射进肠道里面了！！」
+	PRINTFORML %NTR_NAME(0)%射进了两脚紧紧缠绕他的%CALLNAME:奴隷%的肠道深处。
+	PRINTFORML 又热又浓的精液充满着直肠、而且从幼小的菊穴里咕嘟咕嘟地溢出来。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	PRINTFORML %悲鳴%
+	PRINTFORML 感到被灌得满满的胎内白浊的热度使%CALLNAME:奴隷%发出悲鸣。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 从注入的精液中被漂白的意识里、正在逐渐消除对%CALLNAME:MASTER%的思念。
+	ELSE
+		PRINTFORML 在注入的精液中%CALLNAME:奴隷%的意识被漂为白色。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTFORML %悲鳴%
+	PRINTFORML 感到被灌得满满的胎内白浊的热度使%CALLNAME:奴隷%发出悲鸣。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 从注入的精液中被漂白的意识里、正在逐渐消除对%CALLNAME:MASTER%的思念。
+	ELSE
+		PRINTFORML 在注入的精液中%CALLNAME:奴隷%的意识被漂为白色。
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:浮気公認
+		PRINTFORML %悲鳴%
+		PRINTFORML 感到被灌得满满的胎内白浊的热度使%CALLNAME:奴隷%发出悲鸣。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 从注入的精液中被漂白的意识里、正在逐渐消除对%CALLNAME:MASTER%的思念。
+		ELSE
+			PRINTFORML 在注入的精液中%CALLNAME:奴隷%的意识被漂为白色。
+		ENDIF
+	ELSE
+		PRINTFORML %NTR_NAME(0)%在绝顶的%CALLNAME:奴隷%的直肠里、毫不留情地释放了其浑浊的白色欲望。
+		PRINTFORML 「咕・・怎么会・・屁股、怎么会这样・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 被%CALLNAME:MASTER%以外的%NTR_NAME(3)%的精液灌满了直肠、%CALLNAME:奴隷%因不安而脸色发青。
+		ELSE
+			PRINTFORML 被%NTR_NAME(2)%的精液灌满了直肠、%CALLNAME:奴隷%因不安而脸色发青。
+		ENDIF
+	ENDIF
+
+ENDIF
+RETURN 0
+
+;==================================================
+;訪問者宅滞在継続(お持ち帰り)
+;==================================================
+@NTR_KOJO_K5_10_7(奴隷)
+#DIM 奴隷
+
+IF TALENT:奴隷:浮気公認 == 5
+	PRINTFORML 带着项圈的%CALLNAME:奴隷%就像宠物一样被饲养在%NTR_NAME(0)%的家中。
+	PRINTFORML 作为人妻的工作就是用身体侍奉男人。
+	PRINTFORML 无论对象是%NTR_NAME(0)%还是别的什么人，只要尽好人妻的职责就好了。
+	PRINTFORML 所以%CALLNAME:奴隷%现在也正愉快地等待着今天份的工作。
+
+	;亲爱かつ公众便所の場合は売春强迫
+ELSEIF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML %CALLNAME:奴隷%在平时的房间里醒来。
+	PRINTFORML 还是一如既往地装出一副奢侈的样子，但却是个令人作呕的恶趣味的房间。
+	PRINTFORML 通过%NTR_NAME(0)%的手装在%CALLNAME:奴隷%脖子的项圈和从房间的墙壁延伸的锁链也保持不变。
+	PRINTFORML 一个拴着可悲奴隶的屋子里来了一个买她的男人。
+	PRINTFORML 至少可以虚张声势・・%CALLNAME:奴隷%既没有逃避也不隐藏，故意的露出了笑容。
+
+	;亲爱のみの場合は拉致監禁強姦
+ELSEIF TALENT:奴隷:亲爱
+
+	PRINTDATAL
+		DATAFORM 「・・救我・・%CALLNAME:MASTER%・・」
+		DATAFORM 「・・戚・・你不会让我回去的吧・・」
+		DATAFORM 「・・只有这个、才不会输呢・・」
+	ENDDATA
+	PRINTFORML %CALLNAME:奴隷%在被%NTR_NAME(0)%监禁的地下室中醒来。
+	PRINTFORML 被锁链锁住地下室的墙壁的%CALLNAME:奴隷%今天又被迫和不合意的对方做爱。
+	PRINTFORML 只要%CALLNAME:奴隷%继续抱有对%CALLNAME:MASTER%的感情、这种快乐的拷问就会继续吧。
+
+ELSEIF TALENT:奴隷:公众便所
+
+	PRINTFORML 醒过来了的%CALLNAME:奴隷%用手指着项圈询问。
+	IF CALLNAME:奴隷 == "蕾米莉亚"
+		PRINTFORML 只要佩戴这个项圈、在这里的%CALLNAME:奴隷%就不再是红魔馆之主了、只是个会提供所有性服务的精液便所罢了。
+	ELSE
+		PRINTFORML 只要佩戴这个项圈、在这里的就只是个会提供所有性服务的精液便所罢了。
+	ENDIF
+	PRINTFORML 「那么、今天的客人想要什么服务呢？」
+	PRINTFORML %CALLNAME:奴隷%表示对快乐的期待、而%NTR_NAME(0)%则告知了今天的命令。
+	PRINTFORML ：
+	CALL NTR_KOJO_K5_GET_ORDER(奴隷)
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML %CALLNAME:奴隷%在%NTR_NAME(0)%宅中被用项圈拴在墙上，醒过来了。
+	PRINTFORML 现在在这里的只有一只乞求主人哀求的母狗。
+	PRINTFORML %NTR_NAME(0)%将连接%CALLNAME:奴隷%的锁链拉到手边。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	IF TALENT:奴隷:恋慕
+		PRINTDATAL
+			DATAFORM 「让%MSG_LOVER(奴隷)%的女人住在这里，你打算承担责任吗？」
+			DATAFORM 「让%MSG_LOVER(奴隷)%的女人在外面过夜、今晚也不回去吗？」
+			DATAFORM 「在%MSG_LOVER(奴隷)%的视线无法触及的地方，从其他男人的怀中醒来的女人・・是这样吗？」
+		ENDDATA
+	ELSE
+		PRINTDATAL
+			DATAFORM 「你打算让我待在这种地方、你打算负责任吗？」
+			DATAFORM 「今晚也打算不回去吗？」
+			DATAFORM 「库库库・・今天也让我很开心呢？」
+		ENDDATA
+	ENDIF
+	PRINTFORML 从%NTR_NAME(0)%宅中醒来的%CALLNAME:奴隷%看着在身边的%NTR_NAME(3)%微笑了。
+	PRINTFORML %NTR_NAME(0)%以恋人一样的态度拥抱了%CALLNAME:奴隷%、%CALLNAME:奴隷%也回应似地抱住了%NTR_NAME(4)%。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	IF TALENT:奴隷:恋慕
+		PRINTDATAL
+			DATAFORM 「让%MSG_LOVER(奴隷)%的女人住在这里，你打算承担责任吗？」
+			DATAFORM 「让%MSG_LOVER(奴隷)%的女人在外面过夜、今晚也不回去吗？」
+			DATAFORM 「在%MSG_LOVER(奴隷)%的视线无法触及的地方，从其他男人的怀中醒来的女人・・是这样吗？」
+		ENDDATA
+	ELSE
+		PRINTDATAL
+			DATAFORM 「你打算让我待在这种地方、你打算负责任吗？」
+			DATAFORM 「今晚也打算不回去吗？」
+			DATAFORM 「库库库・・今天也让我很开心呢？」
+		ENDDATA
+	ENDIF
+	PRINTFORML 从%NTR_NAME(0)%宅中醒来的%CALLNAME:奴隷%看着在身边的%NTR_NAME(3)%微笑んだ。
+	PRINTFORML %NTR_NAME(0)%以恋人一样的态度拥抱了%CALLNAME:奴隷%、%CALLNAME:奴隷%也回应似地抱住了%NTR_NAME(4)%。
+
+ELSE
+
+	SELECTCASE TALENT:奴隷:浮気公認
+		CASE IS >= 浮気_外泊公認
+			PRINTFORML 「好啊、开始吧。你能让我感到愉悦吗？」
+			PRINTFORML 在%NTR_NAME(0)%的家里醒来的%CALLNAME:奴隷%将身体靠在了%NTR_NAME(4)%的手臂上。
+			PRINTFORML 外宿的事%MSG_LOVER(奴隷)%也知道、但她已经没有感到内疚了。
+			PRINTFORML （・・%CALLNAME:MASTER%・・回去后、我会讲给你听的・・库库库、请期待吧）
+		CASE IS >= 浮気_浮気公認
+			PRINTFORML 「好啊、开始吧」
+			PRINTFORML 在%NTR_NAME(0)%的家里醒来的%CALLNAME:奴隷%将身体靠在了%NTR_NAME(4)%的手臂上。
+			PRINTFORML （・・%CALLNAME:MASTER%・・回去后、我会讲给你听的・・库库库、请期待吧）
+		CASEELSE		; 非公認
+			PRINTFORML 「哼、好像还没打算回去啊」
+			PRINTFORML 在%NTR_NAME(0)%的家中醒来的%CALLNAME:奴隷%半放弃似地将身体靠在了%NTR_NAME(4)%的手臂上。
+	ENDSELECT
+
+ENDIF
+
+RETURN 0
+
+
+;==================================================
+;朝の侍奉(お持ち帰り)
+;==================================================
+;フェラ侍奉
+@NTR_KOJO_K5_14_0(奴隷)
+#DIM 奴隷
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML %NTR_NAME(0)%抓住了%CALLNAME:奴隷%的项圈、不讲道理的侵犯了她的嘴。
+	PRINTFORML 「嗯・・嗯嗯嗯恩！ ・・呜呜呜呜！！」
+	PRINTFORML 把%CALLNAME:奴隷%的嘴唇用肉棒弄脏，白浊色的精液一直吞没到喉咙深处。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML 「啾・・嗯嗯！ ・・咕、咕・・呼呼、很好吃・・」
+	PRINTFORML %CALLNAME:奴隷%对%NTR_NAME(0)%の的阴茎不停地服务、不留一滴地喝下口中的白浊。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	PRINTFORML 「嗯・・嗯嗯嗯嗯恩！」
+	PRINTFORML %CALLNAME:奴隷%继续为%NTR_NAME(0)%的阴茎服务，嘴里被注入了精液。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	IF TALENT:奴隷:处女 
+		PRINTFORML 「恩・・嗯嗯嗯嗯！ 咳、咳咳」
+		PRINTFORML %CALLNAME:奴隷%被威胁要夺走处女，强迫为%NTR_NAME(0)%的阴茎服务，把精液注入嘴里。
+		;非处女
+	ELSE
+		PRINTFORML 「恩・・嗯嗯嗯嗯！ 咳、咳咳」
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%侵犯着嘴巴、在嘴里注入了精液。
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:处女
+		PRINTFORML 「恩・・嗯嗯嗯嗯！ 咳、咳咳」
+		PRINTFORML %CALLNAME:奴隷%被威胁要夺走处女，强迫为%NTR_NAME(0)%的阴茎服务，把精液注入嘴里。
+		;非处女
+	ELSE
+		PRINTFORML 「恩・・嗯嗯嗯嗯！ 咳、咳咳」
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%侵犯着嘴巴、在嘴里注入了精液。
+	ENDIF
+
+ENDIF
+
+RETURN 0
+
+;舔肛侍奉
+@NTR_KOJO_K5_14_1(奴隷)
+#DIM 奴隷
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML 「哈啊啊啊・・怎么会・・哈啊・・咕！」
+	PRINTFORML %CALLNAME:奴隷%的菊穴深深的吞没了%NTR_NAME(0)%的肉棒、肉棒在肠内深深地注入了精液。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTFORML 「哈啊啊啊・・更多、更多的、插进来吧！！」
+	PRINTFORML %CALLNAME:奴隷%在%NTR_NAME(0)%身上自己扭动着腰、因菊穴内被射精而绝顶了。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	IF TALENT:奴隷:处女
+		PRINTFORML 「呼呼、这边可以吗・・？」
+		PRINTFORML %CALLNAME:奴隷%在%NTR_NAME(0)%的要求下进行交合，在直肠中射出了精液。
+		;非处女
+	ELSE
+		PRINTFORML 「啊・・哈啊啊啊！噫、噫噫、啊啊啊！！」
+		PRINTFORML %CALLNAME:奴隷%在%NTR_NAME(0)%的要求下进行交合，在直肠中射出了精液。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	IF TALENT:奴隷:处女
+		PRINTFORML 「放我离开啊・・・啊啊啊！」
+		PRINTFORML %CALLNAME:奴隷%以不夺走处女为交换，用菊穴进行交合，在直肠中射出了精液。
+		;非处女
+	ELSE
+		PRINTFORML 「啊・・哈啊啊啊！怎、怎么会、里面、啊、啊啊！！」
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%侵犯菊穴、然后在直肠中射出了精液。
+	ENDIF
+
+ELSE
+
+	IF TALENT:奴隷:处女
+		PRINTFORML 「放我走・・・啊啊啊！」
+		PRINTFORML %CALLNAME:奴隷%以不夺走处女为交换，用菊穴进行交合，在直肠中射出了精液。
+		;非处女
+	ELSE
+		PRINTFORML 「哈・・哈啊啊啊！怎、怎么会、里面、啊、啊啊！！」
+		PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%侵犯菊穴、然后在直肠中射出了精液。。
+	ENDIF
+
+ENDIF
+
+RETURN 0
+
+;性交侍奉
+@NTR_KOJO_K5_14_2(奴隷)
+#DIM 奴隷
+IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
+
+	PRINTFORML 「住手啊・・怎么会、进来了、不要啊啊啊！ 啊啊啊啊！」
+	PRINTFORML %NTR_NAME(0)%对趴在地上的%CALLNAME:奴隷%毫不留情地侵犯、插入子宫口射精。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	IF TALENT:奴隷:危险日
+		PRINTFORML 「啊啊・・进、被射进来了！ 要怀孕了啊啊啊啊！！」
+	ELSE
+		PRINTFORML 「啊啊・・进来了、被射进来了啊啊啊啊！！」
+	ENDIF
+	PRINTFORML %CALLNAME:奴隷%骑在%NTR_NAME(0)%的身上疯狂的扭动自己的腰、膣肉将挤压着肉棒射出了白浊。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+	IF TALENT:奴隷:危险日
+		PRINTFORML 「啊啊・・进、被射进来了！ 要怀孕了啊啊啊啊！！」
+	ELSE
+		PRINTFORML 「啊啊・・进来了、被射进来了啊啊啊啊！！」
+	ENDIF
+	PRINTFORML %CALLNAME:奴隷%紧紧抱住%NTR_NAME(0)%自己摆动着腰、阴道深处被精液所填满。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%受种内射、而感到了倒错的快感。
+	ELSE
+		PRINTFORML 被%NTR_NAME(2)%受种内射、而感到了倒错的快感。
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTFORML 「啊啊・・去了！热乎乎的精液、去了啊啊啊！！」
+	PRINTFORML %CALLNAME:奴隷%紧紧抱住%NTR_NAME(0)%自己摆动着腰、阴道深处被精液所填满。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%受种内射、似乎没有感到后悔和厌恶。
+	ELSE
+		PRINTFORML 被%NTR_NAME(2)%受种内射、似乎没有感到后悔和厌恶。
+	ENDIF
+
+ELSE
+
+	PRINTFORML 「住手・・住手啊、不能、射进来！ 啊啊啊啊！」
+	PRINTFORML %NTR_NAME(0)%对趴在地上的%CALLNAME:奴隷%毫不留情地侵犯、对着子宮口里面射精了。
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 被%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%受种内射、%CALLNAME:奴隷%发出了不像她自己喘息的声音。
+	ELSE
+		PRINTFORML 被%NTR_NAME(2)%受种内射、%CALLNAME:奴隷%发出了不像她自己喘息的声音。
+	ENDIF
+
+ENDIF
+
+RETURN 0
+
+;==================================================
+;売春許諾
+;==================================================
+;淫乱ルート
+@NTR_KOJO_K5_19_1(奴隷)
+#DIM 奴隷
+;浮気人数で分岐
+SELECTCASE EXP:奴隷:浮気人数
+	CASE 0, 1	; 初めての売春
+		PRINTFORML 「你是说要和其他男人睡觉吗・・？」
+		PRINTFORML 「好吧、我接受・・库库库、好期待啊、肯定很刺激」
+	CASE 2
+		PRINTFORML 「又要和其他男人睡吗・・？ 好啊、可以哟・・上次那个男人、好像也不错啊」
+		PRINTFORML 「诶？ 收费？ 我可是红魔馆的主人、你想让我去做那些妓女才会去做的事？」
+		PRINTFORML 「没关系・・呼呼・・在这里我、本来就已经像个妓女了・・真让人心动啊」
+	CASE 3
+		PRINTFORML 「又要和其他男人睡吗？ 好啊、可以哟、让我来玩玩吧」
+		PRINTFORML 「又像上次一样收钱么？库库库、就让我继续这样堕落下去吧」
+		PRINTFORML 「诶？ 看起来挺开心的啊？ 干脆不掩饰真的想成为妓女吗？・・真的不考虑一下？」
+	CASE 4		; 公众便所直前
+		PRINTFORML 「又跟别的男人睡就好了。好啊、很刺激嘛、弄得我都有点兴奋起来了啊」
+		PRINTFORML 「前些日子的事、我可以考虑一下。嗯、就是那个真的要去当妓女的那个」
+		PRINTFORML 「如果今天的『客人』能让我玩的开心的话、你说的那个、我会考虑的」
+ENDSELECT
+RETURN 0
+
+;浮気公認ルート
+@NTR_KOJO_K5_19_2(奴隷)
+#DIM 奴隷
+;浮気人数で分岐
+SELECTCASE EXP:奴隷:浮気人数
+	CASE 0, 1	; 初めての売春
+		PRINTFORML 「你是说要和其他男人睡觉吗・・？ 我觉得・・一定很刺激吧」
+		PRINTFORML 「好吧、我接受・・但是、这句一定不能告诉别人。特别是那个人」
+	CASE 2
+		PRINTFORML 「又要和其他男人睡吗・・？ 好啊・・上次那个男人、好像也不错啊・・」
+		PRINTFORML 「诶？收费？ 我可是红魔馆的主人、你想让我去做那些妓女才会去做的事？」
+		PRINTFORML 「因为只是打工、所以不是认真的？・・话虽如此、但内疚是不会消失的吧。」
+		PRINTFORML 「好啊、可以啊、我接受了・・但是、这句话一定要保密、绝对的保密。懂吗」
+	CASE 3
+		PRINTFORML 「又要和其他男人睡吗？」
+		IF TALENT:奴隷:人妻
+			PRINTFORML 「好啊、ＯＫ哟・・呼呼、红魔馆的主人、对自己的配偶也保密・・真是背德啊」
+		ELSE
+			PRINTFORML 「好啊、ＯＫ哟・・呼呼、红魔馆的主人、对自己的恋人也保密・・真是背德啊」
+		ENDIF
+		PRINTFORML 「诶？ 看起来很有意思？ 是吗？ 你干脆直接去找妓女得了・・别干了」
+	CASE 4		; 公众便所直前
+		PRINTFORML 「再跟别的男人睡一觉？可以啊、感觉很刺激、而且我也很愉悦啊」
+		PRINTFORML （・・那个人、也会很高兴的吧）
+		PRINTFORML 「喂。前些日子的事、我可以考虑一下。嗯、就是那个真的要去当妓女的那个」
+		PRINTFORML 「如果今天的『客人』能让我玩的开心的话、你说的那个、我会考虑的」
+ENDSELECT
+RETURN 0
+
+
+;==================================================
+;处女オークション開始
+;==================================================
+@NTR_KOJO_K5_VA_0(奴隷)
+#DIM 奴隷
+IF TALENT:奴隷:亲爱
+	PRINTFORML 被%NTR_NAME(0)%注视的%CALLNAME:奴隷%急急忙忙地走到了舞台中央。
+	PRINTFORML 并站在客人面前，瞪着他们。
+	PRINTFORML 「因为一些原因，我决定卖掉自己」
+	PRINTFORML 「喜欢买这种发育不足的身体吗？」
+	PRINTFORML 「我这具身体还是个处女，所以请多多出价吧」
+	PRINTFORML %CALLNAME:奴隷%在聚集的男人们面前，公开声明要拍卖她自己的处女。
+ELSE
+	PRINTFORML 被%NTR_NAME(0)%注视的%CALLNAME:奴隷%优雅的走到了舞台中央
+	PRINTFORML 然后站在客人面前，举起礼服的下摆行了一礼。
+	IF CALLNAME:奴隷 == "蕾米莉亚"
+		PRINTFORML 「诸位初次见面。我是紅魔館之主、蕾米莉亚＝斯卡雷特」
+		PRINTFORML 「因此、我决定暂时卖掉自己。」
+		PRINTFORML 「请购买我的处女吧」
+	ELSE
+		PRINTFORML 「非常感谢你们、今天为我而来」
+		PRINTFORML 「请购买我的处女吧」
+	ENDIF
+	PRINTFORML %CALLNAME:奴隷%在聚集的男人们面前，公开声明要拍卖她自己的处女。
+ENDIF
+RETURN 0
+
+;==================================================
+;处女オークション終了
+;==================================================
+@NTR_KOJO_K5_VA_1(奴隷)
+#DIM 奴隷
+IF TALENT:奴隷:亲爱
+	PRINTFORML 「・・随你便吧」
+	PRINTFORML %CALLNAME:奴隷%注视着拍卖她处女的客人，苦涩地行了一礼。
+ELSE
+	PRINTFORML 「库库库・・随你便吧」
+	PRINTFORML %CALLNAME:奴隷%对拍卖她的处女的客人微笑，再行了一次礼。
+ENDIF
+RETURN 0

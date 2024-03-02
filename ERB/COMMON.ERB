@@ -1,0 +1,825 @@
+﻿;-------------------------------------------------------------------------------
+;関数置き場
+;売却可、助手可の奴隷がいるかどうか
+@ISSALE(ARG)
+#FUNCTION
+FOR LOCAL,0,CHARANUM
+	SIF GETBIT(CFLAG:LOCAL:既成事実,ARG)
+		RETURNF 1
+NEXT
+
+;-------------------------------------------------
+;アイテム販売状況@ITEMSTOCK
+;戻り値1 アイテムが存在しない
+;戻り値2 売切
+;戻り値3 お金が足りない
+;戻り値4 条件を満たしていない
+;戻り値5 すでに99個所持している
+;-------------------------------------------------
+@ITEMSTOCK(ARG)
+#FUNCTION
+SIF ARG >= 100
+	RETURNF 1
+SIF !STRLENS(ITEMNAME:ARG)
+	RETURNF 1
+SIF ITEMSALES:ARG == -2
+	RETURNF 4
+SIF ITEMSALES:ARG == -1
+	RETURNF 2
+SIF MONEY < ITEMPRICE:ARG
+	RETURNF 3
+SIF ITEM:ARG >= 99
+	RETURNF 5
+RETURNF 0
+
+;-------------------------------------------------
+;関数名:CHOICE
+;概　要:２～４択関数
+;引　数:ARGS:0…質問内容
+;      :ARGS:1～4…選択肢の文字列(3,4は省略可)
+;戻り値:ユーザ入力結果(0～3)
+;選択条件の無い、シンプルな選択肢作成関数
+;口上とかでも使えるかもしれない
+;とりあえず4択まで。増やしてもいいけど
+;-------------------------------------------------
+@CHOICE(ARGS:0, ARGS:1, ARGS:2, ARGS:3, ARGS:4)
+PRINTSL ARGS:0
+FOR LOCAL, 0, 4
+	PRINTFORML [{LOCAL}] - %ARGS:(1 + LOCAL)%
+	SIF LOCAL && !STRLENS(ARGS:(2 + LOCAL))
+		BREAK
+NEXT
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+	CASE 0 TO LOCAL - 1
+	CASEELSE
+		CLEARLINE 1
+		GOTO INPUT_LOOP
+ENDSELECT
+RETURN RESULT
+
+;-------------------------------------------------
+;関数名:GET_REVISION
+;概　要:汎用補正値取得関数
+;引　数:ARG:0…参照する数値
+;       ARG:1…上限
+;       ARG:2…上昇率
+;戻り値:補正後の値
+;備　考:式中関数
+;ある数値を、上限値に漸近していく数値に変換したいときに
+;ARG:2が小さいとすぐに上限に達する、大きいと逆になかなか上限まで近づかない
+;-------------------------------------------------
+@GET_REVISION(ARG:0, ARG:1, ARG:2)
+#FUNCTION
+RETURNF ARG:1 - ARG:2 * ARG:1 / (ARG:2 + ARG:0)
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@GET_REVISION2(ARG:0, ARG:1, ARG:2)
+#FUNCTION
+RETURNF ARG:1 * (ARG:0 + 1) / (ARG:2 + ARG:0 + 1)
+
+;-------------------------------------------------
+;関数名:PRINT_BASE
+;概　要:汎用補正値取得関数
+;引　数:ARGS バーの名前
+;		ARG:0…参照するキャラ番号
+;       ARG:1…ベースの番号
+;       ARG:2…バーの長さ
+;BARを表示させたいときに
+;-------------------------------------------------
+@PRINT_BASE(ARGS,ARG:0,ARG:1,ARG:2)
+PRINTFORM %ARGS,%
+BAR BASE:ARG:(ARG:1),MAXBASE:ARG:(ARG:1),ARG:2
+PRINTFORML ({BASE:ARG:(ARG:1)}/{MAXBASE:ARG:(ARG:1)})
+
+;-------------------------------------------------
+;未読判定関数@ONCE
+;式中で使用する関数です
+;ARGSはイベント番号、ARGは真だと初回判定を更新しない、ARG:1はキャラ登録番号（省略するとTARGET,-1ならMASTER）
+;{イベント番号}/　という文字列をCSTR:1にぶっこんでいきます
+;-------------------------------------------------
+@ONCE(ARGS,ARG, ARG:1)
+#FUNCTION
+;ARG:2の変換
+ARG:1 = ARG:1 ? ARG:1 # TARGET
+ARG:1 = ARG:1 == -1 ? MASTER # ARG:1
+SIF CSTR:(ARG:1):ONCE関数用 == ""
+	CSTR:(ARG:1):ONCE関数用 = /
+LOCALS = /%ARGS%/
+IF STRCOUNT(CSTR:(ARG:1):ONCE関数用,LOCALS)
+	RETURNF 0
+ELSEIF ARG
+	RETURNF 1
+ENDIF
+;初回判定更新
+CSTR:(ARG:1):ONCE関数用 = %CSTR:(ARG:1):ONCE関数用%%ARGS%/
+RETURNF 1
+
+;-------------------------------------------------------------------------------
+;フラグリセット処理
+@EVENTTRAIN
+FOR LOCAL,0,CHARANUM
+	CSTR:LOCAL:ONCE関数用 = 
+NEXT
+
+;-------------------------------------------------
+;未読判定関数@FIRSTTIME
+;式中で使用する関数です。
+;ARGSはイベント番号、ARGは真だと初回判定を更新しない、ARG:1はキャラ登録番号（省略するとTARGET,-1ならMASTER）
+;{イベント番号}/　という文字列をCSTR:FIRSTTIME関数用にぶっこんでいきます
+;-------------------------------------------------
+@FIRSTTIME(ARGS,ARG, ARG:1)
+#FUNCTION
+;ARG:1の変換
+ARG:1 = ARG:1 ? ARG:1 # TARGET
+ARG:1 = ARG:1 == -1 ? MASTER # ARG:1
+SIF CSTR:(ARG:1):FIRSTTIME関数用 == ""
+	CSTR:(ARG:1):FIRSTTIME関数用 = /
+LOCALS = /%ARGS%/
+IF STRCOUNT(CSTR:(ARG:1):FIRSTTIME関数用,LOCALS)
+	RETURNF 0
+ELSEIF ARG
+	RETURNF 1
+ENDIF
+;初回判定更新
+CSTR:(ARG:1):FIRSTTIME関数用 = %CSTR:(ARG:1):FIRSTTIME関数用%%ARGS%/
+RETURNF 1
+
+;-------------------------------------------------
+;関数名:EXP_UP
+;概　要:経験値変動チェック
+;引　数:ARG:0…参照するEXP
+;       ARG:1…参照するキャラ番号
+;-------------------------------------------------
+@EXP_UP(ARG,ARG:1)
+#FUNCTION
+RETURNF EXP:(ARG:1):ARG - TCVAR:(ARG:1):(400 + ARG)
+
+;-------------------------------------------------
+;関数名:INVAGINA
+;概　要:Vに何が入っているのかを返す
+;引　数:ARG:0…参照するキャラ番号
+;戻り値:0なし
+;戻り値:1 阴茎
+;戻り値:2 振动棒
+;-------------------------------------------------
+@INVAGINA(ARG)
+#FUNCTION
+IF TEQUIP:ARG:Ｖ性爱
+	RETURNF 1
+ELSEIF TEQUIP:ARG:振动棒
+	RETURNF 2
+ENDIF
+
+;-------------------------------------------------
+;関数名:INANAL
+;概　要:Aに何が入っているのかを返す
+;引　数:ARG:0…参照するキャラ番号
+;戻り値:0なし
+;戻り値:1 阴茎
+;戻り値:2 肛门振动棒
+;戻り値:3 肛珠
+;-------------------------------------------------
+@INANAL(ARG)
+#FUNCTION
+IF TEQUIP:ARG:Ａ性爱
+	RETURNF 1
+ELSEIF TEQUIP:ARG:肛门振动棒
+	RETURNF 2
+ELSEIF TEQUIP:ARG:肛珠
+	RETURNF 3
+ENDIF
+
+;-------------------------------------------------
+;関数名:HETEROSEX
+;ARGとARG:1の性別が同じかどうかを返すほんとはHOMOSEXだけど語感が悪いので
+;女性器を持つものは女、持たないものを男とする
+;戻り値0=異性
+;戻り値1=同性(レズ)
+;戻り値2=同性(ゲイ)
+;-------------------------------------------------
+@HETEROSEX(ARG,ARG:1)
+#FUNCTION
+IF GETBIT(TALENT:ARG:性別,0) == GETBIT(TALENT:(ARG:1):性別,0)
+	IF GETBIT(TALENT:ARG:性別,0)
+		RETURNF 1
+	ELSE
+		RETURNF 2
+	ENDIF
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------
+;関数名:HAS_PENIS
+;ARGがオトコかふたなりであれば1を返す
+;戻り値1=オトコかふたなり
+;戻り値0=オンナ
+;-------------------------------------------------
+@HAS_PENIS(ARG)
+#FUNCTION
+IF TALENT:ARG:性別 & 2
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------
+;関数名:HAS_VAGINA
+;ARGがオンナかふたなりであれば1を返す
+;戻り値1=オンナかふたなり
+;戻り値0=オトコ
+;-------------------------------------------------
+@HAS_VAGINA(ARG)
+#FUNCTION
+IF TALENT:ARG:性別 & 1
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------
+;関数名:IS_MALE
+;ARGが男であれば1を返す
+;戻り値1=オトコ
+;戻り値0=オンナかふたなり
+;-------------------------------------------------
+@IS_MALE(ARG)
+#FUNCTION
+IF 2 == (TALENT:ARG:性別 & 3)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------
+;関数名:IS_FEMALE
+;ARGがおんなであれば1を返す
+;戻り値1=オンナ
+;戻り値0=オトコかふたなり
+;-------------------------------------------------
+@IS_FEMALE(ARG)
+#FUNCTION
+IF 1 == (TALENT:ARG:性別 & 3)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------
+;関数名:IS_FUTA
+;ARGがふたなりであれば1を返す
+;戻り値1=ふたなり
+;戻り値0=オトコかオンナ
+;-------------------------------------------------
+@IS_FUTA(ARG)
+#FUNCTION
+IF 3 == (TALENT:ARG:性別 & 3)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------
+;関数名:IS_DOUTEI
+;ARGが童贞であれば1を返す
+;戻り値1=オンナかふたなり
+;戻り値0=オトコ
+;-------------------------------------------------
+@IS_DOUTEI(ARG)
+#FUNCTION
+;間違えやすいけど、TALENT:童贞が 0 だと童贞
+IF HAS_PENIS(ARG) && !TALENT:ARG:童贞
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------
+;関数名:GET_SEXNAME
+;ARGの性別の名称を返す
+;戻り値=男or女orふたなり
+;-------------------------------------------------
+@GET_SEXNAME(ARG)
+#FUNCTIONS
+SELECTCASE (TALENT:ARG:性別 & 3)
+	CASE 1
+		RETURNF "女"
+	CASE 2
+		RETURNF "男"
+	CASE 3
+		RETURNF "ふたなり"
+	CASEELSE
+		RETURNF "よくわからないもの"
+ENDSELECT
+
+;-------------------------------------------------
+;関数名:SOURCE_REVISION1
+;快楽系SOURCEの快楽系ABLによる補正
+;1/10される
+;-------------------------------------------------
+@SOURCE_REVISION1(ARG)
+#FUNCTION
+SELECTCASE ARG
+	CASE 0
+		RETURNF 5
+	CASE 1 TO 3
+		RETURNF 10 * ARG
+	CASE 4 TO 9
+		RETURNF 20 * ARG - 30
+	CASEELSE
+		RETURNF 150
+ENDSELECT
+
+;-------------------------------------------------
+;関数名:SOURCE_REVISION2
+;快楽系SOURCEに依存するUP:欲望のABL:欲望による補正
+;1/100される
+;-------------------------------------------------
+@SOURCE_REVISION2(ARG)
+#FUNCTION
+SELECTCASE ARG
+	CASE 0 TO 5
+		RETURNF 50 + 10 * ARG
+	CASE 6 TO 9
+		RETURNF 75 + 5 * ARG
+	CASEELSE
+		RETURNF 140
+ENDSELECT
+
+;-------------------------------------------------
+;関数名:GET_TARGETNUM
+;同室中のTARGETの数を返す
+;-------------------------------------------------
+@GET_TARGETNUM
+#FUNCTION
+VARSET LOCAL
+FOR LOCAL,1,CHARANUM
+	SIF TARGET:LOCAL > 0
+		LOCAL:1 ++
+NEXT
+RETURNF LOCAL:1
+
+;-------------------------------------------------
+;関数名:GET_TARGETSLEEP
+;同室中のキャラの中から寝ている数を返す
+;-------------------------------------------------
+@GET_TARGETSLEEP
+#FUNCTION
+VARSET LOCAL
+FOR LOCAL,1,CHARANUM
+	IF CFLAG:MASTER:現在位置 == CFLAG:LOCAL:現在位置
+		SIF CFLAG:LOCAL:睡眠
+			LOCAL:1 ++
+	ENDIF
+NEXT
+RETURNF LOCAL:1
+
+;-------------------------------------------------
+;関数名:GET_TSLEEP_NAME
+;同室中のキャラの中から寝ているキャラの番号と人数を返す
+;-------------------------------------------------
+@GET_TSLEEP_NAME
+VARSET LOCAL
+FOR LOCAL,1,CHARANUM
+	IF CFLAG:MASTER:現在位置 == CFLAG:LOCAL:現在位置
+		IF CFLAG:LOCAL:睡眠
+			LOCAL:1 = LOCAL
+			LOCAL:2 ++
+		ENDIF
+	ENDIF
+NEXT
+;最後のキャラ番号を取得
+;RESULT:0がキャラ番号、RESULT:1が寝ている人数
+RETURN LOCAL:1, LOCAL:2
+
+;-------------------------------------------------
+;関数名:GET_TARGETWAKEUP
+;同室中のキャラの中から起きている数を返す
+;-------------------------------------------------
+@GET_TARGETWAKEUP
+#FUNCTION
+VARSET LOCAL
+FOR LOCAL,1,CHARANUM
+	IF CFLAG:MASTER:現在位置 == CFLAG:LOCAL:現在位置
+		SIF !CFLAG:LOCAL:睡眠
+			LOCAL:1 ++
+	ENDIF
+NEXT
+RETURNF LOCAL:1
+
+;-------------------------------------------------
+;関数名:GET_DAY
+;概　要:曜日を表す文字列を取得する関数
+;引　数:无
+;戻り値:曜日を表す文字列(日/月/火/水/木/金/土)
+;備　考:文中関数
+;-------------------------------------------------
+@GET_DAY
+#FUNCTIONS
+SIF !STRLENS(LOCALS)
+	SPLIT "日/月/火/水/木/金/土", "/", LOCALS
+RETURNF LOCALS:(DAY % 7)
+
+;-------------------------------------------------
+;関数名:DATETIME()
+;概　要:1日目0時0分からの経過時刻を取得する関数
+;引　数:无
+;戻り値:1日目0時0分からの経過時刻（分）
+;-------------------------------------------------
+@DATETIME()
+#FUNCTION
+RETURNF 1440 * DAY + TIME
+
+;-------------------------------------------------
+@GETDISHNAME(ARG)
+#FUNCTIONS
+IF ARG > 6000
+	LOCALS = 睡眠薬入り
+ELSEIF ARG > 5000
+	LOCALS = 利尿剂入り
+ELSEIF ARG > 4000
+	LOCALS = 媚药入り
+ELSEIF ARG > 3000
+	LOCALS = 母乳入り
+ELSEIF ARG > 2000
+	LOCALS = 愛液入り
+ELSEIF ARG > 1000
+	LOCALS = 精液入り
+ELSE
+	LOCALS = 
+ENDIF
+SELECTCASE ARG % 1000
+	CASE 1
+		RETURNF @"%LOCALS%サンドイッチ"
+	CASE 2
+		RETURNF @"%LOCALS%おにぎり"
+	CASE 31
+		RETURNF @"%LOCALS%ヲムレツ"
+	CASE 32
+		RETURNF @"%LOCALS%シチュー"
+	CASE 33
+		RETURNF @"%LOCALS%ハンバーグ"
+	CASE 34
+		RETURNF @"%LOCALS%グラタン"
+	CASE 35
+		RETURNF @"%LOCALS%カレーライス"
+	CASE 36
+		RETURNF @"%LOCALS%ステーキ"
+	CASE 37
+		RETURNF @"%LOCALS%ラーメン"
+	CASE 38
+		RETURNF @"%LOCALS%うどん"
+	CASE 39
+		RETURNF @"%LOCALS%素麺"
+	CASE 40
+		RETURNF @"%LOCALS%蕎麦"
+	CASE 61
+		RETURNF @"%LOCALS%プリン"
+	CASE 62
+		RETURNF @"%LOCALS%ケーキ"
+	CASE 63
+		RETURNF @"%LOCALS%ゼリー"
+	CASE 64
+		RETURNF @"%LOCALS%タルト"
+	CASE 65
+		RETURNF @"%LOCALS%クッキー"
+	CASE 66
+		RETURNF @"%LOCALS%パイ"
+	CASE 67
+		RETURNF @"%LOCALS%羊羹"
+	CASE 68
+		RETURNF @"%LOCALS%大福"
+	CASE 69
+		RETURNF @"%LOCALS%カステラ"
+	CASE 70
+		RETURNF @"%LOCALS%団子"
+ENDSELECT
+
+;-------------------------------------------------
+@GETDISHMENU(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1 TO 30
+		RETURNF "軽食"
+	CASE 31 TO 60
+		RETURNF "主食"
+	CASE 61 TO 90
+		RETURNF "甜点"
+ENDSELECT
+RETURNF ""
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@Common_SetErection()
+RETURN 
+
+;-------------------------------------------------------------------------------
+;コマンド名取得
+;　配列の範囲外チェック込み。ただし途中の飛んでいる番号は判定不可。
+;@return コマンド名文字列
+@GET_TRAIN_NAME(コマンド番号)
+#FUNCTIONS
+#DIM コマンド番号
+;範囲外チェック
+SIF 0 > コマンド番号
+	RETURNF ""
+SIF 648 < コマンド番号
+	RETURNF ""
+RETURNF TRAINNAME:PREVCOM
+
+;-------------------------------------------------
+;関数名:GET_STAINCOUNT(誰の部位, どこの部位, 誰が感じる)
+;概　要:{誰の部位}の{どこの部位}に対し{誰が感じる}の感じる汚れ量を勝手に計算する関数
+;引　数:誰の部位…誰の部位を使うか
+;       どこの部位…どの部位を使うか
+;       誰が感じる…誰がその汚れを感じるのか
+;戻り値:TARGETの感じる汚れ量
+;fix me:補助関数積み上げまくったけど汚いから誰かどうにかしてください
+;-------------------------------------------------
+@GET_STAINCOUNT(誰の部位, どこの部位 = -1, 誰が感じる)
+#FUNCTION
+#DIM 誰の部位
+#DIM どこの部位
+#DIM 誰が感じる
+SIF どこの部位 == -1
+	THROW どこの部位({どこの部位})には部位を指定してください
+LOCAL = 0
+SELECTCASE 誰の部位
+	CASE 部位_膣内, 部位_腸内
+		;愛液の汚れ
+		SIF HAS_STAIN(誰の部位, どこの部位, 汚れB_愛液)
+			LOCAL += 1
+		;精液の汚れ
+		SIF HAS_STAIN(誰の部位, どこの部位, 汚れB_精液)
+			LOCAL += 3
+		;触手粘液の汚れ
+		SIF HAS_STAIN(誰の部位, どこの部位, 汚れB_粘液)
+			LOCAL += 15
+	CASEELSE
+		;愛液の汚れ
+		SIF HAS_STAIN(誰の部位, どこの部位, 汚れB_愛液)
+			LOCAL += 1
+		;精液の汚れ
+		SIF HAS_STAIN(誰の部位, どこの部位, 汚れB_精液)
+			LOCAL += 3
+		;菊花の汚れ
+		SIF HAS_STAIN(誰の部位, どこの部位, 汚れB_菊花)
+			LOCAL += 7
+		;母乳の汚れ
+		SIF HAS_STAIN(誰の部位, どこの部位, 汚れB_母乳)
+			LOCAL += 15
+ENDSELECT
+LOCAL = LOCAL * (2 - TALENT:(誰が感じる):污臭耐性) / 2
+RETURNF LOCAL
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@HAS_STAIN(ARG:0, ARG:1, ARG:2)
+#FUNCTION
+LOCAL = 1 << ARG:2
+SIF STAIN:(ARG:0):(ARG:1) & LOCAL
+	RETURNF 1
+SIF HAS_PAIR_部位(ARG:1) && STAIN:(ARG:0):GET_PAIR_部位(ARG:1) & LOCAL
+	RETURNF 1
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@GET_PAIR_部位(ARG)
+#FUNCTION
+LOCAL = DICTIONARY_PAIR_部位(ARG)
+SIF LOCAL == -1
+	THROW @GET_PAIR_部位({ARG})
+RETURNF LOCAL
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@HAS_PAIR_部位(ARG)
+#FUNCTION
+LOCAL = DICTIONARY_PAIR_部位(ARG)
+SIF LOCAL == -1
+	RETURNF 0
+RETURNF 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@DICTIONARY_PAIR_部位(ARG)
+#FUNCTION
+SIF ARG == 部位_膣内
+	RETURNF 部位_Ｖ
+SIF ARG == 部位_腸内
+	RETURNF 部位_Ａ
+RETURNF -1
+
+;-------------------------------------------------------------------------------
+;地の文用の呼び名を返す
+;@return 1:xxx,0:xxx
+@GET_DESCRIPTIVE_NAME(キャラ)
+#FUNCTIONS
+#DIM キャラ
+SELECTCASE キャラ
+	CASE 人物_村人
+		RETURNF "村の誰か"
+	CASE 人物_客
+		RETURNF "買春客"
+	CASE 人物_催眠者
+		RETURNF "催眠者"
+	CASE 人物_訪問者
+		RETURNF NTR_NAME(0)
+	CASE IS < 人物_あなた
+		;不正な番号
+		RETURNF "見知らぬ誰か"
+	CASE IS < CHARANUM
+		RETURNF CALLNAME:キャラ
+	CASEELSE
+		RETURNF "見知らぬ誰か"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;口上用の呼び名を返す
+;@return 1:xxx,0:xxx
+@GET_CALLNAME(キャラ)
+#FUNCTIONS
+#DIM キャラ
+SELECTCASE キャラ
+	CASE 人物_村人
+		RETURNF "貴方"
+	CASE 人物_客
+		RETURNF "お客様"
+	CASE 人物_催眠者
+		RETURNF "催眠師先生"
+	CASE 人物_訪問者
+		RETURNF NTR_NAME(0)
+	CASE IS < 人物_あなた
+		;不正な番号
+		RETURNF "貴方"
+	CASE IS < CHARANUM
+		RETURNF CALLNAME:キャラ
+	CASEELSE
+		RETURNF "貴方"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@GET_MARK_LEVEL_OWNERNAME(奴隷,刻印番号)
+#FUNCTIONS
+#DIM 奴隷
+#DIM 刻印番号
+#DIMS OWNERNAME
+SELECTCASE 刻印番号
+	CASE 刻印番号_苦痛刻印
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:苦痛刻印主人)%
+	CASE 刻印番号_快乐刻印
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:快乐刻印主人)%
+	CASE 刻印番号_反発刻印
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:反発刻印主人)%
+	CASE 刻印番号_屈服刻印
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)%
+	CASE 7
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:苦痛刻印主人)%
+	CASE 8
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:快乐刻印主人)%
+	CASE 9
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:反発刻印主人)%
+	CASE 10
+		OWNERNAME = %GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)%
+	CASEELSE
+		OWNERNAME = %""%
+ENDSELECT
+IF MARK:奴隷:刻印番号 == 0
+	OWNERNAME = %""%
+ELSEIF OWNERNAME != ""
+	OWNERNAME = %"("+OWNERNAME+")"%
+ENDIF
+RETURNF MARKNAME:刻印番号+":"+TOSTR(MARK:奴隷:刻印番号)+OWNERNAME
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@GET_MARK_LEVEL(奴隷,刻印番号,調教者)
+#FUNCTION
+#DIM 奴隷
+#DIM 調教者
+#DIM 刻印番号
+SELECTCASE 刻印番号
+	CASE 刻印番号_苦痛刻印
+		RETURNF MARK:奴隷:刻印番号 * (CFLAG:奴隷:苦痛刻印主人 == 調教者)
+	CASE 刻印番号_快乐刻印
+		RETURNF MARK:奴隷:刻印番号 * (CFLAG:奴隷:快乐刻印主人 == 調教者)
+	CASE 刻印番号_反発刻印
+		RETURNF MARK:奴隷:刻印番号 * (CFLAG:奴隷:反発刻印主人 == 調教者)
+	CASE 刻印番号_屈服刻印
+		RETURNF MARK:奴隷:刻印番号 * (CFLAG:奴隷:屈服刻印主人 == 調教者)
+	CASEELSE
+		RETURNF MARK:奴隷:刻印番号
+ENDSELECT
+
+
+;-------------------------------------------------
+;カラースタンプ関数
+;-------------------------------------------------
+;特定の記号を特定の色で並べる
+;MARKの表示用だけどなんかその他にも使えるでしょう
+;-------------------------------------------------
+@COLOR_STAMP(STAMP_NUM, MAX_NUM, STAMP_STR, STAMP_COLOR)
+#DIM  STAMP_NUM   ;並べるスタンプの数
+#DIM  MAX_NUM     ;スタンプの最大数
+#DIMS STAMP_STR   ;スタンプに使用する文字列
+#DIM  STAMP_COLOR ;スタンプの色
+#DIM  STAMP_LENGTH;スタンプ文字列の長さ
+STAMP_LENGTH = STRLENS(STAMP_STR)
+SIF STAMP_STR == "❤"
+	STAMP_LENGTH = 2
+SIF !STAMP_LENGTH
+	THROW STAMP_STRが指定されていません
+SIF STAMP_COLOR
+	SETCOLOR STAMP_COLOR
+PRINTFORM %" " * (MAX_NUM - STAMP_NUM) * STAMP_LENGTH%
+PRINTFORM %STAMP_STR * STAMP_NUM%
+RESETCOLOR
+
+@COLORFULL_RANK(RANK, MAX_RANK)
+#DIM RANK
+#DIM MAX_RANK
+#DIMS CONST MAX_STR_10, 10 = "Ex", "SS", " S", " A", " B", " C", " D", " E", " F", " G"
+#DIMS CONST MAX_STR_7,   7 = "Ex", " S", " A", " B", " C", " D", " E"
+{
+	#DIMS  CONST MAX_COLOR_10, 10 = 
+		"0xC070C0", "0xC0C0C0", "0xC0C0C0", "0xFFCCFF", "0xFF0000", 
+		"0xFFA500", "0xFFFF00", "0x00FF00", "0x66FFFF", "0x404040"
+}
+#DIMS  CONST MAX_COLOR_7,   7 = "0xC070C0", "0xC0C0C0", "0xFFCCFF", "0xFF0000", "0xFFA500", "0xFFFF00", "0x404040"
+SELECTCASE MAX_RANK
+	CASE 10
+		CALL COLORFULL_RANK_SETCOLOR(MAX_COLOR_10:RANK)
+		PRINTFORM %MAX_STR_10:RANK, 2%
+		RESETCOLOR
+	CASE  7
+		CALL COLORFULL_RANK_SETCOLOR(MAX_COLOR_7:RANK)
+		PRINTFORM %MAX_STR_7:RANK, 2%
+		RESETCOLOR
+	CASEELSE
+		THROW 【错误】COLORFULL_RANK中出现错误的MAX_RANK:{MAX_RANK}
+ENDSELECT
+RESETCOLOR
+
+@COLORFULL_RANK_SETCOLOR(COLOR)
+#DIMS COLOR
+SELECTCASE COLOR
+	CASE "0xC070C0"
+		SETCOLOR 0xC070C0
+	CASE "0xC0C0C0"
+		SETCOLOR 0xC0C0C0
+	CASE "0xFFCCFF"
+		SETCOLOR 0xFFCCFF
+	CASE "0xFF0000"
+		SETCOLOR 0xFF0000
+	CASE "0xFFA500"
+		SETCOLOR 0xFFA500
+	CASE "0xFFFF00"
+		SETCOLOR 0xFFFF00
+	CASE "0x66FFFF"
+		SETCOLOR 0x66FFFF
+	CASE "0x404040"
+		SETCOLOR 0x404040
+ENDSELECT
+
+;-------------------------------------------------
+;来自eraAM的方法，用于……自己看吧
+;単語1/単語2/…/単語n の書式で書かれたARGS:0～の単語のどれかを等確率で返す
+;(ARGSが複数あるのは関数などが突っ込まれることを想定しているため)
+;＿は何も出力しない選択とする
+;選択肢の数を100まで拡張、RESULT退避処理追加
+;抽選処理が等確率ならFOR-NEXT使わなくてよいと思ったのでRANDで済ませる
+;-------------------------------------------------
+@TEXTR(ARGS, ARGS:1, ARGS:2, ARGS:3, ARGS:4, ARGS:5, ARGS:6)
+#FUNCTIONS
+#DIM  L_RESULT               ;RESULT退避用
+#DIMS DYNAMIC CHOICES        ;結果
+#DIMS DYNAMIC STR_ARRAY, 100 ;選択肢格納用の一時変数
+L_RESULT = RESULT
+;まず一つにまとめる
+ARGS = %ARGS%\/%ARGS:1%\/%ARGS:2%\/%ARGS:3%\/%ARGS:4%\/%ARGS:5%\/%ARGS:6%
+;不要な"/"を削る作業
+;空のARGSがあると//がたくさん出来て判定の邪魔になるので
+;1.//は置換で削る
+;2.最末尾が/なら削る（SPLITとRANDをそのまま使用都合上）
+ARGS '= REPLACE(ARGS, "\/+", "/")
+SIF CHARATU(ARGS, STRLENSU(ARGS) - 1) == "/"
+	ARGS '= SUBSTRINGU(ARGS, 0, STRLENSU(ARGS) - 1)
+SPLIT ARGS, "/", STR_ARRAY
+CHOICES '= STR_ARRAY:(RAND:RESULT)
+SIF CHOICES == "＿"
+	CHOICES =
+RESULT = L_RESULT
+RETURNF CHOICES

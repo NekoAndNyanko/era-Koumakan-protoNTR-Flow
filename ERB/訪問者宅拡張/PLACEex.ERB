@@ -1,0 +1,15 @@
+﻿;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@GETPLACENAME_900(奴隷)
+#DIM 奴隷
+IF CFLAG:奴隷:現在位置 != 位置_訪問者宅
+	THROW "不正な呼び出しです"
+ENDIF
+TRYCCALLFORM %"COM461_"+TOSTR(CFLAG:奴隷:現在位置詳細,"00")+"_ENABLE"%, 奴隷
+	RETURN 1
+CATCH
+	RESULTS:0 = %"不明"%
+	RETURN 1
+ENDCATCH
+RETURN

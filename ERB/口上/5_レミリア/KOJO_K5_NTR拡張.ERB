@@ -1,0 +1,268 @@
+﻿;-------------------------------------------------
+;蕾米莉亚口上NTR対応ラッパ口上
+;
+;NTRに対応していない蕾米莉亚口上に、NTR独自の分岐を追加するためのラッパ口上。
+;たとえばコマンド311の時に KOJO_MESSAGE_COM_K5_311 が実行される場合、
+;NTR_KOJO_MESSAGE_COM_K5_311があればそちらが優先される。
+;さらにNTR_KOJO_MESSAGE_COM_K5_311 の中で、NTR固有の分岐がすべて条件が
+;叶わなかったとき、通常の(非NTR対応の) KOJO_MESSAGE_COM_K5_311 を実行できる。
+;-------------------------------------------------
+;※※※※※※他者による修正、加筆、改変についての但し書き※※※※※※
+;前提としてオリジナル作者以外が手を入れる場合は、オリジナル作者の許可を求めること
+;オリジナル作者とコンタクトが取れない場合には以下の但し書きに従ってUPできるかどうか判断してください。
+
+;◎修正（誤字、脱字、条件分岐等ERB構文のバグ修正、本体のバージョンアップ、ダウン対応など）
+;（　許可　）※どちらかを選択してください
+;
+;◎加筆（未記入箇所、ランダム分岐、条件分岐等の増補）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎改変（オリジナル作者によって書かれた部分に対しての上書き、消去を含む）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎製作中などの理由で時限を設ける
+;（　年　月　日）まで上記の一切を認めない
+;
+;記　　寝の人
+;追記　
+;基本的に作者の意思を確認出来ない場合、加筆改変は可能ということにします
+
+;==================================================
+;302,身体接触
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K5_302
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K5_302_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K5_302_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K5_302_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_蕾米莉亚
+RET_VAL = 0
+
+IF TALENT:奴隷:公众便所
+
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 「库库、适可而止吧？」
+	ELSE
+		PRINTFORML 「・・住手」
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+
+	PRINTDATAL
+		DATAFORM 「・・没办法」
+		DATAFORM 「・・你要瞒着他」
+		DATAFORM 「・・这是我们两个人的秘密。好吗？」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
+
+	PRINTDATAL
+		DATAFORM 「住手。我会生气的？」
+		DATAFORM 「我不是说过不要亲近我吗？」
+		DATAFORM 「・・不行」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTFORML 「・・・」
+	PRINTFORML %CALLNAME:MASTER%的手触碰的瞬间、%CALLNAME:奴隷%的身体在一瞬间颤抖。
+
+ELSE
+	; それ以外の場合、非NTR口上を実行する
+	RET_VAL = 1
+ENDIF 
+
+RETURN RET_VAL
+
+;==================================================
+;312,接吻
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K5_312
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K5_312_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K5_312_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K5_312_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_蕾米莉亚
+RET_VAL = 0
+
+;唇の汚れで拒否された時
+IF TFLAG:193 == -2
+	IF TALENT:奴隷:浮気公認
+		PRINTFORML 「库库库・・你想品尝别人的精液吗？还是算了吧」
+		PRINTFORML 「我知道%CALLNAME:MASTER%你的恶趣味、这是我的忠告」
+
+		PRINTFORML 以嘴唇被精液污染了为由拒绝了接吻。
+		PRINTFORML 「我知道・・来。你难道不想亲吻我吗？」
+		PRINTFORML %CALLNAME:奴隷%似乎为了清洁嘴唇而想要喝茶。
+	ELSE
+		PRINTFORML 「住、住手」
+		PRINTFORML 原因不明，可是在嘴唇碰触之前就被拒绝了。
+		PRINTFORML 「喂、来杯茶」
+		PRINTFORML %CALLNAME:奴隷%似乎想要茶。
+	ENDIF
+	;失敗時
+ELSEIF TFLAG:193 == -1
+	PRINTDATAL
+		DATAFORM 「・・无礼的人」
+		DATAFORM 「・・太慢了」
+		DATAFORM 「・・我可没那种心情」
+	ENDDATA
+	PRINTFORML 被拒绝，被撞倒了。
+	;成功時
+ELSE
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+		;唇が精液で汚れていたとき
+		IF CFLAG:射精者M != 0 && STAIN:口 & 汚れ_精液
+			PRINTFORML 与%CALLNAME:奴隷%亲吻的%CALLNAME:MASTER%对他的唾液的味道感到不协调，离开了唇部。
+			PRINTFORML 「・・库库库・・很刺激吧？」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中)
+			PRINTDATAL
+				DATAFORM 「・・库库・・你要瞒着他・・嗯・・」
+				DATAFORM 「・・这可是玩火的乐趣啊」
+				DATAFORM 「・・很惊险对吗？」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%以诱惑的视线注视%CALLNAME:MASTER%
+			;好意度低いと冷たい
+		ELSE
+			PRINTDATAL
+				DATAFORM 「唔・・住手。你只是个佣人」
+				DATAFORM 「唔・・要有分寸」
+				DATAFORM 「唔・・到此为止吧」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%虽然没有拒绝，但以冷漠的目光瞪着%CALLNAME:MASTER%
+		ENDIF
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(TARGET, FAV_寝取られそう)
+		IF ABL:欲望 >= 5
+			;互いに激しく
+			PRINTDATAL
+				DATAFORM 「嗯・・呼唔・・嘴巴里・・」
+				DATAFORM 「啾・・啾・・啾啪・・」
+				DATAFORM 「嗯・・接受・・呜・・」
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 互相吞噬着嘴唇和舌头，品尝了它的滋味。
+				DATAFORM %CALLNAME:TARGET%用送入口嘴中的舌头舔过每颗牙齿、 连尖利的牙齿也没有放过。
+				DATAFORM %CALLNAME:TARGET%从口中送入的舌头流入唾液后、白色的喉咙发出呼噜噜的响声。
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 「就这么点？ 不会吧？」
+				DATAFORM 「・・再给我一点、直到我满意为止」
+				DATAFORM 「库库库・・求你了。如果你还想继续的话」
+			ENDDATA
+			IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前)
+				PRINTFORML %CALLNAME:MASTER%注视%CALLNAME:TARGET%的视线中感到奇怪的冷淡。
+			ELSE
+				PRINTFORML %CALLNAME:MASTER%看向%CALLNAME:TARGET%的视线中感到饥渴的炽热感
+			ENDIF
+		ELSEIF ABL:亲密 >= 5
+			;親しく求め合うように
+			PRINTDATAL
+				DATAFORM 「唔・・啾・・」
+				DATAFORM 「啾・・啾・・」
+				DATAFORM 「嗯・・嗯ん・・啾・・」
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 互相贴近嘴唇，品尝了柔和的滋味。
+				DATAFORM 搂住小身子咬着嘴唇。
+				DATAFORM 放开嘴唇、%CALLNAME:TARGET%似乎期待着继续。
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 「库库库・・不是让我玩乐吗？」
+				DATAFORM 「嗯・・没错。在我想要的时候给我一个吻」
+				DATAFORM 「库库库・・你做得不错」
+			ENDDATA
+			IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前)
+				PRINTFORML %CALLNAME:MASTER%注视%CALLNAME:TARGET%的视线中感到奇怪的冷淡。
+			ELSE
+				PRINTFORML %CALLNAME:MASTER%看向%CALLNAME:TARGET%的视线中感到饥渴的炽热感
+			ENDIF
+		ENDIF
+	ELSE
+		; それ以外の場合、非NTR口上を実行する
+		RET_VAL = 1
+	ENDIF 
+ENDIF 
+
+RETURN RET_VAL
+
+
+;==================================================
+;350,推到
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K5_350
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K5_350_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K5_350_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K5_350_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_蕾米莉亚
+RET_VAL = 0
+
+IF TALENT:奴隷:公众便所
+	;鍵購入済み
+	IF FLAG:贞操帯鍵購入フラグ == 奴隷
+		PRINTFORML 「呼呼、欢迎光临・・呼呼、随你的便吧」
+		;未購入
+	ELSE
+		PRINTFORML 「阿拉？想让佣人使用这个精液便器吗？」
+		PRINTFORML 「要是让主人知道的话，我可不会饶了你哦？」
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中)
+
+	PRINTDATAL
+		DATAFORM 「・・你要瞒着他」
+		DATAFORM 「你想把我当做共犯吗。呼呼」
+		DATAFORM 「这样也不错啊」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+	PRINTDATAL
+		DATAFORM 「不行。你明明是佣人」
+		DATAFORM 「住手」
+		DATAFORM 「・・不行。你知道的」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) && TALENT:奴隷:恋慕
+
+	PRINTFORML 「・・」
+	PRINTFORML 在%CALLNAME:MASTER%的手臂中、%CALLNAME:奴隷%微微地移开视线。
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) && TALENT:奴隷:恋慕
+
+	PRINTFORML 「・・」
+	PRINTFORML 在%CALLNAME:MASTER%的手臂中、%CALLNAME:奴隷%困惑似的微微移开视线。
+
+	;その他
+ELSE
+	RET_VAL = 1
+ENDIF
+
+RETURN RET_VAL

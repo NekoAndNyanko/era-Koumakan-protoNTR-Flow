@@ -1,0 +1,25 @@
+﻿;告白
+@COM352
+;公众便所時、好意度が低いと失敗
+IF TALENT:公众便所 && 700 > CFLAG:好感度
+	TFLAG:193 = 0
+	RETURN 1
+ENDIF
+;NTR時、好意度が低いと失敗
+IF TALENT:NTR && 500 > CFLAG:好感度
+	TFLAG:193 = 0
+	RETURN 1
+ENDIF
+LOCAL = MARK:屈服刻印 * 3 + MARK:快乐刻印 * 3 + MIN(ABL:亲密 * 10, 50) + MIN(ABL:欲望 * 10,50) + GETPALAMLV(PALAM:欲情,5) * 5 + GETPALAMLV(PALAM:好意,5) * 5 + BASE:气氛 / 50 + (1000 - BASE:理性) / 30
+IF  LOCAL > 100 + TALENT:难以越过的界线 * 20
+	TFLAG:193 = 1
+ELSE
+	TFLAG:193 = 0
+ENDIF
+IF TFLAG:193 == 1
+	SOURCE:欢乐 = 1000
+	SOURCE:被动 = 500 + 100 * ABL:顺从
+	SOURCE:征服 = 500 + 100 * ABL:抖Ｓ之气
+ENDIF
+RETURN 1
+

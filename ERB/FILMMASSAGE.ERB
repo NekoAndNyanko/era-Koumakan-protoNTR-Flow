@@ -1,0 +1,76 @@
+﻿;-----------------------------------------------------------
+;	相机设置共通口上ファイル
+;		影像确认をした際に表示される口上(描画)
+;		ここから各口上ごとに実装された口上に飛ぶ
+;-----------------------------------------------------------
+
+;-----------------------------------------------------------
+;	影像确认の一番上の口上
+;		ARG:0 = 登場人物(ビット)
+;		ARG:1 = 摄影場所
+;-----------------------------------------------------------
+@FILM_MESSAGE_T(ARG:0, ARG:1)
+VARSET LOCAL
+VARSET TARGET
+
+;地位が高い順に呼び出す
+CALL SORT_CFLAG(310)
+FOR LOCAL, 1, CHARANUM
+	LOCAL:1 = RESULT:LOCAL
+	IF GETBIT(ARG:0, RESULT:LOCAL)
+		TRYCCALLFORM KOJO_MESSAGE_SECRET_CAMERA_K{LOCAL:1}(ARG:0, ARG:1)
+		CATCH
+			;汎用
+			LOCALS = %CALLNAME:(LOCAL:1)%
+			LOCALS:1 = %GETPLACENAME(ARG:1)%
+
+			SELECTCASE ARG:1
+				CASE 位置_大厅, 位置_二楼楼梯间, 位置_二楼走廊
+					PRINTFORML %LOCALS%经过了%LOCALS:1%……
+					;BIT(0=裙子, 3=ズボン)
+					IF GETBIT(TEQUIP:(LOCAL:1):0, 0) && !GETBIT(TEQUIP:(LOCAL:1):0, 3)
+						LOCAL:10 = RAND:100
+						IF LOCAL:10 < 10
+							PRINTFORML 设置在地板上的摄像机、顺利的将路过的%LOCALS%的裙下风光记录了下来
+							;1=ノーパン裙子
+							IF TEQUIP:(LOCAL:1):0 == 1
+								PRINTFORML %LOCALS%底下竟是全裸的……
+								PRINTFORML 收纳着%LOCALS%下半身美妙风光的照片被保存了起来……
+							ELSE
+								PRINTFORML 能够看清%LOCALS%穿着的%PANTS_DESCRIPTION(EQUIP:(LOCAL:1):下半身下着２)%%PANTSNAME(EQUIP:(LOCAL:1):下半身下着２)%……
+							ENDIF
+						ELSEIF LOCAL:10 < 30
+							SIF TEQUIP:(LOCAL:1):0 == 1
+								PRINTFORMW 虽然只有一瞬间，但好像能看到%LOCALS%底下什么都没穿……
+						ENDIF
+					ELSE
+						PRINTFORML 能够看到%LOCALS%底下穿着的%PANTSNAME(EQUIP:(LOCAL:1):下半身下着２)%……
+					ENDIF
+				CASE 位置_大浴場
+					PRINTFORML 拍到了%LOCALS:1%里%LOCALS%的身姿……
+					PRINTFORML 相机忠实地将%LOCALS%更衣和入浴的样子收纳了起来、
+					PRINTFORML %LOCALS%赤裸娇艳的肉体映在相片里……
+				CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
+					PRINTFORML 拍到了在%LOCALS:1%里%LOCALS%的样子……
+					LOCAL:1 = RAND:3
+					IF LOCAL:1 == 0 && !RAND:8
+						PRINTFORML 清晰记录了%LOCALS%脱粪的瞬间……
+					ELSEIF LOCAL:1 == 1 && !RAND:4
+						PRINTFORML 清晰地记录了%LOCALS%安心地尿出来的瞬间……
+					ELSE
+						PRINTFORML 将%LOCALS%的玉足记录了下来……
+					ENDIF
+				CASEELSE
+					LOCAL:1 = RAND:3
+					IF LOCAL:1 == 0 
+						PRINTFORML 拍到了%LOCALS:1%里%LOCALS%的样子……
+					ELSEIF LOCAL:1 == 1
+						PRINTFORML 记录下了%LOCALS%在%LOCALS:1%无所事事的样子……
+					ELSE
+						PRINTFORML 记录下了%LOCALS%从%LOCALS:1%路过的样子……
+					ENDIF
+			ENDSELECT
+			WAIT
+		ENDCATCH
+	ENDIF
+NEXT

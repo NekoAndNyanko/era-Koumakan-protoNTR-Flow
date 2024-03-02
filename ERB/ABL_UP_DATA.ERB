@@ -1,0 +1,2073 @@
+﻿;-------------------------------------------------------------------------------
+;各ABLの上昇に必要な珠の数を返す
+@JUEL_DEMAND(ABL番号,パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM ABL番号
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+SELECTCASE ABL番号
+	CASE GETNUM(ABL,"Ｃ感觉")
+		RETURNF JUEL_DEMAND_0(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"Ｖ感觉")
+		RETURNF JUEL_DEMAND_1(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"Ａ感觉")
+		RETURNF JUEL_DEMAND_2(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"Ｂ感觉")
+		RETURNF JUEL_DEMAND_3(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"Ｍ感觉")
+		RETURNF JUEL_DEMAND_4(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"亲密")
+		RETURNF JUEL_DEMAND_9(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"顺从")
+		RETURNF JUEL_DEMAND_10(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"欲望")
+		RETURNF JUEL_DEMAND_11(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"技巧")
+		RETURNF JUEL_DEMAND_12(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"侍奉精神")
+		RETURNF JUEL_DEMAND_13(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"露出癖")
+		RETURNF JUEL_DEMAND_14(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"抖Ｍ之气")
+		RETURNF JUEL_DEMAND_15(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"抖Ｓ之气")
+		RETURNF JUEL_DEMAND_16(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"百合之气")
+		RETURNF JUEL_DEMAND_17(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"断背之气")
+		RETURNF JUEL_DEMAND_18(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"自慰中毒")
+		RETURNF JUEL_DEMAND_30(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"精液中毒")
+		RETURNF JUEL_DEMAND_31(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"百合中毒")
+		RETURNF JUEL_DEMAND_32(パターン,珠番号,キャラ番号)
+	CASE GETNUM(ABL,"搞基中毒")
+		RETURNF JUEL_DEMAND_33(パターン,珠番号,キャラ番号)
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;各ABLの上昇に必要な経験の数を返す
+@EXP_DEMAND(ABL番号,パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM ABL番号
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+SELECTCASE ABL番号
+	CASE GETNUM(ABL,"Ｃ感觉")
+		RETURNF EXP_DEMAND_0(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"Ｖ感觉")
+		RETURNF EXP_DEMAND_1(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"Ａ感觉")
+		RETURNF EXP_DEMAND_2(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"Ｂ感觉")
+		RETURNF EXP_DEMAND_3(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"亲密")
+		RETURNF EXP_DEMAND_9(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"顺从")
+		RETURNF EXP_DEMAND_10(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"欲望")
+		RETURNF EXP_DEMAND_11(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"技巧")
+		RETURNF EXP_DEMAND_12(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"侍奉精神")
+		RETURNF EXP_DEMAND_13(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"露出癖")
+		RETURNF EXP_DEMAND_14(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"抖Ｍ之气")
+		RETURNF EXP_DEMAND_15(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"抖Ｓ之气")
+		RETURNF EXP_DEMAND_16(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"百合之气")
+		RETURNF EXP_DEMAND_17(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"断背之气")
+		RETURNF EXP_DEMAND_18(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"自慰中毒")
+		RETURNF EXP_DEMAND_30(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"精液中毒")
+		RETURNF EXP_DEMAND_31(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"百合中毒")
+		RETURNF EXP_DEMAND_32(パターン,経験番号,キャラ番号)
+	CASE GETNUM(ABL,"搞基中毒")
+		RETURNF EXP_DEMAND_33(パターン,経験番号,キャラ番号)
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;Ｃ感觉の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_0(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｃ = GETNUM(JUEL,"快Ｃ")
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:Ｃ感觉
+	CASE 0
+		LOCAL:快Ｃ = 1
+	CASE 1
+		LOCAL:快Ｃ = 20
+	CASE 2
+		LOCAL:快Ｃ = 400
+	CASE 3
+		LOCAL:快Ｃ = 5000
+	CASE 4
+		LOCAL:快Ｃ = 15000
+	CASE 5
+		LOCAL:快Ｃ = 30000
+	CASE 6
+		LOCAL:快Ｃ = 40000
+	CASE 7
+		LOCAL:快Ｃ = 50000
+	CASE 8
+		LOCAL:快Ｃ = 60000
+	CASE 9
+		LOCAL:快Ｃ = 70000
+	CASEELSE
+		LOCAL:快Ｃ = 20000 * (ABL:キャラ番号:Ｃ感觉 - 6)
+ENDSELECT
+;経験補正
+LOCAL:快Ｃ = LOCAL:快Ｃ * 10 / (5 + GETEXPLV(EXP:キャラ番号:Ｃ经验,8))
+LOCAL:快Ｃ = LOCAL:快Ｃ * (1 + ABL:キャラ番号:Ｃ感觉) / (1 + GETEXPLV(EXP:キャラ番号:Ｃ绝顶经验,8))
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｃ , 2.00
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;Ｃ感觉の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_0(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;Ｖ感觉の上昇にJUELが必要ならその値を返す
+;@param 珠番号 珠番号
+@JUEL_DEMAND_1(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｖ = GETNUM(JUEL,"快Ｖ")
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:Ｖ感觉
+	CASE 0
+		LOCAL:快Ｖ = 1
+	CASE 1
+		LOCAL:快Ｖ = 20
+	CASE 2
+		LOCAL:快Ｖ = 400
+	CASE 3
+		LOCAL:快Ｖ = 5000
+	CASE 4
+		LOCAL:快Ｖ = 15000
+	CASE 5
+		LOCAL:快Ｖ = 30000
+	CASE 6
+		LOCAL:快Ｖ = 40000
+	CASE 7
+		LOCAL:快Ｖ = 50000
+	CASE 8
+		LOCAL:快Ｖ = 60000
+	CASE 9
+		LOCAL:快Ｖ = 70000
+	CASEELSE
+		LOCAL:快Ｖ = 20000 * (ABL:キャラ番号:Ｖ感觉 - 6)
+ENDSELECT
+IF EXP:キャラ番号:Ｖ扩张经验 > 50
+	TIMES LOCAL:快Ｖ , 0.50
+ELSEIF EXP:キャラ番号:Ｖ扩张经验 > 40
+	TIMES LOCAL:快Ｖ , 0.60
+ELSEIF EXP:キャラ番号:Ｖ扩张经验 > 30
+	TIMES LOCAL:快Ｖ , 0.70
+ELSEIF EXP:キャラ番号:Ｖ扩张经验 > 20
+	TIMES LOCAL:快Ｖ , 0.80
+ELSEIF EXP:キャラ番号:Ｖ扩张经验 > 10
+	TIMES LOCAL:快Ｖ , 0.90
+ELSEIF EXP:キャラ番号:Ｖ扩张经验
+	TIMES LOCAL:快Ｖ , 0.95
+ENDIF
+LOCAL:快Ｖ = LOCAL:快Ｖ * 10 / (5 + GETEXPLV(EXP:キャラ番号:Ｖ经验,8))
+LOCAL:快Ｖ = LOCAL:快Ｖ * (1 + ABL:キャラ番号:Ｖ感觉) / (1 + GETEXPLV(EXP:キャラ番号:Ｖ绝顶经验,8))
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｖ , 2.00
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;Ｖ感觉の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_1(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM Ｖ经验 = GETNUM(EXP,"Ｖ经验")
+VARSET LOCAL
+SIF ABL:キャラ番号:Ｖ感觉 > 2
+	LOCAL:Ｖ经验 = 1
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;Ａ感觉の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_2(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ａ = GETNUM(JUEL,"快Ａ")
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:Ａ感觉
+	CASE 0
+		LOCAL:快Ａ = 1
+	CASE 1
+		LOCAL:快Ａ = 50
+	CASE 2
+		LOCAL:快Ａ = 400
+	CASE 3
+		LOCAL:快Ａ = 5000
+	CASE 4
+		LOCAL:快Ａ = 15000
+	CASE 5
+		LOCAL:快Ａ = 30000
+	CASE 6
+		LOCAL:快Ａ = 40000
+	CASE 7
+		LOCAL:快Ａ = 50000
+	CASE 8
+		LOCAL:快Ａ = 60000
+	CASE 9
+		LOCAL:快Ａ = 70000
+	CASEELSE
+		LOCAL:快Ａ = 20000 * (ABL:キャラ番号:Ａ感觉 - 6)
+ENDSELECT
+IF EXP:キャラ番号:Ａ扩张经验 > 50
+	TIMES LOCAL:快Ａ , 0.50
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 40
+	TIMES LOCAL:快Ａ , 0.60
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 30
+	TIMES LOCAL:快Ａ , 0.70
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 20
+	TIMES LOCAL:快Ａ , 0.80
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 10
+	TIMES LOCAL:快Ａ , 0.90
+ELSEIF EXP:キャラ番号:Ａ扩张经验
+	TIMES LOCAL:快Ａ , 0.95
+ENDIF
+LOCAL:快Ａ = LOCAL:快Ａ * 10 / (5 + GETEXPLV(EXP:キャラ番号:Ａ经验,8))
+LOCAL:快Ａ = LOCAL:快Ａ * (1 + ABL:キャラ番号:Ａ感觉) / (1 + GETEXPLV(EXP:キャラ番号:Ａ绝顶经验,8))
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ａ , 2.00
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;Ａ感觉の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_2(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM Ａ经验 = GETNUM(EXP,"Ａ经验")
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:Ａ感觉
+	CASE 0
+		LOCAL:Ａ经验 = 2
+	CASE 1
+		LOCAL:Ａ经验 = 10
+	CASE 2
+		LOCAL:Ａ经验 = 30
+	CASE 3
+		LOCAL:Ａ经验 = 75
+	CASE 4
+		LOCAL:Ａ经验 = 150
+	CASE 5
+		LOCAL:Ａ经验 = 220
+	CASE 6
+		LOCAL:Ａ经验 = 270
+	CASE 7
+		LOCAL:Ａ经验 = 360
+	CASE 8
+		LOCAL:Ａ经验 = 420
+	CASE 9
+		LOCAL:Ａ经验 = 500
+	CASEELSE
+		LOCAL:Ａ经验 = 100 * (ABL:キャラ番号:Ａ感觉 - 4)
+ENDSELECT
+IF EXP:キャラ番号:Ａ扩张经验 > 50
+	TIMES LOCAL:Ａ经验 , 0.50
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 40
+	TIMES LOCAL:Ａ经验 , 0.60
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 30
+	TIMES LOCAL:Ａ经验 , 0.70
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 20
+	TIMES LOCAL:Ａ经验 , 0.80
+ELSEIF EXP:キャラ番号:Ａ扩张经验 > 10
+	TIMES LOCAL:Ａ经验 , 0.90
+ELSEIF EXP:キャラ番号:Ａ扩张经验
+	TIMES LOCAL:Ａ经验 , 0.95
+ENDIF
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:Ａ经验 , 2.00
+SIF LOCAL:Ａ经验 < 1
+	LOCAL:Ａ经验 = 1
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;Ｂ感觉の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_3(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｂ = GETNUM(JUEL,"快Ｂ")
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:Ｂ感觉
+	CASE 0
+		LOCAL:快Ｂ = 1
+	CASE 1
+		LOCAL:快Ｂ = 20
+	CASE 2
+		LOCAL:快Ｂ = 400
+	CASE 3
+		LOCAL:快Ｂ = 5000
+	CASE 4
+		LOCAL:快Ｂ = 15000
+	CASE 5
+		LOCAL:快Ｂ = 30000
+	CASE 6
+		LOCAL:快Ｂ = 40000
+	CASE 7
+		LOCAL:快Ｂ = 50000
+	CASE 8
+		LOCAL:快Ｂ = 60000
+	CASE 9
+		LOCAL:快Ｂ = 70000
+	CASEELSE
+		LOCAL:快Ｂ = 20000 * (ABL:キャラ番号:Ｂ感觉 - 6)
+ENDSELECT
+LOCAL:快Ｂ = LOCAL:快Ｂ * 10 / (5 + GETEXPLV(EXP:キャラ番号:Ｂ经验,8))
+LOCAL:快Ｂ = LOCAL:快Ｂ * (1 + ABL:キャラ番号:Ｂ感觉) / (1 + GETEXPLV(EXP:キャラ番号:Ｂ绝顶经验,8))
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｂ , 2.00
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;Ｂ感觉の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_3(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+RETURNF 0
+
+
+;-------------------------------------------------------------------------------
+@JUEL_DEMAND_4(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+RETURNF 0
+;todo以后再完善M珠的获取，现在就仅凭经验升级
+[SKIPSTART]
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｍ = GETNUM(JUEL,"快Ｍ")
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:Ｍ感觉
+	CASE 0
+		LOCAL:快Ｍ = 1
+	CASE 1
+		LOCAL:快Ｍ = 20
+	CASE 2
+		LOCAL:快Ｍ = 400
+	CASE 3
+		LOCAL:快Ｍ = 5000
+	CASE 4
+		LOCAL:快Ｍ = 15000
+	CASE 5
+		LOCAL:快Ｍ = 30000
+	CASE 6
+		LOCAL:快Ｍ = 40000
+	CASE 7
+		LOCAL:快Ｍ = 50000
+	CASE 8
+		LOCAL:快Ｍ = 60000
+	CASE 9
+		LOCAL:快Ｍ = 70000
+	CASEELSE
+		LOCAL:快Ｍ = 20000 * (ABL:キャラ番号:Ｍ感觉 - 6)
+ENDSELECT
+LOCAL:快Ｍ = LOCAL:快Ｍ * 10 / (5 + GETEXPLV(EXP:キャラ番号:Ｍ经验,8))
+LOCAL:快Ｍ = LOCAL:快Ｍ * (1 + ABL:キャラ番号:Ｍ感觉) / (1 + GETEXPLV(EXP:キャラ番号:Ｍ绝顶经验,8))
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｍ , 2.00
+RETURNF LOCAL:(珠番号)
+[SKIPEND]
+
+;-------------------------------------------------------------------------------
+@EXP_DEMAND_4(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM Ｍ经验 = GETNUM(EXP,"Ｍ经验")
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:Ｍ感觉
+	CASE 0
+		LOCAL:Ｍ经验 = 30
+	CASE 1
+		LOCAL:Ｍ经验 = 50
+	CASE 2
+		LOCAL:Ｍ经验 = 80
+	CASE 3
+		LOCAL:Ｍ经验 = 150
+	CASE 4
+		LOCAL:Ｍ经验 = 350
+	CASE 5
+		LOCAL:Ｍ经验 = 400
+	CASE 6
+		LOCAL:Ｍ经验 = 500
+	CASE 7
+		LOCAL:Ｍ经验 = 600
+	CASE 8
+		LOCAL:Ｍ经验 = 700
+	CASE 9
+		LOCAL:Ｍ经验 = 800
+	CASEELSE
+		LOCAL:Ｍ经验 = 100 * (ABL:キャラ番号:Ｍ感觉)
+ENDSELECT
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:Ｍ经验 , 2.00
+SIF LOCAL:Ｍ经验 < 1
+	LOCAL:Ｍ经验 = 1
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;亲密の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_9(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 好意 = GETNUM(JUEL,"好意")
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+;JUEL:好意(LOCAL:好意)が必要
+SELECTCASE ABL:キャラ番号:亲密
+	CASE 0
+		LOCAL:好意 = 10
+	CASE 1
+		LOCAL:好意 = 200
+	CASE 2
+		LOCAL:好意 = 1000
+	CASE 3
+		LOCAL:好意 = 3000
+	CASE 4
+		LOCAL:好意 = 10000
+	CASE 5
+		LOCAL:好意 = 30000
+	CASE 6
+		LOCAL:好意 = 50000
+	CASE 7
+		LOCAL:好意 = 100000
+	CASE 8
+		LOCAL:好意 = 150000
+	CASE 9
+		LOCAL:好意 = 200000
+	CASEELSE
+		LOCAL:好意 = 50000 * (ABL:キャラ番号:亲密 - 5)
+ENDSELECT
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:好意 , 1.50
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;亲密の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_9(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;顺从の上昇にJUELが必要ならその値を返す
+;-------------------------------------------------------------------------------
+@JUEL_DEMAND_10(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 恐怖 = GETNUM(JUEL,"恐怖")
+#DIM 恭顺 = GETNUM(JUEL,"恭顺")
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+SIF パターン > 3
+	RETURNF -1
+;恐怖の珠で上げる
+VARSET LOCAL
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:顺从
+		CASE 0
+			LOCAL:恐怖 = 10
+		CASE 1
+			LOCAL:恐怖 = 150
+		CASE 2
+			LOCAL:恐怖 = 500
+		CASE 3
+			LOCAL:恐怖 = 3000
+		CASE 4
+			LOCAL:恐怖 = 6000
+		CASE 5
+			LOCAL:恐怖 = 8000
+		CASE 6
+			LOCAL:恐怖 = 10000
+		CASE 7
+			LOCAL:恐怖 = 14000
+		CASE 8
+			LOCAL:恐怖 = 18000
+		CASE 9
+			LOCAL:恐怖 = 25000
+		CASEELSE
+			LOCAL:恐怖 = 10000 * (ABL:キャラ番号:顺从 - 7)
+	ENDSELECT
+	;恭顺の珠で上げる
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:顺从
+		CASE 0
+			LOCAL:恭顺 = 10
+		CASE 1
+			LOCAL:恭顺 = 100
+		CASE 2
+			LOCAL:恭顺 = 300
+		CASE 3
+			LOCAL:恭顺 = 3000
+		CASE 4
+			LOCAL:恭顺 = 6000
+		CASE 5
+			LOCAL:恭顺 = 10000
+		CASE 6
+			LOCAL:恭顺 = 15000
+		CASE 7
+			LOCAL:恭顺 = 20000
+		CASE 8
+			LOCAL:恭顺 = 25000
+		CASE 9
+			LOCAL:恭顺 = 35000
+		CASEELSE
+			LOCAL:恭顺 = 12000 * (ABL:キャラ番号:顺从 - 6)
+	ENDSELECT
+	;欲情の珠で上げる
+ELSEIF パターン == 2
+	SELECTCASE ABL:キャラ番号:顺从
+		CASE 0
+			LOCAL:欲情 = 150
+		CASE 1
+			LOCAL:欲情 = 450
+		CASE 2
+			LOCAL:欲情 = 1000
+		CASEELSE
+			RETURNF -1
+	ENDSELECT
+	;屈服の珠で上げる
+ELSEIF パターン == 3
+	SELECTCASE ABL:キャラ番号:顺从
+		CASE 0
+			LOCAL:屈服 = 100
+		CASE 1
+			LOCAL:屈服 = 600
+		CASE 2
+			LOCAL:屈服 = 1200
+		CASEELSE
+			RETURNF -1
+	ENDSELECT
+ENDIF
+;恋慕
+LOCAL:恭顺 = LOCAL:恭顺 * (10 - 2 * TALENT:キャラ番号:恋慕) / 10
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:恭顺 , 2.00
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+	TIMES LOCAL:恐怖 , 2.00
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;顺从の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_10(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+VARSET LOCAL
+;ＬＶ４から５に上げるときは异常经验必要（素質：[臆病][素直]なら無視できる）
+IF ABL:キャラ番号:顺从 == 4 && TALENT:キャラ番号:胆量 < 0 && TALENT:キャラ番号:态度 < 0
+	LOCAL:异常经验 = 1
+	;ＬＶ７から８に上げるときは异常经验3以上必要（素質：[臆病][素直]なら無視できる）
+ELSEIF ABL:キャラ番号:顺从 == 7 && TALENT:キャラ番号:胆量 < 0 && TALENT:キャラ番号:态度 < 0
+	LOCAL:异常经验 = 3
+ENDIF
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;欲望の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_11(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 优越 = GETNUM(JUEL,"优越")
+SIF パターン > 1
+	RETURNF -1
+;欲情の珠で上げる
+VARSET LOCAL
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:欲情
+		CASE 0
+			LOCAL:欲情 = 1
+		CASE 1
+			LOCAL:欲情 = 20
+		CASE 2
+			LOCAL:欲情 = 1000
+		CASE 3
+			LOCAL:欲情 = 8000
+		CASE 4
+			LOCAL:欲情 = 24000
+		CASE 5
+			LOCAL:欲情 = 30000
+		CASE 6
+			LOCAL:欲情 = 36000
+		CASE 7
+			LOCAL:欲情 = 45000
+		CASE 8
+			LOCAL:欲情 = 55000
+		CASE 9
+			LOCAL:欲情 = 70000
+		CASEELSE
+			LOCAL:欲情 = 10000 + 20000 * (ABL:キャラ番号:欲情 - 6)
+	ENDSELECT
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:欲情
+		CASE 0
+			LOCAL:优越 = 50
+		CASE 1
+			LOCAL:优越 = 200
+		CASE 2
+			LOCAL:优越 = 1000
+		CASE 3
+			LOCAL:优越 = 8000
+		CASE 4
+			LOCAL:优越 = 24000
+		CASE 5
+			LOCAL:优越 = 30000
+		CASE 6
+			LOCAL:优越 = 36000
+		CASE 7
+			LOCAL:优越 = 45000
+		CASE 8
+			LOCAL:优越 = 55000
+		CASE 9
+			LOCAL:优越 = 70000
+		CASEELSE
+			LOCAL:优越 = 10000 + 20000 * (ABL:キャラ番号:欲情 - 6)
+	ENDSELECT
+ENDIF
+;恋慕
+LOCAL:欲情 = LOCAL:欲情 * (10 - 2 * TALENT:キャラ番号:恋慕) / 10
+LOCAL:优越 = LOCAL:优越 * (10 - 2 * TALENT:キャラ番号:恋慕) / 10
+SIF LOCAL:欲情 == 0
+	LOCAL:欲情 = 1
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:优越 , 2.00
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;欲望の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_11(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+VARSET LOCAL
+;ＬＶ４から５に上げるときは异常经验必要（素質：[快感に素直]なら無視できる）
+IF ABL:キャラ番号:欲望 == 4 && TALENT:キャラ番号:快感应答 < 1
+	LOCAL:异常经验 = 1
+	;ＬＶ７から８に上げるときは异常经验3以上必要（素質：[快感に素直]なら無視できる）
+ELSEIF ABL:キャラ番号:欲望 == 7 && TALENT:キャラ番号:快感应答 < 1
+	LOCAL:异常经验 = 3
+ENDIF
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;技巧の上昇にJUELが必要ならその値を返す
+;-------------------------------------------------------------------------------
+@JUEL_DEMAND_12(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 优越 = GETNUM(JUEL,"优越")
+SIF パターン > 0
+	RETURNF -1
+;优越の珠で上げる
+VARSET LOCAL
+SELECTCASE ABL:キャラ番号:技巧
+	CASE 0
+		LOCAL:优越 = 1
+	CASE 1
+		LOCAL:优越 = 20
+	CASE 2
+		LOCAL:优越 = 200
+	CASE 3
+		LOCAL:优越 = 3000
+	CASE 4
+		LOCAL:优越 = 20000
+	CASE 5
+		LOCAL:优越 = 25000
+	CASE 6
+		LOCAL:优越 = 34000
+	CASE 7
+		LOCAL:优越 = 45000
+	CASE 8
+		LOCAL:优越 = 55000
+	CASE 9
+		LOCAL:优越 = 70000
+	CASEELSE
+		LOCAL:优越 = 10000 + 20000 * (ABL:キャラ番号:技巧 - 6)
+ENDSELECT
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:优越 , 2.00
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;技巧の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_12(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;侍奉精神の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_13(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+#DIM 恭顺 = GETNUM(JUEL,"恭顺")
+#DIM 习得 = GETNUM(JUEL,"习得")
+;顺从が必要
+SIF ABL:キャラ番号:顺从 < ABL:キャラ番号:侍奉精神 + 1
+	RETURNF -2
+SIF パターン > 2
+	RETURNF -1
+VARSET LOCAL
+;屈服の珠(LOCAL:屈服)で上げる
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:侍奉精神
+		CASE 0
+			LOCAL:屈服 = 100
+		CASE 1
+			LOCAL:屈服 = 1200
+		CASE 2
+			LOCAL:屈服 = 5000
+		CASE 3
+			LOCAL:屈服 = 10000
+		CASE 4
+			LOCAL:屈服 = 30000
+		CASE 5
+			LOCAL:屈服 = 35000
+		CASE 6
+			LOCAL:屈服 = 40000
+		CASE 7
+			LOCAL:屈服 = 45000
+		CASE 8
+			LOCAL:屈服 = 50000
+		CASE 9
+			LOCAL:屈服 = 60000
+		CASEELSE
+			LOCAL:屈服 = 10000 + 20000 * (ABL:キャラ番号:侍奉精神 - 7)
+	ENDSELECT
+	;恭顺の珠(LOCAL:恭顺)で上げる
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:侍奉精神
+		CASE 0
+			LOCAL:恭顺 = 20
+		CASE 1
+			LOCAL:恭顺 = 100
+		CASE 2
+			LOCAL:恭顺 = 600
+		CASE 3
+			LOCAL:恭顺 = 2000
+		CASE 4
+			LOCAL:恭顺 = 8000
+		CASE 5
+			LOCAL:恭顺 = 8500
+		CASE 6
+			LOCAL:恭顺 = 10000
+		CASE 7
+			LOCAL:恭顺 = 15000
+		CASE 8
+			LOCAL:恭顺 = 20000
+		CASE 9
+			LOCAL:恭顺 = 30000
+		CASEELSE
+			LOCAL:恭顺 = 10000 + 20000 * (ABL:キャラ番号:侍奉精神 - 7)
+	ENDSELECT
+	;习得の珠(LOCAL:习得)で上げる
+ELSEIF パターン == 2
+	IF ABL:キャラ番号:侍奉精神 == 0
+		LOCAL:习得 = 100
+	ELSE
+		RETURNF -1
+	ENDIF
+ENDIF
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:恭顺 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+	TIMES LOCAL:习得 , 2.00
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;侍奉精神の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_13(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 绝顶经验 = GETNUM(EXP,"绝顶经验")
+#DIM 精液经验 = GETNUM(EXP,"精液经验")
+#DIM 侍奉快乐经验 = GETNUM(EXP,"侍奉快乐经验")
+VARSET LOCAL
+;屈服の珠で上げるには绝顶经验(LOCAL:绝顶经验)と精液经验(LOCAL:精液经验)が必要
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:侍奉精神
+		CASE 0
+			LOCAL:绝顶经验 = 5
+			LOCAL:精液经验 = 5
+		CASE 1
+			LOCAL:绝顶经验 = 10
+			LOCAL:精液经验 = 10
+		CASE 2
+			LOCAL:绝顶经验 = 20
+			LOCAL:精液经验 = 20
+		CASE 3
+			LOCAL:绝顶经验 = 20
+			LOCAL:精液经验 = 20
+		CASE 4
+			LOCAL:绝顶经验 = 30
+			LOCAL:精液经验 = 30
+		CASE 5
+			LOCAL:绝顶经验 = 40
+			LOCAL:精液经验 = 40
+		CASE 6
+			LOCAL:绝顶经验 = 100
+			LOCAL:精液经验 = 100
+		CASE 7
+			LOCAL:绝顶经验 = 150
+			LOCAL:精液经验 = 150
+		CASE 8
+			LOCAL:绝顶经验 = 200
+			LOCAL:精液经验 = 200
+		CASE 9
+			LOCAL:绝顶经验 = 300
+			LOCAL:精液经验 = 300
+		CASEELSE
+			LOCAL:绝顶经验 = 100 * (ABL:キャラ番号:侍奉精神 - 6)
+			LOCAL:精液经验 = 100 * (ABL:キャラ番号:侍奉精神 - 6)
+	ENDSELECT
+	;恭顺の珠で上げるには侍奉快乐经验(LOCAL:侍奉快乐经验)が必要
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:侍奉精神
+		CASE 0
+			LOCAL:侍奉快乐经验 = 5
+		CASE 1
+			LOCAL:侍奉快乐经验 = 10
+		CASE 2
+			LOCAL:侍奉快乐经验 = 20
+		CASE 3
+			LOCAL:侍奉快乐经验 = 50
+		CASE 4
+			LOCAL:侍奉快乐经验 = 100
+		CASE 5
+			LOCAL:侍奉快乐经验 = 150
+		CASE 6
+			LOCAL:侍奉快乐经验 = 200
+		CASE 7
+			LOCAL:侍奉快乐经验 = 250
+		CASE 8
+			LOCAL:侍奉快乐经验 = 300
+		CASE 9
+			LOCAL:侍奉快乐经验 = 400
+		CASEELSE
+			LOCAL:侍奉快乐经验 = 100 * (ABL:キャラ番号:侍奉精神 - 5)
+	ENDSELECT
+	;难以越过的界线
+	SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+		TIMES LOCAL:侍奉快乐经验 , 2.00
+	;习得の球で上げるには绝顶经验が必要
+ELSEIF パターン == 2
+	LOCAL:绝顶经验 = 1
+ENDIF
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;露出癖の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_14(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 耻情 = GETNUM(JUEL,"耻情")
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+;耻情の珠(LOCAL:耻情)が必要
+SELECTCASE ABL:キャラ番号:露出癖
+	CASE 0
+		LOCAL:耻情 = 100
+	CASE 1
+		LOCAL:耻情 = 1000
+	CASE 2
+		LOCAL:耻情 = 3000
+	CASE 3
+		LOCAL:耻情 = 6000
+	CASE 4
+		LOCAL:耻情 = 10000
+	CASE 5
+		LOCAL:耻情 = 15000
+	CASE 6
+		LOCAL:耻情 = 22000
+	CASE 7
+		LOCAL:耻情 = 30000
+	CASE 8
+		LOCAL:耻情 = 40000
+	CASE 9
+		LOCAL:耻情 = 50000
+	CASEELSE
+		LOCAL:耻情 = 20000 * (ABL:キャラ番号:露出癖 - 7)
+ENDSELECT
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:耻情 , 2.00
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;露出癖の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_14(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 绝顶经验 = GETNUM(EXP,"绝顶经验")
+#DIM 调教自慰经验 = GETNUM(EXP,"调教自慰经验")
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+VARSET LOCAL
+;调教自慰经验と绝顶经验が必要
+LOCAL:绝顶经验 = 1
+LOCAL:调教自慰经验 = 1
+;ＬＶ３か４に上げるときは异常经验必要（素質：[表现欲]なら無視できる）
+IF ABL:キャラ番号:露出癖 == 3 && !TALENT:キャラ番号:表现欲
+	LOCAL:异常经验 = 1
+	;ＬＶ４か５に上げるときは异常经验３必要（素質：[表现欲]なら無視できる）
+ELSEIF ABL:キャラ番号:露出癖 == 4 && !TALENT:キャラ番号:表现欲
+	LOCAL:异常经验 = 3
+	;ＬＶ８か９に上げるときは异常经验５必要（素質：[表现欲]なら無視できる）
+ELSEIF ABL:キャラ番号:露出癖 == 6 && !TALENT:キャラ番号:表现欲
+	LOCAL:异常经验 = 5
+ENDIF
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;抖Ｍ之气の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_15(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 苦痛 = GETNUM(JUEL,"苦痛")
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+;欲望が必要
+SIF ABL:キャラ番号:欲望 < ABL:キャラ番号:抖Ｍ之气 + 1
+	RETURNF -2
+SIF パターン > 1
+	RETURNF -1
+VARSET LOCAL
+;苦痛(LOCAL:苦痛)と欲情(LOCAL:欲情)で上げる
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:抖Ｍ之气
+		CASE 0
+			LOCAL:欲情 = 100
+			LOCAL:苦痛 = 100
+		CASE 1
+			LOCAL:欲情 = 300
+			LOCAL:苦痛 = 500
+		CASE 2
+			LOCAL:欲情 = 1000
+			LOCAL:苦痛 = 1000
+		CASE 3
+			LOCAL:欲情 = 6000
+			LOCAL:苦痛 = 2000
+		CASE 4
+			LOCAL:欲情 = 12000
+			LOCAL:苦痛 = 3000
+		CASE 5
+			LOCAL:欲情 = 15000
+			LOCAL:苦痛 = 4000
+		CASE 6
+			LOCAL:欲情 = 20000
+			LOCAL:苦痛 = 5000
+		CASE 7
+			LOCAL:欲情 = 25000
+			LOCAL:苦痛 = 7000
+		CASE 8
+			LOCAL:欲情 = 30000
+			LOCAL:苦痛 = 10000
+		CASE 9
+			LOCAL:欲情 = 40000
+			LOCAL:苦痛 = 15000
+		CASEELSE
+			LOCAL:欲情 = 10000 * (ABL:キャラ番号:抖Ｍ之气 - 5)
+			LOCAL:苦痛 = 5000 * (ABL:キャラ番号:抖Ｍ之气 - 6)
+	ENDSELECT
+	;苦痛(LOCAL:苦痛)と屈服(LOCAL:屈服)で上げる
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:抖Ｍ之气
+		CASE 0
+			LOCAL:屈服 = 100
+			LOCAL:苦痛 = 100
+		CASE 1
+			LOCAL:屈服 = 500
+			LOCAL:苦痛 = 500
+		CASE 2
+			LOCAL:屈服 = 1000
+			LOCAL:苦痛 = 1000
+		CASEELSE
+			RETURNF -1
+	ENDSELECT
+ENDIF
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+	TIMES LOCAL:苦痛 , 2.00
+ENDIF
+;受虐狂
+IF TALENT:キャラ番号:受虐狂
+	TIMES LOCAL:欲情 , 0.50
+	TIMES LOCAL:屈服 , 0.50
+	TIMES LOCAL:苦痛 , 0.50
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;抖Ｍ之气の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_15(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 绝顶经验 = GETNUM(EXP,"绝顶经验")
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 苦痛快乐经验 = GETNUM(EXP,"苦痛快乐经验")
+VARSET LOCAL
+;苦痛快乐经验(EXP:キャラ番号:42)が必要
+SELECTCASE ABL:キャラ番号:抖Ｍ之气
+	CASE 3
+		LOCAL:苦痛快乐经验 = 10
+	CASE 4
+		LOCAL:苦痛快乐经验 = 20
+	CASE 5
+		LOCAL:苦痛快乐经验 = 50
+	CASE 6
+		LOCAL:苦痛快乐经验 = 100
+	CASE 7
+		LOCAL:苦痛快乐经验 = 150
+	CASE 8
+		LOCAL:苦痛快乐经验 = 200
+	CASE 9
+		LOCAL:苦痛快乐经验 = 300
+	CASE IS > 9
+		LOCAL:苦痛快乐经验 = 50 + (ABL:キャラ番号:抖Ｍ之气 - 3)
+ENDSELECT
+;苦痛(LOCAL:10)と屈服(LOCAL:7)で上げるには绝顶经验(EXP:キャラ番号:10)が必要
+SIF パターン == 0
+	LOCAL:绝顶经验 = 1
+;ＬＶ３か４に上げるときは异常经验必要（素質：[受虐狂]なら無視できる）
+IF ABL:キャラ番号:抖Ｍ之气 == 3 && !TALENT:キャラ番号:受虐狂
+	LOCAL:异常经验 = 1
+	;ＬＶ４か５に上げるときは异常经验３必要（素質：[受虐狂]なら無視できる）
+ELSEIF ABL:キャラ番号:抖Ｍ之气 == 4 && !TALENT:キャラ番号:受虐狂
+	LOCAL:异常经验 = 3
+	;ＬＶ８か９に上げるときは异常经验５必要（素質：[受虐狂]なら無視できる）
+ELSEIF ABL:キャラ番号:抖Ｍ之气 == 6 && !TALENT:キャラ番号:受虐狂
+	LOCAL:异常经验 = 5
+ENDIF
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:苦痛快乐经验 , 2.00
+;受虐狂
+SIF TALENT:キャラ番号:受虐狂
+	TIMES LOCAL:苦痛快乐经验 , 0.50
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;抖Ｓ之气の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_16(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 优越 = GETNUM(JUEL,"优越")
+;欲望が必要
+SIF ABL:キャラ番号:欲望 < ABL:キャラ番号:抖Ｓ之气 + 1
+	RETURNF -2
+SIF パターン > 1
+	RETURNF -1
+VARSET LOCAL
+IF パターン == 0
+	;欲情(LOCAL:欲情)で上げる
+	SELECTCASE ABL:キャラ番号:抖Ｓ之气
+		CASE 0
+			LOCAL:欲情 = 100
+		CASE 1
+			LOCAL:欲情 = 500
+		CASE 2
+			LOCAL:欲情 = 1500
+		CASE 3
+			LOCAL:欲情 = 3000
+		CASE 4
+			LOCAL:欲情 = 5000
+		CASE 5
+			LOCAL:欲情 = 8000
+		CASE 6
+			LOCAL:欲情 = 12000
+		CASE 7
+			LOCAL:欲情 = 15000
+		CASE 8
+			LOCAL:欲情 = 25000
+		CASE 9
+			LOCAL:欲情 = 30000
+		CASEELSE
+			LOCAL:欲情 = 10000 * (ABL:キャラ番号:抖Ｓ之气 - 6)
+	ENDSELECT
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:抖Ｓ之气
+		CASE 0
+			LOCAL:优越 = 100
+		CASE 1
+			LOCAL:优越 = 500
+		CASE 2
+			LOCAL:优越 = 1500
+		CASE 3
+			LOCAL:优越 = 3000
+		CASE 4
+			LOCAL:优越 = 5000
+		CASE 5
+			LOCAL:优越 = 8000
+		CASE 6
+			LOCAL:优越 = 12000
+		CASE 7
+			LOCAL:优越 = 15000
+		CASE 8
+			LOCAL:优越 = 25000
+		CASE 9
+			LOCAL:优越 = 30000
+		CASEELSE
+			LOCAL:优越 = 10000 * (ABL:キャラ番号:抖Ｓ之气 - 6)
+	ENDSELECT
+ENDIF
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:优越 , 2.00
+ENDIF
+;施虐狂
+IF TALENT:キャラ番号:施虐狂
+	TIMES LOCAL:欲情 , 0.50
+	TIMES LOCAL:优越 , 0.50
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;抖Ｓ之气の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_16(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 嗜虐快乐经验 = GETNUM(EXP,"嗜虐快乐经验")
+VARSET LOCAL
+;嗜虐快乐经验(EXP:キャラ番号:43)が必要
+SELECTCASE ABL:キャラ番号:抖Ｓ之气
+	CASE 0
+		LOCAL:嗜虐快乐经验 = 5
+	CASE 1
+		LOCAL:嗜虐快乐经验 = 10
+	CASE 2
+		LOCAL:嗜虐快乐经验 = 20
+	CASE 3
+		LOCAL:嗜虐快乐经验 = 50
+	CASE 4
+		LOCAL:嗜虐快乐经验 = 80
+	CASE 5
+		LOCAL:嗜虐快乐经验 = 100
+	CASE 6
+		LOCAL:嗜虐快乐经验 = 150
+	CASE 7
+		LOCAL:嗜虐快乐经验 = 200
+	CASE 8
+		LOCAL:嗜虐快乐经验 = 250
+	CASE 9
+		LOCAL:嗜虐快乐经验 = 300
+	CASEELSE
+		LOCAL:嗜虐快乐经验 = 100 * (ABL:キャラ番号:抖Ｓ之气 - 6)
+ENDSELECT
+;ＬＶ３から４に上げるときは异常经验１以上必要（素質：[施虐狂]なら無視できる）
+IF ABL:キャラ番号:抖Ｓ之气 == 3 && !TALENT:キャラ番号:施虐狂
+	LOCAL:异常经验 = 1
+	;ＬＶ４から５に上げるときは异常经验３以上必要（素質：[施虐狂]なら無視できる）
+ELSEIF ABL:キャラ番号:抖Ｓ之气 == 4 && !TALENT:キャラ番号:施虐狂
+	LOCAL:异常经验 = 3
+	;ＬＶ８から９に上げるときは异常经验５以上必要（素質：[施虐狂]なら無視できる）
+ELSEIF ABL:キャラ番号:抖Ｓ之气 == 8 && !TALENT:キャラ番号:施虐狂
+	LOCAL:异常经验 = 5
+ENDIF
+;难以越过的界线で恋慕がない場合は嗜虐快乐经验は２倍必要
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:嗜虐快乐经验 , 2.00
+;施虐狂がある場合は嗜虐快乐经验は半分でＯＫ
+SIF TALENT:キャラ番号:施虐狂
+	TIMES LOCAL:嗜虐快乐经验 , 0.50
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;百合之气の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_17(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｃ = GETNUM(JUEL,"快Ｃ")
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+SIF パターン > 1
+	RETURNF -1
+VARSET LOCAL
+;欲情(LOCAL:欲情),屈服(LOCAL:屈服)で上げる
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:百合之气
+		CASE 0
+			LOCAL:欲情 = 200
+			LOCAL:屈服 = 0
+		CASE 1
+			LOCAL:欲情 = 1000
+			LOCAL:屈服 = 0
+		CASE 2
+			LOCAL:欲情 = 3000
+			LOCAL:屈服 = 1000
+		CASE 3
+			LOCAL:欲情 = 8000
+			LOCAL:屈服 = 2000
+		CASE 4
+			LOCAL:欲情 = 20000
+			LOCAL:屈服 = 5000
+		CASE 5
+			LOCAL:欲情 = 25000
+			LOCAL:屈服 = 6000
+		CASE 6
+			LOCAL:欲情 = 30000
+			LOCAL:屈服 = 8000
+		CASE 7
+			LOCAL:欲情 = 35000
+			LOCAL:屈服 = 10000
+		CASE 8
+			LOCAL:欲情 = 40000
+			LOCAL:屈服 = 15000
+		CASE 9
+			LOCAL:欲情 = 45000
+			LOCAL:屈服 = 20000
+		CASEELSE
+			LOCAL:欲情 = 10000 * (ABL:キャラ番号:百合之气 - 4)
+			LOCAL:屈服 = 10000 * (ABL:キャラ番号:百合之气 - 7)
+	ENDSELECT
+	;快Ｃの珠で上げる
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:百合之气
+		CASE 0
+			LOCAL:快Ｃ = 1000
+		CASE 1
+			LOCAL:快Ｃ = 5000
+		CASEELSE
+			RETURNF -1
+	ENDSELECT
+ENDIF
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｃ , 2.00
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;百合之气の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_17(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 百合经验 = GETNUM(EXP,"百合经验")
+VARSET LOCAL
+;百合经验(EXP:キャラ番号:51)が必要
+SELECTCASE ABL:キャラ番号:百合之气
+	CASE 0
+		LOCAL:百合经验 = 50
+	CASE 1
+		LOCAL:百合经验 = 200
+	CASE 2
+		LOCAL:百合经验 = 500
+	CASE 3
+		LOCAL:百合经验 = 1000
+	CASE 4
+		LOCAL:百合经验 = 2000
+	CASE 5
+		LOCAL:百合经验 = 2300
+	CASE 6
+		LOCAL:百合经验 = 2600
+	CASE 7
+		LOCAL:百合经验 = 3000
+	CASE 8
+		LOCAL:百合经验 = 3500
+	CASE 9
+		LOCAL:百合经验 = 4000
+	CASEELSE
+		LOCAL:百合经验 = 500 * (ABL:キャラ番号:百合之气 - 1)
+ENDSELECT
+
+IF TALENT:キャラ番号:性別嗜好 == -1
+	;素質：[両刀]ならなら异常经验要求を無視できる
+ELSE
+	SELECTCASE ABL:キャラ番号:百合之气
+		CASE IS >= 8
+			LOCAL:异常经验 = 5
+		CASE IS >= 4
+			LOCAL:异常经验 = 3
+		CASE IS >= 3
+			LOCAL:异常经验 = 1
+	ENDSELECT
+ENDIF
+
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:百合经验 , 2.00
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;断背之气の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_18(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｃ = GETNUM(JUEL,"快Ｃ")
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+SIF パターン > 1
+	RETURNF -1
+VARSET LOCAL
+;欲情(LOCAL:欲情),屈服(LOCAL:屈服)で上げる
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:断背之气
+		CASE 0
+			LOCAL:欲情 = 200
+			LOCAL:屈服 = 0
+		CASE 1
+			LOCAL:欲情 = 1000
+			LOCAL:屈服 = 0
+		CASE 2
+			LOCAL:欲情 = 3000
+			LOCAL:屈服 = 1000
+		CASE 3
+			LOCAL:欲情 = 8000
+			LOCAL:屈服 = 2000
+		CASE 4
+			LOCAL:欲情 = 20000
+			LOCAL:屈服 = 5000
+		CASE 5
+			LOCAL:欲情 = 25000
+			LOCAL:屈服 = 6000
+		CASE 6
+			LOCAL:欲情 = 30000
+			LOCAL:屈服 = 8000
+		CASE 7
+			LOCAL:欲情 = 35000
+			LOCAL:屈服 = 10000
+		CASE 8
+			LOCAL:欲情 = 40000
+			LOCAL:屈服 = 15000
+		CASE 9
+			LOCAL:欲情 = 45000
+			LOCAL:屈服 = 20000
+		CASEELSE
+			LOCAL:欲情 = 10000 * (ABL:キャラ番号:断背之气 - 4)
+			LOCAL:屈服 = 10000 * (ABL:キャラ番号:断背之气 - 7)
+	ENDSELECT
+	;快Ｃの珠で上げる
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:断背之气
+		CASE 0
+			LOCAL:快Ｃ = 1000
+		CASE 1
+			LOCAL:快Ｃ = 5000
+		CASEELSE
+			RETURNF -1
+	ENDSELECT
+ENDIF
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｃ , 2.00
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;断背之气の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_18(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 搞基经验 = GETNUM(EXP,"搞基经验")
+VARSET LOCAL
+;搞基经验(EXP:キャラ番号:42)が必要
+SELECTCASE ABL:キャラ番号:断背之气
+	CASE 0
+		LOCAL:搞基经验 = 50
+	CASE 1
+		LOCAL:搞基经验 = 200
+	CASE 2
+		LOCAL:搞基经验 = 500
+	CASE 3
+		LOCAL:搞基经验 = 1000
+	CASE 4
+		LOCAL:搞基经验 = 2000
+	CASE 5
+		LOCAL:搞基经验 = 2300
+	CASE 6
+		LOCAL:搞基经验 = 2600
+	CASE 7
+		LOCAL:搞基经验 = 3000
+	CASE 8
+		LOCAL:搞基经验 = 3500
+	CASE 9
+		LOCAL:搞基经验 = 4000
+	CASEELSE
+		LOCAL:搞基经验 = 500 * (ABL:キャラ番号:断背之气 - 1)
+ENDSELECT
+;ＬＶ３か４に上げるときは异常经验必要（素質：[両刀]なら無視できる）
+IF ABL:キャラ番号:断背之气 == 3 && TALENT:キャラ番号:性別嗜好 == -1
+	LOCAL:异常经验 = 1
+	;ＬＶ４か５に上げるときは异常经验３必要（素質：[両刀]なら無視できる）
+ELSEIF ABL:キャラ番号:断背之气 == 4 && TALENT:キャラ番号:性別嗜好 == -1
+	LOCAL:异常经验 = 3
+	;ＬＶ８か９に上げるときは异常经验５必要（素質：[両刀]なら無視できる）
+ELSEIF ABL:キャラ番号:断背之气 == 8 && TALENT:キャラ番号:性別嗜好 == -1
+	LOCAL:异常经验 = 5
+ENDIF
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:搞基经验 , 2.00
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;自慰中毒の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_30(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｃ = GETNUM(JUEL,"快Ｃ")
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 耻情 = GETNUM(JUEL,"耻情")
+;C感覚が必要
+SIF ABL:キャラ番号:Ｃ感觉 < ABL:キャラ番号:自慰中毒 + 1
+	RETURNF -2
+;露出癖が必要
+SIF ABL:キャラ番号:露出癖 < ABL:キャラ番号:自慰中毒 + 1
+	RETURNF -2
+SIF パターン > 1
+	RETURNF -1
+VARSET LOCAL
+;欲情(LOCAL:欲情),快C(LOCAL:快Ｃ),耻情(LOCAL:耻情)で上げる
+SELECTCASE ABL:キャラ番号:自慰中毒
+	CASE 0
+		LOCAL:欲情 = 3000
+		LOCAL:快Ｃ = 10000
+		LOCAL:耻情 = 1000
+	CASE 1
+		LOCAL:欲情 = 6000
+		LOCAL:快Ｃ = 25000
+		LOCAL:耻情 = 3000
+	CASE 2
+		LOCAL:欲情 = 12000
+		LOCAL:快Ｃ = 50000
+		LOCAL:耻情 = 6000
+	CASE 3
+		LOCAL:欲情 = 20000
+		LOCAL:快Ｃ = 100000
+		LOCAL:耻情 = 15000
+	CASE 4
+		LOCAL:欲情 = 40000
+		LOCAL:快Ｃ = 300000
+		LOCAL:耻情 = 40000
+	CASE 5
+		LOCAL:欲情 = 45000
+		LOCAL:快Ｃ = 350000
+		LOCAL:耻情 = 45000
+	CASE 6
+		LOCAL:欲情 = 50000
+		LOCAL:快Ｃ = 400000
+		LOCAL:耻情 = 50000
+	CASE 7
+		LOCAL:欲情 = 55000
+		LOCAL:快Ｃ = 450000
+		LOCAL:耻情 = 55000
+	CASE 8
+		LOCAL:欲情 = 60000
+		LOCAL:快Ｃ = 500000
+		LOCAL:耻情 = 60000
+	CASE 9
+		LOCAL:欲情 = 70000
+		LOCAL:快Ｃ = 600000
+		LOCAL:耻情 = 70000
+	CASEELSE
+		LOCAL:欲情 = 10000 * (ABL:キャラ番号:自慰中毒 - 2)
+		LOCAL:快Ｃ = 100000 * (ABL:キャラ番号:自慰中毒 - 3)
+		LOCAL:耻情 = 10000 * (ABL:キャラ番号:自慰中毒 - 2)
+ENDSELECT
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｃ , 2.00
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:耻情 , 2.00
+ENDIF
+;容易中毒
+IF TALENT:キャラ番号:容易中毒
+	TIMES LOCAL:快Ｃ , 0.50
+	TIMES LOCAL:欲情 , 0.50
+	TIMES LOCAL:耻情 , 0.50
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;自慰中毒の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_30(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 自慰经验 = GETNUM(EXP,"自慰经验")
+#DIM 调教自慰经验 = GETNUM(EXP,"调教自慰经验")
+VARSET LOCAL
+;自慰经验(EXP:キャラ番号:22)が必要
+IF パターン == 0
+	SELECTCASE ABL:キャラ番号:自慰中毒
+		CASE 0
+			LOCAL:自慰经验 = 100
+		CASE 1
+			LOCAL:自慰经验 = 250
+		CASE 2
+			LOCAL:自慰经验 = 500
+		CASE 3
+			LOCAL:自慰经验 = 1000
+		CASE 4
+			LOCAL:自慰经验 = 2000
+		CASE 5
+			LOCAL:自慰经验 = 2500
+		CASE 6
+			LOCAL:自慰经验 = 3000
+		CASE 7
+			LOCAL:自慰经验 = 3500
+		CASE 8
+			LOCAL:自慰经验 = 4000
+		CASE 9
+			LOCAL:自慰经验 = 5000
+		CASEELSE
+			LOCAL:自慰经验 = 1000 * (ABL:キャラ番号:自慰中毒 - 4)
+	ENDSELECT
+ELSEIF パターン == 1
+	SELECTCASE ABL:キャラ番号:自慰中毒
+		CASE 0
+			LOCAL:调教自慰经验 = 20
+		CASE 1
+			LOCAL:调教自慰经验 = 40
+		CASE 2
+			LOCAL:调教自慰经验 = 60
+		CASE 3
+			LOCAL:调教自慰经验 = 100
+		CASE 4
+			LOCAL:调教自慰经验 = 200
+		CASE 5
+			LOCAL:调教自慰经验 = 250
+		CASE 6
+			LOCAL:调教自慰经验 = 300
+		CASE 7
+			LOCAL:调教自慰经验 = 350
+		CASE 8
+			LOCAL:调教自慰经验 = 400
+		CASE 9
+			LOCAL:调教自慰经验 = 500
+		CASEELSE
+			LOCAL:调教自慰经验 = 100 * (ABL:キャラ番号:自慰中毒 - 4)
+	ENDSELECT
+ENDIF
+;ＬＶ３か４に上げるときは异常经验必要（素質：[容易中毒][自慰狂]なら無視できる）
+IF ABL:キャラ番号:自慰中毒 == 3 && !TALENT:キャラ番号:容易中毒 && !TALENT:キャラ番号:自慰狂
+	LOCAL:异常经验 = 1
+	;ＬＶ４か５に上げるときは异常经验３必要（素質：[容易中毒][自慰狂]なら無視できる）
+ELSEIF ABL:キャラ番号:自慰中毒 == 4 && !TALENT:キャラ番号:容易中毒 && !TALENT:キャラ番号:自慰狂
+	LOCAL:异常经验 = 3
+	;ＬＶ８か９に上げるときは异常经验５必要（素質：[容易中毒][自慰狂]なら無視できる）
+ELSEIF ABL:キャラ番号:自慰中毒 == 8 && !TALENT:キャラ番号:容易中毒 && !TALENT:キャラ番号:自慰狂
+	LOCAL:异常经验 = 5
+ENDIF
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:自慰经验 , 2.00
+	TIMES LOCAL:调教自慰经验 , 2.00
+ENDIF
+;容易中毒
+IF TALENT:キャラ番号:容易中毒 || TALENT:キャラ番号:自慰狂
+	TIMES LOCAL:自慰经验 , 0.50
+	TIMES LOCAL:调教自慰经验 , 0.50
+ENDIF
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;精液中毒の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_31(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+;侍奉精神が必要
+SIF ABL:キャラ番号:侍奉精神 < ABL:キャラ番号:精液中毒 + 1
+	RETURNF -2
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+;欲情(LOCAL:欲情),屈服(LOCAL:屈服)
+SELECTCASE ABL:キャラ番号:精液中毒
+	CASE 0
+		LOCAL:欲情 = 3000
+		LOCAL:屈服 = 10000
+	CASE 1
+		LOCAL:欲情 = 8000
+		LOCAL:屈服 = 25000
+	CASE 2
+		LOCAL:欲情 = 15000
+		LOCAL:屈服 = 50000
+	CASE 3
+		LOCAL:欲情 = 30000
+		LOCAL:屈服 = 100000
+	CASE 4
+		LOCAL:欲情 = 45000
+		LOCAL:屈服 = 300000
+	CASE 5
+		LOCAL:欲情 = 60000
+		LOCAL:屈服 = 350000
+	CASE 6
+		LOCAL:欲情 = 65000
+		LOCAL:屈服 = 400000
+	CASE 7
+		LOCAL:欲情 = 70000
+		LOCAL:屈服 = 450000
+	CASE 8
+		LOCAL:欲情 = 75000
+		LOCAL:屈服 = 500000
+	CASE 9
+		LOCAL:欲情 = 90000
+		LOCAL:屈服 = 600000
+	CASEELSE
+		LOCAL:欲情 = 15000 * (ABL:キャラ番号:精液中毒 - 3)
+		LOCAL:屈服 = 100000 * (ABL:キャラ番号:精液中毒 - 3)
+ENDSELECT
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+ENDIF
+;容易中毒
+IF TALENT:キャラ番号:容易中毒
+	TIMES LOCAL:欲情 , 0.50
+	TIMES LOCAL:屈服 , 0.50
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;精液中毒の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_31(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 精液经验 = GETNUM(EXP,"精液经验")
+VARSET LOCAL
+;精液经验(EXP:キャラ番号:14)が必要
+SELECTCASE ABL:キャラ番号:精液中毒
+	CASE 0
+		LOCAL:精液经验 = 10
+	CASE 1
+		LOCAL:精液经验 = 25
+	CASE 2
+		LOCAL:精液经验 = 40
+	CASE 3
+		LOCAL:精液经验 = 80
+	CASE 4
+		LOCAL:精液经验 = 200
+	CASE 5
+		LOCAL:精液经验 = 250
+	CASE 6
+		LOCAL:精液经验 = 300
+	CASE 7
+		LOCAL:精液经验 = 350
+	CASE 8
+		LOCAL:精液经验 = 400
+	CASE 9
+		LOCAL:精液经验 = 500
+	CASEELSE
+		LOCAL:精液经验 = 100 * (ABL:キャラ番号:精液中毒 - 4)
+ENDSELECT
+
+IF TALENT:キャラ番号:污臭耐性 || TALENT:キャラ番号:容易中毒
+	;素質：[汚臭鈍感]or[容易中毒]なら异常经验要求を無視できる
+ELSE
+	SELECTCASE ABL:キャラ番号:精液中毒
+		CASE IS >= 8
+			LOCAL:异常经验 = 5
+		CASE IS >= 4
+			LOCAL:异常经验 = 3
+		CASE IS >= 3
+			LOCAL:异常经验 = 2
+		CASE IS >= 2
+			LOCAL:异常经验 = 1
+	ENDSELECT
+ENDIF
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:精液经验 , 2.00
+;容易中毒
+SIF TALENT:キャラ番号:容易中毒
+	TIMES LOCAL:精液经验 , 0.50
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;百合中毒の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_32(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｃ = GETNUM(JUEL,"快Ｃ")
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+;百合之气が必要
+SIF ABL:キャラ番号:百合之气 < ABL:キャラ番号:百合中毒 + 1
+	RETURNF -2
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+;快C(LOCAL:快Ｃ),欲情(LOCAL:欲情),屈服(LOCAL:屈服)が必要
+SELECTCASE ABL:キャラ番号:百合中毒
+	CASE 0
+		LOCAL:快Ｃ = 3000
+		LOCAL:欲情 = 10000
+		LOCAL:屈服 = 10000
+	CASE 1
+		LOCAL:快Ｃ = 8000
+		LOCAL:欲情 = 25000
+		LOCAL:屈服 = 25000
+	CASE 2
+		LOCAL:快Ｃ = 15000
+		LOCAL:欲情 = 50000
+		LOCAL:屈服 = 50000
+	CASE 3
+		LOCAL:快Ｃ = 30000
+		LOCAL:欲情 = 100000
+		LOCAL:屈服 = 100000
+	CASE 4
+		LOCAL:快Ｃ = 55000
+		LOCAL:欲情 = 300000
+		LOCAL:屈服 = 300000
+	CASE 5
+		LOCAL:快Ｃ = 60000
+		LOCAL:欲情 = 350000
+		LOCAL:屈服 = 350000
+	CASE 6
+		LOCAL:快Ｃ = 65000
+		LOCAL:欲情 = 400000
+		LOCAL:屈服 = 400000
+	CASE 7
+		LOCAL:快Ｃ = 70000
+		LOCAL:欲情 = 450000
+		LOCAL:屈服 = 450000
+	CASE 8
+		LOCAL:快Ｃ = 75000
+		LOCAL:欲情 = 500000
+		LOCAL:屈服 = 500000
+	CASE 9
+		LOCAL:快Ｃ = 80000
+		LOCAL:欲情 = 550000
+		LOCAL:屈服 = 550000
+	CASEELSE
+		LOCAL:快Ｃ = 10000 * (ABL:キャラ番号:百合中毒 - 1)
+		LOCAL:欲情 = 60000 * (ABL:キャラ番号:百合中毒 + 1)
+		LOCAL:屈服 = 60000 * (ABL:キャラ番号:百合中毒 + 1)
+ENDSELECT
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｃ , 2.00
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+ENDIF
+;容易中毒
+IF TALENT:キャラ番号:容易中毒
+	TIMES LOCAL:快Ｃ , 0.50
+	TIMES LOCAL:欲情 , 0.50
+	TIMES LOCAL:屈服 , 0.50
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;百合中毒の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_32(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 百合经验 = GETNUM(EXP,"百合经验")
+VARSET LOCAL
+;百合经验(EXP:キャラ番号:51)が必要
+SELECTCASE ABL:キャラ番号:百合中毒
+	CASE 0
+		LOCAL:百合经验 = 1000
+	CASE 1
+		LOCAL:百合经验 = 1500
+	CASE 2
+		LOCAL:百合经验 = 2000
+	CASE 3
+		LOCAL:百合经验 = 4500
+	CASE 4
+		LOCAL:百合经验 = 6000
+	CASE 5
+		LOCAL:百合经验 = 6500
+	CASE 6
+		LOCAL:百合经验 = 7000
+	CASE 7
+		LOCAL:百合经验 = 7500
+	CASE 8
+		LOCAL:百合经验 = 8000
+	CASE 9
+		LOCAL:百合经验 = 9000
+	CASEELSE
+		LOCAL:百合经验 = 1000 * ABL:キャラ番号:百合中毒
+ENDSELECT
+;ＬＶ2か3に上げるときは异常经验必要（素質：[両刀][容易中毒]なら無視できる）
+IF ABL:キャラ番号:百合中毒 == 2 && TALENT:キャラ番号:性別嗜好 == -1 && !TALENT:キャラ番号:容易中毒
+	LOCAL:异常经验 = 1
+	;ＬＶ３か４に上げるときは异常经验必要（素質：[両刀][容易中毒]なら無視できる）
+ELSEIF ABL:キャラ番号:百合中毒 == 3 && TALENT:キャラ番号:性別嗜好 == -1 && !TALENT:キャラ番号:容易中毒
+	LOCAL:异常经验 = 2
+	;ＬＶ４か５に上げるときは异常经验３必要（素質：[両刀][容易中毒]なら無視できる）
+ELSEIF ABL:キャラ番号:百合中毒 == 4 && TALENT:キャラ番号:性別嗜好 == -1 && !TALENT:キャラ番号:容易中毒
+	LOCAL:异常经验 = 3
+	;ＬＶ８か９に上げるときは异常经验５必要（素質：[両刀][容易中毒]なら無視できる）
+ELSEIF ABL:キャラ番号:百合中毒 == 8 && TALENT:キャラ番号:性別嗜好 == -1 && !TALENT:キャラ番号:容易中毒
+	LOCAL:异常经验 = 5
+ENDIF
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:百合经验 , 2.00
+;容易中毒
+SIF TALENT:キャラ番号:容易中毒
+	TIMES LOCAL:百合经验 , 0.50
+RETURNF LOCAL:(経験番号)
+
+;-------------------------------------------------------------------------------
+;搞基中毒の上昇にJUELが必要ならその値を返す
+@JUEL_DEMAND_33(パターン,珠番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 珠番号
+#DIM キャラ番号
+#DIM 快Ｃ = GETNUM(JUEL,"快Ｃ")
+#DIM 欲情 = GETNUM(JUEL,"欲情")
+#DIM 屈服 = GETNUM(JUEL,"屈服")
+;断背之气が必要
+SIF ABL:キャラ番号:断背之气 < ABL:キャラ番号:搞基中毒 + 1
+	RETURNF -2
+SIF パターン > 0
+	RETURNF -1
+VARSET LOCAL
+;快C(LOCAL:快Ｃ),欲情(LOCAL:欲情),屈服(LOCAL:屈服)が必要
+SELECTCASE ABL:キャラ番号:搞基中毒
+	CASE 0
+		LOCAL:快Ｃ = 3000
+		LOCAL:欲情 = 10000
+		LOCAL:屈服 = 10000
+	CASE 1
+		LOCAL:快Ｃ = 8000
+		LOCAL:欲情 = 25000
+		LOCAL:屈服 = 25000
+	CASE 2
+		LOCAL:快Ｃ = 15000
+		LOCAL:欲情 = 50000
+		LOCAL:屈服 = 50000
+	CASE 3
+		LOCAL:快Ｃ = 30000
+		LOCAL:欲情 = 100000
+		LOCAL:屈服 = 100000
+	CASE 4
+		LOCAL:快Ｃ = 55000
+		LOCAL:欲情 = 300000
+		LOCAL:屈服 = 300000
+	CASE 5
+		LOCAL:快Ｃ = 60000
+		LOCAL:欲情 = 350000
+		LOCAL:屈服 = 350000
+	CASE 6
+		LOCAL:快Ｃ = 65000
+		LOCAL:欲情 = 400000
+		LOCAL:屈服 = 400000
+	CASE 7
+		LOCAL:快Ｃ = 70000
+		LOCAL:欲情 = 450000
+		LOCAL:屈服 = 450000
+	CASE 8
+		LOCAL:快Ｃ = 75000
+		LOCAL:欲情 = 500000
+		LOCAL:屈服 = 500000
+	CASE 9
+		LOCAL:快Ｃ = 80000
+		LOCAL:欲情 = 550000
+		LOCAL:屈服 = 550000
+	CASEELSE
+		LOCAL:快Ｃ = 10000 * (ABL:キャラ番号:搞基中毒 - 1)
+		LOCAL:欲情 = 60000 * (ABL:キャラ番号:搞基中毒 + 1)
+		LOCAL:屈服 = 60000 * (ABL:キャラ番号:搞基中毒 + 1)
+ENDSELECT
+;难以越过的界线
+IF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:快Ｃ , 2.00
+	TIMES LOCAL:欲情 , 2.00
+	TIMES LOCAL:屈服 , 2.00
+ENDIF
+;容易中毒
+IF TALENT:キャラ番号:容易中毒
+	TIMES LOCAL:快Ｃ , 0.50
+	TIMES LOCAL:欲情 , 0.50
+	TIMES LOCAL:屈服 , 0.50
+ENDIF
+RETURNF LOCAL:(珠番号)
+
+;-------------------------------------------------------------------------------
+;搞基中毒の上昇にEXPが必要ならその値を返す
+@EXP_DEMAND_33(パターン,経験番号,キャラ番号)
+#FUNCTION
+#DIM パターン
+#DIM 経験番号
+#DIM キャラ番号
+#DIM 异常经验 = GETNUM(EXP,"异常经验")
+#DIM 搞基经验 = GETNUM(EXP,"搞基经验")
+VARSET LOCAL
+;搞基经验(EXP:キャラ番号:42)が必要
+SELECTCASE ABL:キャラ番号:搞基中毒
+	CASE 0
+		LOCAL:搞基经验 = 1000
+	CASE 1
+		LOCAL:搞基经验 = 1500
+	CASE 2
+		LOCAL:搞基经验 = 2000
+	CASE 3
+		LOCAL:搞基经验 = 4500
+	CASE 4
+		LOCAL:搞基经验 = 6000
+	CASE 5
+		LOCAL:搞基经验 = 6500
+	CASE 6
+		LOCAL:搞基经验 = 7000
+	CASE 7
+		LOCAL:搞基经验 = 7500
+	CASE 8
+		LOCAL:搞基经验 = 8000
+	CASE 9
+		LOCAL:搞基经验 = 9000
+	CASEELSE
+		LOCAL:搞基经验 = 1000 * ABL:キャラ番号:搞基中毒
+ENDSELECT
+;ＬＶ2か3に上げるときは异常经验必要（素質：[両刀][容易中毒]なら無視できる）
+IF ABL:キャラ番号:搞基中毒 == 2 && !TALENT:キャラ番号:容易中毒 && TALENT:キャラ番号:性別嗜好 == -1
+	LOCAL:异常经验 = 1
+	;ＬＶ３か４に上げるときは异常经验必要（素質：[両刀][容易中毒]なら無視できる）
+ELSEIF ABL:キャラ番号:搞基中毒 == 3 && !TALENT:キャラ番号:容易中毒 && TALENT:キャラ番号:性別嗜好 == -1
+	LOCAL:异常经验 = 2
+	;ＬＶ４か５に上げるときは异常经验３必要（素質：[両刀][容易中毒]なら無視できる）
+ELSEIF ABL:キャラ番号:搞基中毒 == 4 && !TALENT:キャラ番号:容易中毒 && TALENT:キャラ番号:性別嗜好 == -1
+	LOCAL:异常经验 = 3
+	;ＬＶ８か９に上げるときは异常经验５必要（素質：[両刀][容易中毒]なら無視できる）
+ELSEIF ABL:キャラ番号:搞基中毒 == 8 && !TALENT:キャラ番号:容易中毒 && TALENT:キャラ番号:性別嗜好 == -1
+	LOCAL:异常经验 = 5
+ENDIF
+;难以越过的界线
+SIF TALENT:キャラ番号:难以越过的界线 && !TALENT:キャラ番号:恋慕
+	TIMES LOCAL:搞基经验 , 2.00
+;容易中毒
+SIF TALENT:キャラ番号:容易中毒
+	TIMES LOCAL:搞基经验 , 0.50
+RETURNF LOCAL:(経験番号)

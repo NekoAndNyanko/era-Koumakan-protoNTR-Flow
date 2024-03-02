@@ -1,0 +1,513 @@
+@PRINT_NTR_EXP(对象)
+#DIM 对象
+PRINTL □ 浮気经验 □-----------------------------------------------------------------
+LOCAL:1 = 0
+FOR LOCAL,80,130
+	SIF !STRLENS(EXPNAME:LOCAL)
+		CONTINUE
+	SIF GROUPMATCH(LOCAL,121,122,123,124,125,126,127)
+		CONTINUE
+	; SIF !EXP:对象:LOCAL
+	; 	CONTINUE
+	; PRINTFORM %EXPNAME:LOCAL,18%:{MIN(EXP:对象:LOCAL,99999),5,RIGHT}
+	SIF !EXP:对象:LOCAL
+		CONTINUE
+	PRINTFORM %EXPNAME:LOCAL,16%:{EXP:对象:LOCAL,5,LEFT}
+	LOCAL:1 += 1
+	SIF LOCAL:1 % 3 == 0
+		PRINTL 
+NEXT
+PRINTL
+; PRINTL □ 特殊经验 □-----------------------------------------------------------------
+; LOCAL:1 = 0
+; FOR LOCAL,85,91
+; 	SIF !STRLENS(EXPNAME:LOCAL)85,86,87,88,89,90,
+; 		CONTINUE
+; 	; SIF !EXP:对象:LOCAL
+; 	; 	CONTINUE
+; 	; PRINTFORM %EXPNAME:LOCAL,18%:{MIN(EXP:对象:LOCAL,99999),5,RIGHT}
+; 	PRINTFORM %EXPNAME:LOCAL,20%:{EXP:对象:LOCAL,6,LEFT} 
+; 	LOCAL:1 += 1
+; 	SIF LOCAL:1 % 3 == 0
+; 		PRINTL 
+; NEXT
+
+
+
+
+;❤
+@PRINT_STATE_MEMORIAL(对象)
+#DIM 对象
+VARSET LOCALS
+VARSET LOCAL
+PRINTL
+PRINTL □ 身体信息 □-----------------------------------------------------------------------
+PRINTL 
+PRINTL 【口】　
+PRINTFORM 初吻记录：
+IF CFLAG:对象:初始无接吻经验
+	IF CFLAG:对象:初吻丧失日
+		IF CFLAG:对象:初吻对象 == 人物_訪問者
+			CALL COLORMESSAGE(@"%CSTR:对象:初吻丧失记录%",0xE178C8,1)
+		ELSE
+			CALL COLORMESSAGE(@"%CSTR:对象:初吻丧失记录%",C_PINK,1)
+		ENDIF
+	ELSEIF !CSVCFLAG(对象, GETNUM(CFLAG, "初始无接吻经验"))
+		CALL COLORMESSAGE(@"在这个世界线里，尚还没有拥吻过心爱之人的嘴唇",C_YELLOW,1)
+	ELSE
+		CALL COLORMESSAGE(@"诱人的双唇还在等待着能撬开它的嘴唇",C_YELLOW,1)
+	ENDIF
+ELSE
+	CALL COLORMESSAGE(@"对第一位心爱之人的吻，在和%CALLNAME:MASTER%相遇之前失去了",C_AQUA,1)
+ENDIF
+SIF EXP:对象:接吻经验
+	PRINTFORML 现在为止有过{EXP:对象:接吻经验}次接吻经验
+PRINTL
+IF CFLAG:对象:M累积内射
+	PRINTFORML 现在为止喝过{CFLAG:对象:M累积内射/100}.{CFLAG:对象:M累积内射%100}ml精液
+	SIF CFLAG:对象:浮気M累积内射
+		PRINTFORML 其中有{CFLAG:对象:浮気M累积内射/100}.{CFLAG:对象:浮気M累积内射%100}ml滚烫的白浊来自%NTR_NAME(0)%❤
+ENDIF
+IF EXP:对象:精液经验 > 300 && ABL:对象:精液中毒 >= 7
+	PRINTFORML 只要滚烫的精液划过嘴唇，身体就会开始发情
+ELSEIF EXP:对象:精液经验 > 150 && ABL:对象:精液中毒 >= 5
+	PRINTFORML 一尝到精液的味道身体就会不自觉地发热
+ELSEIF ABL:对象:精液中毒 >= 3
+	PRINTFORML 可以毫无排斥地喝下精液
+ENDIF
+PRINTL 
+PRINTL 【胸】
+SELECTCASE ABL:对象:Ｂ感觉
+	CASE IS >= 10
+		PRINTL 感度抜群　
+	CASE IS >= 5
+		PRINTL 感度良好　
+ENDSELECT
+IF TALENT:对象:淫乳
+	PRINT 被彻底调教完成的
+	IF TALENT:对象:胸部尺寸 < 0
+		PRINT 胸脯
+	ELSE
+		PRINT 乳房
+	ENDIF
+	PRINTFORML 一被抚摸，就能让全身瘫软下来
+ENDIF
+IF TALENT:对象:泌乳体质
+	PRINTFORML 如果刺激的话就会分泌出甘甜的乳汁出来
+ENDIF
+PRINTL
+PRINTL 【肛】
+PRINTFORM 尻穴处女丧失记录：
+IF CSTR:对象:A处女丧失记录 != ""
+	IF CFLAG:对象:处女丧失对象_A == 人物_訪問者
+		CALL COLORMESSAGE(@"%CSTR:对象:A处女丧失记录%",0xE178C8,1)
+	ELSE
+		CALL COLORMESSAGE(@"%CSTR:对象:A处女丧失记录%",C_PINK,1)
+	ENDIF
+ELSEIF !EXP:对象:Ａ性交经验
+	CALL COLORMESSAGE(@"崭新的第二性器还未被人涉足",C_YELLOW,1)
+ELSE
+	PRINTFORML 
+ENDIF
+SELECTCASE ABL:对象:Ａ感觉
+	CASE IS >= 10
+		PRINT 感度抜群　
+	CASE IS >= 5
+		PRINT 感度良好　
+ENDSELECT
+IF 对象
+	; SELECTCASE 挿入不可(对象)
+	; 	CASE 3
+	; 		PRINTFORML 无论如何也无法容纳%CALLNAME:MASTER%的阴茎的尺寸
+	; 		LOCAL:6 ++
+	; 	CASE 2
+	; 		IF EXP:对象:Ａ经验 < 50 && TALENT:MASTER:禁断的知识
+	; 			PRINTFORML 不稍微放松一些就没办法把%CALLNAME:MASTER%的阴茎放进来吧
+	; 			LOCAL:6 ++
+	; 		ELSEIF !TALENT:MASTER:禁断的知识
+	; 			PRINTFORML %CALLNAME:MASTER%的阴茎就这様插进去也太残酷了吧
+	; 			LOCAL:6 ++
+	; 		ENDIF
+	; 	CASE 1
+	; 		IF EXP:对象:Ａ经验 < 50 || !TALENT:MASTER:禁断的知识
+	; 			PRINTFORML 不稍微放松一些就没办法把%CALLNAME:MASTER%的阴茎放进来吧
+	; 			LOCAL:6 ++
+	; 		ENDIF
+	; 	CASE -1
+	; 		IF ABL:对象:Ａ感觉 < 2
+	; 			PRINTFORML 与%CALLNAME:MASTER%阴茎的尺寸有些不合
+	; 			LOCAL:6 ++
+	; 		ENDIF
+	; 	CASE -2
+	; 		IF ABL:对象:Ａ感觉 < 3
+	; 			PRINTFORML 太大了即使插进去也不会感到舒服的様子…
+	; 			LOCAL:6 ++
+	; 		ENDIF
+	; ENDSELECT
+	SELECTCASE ABL:对象:Ａ感觉
+		CASE IS >= 5
+			PRINTL 极品名器
+			IF TALENT:对象:浮気的菊花
+				PRINTFORML 经过调教已经完全成为%NTR_NAME(0)%专用形状的菊穴肉壁煽情地蠕动着
+			ELSEIF EXP:对象:浮気Ａ性交经验 > EXP:对象:Ａ性交经验 / 6
+				PRINTFORML 经过开发已经完全适应肉棒的菊穴肉襞一张一缩地蠢动着
+			ELSE
+				PRINTFORML 适应了%CALLNAME:MASTER%肉棒形状的菊穴肉襞一张一缩地蠢动着
+			ENDIF
+		CASE IS >= 3
+			PRINTL 名器
+			PRINTFORML 下体的第二性器官变得极为松软好用了
+		CASE 2
+			PRINTFORML 作为性器官已经能够习惯异物的进入了
+		CASE 1
+			PRINTL 作为第二性器官开始逐渐松弛觉醒
+		CASE 0
+			IF !CFLAG:对象:处女丧失日_A
+				;				PRINTL 未开通
+			ELSEIF EXP:对象:Ａ经验 < 20
+				PRINTL 还不太习惯被异物插入的様子
+			ENDIF
+	ENDSELECT
+ENDIF
+PRINTL
+IF CFLAG:对象:A累积内射
+	PRINTFORML 现在为止一共被注入过{CFLAG:对象:A累积内射/100}.{CFLAG:对象:A累积内射%100}ml的精液
+	SIF CFLAG:对象:浮気A累积内射
+		PRINTFORML 其中{CFLAG:对象:浮気A累积内射/100}.{CFLAG:对象:浮気A累积内射%100}ml浓厚的精液来自%NTR_NAME(0)%❤
+ENDIF
+SELECTCASE ABL:对象:肛射中毒
+	CASE IS >= 5
+		PRINTFORML 每当被肛内射精都会产生阵阵幸福感
+	CASE IS >= 3
+		PRINTFORML 每当被肛内射精的都会浑身躁动难耐
+ENDSELECT
+
+; SIF ABL:对象:Ａ感觉 >= 5 && CFLAG:对象:积攒度 > 300 && 对象
+; 	PRINTFORML 想和%CALLNAME:MASTER%做想的不得了
+
+; IF 充填率(对象,2) >= 100
+; 	PRINTFORML 直肠的所有容量完完全全的被精液填满
+; ELSEIF 充填率(对象,2) >= 50
+; 	PRINTFORML 直肠内蠢动着大量的精子
+; ELSEIF 充填率(对象,2) >= 20
+; 	PRINTFORML 直肠内精子在有活力地游来游去
+; ENDIF
+PRINTL
+IF HAS_VAGINA(对象)
+	PRINTL 【膣】
+	PRINTFORM 处女丧失记录：
+	IF CSTR:对象:V处女丧失记录 != ""
+		IF CFLAG:对象:处女丧失对象_V == 人物_訪問者
+			CALL COLORMESSAGE(@"%CSTR:对象:V处女丧失记录%",0xE178C8,1)
+		ELSE
+			CALL COLORMESSAGE(@"%CSTR:对象:V处女丧失记录%",C_PINK,1)
+		ENDIF
+	ELSEIF !CSVTALENT(对象, GETNUM(TALENT, "处女")) && TALENT:对象:处女
+		CALL COLORMESSAGE(@"在这个世界线里，此处还没有迎来过心爱之人的涉足",C_YELLOW,1)
+	ELSEIF !CSVTALENT(对象, GETNUM(TALENT, "处女")) && !TALENT:对象:处女
+		CALL COLORMESSAGE(@"在和%CALLNAME:MASTER%相遇之前失去了",C_AQUA,1)
+	ELSE
+		IF TALENT:对象:处女 == 1
+			IF ABL:对象:Ｖ感觉 >= 5
+				CALL COLORMESSAGE(@"还没被任何人进入过，入口的处女膜还在等待心爱之人的到来，但即便如此，当给予足够的刺激时，就会轻易地陷入绝顶",C_YELLOW,1)
+			ELSE
+				CALL COLORMESSAGE(@"还没被任何人进入过，入口的处女膜还在等待心爱之人的到来",C_YELLOW,1)
+			ENDIF
+		ENDIF
+	ENDIF
+	IF 对象
+		CALL PRINT_V_DEPICT(对象)
+	ENDIF
+ENDIF
+
+
+@PRINT_SUB_V(女方,男方)
+#FUNCTION
+#DIM 女方
+#DIM 男方
+#DIM 女方体型
+#DIM 男方尺寸
+#DIM 判断值
+判断值 = 0
+IF 男方 == MASTER
+	男方尺寸 = TALENT:MASTER:阴茎尺寸
+ELSEIF 男方 == 人物_訪問者
+	男方尺寸 = 2
+	; 判断值 += 1
+ELSEIF 男方 < CHARANUM
+	男方尺寸 = TALENT:男方:阴茎尺寸
+ELSE
+	男方尺寸 = 0
+	PRINTL 【警告】在PRINT_SUB_V(女方,男方)中出现了意外情况，此时男方={男方}
+ENDIF
+IF 女方 < CHARANUM
+	女方体型 = TALENT:女方:体型
+ELSE
+	女方体型 = 0
+	PRINTL 【警告】在PRINT_SUB_V(女方,男方)中出现了意外情况，此时女方={女方}
+ENDIF
+;基本思路是比如尺寸0（一般大小）对体型0（正常体型）来说刚刚好，差值越大说明男人的阴茎对女人越大，然后加上特殊素质的补正
+IF TALENT:女方:阴道深度 != 3
+	判断值 += 男方尺寸 - 女方体型 - TALENT:女方:阴道深度
+ELSE
+	判断值 += 男方尺寸 - 女方体型 - 2
+ENDIF
+IF 男方 == 人物_訪問者 && 判断值 < 0
+	判断值 = 0
+ENDIF
+SELECTCASE 判断值
+	CASE IS <= -4
+		;只能在前半来回的程度，完全没有充实感啦
+		RETURNF -4
+	CASE -3
+		;能不能到一半还是个问题的程度
+		RETURNF -3
+	CASE -2
+		;能抵达后半，但再怎么努力都没办法填满的程度
+		RETURNF -2
+	CASE -1
+		;努努力能碰到底部的程度
+		RETURNF -1
+	CASE 0
+		;刚刚好抵住的程度
+		RETURNF 0
+	CASE 1
+		;非常充实、征服子宫的程度，会极大拉伸阴道的程度
+		RETURNF 1
+	CASE 2
+		;使阴道过度扩张、完全填满内心的程度，完全插入会过分拉伸阴道的程度
+		RETURNF 2
+	CASE 3
+		;仅仅是进入就让女人升起渴望的程度，即使阴道拼命拉伸，也无法完全插入的程度，完全插入会进入子宫的程度，现实中虽然会挂掉，但游戏里就算了吧，不要纠结
+		RETURNF 3
+	CASE IS >=4
+		;完全没入女人身体、彻底支配身心的程度，emmm这是什么玩意，我写了什么东西，算了，访问者嘛，特殊对待
+		RETURNF 4
+ENDSELECT
+;不考虑阴道拉伸的情况下对应值如下
+;			小人	幼儿	矮小	少女	高挑	高大	巨人
+;			-3		-2		-1		0		1		2		3
+;短小 -2	1		0		-1		-2		-3		-4	 	-5
+;较小 -1	2		1		0		-1		-2		-3	 	-4
+;正常 0		3		2		1		0		-1		-2		-3
+;较大 1		4		3		2		1		0		-1	 	-2
+;特大 2		5		4		3		2		1		0	 	-1
+;极大 3		6		5		4		3		2		1		 0	;这个实际上不存在，阴茎2就是极限了，考虑访问者的判定值要不要+1
+
+;不考虑素质只考虑尺寸和体型的版本
+@PRINT_SUB_V_BASE(女方,男方)
+#FUNCTION
+#DIM 女方
+#DIM 男方
+#DIM 女方体型
+#DIM 男方尺寸
+#DIM 判断值
+判断值 = 0
+IF 男方 < CHARANUM
+	男方尺寸 = TALENT:男方:阴茎尺寸
+ELSEIF 男方 == 人物_訪問者
+	男方尺寸 = 2
+	; 判断值 += 1
+ELSE
+	男方尺寸 = 0
+	PRINTL 【警告】在PRINT_SUB_V_BASE(女方,男方)中出现了意外情况，此时男方={男方}
+ENDIF
+IF 女方 < CHARANUM
+	女方体型 = TALENT:女方:体型
+ELSE
+	女方体型 = 0
+	PRINTL 【警告】在PRINT_SUB_V_BASE(女方,男方)中出现了意外情况，此时女方={女方}
+ENDIF
+判断值 += 男方尺寸 - 女方体型
+SELECTCASE 判断值
+	CASE IS < -4
+		;只能在前半来回的程度，完全没有充实感啦
+		RETURNF -4
+	CASE -3
+		;能不能到一半还是个问题的程度
+		RETURNF -3
+	CASE -2
+		;能抵达后半，但再怎么努力都没办法填满的程度
+		RETURNF -2
+	CASE -1
+		;努努力能碰到底部的程度
+		RETURNF -1
+	CASE 0
+		;刚刚好抵住的程度
+		RETURNF 0
+	CASE 1
+		;非常充实、征服子宫的程度，会极大拉伸阴道的程度
+		RETURNF 1
+	CASE 2
+		;使阴道过度扩张、完全填满内心的程度，完全插入会过分拉伸阴道的程度
+		RETURNF 2
+	CASE 3
+		;仅仅是进入就让女人升起渴望的程度，即使阴道拼命拉伸，也无法完全插入的程度，完全插入会进入子宫的程度，现实中虽然会挂掉，但游戏里就算了吧，不要纠结
+		RETURNF 3
+	CASE IS >=4
+		;完全没入女人身体、彻底支配身心的程度，emmm这是什么玩意，我写了什么东西，算了，访问者嘛，特殊对待
+		RETURNF 4
+ENDSELECT
+
+@PRINT_V_DEPICT(对象)
+#DIM 对象
+SELECTCASE PRINT_SUB_V(对象,MASTER)
+	CASE 4
+				;PRINTFORML 不经过惨无人道的训练就无法容纳%CALLNAME:MASTER%的阴茎，自然更不用说%NTR_NAME(0)%了
+		PRINTFORML 【错误】不可能出现的情形：可能是MASTER阴茎尺寸被意外修改或角色%CALLNAME:对象%的体型设置错误
+	CASE 3
+				;PRINTFORML 如果不用特殊手段就无论如何也无法容纳%CALLNAME:MASTER%的阴茎
+		PRINTFORML 【错误】不可能出现的情形：可能是MASTER阴茎尺寸被意外修改或角色%CALLNAME:对象%的体型设置错误
+	CASE 2
+		IF EXP:对象:Ｖ经验 < 50 && TALENT:MASTER:禁断的知识
+			PRINTFORML 与%CALLNAME:MASTER%的阴茎相比%CALLNAME:对象%的小穴如同幼儿，需要足够的放松才能将%CALLNAME:MASTER%的阴茎放进来
+		ELSEIF !TALENT:MASTER:禁断的知识
+			PRINTFORML 直接插入对于%CALLNAME:对象%来说有些困难
+		ENDIF
+	CASE 1
+		PRINTFORML %CALLNAME:MASTER%的阴茎可以轻松地按摩与扩张小穴深处的子宫口
+	CASE 0
+		PRINTFORML %CALLNAME:MASTER%的阴茎与这个小穴十分匹配，刚好可以填满里面
+	CASE -1
+		PRINTFORML %CALLNAME:MASTER%的阴茎虽然难以触及子宫，不过仍然可以给予足够的快感，至少不会对性交产生影响
+	CASE -2
+		PRINTFORML %CALLNAME:MASTER%的阴茎别说子宫了，根本无法填满这个小穴，不过好在只要努力还是能够给予快感的
+	CASE -3
+		PRINTFORML %CALLNAME:MASTER%的阴茎只能在小穴中浅浅地徘徊，难以给予快感
+	CASE -4
+		PRINTFORML 即使%CALLNAME:MASTER%完全插入，这个小穴也不会回以快感了吧
+	CASEELSE
+		PRINTFORML 【错误】不可能出现的情形：PRINT_SUB_V(对象,MASTER)的返回结果不在[-4,4]
+ENDSELECT
+IF EXP:对象:浮気Ｖ性交经验 > 0
+	SELECTCASE PRINT_SUB_V_BASE(对象,人物_訪問者)
+		CASE 4
+			IF TALENT:对象:阴道深度 == 3
+				PRINTFORML 尽管开发完毕的小穴能够收缩自如，但要想完全吞没%NTR_NAME(0)%的阴茎仍然需要全身心地奉献
+			ELSEIF TALENT:对象:阴道深度 == 2
+				PRINTFORML 被彻底蹂躏的小穴几乎无法回到原来的样子，然而已经变得宽松而幽长的小穴要吞下%NTR_NAME(0)%的阴茎仍然有些勉强
+			ELSEIF TALENT:对象:阴道深度 == 1
+				PRINTFORML 尽管经过初步的开发，小穴深处的穹隆开始位移，也难以接纳%NTR_NAME(0)%远超自己体型的阴茎
+			ELSE
+				PRINTFORML 如果足够松弛，%NTR_NAME(0)%可以随意地贯穿这个小穴，但不经调教地贸然出手，恐怕会造成大出血吧
+			ENDIF
+		CASE 3
+			IF TALENT:对象:阴道深度 == 3
+				PRINTFORML 开发完毕的小穴拉伸时深邃无比，收缩时宛如处女，被调教得与%NTR_NAME(0)%凶恶的阴茎完美契合
+			ELSEIF TALENT:对象:阴道深度 == 2
+				PRINTFORML 被开发得足够让%NTR_NAME(0)%远超规格的阴茎轻松进出，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
+			ELSEIF TALENT:对象:阴道深度 == 1
+				PRINTFORML 随着宫颈被不断地冲刺，小穴深处的穹隆开始位移，已经勉强能够容纳%NTR_NAME(0)%的阴茎了
+			ELSE
+				PRINTFORML 如果不经过开发，恐怕难以容纳%NTR_NAME(0)%的阴茎
+			ENDIF
+		CASE 2
+			IF TALENT:对象:阴道深度 == 3
+				PRINTFORML 开发完毕的小穴拉伸时深邃无比，收缩时宛如处女，被调教得与%NTR_NAME(0)%凶恶的阴茎完美契合
+			ELSEIF TALENT:对象:阴道深度 == 2
+				PRINTFORML 被开发得与%NTR_NAME(0)%远超规格的阴茎完美契合，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
+			ELSEIF TALENT:对象:阴道深度 == 1
+				PRINTFORML 随着宫颈被不断地冲刺，小穴深处的穹隆开始位移，已经能够完全容纳%NTR_NAME(0)%的阴茎了
+			ELSE
+				PRINTFORML 对于这个小穴来说，容纳%NTR_NAME(0)%的阴茎有些勉强
+			ENDIF
+		CASE 1
+			IF TALENT:对象:阴道深度 == 3
+				PRINTFORML 开发完毕的小穴不仅完美契合%NTR_NAME(0)%阴茎的形状，还能够收缩自如，宛如处女
+			ELSEIF TALENT:对象:阴道深度 == 2
+				PRINTFORML 被彻底扩张拉伸的小穴完全契合了%NTR_NAME(0)%阴茎的形状，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
+			ELSEIF TALENT:对象:阴道深度 == 1
+				PRINTFORML 经过一段时间的开发，随着深处的穹隆开始位移，小穴变得逐渐契合%NTR_NAME(0)%的阴茎了
+			ELSE
+				PRINTFORML %NTR_NAME(0)%的阴茎可以轻易地填满整个小穴，并极大地拉长肉壁的深度
+			ENDIF
+		CASE 0
+			IF TALENT:对象:阴道深度 == 3
+				PRINTFORML 开发完毕的小穴收缩自如，无论怎样的性爱都能够为自己的伴侣献上
+			ELSEIF TALENT:对象:阴道深度 == 2
+				PRINTFORML 在不断的调教下，身体已经认定了自己的伴侣，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
+			ELSEIF TALENT:对象:阴道深度 == 1
+				PRINTFORML 由于子宫口被不断地刺激，小穴深处的穹隆开始位移，本能地为接纳%NTR_NAME(0)%提供着更多地空间
+			ELSE
+				PRINTFORML %NTR_NAME(0)%的阴茎可以完美地与这个小穴契合
+			ENDIF
+		CASEELSE
+			PRINTFORML 【错误】不可能出现的情形：访问者阴茎尺寸对%CALLNAME:对象%为的差值不在0-4
+	ENDSELECT
+ENDIF
+SIF TALENT:对象:阴道深度 == 3
+	PRINTFORML 能够自由收缩的小穴恢复了紧致，即使是经验十足的老手也看不出性爱在上面留下的中古痕迹
+PRINTL
+SELECTCASE ABL:对象:Ｖ感觉
+	CASE IS >= 10
+		PRINT 感度抜群　
+	CASE IS >= 5
+		PRINT 感度良好　
+ENDSELECT
+SELECTCASE ABL:对象:膣
+	CASE IS >= 5
+		PRINTL 极品名器
+		IF TALENT:对象:浮気的蜜壶 && TALENT:对象:恋慕
+			PRINTFORML 无论本人同不同意，身体都已经擅自认定了自己的伴侣，这里变成了只为取悦%NTR_NAME(0)%而存在的穴
+		ELSEIF TALENT:对象:浮気的蜜壶 && TALENT:对象:恋人 && !TALENT:对象:恋慕
+			PRINTFORML 身心都只为身为真正伴侣的%NTR_NAME(0)%而存在的专用小穴如邀约般煽情地蠕动湿润的肉壁
+		ELSEIF EXP:对象:浮気Ｖ性交经验 > 100 && EXP:对象:浮気Ｖ性交经验 > EXP:对象:Ｖ性交经验 / 6
+			PRINTFORML 完全调适为%NTR_NAME(0)%专用形态的小穴肉壁如呼吸般一张一缩地蠕动着
+		ELSE
+			PRINTFORML 完全适应了交合的小穴肉壁如呼吸般一张一缩地蠕动着
+		ENDIF
+	CASE IS >= 3
+		PRINTL 名器
+		IF TALENT:对象:浮気的蜜壶 && TALENT:对象:恋慕
+			PRINTFORML 不知不觉间，身体已经认定了真正的伴侣，将这里改变为了能让%NTR_NAME(0)%更加舒服的小穴
+		ELSEIF TALENT:对象:浮気的蜜壶 && TALENT:对象:恋人 && !TALENT:对象:恋慕
+			PRINTFORML 变得极其松软好用的小穴全心全意地将子宫奉献给%NTR_NAME(0)%
+		ELSEIF EXP:对象:浮気Ｖ性交经验 > 100 && EXP:对象:浮気Ｖ性交经验 > EXP:对象:Ｖ性交经验 / 6
+			PRINTFORML 适应了%NTR_NAME(0)%阴茎的小穴变得极其松软好用了
+		ELSE
+			PRINTFORML 肉壁扩张开来，适应了交合变得极其松软好用了
+		ENDIF
+	CASE 2
+		PRINTFORML 松软的肉壁逐渐扩张，已经习惯了阴茎的插入
+	CASE 1
+		PRINTL 紧绷的肉壁开始逐渐松弛
+	CASE 0
+		IF TALENT:对象:处女
+			PRINTL 尚还不认识男人，还被未使用过的小穴
+		ELSEIF EXP:对象:Ｖ经验 < 30
+			PRINTL 刚开始认识性爱，笨拙的小穴青涩地汲取着关于性的知识
+		ELSEIF EXP:对象:Ｖ经验 < 80
+			PRINTL 几乎没怎么被使用的小穴还很僵硬
+		ENDIF
+ENDSELECT
+PRINTL
+IF CFLAG:对象:V累积内射
+	PRINTFORML 现在为止一共被注入过{CFLAG:对象:V累积内射/100}.{CFLAG:对象:V累积内射%100}ml的精液
+	SIF CFLAG:对象:浮気V累积内射
+		PRINTFORML 其中{CFLAG:对象:浮気V累积内射/100}.{CFLAG:对象:浮気V累积内射%100}ml浓厚的精液来自%NTR_NAME(0)%❤
+ENDIF
+SELECTCASE ABL:对象:膣射中毒
+	CASE IS >= 5
+		PRINTFORML 每当被膣内射精都会产生阵阵幸福感
+	CASE IS >= 3
+		PRINTFORML 每当被膣内射精的都会浑身躁动难耐
+ENDSELECT
+
+[SKIPSTART]
+;-------------------------------------------------------------------------------
+;体験の记録を表示
+@PRINT_STATE_MEMORIAL(对象)
+#DIM 对象
+IF !FLAG:真实模式
+	PRINTFORML %"初次接吻      ："+CSTR:对象:初吻丧失记录%
+	PRINTFORML %"Ｍ初体验      ："+CSTR:对象:M处女丧失记录%
+	PRINTFORML %"处女丧失      ："+CSTR:对象:V处女丧失记录%
+	PRINTFORML %"肛门处女丧失  ："+CSTR:对象:A处女丧失记录%
+ELSE
+	PRINTFORML %"初次接吻      ："+CSTR:对象:已知的初吻丧失记录%
+	PRINTFORML %"Ｍ初体验      ："+CSTR:对象:已知的M处女丧失记录%
+	PRINTFORML %"处女丧失      ："+CSTR:对象:已知的V处女丧失记录%
+	PRINTFORML %"肛门处女丧失  ："+CSTR:对象:已知的A处女丧失记录%		
+ENDIF
+RETURN 0
+[SKIPEND]

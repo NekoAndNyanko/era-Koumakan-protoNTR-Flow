@@ -1,0 +1,244 @@
+;以时间为单位加算角色的NTR SOURCE获取
+@VISITER_FRIENDSHIP_TIMEPLUS(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+TCVAR:奴隷:行為者 = 調教者
+IF FLAG:访问者行为计时点 != 0
+	;LOCAL 行为加算次数 每五分钟算一次
+	LOCAL = TIME_PROGRESS(FLAG:访问者行为计时点)/5
+	FLAG:访问者行为计时点 = DATETIME()
+	SIF LOCAL < 1
+		LOCAL = 1
+	SELECTCASE FLAG:訪問者との行為
+		CASE NTR_行为_キス
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 20
+				SOURCE:奴隷:情爱 += 20
+				SOURCE:奴隷:性行动 += 10
+				SOURCE:奴隷:逸脱 += 10
+				SOURCE:奴隷:屈从 += 10
+			NEXT
+		CASE NTR_行为_爱抚
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 20
+				SOURCE:奴隷:快Ｃ += 120 + 10 * (ABL:奴隷:Ｃ感觉) + 30 * TALENT:奴隷:Ｃ感度 + 60 * TALENT:奴隷:淫核
+				SOURCE:奴隷:快Ｂ += 120 + 10 * (ABL:奴隷:Ｂ感觉) + 30 * TALENT:奴隷:Ｂ感度 + 60 * TALENT:奴隷:淫乳
+				SOURCE:奴隷:情爱 += 20
+				SOURCE:奴隷:欲情 += 80
+				SOURCE:奴隷:性行动 += 30
+				SOURCE:奴隷:露出 += 10
+				SOURCE:奴隷:肮脏 += 10
+				SOURCE:奴隷:逸脱 += 10
+				CALL NTR_EXP_ADD_C(奴隷,1)
+				CALL NTR_EXP_ADD_B(奴隷,1)
+				CALL 改变乳头色素(奴隷,1)
+				CALL 改变小穴色素(奴隷,1)
+				CALL 改变乳头大小(奴隷,1)
+			NEXT
+		CASE NTR_行为_胸爱抚
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 20
+				SOURCE:奴隷:快Ｂ += 180 + 20 * (ABL:奴隷:Ｂ感觉) + 45 * TALENT:奴隷:Ｂ感度 + 90 * TALENT:奴隷:淫乳
+				SOURCE:奴隷:情爱 += 50
+				SOURCE:奴隷:性行动 += 30
+				SOURCE:奴隷:欲情 += 80
+				SOURCE:奴隷:欢乐 += 50
+				SOURCE:奴隷:露出 += 10
+				CALL NTR_EXP_ADD_B(奴隷,1)
+				CALL 改变乳头色素(奴隷,1)
+				CALL 改变乳头大小(奴隷,1)
+			NEXT
+		CASE NTR_行为_口交
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 50
+				SOURCE:奴隷:情爱 += 50
+				SOURCE:奴隷:性行动 += 150
+				SOURCE:奴隷:达成 += 80
+				SOURCE:奴隷:屈从 += 300
+				SOURCE:奴隷:欢乐 += 50
+				SOURCE:奴隷:露出 += 10
+				SOURCE:奴隷:肮脏 += 100
+				SOURCE:奴隷:反感 += 50
+				CALL NTR_EXP_ADD_M_SEX(奴隷,1)
+			NEXT
+		CASE NTR_行为_六九式
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 80
+				SOURCE:奴隷:快Ｃ += 150 + 25 * (ABL:奴隷:Ｃ感觉) + 50 * TALENT:奴隷:Ｃ感度 + 80 * TALENT:奴隷:淫核
+				SOURCE:奴隷:情爱 += 50
+				SOURCE:奴隷:欲情 += 80
+				SOURCE:奴隷:性行动 += 250
+				SOURCE:奴隷:达成 += 80
+				SOURCE:奴隷:液体 += 40
+				SOURCE:奴隷:露出 += 50
+				SOURCE:奴隷:肮脏 += 10
+				SOURCE:奴隷:屈从 += 400
+				SOURCE:奴隷:逸脱 += 300
+				IF !TALENT:处女
+					SOURCE:奴隷:快Ｖ += 60
+				ELSE
+					SOURCE:奴隷:苦痛 += 10
+				ENDIF
+				CALL NTR_EXP_ADD_M_SEX(奴隷,1)
+				CALL NTR_EXP_ADD_C(奴隷,1)
+				CALL 改变小穴色素(奴隷,1)
+			NEXT
+		CASE NTR_行为_素股
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 50
+				SOURCE:奴隷:快Ｃ += 150 + 25 * (ABL:奴隷:Ｃ感觉) + 50 * TALENT:奴隷:Ｃ感度 + 80 * TALENT:奴隷:淫核
+				SOURCE:奴隷:情爱 += 50
+				SOURCE:奴隷:欲情 += 80
+				SOURCE:奴隷:性行动 += 100
+				SOURCE:奴隷:达成 += 20
+				SOURCE:奴隷:肮脏 += 10
+				SOURCE:奴隷:屈从 += 200
+				SOURCE:奴隷:逸脱 += 50
+				CALL NTR_EXP_ADD_C(奴隷,1)
+				CALL 改变小穴色素(奴隷,1)
+			NEXT
+		CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 50
+				SOURCE:奴隷:快Ｖ += 400 + 50 * (ABL:奴隷:Ｖ感觉) + 100 * TALENT:奴隷:Ｖ感度 + 200 * TALENT:奴隷:淫壶 + 400 * TALENT:奴隷:浮気的蜜壶
+				SOURCE:奴隷:情爱 += 50
+				SOURCE:奴隷:欲情 += 80
+				SOURCE:奴隷:性行动 += 100
+				SOURCE:奴隷:苦痛 += 200
+				IF 訪問者_Ｐ大きさ == 2
+					SOURCE:奴隷:苦痛 += 200
+				ENDIF
+				CALL NTR_EXP_ADD_V(奴隷,1)
+				CALL 改变小穴色素(奴隷,1)
+			NEXT
+		CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+			FOR LOCAL:1,0,LOCAL
+				CALL NTR_ADD_SURRENDER(奴隷, 1)
+				BASE:奴隷:气力 -= 50
+				SOURCE:奴隷:快Ａ += 400 + 50 * (ABL:奴隷:Ａ感觉) + 100 * TALENT:奴隷:Ａ感度 + 200 * TALENT:奴隷:淫肛 + 400 * TALENT:奴隷:浮気的菊花
+				SOURCE:奴隷:情爱 += 50
+				SOURCE:奴隷:欲情 += 80
+				SOURCE:奴隷:性行动 += 100
+				SOURCE:奴隷:苦痛 += 200
+				IF 訪問者_Ｐ大きさ == 2
+					SOURCE:奴隷:苦痛 += 200
+				ENDIF
+				CALL NTR_EXP_ADD_A(奴隷,1)
+				CALL 改变肛门色素(奴隷,1)
+			NEXT
+	ENDSELECT
+	;	ENDIF
+	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
+ENDIF
+
+;------------------------------------------------------------
+
+@NTR_SOURCE_CHECK_LITE(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+#DIM SOURCE番号
+#DIM LOOP_I
+TCVAR:奴隷:行為者 = 調教者
+CALL NTR_SIMPLE_FULFIL(奴隷)
+CALL SOURCE_EXP(奴隷,調教者)
+CALL SOURCE_快Ｃ(奴隷,調教者)
+CALL SOURCE_快Ｖ(奴隷,調教者)
+CALL SOURCE_快Ａ(奴隷,調教者)
+CALL SOURCE_快Ｂ(奴隷,調教者)
+CALL SOURCE_CVAB_EXTRA(奴隷,調教者)
+CALL SOURCE_情爱(奴隷,調教者)
+CALL SOURCE_性行动(奴隷,調教者)
+CALL SOURCE_达成(奴隷,調教者)
+CALL SOURCE_苦痛(奴隷,調教者)
+CALL SOURCE_恐怖(奴隷,調教者)
+CALL SOURCE_液体(奴隷,調教者)
+CALL SOURCE_欲情(奴隷,調教者)
+CALL SOURCE_恭顺(奴隷,調教者)
+CALL SOURCE_露出(奴隷,調教者)
+CALL SOURCE_屈从(奴隷,調教者)
+CALL SOURCE_欢乐(奴隷,調教者)
+CALL SOURCE_征服(奴隷,調教者)
+CALL SOURCE_被动(奴隷,調教者)
+CALL SOURCE_肮脏(奴隷,調教者)
+CALL SOURCE_抑郁(奴隷,調教者)
+CALL SOURCE_逸脱(奴隷,調教者)
+CALL SOURCE_反感(奴隷,調教者)
+CALL SOURCE_EXTRA(奴隷,調教者)
+CALL SOURCE_DOWNBASE(奴隷,調教者)
+CALL SOURCE_ABLUP(奴隷)
+CALL MARK_GOT_CHECK(奴隷,調教者)
+CALL KOJO_MESSAGE_MARKCNG(奴隷)
+;パラメータの増加
+FOR LOOP_I,0,100
+	SIF PALAMNAME:LOOP_I == ""
+		CONTINUE
+	PALAM:奴隷:LOOP_I += CUP:奴隷:LOOP_I - CDOWN:奴隷:LOOP_I
+	SIF FLAG:DEBUG模式
+		PRINTFORML %PALAMNAME:LOOP_I,8,LEFT% {PALAM:(奴隷):LOOP_I,10,LEFT} + {CUP:(奴隷):LOOP_I,10,LEFT} =   {PALAM:(奴隷):LOOP_I + CUP:(奴隷):LOOP_I,10,LEFT}
+	CUP:奴隷:LOOP_I = 0
+	CDOWN:奴隷:LOOP_I = 0
+NEXT
+FOR SOURCE番号,0,VARSIZE("SOURCE")
+	SOURCE:奴隷:SOURCE番号 = 0
+NEXT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@NTR_SOURCE_CHECK(奴隷,調教者)
+#DIM 奴隷
+#DIM 調教者
+#DIM SOURCE番号
+#DIM LOOP_I
+TCVAR:奴隷:行為者 = 調教者
+CALL SOURCE_EXP(奴隷,調教者)
+CALL SOURCE_快Ｃ(奴隷,調教者)
+CALL SOURCE_快Ｖ(奴隷,調教者)
+CALL SOURCE_快Ａ(奴隷,調教者)
+CALL SOURCE_快Ｂ(奴隷,調教者)
+CALL SOURCE_CVAB_EXTRA(奴隷,調教者)
+CALL SOURCE_情爱(奴隷,調教者)
+CALL SOURCE_性行动(奴隷,調教者)
+CALL SOURCE_达成(奴隷,調教者)
+CALL SOURCE_苦痛(奴隷,調教者)
+CALL SOURCE_恐怖(奴隷,調教者)
+CALL SOURCE_液体(奴隷,調教者)
+CALL SOURCE_欲情(奴隷,調教者)
+CALL SOURCE_恭顺(奴隷,調教者)
+CALL SOURCE_露出(奴隷,調教者)
+CALL SOURCE_屈从(奴隷,調教者)
+CALL SOURCE_欢乐(奴隷,調教者)
+CALL SOURCE_征服(奴隷,調教者)
+CALL SOURCE_被动(奴隷,調教者)
+CALL SOURCE_肮脏(奴隷,調教者)
+CALL SOURCE_抑郁(奴隷,調教者)
+CALL SOURCE_逸脱(奴隷,調教者)
+CALL SOURCE_反感(奴隷,調教者)
+CALL SOURCE_EXTRA(奴隷,調教者)
+CALL SOURCE_DOWNBASE(奴隷,調教者)
+CALL SOURCE_ABLUP(奴隷)
+CALL MARK_GOT_CHECK(奴隷,調教者)
+CALL KOJO_MESSAGE_MARKCNG(奴隷)
+;パラメータの増加
+FOR LOOP_I,0,100
+	SIF PALAMNAME:LOOP_I == ""
+		CONTINUE
+	PALAM:奴隷:LOOP_I += CUP:奴隷:LOOP_I - CDOWN:奴隷:LOOP_I
+	CUP:奴隷:LOOP_I = 0
+	CDOWN:奴隷:LOOP_I = 0
+NEXT
+CALL LOST_VIRGIN(奴隷, 調教者)
+CALL LOST_VIRGIN_A(奴隷, 調教者)
+CALL LOST_VIRGIN_M(奴隷, 調教者)
+FOR SOURCE番号,0,VARSIZE("SOURCE")
+	SOURCE:奴隷:SOURCE番号 = 0
+NEXT
+RETURN 0

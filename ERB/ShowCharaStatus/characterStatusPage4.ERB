@@ -1,0 +1,166 @@
+;-------------------------------------------------
+;親の名前表示
+;-------------------------------------------------
+;親の名前をステータスに表示します
+;使用変数一覧
+;CFLAG:73 父親
+;CFLAG:74 母親
+;CFLAG:86 父親の第×子
+;CFLAG:87 母親の第×子
+@PRINT_PARENT(ARG)
+;息子または娘でないとスキップ
+SIF NO:ARG != 148 && NO:ARG != 149
+	RETURN 0
+VARSET LOCAL
+
+IF CFLAG:ARG:父親 >= 人物_客
+	PRINTFORM 父：不明 
+ELSEIF CFLAG:ARG:父親 == 人物_村人
+	PRINTFORM 父：不明 
+ELSEIF CFLAG:ARG:父親 == 人物_訪問者
+	PRINTFORM 父：%NTR_NAME(0)% 
+	PRINTFORM (第{CFLAG:ARG:父親の子番号}子) 
+ELSE
+	PRINTFORM 父：%CALLNAME:(CFLAG:ARG:73)%
+	PRINTFORM (第{CFLAG:ARG:父親の子番号}子) 
+ENDIF
+;前二つはいらないけど一応つけておく
+IF CFLAG:ARG:母親 >= 人物_客
+	PRINTFORM 母：不明
+ELSEIF CFLAG:ARG:母親 == 人物_村人
+	PRINTFORM 母：不明
+ELSEIF CFLAG:ARG:母親 == 人物_訪問者
+	PRINTFORM 母：%NTR_NAME(0)% 
+	PRINTFORM (第{CFLAG:ARG:母親の子番号}子)
+ELSE
+	PRINTFORM 母：%CALLNAME:(CFLAG:ARG:74)%
+	PRINTFORM (第{CFLAG:ARG:母親の子番号}子)
+ENDIF
+
+;-------------------------------------------------
+;子の名前表示
+;-------------------------------------------------
+;子の名前をステータスに表示します
+;使用変数一覧
+;LOCAL:1  父母判定
+;CFLAG:73 父親
+;CFLAG:74 母親
+@PRINT_PARENT_2(ARG)
+;一人もいないとスキップ
+SIF CFLAG:ARG:子供の人数 == 0 && !TALENT:ARG:妊娠
+	RETURN 0
+VARSET LOCAL
+;ARGの子供の名前を出す
+IF CFLAG:ARG:子供の人数
+	PRINTL 父親としての子供（()内は母親の名前）
+	FOR LOCAL:1, 0, CHARANUM
+		IF (NO:(LOCAL:1) == 148 || NO:(LOCAL:1) == 149) && CFLAG:(LOCAL:1):73 == ARG
+			PRINTFORM  %N_T_R(LOCAL:1)%(%N_T_R(CFLAG:(LOCAL:1):74)%)
+			LOCAL += 1
+			IF (LOCAL%3) == 0
+				PRINTL 
+			ELSE
+				PRINT 　
+			ENDIF
+		ENDIF
+	NEXT
+	LOCAL = 0
+	PRINTL 
+	PRINTL 
+	PRINTL 母親としての子供（()内は父親の名前）
+	FOR LOCAL:1, 0, CHARANUM
+		IF (NO:(LOCAL:1) == 148 || NO:(LOCAL:1) == 149) && CFLAG:(LOCAL:1):74 == ARG
+			PRINTFORM  %N_T_R(LOCAL:1)%(%N_T_R(CFLAG:(LOCAL:1):73)%)
+			LOCAL += 1
+			IF (LOCAL%3) == 0
+				PRINTL 
+			ELSE
+				PRINT 　
+			ENDIF
+		ENDIF
+	NEXT
+	PRINTL
+	PRINTL 
+	PRINTFORML  里子に出した子供の人数 {CFLAG:ARG:里子人数} 人
+	PRINTFORML 　　　　　　　　　　　　　　　　　　　　　　　計 {CFLAG:ARG:子供の人数} 人
+	PRINTL
+ENDIF
+
+SIF TALENT:ARG:妊娠
+	PRINTFORML 現在%N_T_R(CFLAG:ARG:にんっしんっ - 1, 1)%の子供を身篭っている
+
+
+;-------------------------------------------------
+;兄弟の名前表示
+;-------------------------------------------------
+;兄弟の名前をステータスに表示します
+;里子に出された兄弟は表示されません
+;使用変数一覧
+;LOCAL:1  兄弟判定
+;LOCAL:2  兄弟数及び兄弟の番号
+;LOCAL:3  多生児の場合の人数
+;LOCAL:4  多生児の兄弟判定
+;CFLAG:73 父親
+;CFLAG:74 母親
+;CFLAG:354 多生児判定
+@PRINT_PARENT_3(ARG)
+#DIM 対象
+#DIM 多生児関係
+VARSET LOCAL
+
+;初期キャラの兄弟関係
+IF ARG == 人物_蕾米莉亚
+	SETCOLOR 色設定_兄弟_自分
+	PRINTFORM  1_%CALLNAME:人物_蕾米莉亚%
+	RESETCOLOR
+	PRINTFORM  2_%CALLNAME:人物_芙兰朵露%
+ELSEIF ARG == 人物_芙兰朵露
+	PRINTFORM  1_%CALLNAME:人物_蕾米莉亚%
+	SETCOLOR 色設定_兄弟_自分
+	PRINTFORM  2_%CALLNAME:人物_芙兰朵露%
+	RESETCOLOR
+ENDIF
+;息子または娘でないとスキップ
+SIF NO:ARG != 148 && NO:ARG != 149
+	RETURN 0
+多生児関係 = 0
+FOR 対象, 0, CHARANUM
+	;父親、母親が同じ
+	IF (NO:対象 == 148 || NO:対象 == 149) && (CFLAG:対象:父親 == CFLAG:ARG:父親 || CFLAG:対象:母親 == CFLAG:ARG:母親)
+		LOCAL:2 ++
+		SIF 対象 == ARG
+			SETCOLOR 色設定_兄弟_自分
+		PRINTFORM  {LOCAL:2}_%CALLNAME:対象%
+		RESETCOLOR
+		;対象とARGが多生児の関係である場合
+		IF CFLAG:ARG:多生児兄弟フラグ > 0 && CFLAG:対象:多生児兄弟フラグ == CFLAG:ARG:多生児兄弟フラグ
+			IF 多生児関係 == 0
+				FOR LOCAL:4, 0, CHARANUM
+					SIF (NO:(LOCAL:4) == 148 || NO:(LOCAL:4) == 149) && CFLAG:ARG:多生児兄弟フラグ == CFLAG:(LOCAL:4):多生児兄弟フラグ
+						多生児関係 ++
+				NEXT
+			ENDIF
+			;多生児表記は対象だけ
+			PRINT (
+			CALL 多生児出産口上, 多生児関係, 2
+			;多生児だけど父親が違う場合
+			SIF CFLAG:対象:父親 != CFLAG:ARG:父親
+				PRINT /異父
+			PRINT )
+			;父親が違う場合
+		ELSEIF CFLAG:対象:父親 != CFLAG:ARG:父親
+			PRINT (異父)
+			;母親が違う場合
+		ELSEIF CFLAG:対象:母親 != CFLAG:ARG:母親
+			PRINT (異母)
+		ENDIF
+
+		LOCAL += 1
+		IF (LOCAL%3) == 0
+			PRINTL 
+		ELSE
+			PRINT 　
+		ENDIF
+	ENDIF
+NEXT
+PRINTL

@@ -1,0 +1,920 @@
+﻿@EVENT_COUNTER_SOURCE(ARG,ARG:1)
+SIF TCVAR:ARG:カウンター行動決定フラグ > 1
+	RETURN 0
+IF ARG:1 == 1
+
+ENDIF
+
+IF TEQUIP:PLAYER:Ｖ性爱 == ARG && TCVAR:ARG:カウンター行動 != 80 && CFLAG:ARG:うふふ == 2
+	CALL TOUCH_SET(101,6,ARG)
+	SOURCE:ARG:性行动 += 150
+	SOURCE:ARG:征服 += 400
+	SOURCE:PLAYER:液体 += 100
+	SOURCE:ARG:虐待 += 250
+	SOURCE:ARG:强迫 += 400
+	SOURCE:ARG:与快Ｖ += 500
+	CALL PAIN_CHECK_V_MASTER(ARG)
+	LOCALS = {ARG}/
+	CSTR:PLAYER:射精判定用 += LOCALS
+	TCVAR:PLAYER:射精箇所フラグ = 1
+	;強度
+	TCVAR:PLAYER:射精快感強度 += 400
+	STAIN:ARG:Ｐ |= STAIN:PLAYER:膣内
+	STAIN:PLAYER:膣内 |= STAIN:ARG:Ｐ
+	EXP:PLAYER:Ｖ性交经验 ++
+	CALL 締り具合変動, PLAYER, 3, 0
+ENDIF
+SELECTCASE TCVAR:ARG:カウンター行動
+		;色っぽい仕草
+	CASE CNT_色っぽい仕草
+		SOURCE:ARG:诱惑 += 150
+		SOURCE:ARG:挑衅 += 50
+		;見つめる
+	CASE CNT_見つめる
+		SOURCE:ARG:诱惑 += 80
+		;体を摺り寄せる
+	CASE CNT_体を摺り寄せる
+		SOURCE:ARG:诱惑 += 100
+		SOURCE:ARG:侍奉 += 80
+		;裙子を捲る
+	CASE CNT_裙子を捲る
+		CALLF ONCE("裙子めくられ",0,ARG)
+		SOURCE:ARG:侮辱 += 200
+		SOURCE:ARG:挑衅 += 200
+		;耳元に息を吹きかける
+	CASE CNT_耳元に息を吹きかける
+		SOURCE:ARG:诱惑 += 50
+		SOURCE:ARG:挑衅 += 100
+		;抚摸臀部
+	CASE CNT_抚摸臀部
+		SOURCE:ARG:诱惑 += 100
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:侮辱 += 100
+		;乳搾り手コキ
+	CASE CNT_乳搾り手コキ
+		CALL TOUCH_SET(103,1,ARG)
+		CALL TOUCH_SET(103,7,ARG)
+		;終了後には服を戻す演出とするので脱がさない
+		SOURCE:ARG:性行动 += 400
+		SOURCE:ARG:虐待 += 400
+		SOURCE:ARG:诱惑 += 200
+		SOURCE:ARG:挑衅 += 300
+		SOURCE:ARG:侍奉 += 100
+		SOURCE:ARG:与快Ａ += 100 * (TALENT:ARG:手指灵巧+1) * ( RAND:(ABL:ARG:指+1) +2 )
+		SOURCE:PLAYER:液体 += 20
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		;必ず射精させる。手指灵巧があれば射精量２倍
+		BASE:PLAYER:射精 = MAXBASE:PLAYER:射精 * (TALENT:ARG:手指灵巧+1) * ( RAND:(ABL:ARG:指+1) +1 )
+		;MASTERが跳蛋装備時射精量５割増し
+		IF CFLAG:MASTER:跳蛋A挿入 != 0
+			BASE:MASTER:射精 = BASE:MASTER:射精 * 3 / 2
+		ENDIF
+		TCVAR:PLAYER:射精箇所フラグ = 10
+		TCVAR:PLAYER:イきそう = 1
+		TCVAR:PLAYER:射精快感強度 += (BASE:PLAYER:射精/10)
+		EXP:ARG:手淫经验 += 2
+		;キス
+	CASE CNT_キス
+		TCVAR:ARG:行為者 = ARG
+		TCVAR:PLAYER:行為者 = ARG
+		TCVAR:行為者 = ARG
+		CALL TOUCH_SET(104,4,ARG)
+		SOURCE:ARG:诱惑 += 250
+		SOURCE:ARG:侍奉 += 100
+		EXP:ARG:接吻经验 ++
+		EXP:MASTER:接吻经验 ++
+		CALL LOST_VIRGIN_M(ARG, PLAYER)
+		CALL LOST_VIRGIN_M(PLAYER, ARG)
+		;後ろから抱きつく
+	CASE CNT_背面抱擁
+		TCVAR:ARG:位置関係 = 2
+		SOURCE:ARG:诱惑 += 300
+		SOURCE:ARG:侍奉 += 100
+		;前から抱きつく
+	CASE CNT_対面抱擁
+		TCVAR:ARG:位置関係 = 1
+		SOURCE:ARG:诱惑 += 300
+		SOURCE:ARG:侍奉 += 100
+		;胸を揉ませる
+	CASE CNT_胸を揉ませる
+		CALL TOUCH_SET(105,3,ARG)
+		SOURCE:ARG:诱惑 += 350
+		SOURCE:ARG:侍奉 += 200
+		SOURCE:ARG:强迫 += 200
+		SOURCE:ARG:快Ｂ += 50
+		;股間をまさぐる
+	CASE CNT_股間をまさぐる
+		CALL TOUCH_SET(103,1,ARG)
+		SOURCE:ARG:诱惑 += 300
+		SOURCE:ARG:挑衅 += 200
+		SOURCE:ARG:侍奉 += 300
+		SIF !(HAS_PENIS(PLAYER))
+			SOURCE:ARG:与快Ｃ += 100
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 3
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 300
+		SOURCE:PLAYER:液体 += 5
+		;裙子の中を見せる
+	CASE CNT_裙子の中を見せる
+		SOURCE:ARG:诱惑 += 400
+		SOURCE:ARG:挑衅 += 100
+		CFLAG:ARG:ぱんつ確認 = 1
+		;胸もみもみ
+	CASE CNT_胸を揉む
+		SOURCE:ARG:诱惑 += 200
+		SOURCE:ARG:挑衅 += 200
+		SOURCE:ARG:侍奉 += 200
+		SOURCE:ARG:与快Ｂ += 200
+		SOURCE:PLAYER:液体 += 5
+		;手淫
+	CASE CNT_手淫
+		CALL TOUCH_SET(103,1,ARG)
+		SIF TEQUIP:PLAYER:0 & 4
+			CALL DATUI_BOTTOM(ARG,RAND:2)
+		SOURCE:ARG:性行动 += 250
+		SOURCE:ARG:诱惑 += 500
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:侍奉 += 500
+		SIF !(HAS_PENIS(PLAYER))
+			SOURCE:ARG:与快Ｃ += 300
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 3
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 500
+		EXP:ARG:手淫经验 ++
+		SOURCE:PLAYER:液体 += 10
+		;口淫
+	CASE CNT_口交
+		CALL TOUCH_SET(104,1,ARG)
+		SIF TEQUIP:PLAYER:0 & 4
+			CALL DATUI_BOTTOM(ARG,RAND:2)
+		SOURCE:ARG:性行动 += 300
+		SOURCE:ARG:诱惑 += 600
+		SOURCE:ARG:挑衅 += 50
+		SOURCE:ARG:侍奉 += 800
+		SIF !(HAS_PENIS(PLAYER))
+			SOURCE:ARG:与快Ｃ += 500
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 4
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 800
+		EXP:ARG:口淫经验 ++
+		SOURCE:PLAYER:液体 += 20
+		;素股、阴部摩擦
+	CASE CNT_素股
+		SIF TEQUIP:PLAYER:0
+			CALL DATUI_BOTTOM(ARG,0)
+		SIF TEQUIP:ARG:0
+			CALL DATUI_BOTTOM_T(ARG,0)
+		SOURCE:ARG:快Ｃ += 150
+		SOURCE:ARG:性行动 += 250
+		SOURCE:ARG:诱惑 += 500
+		SOURCE:ARG:挑衅 += 200
+		SOURCE:ARG:侍奉 += 400
+		SOURCE:ARG:强迫 += 400
+		IF !(HAS_PENIS(PLAYER))
+			SOURCE:ARG:与快Ｃ += 500
+			CALL TOUCH_SET(102,2,ARG)
+		ELSE
+			CALL TOUCH_SET(102,1,ARG)
+		ENDIF
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 6
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 800
+		SOURCE:PLAYER:液体 += 20
+		;乳交
+	CASE CNT_乳交
+		CALL TOUCH_SET(105,1,ARG)
+		SIF TEQUIP:PLAYER:0 > 1
+			CALL DATUI_BOTTOM(ARG,RAND:2)
+		SIF TEQUIP:ARG:1 > 1
+			CALL DATUI_TOP_T(ARG,1)
+		SOURCE:ARG:性行动 += 400
+		SOURCE:ARG:快Ｂ = 150
+		SOURCE:ARG:诱惑 += 800
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:侍奉 += 800
+		SOURCE:ARG:强迫 += 200
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 5
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 1000
+		EXP:ARG:乳交经验 ++
+		;足交
+	CASE CNT_足交
+		SOURCE:ARG:性行动 += 250
+		SOURCE:ARG:挑衅 += 400
+		SOURCE:ARG:侮辱 += 200
+		SOURCE:ARG:侍奉 += 300
+		SOURCE:ARG:虐待 += 300
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 7
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 500
+		EXP:ARG:嗜虐快乐经验 ++
+		SOURCE:PLAYER:液体 += 10
+		;肛门爱抚
+	CASE CNT_肛门爱抚
+		CALL TOUCH_SET(103,7,ARG)
+		SIF TEQUIP:PLAYER:0 & 4
+			CALL DATUI_BOTTOM(ARG,RAND:2)
+		SOURCE:ARG:性行动 += 150
+		SOURCE:ARG:虐待 = 150
+		SOURCE:ARG:诱惑 += 100
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:侍奉 += 200
+		SOURCE:ARG:与快Ａ += 300
+		EXP:ARG:手淫经验 ++
+		SOURCE:PLAYER:液体 += 10
+		CALL 締り具合変動, PLAYER, 1, 1
+		;舔舐肛门
+	CASE CNT_舔舐肛门
+		CALL TOUCH_SET(103,7,ARG)
+		SIF TEQUIP:PLAYER:0 & 4
+			CALL DATUI_BOTTOM(ARG,RAND:2)
+		SOURCE:ARG:性行动 += 150
+		SOURCE:ARG:侮辱 += 300
+		SOURCE:ARG:诱惑 += 100
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:侍奉 += 300
+		SOURCE:ARG:与快Ａ += 200
+		EXP:ARG:口淫经验 ++
+		SOURCE:PLAYER:液体 += 10
+		;指挿入
+	CASE CNT_指挿入
+		CALL TOUCH_SET(103,6,ARG)
+		SIF TEQUIP:PLAYER:0 & 4
+			CALL DATUI_BOTTOM(ARG,RAND:2)
+		SOURCE:ARG:性行动 += 150
+		SOURCE:ARG:侮辱 += 200
+		SOURCE:ARG:诱惑 += 100
+		SOURCE:ARG:挑衅 += 150
+		SOURCE:ARG:侍奉 += 100
+		SOURCE:ARG:与快Ｖ += 300
+		EXP:ARG:手淫经验 ++
+		SOURCE:PLAYER:液体 += 20
+		CALL 締り具合変動, PLAYER, 1, 0
+		;胸爱抚
+	CASE CNT_胸爱抚
+		CALL TOUCH_SET(103,5,ARG)
+		SIF TEQUIP:PLAYER:1 & 2
+			CALL DATUI_TOP(ARG,RAND:2)
+		SIF !(HAS_VAGINA(PLAYER))
+			SOURCE:ARG:虐待 += 100
+		SOURCE:ARG:性行动 += 100
+		SOURCE:ARG:侮辱 += 100
+		SOURCE:ARG:诱惑 += 200
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:侍奉 += 200
+		SOURCE:ARG:与快Ｂ += 300
+		EXP:ARG:手淫经验 ++
+		;吮吸乳首
+	CASE CNT_吮吸乳首
+		CALL TOUCH_SET(104,5,ARG)
+		SIF TEQUIP:PLAYER:1 & 2
+			CALL DATUI_TOP(ARG,RAND:2)
+		SOURCE:ARG:性行动 += 200
+		SOURCE:ARG:诱惑 += 150
+		SOURCE:ARG:挑衅 += 200
+		SOURCE:ARG:侍奉 += 250
+		SOURCE:ARG:与快Ｂ += 400
+		EXP:ARG:口淫经验 ++
+		;ディープキス
+	CASE CNT_ディープキス
+		TCVAR:ARG:行為者 = ARG
+		TCVAR:PLAYER:行為者 = ARG
+		TCVAR:行為者 = ARG
+		CALL TOUCH_SET(104,4,ARG)
+		SOURCE:ARG:性行动 += 100
+		SOURCE:ARG:诱惑 += 150
+		SOURCE:ARG:侍奉 += 150
+		SOURCE:征服 += 100
+		EXP:ARG:接吻经验 ++
+		EXP:PLAYER:接吻经验 ++
+		CALL LOST_VIRGIN_M(ARG, PLAYER)
+		CALL LOST_VIRGIN_M(PLAYER, ARG)
+		;强制舔阴
+	CASE CNT_强制舔阴
+		CALL TOUCH_SET(102,4,ARG)
+		SIF TEQUIP:ARG:0 & 4
+			CALL DATUI_BOTTOM_T(ARG,RAND:2)
+		SOURCE:ARG:快Ｃ = 100
+		SOURCE:ARG:性行动 += 300
+		SOURCE:ARG:征服 += 300
+		SOURCE:ARG:液体 += 60
+		SOURCE:ARG:诱惑 += 100
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:强迫 += 600
+		STAIN:ARG:Ｖ |= STAIN:PLAYER:口
+		STAIN:PLAYER:口 |= STAIN:ARG:Ｖ
+		EXP:PLAYER:口淫经验 ++
+		;裙子、连衣裙のときはぱんつ暴露
+		IF (EQUIP:ARG:裙子 && EQUIP:ARG:裙子 != 5) || (EQUIP:ARG:连衣裙 == 1)
+			CFLAG:ARG:ぱんつ確認 = 1
+		ENDIF
+		;口交強制
+	CASE CNT_口交強制
+		CALL TOUCH_SET(101,4,ARG)
+		SIF TEQUIP:ARG:0 & 4
+			CALL DATUI_BOTTOM_T(ARG,RAND:2)
+		SIF HAS_VAGINA(ARG)
+			SOURCE:ARG:快Ｃ = 100
+		SOURCE:ARG:性行动 += 300
+		SOURCE:ARG:征服 += 500
+		SOURCE:ARG:液体 += 60
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:强迫 += 600
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 6
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 800
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:口
+		STAIN:PLAYER:口 |= STAIN:ARG:Ｐ
+		EXP:PLAYER:口淫经验 ++
+		;舔肛侍奉
+	CASE CNT_舔肛侍奉
+		CALL TOUCH_SET(107,4,ARG)
+		SIF TEQUIP:ARG:0 & 4
+			CALL DATUI_BOTTOM_T(ARG,RAND:2)
+		SOURCE:ARG:快Ａ = 100
+		SOURCE:ARG:性行动 += 300
+		SOURCE:ARG:征服 += 400
+		SOURCE:ARG:侮辱 += 200
+		SOURCE:ARG:挑衅 += 100
+		SOURCE:ARG:强迫 += 600
+		LOCALS = {ARG}/
+		CSTR:ARG:射精判定用 += LOCALS
+		TCVAR:ARG:射精箇所フラグ = 9
+		;強度
+		TCVAR:ARG:射精快感強度 += 200
+		STAIN:ARG:Ａ |= STAIN:PLAYER:口
+		STAIN:PLAYER:口 |= STAIN:ARG:Ａ
+		EXP:PLAYER:口淫经验 ++
+		SOURCE:PLAYER:液体 += 10
+		;裙子、连衣裙のときはぱんつ暴露
+		IF (EQUIP:ARG:裙子 && EQUIP:ARG:裙子 != 5) || (EQUIP:ARG:连衣裙 == 1)
+			CFLAG:ARG:ぱんつ確認 = 1
+		ENDIF
+		;ぱふぱふ
+	CASE CNT_ぱふぱふ
+		CALL TOUCH_SET(105,4,ARG)
+		SIF TEQUIP:ARG:1 > 1
+			CALL DATUI_TOP_T(ARG,1)
+		SOURCE:ARG:快Ｂ += 80
+		SOURCE:ARG:性行动 += 250
+		SOURCE:ARG:被动 += 300
+		SOURCE:ARG:诱惑 += 600
+		SOURCE:ARG:强迫 += 200
+		;乳合わせ
+	CASE CNT_乳合わせ
+		CALL TOUCH_SET(105,5,ARG)
+		SIF TEQUIP:PLAYER:1 > 1
+			CALL DATUI_TOP(ARG,1)
+		SIF TEQUIP:ARG:1 > 1
+			CALL DATUI_TOP_T(ARG,1)
+		SOURCE:ARG:快Ｂ += 80
+		SOURCE:ARG:与快Ｂ += 100
+		SOURCE:ARG:性行动 += 300
+		SOURCE:ARG:诱惑 += 600
+		SOURCE:ARG:强迫 += 200
+		;タワシ洗い
+	CASE CNT_タワシ洗い
+		CALL TOUCH_SET(102,3,ARG)
+		SIF TEQUIP:ARG:0
+			CALL DATUI_BOTTOM_T(ARG,0)
+		SOURCE:ARG:快Ｃ += 100
+		SOURCE:ARG:性行动 += 150
+		SOURCE:ARG:诱惑 += 100
+		SOURCE:ARG:挑衅 += 150
+		SOURCE:ARG:征服 += 100
+		SOURCE:ARG:强迫 += 200
+		;挿入される
+	CASE CNT_正常位挿入される
+		TCVAR:ARG:行為者 = ARG
+		TCVAR:PLAYER:行為者 = ARG
+		TCVAR:行為者 = ARG
+		CALL TOUCH_SET(101,6,ARG)
+		SIF TEQUIP:ARG:0 & 4
+			CALL DATUI_BOTTOM_T(ARG,RAND:2)
+		SOURCE:ARG:性行动 += 300
+		SOURCE:ARG:征服 += 800
+		SOURCE:PLAYER:液体 += 100
+		SOURCE:ARG:虐待 += 500
+		SOURCE:ARG:强迫 += 800
+		SOURCE:ARG:与快Ｖ += 1000
+		CALL PAIN_CHECK_V_MASTER(ARG)
+		LOCALS = {PLAYER}/
+		CSTR:ARG:射精判定用 += LOCALS
+		TCVAR:ARG:射精箇所フラグ = 1
+		;強度
+		TCVAR:ARG:射精快感強度 += 800
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:膣内
+		STAIN:PLAYER:膣内 |= STAIN:ARG:Ｐ
+		EXP:PLAYER:Ｖ性交经验 ++
+		TEQUIP:PLAYER:Ｖ性爱 = ARG
+		SOURCE:PLAYER:液体 += 10
+		CALL 締り具合変動, PLAYER, 3, 0
+		CALL LOST_VIRGIN_A(PLAYER)
+		;肛交后背位
+	CASE CNT_后背位A挿入される
+		TCVAR:ARG:行為者 = ARG
+		TCVAR:PLAYER:行為者 = ARG
+		TCVAR:行為者 = ARG
+		;		CALL TOUCH_SET(101,7,ARG)
+		;		TEQUIP:PLAYER:体位 = 2
+		SIF TEQUIP:ARG:0
+			CALL DATUI_BOTTOM_T(ARG,0)
+		SOURCE:ARG:快Ｃ = 150
+		SOURCE:ARG:性行动 += 600
+		SOURCE:ARG:征服 += 800
+		SOURCE:ARG:与快Ａ += 500
+		LOCALS = {PLAYER}/
+		CSTR:ARG:射精判定用 += LOCALS
+		TCVAR:ARG:射精箇所フラグ = 2
+		;強度
+		TCVAR:ARG:射精快感強度 = 1300
+		EXP:PLAYER:Ａ经验 ++
+		EXP:PLAYER:Ａ性交经验 ++
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:Ａ
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:腸内
+		STAIN:PLAYER:Ａ |= STAIN:ARG:Ｐ
+		STAIN:PLAYER:腸内 |= STAIN:ARG:Ｐ
+		SOURCE:PLAYER:液体 += 10
+		CALL 締り具合変動, PLAYER, 3, 1
+		CALL LOST_VIRGIN_A(PLAYER)
+		;肛交背面座位
+	CASE CNT_背面座位A挿入される
+		TCVAR:ARG:行為者 = ARG
+		TCVAR:PLAYER:行為者 = ARG
+		TCVAR:行為者 = ARG
+		;		CALL TOUCH_SET(107,1,ARG)
+		;		TEQUIP:ARG:体位 = 5
+		SIF TEQUIP:ARG:0
+			CALL DATUI_BOTTOM_T(ARG,0)
+		SOURCE:ARG:快Ｃ = 150
+		SOURCE:ARG:性行动 += 600
+		SOURCE:ARG:征服 += 650
+		SOURCE:ARG:与快Ｃ += 100
+		SOURCE:ARG:与快Ａ += 400
+		SOURCE:ARG:与快Ｂ += 150
+		LOCALS = {PLAYER}/
+		CSTR:ARG:射精判定用 += LOCALS
+		TCVAR:ARG:射精箇所フラグ = 2
+		;強度
+		TCVAR:ARG:射精快感強度 = 1200
+		EXP:PLAYER:Ａ经验 ++
+		EXP:PLAYER:Ａ性交经验 ++
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:Ａ
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:腸内
+		STAIN:PLAYER:Ａ |= STAIN:ARG:Ｐ
+		STAIN:PLAYER:腸内 |= STAIN:ARG:Ｐ
+		SOURCE:PLAYER:液体 += 10
+		CALL 締り具合変動, PLAYER, 3, 1
+		CALL LOST_VIRGIN_A(PLAYER)
+		;肛交骑乘位
+	CASE CNT_骑乘位A挿入される
+		TCVAR:ARG:行為者 = ARG
+		TCVAR:PLAYER:行為者 = ARG
+		TCVAR:行為者 = ARG
+		;		CALL TOUCH_SET(107,1,ARG)
+		;		TEQUIP:ARG:体位 = 3
+		SIF TEQUIP:ARG:0
+			CALL DATUI_BOTTOM_T(ARG,0)
+		SOURCE:ARG:快Ｃ = 150
+		SOURCE:ARG:性行动 += 500
+		SOURCE:ARG:征服 += 900
+		SOURCE:ARG:与快Ａ += 550
+		LOCALS = {PLAYER}/
+		CSTR:ARG:射精判定用 += LOCALS
+		TCVAR:ARG:射精箇所フラグ = 2
+		;強度
+		TCVAR:ARG:射精快感強度 = 1000
+		EXP:PLAYER:Ａ经验 ++
+		EXP:PLAYER:Ａ性交经验 ++
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:Ａ
+		STAIN:ARG:Ｐ |= STAIN:PLAYER:腸内
+		STAIN:PLAYER:Ａ |= STAIN:ARG:Ｐ
+		STAIN:PLAYER:腸内 |= STAIN:ARG:Ｐ
+		SOURCE:PLAYER:液体 += 10
+		CALL 締り具合変動, PLAYER, 3, 1
+		CALL LOST_VIRGIN_A(ARG)
+		;;骑乘位 挿入されるを参考に適当に	
+	CASE CNT_骑乘位逆强奸
+		TCVAR:ARG:行為者 = ARG
+		TCVAR:PLAYER:行為者 = ARG
+		TCVAR:行為者 = ARG
+		CALL TOUCH_SET(106,1,ARG)
+		SIF TEQUIP:PLAYER:0 & 4
+			CALL DATUI_BOTTOM_T(PLAYER,RAND:2)
+		SOURCE:PLAYER:性行动 += 300
+		SOURCE:PLAYER:征服 += 800
+		SOURCE:ARG:液体 += 100
+		SOURCE:ARG:虐待 += 500
+		SOURCE:ARG:强迫 += 800
+		SOURCE:快Ｖ = 500
+		CALL PAIN_CHECK_V(TARGET)
+		LOCALS = {ARG}/
+		CSTR:PLAYER:射精判定用 += LOCALS
+		TCVAR:PLAYER:射精箇所フラグ = 1
+		;強度
+		TCVAR:PLAYER:射精快感強度 += 800
+		STAIN:PLAYER:Ｐ |= STAIN:ARG:膣内
+		STAIN:ARG:膣内 |= STAIN:PLAYER:Ｐ
+		EXP:ARG:Ｖ性交经验 ++
+		CALL LOST_VIRGIN(ARG)
+		TEQUIP:ARG:Ｖ性爱 = PLAYER
+		CALL 締り具合変動, PLAYER, 3, 0
+		;リアクション
+		;膣性交
+	CASE 500
+		SELECTCASE TCVAR:ARG:カウンター行動の派生
+			CASE 1
+				TCVAR:PLAYER:射精快感強度 += 300
+				;だいしゅきホールド
+			CASE 2
+				TCVAR:PLAYER:射精快感強度 += 100
+				SOURCE:ARG:诱惑 += 300
+				;性交見せつけ
+			CASE 3
+				TCVAR:PLAYER:射精快感強度 += 100
+				SOURCE:ARG:挑衅 += 300
+				SOURCE:ARG:侮辱 += 500
+		ENDSELECT
+		;手淫
+	CASE 502
+		SELECTCASE TCVAR:ARG:カウンター行動の派生
+			CASE 1
+				LOCALS = {ARG}/
+				CSTR:PLAYER:射精判定用 += LOCALS
+				TCVAR:PLAYER:射精箇所フラグ = 3
+				;強度
+				TCVAR:PLAYER:射精快感強度 += 200
+				SIF !EXP_UP(24,ARG)
+					EXP:ARG:手淫经验 ++
+		ENDSELECT
+		;口交
+	CASE 503
+		SELECTCASE TCVAR:ARG:カウンター行動の派生
+			CASE 1
+				LOCALS = {ARG}/
+				CSTR:PLAYER:射精判定用 += LOCALS
+				TCVAR:PLAYER:射精箇所フラグ = 4
+				;強度
+				TCVAR:PLAYER:射精快感強度 += 300
+				SIF !EXP_UP(25,ARG)
+					EXP:ARG:口淫经验 ++
+				;ディープスロート
+			CASE 2
+				TCVAR:PLAYER:射精快感強度 += 500
+				SOURCE:ARG:侍奉 += 300
+		ENDSELECT
+		;乳交
+	CASE 504
+		SELECTCASE TCVAR:ARG:カウンター行動の派生
+			CASE 1
+				LOCALS = {ARG}/
+				CSTR:PLAYER:射精判定用 += LOCALS
+				TCVAR:PLAYER:射精箇所フラグ = 5
+				;強度
+				TCVAR:PLAYER:射精快感強度 += 300
+				SIF !EXP_UP(26,ARG)
+					EXP:ARG:乳交经验 ++
+				;縦乳交
+			CASE 2
+				TCVAR:PLAYER:射精快感強度 += 300
+				SOURCE:ARG:诱惑 += 300
+				SOURCE:ARG:侍奉 += 300
+				;貧乳
+			CASE 3
+				TCVAR:PLAYER:射精快感強度 += 500
+				SOURCE:ARG:侍奉 += 500
+		ENDSELECT
+		;素股
+	CASE 505
+		SELECTCASE TCVAR:ARG:カウンター行動の派生
+			CASE 1
+				LOCALS = {ARG}/
+				CSTR:PLAYER:射精判定用 += LOCALS
+				TCVAR:PLAYER:射精箇所フラグ = 6
+				;強度
+				TCVAR:PLAYER:射精快感強度 += 300
+				;手淫追加
+			CASE 2
+				TCVAR:PLAYER:射精快感強度 += 300
+				SOURCE:ARG:侍奉 += 300
+				EXP:ARG:手淫经验 ++
+		ENDSELECT
+		;玉揉み
+	CASE 600
+		TCVAR:PLAYER:射精快感強度 += 200
+		SOURCE:ARG:诱惑 += 200
+		SOURCE:ARG:侍奉 += 200
+		SOURCE:ARG:挑衅 += 200
+		SOURCE:ARG:征服 += 300
+		SIF TALENT:ARG:施虐狂 || ABL:ARG:抖Ｓ之气 > 4
+			SOURCE:ARG:虐待 += 100
+		;肛门爱抚
+	CASE 601
+		TCVAR:PLAYER:射精快感強度 += 100
+		SOURCE:ARG:侮辱 += 300
+		SOURCE:ARG:虐待 += 100
+		SOURCE:ARG:与快Ａ += 300
+ENDSELECT
+
+;TCVAR:26 マスターカウンター制御 
+;(ビット 0=抚摸臀部不可 1=抱住 2=接吻 3=胸爱抚 4=肛门爱抚 5=阴蒂爱抚 6=指挿入れ)
+
+SELECTCASE TCVAR:ARG:カウンター行動
+		;色っぽい仕草
+	CASE CNT_色っぽい仕草
+
+		;見つめる
+	CASE CNT_見つめる
+
+		;体を摺り寄せる
+	CASE CNT_体を摺り寄せる
+
+		;裙子を捲る
+	CASE CNT_裙子を捲る
+
+		;耳元に息を吹きかける
+	CASE CNT_耳元に息を吹きかける
+
+		;抚摸臀部
+	CASE CNT_抚摸臀部
+
+		;乳搾り手コキ
+	CASE CNT_乳搾り手コキ
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_抚摸臀部不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_胸爱抚不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_肛门爱抚不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_阴蒂爱抚不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_指挿入れ不可
+		;キス
+	CASE CNT_キス
+
+		;後ろから抱きつく
+	CASE CNT_背面抱擁
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_抚摸臀部不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_胸爱抚不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_肛门爱抚不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_阴蒂爱抚不可
+		SETBIT TCVAR:MASTER:マスターカウンター制御 ,MCC_指挿入れ不可
+		;前から抱きつく
+	CASE CNT_対面抱擁
+
+		;胸を揉ませる
+	CASE CNT_胸を揉ませる
+
+		;股間をまさぐる
+	CASE CNT_股間をまさぐる
+
+		;裙子の中を見せる
+	CASE CNT_裙子の中を見せる
+
+		;胸もみもみ
+	CASE CNT_胸を揉む
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抚摸臀部不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_胸爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_肛门爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_阴蒂爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_指挿入れ不可
+
+		;手淫
+	CASE CNT_手淫
+
+		;口淫
+	CASE CNT_口交
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_胸爱抚不可
+		;素股、阴部摩擦
+	CASE CNT_素股
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_阴蒂爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_指挿入れ不可
+
+		;乳交
+	CASE CNT_乳交
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_胸爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_肛门爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_阴蒂爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_指挿入れ不可
+
+		;足交
+	CASE CNT_足交
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抚摸臀部不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_胸爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_肛门爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_阴蒂爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_指挿入れ不可
+		;肛门爱抚
+	CASE CNT_肛门爱抚
+
+		;舔舐肛门
+	CASE CNT_舔舐肛门
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_胸爱抚不可
+
+		;指挿入
+	CASE CNT_指挿入
+
+		;胸爱抚
+	CASE CNT_胸爱抚
+
+		;吮吸乳首
+	CASE CNT_吮吸乳首
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		;ディープキス
+	CASE CNT_ディープキス
+
+		;强制舔阴
+	CASE CNT_强制舔阴
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		;口交強制
+	CASE CNT_口交強制
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+
+		;舔肛侍奉
+	CASE CNT_舔肛侍奉
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+
+		;ぱふぱふ
+	CASE CNT_ぱふぱふ
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+
+		;乳合わせ
+	CASE CNT_乳合わせ
+
+		;タワシ洗い
+	CASE CNT_タワシ洗い
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抚摸臀部不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_胸爱抚不可
+		;挿入される
+	CASE CNT_正常位挿入される
+
+		;骑乘位 指挿入れはここでは制御できなかったのでコマンド側で制限した
+	CASE CNT_骑乘位逆强奸
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_抱住不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_接吻不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,MCC_肛门爱抚不可
+		SETBIT TCVAR:ARG:マスターカウンター制御 ,6
+ENDSELECT
+
+
+@DATUI_BOTTOM(ARG,ARG:1)
+SELECTCASE ARG:1
+	CASE 0
+		TCVAR:ARG:下半身脱衣行動 = 1
+		EQUIP:PLAYER:下半身下着１ = 0
+		EQUIP:PLAYER:下半身下着２ = 0
+		EQUIP:PLAYER:下半身上着１ = 0
+		EQUIP:PLAYER:下半身上着２ = 0
+		EQUIP:PLAYER:裙子 = 0
+		EQUIP:PLAYER:赛车服 = 0
+		EQUIP:PLAYER:连衣裙 = 0
+		EQUIP:PLAYER:着物 = 0
+		EQUIP:PLAYER:紧身衣 = 0
+	CASE 1
+		TCVAR:ARG:下半身脱衣行動 = 2
+		EQUIP:PLAYER:下半身下着１ = 0
+		EQUIP:PLAYER:下半身下着２ = 0
+		EQUIP:PLAYER:下半身上着１ = 0
+		EQUIP:PLAYER:下半身上着２ = 0
+		EQUIP:PLAYER:赛车服 = 0
+		EQUIP:PLAYER:紧身衣 = 0
+	CASE 2
+		TCVAR:ARG:下半身脱衣行動 = 3
+		EQUIP:PLAYER:下半身下着１ = 0
+		EQUIP:PLAYER:下半身上着１ = 0
+		EQUIP:PLAYER:赛车服 = 0
+ENDSELECT
+CALL CLOTHES_SETTING_TRAIN(PLAYER)
+
+@DATUI_BOTTOM_T(ARG,ARG:1)
+SELECTCASE ARG:1
+	CASE 0
+		TCVAR:ARG:TARGET自身の下半身脱衣行動 = 1
+		EQUIP:ARG:下半身下着１ = 0
+		EQUIP:ARG:下半身下着２ = 0
+		EQUIP:ARG:下半身上着１ = 0
+		EQUIP:ARG:下半身上着２ = 0
+		EQUIP:ARG:裙子 = 0
+		EQUIP:ARG:赛车服 = 0
+		EQUIP:ARG:连衣裙 = 0
+		EQUIP:ARG:着物 = 0
+		EQUIP:ARG:紧身衣 = 0
+	CASE 1
+		TCVAR:ARG:TARGET自身の下半身脱衣行動 = 2
+		EQUIP:ARG:下半身下着１ = 0
+		EQUIP:ARG:下半身下着２ = 0
+		EQUIP:ARG:下半身上着１ = 0
+		EQUIP:ARG:下半身上着２ = 0
+		EQUIP:ARG:赛车服 = 0
+		EQUIP:ARG:紧身衣 = 0
+	CASE 2
+		TCVAR:ARG:TARGET自身の下半身脱衣行動 = 3
+		EQUIP:ARG:下半身下着１ = 0
+		EQUIP:ARG:下半身上着１ = 0
+		EQUIP:ARG:赛车服 = 0
+ENDSELECT
+CALL CLOTHES_SETTING_TRAIN(ARG)
+
+
+@DATUI_TOP(ARG,ARG:1)
+SELECTCASE ARG:1
+	CASE 0
+		TCVAR:ARG:上半身脱衣行動 = 1
+		EQUIP:PLAYER:上半身下着１ = 0
+		EQUIP:PLAYER:上半身下着２ = 0
+		EQUIP:PLAYER:上半身上着１ = 0
+		EQUIP:PLAYER:上半身上着２ = 0
+		EQUIP:PLAYER:赛车服 = 0
+		EQUIP:PLAYER:连衣裙 = 0
+		EQUIP:PLAYER:着物 = 0
+		EQUIP:PLAYER:紧身衣 = 0
+	CASE 1
+		TCVAR:ARG:上半身脱衣行動 = 2
+		EQUIP:PLAYER:上半身下着１ = 0
+		EQUIP:PLAYER:上半身上着１ = 0
+		EQUIP:PLAYER:赛车服 = 0
+		EQUIP:PLAYER:连衣裙 = 0
+		EQUIP:PLAYER:紧身衣 = 0
+ENDSELECT
+CALL CLOTHES_SETTING_TRAIN(PLAYER)
+
+@DATUI_TOP_T(ARG,ARG:1)
+SELECTCASE ARG:1
+	CASE 0
+		TCVAR:ARG:TARGET自身の上半身脱衣行動 = 1
+		EQUIP:ARG:上半身下着１ = 0
+		EQUIP:ARG:上半身下着２ = 0
+		EQUIP:ARG:上半身上着１ = 0
+		EQUIP:ARG:上半身上着２ = 0
+		EQUIP:ARG:赛车服 = 0
+		EQUIP:ARG:连衣裙 = 0
+		EQUIP:ARG:着物 = 0
+		EQUIP:ARG:紧身衣 = 0
+	CASE 1
+		TCVAR:ARG:TARGET自身の上半身脱衣行動 = 2
+		EQUIP:ARG:上半身下着１ = 0
+		EQUIP:ARG:上半身上着１ = 0
+		EQUIP:ARG:赛车服 = 0
+		EQUIP:ARG:连衣裙 = 0
+		EQUIP:ARG:紧身衣 = 0
+ENDSELECT
+CALL CLOTHES_SETTING_TRAIN(ARG)
+
+;MASTERのVへの苦痛
+@PAIN_CHECK_V_MASTER(ARG)
+;EXP:Ｖ经验をみる（处女の反感は別途処理済みなので省略）
+IF EXP:PLAYER:Ｖ经验 < EXPLV:1
+	TIMES SOURCE:ARG:虐待 , 1.50
+ELSEIF EXP:PLAYER:Ｖ经验 < EXPLV:2
+	TIMES SOURCE:ARG:虐待 , 0.80
+ELSEIF EXP:PLAYER:Ｖ经验 < EXPLV:3
+	TIMES SOURCE:ARG:虐待 , 0.40
+ELSEIF EXP:PLAYER:Ｖ经验 < EXPLV:4
+	TIMES SOURCE:ARG:虐待 , 0.10
+ELSEIF EXP:PLAYER:Ｖ经验 < EXPLV:5
+	TIMES SOURCE:ARG:虐待 , 0.00
+ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:5
+	TIMES SOURCE:ARG:虐待 , 0.00
+ENDIF
+
+;PALAM:润滑をみる
+IF PALAM:PLAYER:润滑 < PALAMLV:1
+	TIMES SOURCE:ARG:虐待 , 1.20
+ELSEIF PALAM:PLAYER:润滑 < PALAMLV:2
+	TIMES SOURCE:ARG:虐待 , 0.70
+ELSEIF PALAM:PLAYER:润滑 < PALAMLV:3
+	TIMES SOURCE:ARG:虐待 , 0.40
+ELSEIF PALAM:PLAYER:润滑 < PALAMLV:4
+	TIMES SOURCE:ARG:虐待 , 0.10
+ELSEIF PALAM:PLAYER:润滑 >= PALAMLV:4
+	TIMES SOURCE:ARG:虐待 , 0.10
+ENDIF

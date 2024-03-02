@@ -1,0 +1,57 @@
+;-------------------------------------------------------------------------------
+;爱抚
+@NTR_PET(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+TCVAR:奴隷:行為者 = 調教者
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_01(奴隷, 3)
+IF FLAG:訪問者との行為の終了時刻 == 0
+	FLAG:访问者行为计时点 = DATETIME()
+	CALL NTR_ADD_SURRENDER(奴隷, 3)
+	SIF EXP:奴隷:NTR陷落经验 
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+	BASE:奴隷:体力 -= 5
+	BASE:奴隷:气力 -= 50
+	SOURCE:奴隷:快Ｃ = 80
+	SOURCE:奴隷:快Ｂ = 80
+	SOURCE:奴隷:情爱 = 50
+	SOURCE:奴隷:性行动 = 60
+	SOURCE:奴隷:露出 = 20
+	SOURCE:奴隷:肮脏 = 30
+	SOURCE:奴隷:逸脱 = 20
+	IF TALENT:奴隷:NTR
+		SOURCE:奴隷:反感 = 5
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:反感 = 10
+	ELSE
+		SOURCE:奴隷:反感 = 20
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 20
+	SIF TALENT:奴隷:污臭耐性 > 0
+		SOURCE:奴隷:肮脏 /= 4
+	SIF TALENT:奴隷:污臭耐性 < 0
+		SOURCE:奴隷:肮脏 *= 3
+	SIF TALENT:奴隷:自尊心 > 0
+		SOURCE:奴隷:肮脏 *= 2
+	FLAG:訪問者との行為の終了時刻 = DATETIME() + 10
+	CALL NTR_EXP_ADD_KISS(奴隷,1)
+	CALL NTR_EXP_ADD_C_EX(奴隷,1)
+	CALL NTR_EXP_ADD_B_EX(奴隷,1)
+	CALL NTR_EXP_ADD_M_EX(奴隷,1)
+	CALL 改变乳头色素(奴隷,1)
+	CALL 改变小穴色素(奴隷,1)
+	CALL 改变乳头大小(奴隷,1)
+	FLAG:訪問者との行為 = NTR_行为_爱抚
+	CFLAG:奴隷:訪問者行為 = NTR_行为_爱抚
+	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;爱抚終了（絶頂）
+;@return 常に0
+@NTR_PET_FINISH(奴隷)
+#DIM 奴隷
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_2(奴隷, 3)
+RETURN 0

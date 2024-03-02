@@ -1,0 +1,224 @@
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：美鈴
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_1(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:帽子 = 1
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+EQUIP:着用者:下半身上着１ = 1
+EQUIP:着用者:连衣裙 = 2
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：小恶魔
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_2(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:鞋子 = 5
+EQUIP:着用者:袜子 = 2
+EQUIP:着用者:手 = 3
+EQUIP:着用者:裙子 = 1
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：パチュリー
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_3(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:帽子 = 1
+EQUIP:着用者:鞋子 = 4
+EQUIP:着用者:袜子 = 1
+EQUIP:着用者:连衣裙 = 3
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：咲夜
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_4(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:帽子 = 2
+EQUIP:着用者:鞋子 = 5
+EQUIP:着用者:袜子 = 2
+EQUIP:着用者:裙子 = 2
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：蕾米莉亚
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_5(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:帽子 = 1
+EQUIP:着用者:鞋子 = 5
+EQUIP:着用者:袜子 = 6
+EQUIP:着用者:裙子 = 3
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：芙兰朵露
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_6(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+EQUIP:着用者:帽子 = 1
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 3
+EQUIP:着用者:裙子 = 1
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：子悪魔
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_7(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:帽子 = 9
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 7
+EQUIP:着用者:裙子 = 6
+EQUIP:着用者:上半身上着２ = 23
+EQUIP:着用者:上半身下着２ = 10
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：チルノ
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_8(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+EQUIP:着用者:帽子 = 3
+EQUIP:着用者:连衣裙 = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：大妖精
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_9(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+EQUIP:着用者:帽子 = 3
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+EQUIP:着用者:连衣裙 = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：魔理沙
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_10(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:帽子 = 1
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+EQUIP:着用者:连衣裙 = 8
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：霊夢
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_11(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+EQUIP:着用者:帽子 = 3
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 5
+EQUIP:着用者:裙子 = 3
+EQUIP:着用者:上半身上着２ = 18
+EQUIP:着用者:上半身下着２ = 5
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：ルーミア
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_12(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+EQUIP:着用者:帽子 = 3
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+EQUIP:着用者:裙子 = 3
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：アリス
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_13(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+CALL CLOTHES_Change_Bra(着用者,下着変更)
+EQUIP:着用者:帽子 = 9
+EQUIP:着用者:鞋子 = 5
+EQUIP:着用者:袜子 = 3
+EQUIP:着用者:连衣裙 = 1
+EQUIP:着用者:上半身上着２ = 22
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1

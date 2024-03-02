@@ -1,0 +1,126 @@
+;-------------------------------------------------------------------------------
+;寝間着着用
+@CLOTHES_Preset_NIGHTWEAR(着用者,下着変更=0)
+#DIM 着用者
+#DIM 下着変更
+;まずは脱ぐ
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+SELECTCASE CFLAG:着用者:寝間着
+	CASE 0
+		;全裸の場合は強制的に下着も脱ぐ
+		CALL CLOTHES_Preset_NUDE(着用者,1)
+	CASE 1
+		;いつもの服(鞋子、配件ー無し)
+		;プリセット後、上下服以外を外す
+		SELECTCASE CFLAG:着用者:服装パターン
+			CASE 0
+				CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+			CASE 1
+				CALL CLOTHES_Preset_MALE(着用者,下着変更)
+			CASE 2
+				CALL CLOTHES_Preset_FEMALE(着用者,下着変更)
+			CASE 4
+				CALL CLOTHES_Preset_MAID(着用者,下着変更)
+			CASE 100
+				CALL CLOTHES_Preset_CUSTOM(着用者,下着変更)
+			CASE 101
+				CALL CLOTHES_Preset_1(着用者,下着変更)
+			CASE 102
+				CALL CLOTHES_Preset_2(着用者,下着変更)
+			CASE 103
+				CALL CLOTHES_Preset_3(着用者,下着変更)
+			CASE 104
+				CALL CLOTHES_Preset_4(着用者,下着変更)
+			CASE 105
+				CALL CLOTHES_Preset_5(着用者,下着変更)
+			CASE 106
+				CALL CLOTHES_Preset_6(着用者,下着変更)
+			CASE 107
+				CALL CLOTHES_Preset_7(着用者,下着変更)
+			CASE 108
+				CALL CLOTHES_Preset_8(着用者,下着変更)
+			CASE 109
+				CALL CLOTHES_Preset_9(着用者,下着変更)
+			CASE 110
+				CALL CLOTHES_Preset_10(着用者,下着変更)
+			CASE 111
+				CALL CLOTHES_Preset_11(着用者,下着変更)
+			CASE 112
+				CALL CLOTHES_Preset_12(着用者,下着変更)
+			CASE 113
+				CALL CLOTHES_Preset_13(着用者,下着変更)
+		ENDSELECT
+		EQUIP:着用者:配件 = 0
+		EQUIP:着用者:帽子 = 0
+		EQUIP:着用者:鞋子 = 0
+		EQUIP:着用者:袜子 = 0
+		EQUIP:着用者:手 = 0
+		;下着
+		;CASE 2
+		;下着・ズボン
+	CASE 3
+		EQUIP:着用者:下半身上着１ = 1
+		;Ｙシャツ・パンツ
+	CASE 4
+		EQUIP:着用者:上半身上着２ = 4
+		;パジャマ・ズボン
+	CASE 5
+		EQUIP:着用者:上半身上着２ = 7
+		EQUIP:着用者:下半身上着１ = 1
+		;Ｔシャツ・パンツ
+	CASE 6
+		EQUIP:着用者:上半身上着２ = 8
+		;タンクトップ・パンツ
+	CASE 7
+		EQUIP:着用者:上半身上着２ = 9
+		;ネグリジェ・パンツ
+	CASE 8
+		EQUIP:着用者:连衣裙 = 3
+		;ベビードール・パンツ
+	CASE 9
+		EQUIP:着用者:连衣裙 = 4
+		;寝巻・パンツ
+	CASE 10
+		EQUIP:着用者:着物 = 2
+	CASE 11
+		EQUIP:着用者:袜子 = 6
+		EQUIP:着用者:下半身下着２ = RAND(29,51)
+		EQUIP:着用者:手 = 6
+		EQUIP:着用者:上半身下着２ = 4
+ENDSELECT
+IF CFLAG:着用者:寝間着
+	;いつもの服以外の下着着用
+	IF CFLAG:着用者:寝間着 >= 2
+		IF HAS_VAGINA(着用者)
+			;貧乳以下は寝間着時に上半身下着を着用しない
+			;※但し、蕾米莉亚のような貧乳且つ私服で上半身下着を着用している場合は寝間着時も着用状態が維持される
+			IF TALENT:着用者:胸部尺寸 >= 0
+				CALL CLOTHES_Change_Bra(着用者,下着変更)
+			ENDIF
+			;女の子なら下着は女の子用を
+			CALL CLOTHES_Change_Knickers(着用者,下着変更)
+		ELSE
+			;男の子ならトランクス
+			EQUIP:着用者:下半身下着２ = 101
+		ENDIF
+	ENDIF
+ENDIF
+CFLAG:着用者:寝間着着用 = 1
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;寝間着のまま移动する際の鞋子を履く
+@CLOTHES_Preset_NIGHTWEAR_S(着用者)
+#DIM 着用者
+;私服時に鞋子を履かない場合はここでも鞋子を履かない
+IF CFLAG:着用者:服装パターン != 0 && CFLAG:着用者:服装パターン != 108 && CFLAG:着用者:服装パターン != 109
+	SELECTCASE 着用者
+			;美鈴、咲夜、小恶魔は鞋子
+		CASE 1, 2, 4
+			EQUIP:着用者:鞋子 = 1
+			;他はスリッパ
+		CASEELSE
+			EQUIP:着用者:鞋子 = 4
+	ENDSELECT
+ENDIF
+RETURN 1

@@ -1,0 +1,290 @@
+﻿;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 通常会话 実行判定
+; @return 0 コマンドの実行不可, 1 コマンドの実行可能
+@COM460_12_ENABLE(奴隷)
+#DIM 奴隷
+RESULTS:0 = %"[12]-抱いてほしい"%
+IF CFLAG:奴隷:屈服度 > 1000
+	RETURN 1
+ELSEIF TALENT:奴隷:浮気的蜜壶 || TALENT:奴隷:淫壶
+	RETURN 1
+ELSEIF TALENT:奴隷:浮気的菊花 || TALENT:奴隷:淫肛
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい
+; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12(奴隷)
+#DIM 奴隷
+#DIM SKIPDISP退避
+CALL COM460_12_ENABLE
+IF RESULT:0 == 0
+	RETURN 0
+ENDIF
+;SKIPDISPが既に設定されているかもしれないので退避して後で復帰
+SKIPDISP退避 = ISSKIP()
+IF !NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+	SKIPDISP 1
+ENDIF
+PRINTFORML %CALLNAME:奴隷+"被询问想要什么样的侵犯，"+NTR_NAME(0)+"一边说着一边露出了不怀好意的笑容"%
+IF CFLAG:奴隷:屈服度 > 1000
+	;屈服度が高い場合の選択肢
+	IF ABL:奴隷:抖Ｍ之气 < 4
+		PRINTFORML %"[0]-想做像恋人一样甜蜜的性爱"%
+	ENDIF
+	IF ABL:奴隷:抖Ｍ之气 > 1
+		PRINTFORML %"[1]-想被大肉棒激烈地侵犯到失去意识"%
+	ENDIF
+	IF ABL:奴隷:抖Ｍ之气 < 4
+		PRINTFORML %"[2]-希望能像对待恋人一样温柔地被侵犯肛穴"%
+	ENDIF
+	IF ABL:奴隷:抖Ｍ之气 > 1
+		PRINTFORML %"[3]-想被狠狠地蹂躏自己淫靡屁股洞"%
+	ENDIF
+ENDIF
+IF TALENT:奴隷:淫壶 || TALENT:奴隷:浮気的蜜壶
+	PRINTFORML %"[4]-全身发烫，淫液汩汩流着，所以非常想被侵犯小穴"%
+ENDIF
+IF TALENT:奴隷:淫肛 || TALENT:奴隷:浮気的菊花
+	PRINTFORML %"[5]-屁股洞里酥酥麻麻地受不了了，所以非常想被大肉棒蹂躏肛穴"%
+ENDIF
+PRINTFORML %"[9]-犹豫了、只、只是随便说说而已吧……"%
+$COM460_12_INPUT_LOOP
+IF 奴隷 == MASTER
+	;対象が「あなた」の場合だけ入力を要求する
+	INPUT
+ELSE
+	RESULT:0 = RAND:5
+	;CLEARLINEでチラチラするかもしれないけどまあ妥協
+	PRINTFORML %"("+CALLNAME:奴隷+"は "+TOSTR(RESULT:0)+" を選択しました)"%
+ENDIF
+TRYCALLFORM COM460_12_%TOSTR(RESULT:0,"00")%
+IF RESULT:0 == 1
+	TIME += 5
+	EXP:奴隷:会话经验 ++
+ELSE
+	CLEARLINE 1
+	GOTO COM460_12_INPUT_LOOP
+ENDIF
+SKIPDISP SKIPDISP退避
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい - Ｖ優しく
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12_00(奴隷)
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+IF ABL:奴隷:抖Ｍ之气 > 3
+	RETURN 0
+ENDIF
+PRINTDATAL
+	DATAFORM %"就像对待真正的恋人一样、"+NTR_NAME(0)+"温柔地推倒了"+CALLNAME:奴隷+"并将肉棒放进了蜜裂里……"%
+ENDDATA
+; 手抜き。そのうち修正。
+;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ｖ感觉, 0 )
+;「優しく」の場合１回の行為時間を長く取り回数は減らす。(22～40分×1～2回)
+回数 = 1 + RAND:2
+累計時間 = 0
+FOR LOCAL:0,0,回数
+	行為時間 = 11 + RAND:10 + 11 + RAND:10
+	CALL NTR_Play_V_0(奴隷,人物_訪問者,1,行為時間)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	累計時間 += 行為時間
+	TIME += 行為時間
+NEXT
+PRINTDATAL
+	DATAFORM %NTR_NAME(0)+"和"+CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，持续享受了"+TOSTR(回数)+"次激烈的交合"%
+ENDDATA
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい - Ｖ激しく
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12_01(奴隷)
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+IF ABL:奴隷:抖Ｍ之气 < 2
+	RETURN 0
+ENDIF
+PRINTDATAL
+	DATAFORM %"为了实现承诺"+NTR_NAME(0)+"怒挺的大肉棒狠狠地侵犯了"+CALLNAME:奴隷+"湿成泥泞的小穴……"%
+ENDDATA
+; 手抜き。そのうち修正。
+;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ｖ感觉, 0 )
+;「激しく」の場合は１回の行為時間を短く取り、气力が尽きるまで続ける。おそらく体力も尽きる。(11～20分×n回)
+回数 = 0
+累計時間 = 0
+DO
+	回数++
+	行為時間 = 11 + RAND:10
+	CALL NTR_Play_V_1(奴隷,人物_訪問者,1,行為時間)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	累計時間 += 行為時間
+	TIME += 行為時間
+LOOP BASE:奴隷:气力 > 0
+PRINTDATAL
+	DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次小穴"%
+ENDDATA
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい - Ａ優しく
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12_02(奴隷)
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+IF ABL:奴隷:抖Ｍ之气 > 3
+	RETURN 0
+ENDIF
+PRINTDATAL
+	DATAFORM %"就像对待真正的恋人一样、"+NTR_NAME(0)+"温柔地推倒了"+CALLNAME:奴隷+"并将肉棒缓缓插进了紧致的肛穴里……"%
+ENDDATA
+; 手抜き。そのうち修正。
+;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ａ感觉, 0 )
+;「優しく」の場合１回の行為時間を長く取り回数は減らす。(22～40分×1～2回)
+回数 = 1 + RAND:2
+累計時間 = 0
+FOR LOCAL:0,0,回数
+	行為時間 = 11 + RAND:10 + 11 + RAND:10
+	CALL NTR_Play_A_0(奴隷,人物_訪問者,1,行為時間)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	累計時間 += 行為時間
+	TIME += 行為時間
+NEXT
+PRINTDATAL
+	DATAFORM %NTR_NAME(0)+"和"+CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，持续享受了"+TOSTR(回数)+"次激烈的肛交"%
+ENDDATA
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい - Ａ激しく
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12_03(奴隷)
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+IF ABL:奴隷:抖Ｍ之气 < 2
+	RETURN 0
+ENDIF
+PRINTDATAL
+	DATAFORM %"为了实现承诺"+NTR_NAME(0)+"怒挺的大肉棒狠狠地侵犯了"+CALLNAME:奴隷+"淫乱的肛穴……"%
+ENDDATA
+; 手抜き。そのうち修正。
+;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ａ感觉, 0 )
+;「激しく」の場合は１回の行為時間を短く取り、气力が尽きるまで続ける。おそらく体力も尽きる。(11～20分×n回)
+回数 = 0
+累計時間 = 0
+DO
+	回数++
+	行為時間 = 11 + RAND:10
+	CALL NTR_Play_A_1(奴隷,人物_訪問者,1,行為時間)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	累計時間 += 行為時間
+	TIME += 行為時間
+LOOP BASE:奴隷:气力 > 0
+PRINTDATAL
+	DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次肛穴"%
+ENDDATA
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい - Ｖ普通
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12_04(奴隷)
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+IF !TALENT:奴隷:淫壶 && !TALENT:奴隷:浮気的蜜壶
+	RETURN 0
+ENDIF
+PRINTDATAL
+	DATAFORM %NTR_NAME(0)+"将怒挺的大肉棒狠狠地插入了"+CALLNAME:奴隷+"淫汁四溅的小穴里，引得"+CALLNAME:奴隷+"发出一声声放浪的娇吟……"%
+ENDDATA
+; 手抜き。そのうち修正。
+;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ｖ感觉, 0 )
+;「普通」の場合１回の行為時間を短く取り回数は減らす。(11～20分×2～4回)
+回数 = 2 + RAND:3
+累計時間 = 0
+FOR LOCAL:0,0,回数
+	行為時間 = 11 + RAND:10
+	CALL NTR_Play_V_0(奴隷,人物_訪問者,1,行為時間)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	累計時間 += 行為時間
+	TIME += 行為時間
+NEXT
+PRINTDATAL
+	DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次小穴"%
+ENDDATA
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい - Ａ普通
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12_05(奴隷)
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+IF !TALENT:奴隷:浮気的菊花 && !TALENT:奴隷:淫肛
+	RETURN 0
+ENDIF
+PRINTDATAL
+	DATAFORM %NTR_NAME(0)+"将自己坚挺的大肉棒一股脑地插入了"+CALLNAME:奴隷+"淫靡的肛穴中，搅得"+CALLNAME:奴隷+"浪叫连连……"%
+ENDDATA
+; 手抜き。そのうち修正。
+;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ａ感觉, 0 )
+;「普通」の場合１回の行為時間を短く取り回数は減らす。(11～20分×2～4回)
+回数 = 2 + RAND:3
+累計時間 = 0
+FOR LOCAL:0,0,回数
+	行為時間 = 11 + RAND:10
+	CALL NTR_Play_A_0(奴隷,人物_訪問者,1,行為時間)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	累計時間 += 行為時間
+	TIME += 行為時間
+NEXT
+PRINTDATAL
+	DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次肛穴"%
+ENDDATA
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - 抱いてほしい - 本気で言ったわけじゃない
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_12_09(奴隷)
+#DIM 奴隷
+PRINTDATAL
+	DATAFORM %CALLNAME:奴隷+"慌忙地否定了、责备"+NTR_NAME(0)+"是骗子、引来对方更肆意的笑容……"%
+ENDDATA
+RETURN 1
+RETURN 0

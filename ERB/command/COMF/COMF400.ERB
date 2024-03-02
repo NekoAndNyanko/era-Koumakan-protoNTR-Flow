@@ -1,0 +1,943 @@
+﻿;-------------------------------------------------
+;移动
+;-------------------------------------------------
+@COM400
+#DIMS ROOMNAME
+#DIM PAGE
+#DIM 住人
+#DIM LOOP_CHR
+#DIM LOOP_POS
+#DIM WK
+#DIMS WKNAME
+#DIM TargetRoom
+
+CALL TURN_RESET
+;遠距離移动中の処理
+IF TFLAG:遠距離移动
+
+	TargetRoom = TFLAG:遠距離移动
+
+	IF TargetRoom == CFLAG:MASTER:現在位置
+		NEXTCOM = -1
+		TFLAG:遠距離移动 = 0
+		CALLF RESET_ROUTE(MASTER, 1)
+		RETURN 0
+	ENDIF
+
+	;キャラの位置更新(NEXTCOM設定中は@SHOW_STATUSが走らないのでこっちで処理)
+	CALL CHARA_MOVEMENT
+	TFLAG:時間経過 = DATETIME()
+	;キャラをCFLAG:310の昇順に並び替え
+	VARSET TARGET
+	CALL SORT_CFLAG(310)
+	WK = 0
+	CALL NTR_CHK_GOWITH(10)
+	FOR LOOP_CHR,1,CHARANUM
+		IF CFLAG:MASTER:現在位置 != CFLAG:(RESULT:LOOP_CHR):現在位置
+			CONTINUE
+		ENDIF
+		WK ++
+		TARGET:WK = RESULT:LOOP_CHR
+	NEXT
+
+	住人 = 0
+	;誰かいないかチェック
+	FOR LOOP_CHR,1,CHARANUM
+		IF TARGET:LOOP_CHR <= 0
+			CONTINUE
+		ENDIF
+		IF CFLAG:(TARGET:LOOP_CHR):同行
+			CONTINUE
+		ENDIF
+		住人 = TARGET:LOOP_CHR
+	NEXT
+	IF 住人
+		PRINTFORM 在%GETPLACENAME(CFLAG:MASTER:現在位置)%遇到了%CALLNAME:住人%
+		;STRLENSU CALLNAME:住人
+		;PRINTFORMW 対象:%CALLNAME:住人% パンツ:%CSTR:MASTER:収集品% %SUBSTRINGU(CSTR:MASTER:収集品, 0, RESULT)%
+		IF STRLENS(CSTR:MASTER:収集品) && 収集品死守戦発生(住人) && !CFLAG:住人:睡眠
+			CALL CHK_COLLECTION_ITEM(住人)
+			IF RESULT == 1
+				RETURN 0
+			ENDIF
+		ELSEIF FLAG:贞操帯鍵購入フラグ && RAND:2 && CFLAG:TARGET:NTR贞操帯反応
+			CALL CHK_LOCK(住人)
+		ELSE
+			PRINTL ……怎么办呢？
+			PRINTL [0]继续移动
+			PRINTL [1]停下来
+			INPUT
+
+			IF RESULT == 0
+				;無視する場合
+				CALL IGNORE_WHEN_MOVE(住人)
+			ELSE
+				;実際は0以外全部立ち止まる扱い
+				CALL STOP_WHEN_MOVE(住人)
+				RETURN 0
+			ENDIF
+		ENDIF
+	ENDIF
+	;遠距離移动
+	IF CAN_MOVE(CFLAG:MASTER:現在位置, TargetRoom)
+		;地下室
+		IF TargetRoom == 位置_地下室 && ABL:MASTER:战斗技能 <= 0
+			PRINTW 从门里感到不祥之意……
+			PRINTW 为了能平安返回，一定程度的实力是必要的吧。
+			;遠距離移动フラグ消去
+			NEXTCOM = -1
+			CALLF RESET_ROUTE(MASTER, 1)
+			RETURN 0
+		ELSEIF TargetRoom != 位置_玩家房间 && isLocked(TargetRoom) && !canUnLock(MASTER, TargetRoom)
+			;あなた以外の私室 and 合鍵無し
+			PRINTW 门从里面锁着……
+			IF GETBIT(FLAG:雑多設定,2)
+				;なかにいるキャラから頼まれ事を請けているか
+				FOR LOOP_CHR, 1, 8
+					IF CFLAG:LOOP_CHR:現在位置 != TargetRoom
+						CONTINUE
+					ENDIF
+					IF CFLAG:LOOP_CHR:従者イベント１ >= 10
+						TRYCALL 従者E_受け取り不可, LOOP_CHR, "鍵閉め"
+					ENDIF
+				NEXT
+
+			ENDIF
+			;遠距離移动フラグ消去
+			NEXTCOM = -1
+			CALLF RESET_ROUTE(MASTER, 1)
+			RETURN 0
+			;それ以外の場所
+		ELSE
+			;あなたの現在位置に移动先を代入
+			CFLAG:MASTER:現在位置 = TargetRoom
+			;施錠されているが解錠できる
+			IF isLocked(TargetRoom)
+				IF tryUnLock(MASTER, TargetRoom)
+					IF HAS_DUPLICATE_KEY(TargetRoom)
+						PRINTFORML %"门从里面锁着……"+CALLNAME:MASTER+"打开锁进去了"%
+					ELSE
+						PRINTFORML %"门从里面锁着……"+CALLNAME:MASTER+"用钥匙进去了"%
+					ENDIF
+				ENDIF
+			ENDIF
+			PRINTFORML 
+			FOR LOOP_CHR, 1, CHARANUM
+				CALL CHAR_ON_PLACE(LOOP_CHR)
+			NEXT
+			;遠距離移动フラグ消去
+			NEXTCOM = -1
+		ENDIF
+		FOR LOOP_CHR,1,CHARANUM
+			IF CFLAG:LOOP_CHR:同行
+				CFLAG:LOOP_CHR:現在位置 = CFLAG:MASTER:現在位置
+			ENDIF
+		NEXT
+	ELSE
+		;現在位置を更新し、次も移动の扱いにする
+		CFLAG:MASTER:現在位置 = 移动ルート:MASTER:0
+		CALL SORT_ROUTE(MASTER)
+		NEXTCOM = 400
+	ENDIF
+	IF FLAG:訪問者同行フラグ
+		FLAG:訪問者の現在位置 = CFLAG:MASTER:現在位置
+	ENDIF
+	CALL INHABITANT_FRIENDSHIP_END_MASTER_MOVE
+	TIME += 3
+	RETURN 0
+ENDIF
+
+;プレイヤーの位置から表示するマップを変更
+PAGE = MAP_DISTINCTION(CFLAG:MASTER:現在位置)
+
+$LOOP_PAGE
+
+DRAWLINE
+PRINTL
+PRINTL 移动場所選択
+PRINTL
+CALLFORM MAP_PRINT_{PAGE}
+PRINTL
+DRAWLINE
+;マップの数だけ表示
+FOR WK, 0, 2
+	PRINT 　
+	;現在のマップを橙色で表示
+	IF PAGE == WK
+		SETCOLOR 0XFF8000
+	ENDIF
+	SELECTCASE WK
+		CASE 0
+			WKNAME = 紅魔館
+		CASE 1
+			WKNAME = 霧の湖周辺他
+	ENDSELECT
+	PRINT 　　
+	PRINTBUTTON @"[%WKNAME%]", WK+1000
+	RESETCOLOR
+NEXT
+PRINTL
+DRAWLINE
+PRINTL
+PRINTFORML 现在{CFLAG:MASTER:現在位置}:在%GETPLACENAME(CFLAG:MASTER:現在位置)%
+IF !CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:MASTER:開始位置) && CFLAG:MASTER:現在位置 != CFLAG:MASTER:開始位置
+	PRINTL [0] - 回到自己的房间
+ENDIF
+FOR LOOP_POS,0, 場所番号最大値+1
+	IF CAN_MOVE(CFLAG:MASTER:現在位置, LOOP_POS)
+		PRINTFORML [{LOOP_POS}] - %GETPLACENAME(LOOP_POS)%
+	ENDIF
+NEXT
+PRINT [100] - 返回
+$INPUT_LOOP
+INPUTS
+IF RESULTS == ""
+	GOTO INPUT_LOOP
+ENDIF
+TargetRoom = TOINT(RESULTS) - (TOINT(RESULTS) == 0 && RESULTS != "0")
+IF TargetRoom == -1
+	REPLACE RESULTS, CALLNAME:MASTER, "%CALLNAME:MASTER%"
+	FOR LOOP_POS, 1, 18
+		IF GETPLACENAME(LOOP_POS) == RESULTS
+			TargetRoom = LOOP_POS
+		ENDIF
+	NEXT
+ENDIF
+
+IF TargetRoom == 0
+	;直接ワープで返回のはよくないので置換
+	TargetRoom = CFLAG:MASTER:開始位置
+ENDIF
+
+
+IF TargetRoom == 100
+	RETURN 0
+	;マップ変更
+ELSEIF INRANGE(TargetRoom, 1000, 1001)
+	PAGE = TargetRoom - 1000
+	GOTO LOOP_PAGE
+	;目的地がテラスなら蕾米莉亚私室が閉まっている且つ合鍵を持っていないと進めない
+ELSEIF TargetRoom == 位置_3F阳台 && CFLAG:MASTER:現在位置 != 位置_蕾米莉亚私室 &&  isLocked(位置_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_蕾米莉亚私室)
+	PRINTW 因为不能通过蕾米莉亚的房间，所以不能移动
+	GOTO LOOP_PAGE
+ELSEIF TargetRoom == 0
+	;どうしようもなければワープで返回
+	CFLAG:MASTER:現在位置 = CFLAG:MASTER:開始位置
+ELSEIF !INRANGE(TargetRoom, 0, 場所番号最大値)
+	CLEARLINE 1
+	REUSELASTLINE 
+	GOTO INPUT_LOOP
+	;移动先が隣の場所
+ELSEIF CAN_MOVE(CFLAG:MASTER:現在位置, TargetRoom)
+	IF FLAG:1840 < 2
+		FLAG:1840 = 0
+	ENDIF
+
+	;地下室
+	IF TargetRoom == 位置_地下室 && ABL:MASTER:战斗技能 <= 0
+		PRINTW 从门里感到不祥之意……
+		PRINTW 为了能平安返回，一定程度的实力是必要的吧。
+		RESTART
+	ELSEIF isLocked(TargetRoom)
+		;施錠されている
+		IF tryUnLock(MASTER, TargetRoom)
+			IF HAS_DUPLICATE_KEY(TargetRoom)
+				PRINTFORML 用钥匙进去了
+			ELSE
+				PRINTFORML 打开锁进去了
+			ENDIF
+		ELSE
+			PRINTW 门从里面锁着……
+			RESTART
+		ENDIF
+	ENDIF
+	CFLAG:MASTER:現在位置 = TargetRoom
+	PRINTFORML 
+	FOR LOOP_CHR, 1, CHARANUM
+		CALL CHAR_ON_PLACE(LOOP_CHR)
+	NEXT
+	CALL NTR_CHK_GOWITH(10)
+ELSE
+	IF FLAG:1840 < 2
+		FLAG:1840 = 0
+	ENDIF
+	;目的地が離れているので、最終目的地として設定
+	TFLAG:遠距離移动 = TargetRoom
+	CALLF FARMOVE(MASTER, CFLAG:MASTER:現在位置, TargetRoom)
+	;現在位置を更新し、次も移动の扱いにする
+	CFLAG:MASTER:現在位置 = 移动ルート:MASTER:0
+	CALL SORT_ROUTE(MASTER)
+	NEXTCOM = 400
+ENDIF
+IF FLAG:訪問者同行フラグ
+	FLAG:訪問者の現在位置 = CFLAG:MASTER:現在位置
+ENDIF
+CALL INHABITANT_FRIENDSHIP_END_MASTER_MOVE
+TIME += 3
+PREVCOM = 400
+STR:0 = 移动
+
+RETURN 0
+
+;住人による収集品チェック
+;戻り値1:収集品没収
+@CHK_COLLECTION_ITEM(住人)
+#DIM 住人
+
+PRINTL 
+CALL 収集品死守戦開始, 住人
+IF RESULT == 1
+	PRINTFORMW %CALLNAME:MASTER%被%CALLNAME:住人%盯上并搜身了……
+	PRINTFORMW 
+	PRINTFORMW 
+	PRINTFORMW 
+	PRINTFORMW 没收了收藏品
+	IF GETBIT (CFLAG:住人:MASTERの弱味,0)
+		PRINTFORMW 被%CALLNAME:住人%抓住了弱点
+	ENDIF
+	CALL KOJO_EVENT(11, 住人, 0)
+	SETBIT CFLAG:住人:MASTERの弱味 ,0
+	CSTR:MASTER:収集品 =
+	NEXTCOM = -1
+	CALLF RESET_ROUTE(MASTER, 1)
+	RETURN 1
+ENDIF
+RETURN 0
+
+;住人による贞操帯鍵チェック
+@CHK_LOCK(住人)
+#DIM 住人
+
+PRINTL 
+PRINTFORMW 被%CALLNAME:TARGET%盯上并搜身了……
+PRINTFORMW 
+PRINTFORMW 
+PRINTFORMW 
+PRINTFORMW 发现了贞操带的钥匙。
+CALL NTR_LOCK_REACTION(TARGET)
+
+RETURN 0
+
+;移动時住人を無視した場合の処理
+;戻り値 常に0
+@IGNORE_WHEN_MOVE(住人)
+#DIM 住人
+
+;什麽也不做でいいかな…無視されて怒らせる？
+IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者の气氛 != 0
+	PRINTFORMW %CALLNAME:住人%好像和谁躲起来做了什么
+ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置
+	PRINTFORMW %CALLNAME:住人%好像在和谁说话
+ELSE
+	CALL KOJO_EVENT(10, 住人, 0)
+	IF GETBIT(FLAG:雑多設定,2)
+		CALL 従者E_発生, 住人
+	ENDIF
+ENDIF
+RETURN 0
+
+;移动時住人を無視せず立ち止まった場合の処理
+;戻り値 常に0
+@STOP_WHEN_MOVE(住人)
+#DIM 住人
+
+IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者の气氛 != 0
+	IF IS_AIR_MASTER(住人) < FLAG:訪問者の气氛
+		PRINTFORMW %CALLNAME:住人%好像和谁躲起来做了什么、但因为%CALLNAME:MASTER%来了停了下来
+		CALL NTR_RESET_VISITOR_ACTION(住人)
+	ENDIF
+ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置
+	PRINTFORMW %CALLNAME:住人%好像在和谁说话
+	CALL NTR_RESET_VISITOR_ACTION(住人)
+ELSE
+	CALL KOJO_EVENT(10, 住人, 1)
+ENDIF
+NEXTCOM = -1
+CALLF RESET_ROUTE(MASTER, 1)
+RETURN 0
+
+;場所移动時、住人毎の処理
+;戻り値 常に0
+@CHAR_ON_PLACE(住人)
+#DIM 住人
+
+;ターゲットと訪問者が一緒 and 訪問者の气氛が会话以外(キス以上) and あなたとターゲットが一緒
+IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者の气氛 != 0 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置
+	;性交以外
+	IF 1 <= FLAG:訪問者との行為 && FLAG:訪問者との行為 <= 6
+		PRINTFORML 【%GETPLACENAME(FLAG:21)%】%CALLNAME:住人%和%NTR_NAME(0)%好像在做什么、但因为%CALLNAME:MASTER%来了停了下来
+		PRINTFORML 感觉%CALLNAME:住人%的脸有些红
+		PRINTFORMW 
+		CALL NTR_RESET_VISITOR_ACTION(住人)
+		;性交時 and (1/3 or 空気度が4以上 or 性交時の覗きバレ)
+	ELSEIF 7 <= FLAG:訪問者との行為 && FLAG:訪問者との行為 <= 13 && (RAND:3 == 0 || IS_AIR_MASTER(住人) >= 4 || (CFLAG:住人:覗き発覚回数 > 0 && CFLAG:住人:覗き発覚時行為 >= 7))
+		TRYCALLFORM NTR_INFIDELITY(住人)
+		;性交時
+	ELSEIF 7 <= FLAG:訪問者との行為 && FLAG:訪問者との行為 <= 13
+		PRINTFORML 【%GETPLACENAME(FLAG:21)%】%CALLNAME:住人%和%NTR_NAME(0)%好像在做些什么、但是注意到接近的%CALLNAME:MASTER%、慌忙中断了行动
+		PRINTFORML %CALLNAME:住人%的脸有些红，衣服凌乱
+		PRINTFORMW 
+		CALL NTR_RESET_VISITOR_ACTION(住人)
+	ENDIF
+ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置 && CFLAG:住人:睡眠 && FLAG:睡姦フラグ != 0
+	PRINTFORMW 睡梦中的%CALLNAME:住人%被%NTR_NAME(0)%袭击
+	;ターゲットと訪問者が一緒 and あなたとターゲットが一緒
+ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置
+	PRINTFORMW %CALLNAME:住人%好像在和谁说话
+	CALL NTR_RESET_VISITOR_ACTION(住人)
+	;あなたとターゲットが一緒 and 睡眠中
+ELSEIF CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置 && CFLAG:住人:睡眠
+	PRINTFORMW %CALLNAME:住人%在睡觉
+	CALL KOJO_EVENT(7,住人,2)
+ENDIF
+RETURN 0
+
+@GETMAP(場所)
+#DIM 場所
+#DIM LOOP_CHR
+FOR LOOP_CHR ,1,CHARANUM
+	IF TALENT:LOOP_CHR:恋慕 && CFLAG:LOOP_CHR:現在位置 == 場所 
+		SETCOLOR 色設定_マップ_恋人
+	ELSEIF TALENT:LOOP_CHR:恋人 && CFLAG:LOOP_CHR:現在位置 == 場所
+		SETCOLOR 0xFFCCFF
+	ENDIF
+NEXT
+IF CFLAG:MASTER:現在位置 == 場所
+	SETCOLOR 色設定_マップ_自分
+ENDIF
+IF FLAG:訪問者の現在位置 != 900 && FLAG:訪問者の現在位置 == 場所
+	IF !IS_NTR_SHOW_POS() && CFLAG:MASTER:現在位置 != FLAG:訪問者の現在位置 && CAN_MOVE(CFLAG:MASTER:現在位置, FLAG:訪問者の現在位置) != 2
+		;IF CFLAG:MASTER:現在位置 != FLAG:訪問者の現在位置 && CAN_MOVE(CFLAG:MASTER:現在位置, FLAG:訪問者の現在位置) != 2
+		;IF CAN_MOVE(CFLAG:MASTER:現在位置, FLAG:訪問者の現在位置) != 2
+		;目の届かない場所だと色の変化なし
+	ELSE
+		IF FLAG:訪問者の气氛 == 1 || FLAG:訪問者の气氛 == 2
+			SETCOLOR 色設定_マップ_爱抚
+		ELSEIF FLAG:訪問者の气氛 == 3 || FLAG:訪問者の气氛 == 4
+			SETCOLOR 色設定_マップ_性交
+		ELSE
+			SETCOLOR 色設定_マップ_会话
+		ENDIF
+	ENDIF
+ENDIF
+PRINTBUTTON (場所 > 9 ? TOSTR(場所) # TOFULL(TOSTR(場所))),場所
+RESETCOLOR
+
+
+;遠距離移动によるルート設定
+@FARMOVE(住人, 現在地, 最終目的地)
+#FUNCTION
+#DIM 住人
+#DIM 現在地
+#DIM 最終目的地
+#DIM Route_pos, 移动ルートMAX
+#DIM Route_mus
+#DIM Route_Sp
+#DIM 暫定目的地
+#DIM 経由地
+#DIM 経由地補正
+
+;LOCAL一覧
+;1	暫定目的地
+;2	ルート設定における現在地
+
+IF (0 >= 現在地)
+	現在地 = CFLAG:住人:開始位置
+ENDIF
+
+;ルートリセット
+CALLF RESET_ROUTE(住人, 0)
+
+VARSET Route_pos
+Route_mus = 0
+Route_Sp = 0
+暫定目的地 = 最終目的地
+経由地 = 現在地
+
+;経由地から暫定目的地に直接移动できる場合、暫定目的地を保存してルート設定終了
+IF CAN_MOVE(経由地, 暫定目的地)
+	GOTO SUCCESS
+ENDIF
+
+;出発地点からのルートが固定されている場合その分を先に計算する
+;袋小路なら行ける場所は固定なので、そこを経由地に保存する
+経由地補正 = 次の経由地(経由地)
+IF 経由地補正 != -1
+	Route_Sp = 経由地
+	経由地 = 経由地補正
+ENDIF
+
+;目的地から出発地点に向けて近づける
+WHILE 1
+	;経由地から暫定目的地に直接移动できる場合、暫定目的地を保存してルート設定終了
+	IF CAN_MOVE(経由地, 暫定目的地)
+		GOTO SUCCESS
+	ENDIF
+
+	;直接移动できない場合、1つ近い位置を暫定目的地に設定し直してループ
+	IF Route_mus >= 移动ルートMAX
+		GOTO ERROR
+	ENDIF
+	Route_pos:Route_mus = 暫定目的地
+	Route_mus ++
+	IF Route_mus >= 移动ルートMAX
+		GOTO ERROR
+	ENDIF
+	暫定目的地 = 次の目的地(経由地, 暫定目的地)
+	;前の目的地と今の目的地は必ず一致しない
+	IF 暫定目的地 == Route_pos:Route_mus
+		GOTO ERROR
+	ENDIF
+	;DEBUGPRINTFORML {暫定目的地} ルート逆算(現在地({経由地})〜最終地点({最終目的地})までの道のり)
+WEND
+
+$SUCCESS
+IF Route_mus >= 移动ルートMAX
+	GOTO ERROR
+ENDIF
+Route_pos:Route_mus = 暫定目的地
+
+;経由地が現在地からずれている場合そこを最初の移动地点にする
+IF Route_Sp
+	Route_mus ++
+	IF Route_mus >= 移动ルートMAX
+		GOTO ERROR
+	ENDIF
+	Route_pos:Route_mus = 経由地補正
+ENDIF
+;設定したルートを反対から取って保存
+FOR LOCAL, Route_mus, -1, -1
+	移动ルート:住人:(Route_mus-LOCAL) = Route_pos:LOCAL
+NEXT
+
+;PRINTFORM 目的地{最終目的地} ルート
+;REPEAT 移动ルートMAX
+;	PRINTFORM {移动ルート:住人:COUNT} →
+;REND
+;PRINTW
+RETURNF
+
+$ERROR
+THROW ルート計算中にルート最大サイズを超えました {住人} 現在地:{現在地} 最終目的地:{最終目的地}
+
+;場所=>OPTIONAL<場所>
+@次の経由地(今の経由地)
+#FUNCTION
+#DIM 今の経由地
+SELECTCASE 今の経由地
+		;厨房からは食堂のみ
+	CASE 位置_厨房
+		RETURNF 位置_食堂
+		;納屋からは庭のみ
+	CASE 位置_仓库
+		RETURNF 位置_院子
+		;パチェかこぁの部屋からは図書室のみ
+	CASE 位置_帕秋莉私室, 位置_小恶魔私室
+		RETURNF 位置_图书室
+		;咲夜の部屋からは二階廊下のみ
+	CASE 位置_咲夜私室
+		RETURNF 位置_二楼走廊
+		;妖精メイド詰所からは二階廊下のみ
+	CASE 位置_妖精女仆办公室
+		RETURNF 位置_二楼走廊
+		;あなたの部屋からは二階廊下のみ
+	CASE 位置_玩家房间
+		RETURNF 位置_二楼走廊
+		;地下室からは広間のみ
+	CASE 位置_地下室
+		RETURNF 位置_大厅
+		;大浴場からは広間のみ
+	CASE 位置_大浴場
+		RETURNF 位置_大厅
+		;琪露诺的家からは湖南部のみ
+	CASE 位置_琪露诺的家
+		RETURNF 位置_湖南部
+		;大妖精的家からは湖南部のみ
+	CASE 位置_大妖精的家
+		RETURNF 位置_湖南部
+		;野外トイレからは庭のみ
+	CASE 位置_屋外厕所
+		RETURNF 位置_院子
+		;1F厕所からは広間のみ
+	CASE 位置_1F厕所
+		RETURNF 位置_大厅
+		;2F厕所からは踊り場のみ
+	CASE 位置_2F厕所
+		RETURNF 位置_二楼走廊
+		;魔理沙の家からは魔法の森のみ
+	CASE 位置_魔理沙の家
+		RETURNF 位置_魔法の森内部
+		;ルーミアの住処からは魔法の森のみ
+	CASE 位置_ルーミアの住処
+		RETURNF 位置_魔法の森内部
+		;アリスの家からは魔法の森のみ
+	CASE 位置_アリスの家
+		RETURNF 位置_魔法の森内部
+		;博麗神社からは湖北部のみ
+	CASE 位置_博麗神社
+		RETURNF 位置_湖
+		;テラスの場合レミの部屋へ入れないなら庭へ飛び降りる
+	CASE 位置_3F阳台
+		IF isLocked(位置_蕾米莉亚私室) && !canUnLock(MASTER, 位置_蕾米莉亚私室)
+			RETURNF 位置_院子
+		ELSE
+			RETURNF 位置_蕾米莉亚私室
+		ENDIF
+ENDSELECT
+RETURNF -1
+
+;(場所, 場所)=>場所
+@次の目的地(出発地, 今の目的地)
+#FUNCTION
+#DIM 出発地
+#DIM 今の目的地
+SELECTCASE 今の目的地
+	CASE 位置_红魔馆正门
+		;正門に直接行けない場合、湖南部, 魔法の森内部なら湖北部を目指す
+		SELECTCASE 出発地
+			CASE 位置_湖南部, 位置_魔法の森内部
+				RETURNF 位置_湖
+				;それ以外は広間を目指す
+			CASEELSE
+				RETURNF 位置_大厅
+		ENDSELECT
+	CASE 位置_大厅
+		SELECTCASE 出発地
+				;広間を目指す場合、現在地が位置_院子なら位置_食堂を目指す
+			CASE 位置_院子
+				RETURNF 位置_食堂
+				;館の外からは正門を目指す
+			CASE 位置_守卫小屋, 位置_湖, 位置_湖南部, 位置_魔法の森内部
+				RETURNF 位置_红魔馆正门
+			CASEELSE
+				;それ以外の(直接行けない)場所からは、位置_二楼楼梯间を目指す
+				RETURNF 位置_二楼楼梯间
+		ENDSELECT
+	CASE 位置_食堂
+		;食堂に直接行けない場合、位置_大厅を目指す
+		RETURNF 位置_大厅
+	CASE 位置_图书室
+		;図書室に直接行けない場合、位置_大厅を目指す
+		RETURNF 位置_大厅
+	CASE 位置_厨房
+		;厨房に直接行けない場合、位置_食堂を目指す
+		RETURNF 位置_食堂
+	CASE 位置_仓库
+		;納屋に直接行けない場合、位置_院子を目指す
+		RETURNF 位置_院子
+	CASE 位置_帕秋莉私室
+		;パチェ私室に直接行けない場合、位置_图书室を目指す
+		RETURNF 位置_图书室
+	CASE 位置_小恶魔私室
+		;こぁ私室に直接行けない場合、位置_图书室を目指す
+		RETURNF 位置_图书室
+	CASE 位置_守卫小屋
+		;守衛小屋私室に直接行けない場合、位置_红魔馆正门を目指す
+		RETURNF 位置_红魔馆正门
+	CASE 位置_院子
+		;庭に直接行けない場合、位置_食堂を目指す
+		RETURNF 位置_食堂
+	CASE 位置_二楼楼梯间
+		SELECTCASE 出発地
+				;踊り場に直接行けない場合、現在地が位置_咲夜私室〜位置_玩家房间, 位置_2F厕所なら位置_二楼走廊を目指す
+			CASE 位置_咲夜私室, 位置_妖精女仆办公室, 位置_玩家房间, 位置_2F厕所
+				RETURNF 位置_二楼走廊
+			CASEELSE
+				;それ以外の(直接行けない)場所からは、位置_大厅を目指す
+				RETURNF 位置_大厅
+		ENDSELECT
+	CASE 位置_二楼走廊
+		;二回廊下に直接行けない場合、位置_二楼楼梯间を目指す
+		RETURNF 位置_二楼楼梯间
+	CASE 位置_咲夜私室
+		;咲夜私室に直接行けない場合、位置_二楼走廊を目指す
+		RETURNF 位置_二楼走廊
+	CASE 位置_妖精女仆办公室
+		;妖精メイド詰所に直接行けない場合、位置_二楼走廊を目指す
+		RETURNF 位置_二楼走廊
+	CASE 位置_玩家房间
+		;玩家房间に直接行けない場合、位置_二楼走廊を目指す
+		RETURNF 位置_二楼走廊
+	CASE 位置_蕾米莉亚私室
+		;レミ私室に直接行けない場合、位置_二楼楼梯间を目指す
+		RETURNF 位置_二楼楼梯间
+	CASE 位置_地下室
+		;地下室に直接行けない場合、位置_大厅を目指す
+		RETURNF 位置_大厅
+	CASE 位置_大浴場
+		;大浴場に直接行けない場合、位置_大厅を目指す
+		RETURNF 位置_大厅
+	CASE 位置_湖 
+		;湖北部に直接行けない場合正門を目指す
+		RETURNF 位置_红魔馆正门
+	CASE 位置_琪露诺的家 
+		;琪露诺的家に直接行けない場合、位置_湖南部を目指す
+		RETURNF 位置_湖南部
+	CASE 位置_大妖精的家 
+		;大妖精的家に直接行けない場合、位置_湖南部を目指す
+		RETURNF 位置_湖南部
+	CASE 位置_魔理沙の家 
+		;魔理沙の家に直接行けない場合、位置_魔法の森内部を目指す
+		RETURNF 位置_魔法の森内部
+	CASE 位置_屋外厕所
+		;野外トイレに直接行けない場合、位置_院子を目指す
+		RETURNF 位置_院子
+	CASE 位置_1F厕所
+		;1F厕所に直接行けない場合、位置_大厅を目指す
+		RETURNF 位置_大厅
+	CASE 位置_2F厕所
+		;2F厕所に直接行けない場合、位置_二楼走廊を目指す
+		RETURNF 位置_二楼走廊
+	CASE 位置_3F阳台
+		;3F阳台に直接行けない場合、位置_蕾米莉亚の部屋を目指す
+		RETURNF 位置_蕾米莉亚私室
+	CASE 位置_湖南部
+		;湖南部に直接行けない場合、位置_湖を目指す
+		RETURNF 位置_湖
+	CASE 位置_魔法の森内部
+		;魔法の森内部に直接行けない場合、位置_位置_湖を目指す
+		RETURNF 位置_湖
+	CASE 位置_ルーミアの住処
+		;ルーミアの住処に直接行けない場合、位置_魔法の森内部を目指す
+		RETURNF 位置_魔法の森内部
+	CASE 位置_アリスの家
+		;アリスの家に直接行けない場合、位置_魔法の森内部を目指す
+		RETURNF 位置_魔法の森内部
+	CASE 位置_博麗神社
+		;博麗神社に直接行けない場合、位置_湖を目指す
+		RETURNF 位置_湖
+ENDSELECT
+THROW その場所は想定されていません{今の目的地}
+
+
+;次の移动場所を設定
+@SORT_ROUTE(住人)
+#DIM 住人
+#DIM LOOP_I
+
+;SETCOLOR 200, 200, 0
+;REPEAT 移动ルートMAX
+;	PRINTFORM {移动ルート:住人:COUNT} → 
+;REND
+;PRINTFORML ルート設定変更前 (%CALLNAME:住人%)
+
+;ARRAYSHIFTで行うと同室に複数キャラが居る時にこの処理に来ると何故か動作しない事があるので別の方法で
+; ARRAYSHIFT 移动ルート:住人, -1, 0, 0
+
+FOR LOOP_I, 1, 移动ルートMAX
+	移动ルート:住人:(LOOP_I-1) = 移动ルート:住人:LOOP_I
+NEXT
+
+;RESETCOLOR
+;REPEAT 移动ルートMAX
+;	PRINTFORM  {移动ルート:住人:COUNT} →
+;REND
+;PRINTFORML ルート設定変更後 (%CALLNAME:住人%)
+
+;目的地到達なら移动目的を消す
+IF CFLAG:住人:移动目的 && 移动ルート:住人:0 == 0
+	CFLAG:住人:移动目的 = 0
+ENDIF
+RETURN
+
+
+;移动ルートのリセット
+@RESET_ROUTE(住人, 目的消去)
+#FUNCTION
+#DIM 住人
+#DIM 目的消去
+#DIM LOOP_I
+
+FOR LOOP_I, 0, 移动ルートMAX
+	移动ルート:住人:LOOP_I = 0
+NEXT
+
+;移动目的を消す
+IF 目的消去 && CFLAG:住人:移动目的
+	CFLAG:住人:移动目的 = 0
+ENDIF
+RETURNF
+
+;合鍵所有チェック
+@HAS_DUPLICATE_KEY(場所)
+#FUNCTION
+#DIM 場所
+#DIM LOOP_CHR
+FOR LOOP_CHR, 1, CHARANUM
+	IF CFLAG:LOOP_CHR:開始位置 == 場所
+		IF FLAG:非公开NTR模式
+			IF TALENT:LOOP_CHR:恋人
+				RETURNF 1
+			ENDIF
+		ELSE
+			IF TALENT:LOOP_CHR:恋慕 || FLAG:全员NTR主人公女体化
+				RETURNF 1
+			ENDIF
+		ENDIF
+	ENDIF
+NEXT
+RETURNF 0
+
+
+;収集品死守戦発生条件
+@収集品死守戦発生(住人)
+#FUNCTION
+#DIM 住人		;住人 対象キャラ番号
+#DIM 察知確率
+#DIM 基礎値		;基礎値 主人公の収集経験(MAX100)
+;怪しまれる確率設定
+基礎値 = MIN(CFLAG:MASTER:収集品死守戦フラグ, 100)
+
+察知確率 = 0
+;収集品が対象の物なら察知確率上昇
+STRLENSU CALLNAME:住人
+IF SUBSTRINGU(CSTR:MASTER:収集品, 0, RESULT) == CALLNAME:住人
+	;但し好感度が高いと上昇値が減少
+	IF CFLAG:住人:好感度 <= 50
+		察知確率 += 20
+	ELSEIF CFLAG:住人:好感度 <= 100
+		察知確率 += 15
+	ELSEIF CFLAG:住人:好感度 <= 200
+		察知確率 += 10
+	ELSEIF CFLAG:住人:好感度 <= 300
+		察知確率 += 5
+	ENDIF
+	;そうでなければ対象が恋慕を取得していると上昇
+ELSE
+	;チルノ、大妖精、ルーミアは自分に関係がない場合は怪しまない
+	IF (住人 == 人物_琪露诺 || 住人 == 人物_大妖精 || 住人 == 人物_露米娅)
+		RETURNF 0
+	ENDIF
+
+	IF TALENT:住人:恋慕 && !TALENT:住人:亲爱
+		;加えて好感度が高いとさらに上昇値が増加
+		IF CFLAG:住人:好感度 >= 3000
+			察知確率 += 25
+		ELSEIF CFLAG:住人:好感度 >= 2000
+			察知確率 += 20
+		ELSEIF CFLAG:住人:好感度 >= 1000
+			察知確率 += 15
+		ELSE
+			察知確率 += 10
+		ENDIF
+	ENDIF
+ENDIF
+
+;出会ったキャラ別の察知能力
+SELECTCASE 住人
+	CASE 人物_美铃
+		察知確率 += 60
+	CASE 人物_小恶魔
+		察知確率 += 45
+	CASE 人物_帕秋莉
+		察知確率 += 40
+	CASE 人物_咲夜
+		察知確率 += 70
+	CASE 人物_蕾米莉亚
+		察知確率 += 35
+	CASE 人物_芙兰朵露
+		察知確率 += 20
+	CASE 人物_艾丽娅
+		察知確率 += 30
+	CASE 人物_琪露诺
+		察知確率 += 5
+	CASE 人物_大妖精
+		察知確率 += 10
+	CASE 人物_魔理沙
+		察知確率 += 30
+	CASE 人物_灵梦
+		察知確率 += 80
+	CASE 人物_露米娅
+		察知確率 += 10
+	CASE 人物_爱丽丝
+		察知確率 += 50
+ENDSELECT
+
+;確率設定
+IF RAND:基礎値 >= 察知確率
+	RETURNF 0
+ENDIF
+RETURNF 1
+
+
+;収集品死守戦開始
+;住人 キャラ名
+;移动中 怪しまれた時の状態(1=移动中, 0=移动していない)
+@収集品死守戦開始(住人, 移动中)
+#DIM 住人
+#DIM 移动中
+#DIM 結果	; 1:敗北 0:勝利
+#DIM 確率
+IF !移动中
+	;ちょいと適当すぎるか？
+	PRINTFORMW 突然被%CALLNAME:住人%问到有没有隐藏什么
+ELSE
+	PRINTFORMW %CALLNAME:住人%叫住了%CALLNAME:MASTER%、问到有没有隐藏什么
+ENDIF
+PRINTFORMW 这样下去就会被发现持有的收藏品！
+PRINTFORML 怎么办？
+PRINTL
+IF 移动中
+	PRINTL [0] 逃跑
+ENDIF
+PRINTL [1] 转移话题
+;PRINTL [2] 
+$LOOP_死守戦開始
+INPUT
+IF RESULT == 0 && 移动中
+	PRINTFORMW %CALLNAME:MASTER%一瞬间转移了对方的注意力，全力从那个场合跑了出去
+	結果 = 0
+	確率 = 0
+	;対象の戦闘技能とMASTERの戦闘技能の差で判定
+	;差が+4以上なら逃走失敗、-4以下なら逃走確定
+	SELECTCASE (ABL:住人:战斗技能 - ABL:MASTER:战斗技能)
+		CASE IS > 3
+			結果 = 1
+		CASE 3
+			確率 = 90
+		CASE 2
+			確率 = 70
+		CASE 1
+			確率 = 60
+		CASE 0
+			確率 = 50
+		CASE -1
+			確率 = 40
+		CASE -2
+			確率 = 20
+		CASE -3
+			確率 = 10
+	ENDSELECT
+	;差が+4以上又は-4以下でなければ確率
+	IF 確率 && RAND:100 < 確率
+		結果 = 1
+	ENDIF
+	IF 結果
+		PRINTFORMW 但是，马上被%CALLNAME:住人%赶上了……
+		RETURN 1
+	ELSE
+		PRINTFORMW 好歹从%CALLNAME:住人%那里逃出来了…
+		;好感度5%削減
+		TIMES CFLAG:住人:好感度, 0.95
+		RETURN 0
+	ENDIF
+ELSEIF RESULT == 1
+	PRINTFORMW %CALLNAME:MASTER%用天生的说话技巧想方设法克服了那个场合
+	IF RAND:100 >= (EXP:MASTER:会话经验 - CFLAG:住人:収集品死守戦フラグ)
+		PRINTFORMW 但是，没能很好地进行欺骗……
+		RETURN 1
+	ELSE
+		IF !移动中
+			PRINTFORMW 总算成功地把%CALLNAME:住人%敷衍住了
+		ELSE
+			PRINTFORMW 成功的敷衍了事，%CALLNAME:MASTER%匆匆忙忙离开了%GETPLACENAME(CFLAG:MASTER:現在位置)%……
+		ENDIF
+		;一度ごまかしに成功するにつれてごまかされにくくなる
+		CFLAG:住人:収集品死守戦フラグ += 10
+		RETURN 0
+	ENDIF
+ELSE
+	CLEARLINE 1
+	GOTO LOOP_死守戦開始
+ENDIF
+

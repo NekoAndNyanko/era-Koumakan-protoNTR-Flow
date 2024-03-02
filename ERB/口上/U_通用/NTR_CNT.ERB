@@ -1,0 +1,266 @@
+; #DIM CONST NTR_CNT_なし                 =  0
+; #DIM CONST NTR_CNT_诱惑姿势       =  1
+; #DIM CONST NTR_CNT_凝视             =  2
+; #DIM CONST NTR_CNT_贴近身体         =  3
+; #DIM CONST NTR_CNT_耳边吹气             =  4
+; #DIM CONST NTR_CNT_接吻                 =  5
+; #DIM CONST NTR_CNT_背面拥抱             =  6
+; #DIM CONST NTR_CNT_正面拥抱             =  7
+; #DIM CONST NTR_CNT_揉胸         =  8
+; #DIM CONST NTR_CNT_揉搓股间       =  9
+; #DIM CONST NTR_CNT_掀裙子看内裤     = 10
+; #DIM CONST NTR_CNT_深吻         = 11
+
+@NTR_CNT_U_1(奴隷)
+#DIM 奴隷
+IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	PRINTFORMW %CALLNAME:奴隷%展露出淫靡的姿态，试图诱惑%NTR_NAME(0)%…
+ENDIF
+
+@NTR_CNT_U_2(奴隷)
+#DIM 奴隷
+IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	PRINTFORMW %CALLNAME:奴隷%用湿润的双眸凝视着%NTR_NAME(0)%…
+ENDIF
+
+@NTR_CNT_U_3(奴隷)
+#DIM 奴隷
+IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	PRINTFORMW %CALLNAME:奴隷%一边嘴里轻轻呼出诱人的突袭，一边将身体贴近了%NTR_NAME(0)%…
+ENDIF
+
+@NTR_CNT_U_4(奴隷)
+#DIM 奴隷
+IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	PRINTFORMW %CALLNAME:奴隷%脸颊微红，凑到%NTR_NAME(0)%的耳边轻轻吹了一口气…
+ENDIF
+
+@NTR_CNT_U_5(奴隷)
+#DIM 奴隷
+IF FLAG:非公开NTR模式
+	IF CFLAG:奴隷:初吻丧失日
+		IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+				PRINTFORMW 即使身为恋人的%CALLNAME:MASTER%还在身边，但与%NTR_NAME(0)%共处一室的悸动还是驱使着%CALLNAME:奴隷%趁%CALLNAME:MASTER%不注意大胆地吻上了%NTR_NAME(0)%…
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORMW 即使与本应是%ANATA_LOVER(奴隷)%共处一室，%CALLNAME:奴隷%还是忍不住趁着%CALLNAME:MASTER%不注意悄悄吻上了%NTR_NAME(0)%…
+			ELSE
+				PRINTFORMW %CALLNAME:奴隷%躲开%ANATA_LOVER(奴隷)%的视线，将自己的嘴唇和%NTR_NAME(0)%的嘴唇重合在一起…
+			ENDIF
+		ELSE
+			IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+				PRINTFORMW %CALLNAME:奴隷%主动亲吻了%NTR_NAME(0)%…
+			ENDIF
+		ENDIF
+	ELSE
+		IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+				PRINTFORMW 即使身为恋人的%CALLNAME:MASTER%还在身边，但%CALLNAME:奴隷%还是趁%CALLNAME:MASTER%不注意将嘴唇递到%NTR_NAME(0)%眼前，大胆地吐出舌尖引诱%NTR_NAME(0)%…
+				PRINTFORMW 那谄媚的神情仿佛在说「是时候收下人家的初吻了」…
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORMW 即使与本应是%ANATA_LOVER(奴隷)%共处一室，%CALLNAME:奴隷%还是忍不住将嘴唇轻轻地凑近%NTR_NAME(0)%，在靠近嘴角的脸颊上点了一下
+				PRINTFORMW 挑逗一般的神情仿佛在说「想要我的初吻吗」…
+			ELSE
+				PRINTFORMW %CALLNAME:奴隷%躲开%ANATA_LOVER(奴隷)%的视线，将嘴唇轻轻地凑近%NTR_NAME(0)%，在靠近嘴角的脸颊上点了一下…
+			ENDIF
+		ELSE
+			IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+				PRINTFORMW %CALLNAME:奴隷%将嘴唇轻轻地凑近%NTR_NAME(0)%，在靠近嘴角的脸颊上点了一下…
+			ENDIF
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+		PRINTFORM %CALLNAME:奴隷%在
+		;主人公より好意度がかなり高いか、浮気公認だと同席でも光明正大地接吻
+		IF CFLAG:奴隷:屈服度 > (CFLAG:奴隷:好感度 * 2) || TALENT:奴隷:浮気公認 > 0
+			PRINTFORM %ANATA_LOVER(奴隷)%的眼前
+			IF TALENT:奴隷:浮気公認 > 0
+				PRINTFORM 光明正大地
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+				PRINTFORM 完全不想隐藏地
+			ELSE
+			ENDIF
+		ELSE
+			PRINTFORM 避开了%ANATA_LOVER(奴隷)%的目光
+		ENDIF
+		PRINTFORMW 将自己的嘴唇和%NTR_NAME(0)%的嘴唇重合在一起…
+	ELSE
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%主动亲吻了%NTR_NAME(0)%…
+		ENDIF
+	ENDIF
+ENDIF
+IF FLAG:非公开NTR模式
+	SIF CFLAG:奴隷:初吻丧失日
+		CALL NTR_EXP_ADD_KISS(奴隷,1)
+ELSE
+	CALL NTR_EXP_ADD_KISS(奴隷,1)
+	CALL LOST_VIRGIN_M(奴隷, 人物_訪問者)
+ENDIF
+
+@NTR_CNT_U_6(奴隷)
+#DIM 奴隷
+IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+	PRINTFORM %CALLNAME:奴隷%在
+	PRINTFORM %ANATA_LOVER(奴隷)%的眼前
+	IF TALENT:奴隷:浮気公認 > 0
+		PRINTFORM 光明正大地
+	ELSE
+	ENDIF
+	PRINTFORMW 从背后抱住了%NTR_NAME(0)%
+	SIF TALENT:奴隷:胸部尺寸 > 0
+		PRINTFORML 并将自己柔软的乳房压在%NTR_NAME(0)%的脊背上…
+ELSE
+	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		PRINTFORMW %CALLNAME:奴隷%从背后撒娇般抱住了%NTR_NAME(0)%
+		SIF TALENT:奴隷:胸部尺寸 > 0
+			PRINTFORML 并将自己柔软的乳房压在%NTR_NAME(0)%的脊背上…
+	ENDIF
+ENDIF
+
+@NTR_CNT_U_7(奴隷)
+#DIM 奴隷
+IF FLAG:非公开NTR模式
+	IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+			PRINTFORMW 在身为恋人的%CALLNAME:MASTER%面前，%CALLNAME:奴隷%像是与同性好友嬉戏似的拥抱着%NTR_NAME(0)%…
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORMW 趁着%ANATA_LOVER(奴隷)%没注意这边，%CALLNAME:奴隷%羞涩地倒在%NTR_NAME(0)%怀里，彼此相拥…
+		ELSE
+			PRINTFORMW %CALLNAME:奴隷%在%ANATA_LOVER(奴隷)%的面前轻轻抱了抱%NTR_NAME(0)%…
+		ENDIF
+	ELSE
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%开心地抱了抱%NTR_NAME(0)%…
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+		PRINTFORM %CALLNAME:奴隷%在
+		PRINTFORM %ANATA_LOVER(奴隷)%的眼前
+		IF TALENT:奴隷:浮気公認 > 0
+			PRINTFORM 光明正大地
+		ELSE
+		ENDIF
+		PRINTFORMW 抱紧了%NTR_NAME(0)%
+	ELSE
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%热情地抱紧了%NTR_NAME(0)%
+		ENDIF
+	ENDIF
+ENDIF
+
+@NTR_CNT_U_8(奴隷)
+#DIM 奴隷
+IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+	IF FLAG:非公开NTR模式
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷%不着边际地用\@ TALENT:奴隷:胸部尺寸 > 0 ? 饱满的乳房 # 可爱的胸部 \@蹭了蹭%NTR_NAME(0)%的手臂
+			DATAFORM %CALLNAME:奴隷%趁%CALLNAME:MASTER%不注意牵起%NTR_NAME(0)%的手，轻轻放在自己\@ TALENT:奴隷:胸部尺寸 > 0 ? 傲人的 # 青涩的 \@胸脯上
+			DATAFORM %CALLNAME:奴隷%\@ TALENT:奴隷:胸部尺寸 > 0 ? 托起自己柔软的乳房挤了挤 # 将手放在胸口上抚摸 \@，向某人露出了邀约般的诱人微笑
+		ENDDATA
+	ELSE
+		PRINTFORM %CALLNAME:奴隷%在
+		IF TALENT:奴隷:浮気公認 > 0
+			PRINTFORM %ANATA_LOVER(奴隷)%的眼前
+		ELSE
+		ENDIF
+		IF TALENT:奴隷:浮気公認 > 0
+			PRINTFORM 光明正大地
+		ELSE
+		ENDIF
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINTFORMW 拉过%NTR_NAME(0)%的手，按揉自己的乳房…
+		ELSE
+			PRINTFORMW 拉过%NTR_NAME(0)%的手，爱抚自己的胸部…
+		ENDIF
+	ENDIF
+ELSE
+	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		PRINTFORM %CALLNAME:奴隷%
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINTFORMW 拉过%NTR_NAME(0)%的手，按揉自己的乳房…
+		ELSE
+			PRINTFORMW 拉过%NTR_NAME(0)%的手，爱抚自己的胸部…
+		ENDIF
+	ENDIF
+ENDIF
+
+@NTR_CNT_U_9(奴隷)
+#DIM 奴隷
+IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+	PRINTFORM %CALLNAME:奴隷%双颊绯红地
+	IF TALENT:奴隷:浮気公認 > 0
+		PRINTFORM 像专门给%ANATA_LOVER(奴隷)%看一样
+	ELSE
+		PRINTFORM %ANATA_LOVER(奴隷)%的眼前
+	ENDIF
+	PRINTFORMW 伸手轻轻摩挲%NTR_NAME(0)%的两腿之间…
+ELSE
+	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		PRINTFORM %CALLNAME:奴隷%双颊绯红地
+		PRINTFORMW 伸手轻轻摩挲%NTR_NAME(0)%的两腿之间…
+	ENDIF
+ENDIF
+
+@NTR_CNT_U_10(奴隷)
+#DIM 奴隷
+IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF FLAG:非公开NTR模式 && CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+		PRINTFORML 在%CALLNAME:MASTER%走神的间隙，%CALLNAME:奴隷%轻轻将手放在股间，对着%NTR_NAME(0)%慢慢地掀起了自己的裙摆
+		PRINTFORM \@ TALENT:奴隷:羞耻心 > 0 ? 羞涩地 # 大胆地\@展示着裙下
+		IF EQUIP:奴隷:下半身下着１
+			PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着１)%%PANTSNAME(EQUIP:奴隷:下半身下着１)%
+		ELSEIF !EQUIP:奴隷:下半身下着２
+			PRINTFORM 一览无余的真空
+		ELSE
+			PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着２)%%PANTSNAME(EQUIP:奴隷:下半身下着２)%
+		ENDIF
+		PRINTFORML …
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%主动\@ TALENT:奴隷:羞耻心 > 0 ? 害羞地 # \@卷起自己的裙子
+		PRINTFORM 将最重要部位，展露给%NTR_NAME(0)%欣赏
+		IF EQUIP:奴隷:下半身下着１
+			IF GETBIT(FLAG:匂いフェチ,1) 
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着１)%%IRUINAME_SMELL(EQUIP:奴隷:下半身下着１)%%PANTSNAME(EQUIP:奴隷:下半身下着１)%
+			ELSE
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着１)%%PANTSNAME(EQUIP:奴隷:下半身下着１)%
+			ENDIF
+		ELSEIF !EQUIP:奴隷:下半身下着２
+			PRINTFORM 裙子里什么也没穿的下半身
+		ELSE
+			IF GETBIT(FLAG:匂いフェチ,1) 
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着２)%%IRUINAME_SMELL(EQUIP:奴隷:下半身下着２)%%PANTSNAME(EQUIP:奴隷:下半身下着２)%
+			ELSE
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着２)%%PANTSNAME(EQUIP:奴隷:下半身下着２)%
+			ENDIF
+		ENDIF
+		PRINTFORML 被看到了…
+	ENDIF
+ENDIF
+
+@NTR_CNT_U_11(奴隷)
+#DIM 奴隷
+IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+	PRINTFORM %CALLNAME:奴隷%
+	IF TALENT:奴隷:浮気公認 > 0
+		PRINTFORM 像是专门给%ANATA_LOVER(奴隷)%欣赏一样
+	ELSE
+		PRINTFORM 在%ANATA_LOVER(奴隷)%的眼前
+	ENDIF
+	IF TALENT:奴隷:淫乱|| TALENT:奴隷:浮気的蜜唇
+		PRINTFORML 热情地亲吻了%NTR_NAME(0)%，舌头相互纠缠，交换着唾液…
+	ELSE
+		PRINTFORML 热情地亲吻了%NTR_NAME(0)%，并将舌头伸了进去…
+	ENDIF
+ELSE
+	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		PRINTFORM %CALLNAME:奴隷%は
+		IF TALENT:奴隷:淫乱|| TALENT:奴隷:浮気的蜜唇
+			PRINTFORML 热情地亲吻了%NTR_NAME(0)%，舌头相互纠缠，交换着唾液…
+		ELSE
+			PRINTFORML 热情地亲吻了%NTR_NAME(0)%，并将舌头伸了进去…
+		ENDIF
+	ENDIF
+ENDIF

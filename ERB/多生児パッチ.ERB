@@ -1,0 +1,275 @@
+﻿;多生児出産(ryパッチ======================================
+;新規追加フラグ
+;FLAG:53 多生児出産と(ryパッチVerUP用フラグ
+;FLAG:54 訪問者の子供の数
+
+;CFLAG:85 子供の人数
+;CFLAG:86 父親の何人目の子供(子供用フラグ)
+;CFLAG:87 母親の何人目の子供(子供用フラグ)
+;CFLAG:88 里子に出した数
+
+;CFLAG:353 何人出産するか(出産後は育儿中の人数となる)
+;CFLAG:354 多生児の兄弟用フラグ
+
+
+;====================================================
+;SHOP.ERB～～～～～～～～～～～～～～～～～～
+
+
+
+;PREGNACY_S.ERB～～～～～～～～～～～～～～～～～～
+
+;出産直前に処理---------------------------------
+@生まれる人数, ARG
+#DIM 最大出産可能人数
+
+最大出産可能人数 = 人物最大 - CHARANUM
+;産まれる人数確認
+CFLAG:ARG:出産数 = 1
+;獣系(素質[猫舌][動物耳][狐][妖狐]のいずれかを持つ)は多生児を産みやすい
+IF TALENT:ARG:猫舌 || TALENT:ARG:動物耳 || TALENT:ARG:狐 || TALENT:ARG:妖狐
+	SIF RAND:多生児出産強度(ARG, 80) == 0
+		CFLAG:ARG:出産数 = 2
+	SIF RAND:多生児出産強度(ARG, 120) == 0
+		CFLAG:ARG:出産数 = 3
+	SIF RAND:多生児出産強度(ARG, 160) == 0
+		CFLAG:ARG:出産数 = 4
+	SIF RAND:多生児出産強度(ARG, 260) == 0
+		CFLAG:ARG:出産数 = 5
+	SIF RAND:多生児出産強度(ARG, 500) == 0
+		CFLAG:ARG:出産数 = 6
+	SIF RAND:多生児出産強度(ARG, 650) == 0
+		CFLAG:ARG:出産数 = 7
+	SIF RAND:多生児出産強度(ARG, 800) == 0
+		CFLAG:ARG:出産数 = 8
+ELSE
+	SIF RAND:多生児出産強度(ARG, 100) == 0
+		CFLAG:ARG:出産数 = 2
+	SIF RAND:多生児出産強度(ARG, 250) == 0
+		CFLAG:ARG:出産数 = 3
+	SIF RAND:多生児出産強度(ARG, 500) == 0
+		CFLAG:ARG:出産数 = 4
+	SIF RAND:多生児出産強度(ARG, 750) == 0
+		CFLAG:ARG:出産数 = 5
+	SIF RAND:多生児出産強度(ARG, 1000) == 0
+		CFLAG:ARG:出産数 = 6
+	SIF RAND:多生児出産強度(ARG, 2000) == 0
+		CFLAG:ARG:出産数 = 7
+	SIF RAND:多生児出産強度(ARG, 3000) == 0
+		CFLAG:ARG:出産数 = 8
+ENDIF
+;最大人数のチェック
+IF (最大出産可能人数 < CFLAG:ARG:出産数)
+	CFLAG:ARG:出産数 = 最大出産可能人数 
+ENDIF
+
+TRYCALL 生まれる人数DEBUG, ARG
+
+@親子関係追加取得, ARG, ARG:1, ARG:2
+;ARG   子供
+;ARG:1 ARGの父
+;ARG:2 ARGの母
+
+;父母の子供の人数フラグ設定
+;父親が訪問者なら訪問者用の人数フラグ処理
+IF ARG:1 >= CHARANUM
+	FLAG:訪問者の子供の数 ++
+ELSE
+	CFLAG:(ARG:1):85 ++
+ENDIF
+CFLAG:(ARG:2):85 ++
+
+;子供が父母の何人目の子供かを設定
+IF ARG:1 >= CHARANUM
+	CFLAG:ARG:父親の子番号 = FLAG:訪問者の子供の数
+ELSE
+	CFLAG:ARG:父親の子番号 = CFLAG:(ARG:1):85
+ENDIF
+CFLAG:ARG:母親の子番号 = CFLAG:(ARG:2):85
+
+;母親及び父親がMASTERではない時の出産口上---------------------
+@両親がMASTER以外の出産口上, ARG, ARG:1
+;ARG   母親の番号
+;ARG:1 子供の番号
+
+PRINTFORMW %CALLNAME:ARG%が%N_T_R(CFLAG:(ARG:1):73, 1)%の子を\@ CFLAG:ARG:出産数 != 1 ?{CFLAG:ARG:出産数}人#\@産みました。
+
+
+
+;生まれた人数に応じて口上変化---------------------
+@多生児出産口上, ARG, ARG:1
+;設定上八つ子まで
+SELECTCASE ARG
+	CASE 2
+		PRINT 双
+	CASE 3
+		PRINT 三つ
+	CASE 4
+		PRINT 四つ
+	CASE 5
+		PRINT 五つ
+	CASE 6
+		PRINT 六つ
+	CASE 7
+		PRINT 七つ
+	CASE 8
+		PRINT 八つ
+ENDSELECT
+PRINT 子
+SIF ARG:1 == 0
+	PRINTW の赤ちゃんだ
+;SIF ARG:1 == 1
+;	PRINT の子
+
+@多生児フラグ処理, ARG, ARG:1
+;ARG 生まれる子供
+;ARG:1 現在の繰り返し番号
+
+;一番目の子
+IF ARG:1 == 0
+	LOCAL:1 = 0
+	;他の子供をチェックし、CFLAG:354の最大数を取得
+	FOR LOCAL, 0, CHARANUM
+		SIF NO:LOCAL != 148 && NO:LOCAL != 149
+			CONTINUE
+		SIF LOCAL:1 < CFLAG:LOCAL:多生児兄弟フラグ
+			LOCAL:1 = CFLAG:LOCAL:多生児兄弟フラグ
+	NEXT
+
+	CFLAG:ARG:多生児兄弟フラグ = (LOCAL:1 + 1)
+ELSE
+	CFLAG:ARG:多生児兄弟フラグ = CFLAG:(CHARANUM-2):多生児兄弟フラグ
+
+ENDIF
+
+
+@里子, ARG
+;生まれる子供の数だけ追加
+SIF (CFLAG:ARG:にんっしんっ - 1) < CHARANUM
+	CFLAG:(CFLAG:ARG:にんっしんっ - 1):88 += CFLAG:ARG:出産数
+CFLAG:ARG:里子人数 += CFLAG:ARG:出産数
+
+SIF (CFLAG:ARG:にんっしんっ - 1) < CHARANUM
+	CFLAG:(CFLAG:ARG:にんっしんっ - 1):85 += CFLAG:ARG:出産数
+CFLAG:ARG:子供の人数 += CFLAG:ARG:出産数
+
+
+
+
+@子供相性設定, ARG
+;ARG 相性を設定するキャラ
+
+;父親が登録外のキャラの場合の処理
+IF CFLAG:ARG:父親 >= CHARANUM
+	FOR LOCAL, 0, CHARANUM
+		IF RELATION:(CFLAG:ARG:母親):LOCAL == 0 || RELATION:(CFLAG:ARG:母親):LOCAL == 100
+			RELATION:ARG:LOCAL = 100
+		ELSE
+			;受け継ぐ相性が100超なら ((受け継ぐ相性-100)/2)+100
+			;受け継ぐ相性が100未満なら((100-受け継ぐ相性)/2)+受け継ぐ相性
+			IF RELATION:(CFLAG:ARG:母親):LOCAL > 100
+				RELATION:ARG:LOCAL = ((RELATION:(CFLAG:ARG:母親):LOCAL - 100) / 2) + 100
+			ELSEIF RELATION:(CFLAG:ARG:母親):LOCAL < 100
+				RELATION:ARG:LOCAL = ((100 - RELATION:(CFLAG:ARG:母親):LOCAL) / 2) + RELATION:(CFLAG:ARG:母親):LOCAL
+			ENDIF
+		ENDIF
+	NEXT
+	RELATION:ARG:(CFLAG:ARG:母親) = 300
+ELSE
+	FOR LOCAL, 0, CHARANUM
+		IF (RELATION:(CFLAG:ARG:母親):LOCAL == 0 || RELATION:(CFLAG:ARG:母親):LOCAL == 100) && (RELATION:(CFLAG:ARG:父親):LOCAL == 0 || RELATION:(CFLAG:ARG:父親):LOCAL == 100)
+			RELATION:ARG:LOCAL = 100
+		ELSE
+			;対象LOCALに対する相性が両親共に同じか
+			IF RELATION:(CFLAG:ARG:母親):LOCAL == RELATION:(CFLAG:ARG:父親):LOCAL
+				;受け継ぐ相性が100超なら ((受け継ぐ相性-100)/2)+100
+				;受け継ぐ相性が100未満なら((100-受け継ぐ相性)/2)+受け継ぐ相性
+				IF RELATION:(CFLAG:ARG:母親):LOCAL > 100
+					RELATION:ARG:LOCAL = (((RELATION:(CFLAG:ARG:母親):LOCAL - 100) / 2) + 100)
+				ELSEIF RELATION:(CFLAG:ARG:母親):LOCAL < 100
+					RELATION:ARG:LOCAL = (((100 - RELATION:(CFLAG:ARG:母親):LOCAL) / 2) + RELATION:(CFLAG:ARG:母親):LOCAL)
+				ENDIF
+			ELSE
+				;両親の平均値を取得
+				RELATION:ARG:LOCAL = ((RELATION:(CFLAG:ARG:母親):LOCAL + RELATION:(CFLAG:ARG:父親):LOCAL) / 2)
+			ENDIF
+		ENDIF
+	NEXT
+	RELATION:ARG:(CFLAG:ARG:父親) = 300
+	RELATION:ARG:(CFLAG:ARG:母親) = 300
+ENDIF
+
+;その他いろいろ～～～～～～～～～～～～～～～～～～
+@N_T_R(ARG, ARG:1)
+#FUNCTIONS
+;ARG キャラ番号ないし訪問者(998)番号
+
+;訪問者による第１引数に引っかかる時とかにいちいちIF文とか使わないでいけるようにするもの
+;%N_T_R(LOCAL, 0)%
+
+SELECTCASE ARG:1
+	CASE 0
+		SELECTCASE ARG
+			CASE 0 TO CHARANUM-1
+				RETURNF CALLNAME:ARG
+			CASE 人物_訪問者
+				;RETURNF "訪問者"
+				RETURNF NTR_NAME(0)
+			CASE 人物_客
+				RETURNF "客"
+			CASE 人物_村人
+				RETURNF "村人"
+			CASEELSE
+				RETURNF "名前が定義されていない何か"
+		ENDSELECT
+	CASE 1
+		SELECTCASE ARG
+			CASE 0 TO CHARANUM-1
+				RETURNF CALLNAME:ARG
+			CASE 人物_訪問者
+				;RETURNF "訪問者"
+				RETURNF NTR_NAME(0)
+			CASE 人物_客, 人物_村人
+				RETURNF "名も知らない誰か"
+			CASE IS > 人物_客
+				RETURNF "誰か"
+			CASEELSE
+				RETURNF "名前が定義されていない何か"
+		ENDSELECT
+ENDSELECT
+
+
+;多生児出産確率------------------
+@多生児出産強度(ARG, ARG:1)
+#FUNCTION
+
+SELECTCASE CFLAG:ARG:355
+	CASE 1
+		;8つ子の確立、獣系でRAND:640 それ以外でRAND:2400となる
+		TIMES ARG:1, 0.80
+	CASE 2
+		;8つ子の確立、獣系でRAND: それ以外でRAND:となる
+		TIMES ARG:1, 0.50
+	CASE 3
+		;8つ子の確立、獣系でRAND: それ以外でRAND:となる
+		TIMES ARG:1, 0.30
+	CASE 4
+		;8つ子の確立、獣系でRAND: それ以外でRAND:となる
+		TIMES ARG:1, 0.15
+	CASE 5
+		;8つ子の確立、獣系でRAND:40 それ以外でRAND:150となる
+		TIMES ARG:1, 0.05
+	CASE 6
+		;8つ子の確立、獣系でRAND:8 それ以外でRAND:30となる
+		TIMES ARG:1, 0.01
+ENDSELECT
+
+IF ARG:1 == 1
+	ARG:1 = 2
+ELSEIF ARG:1 == 0
+	ARG:1 = 1
+ENDIF
+
+RETURNF ARG:1
+
+

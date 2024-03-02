@@ -1,0 +1,336 @@
+﻿;-------------------------------------------------------------------------------
+;会话命令(我TM魔改版) - 调查角色信息 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_20_ENABLE
+SIF ITEM:18 == 0 || FLAG:真实模式 == 0
+	RETURN 0
+
+RESULTS:0 = %"[20]-尝试调查"+CALLNAME:TARGET+"的信息"%
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会话命令(我TM魔改版) - 调查角色信息
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+; 咲夜さんかお嬢様しか想定してないんで、口上もここに混ぜ込んでいいよね？
+@COM300_20
+#DIM 成否判定
+#DIM 优先类型
+#DIM 判定难度
+
+;调查分支
+;PRINTFORML [ 1] - 经常撞到妖精互相抱在一起的场面呢，总是喊一声舒服而已就跑掉了……
+;PRINTFORML [ 2] - 好多妖精都会没事出去找男人呢……
+;PRINTFORML [ 3] - %CALLNAME:TARGET%~妖精跟我说了些性快感的趣闻，想听听吗？……
+;PRINTFORML [ 4] - 村子里好像新开了家道具店，里面超和谐的……哈哈……
+;PRINTFORML [ 5] - 听说在很舒服的时候胸部会喷出奶来哦……
+;PRINTFORML [ 6] - 内急很难抵挡呢，好像很多人都有过不在厕所解决的经历……
+;PRINTFORML [ 7] - %CALLNAME:TARGET%，知道那种粘乎乎的白色的液体吗~~？
+;PRINTFORML [ 8] - 听说那种粘乎乎的白色液体很有营养的样子，%CALLNAME:TARGET%试过吗？……
+;PRINTFORML [ 9] - 去村子里总是能见到年轻男女搂搂抱抱呢……
+;PRINTFORML [10] - 村子里有那种被妖怪咬掉那玩意的新闻呢……有点惨嚯……
+;PRINTFORML [11] - 有些男人真的很暴力呢，还专找女孩子下手……
+;PRINTFORML [12] - 外界的一些东西总算有人会用了呢，老家伙们总是说会把魂魄留在上面，见到有人用就要用拐杖打呢……
+;PRINTFORML [13] - %CALLNAME:TARGET%喜欢战斗吗？……
+;PRINTFORML [14] - %CALLNAME:TARGET%有甚么书可以介绍介绍吗？……
+;PRINTFORML [15] - %CALLNAME:TARGET%会做料理吗？……
+;PRINTFORML [16] - 听到些妖精说想转行做娼女，有那么好吗？……
+;有证据的情况下，可以问出轨相关经验
+;IF
+
+;ENDIF
+
+PRINTFORML 尝试通过话术转移%CALLNAME:TARGET%的注意力，用记忆审查器调查%CALLNAME:TARGET%。
+;PRINTL [ 1] - 好
+;PRINTL [ 0] - 放弃
+;INPUT
+;IF RESULT == 0
+;	CALL COM300
+;ELSE
+;和话术，与玩家关系，屈服度，怒意，性欲，访问者在不在旁边有关
+判定难度 = 100
+SIF TALENT:TARGET:恋慕 || TALENT:TARGET:亲爱
+	判定难度 -= 20
+SIF TALENT:TARGET:人妻
+	判定难度 -= 10
+判定难度 += BASE:TARGET:怒意/10
+判定难度 = RAND:(判定难度) + 1
+判定难度 -= ABL:MASTER:话术技能*15 + 10
+
+IF 判定难度 < 0
+	成否判定 = MAX(1,-判定难度/10)
+	优先类型 = 1
+	;=1 优先抽取普通的经验
+	;=2 优先抽取普通的涩琴经验
+
+	;=4 优先抽取NTR涩琴经验
+	;IF CFLAG:TARGET:性欲 > 30
+	;	优先类型 = 2
+	;ENDIF
+	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+		优先类型 = 4
+	ENDIF
+	TRYCALLFORM COM300_20_3(成否判定,优先类型)
+ELSEIF 判定难度 > 50
+	;大失败
+	PRINTFORM 「你在干什么呀！」
+	PRINTFORMW %CALLNAME:TARGET%发现了你似乎打算用什么东西搞小动作，生气地瞪了你一眼。
+	BASE:TARGET:怒意 += 500
+	CFLAG:TARGET:怒意 = 1
+ELSE 
+	;失败
+	PRINTFORMW %CALLNAME:TARGET%一直在和你侃侃而谈，没有机会拿出来...
+ENDIF
+CALL COM300_01
+;ENDIF
+RETURN RESULT
+
+;-------------------------------------------------------------------------------
+;会话命令(我TM魔改版) - 调查角色信息
+; RETURN 0 コマンドの実行に失敗
+@COM300_20_0(ARG)
+TRYCALLFORM KOJO_K{TARGET}_COM300_20_{ARG}_0
+RETURN RESULT
+;-------------------------------------------------------------------------------
+;会话命令(我TM魔改版) - 调查角色信息
+; RETURN 1 コマンドの実行に成功
+@COM300_20_1(ARG)
+TRYCALLFORM KOJO_K{TARGET}_COM300_20_{ARG}_1
+RETURN RESULT
+
+;-------------------------------------------------------------------------------
+;会话命令(我TM魔改版 红茶魔改) - 调查角色信息
+; RETURN 1 コマンドの実行に成功
+@COM300_20_3(判定,类型)
+#DIM 判定
+#DIM 类型
+#DIM LOOP_I
+#DIM LOOP_II
+#DIM 总可更新经验数
+#DIM 可更新经验数
+#DIM ROLLDICE
+#DIM 更新经验
+#DIM UPDATEEXP,200
+#DIM D_UPDATEEXP,200
+
+;判定=更新多少个经验
+;类型=优先抽取哪一类经验
+;额外有20%概率抽取刻印和重要的回忆
+;类型1 有40%的概率抽取普通经验 40%的概率抽取H相关经验 20%的概率抽取NTR相关经验
+;类型2 有10%的概率抽取普通经验 70%的概率抽取H相关经验 20%的概率抽取NTR相关经验
+;类型4 有10%的概率抽取普通经验 30%的概率抽取H相关经验 60%的概率抽取NTR相关经验
+;
+;首先拉取可抽取经验列表
+
+总可更新经验数 = 0
+FOR LOOP_I, 0, 127
+	IF EXP:(LOOP_I+150) != EXP:LOOP_I && EXP:LOOP_I != 0
+		UPDATEEXP:总可更新经验数 = LOOP_I
+		总可更新经验数 ++
+	ENDIF
+NEXT
+
+
+;没有可以更新的经验
+IF 总可更新经验数 == 0	
+	PRINTL 好像继续问下去也问不出什么了...
+	RETURN 0
+ENDIF
+
+更新经验 = 0
+
+;总可更新经验数 --	
+
+SIF 判定 > 3	
+	判定 = 3
+
+FOR LOOP_I, 1, 判定
+	IF 类型 == 1 
+		;70-77 日常
+		;0-62 普通H
+		;80-127 NTR
+		ROLLDICE = RAND:100
+		SELECTCASE ROLLDICE
+			CASE 0 TO 20
+				可更新经验数 = 0
+				FOR LOOP_II, 0, 总可更新经验数
+					IF UPDATEEXP:LOOP_II > 79
+						D_UPDATEEXP:可更新经验数 = UPDATEEXP:LOOP_II
+						可更新经验数 ++ 
+					ENDIF
+				NEXT	
+				IF 可更新经验数
+					更新经验 = RAND:可更新经验数
+					;D_UPDATEEXP:(更新经验)
+					IF !EXP:TARGET:(150+D_UPDATEEXP:(更新经验))
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎有{EXP:TARGET:(D_UPDATEEXP:(更新经验))}次的样子
+					ELSE
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎比上次多了{EXP:TARGET:(D_UPDATEEXP:(更新经验)) - EXP:TARGET:(150+D_UPDATEEXP:(更新经验))}次的样子
+					ENDIF
+					EXP:TARGET:(150+D_UPDATEEXP:(更新经验)) = EXP:TARGET:(D_UPDATEEXP:(更新经验))
+					更新经验 ++ 
+				ENDIF
+			CASE 21 TO 60
+				可更新经验数 = 0
+				FOR LOOP_II, 0, 总可更新经验数
+					IF UPDATEEXP:LOOP_II < 63
+						D_UPDATEEXP:可更新经验数 = UPDATEEXP:LOOP_II
+						可更新经验数 ++ 
+					ENDIF
+				NEXT	
+				IF 可更新经验数
+					更新经验 = RAND:可更新经验数
+					;D_UPDATEEXP:(更新经验)
+					IF !EXP:TARGET:(150+D_UPDATEEXP:(更新经验))
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎有{EXP:TARGET:(D_UPDATEEXP:(更新经验))}次的样子
+					ELSE
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎比上次多了{EXP:TARGET:(D_UPDATEEXP:(更新经验)) - EXP:TARGET:(150+D_UPDATEEXP:(更新经验))}次的样子
+					ENDIF
+					EXP:TARGET:(150+D_UPDATEEXP:(更新经验)) = EXP:TARGET:(D_UPDATEEXP:(更新经验))
+					更新经验 ++
+				ENDIF
+			CASEELSE
+				可更新经验数 = 0
+				FOR LOOP_II, 0, 总可更新经验数
+					IF UPDATEEXP:LOOP_II > 62 && UPDATEEXP:LOOP_II < 80
+						D_UPDATEEXP:可更新经验数 = UPDATEEXP:LOOP_II
+						可更新经验数 ++ 
+					ENDIF
+				NEXT	
+				IF 可更新经验数
+					更新经验 = RAND:可更新经验数
+					;D_UPDATEEXP:(更新经验)
+					IF !EXP:TARGET:(150+D_UPDATEEXP:(更新经验))
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎有{EXP:TARGET:(D_UPDATEEXP:(更新经验))}次的样子
+					ELSE
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎比上次多了{EXP:TARGET:(D_UPDATEEXP:(更新经验)) - EXP:TARGET:(150+D_UPDATEEXP:(更新经验))}次的样子
+					ENDIF						
+					EXP:TARGET:(150+D_UPDATEEXP:(更新经验)) = EXP:TARGET:(D_UPDATEEXP:(更新经验))
+					更新经验 ++
+				ENDIF				
+		ENDSELECT
+
+
+	ENDIF
+	IF 类型 == 4
+		;70-77 日常
+		;0-62 普通H
+		;80-127 NTR
+		ROLLDICE = RAND:100
+		SELECTCASE ROLLDICE
+			CASE 0 TO 50
+				可更新经验数 = 0
+				FOR LOOP_II, 0, 总可更新经验数
+					IF UPDATEEXP:LOOP_II > 79
+						D_UPDATEEXP:可更新经验数 = UPDATEEXP:LOOP_II
+						可更新经验数 ++ 
+					ENDIF
+				NEXT	
+				IF 可更新经验数
+					更新经验 = RAND:可更新经验数
+					;D_UPDATEEXP:(更新经验)
+					IF !EXP:TARGET:(150+D_UPDATEEXP:(更新经验))
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎有{EXP:TARGET:(D_UPDATEEXP:(更新经验))}次的样子
+					ELSE
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎比上次多了{EXP:TARGET:(D_UPDATEEXP:(更新经验)) - EXP:TARGET:(150+D_UPDATEEXP:(更新经验))}次的样子
+					ENDIF
+					EXP:TARGET:(150+D_UPDATEEXP:(更新经验)) = EXP:TARGET:(D_UPDATEEXP:(更新经验))
+					更新经验 ++ 
+				ENDIF
+			CASE 51 TO 90
+				可更新经验数 = 0
+				FOR LOOP_II, 0, 总可更新经验数
+					IF UPDATEEXP:LOOP_II < 63
+						D_UPDATEEXP:可更新经验数 = UPDATEEXP:LOOP_II
+						可更新经验数 ++ 
+					ENDIF
+				NEXT	
+				IF 可更新经验数
+					更新经验 = RAND:可更新经验数
+					;D_UPDATEEXP:(更新经验)
+					IF !EXP:TARGET:(150+D_UPDATEEXP:(更新经验))
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎有{EXP:TARGET:(D_UPDATEEXP:(更新经验))}次的样子
+					ELSE
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎比上次多了{EXP:TARGET:(D_UPDATEEXP:(更新经验)) - EXP:TARGET:(150+D_UPDATEEXP:(更新经验))}次的样子
+					ENDIF
+					EXP:TARGET:(150+D_UPDATEEXP:(更新经验)) = EXP:TARGET:(D_UPDATEEXP:(更新经验))
+					更新经验 ++
+				ENDIF
+			CASEELSE
+				可更新经验数 = 0
+				FOR LOOP_II, 0, 总可更新经验数
+					IF UPDATEEXP:LOOP_II > 62 && UPDATEEXP:LOOP_II < 80
+						D_UPDATEEXP:可更新经验数 = UPDATEEXP:LOOP_II
+						可更新经验数 ++ 
+					ENDIF
+				NEXT	
+				IF 可更新经验数
+					更新经验 = RAND:可更新经验数
+					;D_UPDATEEXP:(更新经验)
+					IF !EXP:TARGET:(150+D_UPDATEEXP:(更新经验))
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎有{EXP:TARGET:(D_UPDATEEXP:(更新经验))}次的样子
+					ELSE
+						PRINTFORML %CALLNAME:TARGET%的%EXPNAME:(D_UPDATEEXP:(更新经验))%似乎比上次多了{EXP:TARGET:(D_UPDATEEXP:(更新经验)) - EXP:TARGET:(150+D_UPDATEEXP:(更新经验))}次的样子
+					ENDIF						
+					EXP:TARGET:(150+D_UPDATEEXP:(更新经验)) = EXP:TARGET:(D_UPDATEEXP:(更新经验))
+					更新经验 ++
+				ENDIF				
+		ENDSELECT
+
+
+	ENDIF
+NEXT
+
+SIF 更新经验 == 0 
+	PRINTL 没查出什么有变化的经验来
+
+ROLLDICE = RAND:20
+SELECTCASE ROLLDICE
+	CASE 0
+		IF CSTR:TARGET:初吻丧失记录 != CSTR:TARGET:已知的初吻丧失记录
+			PRINTFORML 意外知道了%CALLNAME:TARGET%的初吻相关情况...
+			CSTR:TARGET:已知的初吻丧失记录 = %CSTR:TARGET:初吻丧失记录%
+		ENDIF
+	CASE 1
+		IF CSTR:TARGET:M处女丧失记录 != CSTR:TARGET:已知的M处女丧失记录
+			PRINTFORML 意外知道了%CALLNAME:TARGET%的初吻相关情况...
+			CSTR:TARGET:已知的M处女丧失记录 = %CSTR:TARGET:M处女丧失记录%
+		ENDIF
+	CASE 2
+		IF CSTR:TARGET:V处女丧失记录 != CSTR:TARGET:已知的V处女丧失记录
+			PRINTFORML 意外知道了%CALLNAME:TARGET%的初体験相关情况...
+			CSTR:TARGET:已知的V处女丧失记录 = %CSTR:TARGET:V处女丧失记录%
+		ENDIF
+	CASE 3
+		IF CSTR:TARGET:A处女丧失记录 != CSTR:TARGET:已知的A处女丧失记录
+			PRINTFORML 意外知道了%CALLNAME:TARGET%的初体験相关情况...
+			CSTR:TARGET:已知的A处女丧失记录 = %CSTR:TARGET:A处女丧失记录%
+		ENDIF			
+	CASE 4 TO 9
+		IF MARK:TARGET:(ROLLDICE-4) != MARK:TARGET:(ROLLDICE+3)
+			PRINTFORML 意外知道了%CALLNAME:TARGET%的某些深刻记忆...
+			MARK:TARGET:(ROLLDICE+3) = MARK:TARGET:(ROLLDICE-4)
+		ENDIF	
+ENDSELECT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RETURN 0

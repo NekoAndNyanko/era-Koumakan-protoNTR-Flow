@@ -1,0 +1,282 @@
+﻿;-------------------------------------------------------------------------------
+;キャラクターの能力表示を行う
+;@param ARG:0 表示するキャラクター番号
+;@param ARG:1 宝珠を表示 1:する 0:しない
+;@param ARG:2 何処から呼び出したか 1:SHOP 0:それ以外
+;@return 1:xxx,0:xxx
+@PRINT_STATE(奴隷, 宝珠表示, inSHOP)
+#DIM 奴隷
+#DIM 宝珠表示
+#DIM inSHOP
+FOR LOCAL:70 , 0 , CHARANUM
+	CALL 肌肤等颜色改变(LOCAL:70)
+NEXT
+PRINTL
+PRINTL
+PRINTL
+DRAWLINE
+PRINTS NAME:奴隷
+;成人以外の子供のみ表示される
+SIF (NO:奴隷 == 148 || NO:奴隷 == 149)
+	PRINTFORM %子供の成長状態(奴隷)%
+PRINTFORML (好感度:{CFLAG:奴隷:好感度})
+;不在真实模式下
+IF !FLAG:真实模式
+	PRINTFORML 金钱:{MONEY:奴隷}
+	PRINTFORM %NTR_NAME(0)%からの脅迫
+	PRINTFORML (屈服度:{CFLAG:奴隷:屈服度})(脅迫度:{CFLAG:奴隷:脅迫度})
+	PRINTFORML 性欲:{CFLAG:奴隷:性欲}
+	;@出産まで後何日
+	IF TALENT:奴隷:妊娠
+		PRINTFORML (%N_T_R(CFLAG:奴隷:にんっしんっ - 1, 1)%の子を出産まで残り{CFLAG:奴隷:出産日 - DAY}日)
+		;出産まで後何日ここまで
+	ENDIF
+ENDIF
+PRINT 体力:
+;数值 最大数值 字符1 字符2 颜色1 颜色2 长度
+CALL 数据条绘制(BASE:奴隷:体力,MAXBASE:奴隷:体力,"▥","▥",粉红色,深灰色,16)
+PRINTFORM ({BASE:奴隷:体力,4}/{MAXBASE:奴隷:体力,4}) 
+PRINT 气力:
+CALL 数据条绘制(BASE:奴隷:气力,MAXBASE:奴隷:气力,"▥","▥",黄色,深灰色,16)
+PRINTFORM ({BASE:奴隷:气力,4}/{MAXBASE:奴隷:气力,4})
+PRINTL
+PRINTL
+;行あわせ準備
+LOCAL:1 = LINECOUNT
+IF LOCAL == 0
+	PRINTBUTTON "[图像显示开关]",8
+	IF FLAG:AA表示 && FLAG:画像表示
+		CALL PRINT_STATE_IMAGE(奴隷)
+	ENDIF
+	PRINTL
+	PRINTL ＝＝主要信息１＝＝
+	CALL PRINT_STATE_CLOTH(奴隷)
+	CALL PRINT_STATE_TALENT(奴隷)
+	PRINTL
+	[SKIPSTART]
+	IF 奴隷 != MASTER
+		CALL PRINT_STATE_MARK(奴隷)
+	ELSE
+		PRINTL
+	ENDIF
+	[SKIPEND]
+	CALL PRINT_STATE_ABL(奴隷)
+	;従者イベント,ERB
+	IF GETBIT(FLAG:雑多設定,2) && 奴隷 == MASTER
+		PRINTL
+		PRINTL 目前有以下委托：
+		FOR LOCAL:5, 1, 8
+			SIF CFLAG:(LOCAL:5):従者イベント１ < 10
+				CONTINUE
+			TRYCALL PRINT_STATE_ZYUSYAEVENT(LOCAL:5)
+		NEXT
+	ENDIF
+	;料理の状態
+	IF 奴隷 == MASTER
+		PRINT 当前持有料理：
+		IF FLAG:料理
+			IF TCVAR:MASTER:306 == 2
+				PRINT 有些馊了的
+			ELSEIF TCVAR:MASTER:306 == 1
+				PRINT 已经凉了的
+			ENDIF
+			PRINTFORML %GETDISHNAME(FLAG:料理)%
+		ELSE
+			PRINTL 无
+		ENDIF
+	ENDIF
+	PRINTL
+ELSEIF LOCAL == 1
+	PRINTL ＝＝主要信息２＝＝
+	CALL PRINT_STATE_EXP(奴隷)
+	SIF 奴隷 != MASTER && !宝珠表示
+		CALL PRINT_STATE_JUEL(奴隷)
+	SIF 宝珠表示
+		CALL PRINT_STATE_EX(奴隷)
+	PRINTL
+ELSEIF LOCAL == 2
+	PRINTL ＝＝ 秘密信息 ＝＝
+	TRYCALL PRINT_NTR_EXP(奴隷)
+	PRINTL
+	TRYCALL PRINT_STATE_MEMORIAL(奴隷)
+	PRINTL
+ELSEIF LOCAL == 3
+	PRINTL ＝＝ 个人信息 ＝＝
+	PRINTL ;todo 增加性格、活动时段等，仿tw
+	TRYCALL PRINT_STATE_BODY(奴隷)
+	TRYCALL PRINT_STATE_PROTECTION(奴隷)
+	TRYCALL PRINT_RELATION(奴隷)
+ELSEIF LOCAL == 4
+	PRINTL ＝＝親子情報１＝＝
+	PRINTL
+	PRINTL □ 兄弟関係 □-----------------------------------------------------------------
+	TRYCALL PRINT_PARENT_3(奴隷)
+	PRINTL
+	PRINTL □ 親 □-----------------------------------------------------------------------
+	TRYCALL PRINT_PARENT(奴隷)
+	PRINTL
+	PRINTL □ 子供 □---------------------------------------------------------------------
+	TRYCALL PRINT_PARENT_2(奴隷)
+	PRINTL
+ELSEIF LOCAL == 5
+	PRINTL ＝＝親子情報２＝＝
+	PRINTL
+	PRINTL □ 出産表 □-------------------------------------------------------------------
+	TRYCALL PRINT_PARENT_4(奴隷)
+	PRINTL
+ENDIF
+;行あわせ処理
+IF LINECOUNT - LOCAL:1 < 20
+	LOCAL:1 = 20 - (LINECOUNT - LOCAL:1)
+	REPEAT LOCAL:1
+		PRINTL
+	REND
+ENDIF
+DRAWLINE
+IF LOCAL != 0
+	PRINTC [1] 上一页
+ELSE
+	PRINTC 　
+ENDIF
+IF LOCAL != 5
+	PRINTC [2] 下一页
+ELSE
+	PRINTC 　
+ENDIF
+PRINTL
+IF inSHOP
+	IF 奴隷 != 0
+		PRINTC [3] 上一个角色
+	ELSE
+		PRINTC 　
+	ENDIF
+	IF 奴隷 != CHARANUM-1
+		PRINTC [4] 下一个角色
+	ELSE
+		PRINTC 　
+	ENDIF
+ENDIF
+PRINTL
+PRINTC [9] 返回
+PRINTL
+$LOOP_STATE
+ONEINPUT
+IF RESULT == 1 && LOCAL != 0
+	LOCAL --
+	RESTART
+ELSEIF RESULT == 2 && LOCAL != 5
+	LOCAL ++
+	RESTART
+ELSEIF RESULT == 3 && 奴隷 != 0
+	奴隷 --
+	RESTART
+ELSEIF RESULT == 4 && 奴隷 != CHARANUM-1
+	奴隷 ++
+	RESTART
+ELSEIF RESULT == 8
+	FLAG:AA表示 = !FLAG:AA表示
+	RESTART
+ELSEIF RESULT != 9
+	GOTO LOOP_STATE
+ENDIF
+
+;--------------------------------------------------------
+;下着が未確認状態かどうかを返す
+;@return:0 確認済
+;@return:1 未確認
+;@return:2 未確認
+@Unknown下着(奴隷, 服番号)
+#FUNCTION
+#DIM 奴隷
+#DIM 服番号
+;既に確認済み
+SIF CFLAG:奴隷:ぱんつ確認
+	RETURNF 0
+;同室且つズボン等を穿いていない
+SIF CFLAG:奴隷:現在位置 == CFLAG:MASTER:現在位置 && !EQUIP:奴隷:下半身上着１ && !EQUIP:奴隷:下半身上着２ && !EQUIP:奴隷:裙子 && !EQUIP:奴隷:赛车服 && !EQUIP:奴隷:连衣裙 && !EQUIP:奴隷:着物
+	RETURNF 0
+;下半身下着１
+SIF 服番号 == GETNUM(EQUIP,"下半身下着１")
+	RETURNF 1
+;下半身下着２
+SIF 服番号 == GETNUM(EQUIP,"下半身下着２")
+	RETURNF 2
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;改变乳头大小
+@改变乳头大小(ARG,改变值)
+#DIM 改变值
+; [IF_DEBUG]
+; SETCOLOR 0xFFFF00
+; IF 改变值 > 0
+; PRINTFORML 乳头大小（%CALLNAME:ARG%） + {改变值}
+; ELSEIF 改变值 == 0
+; PRINTL 乳头大小没有变化
+; ELSEIF 改变值 < 0
+; PRINTFORML 乳头大小（%CALLNAME:ARG%） - {改变值}
+; ENDIF
+; RESETCOLOR
+; [ENDIF]
+BASE:ARG:乳头大小 += 改变值
+
+;-------------------------------------------------------------------------------
+;締り具合変動(コマンドによる変化)
+@締り具合変動(奴隷,上昇値,部位)
+#DIM 奴隷
+#DIM 上昇値 ;1～7 (1:指、3:阴茎、5:バルーン、7:フィスト)
+#DIM 部位 ;Ａ=1 Ｖ=0
+#DIM 緩さ補正
+IF 部位
+	;A
+	;現在の緩さによる上昇値補正
+	;がばがば以上で、かつ今までに無いほど緩くなろうとしていた場合補正が入る
+	IF (MAXBASE:奴隷:Ａ松弛度*3 < BASE:奴隷:Ａ松弛度*4) && BASE:奴隷:Ａ松弛度 >= 450
+		上昇値 = MAX(上昇値-3,1)
+	ENDIF
+	BASE:奴隷:Ａ松弛度 += 上昇値
+ELSE
+	;V
+	;現在の緩さによる上昇値補正
+	;がばがば以上で、かつ今までに無いほど緩くなろうとしていた場合補正が入る
+	IF (MAXBASE:奴隷:Ｖ松弛度*3 < BASE:奴隷:Ｖ松弛度*4) && BASE:奴隷:Ｖ松弛度 >= 450
+		上昇値 = MAX(上昇値-3,1)
+	ENDIF
+	BASE:奴隷:Ｖ松弛度 += 上昇値
+ENDIF
+; [IF_DEBUG]
+; SETCOLOR 0xFFFF00
+; IF 部位 == 0
+; PRINT Ｖ
+; ELSE
+; PRINT Ａ
+; ENDIF
+; IF 上昇値 > 0
+; PRINTFORML 松弛度上升值（%CALLNAME:奴隷%） + {上昇値}
+; ELSEIF 上昇値 == 0
+; PRINTL 松弛度上升值（%CALLNAME:奴隷%）没有变化
+; ELSEIF 上昇値 < 0
+; PRINTFORML 松弛度上升值（（%CALLNAME:奴隷%） - {上昇値}
+; ENDIF
+; RESETCOLOR
+; [ENDIF]
+
+
+;数值 最大数值 字符1 字符2 颜色1 颜色2 长度
+@数据条绘制(ARG,ARG:1,ARGS,ARGS:1,ARG:2,ARG:3,ARG:4)
+#DIM 满槽个数
+SIF ARG > ARG:1
+	ARG = ARG:1
+SIF ARG < 0
+	ARG = 0
+满槽个数 = ARG * 100 / ARG:1 * ARG:4 / 100
+PRINT [
+SETCOLOR ARG:2
+SIF 满槽个数 <= 0 && ARG > 0
+	满槽个数 = 1
+PRINTS ARGS * 满槽个数
+RESETCOLOR
+SETCOLOR ARG:3
+PRINTS ARGS:1 * (ARG:4 - 满槽个数)
+RESETCOLOR
+PRINT ]

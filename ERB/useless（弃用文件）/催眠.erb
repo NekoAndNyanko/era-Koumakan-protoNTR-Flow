@@ -1,0 +1,1866 @@
+﻿;-------------------------------------------------------------------------------
+;催眠移动
+@催眠移动(住人)
+#DIM 住人
+;移动後直ぐの活動
+IF GETBIT(FLAG:催眠設定,1)
+	;赤ん坊、幼兒は勝手に人里までは行けないことに是的。
+	IF CFLAG:住人:成長度 != 成長度_乳児 && CFLAG:住人:成長度 != 成長度_幼児
+		IF CFLAG:住人:本日催眠次數 == 0
+			IF CFLAG:住人:現在位置 == 位置_红魔馆正门 || CFLAG:住人:現在位置 == 位置_大厅 || CFLAG:住人:現在位置 == 位置_湖 || CFLAG:住人:現在位置 == 位置_湖南部
+				IF TALENT:住人:催眠中毒 == 1 || TALENT:住人:專屬烙印 == 1
+					IF RAND:50 < 40
+						;念のため同行解除
+						IF CFLAG:住人:同行 != 0
+							CFLAG:住人:同行 = 0
+							PRINTFORMW %CALLNAME:住人%趁%CALLNAME:MASTER%不注意，從%CALLNAME:MASTER%眼前溜走了。
+						ENDIF
+						PRINTFORMW %CALLNAME:住人%眼神迷離起來，在腦內神秘聲音的命令下往人間里的方向出去了
+						CFLAG:住人:現在位置 = 位置_人間の里
+						CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
+						;方式が設定されていれば復位
+						SIF 移动ルート:住人:0
+							CALLF RESET_ROUTE(住人, 0)
+						CALL 催眠姦初始判定(住人)
+					ENDIF
+				ELSE
+					IF RAND:50 < 25
+						;念のため同行解除
+						IF CFLAG:住人:同行 != 0
+							CFLAG:住人:同行 = 0
+							PRINTFORMW %CALLNAME:住人%趁%CALLNAME:MASTER%不注意，從%CALLNAME:MASTER%眼前溜走了。
+						ENDIF
+						PRINTFORMW %CALLNAME:住人%往人間里的方向出去了
+						CFLAG:住人:現在位置 = 位置_人間の里
+						CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
+						;方式が設定されていれば復位
+						SIF 移动ルート:住人:0
+							CALLF RESET_ROUTE(住人, 0)
+						CALL 催眠姦初始判定(住人)
+					ENDIF
+				ENDIF
+				CFLAG:住人:本日催眠次數 = 1
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;催眠循環判定
+IF CFLAG:住人:本日催眠次數 != 0
+	CALL 催眠姦初始判定(住人)
+ENDIF
+RETURN
+;-------------------------------------------------------------------------------
+;催眠姦初始判定
+@催眠姦初始判定(住人)
+#DIM 住人
+#DIM 好感度LV
+
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	好感度LV = FAV_催眠完毕
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前)
+	好感度LV = FAV_催眠寸前
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	好感度LV = FAV_主人より高い
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2)
+	好感度LV = FAV_うふふする程度2
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度)
+	好感度LV = FAV_うふふする程度
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	好感度LV = FAV_侍奉する程度
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度)
+	好感度LV = FAV_体を触らせる程度
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_接吻程度)
+	好感度LV = FAV_接吻程度
+ELSE
+	好感度LV = 0
+ENDIF
+IF CFLAG:住人:催眠行為持續時間 > DATETIME()
+ELSE
+	IF CFLAG:住人:現在位置 == 位置_人間の里
+		IF TALENT:住人:催眠中毒 == 1
+			CALL 催眠便器(住人)
+		ELSEIF TALENT:住人:專屬烙印 == 1
+			CALL 催眠侍奉(住人)
+		ELSE
+			IF FLAG:催眠 != 0 ;同時調教一人
+				CFLAG:住人:現在位置 = 位置_红魔馆正门
+				PRINTFORMW %CALLNAME:住人%在人間之裡閒逛了一陣，回到了館裡
+			ELSE
+				SELECTCASE 好感度LV
+					CASE IS > 5
+						IF RAND:50 < 40
+							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
+							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
+							SIF 移动ルート:住人:0
+								CALLF RESET_ROUTE(住人, 0)
+							FLAG:催眠 = 1
+							CALL 催眠調教開始(住人)
+						ELSE
+							CFLAG:住人:現在位置 = 位置_红魔馆正门
+							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
+						ENDIF
+					CASE IS > 3
+						IF RAND:50 < 30
+							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
+							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
+							SIF 移动ルート:住人:0
+								CALLF RESET_ROUTE(住人, 0)
+							FLAG:催眠 = 1
+							CALL 催眠調教開始(住人)
+						ELSE
+							CFLAG:住人:現在位置 = 位置_红魔馆正门
+							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
+						ENDIF
+					CASE IS > 0
+						IF RAND:50 < 20
+							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
+							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
+							SIF 移动ルート:住人:0
+								CALLF RESET_ROUTE(住人, 0)
+							FLAG:催眠 = 1
+							CALL 催眠調教開始(住人)
+						ELSE
+							CFLAG:住人:現在位置 = 位置_红魔馆正门
+							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
+						ENDIF
+					CASEELSE
+						IF RAND:50 < 10
+							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
+							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
+							SIF 移动ルート:住人:0
+								CALLF RESET_ROUTE(住人, 0)
+							FLAG:催眠 = 1
+							CALL 催眠調教開始(住人)
+						ELSE
+							CFLAG:住人:現在位置 = 位置_红魔馆正门
+							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
+						ENDIF
+				ENDSELECT
+			ENDIF
+		ENDIF
+	ENDIF
+	IF CFLAG:住人:現在位置 == 位置_民家
+		CALL 催眠調教開始(住人)
+	ENDIF
+ENDIF
+RETURN
+;-------------------------------------------------------------------------------
+;催眠姦2
+@催眠便器(住人)
+#DIM 住人
+#DIM 調教者
+
+CFLAG:住人:催眠中 = 1
+IF CFLAG:住人:催眠气氛 == 0
+	PRINTFORML %CALLNAME:住人%走在人間之裡的街道上，彷彿腦內暗藏的開關被按下，眼神忽然變得迷離起來
+	PRINTFORML 被催眠者種下的異種常識佔據了%CALLNAME:住人%的意識，『想要成為大家的肉便器』的想法充滿了%CALLNAME:住人%的腦海
+	PRINTFORML %CALLNAME:住人%隨手將遮蔽身體的衣物拋開，在眾人的目光下展示自己的身體，因為情慾的折磨%CALLNAME:住人%的體表變成了誘人的玫瑰色
+	PRINTFORML %CALLNAME:住人%全身散發出濃郁的色香，彷彿被花蜜吸引的飛蟲，村人向%CALLNAME:住人%聚集了過去
+	PRINTFORML %CALLNAME:住人%嘴角露出了扭曲的笑容
+	PRINTFORML 「大家請來使用我吧♪」
+ELSE
+	IF CFLAG:住人:前回催眠行為 == 催眠_爱抚村人
+		CALL 催眠_爱抚村人_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_手淫村人
+		CALL 催眠_手淫村人_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_口交村人
+		CALL 催眠_口交村人_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_性交村人
+		CALL 催眠_性交村人_F(住人)
+	ELSE
+		IF RAND:100 < 20
+			PRINTFORMW 村人們將%CALLNAME:住人%團團圍住，數不清的手上下探索著%CALLNAME:住人%的敏感帶
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_0(住人)
+				FUNC 催眠_KOJO_爱抚村人(住人)
+			ENDFUNC
+			CALL 催眠_爱抚村人(住人)
+		ELSEIF RAND:100 < 40
+			PRINTFORMW %CALLNAME:住人%雙手各握住一根村人的肉棒，上下捋動著
+			PRINTFORMW 被擠開的村人在淫亂的氣氛中拼命自慰
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_1(住人)
+				FUNC 催眠_KOJO_手淫村人(住人)
+			ENDFUNC
+			CALL 催眠_手淫村人(住人)
+		ELSEIF RAND:100 < 60
+			PRINTFORMW 村人掏出肉棒讓%CALLNAME:住人%含住
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_2(住人)
+				FUNC 催眠_KOJO_口交村人(住人)
+			ENDFUNC
+			CALL 催眠_口交村人(住人)
+		ELSEIF RAND:100 < 80
+			PRINTFORMW 村人將%CALLNAME:住人%架起來，像夾三明治一樣將%CALLNAME:住人%夾在中間，挺立的肉棒抵住%CALLNAME:住人%的兩穴
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_3(住人)
+				FUNC 催眠_KOJO_性交村人(住人)
+			ENDFUNC
+			CALL 催眠_性交村人(住人)
+		ELSE
+			CFLAG:住人:現在位置 = 位置_红魔馆正门
+			CFLAG:住人:催眠气氛 = 0
+			CFLAG:住人:催眠中 = 0
+			PRINTFORML 催眠時間終了
+			PRINTFORML %CALLNAME:住人%精疲力竭地回到館裏了，渾身沾染著為數眾多不同男性的氣息
+			PRINTFORML 但%CALLNAME:住人%完全沒有發覺自身的異樣
+		ENDIF
+	ENDIF
+ENDIF
+CFLAG:住人:催眠气氛 ++
+;催眠便器奪還
+IF CFLAG:MASTER:現在位置 == 位置_人間の里周辺
+	PRINTFORML %CALLNAME:MASTER%遠遠看見%CALLNAME:住人%的裸體被村人糾纏的場景
+	PRINTFORML 即使相隔很遠，淫亂的氣氛也使%CALLNAME:MASTER%胸口一陣刺痛
+	PRINTL [000] - 衝過去
+	PRINTL [001] - 遠遠逃走
+	$INPUT_LOOP
+	INPUT
+	IF RESULT != 000 && RESULT != 001
+		GOTO INPUT_LOOP
+	ELSEIF RESULT == 001
+		PRINTFORML %CALLNAME:MASTER%無法忍受面前的場景，轉身從人間里周辺逃走了
+		PRINTFORML 直到遠遠將%CALLNAME:住人%拋在身後，%CALLNAME:MASTER%才停下了腳步
+		PRINTFORML %CALLNAME:MASTER%流下了悔恨的淚水
+		CFLAG:MASTER:現在位置 = 位置_红魔馆正门
+	ELSEIF RESULT == 000
+		PRINTFORML %CALLNAME:MASTER%向村人群衝了過去，為奪回%CALLNAME:住人%展開激戰
+		PRINTFORML 令%CALLNAME:MASTER%心痛，%CALLNAME:住人%站在村人一側對自己發動了攻擊
+		IF ABL:master:战斗技能 - ABL:住人:战斗技能 - RAND:50 <= 0
+			call 戰敗逆強姦（住人）
+		ELSE
+			call 洗腦解除_永琳(住人)
+		ENDIF
+	ENDIF
+ENDIF
+RETURN
+;-------------------------------------------------------------------------------
+;催眠姦3
+@催眠侍奉(住人)
+#DIM 住人
+
+FLAG:催眠侍奉中 = 1
+CFLAG:住人:催眠中 = 1
+IF FLAG:催眠 == 0
+	IF CFLAG:住人:催眠气氛 == 0
+		PRINTFORML %CALLNAME:住人%赤身裸體地跪在催眠者面前，用臉頰摩擦著催眠者的腳
+		PRINTFORML 催眠者對%CALLNAME:住人%的恭顺表示滿意，彈出腳，用腳趾輕輕彈了一下%CALLNAME:住人%的花瓣
+		PRINTFORML %CALLNAME:住人%的身體猛地一僵，皮膚泛起了櫻花般的顏色
+		PRINTFORML 「催眠者大人，求求你……我要去了…………」
+		PRINTFORML 催眠者嘴角露出了扭曲的笑容
+		PRINTFORML 「還不可以，給我忍住」
+	ELSE
+		IF CFLAG:住人:前回催眠行為 == 催眠_口交
+			CALL 催眠_口交_F(住人)
+		ELSEIF CFLAG:住人:前回催眠行為 == 催眠_六九式
+			CALL 催眠_六九式_F(住人)
+		ELSEIF CFLAG:住人:前回催眠行為 == 催眠_性交A
+			CALL 催眠_性交A_F(住人)
+		ELSEIF CFLAG:住人:前回催眠行為 == 催眠_性交
+		ELSE
+			IF RAND:100 < 20
+				PRINTFORMW 催眠者命令%CALLNAME:住人%跪在自己面前，含住自己的陽具
+				TRYCALLLIST
+					FUNC 催眠_KOJO_口交(住人)
+				ENDFUNC
+				CALL 催眠_口交(住人)
+			ELSEIF RAND:100 < 40
+				PRINTFORMW 催眠者命令%CALLNAME:住人%反向騎在自己身上
+				PRINTFORMW 一邊享受%CALLNAME:住人%的口交服務，一邊玩弄著%CALLNAME:住人%的陰部
+				TRYCALLLIST
+					FUNC 催眠_KOJO_六九式(住人)
+				ENDFUNC
+				CALL 催眠_六九式(住人)
+			ELSEIF RAND:100 < 60
+				PRINTFORML 催眠者用堅硬的肉棒抵住%CALLNAME:住人%的小穴
+				PRINTFORML 「開心吧，牝犬…………這就給你大肉棒！」 
+				CALL 催眠_性交(住人)
+			ELSEIF RAND:100 < 80
+				PRINTFORML 催眠者湊近%CALLNAME:住人%的耳邊輕輕命令
+				PRINTFORML 「現在你是一頭肛交雌豚」
+				CALL 催眠_性交A(住人)
+			ELSE
+				CFLAG:住人:現在位置 = 位置_红魔馆正门
+				CFLAG:住人:催眠气氛 = 0
+				CFLAG:住人:催眠中 = 0
+				FLAG:催眠侍奉中 = 0
+				PRINTFORML 催眠時間終了
+				PRINTFORML 催眠者滿足地解放了%CALLNAME:住人%
+				PRINTFORML %CALLNAME:住人%精疲力竭地回到館裏了，渾身沾染著催眠者的氣息
+				PRINTFORML 但%CALLNAME:住人%完全沒有發覺自身的異樣
+			ENDIF
+		ENDIF
+	ENDIF
+	CFLAG:住人:催眠气氛 ++
+ELSE
+	PRINTFORML %CALLNAME:住人%躲在暗處窺看催眠者調教其他女人，臉上露出了嫉妒的表情
+	;待增加雙重調教內容
+ENDIF
+
+;專屬烙印奪還
+IF CFLAG:MASTER:現在位置 == 位置_人間の里周辺
+	PRINTFORML %CALLNAME:MASTER%偶爾看見%CALLNAME:住人%卑猥地侍奉催眠者的場景
+	PRINTFORML 即使相隔很遠，淫猥的氣氛也使%CALLNAME:MASTER%胸口一陣刺痛
+	PRINTL [000] - 衝過去
+	PRINTL [001] - 遠遠逃走
+	$INPUT_LOOP
+	INPUT
+	IF RESULT != 000 && RESULT != 001
+		GOTO INPUT_LOOP
+	ELSEIF RESULT == 001
+		PRINTFORML %CALLNAME:MASTER%無法忍受面前的場景，轉身從人間里周辺逃走了
+		PRINTFORML 直到遠遠將%CALLNAME:住人%拋在身後，%CALLNAME:MASTER%才停下了腳步
+		PRINTFORML %CALLNAME:MASTER%流下了悔恨的淚水
+		CFLAG:MASTER:現在位置 = 位置_红魔馆正门
+	ELSEIF RESULT == 000
+		PRINTFORML %CALLNAME:MASTER%向催眠者衝了過去，為奪回%CALLNAME:住人%展開激戰
+		PRINTFORML 令%CALLNAME:MASTER%心痛，%CALLNAME:住人%擋在催眠者面前與自己展開了爭鬥
+		PRINTFORML 催眠者在%CALLNAME:住人%身後發出冷笑
+		PRINTFORML 「%CALLNAME:住人%的身體已經是我的形狀了，如果不能帶給她我所給予的程度以上的快樂，還是放棄她比較好」
+		PRINTFORML %CALLNAME:住人%溫柔地回望催眠者
+		PRINTFORML 「我的身心都是屬於催眠者大人的，無論誰都無法奪走」
+		PRINTFORML 「說的好，那麼，%CALLNAME:MASTER%你要試試看嗎」
+		call 催眠_性技對決(住人)
+	ENDIF
+ENDIF
+RETURN
+;-------------------------------------------------------------------------------
+;催眠姦4
+@催眠調教開始(住人)
+#DIM 住人
+#DIM 調教者
+#DIM 好感度LV
+#DIM 容許度
+#DIM 容許度調整
+
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	好感度LV = FAV_催眠完毕
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前)
+	好感度LV = FAV_催眠寸前
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	好感度LV = FAV_主人より高い
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2)
+	好感度LV = FAV_うふふする程度2
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度)
+	好感度LV = FAV_うふふする程度
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	好感度LV = FAV_侍奉する程度
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度)
+	好感度LV = FAV_体を触らせる程度
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_接吻程度)
+	好感度LV = FAV_接吻程度
+ELSE
+	好感度LV = 0
+ENDIF
+
+容許度 = MIN(好感度LV,CFLAG:住人:催眠气氛) + 1
+IF 容許度 >= 6
+	容許度調整 = 3
+ELSE
+	容許度調整 =0
+ENDIF
+
+調教者=人物_催眠者
+
+CFLAG:住人:催眠中 = 1
+
+IF TALENT:住人:洗腦解除 == 1
+	PRINTFORML 催眠师对玩坏的玩具不感兴趣
+	CFLAG:住人:跳蛋挿入 = 240
+	CFLAG:住人:跳蛋A挿入 = 240
+	PRINTFORML 催眠者将跳蛋插入%CALLNAME:住人%的前后两穴固定好
+	PRINTFORML 又将不能将跳蛋取下的强制观念写入%CALLNAME:住人%的脑内
+	PRINTFORML 完成恶作剧之后，催眠者就将%CALLNAME:住人%赶回了馆里
+	CFLAG:住人:跳蛋挿入者 = 人物_催眠者
+	CFLAG:住人:現在位置 = 位置_红魔馆正门
+	PRINTFORML %CALLNAME:住人%不知從哪裡返回館裡了，完全沒有發現自己身上發生了什麼
+	CFLAG:住人:催眠气氛 = 0
+	CFLAG:住人:催眠中 = 0
+	FLAG:催眠 = 0
+ELSEIF CFLAG:住人:催眠深度 == 0 ;初调教
+	PRINTFORML %CALLNAME:住人%跟隨催眠者來到了人間之裡的一處民家
+	PRINTFORML 房間拉著厚厚的窗簾，僅憑燭火照明，籠罩在一片曖昧的昏暗中
+	PRINTFORML 蠟燭發出若有若無的熏香味，搭配房間裡暖洋洋的溫度，讓人不由地產生午睡的想法
+	PRINTFORML %CALLNAME:住人%感到一陣沒來由的疲憊，連眨了幾下眼睛
+	PRINTFORML 催眠者讓%CALLNAME:住人%坐在椅子上，露出了溫柔的笑容
+	PRINTFORML 「現在，請放鬆下來聽我說話」
+	PRINTFORML 富有磁性的聲音變得空靈而遙遠，%CALLNAME:住人%不由地放鬆了精神，仔細去聽
+	PRINTFORML 「你的身體正在下沉，好像沒入浴池一樣，發燙的池水令人舒適，你的精神也鬆弛了下來」
+	PRINTFORML 隨著催眠者的話語，%CALLNAME:住人%軟軟地靠在椅背上，面頰發燒，好像在浴池裡泡了很久一樣
+	PRINTFORML 「你會服從我下達的每一個指令，如同那是所有人都接受的常識一樣」
+	PRINTFORML 「當你服從指令的時候，你會全身心地感覺悅樂，相反，反抗指令的想法會讓你感到痛苦」
+	PRINTFORML 「當我下達清醒指令之後，你會忘記發生的一切」
+	PRINTFORML 「但指令帶來的快感會殘留在你的身體之內，讓你不知所措」
+	PRINTFORML 在%CALLNAME:住人%耳中，催眠者的聲音漸漸變成無法理解的白噪音
+	PRINTFORML %CALLNAME:住人%不由自主地用力點了點頭，眼神變得空洞
+	PRINTFORML 「是，我會服從指令」
+	TCVAR:住人:行為者 = 調教者
+	CALL 催眠_加算(住人, 1)
+	BASE:住人:体力 -= 5
+	BASE:住人:气力 -= 10
+	SOURCE:住人:屈从 = 20
+	SOURCE:住人:恐怖 = 20
+	SOURCE:住人:反感 = 20
+	SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+		SOURCE:住人:抑郁 += 20
+	CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:30 + 10
+ELSE
+	IF CFLAG:住人:前回催眠行為 == 催眠_接吻
+		CALL 催眠_接吻_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_爱抚
+		CALL 催眠_爱抚_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_口交
+		CALL 催眠_口交_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_六九式
+		CALL 催眠_六九式_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_性交A
+		CALL 催眠_性交A_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_性交
+		CALL 催眠_性交_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_爱抚村人
+		CALL 催眠_爱抚村人_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_手淫村人
+		CALL 催眠_手淫村人_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_口交村人
+		CALL 催眠_口交村人_F(住人)
+	ELSEIF CFLAG:住人:前回催眠行為 == 催眠_性交村人
+		CALL 催眠_性交村人_F(住人)
+	ELSE
+
+		SELECTCASE (RAND:(容許度-容許度調整))+容許度調整+1
+			CASE IS >= 8
+				IF TALENT:住人:处女 == 1
+					PRINTFORML 催眠者把挺立的肉棒夾在%CALLNAME:住人%兩腿之間，摩擦著%CALLNAME:住人%的陰唇
+					PRINTFORML 「還不是時候，還需要忍耐…………」 
+					TRYCALLLIST
+						FUNC 催眠_KOJO_素股(住人)
+					ENDFUNC
+					CALL 催眠_素股(住人)
+				ELSE
+					PRINTFORML 催眠者拍了拍手，一群村人排成一排走了進來
+					PRINTFORML 「這頭母豬就交給你們隨意使用了」
+					PRINTFORML 催眠者的話語將%CALLNAME:住人%拋入了地獄
+					IF (RAND:3)+1 == 1
+						PRINTFORMW 村人們將%CALLNAME:住人%團團圍住，數不清的手上下探索著%CALLNAME:住人%的敏感帶
+						TRYCALLLIST
+							FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_0(住人)
+							FUNC 催眠_KOJO_爱抚村人(住人)
+						ENDFUNC
+						CALL 催眠_爱抚村人(住人)
+					ELSEIF (RAND:3)+1 == 2
+						PRINTFORMW %CALLNAME:住人%雙手各握住一根村人的肉棒，上下捋動著
+						PRINTFORMW 被擠開的村人在淫亂的氣氛中拼命自慰
+						TRYCALLLIST
+							FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_1(住人)
+							FUNC 催眠_KOJO_手淫村人(住人)
+						ENDFUNC
+						CALL 催眠_手淫村人(住人)
+					ELSEIF (RAND:3)+1 == 3
+						PRINTFORMW 村人掏出肉棒讓%CALLNAME:住人%含住
+						TRYCALLLIST
+							FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_2(住人)
+							FUNC 催眠_KOJO_口交村人(住人)
+						ENDFUNC
+						CALL 催眠_口交村人(住人)
+					ELSE
+						PRINTFORMW 村人將%CALLNAME:住人%架起來，像夾三明治一樣將%CALLNAME:住人%夾在中間，挺立的肉棒抵住%CALLNAME:住人%的兩穴
+						TRYCALLLIST
+							FUNC NTR_KOJO_K{CFLAG:住人:297}_18_3_3(住人)
+							FUNC 催眠_KOJO_性交村人(住人)
+						ENDFUNC
+						CALL 催眠_性交村人(住人) 
+					ENDIF
+				ENDIF
+			CASE IS == 7 ;FAV_主人より高い
+				IF TALENT:住人:处女 == 1
+					PRINTFORML 催眠者把挺立的肉棒夾在%CALLNAME:住人%兩腿之間，摩擦著%CALLNAME:住人%的陰唇
+					PRINTFORML 「還不是時候，還需要忍耐…………」 
+					TRYCALLLIST
+						FUNC 催眠_KOJO_素股(住人)
+					ENDFUNC
+					CALL 催眠_素股(住人)
+				ELSE
+					PRINTFORML 催眠者用堅硬的肉棒抵住%CALLNAME:住人%的小穴
+					PRINTFORML 「開心吧，牝犬…………這就給你大肉棒！」 
+					CALL 催眠_性交(住人)
+				ENDIF
+			CASE IS == 6 ;FAV_うふふする程度2
+				PRINTFORML 催眠者湊近%CALLNAME:住人%的耳邊輕輕命令
+				PRINTFORML 「現在你是一頭肛交雌豚」
+				CALL 催眠_性交A(住人)
+			CASE IS == 5
+				IF CFLAG:住人:催眠气氛 <= 8
+					PRINTFORMW 催眠者命令%CALLNAME:住人%跪在自己面前，含住自己的陽具
+					TRYCALLLIST
+						FUNC 催眠_KOJO_口交(住人)
+					ENDFUNC
+					CALL 催眠_口交(住人)
+				ELSE
+					PRINTFORMW 催眠者命令%CALLNAME:住人%反向騎在自己身上
+					PRINTFORMW 一邊享受%CALLNAME:住人%的口交服務，一邊玩弄著%CALLNAME:住人%的陰部
+					TRYCALLLIST
+						FUNC 催眠_KOJO_六九式(住人)
+					ENDFUNC
+					CALL 催眠_六九式(住人)
+				ENDIF
+			CASE IS == 4 ;FAV_侍奉する程度
+				PRINTFORMW 催眠者命令%CALLNAME:住人%坐在自己懷裡，雙手熟練地探進%CALLNAME:住人%的衣服內
+				TRYCALLLIST
+					FUNC 催眠_KOJO_爱抚(住人)
+				ENDFUNC
+				CALL 催眠_爱抚(住人)
+			CASE IS == 3
+				PRINTFORMW 催眠者向%CALLNAME:住人%遞出了茶杯，杯中裝滿了白濁的體液，散發著濃郁的精臭味
+				PRINTFORMW 「請喝茶，這可是我準備了好幾天的精心製作」
+				TRYCALLLIST
+					FUNC 催眠_KOJO_泡茶(住人)
+				ENDFUNC
+				CALL 催眠_泡茶(住人)
+			CASE IS == 2
+				PRINTFORMW 催眠者命令%CALLNAME:住人%與自己接吻，%CALLNAME:住人%懵懂地獻上了自己的嘴唇
+				TRYCALLLIST
+					FUNC 催眠_KOJO_接吻(住人)
+				ENDFUNC
+				CALL 催眠_接吻(住人)
+			CASEELSE
+				PRINTFORML 催眠者與%CALLNAME:住人%漫無目的地聊天
+				PRINTFORML 在談話中%CALLNAME:住人%毫無戒心地回答了催眠者所有的問題，即使是關於身體的私密問題也沒有絲毫隱瞞
+				PRINTFORML 催眠者對%CALLNAME:住人%的了解加深了
+				IF TALENT:住人:处女 == 1
+					PRINTFORML 催眠者驚喜地聽說%CALLNAME:住人%仍是純潔無垢的
+					PRINTFORML 催眠者決心將%CALLNAME:住人%徹底變成屬於自己一個人的東西
+				ENDIF
+				TCVAR:住人:行為者 = 調教者
+				CALL 催眠_加算(住人, 1)
+				BASE:住人:体力 -= 5
+				BASE:住人:气力 -= 10
+				SOURCE:住人:屈从 = 20
+				SOURCE:住人:恐怖 = 20
+				SOURCE:住人:反感 = 20
+				SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+					SOURCE:住人:抑郁 += 20
+				CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:30 + 10
+		ENDSELECT
+	ENDIF
+ENDIF
+CFLAG:住人:催眠气氛 ++
+
+;落陷事件判定
+;落陷事件終
+IF TALENT:住人:催眠中毒 == 0 && TALENT:住人:專屬烙印 == 0 && CFLAG:住人:前回催眠行為 == 0
+	IF TALENT:住人:恋慕 == 0 && TALENT:住人:NTR == 0 && TALENT:住人:人妻 == 0 && TALENT:住人:亲爱 == 0
+		SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 && CFLAG:住人:催眠深度 > 2000 && 1000 > CFLAG:住人:好感度
+			CALL 催眠_落陷(住人)
+	ELSE
+		SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 && CFLAG:住人:催眠深度 > 4000 && 1000 > CFLAG:住人:好感度
+			CALL 催眠_落陷(住人)
+	ENDIF
+ENDIF
+;落陷事件初
+IF TALENT:住人:部分洗腦 == 0 && CFLAG:住人:前回催眠行為 == 0
+	IF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 * 5 / 6 && CFLAG:住人:催眠深度 > 700 && TALENT:住人:催眠中毒 == 0 && TALENT:住人:專屬烙印 == 0
+		PRINTFORML 催眠者認為是時候加強對%CALLNAME:住人%的催眠強度了
+		CALL 催眠_部分洗腦(住人)
+	ENDIF
+ENDIF
+
+;逃脫檢定
+IF CFLAG:住人:前回催眠行為 == 0 && CFLAG:住人:現在位置 == 位置_民家
+	IF RAND:(CFLAG:住人:催眠深度 + 100) - RAND:(CFLAG:住人:好感度 + 1) <= 0
+		CFLAG:住人:現在位置 = 位置_红魔馆正门
+		PRINTFORML %CALLNAME:住人%的意識開始出現清醒的跡象
+		PRINTFORML 催眠者下達了返回的暗號
+		PRINTFORML %CALLNAME:住人%不知從哪裡返回館裡了，完全沒有發現自己身上發生了什麼
+		CFLAG:住人:催眠气氛 = 0
+		CFLAG:住人:催眠中 = 0
+		FLAG:催眠 = 0
+	ENDIF
+ENDIF
+RETURN
+;-------------------------------------------------------------------------------
+;接吻
+@催眠_接吻(住人,調教者=人物_催眠者)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+TCVAR:行為者 = 調教者
+CALL 催眠_加算(住人, 2)
+BASE:住人:气力 -= 80
+SOURCE:住人:情爱 = 50
+SOURCE:住人:性行动 = 10
+SOURCE:住人:逸脱 = 10
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:屈从 = 20
+	SOURCE:住人:反感 = 0
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:屈从 = 15
+	SOURCE:住人:反感 = 5
+ELSE
+	SOURCE:住人:屈从 = 10
+	SOURCE:住人:反感 = 10
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 10
+EXP:住人:接吻经验 ++
+EXP:住人:催眠接吻经验 ++
+CALL LOST_VIRGIN_M(住人, 人物_催眠者)
+CFLAG:住人:前回催眠行為 = 催眠_接吻
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:10 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;接吻終了
+@催眠_接吻_F(住人)
+#DIM 住人
+TRYCALLLIST
+	FUNC 催眠_KOJO_接吻_F(住人)
+ENDFUNC
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;泡茶
+@催眠_泡茶(住人,調教者=人物_催眠者)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 2)
+SOURCE:住人:逸脱 = 20
+SOURCE:住人:屈从 = 100
+SOURCE:住人:肮脏 = 200
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 10
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 20
+ELSE
+	IF TALENT:住人:污臭耐性 < 0
+		SOURCE:住人:反感 = 100
+	ELSEIF TALENT:住人:污臭耐性 == 0
+		SOURCE:住人:反感 = 50
+	ELSE
+		SOURCE:住人:反感 = 30
+	ENDIF
+	SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+		SOURCE:住人:抑郁 += 400
+	CALL STAIN_ADD_SEMEN_M(住人, 人物_催眠者)
+	EXP:住人:精饮经验 ++
+	EXP:住人:催眠精饮经验 ++
+	CFLAG:住人:前回催眠行為 = 催眠_泡茶
+	CFLAG:住人:催眠行為持續時間 = DATETIME() + 10
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;泡茶
+@催眠_泡茶_F(住人)
+#DIM 住人
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;爱抚
+@催眠_爱抚(住人)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 3)
+BASE:住人:体力 -= 5
+BASE:住人:气力 -= 50
+SOURCE:住人:快Ｃ = 80
+SOURCE:住人:快Ｂ = 80
+SOURCE:住人:情爱 = 50
+SOURCE:住人:性行动 = 60
+SOURCE:住人:露出 = 20
+SOURCE:住人:肮脏 = 30
+SOURCE:住人:逸脱 = 20
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 5
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 10
+ELSE
+	SOURCE:住人:反感 = 20
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 20
+EXP:住人:接吻经验 ++
+EXP:住人:Ｃ经验 ++
+EXP:住人:Ｂ经验 ++
+SIF TALENT:住人:污臭耐性 > 0
+	SOURCE:住人:肮脏 /= 4
+SIF TALENT:住人:污臭耐性 < 0
+	SOURCE:住人:肮脏 *= 3
+SIF TALENT:住人:自尊心 > 0
+	SOURCE:住人:肮脏 *= 2
+EXP:住人:Ｃ绝顶经验 ++
+EXP:住人:Ｂ绝顶经验 ++
+CFLAG:住人:前回催眠行為 = 催眠_爱抚
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:30 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;爱抚終了
+@催眠_爱抚_F(住人)
+#DIM 住人
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交
+@催眠_口交(住人,調教者=人物_催眠者)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 3)
+BASE:住人:体力 -= 10
+BASE:住人:气力 -= 100
+SOURCE:住人:情爱 = 100
+SOURCE:住人:性行动 = 300
+SOURCE:住人:达成 = 150
+SOURCE:住人:屈从 = 700
+SOURCE:住人:肮脏 = 200
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 50
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 100
+ELSE
+	SOURCE:住人:反感 = 200
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 400
+EXP:住人:口淫经验 ++
+EXP:住人:催眠口淫经验 ++
+SIF TALENT:住人:猫舌
+	EXP:住人:嗜虐快乐经验 ++
+CALL STAIN_MOVE_BY_PENIS(部位_口, 住人, 人物_催眠者)
+EXP:住人:精饮经验 ++
+EXP:住人:催眠精饮经验 ++
+CFLAG:住人:射精者M = 調教者
+CFLAG:住人:前回催眠行為 = 催眠_口交
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:30 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交終了
+@催眠_口交_F(住人)
+#DIM 住人
+TRYCALLLIST
+	FUNC 催眠_KOJO_口交_F(住人)
+ENDFUNC
+CALL EJACULATION_M(住人, 人物_催眠者)
+EXP:住人:口淫经验 ++
+EXP:住人:催眠口淫经验 ++
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;六九式
+@催眠_六九式(住人,調教者=人物_催眠者)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 3)
+BASE:住人:体力 -= 20
+BASE:住人:气力 -= 160
+SOURCE:住人:快Ｃ = 100
+SOURCE:住人:情爱 = 100
+SOURCE:住人:性行动 = 450
+SOURCE:住人:达成 = 200
+SOURCE:住人:液体 = 80
+SOURCE:住人:露出 = 100
+SOURCE:住人:屈从 = 800
+SOURCE:住人:逸脱 = 600
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 200
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 400
+ELSE
+	SOURCE:住人:反感 = 600
+ENDIF
+IF !TALENT:处女
+	SOURCE:住人:快Ｖ += 120
+	SOURCE:住人:苦痛 += 15
+	SOURCE:住人:露出 += 10
+	SOURCE:住人:逸脱 += 20
+	SOURCE:住人:反感 += 20
+ELSE
+	;69で破瓜してしまうのを避けるためコメントアウト
+	;SOURCE:住人:快Ｖ += 60
+	SOURCE:住人:苦痛 += 10
+	SOURCE:住人:露出 += 30
+	SOURCE:住人:逸脱 += 30
+	SOURCE:住人:反感 += 30
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 800
+EXP:住人:口淫经验 ++
+EXP:住人:催眠口淫经验 ++
+EXP:住人:Ｃ经验 ++
+SIF TALENT:住人:猫舌
+	EXP:住人:嗜虐快乐经验 += 1
+CALL STAIN_MOVE_BY_PENIS(部位_口, 住人, 人物_催眠者)
+EXP:住人:精饮经验 ++
+EXP:住人:催眠精饮经验 ++
+CFLAG:住人:射精者M = 調教者
+EXP:住人:Ｃ绝顶经验 ++
+CFLAG:住人:前回催眠行為 = 催眠_六九式
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:30 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;六九式終了
+@催眠_六九式_F(住人)
+#DIM 住人
+TRYCALLLIST
+	FUNC 催眠_KOJO_六九式_F(住人)
+ENDFUNC
+CALL EJACULATION_M(住人, 人物_催眠者)
+EXP:住人:口淫经验 ++
+EXP:住人:催眠口淫经验 ++
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A
+@催眠_性交A(住人,調教者=人物_催眠者)
+#DIM 住人
+#DIM 調教者
+#DIM 体位
+TCVAR:住人:行為者 = 調教者
+TCVAR:行為者 = 調教者
+TEQUIP:住人:Ａ性爱 = 調教者
+CALL 締り具合変動(住人, 3, 1)
+CALL 催眠_加算(住人, 10)
+体位 = 0
+体位 = (RAND:4)+1
+TRYCALLLIST
+	FUNC 催眠_KOJO_A{体位}(住人)
+ENDFUNC
+BASE:住人:体力 -= 80
+BASE:住人:气力 -= 120
+SOURCE:住人:快Ａ = 400
+SOURCE:住人:情爱 = 100
+SOURCE:住人:苦痛 = 800
+SOURCE:住人:露出 = 60
+SOURCE:住人:逸脱 = 200
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 250
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 375
+ELSE
+	SOURCE:住人:反感 = 500
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 500
+EXP:住人:Ａ扩张经验 += 1
+PRINTFORML %CALLNAME:住人%のアヌスは、催眠者の大きすぎる陰莖によって拡張されている…
+IF ( TALENT:住人:受虐狂 || ABL:住人:抖Ｍ之气 > 2 ) && EXP:住人:Ａ扩张经验 < 450
+	CUP:住人:欲情 += 500
+	CUP:住人:苦痛 += 250
+ELSEIF EXP:住人:Ａ扩张经验 < 450
+	CUP:住人:苦痛 += 500
+ENDIF
+EXP:住人:Ａ经验 ++
+EXP:住人:Ａ性交经验 ++
+EXP:住人:催眠Ａ性交经验 ++
+CALL STAIN_MOVE_BY_PENIS(部位_Ａ, 住人, 人物_催眠者)
+CALL STAIN_MOVE_BY_PENIS(部位_腸内, 住人, 人物_催眠者)
+CALL LOST_VIRGIN_A(住人, 人物_催眠者)
+CFLAG:住人:前回催眠行為 = 催眠_性交A
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:60 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A
+@催眠_性交A_F(住人)
+#DIM 住人
+TRYCALLLIST
+	FUNC 催眠_KOJO_A_F(住人)
+ENDFUNC
+CALL EJACULATION_A(住人, 人物_催眠者)
+EXP:住人:Ａ绝顶经验 ++
+EXP:住人:绝顶经验 ++
+;A感覚が高いと绝顶经验加算（強絶頂扱い）
+CALL 催眠_A_EXP_PLUS(住人)
+IF RAND:3 == 1
+	IF CFLAG:住人:精液残留中 == 0
+		CFLAG:住人:精液残留中 = 40
+		PRINTFORML 催眠者在%CALLNAME:住人%的肛門塞入了塞子，不讓滿溢的精液流出來
+	ENDIF
+ENDIF
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;素股
+@催眠_素股(住人,調教者=人物_催眠者)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 4)
+BASE:住人:体力 -= 40
+BASE:住人:气力 -= 130
+SOURCE:住人:快Ｃ = 150
+SOURCE:住人:情爱 = 80
+SOURCE:住人:性行动 = 250
+SOURCE:住人:达成 = 50
+SOURCE:住人:屈从 = 500
+SOURCE:住人:逸脱 = 120
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 60
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 100
+ELSE
+	SOURCE:住人:反感 = 120
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 300
+EXP:住人:Ｃ经验 ++
+CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_催眠者)
+EXP:住人:Ｃ绝顶经验 ++
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:10 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交
+@催眠_性交(住人,調教者=人物_催眠者)
+#DIM 住人
+#DIM 調教者
+#DIM 体位
+TCVAR:住人:行為者 = 調教者
+TCVAR:行為者 = 調教者
+TEQUIP:住人:Ｖ性爱 = 調教者
+CALL 締り具合変動(住人, 3, 0)
+CALL 催眠_加算(住人, 10)
+体位 = 0
+体位 = (RAND:4)+1
+TRYCALLLIST
+	FUNC 催眠_KOJO_V{体位}(住人)
+ENDFUNC
+BASE:住人:体力 -= 50
+BASE:住人:气力 -= 100
+SOURCE:住人:快Ｖ = 400
+SOURCE:住人:情爱 = 150
+SOURCE:住人:苦痛 = 500
+SOURCE:住人:露出 = 50
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 150
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 240
+ELSE
+	SOURCE:住人:反感 = 300
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 300
+SIF TALENT:住人:贞操 > 0 && CFLAG:住人:催眠深度 > CFLAG:住人:好感度
+	SOURCE:住人:反感 += 1000
+IF TALENT:住人:处女 == 1
+	SOURCE:住人:苦痛 += 2000
+	SOURCE:住人:反感 += 3000
+ENDIF
+IF TALENT:住人:处女 == 2
+	SOURCE:住人:苦痛 += 500
+	SOURCE:住人:反感 += 1000
+ENDIF
+EXP:住人:Ｖ扩张经验 += 1
+PRINTFORML %CALLNAME:住人%の膣は、催眠者の大きすぎる陰莖によって拡張されている…
+IF ( TALENT:住人:受虐狂 || ABL:住人:抖Ｍ之气 > 2 ) && EXP:住人:Ｖ扩张经验 < 450
+	CUP:住人:欲情 += 500
+	CUP:住人:苦痛 += 250
+ELSEIF EXP:住人:Ｖ扩张经验 < 450
+	CUP:住人:苦痛 += 500
+ENDIF
+EXP:住人:Ｖ经验 ++
+EXP:住人:Ｖ性交经验 ++
+EXP:住人:催眠Ｖ性交经验 ++
+;汚賍等共通する処理
+CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_催眠者)
+CALL STAIN_MOVE_BY_PENIS(部位_膣内, 住人, 人物_催眠者)
+IF TALENT:住人:处女
+	CALL LOST_VIRGIN(住人, 人物_催眠者)
+	;处女喪失中フラグ套裝
+ENDIF
+CFLAG:住人:精液残留中 = 0
+CFLAG:住人:前回催眠行為 = 催眠_性交
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:60 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交
+@催眠_性交_F(住人)
+#DIM 住人
+TRYCALLLIST
+	FUNC 催眠_KOJO_V_F(住人)
+ENDFUNC
+CALL EJACULATION_V(住人, 人物_催眠者)
+EXP:住人:Ｖ绝顶经验 ++
+EXP:住人:绝顶经验 ++
+;V感覚が高いと绝顶经验加算（強絶頂扱い）
+CALL 催眠_V_EXP_PLUS(住人)
+IF RAND:3 == 1
+	IF CFLAG:住人:精液残留中 == 0
+		CFLAG:住人:精液残留中 = 40
+		PRINTFORML 催眠者在%CALLNAME:住人%的小穴塞入了塞子，不讓滿溢的精液流出來
+	ENDIF
+ENDIF
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;爱抚村人
+@催眠_爱抚村人(住人,調教者=人物_村人)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 3)
+BASE:住人:体力 -= 5
+BASE:住人:气力 -= 50
+SOURCE:住人:快Ｃ = 80
+SOURCE:住人:快Ｂ = 80
+SOURCE:住人:情爱 = 50
+SOURCE:住人:性行动 = 60
+SOURCE:住人:露出 = 20
+SOURCE:住人:肮脏 = 30
+SOURCE:住人:逸脱 = 20
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 5
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 10
+ELSE
+	SOURCE:住人:反感 = 20
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 20
+EXP:住人:接吻经验 ++
+EXP:住人:催眠接吻经验 ++
+EXP:住人:Ｃ经验 ++
+EXP:住人:Ｂ经验 ++
+SIF TALENT:住人:污臭耐性 > 0
+	SOURCE:住人:肮脏 /= 4
+SIF TALENT:住人:污臭耐性 < 0
+	SOURCE:住人:肮脏 *= 3
+SIF TALENT:住人:自尊心 > 0
+	SOURCE:住人:肮脏 *= 2
+EXP:住人:Ｃ绝顶经验 ++
+EXP:住人:Ｂ绝顶经验 ++
+CALL LOST_VIRGIN_M(住人, 人物_村人)
+CFLAG:住人:前回催眠行為 = 催眠_爱抚村人
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:30 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;爱抚村人終了
+@催眠_爱抚村人_F(住人)
+#DIM 住人
+TRYCALLLIST
+	FUNC 催眠_KOJO_爱抚村人_F(住人)
+ENDFUNC
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;手淫村人
+@催眠_手淫村人(住人,調教者=人物_村人)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 3)
+BASE:住人:体力 -= 10
+BASE:住人:气力 -= 75
+SOURCE:住人:恭顺 = 80
+SOURCE:住人:欲情 = 80
+SOURCE:住人:情爱 = 50
+SOURCE:住人:性行动 = 60
+SOURCE:住人:露出 = 40
+SOURCE:住人:肮脏 = 30
+SOURCE:住人:逸脱 = 20
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 5
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 10
+ELSE
+	SOURCE:住人:反感 = 20
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 20
+EXP:住人:手淫经验 ++
+EXP:住人:侍奉快乐经验 ++
+EXP:住人:异常经验 ++
+SIF TALENT:住人:污臭耐性 > 0
+	SOURCE:住人:肮脏 /= 4
+SIF TALENT:住人:污臭耐性 < 0
+	SOURCE:住人:肮脏 *= 3
+SIF TALENT:住人:自尊心 > 0
+	SOURCE:住人:肮脏 *= 2
+CFLAG:住人:前回催眠行為 = 催眠_手淫村人
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:20 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;手淫村人終了
+@催眠_手淫村人_F(住人)
+#DIM 住人
+PRINTFORMW 即將抵達絕頂的村人擠到%CALLNAME:住人%的身邊
+TRYCALLLIST
+	FUNC NTR_KOJO_K{CFLAG:住人:297}_7_2(住人)
+	FUNC 催眠_KOJO_手淫村人_F(住人)
+ENDFUNC
+CALL NTR_SEMEN_STAIN(住人)
+EXP:住人:精液经验 ++
+EXP:住人:催眠精液经验 ++
+TRYCALL 精力取得, 人物_村人
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交村人
+@催眠_口交村人(住人,調教者=人物_村人)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+CALL 催眠_加算(住人, 3)
+BASE:住人:体力 -= 10
+BASE:住人:气力 -= 100
+SOURCE:住人:情爱 = 100
+SOURCE:住人:性行动 = 300
+SOURCE:住人:达成 = 150
+SOURCE:住人:屈从 = 700
+SOURCE:住人:肮脏 = 200
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 20
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 50
+ELSE
+	SOURCE:住人:反感 = 100
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 400
+EXP:住人:口淫经验 ++
+SIF TALENT:住人:猫舌
+	EXP:住人:嗜虐快乐经验 ++
+CALL STAIN_MOVE_BY_PENIS(部位_口, 住人, 人物_村人)
+EXP:住人:精饮经验 ++
+EXP:住人:催眠精饮经验 ++
+CFLAG:住人:射精者M = 人物_村人
+CFLAG:住人:前回催眠行為 = 催眠_口交村人
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:20 + 10
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交村人終了
+@催眠_口交村人_F(住人)
+#DIM 住人
+PRINTFORMW 村人的忍耐即將到達極限，開始發出低沉的呻吟聲
+TRYCALLLIST
+	FUNC 催眠_KOJO_口交村人_F(住人)
+ENDFUNC
+CALL EJACULATION_M(住人, 人物_村人)
+EXP:住人:口淫经验 ++
+EXP:住人:催眠口淫经验 ++
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交村人
+@催眠_性交村人(住人,調教者=人物_村人)
+#DIM 住人
+#DIM 調教者
+TCVAR:住人:行為者 = 調教者
+TCVAR:行為者 = 調教者
+TEQUIP:住人:Ｖ性爱 = 調教者
+TEQUIP:住人:Ａ性爱 = 調教者
+CALL 締り具合変動(住人, 3, 0)
+CALL 締り具合変動(住人, 3, 1)
+CALL 催眠_加算(住人, 10)
+BASE:住人:体力 -= 130
+BASE:住人:气力 -= 220
+SOURCE:住人:露出 = 80
+SOURCE:住人:逸脱 = 200
+IF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+	SOURCE:住人:反感 = 150
+ELSEIF TALENT:住人:部分洗腦
+	SOURCE:住人:反感 = 240
+ELSE
+	SOURCE:住人:反感 = 300
+ENDIF
+SIF TALENT:住人:自己爱 < 0 || TALENT:住人:抵抗
+	SOURCE:住人:抑郁 += 500
+SIF TALENT:住人:贞操 > 0 && CFLAG:住人:催眠深度 > CFLAG:住人:好感度
+	SOURCE:住人:反感 += 1000
+IF TALENT:住人:处女 == 1
+	SOURCE:住人:苦痛 += 2000
+	SOURCE:住人:反感 += 3000
+ENDIF
+IF TALENT:住人:处女 == 2
+	SOURCE:住人:苦痛 += 500
+	SOURCE:住人:反感 += 1000
+ENDIF
+EXP:住人:Ｖ经验 ++
+EXP:住人:Ｖ性交经验 ++
+EXP:住人:Ａ经验 ++
+EXP:住人:Ａ性交经验 ++
+EXP:住人:催眠Ｖ性交经验 ++
+EXP:住人:催眠Ａ性交经验 ++
+EXP:住人:异常经验 ++
+CFLAG:住人:前回催眠行為 = 催眠_性交村人
+CFLAG:住人:催眠行為持續時間 = DATETIME() + RAND:30 + 30
+;汚賍等共通する処理
+CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_村人)
+CALL STAIN_MOVE_BY_PENIS(部位_膣内, 住人, 人物_村人)
+CALL STAIN_MOVE_BY_PENIS(部位_Ａ, 住人, 人物_村人)
+CALL STAIN_MOVE_BY_PENIS(部位_腸内, 住人, 人物_村人)
+IF TALENT:住人:处女
+	CALL LOST_VIRGIN(住人, 人物_村人)
+ENDIF
+CALL LOST_VIRGIN_A(住人, 人物_村人)
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交村人終了
+@催眠_性交村人_F(住人)
+#DIM 住人
+TRYCALLLIST
+	FUNC 催眠_KOJO_性交村人_F(住人)
+ENDFUNC
+CALL EJACULATION_V(住人, 人物_村人)
+CALL EJACULATION_A(住人, 人物_村人)
+EXP:住人:Ｖ绝顶经验 ++
+EXP:住人:绝顶经验 ++
+EXP:住人:Ａ绝顶经验 ++
+EXP:住人:绝顶经验 ++
+;V感覚が高いと绝顶经验加算（強絶頂扱い）
+CALL 催眠_V_EXP_PLUS(住人)
+;A感覚が高いと绝顶经验加算（強絶頂扱い）
+CALL 催眠_A_EXP_PLUS(住人)
+IF RAND:3 == 1
+	IF CFLAG:住人:精液残留中 == 0
+		CFLAG:住人:精液残留中 = 40
+		PRINTFORML 村人在%CALLNAME:住人%的前後兩穴塞入了塞子，不讓滿溢的精液流出來
+	ENDIF
+ENDIF
+CFLAG:住人:前回催眠行為 = 0
+RETURN 0
+;-------------------------------------------------------------------------------
+;部分洗腦
+@催眠_部分洗腦(住人)
+#DIM 住人
+TCVAR:住人:行為者 = 人物_催眠者
+PRINTFORML 催眠者命令%CALLNAME:住人%四肢著地跪爬在地上，自己從房中取出了一條馬鞭
+PRINTFORML 「隨著我的指令，你的身體會變得無法動彈，同時你會回想起在催眠中發生的所有事情」
+PRINTFORML 「你的身體會變得敏感，疼痛和快感也會變得難以分辨」
+PRINTFORML 「你會對身體的變化感到恐懼，同時變得屈從於向你施加快感的人」
+PRINTFORML 「現在，」催眠者空揮了一下鞭子，發出嗖嗖的破空聲，「你醒來了」
+PRINTFORML %CALLNAME:住人%的眼神變得有神，緊接著開始四處轉動，繼而%CALLNAME:住人%發現自己除了眼球之外不能動彈分毫
+PRINTFORML 在%CALLNAME:住人%發出驚恐的聲音前，催眠者的鞭子落到了%CALLNAME:住人%的身上，把話語變成一聲慘叫
+PRINTFORML 「安靜！」
+PRINTFORML %CALLNAME:住人%抬起頭，認出了眼前的男人，之前催眠中的遭遇也如潮水般湧現出來
+PRINTFORML 「你…………誰…………為什麼…………」
+IF TALENT:住人:处女 == 1
+	PRINTFORML 催眠者臉上露出狂熱的表情，雙眼異常地睜大
+	PRINTFORML 「當然是因為你是我的，我的，屬於我一個人的……我誰都不會給！」
+ELSE
+	PRINTFORML 催眠者臉上露出輕蔑的表情，嘴角溢出一絲冷笑
+	PRINTFORML 「為什麼，因為你是一條母狗，是雌豚，我在你身上看到了這種素質。而我會把它徹底引出來」
+ENDIF
+IF TALENT:住人:自尊心 == -1
+	PRINTFORML %CALLNAME:住人%回想起在催眠中自己的表現，陷入了沉默
+	PRINTFORML 「我……我……才沒有…………」
+ELSEIF TALENT:住人:自尊心 == 1
+	PRINTFORML %CALLNAME:住人%雖然無法動彈，還是用冷蔑的眼神回應催眠者
+	PRINTFORML 「呵……這種程度，別以為我會屈服」
+ELSE
+	PRINTFORML %CALLNAME:住人%身體無法動彈，只能大聲否認以作回應
+	PRINTFORML 「住口！我才不會……」
+ENDIF
+PRINTFORML 「看來還需要更多教育啊……」催眠者的聲音像毒蛇一樣又冷又滑
+PRINTFORML 催眠者手中的馬鞭倏地揮出，啪地在%CALLNAME:住人%身上留下了一條鮮紅的鞭痕
+PRINTFORML 「啊！痛！」
+PRINTFORML 在呼痛聲中，馬鞭一次又一次揮下，%CALLNAME:住人%的慘叫聲也漸漸從單純的痛苦開始轉變
+PRINTFORML 	。
+PRINTFORML 	。
+PRINTFORML 	。
+PRINTFORML 「啊……啊！好難受…………身體………………」
+PRINTFORML 催眠者把鞭梢拿在手中把玩著，用譏誚的聲音再度提問
+PRINTFORML 「現在有好好認識到自己究竟是什麼東西了嗎」
+PRINTFORML %CALLNAME:住人%的眼睛蒙上了一層水霧，反抗的光芒已經逝去，留下的是濃濃的屈服色彩
+IF TALENT:住人:恋慕 || TALENT:住人:人妻
+	PRINTFORML 「對不起……%callname:master%……對不起……」
+ELSEIF TALENT:住人:NTR
+	PRINTFORML 「又一次……屈服了嗎…………」
+ELSE
+ENDIF
+PRINTFORML 「求求你……請饒恕我…………」
+PRINTFORML 「請饒恕我…………催眠者大人……」
+PRINTFORML 催眠者對這個回答露出滿意的微笑，「那麼，讓你解脫！」
+PRINTFORML 鞭子嗖地落下，準確地抽打在%CALLNAME:住人%的陰戶正中，勃起的陰蒂遭受了突如其來的打擊
+PRINTFORML 本能的力量甚至超過了催眠的命令，%CALLNAME:住人%脊背猛地挺直，揚起頭，身子不住地顫抖
+PRINTFORML 愛液和尿液淅瀝瀝地流淌而下，在地上積成一片水窪
+PRINTFORML %CALLNAME:住人%身體脫力地趴在地上，動彈不得
+PRINTFORML 「隨著我的指令，你會忘記剛才發生的一切，但你的身體會記住……」
+PRINTFORML 「……誰才是你的主宰者……」
+PRINTFORML 催眠者陰冷的命令為調教畫上了句號，%CALLNAME:住人%的意識漸漸遠去，眼中失去了光明
+CALL 催眠_加算(住人, 5)
+BASE:住人:体力 -= 500
+BASE:住人:气力 -= 500
+SOURCE:住人:快Ｃ = 200
+SOURCE:住人:苦痛 = 600
+SOURCE:住人:恐怖 = 600
+SOURCE:住人:液体 = 100
+SOURCE:住人:露出 = 100
+SOURCE:住人:屈从 = 1000
+SOURCE:住人:逸脱 = 600
+SOURCE:住人:反感 = 600
+IF TALENT:住人:恋慕 || TALENT:住人:人妻
+	SOURCE:住人:屈从 -= 200
+	EXP:住人:浮気绝顶经验 ++
+ELSEIF TALENT:住人:NTR
+	SOURCE:住人:屈从 += 200
+ELSE
+ENDIF
+EXP:住人:Ｃ经验 ++
+EXP:住人:Ｃ绝顶经验 ++
+EXP:住人:苦痛快乐经验 ++
+TALENT:住人:部分洗腦 = 1
+CFLAG:住人:現在位置 = 位置_红魔馆正门
+PRINTFORML %CALLNAME:住人%被催眠者扔在館的門外，完全沒有發現自己身上發生了什麼
+CFLAG:住人:好感度 = CFLAG:住人:好感度 / 2
+CFLAG:住人:亲密程度 -= 1
+CFLAG:住人:屈服度 = CFLAG:住人:屈服度 / 2
+CFLAG:住人:催眠中 = 0
+CFLAG:住人:催眠气氛 = 0
+FLAG:催眠 = 0
+RETURN
+;-------------------------------------------------------------------------------
+;落陷
+@催眠_落陷(住人,調教者)
+#DIM 住人
+#DIM 調教者
+#DIM 行為時間
+#DIM 累計時間
+
+PRINTFORML 經過長久的調教，催眠者的指令已經深刻地刻入%CALLNAME:住人%的靈魂深處
+PRINTFORML 催眠者認為是時候讓%CALLNAME:住人%徹底墮落了
+
+IF TALENT:住人:处女 == 1 ;專屬烙印受孕儀式
+	調教者=人物_催眠者
+	TCVAR:住人:行為者 = 調教者
+	TCVAR:行為者 = 調教者
+	TEQUIP:住人:Ｖ性爱 = 調教者
+	PRINTFORML 催眠者為%CALLNAME:住人%換上了潔白的婚紗————婚紗下什麼都沒有穿著
+	PRINTFORML 在%CALLNAME:住人%走向催眠者的短短幾步間，愛液已經順著大腿流下，打濕了地面
+	PRINTFORML 催眠者將%CALLNAME:住人%一把抱在懷裡，粗暴地吻了下去，兩人的舌頭激烈地互相交纏
+	PRINTFORML 催眠者用舌頭將一粒藥丸推了過去，%CALLNAME:住人%順從地嚥下了藥丸
+	PRINTFORML 一股熱流緩緩流向小腹，%CALLNAME:住人%感覺自己的子宮陣陣抽搐，渴求著催眠者的精液
+	TRYCALL 排卵诱发剂追加処理, 住人
+	PRINTFORML 「%CALLNAME:住人%，為我生個孩子吧」
+	PRINTFORML 「你的意志就是我的願望，催眠者大人」
+	PRINTFORML %CALLNAME:住人%的眼睛蒙上了一層水霧，充滿愛意地看向催眠者
+	PRINTFORML 催眠者將%CALLNAME:住人%推倒在地上，分開雙腿架在自己肩上，猛一挺腰，將肉棒刺進完全润滑過的小穴裡
+	PRINTFORML 催眠者激烈地動作著，將%CALLNAME:住人%捲入了快感的漩渦
+	PRINTFORML %CALLNAME:住人%發出嬌媚的呻吟聲
+	PRINTFORML 「催眠者大人的肉棒……好舒服…………請射到裡面來吧！」
+	DO
+		PRINTFORML 催眠者毫不留情地抽插著，每一次插入都用力插到最深
+		PRINTFORML %CALLNAME:住人%和催眠者幾乎同時達到了絕頂，滾燙的精液灌進了%CALLNAME:住人%小穴深處
+		PRINTFORML 催眠者的肉棒立刻又硬了起來，在將%CALLNAME:住人%的身體徹底染上自己的顏色之前催眠者沒有停下來的打算
+		CALL 締り具合変動(住人, 3, 0)
+		CALL 催眠_加算(住人, 10)
+		BASE:住人:体力 -= 50
+		BASE:住人:气力 -= 100
+		SOURCE:住人:快Ｖ = 400
+		SOURCE:住人:情爱 = 150
+		SOURCE:住人:露出 = 50
+		EXP:住人:Ｖ扩张经验 += 1
+		CUP:住人:欲情 += 500
+		CUP:住人:苦痛 += 250
+		EXP:住人:Ｖ经验 ++
+		EXP:住人:Ｖ性交经验 ++
+		EXP:住人:催眠Ｖ性交经验 ++
+		;汚賍等共通する処理
+		CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_催眠者)
+		CALL STAIN_MOVE_BY_PENIS(部位_膣内, 住人, 人物_催眠者)
+		IF TALENT:住人:处女
+			CALL LOST_VIRGIN(住人, 人物_催眠者)
+			;处女喪失中フラグ套裝
+		ENDIF
+		CALL EJACULATION_V(住人, 人物_催眠者)
+		EXP:住人:Ｖ绝顶经验 ++
+		EXP:住人:绝顶经验 ++
+		;V感覚が高いと绝顶经验加算（強絶頂扱い）
+		CALL 催眠_V_EXP_PLUS(住人)
+		累計時間 += 10
+	LOOP BASE:住人:气力 > 0
+	CFLAG:住人:催眠行為持續時間 = DATETIME() + 累計時間
+	CFLAG:住人:現在位置 = 位置_人間の里
+	PRINTFORML %CALLNAME:住人%的身體和靈魂都被打上了催眠者的烙印
+	PRINTFORML 對%CALLNAME:住人%來說，催眠者已經成為了她的唯一、她的主宰，其他人的存在是完全不必要的
+	TALENT:住人:恋慕 = 0
+	TALENT:住人:NTR = 0
+	TALENT:住人:亲爱 = 0
+	CFLAG:住人:好感度 = 0
+	CFLAG:住人:屈服度 = 0
+	CFLAG:住人:催眠中 = 0
+	CFLAG:住人:催眠气氛 = 0
+	FLAG:催眠 = 0
+	TALENT:住人:專屬烙印 = 1
+ELSE ;催眠中毒村人輪姦
+	PRINTFORML 催眠者把%CALLNAME:住人%帶到一處空房間，讓%CALLNAME:住人%跪趴在地上
+	PRINTFORML 催眠者用木枷鎖住%CALLNAME:住人%的脖子和雙手，又用另一座木枷鎖住%CALLNAME:住人%的腰部
+	PRINTFORML 「便器%CALLNAME:住人%已經準備完畢，你們可以出來了」
+	PRINTFORML 循著催眠者聲音走出來的是一隊村人，雙眼無神的男人分成兩列在%CALLNAME:住人%的前後排成隊伍
+	PRINTFORML 完全沒有前戲，男人們就把肉棒捅進%CALLNAME:住人%的嘴巴和小穴，粗暴地抽插著
+	PRINTFORML 「嗚嗚嗚？！！」
+	PRINTFORML %CALLNAME:住人%被緊緊鎖住，無法做出任何反抗
+	DO
+		PRINTFORML 村人瘋狂地在%CALLNAME:住人%前後兩穴抽插，就像使用肉便器一樣
+		PRINTFORML 沒能堅持太久村人就在%CALLNAME:住人%體內射出了精液，但%CALLNAME:住人%根本沒時間回氣
+		PRINTFORML 下一組村人立刻補上了前面的位置
+		PRINTFORML 在無休止的插入中，%CALLNAME:住人%漸漸分辨不清痛苦和悅樂的差距
+		PRINTFORML %CALLNAME:住人%的身體開始本能地渴求更多男人的肉棒
+		CALL 催眠_加算(住人, 20)
+		BASE:住人:体力 -= 150
+		BASE:住人:气力 -= 200
+		SOURCE:住人:性行动 += 50
+		SOURCE:住人:屈从 += 100
+		SOURCE:住人:露出 += 60
+		SOURCE:住人:达成 += 20
+		SOURCE:住人:欲情 += 20
+		SOURCE:住人:肮脏 += 50
+		SOURCE:住人:逸脱 += 30
+		SOURCE:住人:苦痛 += 50
+		SOURCE:住人:快Ｃ += 100
+		SOURCE:住人:快Ｖ += 100
+		EXP:住人:Ｖ扩张经验 += 1
+		CUP:住人:欲情 += 500
+		CUP:住人:苦痛 += 250
+		EXP:住人:Ｖ经验 ++
+		EXP:住人:Ｖ性交经验 ++
+		EXP:住人:催眠Ｖ性交经验 ++
+		EXP:住人:口淫经验 ++
+		EXP:住人:催眠口淫经验 ++
+		EXP:住人:精饮经验 ++
+		EXP:住人:催眠精饮经验 ++
+		EXP:住人:精液经验 ++
+		EXP:住人:催眠精液经验 ++
+		SIF TALENT:住人:猫舌
+			EXP:住人:嗜虐快乐经验 ++
+		;汚賍等共通する処理
+		CALL STAIN_MOVE_BY_PENIS(部位_口, 住人, 人物_村人)
+		CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_村人)
+		CALL STAIN_MOVE_BY_PENIS(部位_膣内, 住人, 人物_村人)
+		IF TALENT:住人:处女
+			CALL LOST_VIRGIN(住人, 人物_村人)
+			;处女喪失中フラグ套裝
+		ENDIF
+		CALL EJACULATION_V(住人, 人物_村人)
+		CALL EJACULATION_M(住人, 人物_村人)
+		EXP:住人:Ｖ绝顶经验 ++
+		EXP:住人:绝顶经验 ++
+		;V感覚が高いと绝顶经验加算（強絶頂扱い）
+		CALL 催眠_V_EXP_PLUS(住人)
+		累計時間 += 10
+	LOOP BASE:住人:气力 > 0
+	CFLAG:住人:催眠行為持續時間 = DATETIME() + 累計時間
+	CFLAG:住人:現在位置 = 位置_人間の里
+	PRINTFORML %CALLNAME:住人%的身體和靈魂都被染成了精液的白濁顏色
+	PRINTFORML 對%CALLNAME:住人%來說，自己已經成為了只會追求性愛快樂的雌獸，無論對手是誰都會張開雙腿
+	PRINTFORML 除此之外的關係都是多餘的
+	TALENT:住人:恋慕 = 0
+	TALENT:住人:NTR = 0
+	TALENT:住人:亲爱 = 0
+	CFLAG:住人:好感度 = 0
+	CFLAG:住人:屈服度 = 0
+	CFLAG:住人:催眠中 = 0
+	CFLAG:住人:催眠气氛 = 0
+	FLAG:催眠 = 0
+	TALENT:住人:催眠中毒 = 1
+ENDIF
+;-------------------------------------------------------------------------------
+;便器奪還逆強姦
+@戰敗逆強姦（住人）
+#DIM 住人
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+PRINTFORML %CALLNAME:MASTER%被密集的攻击打倒在地
+PRINTFORML 村人压住%CALLNAME:MASTER%的四肢，像制作昆虫标本一样大大地张开
+PRINTFORML 在战斗中破损的衣服遮挡不住身体，露出了雪白的肌肤
+回数 = 0
+累計時間 = 0
+DO
+	回数++
+	行為時間 = 11 + RAND:10
+	IF HAS_PENIS(MASTER) ;逆强奸榨精，阳痿
+		PRINTFORML %CALLNAME:住人%展现出妖艳的笑容，俯下身子，像雌兽一样覆盖了上来
+		PRINTFORML 吸入了%CALLNAME:住人%灼热的吐息，%CALLNAME:MASTER%仿佛饮下媚药一样陷入了情欲之中
+		PRINTFORML %CALLNAME:MASTER%的肉棒异常地膨胀勃起，像旗杆一样高高耸立，并且变得极为敏感
+		PRINTFORML %CALLNAME:住人%缓缓沉下腰，将肉棒吞入体内，灼热的腔内像活物一样蠕动着，仅仅插入就让%CALLNAME:MASTER%射了出来
+		PRINTFORML 「怎么可以……给我继续…………」
+		PRINTFORML %CALLNAME:住人%不满地发出怒斥声，灵巧地扭动着腰，在%CALLNAME:住人%的刺激下%CALLNAME:MASTER%的肉棒又硬了起来
+		PRINTFORML %CALLNAME:住人%双手撑住%CALLNAME:MASTER%的胸膛，像骑马一样上下套弄起来，泛滥的爱液打湿了两人交合的部位
+		PRINTFORML 在%CALLNAME:住人%的疯狂榨取下，%CALLNAME:MASTER%一次又一次地发射出来
+		;住人数值变动
+		BASE:住人:体力 -= 50
+		BASE:住人:气力 -= 100
+		SOURCE:住人:快Ｖ = 400
+		SOURCE:住人:情爱 = 150
+		SOURCE:住人:露出 = 50
+		IF TALENT:住人:处女 == 2
+			SOURCE:住人:苦痛 += 500
+			SOURCE:住人:反感 += 1000
+		ENDIF
+		EXP:住人:Ｖ扩张经验 += 1
+		IF ( TALENT:住人:受虐狂 || ABL:住人:抖Ｍ之气 > 2 ) && EXP:住人:Ｖ扩张经验 < 450
+			CUP:住人:欲情 += 500
+			CUP:住人:苦痛 += 250
+		ELSEIF EXP:住人:Ｖ扩张经验 < 450
+			CUP:住人:苦痛 += 500
+		ENDIF
+		EXP:住人:Ｖ经验 ++
+		EXP:住人:Ｖ性交经验 ++
+		EXP:住人:催眠Ｖ性交经验 ++
+		;汚賍等共通する処理
+		CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_あなた)
+		CALL STAIN_MOVE_BY_PENIS(部位_膣内, 住人, 人物_あなた)
+		IF TALENT:住人:处女
+			CALL LOST_VIRGIN(住人, 人物_あなた)
+			;处女喪失中フラグ套裝
+		ENDIF
+		CALL EJACULATION_V(住人, 人物_あなた)
+		EXP:住人:Ｖ绝顶经验 ++
+		EXP:住人:绝顶经验 ++
+		;V感覚が高いと绝顶经验加算（強絶頂扱い）
+		CALL 催眠_V_EXP_PLUS(住人)
+
+		;MASTER数值变动
+		BASE:master:体力 -= 50
+		BASE:master:气力 -= 100
+		EXP:master:	射精经验 ++
+		EXP:master:异常经验 ++
+		EXP:master:被强奸经验 ++
+		MAXBASE:master:勃起 = 0
+		PRINTFORML 由于%CALLNAME:住人%的疯狂榨取，%CALLNAME:MASTER%感觉身体被掏空了
+
+	ELSE ;村人轮奸
+		PRINTFORML %CALLNAME:住人%展现出妖艳的笑容，把%CALLNAME:MASTER%推向村人之中
+		PRINTFORML 村人粗暴地分开%CALLNAME:MASTER%的双腿，毫无润滑地刺了进去，其余的村人也将肉棒插入了%CALLNAME:MASTER%的嘴巴和肛门
+		PRINTFORML 纯粹为了发泄兽欲，村人毫无怜惜地抽插着，没有刻意忍耐，迅速地发射出来
+		PRINTFORML 排在后面的村人马上接替上来，开始新一轮的奸淫
+		PRINTFORML %CALLNAME:MASTER%渐渐无法分辨痛苦与快乐的区别，双眼变得无神，机械地迎合着村人的动作
+		BASE:MASTER:体力 -= 150
+		BASE:MASTER:气力 -= 200
+		SOURCE:MASTER:性行动 += 50
+		SOURCE:MASTER:屈从 += 100
+		SOURCE:MASTER:露出 += 60
+		SOURCE:MASTER:达成 += 20
+		SOURCE:MASTER:欲情 += 20
+		SOURCE:MASTER:肮脏 += 50
+		SOURCE:MASTER:逸脱 += 30
+		SOURCE:MASTER:苦痛 += 50
+		SOURCE:MASTER:快Ｃ += 100
+		SOURCE:MASTER:快Ｖ += 100
+		SOURCE:MASTER:快Ａ += 100
+		EXP:MASTER:Ｖ扩张经验 += 1
+		EXP:MASTER:Ａ扩张经验 += 1
+		CUP:MASTER:欲情 += 500
+		CUP:MASTER:苦痛 += 250
+		EXP:MASTER:Ｖ经验 ++
+		EXP:MASTER:Ｖ性交经验 ++
+		EXP:MASTER:Ａ经验 ++
+		EXP:MASTER:Ａ性交经验 ++
+		EXP:MASTER:口淫经验 ++
+		EXP:MASTER:精饮经验 ++
+		EXP:MASTER:精液经验 ++
+		EXP:master:被轮奸经验 ++
+		SIF TALENT:MASTER:猫舌
+			EXP:MASTER:嗜虐快乐经验 ++
+		;汚賍等共通する処理
+		CALL STAIN_MOVE_BY_PENIS(部位_口, MASTER, 人物_村人)
+		CALL STAIN_MOVE_BY_PENIS(部位_Ａ, MASTER, 人物_村人)
+		CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, MASTER, 人物_村人)
+		CALL STAIN_MOVE_BY_PENIS(部位_膣内, MASTER, 人物_村人)
+		IF TALENT:MASTER:处女
+			CALL LOST_VIRGIN(MASTER, 人物_村人)
+			;处女喪失中フラグ套裝
+		ENDIF
+		CALL LOST_VIRGIN_A(MASTER, 人物_村人)
+		CALL LOST_VIRGIN_M(MASTER, 人物_村人)
+		CALL EJACULATION_V(MASTER, 人物_村人)
+		CALL EJACULATION_A(MASTER, 人物_村人)
+		CALL EJACULATION_M(MASTER, 人物_村人)
+		EXP:MASTER:Ｖ绝顶经验 ++
+		EXP:MASTER:Ａ绝顶经验 ++
+		EXP:MASTER:绝顶经验 ++
+		;感覚が高いと绝顶经验加算（強絶頂扱い）
+		CALL 催眠_V_EXP_PLUS(MASTER)
+		CALL 催眠_A_EXP_PLUS(MASTER)
+	ENDIF
+	累計時間 += 行為時間
+	TIME += 行為時間
+LOOP BASE:master:气力 > 0
+PRINTDATAL
+	DATAFORM %CALLNAME:master+"在"+TOSTR(累計時間)+"分中被強姦了"+TOSTR(回数)+"次"%
+ENDDATA
+CFLAG:master:現在位置 = 位置_红魔馆正门
+PRINTFORML 連續高潮到失去意識之後，%CALLNAME:MASTER%被像垃圾一樣扔在了館的門外
+RETURN
+;-------------------------------------------------------------------------------
+;性技對決
+@催眠_性技對決(住人)
+#DIM 住人
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+PRINTFORML %CALLNAME:住人%服从催眠者的指示，敞开衣服站在%CALLNAME:MASTER%面前，表情冷漠没有丝毫情欲的痕迹
+PRINTFORML 「没关系，马上就让你回想起来……」
+PRINTFORML 怀着沉痛的觉悟，%CALLNAME:MASTER%将%CALLNAME:住人%揽入怀中，回忆着两人曾经的羁绊，%CALLNAME:MASTER%温柔地爱抚着%CALLNAME:住人%的身体
+PRINTFORML 催眠者冷笑着站在一旁，欣赏着自己一手造成的悲剧
+IF ABL:MASTER:指 + ABL:MASTER:舌 >= 10
+	PRINTFORML %CALLNAME:MASTER%饱含爱意地与%CALLNAME:住人%接吻，交缠的舌头唤醒了%CALLNAME:住人%脑海深处的记忆残片
+	PRINTFORML %CALLNAME:住人%的双眼蓦地睁大，红晕飞上双颊，眼泪也不由地流了下来
+	PRINTFORML 对自己的反应感到迷惑，%CALLNAME:住人%发出了惊慌的悲鸣声
+	PRINTFORML 「呜呜………………」
+	PRINTFORML %CALLNAME:MASTER%的手指不失时机地玩弄着%CALLNAME:住人%的敏感位置
+	PRINTFORML 「高潮吧，然后回来！」
+	PRINTFORML %CALLNAME:住人%的身体猛地僵直，爱液激烈地喷洒出来，双眼一刹间恢复了清明，身体却软软地倒在%CALLNAME:MASTER%怀里
+	PRINTFORML 「什……怎么可能！！」
+	PRINTFORML 催眠者发出难以置信的惊叫
+	PRINTFORML %CALLNAME:MASTER%冷冷地瞪了过去，「%CALLNAME:住人%我就此领受了，今天就放过你，下次可不会这么简单了解」
+	PRINTFORML 把失魂落魄的催眠者抛在身后，%CALLNAME:MASTER%带着%CALLNAME:住人%返回了馆里
+	CFLAG:住人:催眠深度 = 0
+	CFLAG:住人:催眠气氛 = 0
+	CFLAG:住人:催眠中 = 0
+	TALENT:住人:專屬烙印 = 0
+	TALENT:住人:洗腦解除 = 1
+	CFLAG:住人:現在位置 = 位置_红魔馆正门
+	CFLAG:MASTER:現在位置 = 位置_红魔馆正门
+ELSE
+	PRINTFORML %CALLNAME:MASTER%徒劳地玩弄着%CALLNAME:住人%的身体，但%CALLNAME:住人%冷冰冰的毫无反应
+	PRINTFORML 时间悄悄流逝，%CALLNAME:MASTER%不由地焦躁起来
+	PRINTFORML 催眠者冷冷一笑，「闹剧该结束了」
+	IF HAS_PENIS(MASTER)
+		PRINTFORML 「作为惩罚，让我夺走你的一样东西吧」
+		PRINTFORML 催眠者深深地望向%CALLNAME:MASTER%，正因失败失魂落魄的%CALLNAME:MASTER%丝毫没能抵抗，目光像被吸住了一样
+		PRINTFORML 「今天的失败会成为你的梦魇，让你再也硬不起来啦，哈哈哈哈」
+		MAXBASE:master:勃起 = 0
+		PRINTFORML 随着催眠者的诅咒，%CALLNAME:MASTER%的肉棒软软地垂了下去
+		CFLAG:master:現在位置 = 位置_红魔馆正门
+		PRINTFORML %CALLNAME:MASTER%像梦游一样回到了馆里，脑海中催眠者的冷笑声缭绕不去
+	ELSE
+		PRINTFORML 「作为惩罚，%CALLNAME:住人%，给我抓住他！」
+		PRINTFORML 猝不及防，%CALLNAME:MASTER%被怀中的%CALLNAME:住人%施以重重一击，动弹不得了
+		回数 = 0
+		累計時間 = 0
+		DO
+			回数++
+			行為時間 = 11 + RAND:10
+			PRINTFORML 催眠者淫笑着，把身体凑了上来
+			PRINTFORML 催眠者粗暴地分开%CALLNAME:MASTER%的双腿，毫无润滑地刺了进去，故意施加更大痛苦那样进出着
+			PRINTFORML 没有刻意忍耐，催眠者将精液射入%CALLNAME:MASTER%的腔内，几乎不需要休息，催眠者的肉棒又在%CALLNAME:MASTER%体内膨胀了起来
+			BASE:master:体力 -= 50
+			BASE:master:气力 -= 100
+			SOURCE:MASTER:性行动 += 50
+			SOURCE:MASTER:屈从 += 100
+			SOURCE:MASTER:露出 += 60
+			SOURCE:MASTER:达成 += 20
+			SOURCE:MASTER:欲情 += 20
+			SOURCE:MASTER:肮脏 += 50
+			SOURCE:MASTER:逸脱 += 30
+			SOURCE:MASTER:苦痛 += 50
+			SOURCE:MASTER:快Ｃ += 100
+			SOURCE:MASTER:快Ｖ += 100
+			EXP:MASTER:Ｖ扩张经验 += 1
+			CUP:MASTER:欲情 += 500
+			CUP:MASTER:苦痛 += 250
+			EXP:MASTER:Ｖ经验 ++
+			EXP:MASTER:Ｖ性交经验 ++
+			EXP:MASTER:精液经验 ++
+			EXP:master:被强奸经验 ++
+			;汚賍等共通する処理
+			CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, MASTER, 人物_村人)
+			CALL STAIN_MOVE_BY_PENIS(部位_膣内, MASTER, 人物_村人)
+			IF TALENT:MASTER:处女
+				CALL LOST_VIRGIN(MASTER, 人物_村人)
+				;处女喪失中フラグ套裝
+			ENDIF
+			CALL EJACULATION_V(MASTER, 人物_村人)
+			EXP:MASTER:Ｖ绝顶经验 ++
+			EXP:MASTER:绝顶经验 ++
+			;感覚が高いと绝顶经验加算（強絶頂扱い）
+			CALL 催眠_V_EXP_PLUS(MASTER)
+
+			累計時間 += 行為時間
+			TIME += 行為時間
+		LOOP BASE:master:气力 > 0
+		PRINTDATAL
+			DATAFORM %CALLNAME:master+"在"+TOSTR(累計時間)+"分中被強姦了"+TOSTR(回数)+"次"%
+		ENDDATA
+		CFLAG:master:現在位置 = 位置_红魔馆正门
+		PRINTFORML 連續高潮到失去意識之後，%CALLNAME:MASTER%被像垃圾一樣扔在了館的門外
+	ENDIF
+ENDIF
+RETURN
+;-------------------------------------------------------------------------------
+;洗腦解除_永琳
+@洗腦解除_永琳(住人)
+#DIM 住人
+PRINTFORML 經歷一番苦戰，%CALLNAME:MASTER%壓制住了%CALLNAME:住人%
+PRINTFORML %CALLNAME:住人%被送到了永琳的診所
+PRINTFORML 永琳將%CALLNAME:住人%鎖在分娩椅上，大張開雙腿
+PRINTFORML 鈴仙奉命用電極刺激%CALLNAME:住人%脆弱的陰蒂
+PRINTFORML 在%CALLNAME:住人%即將達到高潮的瞬間，永琳直視在%CALLNAME:住人%的雙眼，施展了解除催眠的逆向技術
+PRINTFORML %CALLNAME:住人%被迫回想起在催眠中做下的淫亂行為
+PRINTFORML 意志無法壓抑的多重高潮爆發出來，%CALLNAME:住人%的體液像噴泉一樣盛大地噴出，打濕了分娩椅和診所的地板
+PRINTFORML 過強的高潮也燒毀了催眠者在%CALLNAME:住人%腦內設置的機關，%CALLNAME:住人%的洗腦狀態被解除了
+CFLAG:住人:催眠深度 = 0
+CFLAG:住人:催眠气氛 = 0
+CFLAG:住人:催眠中 = 0
+TALENT:住人:催眠中毒 = 0
+TALENT:住人:洗腦解除 = 1
+TIME += 120
+CFLAG:住人:現在位置 = 位置_红魔馆正门
+RETURN
+;-------------------------------------------------------------------------------
+;住人の訪問者に対する好感度チェック
+;戻り値…1:条件成立 0:条件非成立
+@催眠_CHK_FAVORABLY(住人, 好感度LV)
+#FUNCTION
+#DIM 住人
+#DIM 好感度LV
+#DIM 屈服度閾値
+IF 好感度LV == FAV_催眠完毕
+	SIF TALENT:住人:催眠中毒 || TALENT:住人:專屬烙印
+		RETURNF 1
+ELSEIF 好感度LV == FAV_催眠寸前
+	;判定基準をEVENTTURNEND()と同一に。
+	;従来どおりの判定をさせたい場合はELSEの場合のみ有効とすればよい
+	IF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 && CFLAG:住人:催眠深度 > 2000 && 1000 > CFLAG:住人:好感度
+		RETURNF 1
+	ENDIF
+ELSEIF 好感度LV == FAV_主人より高い
+	SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 && CFLAG:住人:催眠深度 > 1000
+		RETURNF 1
+ELSEIF 好感度LV == FAV_うふふする程度2
+	SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 * 5 / 6 && CFLAG:住人:催眠深度 > 700
+		RETURNF 1
+ELSEIF 好感度LV == FAV_うふふする程度
+	SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 * 3 / 4 && CFLAG:住人:催眠深度 > 500
+		RETURNF 1
+ELSEIF 好感度LV == FAV_侍奉する程度
+	SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 / 2 && CFLAG:住人:催眠深度 > 400
+		RETURNF 1
+ELSEIF 好感度LV == FAV_体を触らせる程度
+	SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 / 3 && CFLAG:住人:催眠深度 > 150
+		RETURNF 1
+ELSEIF 好感度LV == FAV_接吻程度
+	SIF CFLAG:住人:催眠深度 > CFLAG:住人:好感度 / 4 && CFLAG:住人:催眠深度 > 100
+		RETURNF 1
+ELSE
+	RETURNF 0
+	;PRINTFORML !!! バグ [{好感度LV}]
+ENDIF
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;Ｖ感觉高いときの绝顶经验加算（強絶頂のようなもの）
+@催眠_V_EXP_PLUS(住人)
+#DIM 住人
+IF ABL:住人:Ｖ感觉 >= 2
+	IF RAND:3 == 0
+		EXP:住人:Ｖ经验 ++
+		EXP:住人:Ｖ绝顶经验 ++
+		EXP:住人:绝顶经验 ++
+	ENDIF
+ELSEIF ABL:住人:Ｖ感觉 >= 4
+	IF RAND:2 == 0
+		EXP:住人:Ｖ经验 ++
+		EXP:住人:Ｖ绝顶经验 ++
+		EXP:住人:绝顶经验 ++
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;Ａ感觉高いときの绝顶经验加算（強絶頂のようなもの）
+@催眠_A_EXP_PLUS(住人)
+#DIM 住人
+IF ABL:住人:Ａ感觉 >= 2
+	IF RAND:3 == 0
+		EXP:住人:Ａ经验 ++
+		EXP:住人:Ａ绝顶经验 ++
+		EXP:住人:绝顶经验 ++
+	ENDIF
+ELSEIF ABL:住人:Ａ感觉 >= 4
+	IF RAND:2 == 0
+		EXP:住人:Ａ经验 ++
+		EXP:住人:Ａ绝顶经验 ++
+		EXP:住人:绝顶经验 ++
+	ENDIF
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+;歸宅時觸發，LOOP
+@催眠_SOURCE_CHECK(住人,調教者)
+#DIM 住人
+#DIM 調教者
+#DIM SOURCE番号
+#DIM LOOP_I
+TCVAR:住人:行為者 = 調教者
+CALL SOURCE_EXP(住人,調教者)
+CALL SOURCE_快Ｃ(住人,調教者)
+CALL SOURCE_快Ｖ(住人,調教者)
+CALL SOURCE_快Ａ(住人,調教者)
+CALL SOURCE_快Ｂ(住人,調教者)
+CALL SOURCE_CVAB_EXTRA(住人,調教者)
+CALL SOURCE_情爱(住人,調教者)
+CALL SOURCE_性行动(住人,調教者)
+CALL SOURCE_达成(住人,調教者)
+CALL SOURCE_苦痛(住人,調教者)
+CALL SOURCE_恐怖(住人,調教者)
+CALL SOURCE_液体(住人,調教者)
+CALL SOURCE_欲情(住人,調教者)
+CALL SOURCE_恭顺(住人,調教者)
+CALL SOURCE_露出(住人,調教者)
+CALL SOURCE_屈从(住人,調教者)
+CALL SOURCE_欢乐(住人,調教者)
+CALL SOURCE_征服(住人,調教者)
+CALL SOURCE_被动(住人,調教者)
+CALL SOURCE_肮脏(住人,調教者)
+CALL SOURCE_抑郁(住人,調教者)
+CALL SOURCE_逸脱(住人,調教者)
+CALL SOURCE_反感(住人,調教者)
+CALL SOURCE_EXTRA(住人,調教者)
+CALL SOURCE_DOWNBASE(住人,調教者)
+CALL SOURCE_ABLUP(住人)
+CALL MARK_GOT_CHECK(住人,調教者)
+;パラメータの増加
+FOR LOOP_I,0,100
+	SIF PALAMNAME:LOOP_I == ""
+		CONTINUE
+	PALAM:住人:LOOP_I += CUP:住人:LOOP_I - CDOWN:住人:LOOP_I
+	CUP:住人:LOOP_I = 0
+	CDOWN:住人:LOOP_I = 0
+NEXT
+CALL LOST_VIRGIN(住人, 調教者)
+CALL LOST_VIRGIN_A(住人, 調教者)
+CALL LOST_VIRGIN_M(住人, 調教者)
+FOR SOURCE番号,0,VARSIZE("SOURCE")
+	SOURCE:住人:SOURCE番号 = 0
+NEXT
+RETURN 0
+;-------------------------------------------------------------------------------
+;催眠深度加算
+;　・加算する屈服度が0以下なら什麼也不做
+;　・加算する屈服度が1以上なら加算する
+;　・将来難易度調整で加算する屈服度を増減する場合、1が0にはならないようにする
+;@return 常に0
+@催眠_加算(住人, 加算値)
+#DIM 住人
+#DIM 加算値
+;加算値0以下ならなにもしない
+IF 0 >= 加算値
+	RETURN 0
+ENDIF
+;结婚戒指していると若干影響軽減。0にはならない。
+IF EQUIP:住人:配件 == 衣装_配件_结婚戒指
+	加算値 = (加算値 * 4) / 5
+	SIF 加算値 < 1
+		加算値 = 1
+ENDIF
+;屈服度補正をかける。最大50倍。屈服度倍率が0のときはかけないようにする
+IF FLAG:催眠倍率 == 0
+	CFLAG:住人:催眠深度 += 加算値
+ELSE
+	CFLAG:住人:催眠深度 += 加算値 * (FLAG:催眠倍率)
+ENDIF
+
+IF FLAG:催眠倍率 == 0
+	PRINTFORML 催眠深度+{加算値}
+ELSE
+	PRINTFORML 催眠深度+{加算値 * (FLAG:催眠倍率)}
+ENDIF
+RETURN 0
+

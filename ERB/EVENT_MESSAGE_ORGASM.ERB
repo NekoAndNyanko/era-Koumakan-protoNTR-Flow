@@ -1,0 +1,305 @@
+﻿
+;-------------------------------------------
+;触手の射精時のテキスト
+;-------------------------------------------
+@PALAM_MESSAGE_E
+;触手が射精
+SIF TFLAG:15 == 1
+	PRINTFORML %CALLNAME:TARGET%に絡みついた触手が粘つく体液を吐き出した…
+;触手が大量射精
+SIF TFLAG:15 == 2
+	PRINTFORML %CALLNAME:TARGET%の全身に絡みついた触手が一斉に粘つく体液を吐き出した…
+;テキストを読むためのウエイト
+;表示があるときのみ
+SIF TFLAG:15
+	WAIT
+
+;-------------------------------------------
+;奴隷の絶頂時のテキスト
+;-------------------------------------------
+@PALAM_MESSAGE_B
+;噴射乳絶頂は、Ｂ绝顶と同時じゃないとダメ
+LOCAL =  NOWEX:Ｃ绝顶 + NOWEX:Ｖ绝顶 + NOWEX:Ａ绝顶 + (NOWEX:Ｂ绝顶 && NOWEX:喷乳)*2 + NOWEX:射精
+IF !(LOCAL + NOWEX:12)
+	IF TALENT:TARGET:恋慕 && NOWEX:TARGET:绝顶演技
+		;恋慕があるならイけなくてもイったふりをしてくれる。
+		TRYCALL NTR_MESSAGE_FAKE_ORGASM,TARGET
+	ENDIF
+	RETURN 0
+ENDIF
+
+;絶頂
+LOCAL:1 = 0
+PRINTFORM %CALLNAME:TARGET%は
+IF NOWEX:10
+	PRINT 乳汁从胸部的凸起处流了出来
+	LOCAL:1 = 1
+ENDIF
+IF LOCAL >= 5
+	PRINT 从阴唇间喷出了透明的淫液
+	LOCAL:1 = 1
+ENDIF
+IF NOWEX:射精
+	PRINT 从肉棒射出了精液
+	LOCAL:1 = 1
+ENDIF
+IF LOCAL > 5
+	PRINT 绷直了脊背
+	LOCAL:1 = 1
+ENDIF
+IF LOCAL:1
+	PRINTL 浑身颤抖着、达到了绝顶
+ELSE
+	PRINTL 浑身颤抖着、达到了高潮
+ENDIF
+
+;中出し
+IF NOWEX:射精
+	IF (TCVAR:PLAYER:100 == TARGET || SELECTCOM == 97 || SELECTCOM == 98 || SELECTCOM == 99)
+		IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+			PRINTFORML 自己孩子的精液流入了作为母亲的%CALLNAME:PLAYER%的子宫里…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%的精液流入了%CALLNAME:PLAYER%的阴道里…
+		ENDIF
+	ENDIF
+ENDIF
+;絶頂
+SIF LOCAL >= 3
+	PRINTS CALLNAME:TARGET
+IF LOCAL >= 5 && TEQUIP:50 > 0
+	PRINTL 白浊的粘液从小穴不停流出来、两片粉色的花瓣像呼吸一样微微开合、似乎在渴望更进一步的蹂躏…
+ELSEIF LOCAL >= 5
+	PRINTL 快感的余韵依然断断续续地带来高潮、但身体已经彻底筋疲力尽地瘫软了下去…
+ELSEIF LOCAL >= 3
+	PRINTL 低低地喘息着、沉浸在绝顶的余韵里…
+ENDIF
+
+;絶頂とおもらし
+IF LOCAL >= 7 && TEQUIP:利尿剂 && TALENT:漏尿癖
+	PRINTFORML %CALLNAME:TARGET%全身剧烈地痉挛、大声地娇吟着、然后从下体喷洒出了大量尿液
+	PRINTFORML 痛快的失禁让%CALLNAME:TARGET%感受到了强烈的快乐…
+ELSEIF LOCAL >= 7 && TEQUIP:利尿剂
+	PRINTFORML 身体不停地痉挛的%CALLNAME:TARGET%的下体、尿液如同洪水般从尿道口倾泻而出…
+ELSEIF LOCAL >= 7 && TALENT:漏尿癖
+	PRINTFORML 身体不停地痉挛的%CALLNAME:TARGET%、从尿道口喷射出一道水流、划着弧线洒在了地上…
+ELSEIF LOCAL >= 5 && TEQUIP:利尿剂 && TALENT:漏尿癖
+	PRINTFORML 筋疲力尽的%CALLNAME:TARGET%、尿液像洪水一样从尿道口倾泻而出…
+ELSEIF LOCAL >= 5 && TEQUIP:利尿剂
+	PRINTFORML 筋疲力尽的%CALLNAME:TARGET%、从尿道口喷射出一道水流、划着弧线洒在了地上…
+ELSEIF LOCAL >= 5 && TALENT:漏尿癖
+	PRINTFORML 筋疲力尽的%CALLNAME:TARGET%控制不住地从尿道口流出了尿液…
+ELSEIF LOCAL >= 3 && TEQUIP:利尿剂 && TALENT:漏尿癖
+	PRINTFORML 全身颤抖的%CALLNAME:TARGET%、从尿道口喷射出一道水流、划着弧线洒在了地上…
+ELSEIF LOCAL >= 3 && TEQUIP:利尿剂
+	PRINTFORML 全身颤抖的%CALLNAME:TARGET%控制不住地从尿道口流出了尿液…
+ELSEIF LOCAL >= 3 && TALENT:漏尿癖
+	PRINTFORML 全身颤抖的%CALLNAME:TARGET%、从两片阴唇间漏出了透明的尿液…
+ELSEIF LOCAL >= 1 && TEQUIP:利尿剂 && TALENT:漏尿癖
+	PRINTFORML %CALLNAME:TARGET%控制不住地从尿道口流出了尿液…
+ELSEIF LOCAL >= 1 && TEQUIP:利尿剂
+	PRINTFORML %CALLNAME:TARGET%从两片阴唇间漏出了透明的尿液…
+ENDIF
+
+;テキストを読むためのウエイト
+;表示があるときのみ
+SIF LOCAL + NOWEX:12 > 0
+	WAIT
+
+;-------------------------------------------
+;調教者の射精時のテキスト
+;-------------------------------------------
+@PALAM_MESSAGE_A
+VARSET LOCAL
+;TFLAG:1 射精箇所 (ビット0=避孕套 1=膣内 2=菊花 3=手淫 4=口淫 5=乳交 6=素股 7=足交 8=体表 9=舔肛侍奉
+;20=手淫口交 21=乳夹口交22=六九式
+;搾乳手コキ
+IF TCVAR:TARGET:カウンター行動 == CNT_乳搾り手コキ
+	IF BASE:MASTER:精力 == 0
+		PRINTFORML %CALLNAME:PLAYER%被%CALLNAME:TARGET%完全榨干了…
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%被%CALLNAME:TARGET%狠狠地榨取了精液…
+	ENDIF
+	WAIT
+	RETURN 0
+ENDIF
+;避孕套
+IF GETBIT(TFLAG:1,射精箇所_避孕套)
+	PRINTFORML %CALLNAME:PLAYER%射出了大量的精液…
+	PRINTFORML 拔出来后、%CALLNAME:TARGET%看到肉棒上白浊的种子充满了避孕套…
+	;膣内射精
+	IF GETBIT(TFLAG:1,射精箇所_膣内)
+		IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服从)
+			PRINTFORML %CALLNAME:TARGET%因为%CALLNAME:PLAYER%做了避孕措施而松了口气…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%想象着那些精液射入子宫的情况、脸色有些发青…
+		ENDIF
+	ENDIF
+	WAIT
+	RETURN 0
+ENDIF
+;個別処理
+;子宮口責め
+IF GETBIT(TFLAG:1,射精箇所_子宮口責め)
+	PRINTFORML %CALLNAME:PLAYER%在%CALLNAME:TARGET%的阴道里射精了
+	PRINT 精液を
+	SIF NO:TARGET >= 148 && (CFLAG:TARGET:父親 == PLAYER || CFLAG:TARGET:母親 == PLAYER)
+		PRINT 我が子の
+	PRINTFORMW 子宮内に注ぎ込んだ…
+	;六九式
+ELSEIF GETBIT(TFLAG:1,射精箇所_六九式)
+	IF NOWEX:射精 && NOWEX:MASTER:射精
+		PRINTFORML %CALLNAME:TARGET%和%CALLNAME:PLAYER%同时在对方嘴里射出了精液…
+		PRINTFORMW 两人饥渴地舔舐着彼此的阴茎、大口吞咽着白浊的液体、沉溺在这淫靡的快乐里…
+	ELSEIF NOWEX:射精
+		IF TALENT:PLAYER & 2
+			PRINTFORML %CALLNAME:TARGET%比%CALLNAME:PLAYER%先射出了精液…
+			PRINTFORMW %CALLNAME:PLAYER%一边努力地吞咽着大量的白浊、一边奋力地将肉棒往%CALLNAME:TARGET%喉咙深处突入
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%在%CALLNAME:PLAYER%的口中射出了精液…
+		ENDIF
+	ELSE
+		IF HAS_PENIS(TARGET)
+			PRINTFORM %CALLNAME:PLAYER%一边像品尝美味般用嘴巴侍奉着%CALLNAME:TARGET%的肉棒、
+		ELSE
+			PRINTFORM %CALLNAME:PLAYER%一边像品尝美味般用舌头舔弄着%CALLNAME:TARGET%的小穴、
+		ENDIF
+		PRINTFORML 一边将肉棒插入%CALLNAME:TARGET%的喉咙深处射出了精液…
+		PRINTFORMW 强烈的雄性气息让%CALLNAME:TARGET%瞪大了眼睛、反应过来后努力地将射出来的种子都咽了下去…
+	ENDIF
+	;乳夹口交
+ELSEIF GETBIT(TFLAG:1,射精箇所_乳夹口交)
+	PRINTFORMW 被%CALLNAME:TARGET%用胸部和嘴巴努力侍奉着的肉棒前端、射出了大量精液…
+	;授乳手コキ
+ELSEIF GETBIT(TFLAG:1,射精箇所_授乳手コキ)
+	PRINTFORML %CALLNAME:PLAYER%一边吮吸着%CALLNAME:TARGET%分泌出的乳汁、一边在%CALLNAME:TARGET%灵巧的手里射出了精液…
+	;手淫口交
+ELSEIF GETBIT(TFLAG:1,射精箇所_手淫口交)
+	PRINTFORML 在%CALLNAME:TARGET%的喉咙里射出了精液…
+	;精飲
+	IF EXP_UP(15) == NOWEX:PLAYER:射精 * 3
+		PRINTFORML %CALLNAME:TARGET%顿时睁大了眼睛、嘴巴紧紧含住肉棒不放、奋力地吞咽着在不断涌入喉咙深处的白浊
+		PRINTFORMW 当所有精液都被饮下去后，%CALLNAME:TARGET%早已满脸红晕、眼神恍惚，灵巧的手下意识地不断挤弄着肉棒、仿佛要再继续榨取“牛奶”一样…
+		RETURN 1
+	ELSE
+		IF TCVAR:精饮经验 == 0
+			PRINTFORML %CALLNAME:TARGET%吓了一跳、急忙把嘴巴拿开了
+			PRINTFORMW 喷射而出的白浊液体脏了%CALLNAME:TARGET%的脸
+			PRINTFORMW 品味着口腔里残留的奇异味道，%CALLNAME:TARGET%有些不知所措…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%一边用舌头舔舐着阴茎、一边将所有的精液吞进了肚子里
+			PRINTFORMW 同时，双手仍一丝不苟地努力侍奉着……
+		ENDIF
+		RETURN 2
+	ENDIF
+	;部位別処理
+	;膣内
+ELSEIF TCVAR:PLAYER:12 == 1
+	LOCAL = MASTER_POSE(6,1)
+	IF TFLAG:50 == 13
+		PRINTFORML %CALLNAME:PLAYER%在%CALLNAME:(TFLAG:152)%的小穴里射精了…然后果断地拔了出来
+		PRINTFORMW 在射精停止前、转身插入%CALLNAME:TARGET%的体内、将剩下的精子注入进去…
+	ELSEIF TFLAG:50 == 7
+		PRINTFORML %CALLNAME:PLAYER%将肉棒挺入了%CALLNAME:TARGET%的小穴深处、顶住
+		SIF NO:TARGET >= 148 && (CFLAG:TARGET:父親 == PLAYER || CFLAG:TARGET:母親 == PLAYER)
+			PRINT 自己孩子的
+		PRINTFORMW 子宫口、注入了大量精液…
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%在%CALLNAME:LOCAL%的小穴里射精了
+		PRINTFORMW 被温柔的精液所刺激的阴道、激烈的蠕动着、贪婪地绞缠着阴茎…
+	ENDIF
+	;菊花
+ELSEIF GETBIT(TFLAG:1,射精箇所_菊花)
+	PRINTFORML %CALLNAME:PLAYER%在%CALLNAME:TARGET%的肛门深处射出了精液
+	PRINTFORMW 被温热的白浊所刺激的肠道颤抖着、紧紧地缠住了阴茎…
+	;手淫
+ELSEIF GETBIT(TFLAG:1,射精箇所_手淫)
+	IF CFLAG:うふふ == 2
+		PRINTFORML 感受到阴茎的微微颤动，%CALLNAME:TARGET%的手更加激烈地撸动起来
+		PRINTFORML \@ NOWEX:PLAYER:射精 > 1 ? 很快、大量的 # 很快 \@精液从前端喷射而出
+		PRINTFORMW 一直撸到%CALLNAME:MASTER%的肉棒像被榨干那样疲软下去为止…
+	ELSE
+		IF ABL:精液中毒 > 2 && ABL:技巧 > 2
+			PRINTFORML %CALLNAME:TARGET%露出一脸陶醉的表情，一边双手温柔地撸动着%CALLNAME:PLAYER%因激烈的射精而跳动的肉棒、一边伸出舌头舔舐着溅到嘴边的精液…
+		ELSEIF NOWEX:PLAYER:射精 == 1
+			PRINTFORMW 在%CALLNAME:TARGET%双手的玩弄下射精了…
+		ELSE
+			PRINTFORMW 激烈又突兀的射精、让%CALLNAME:TARGET%的脸和手沾满了精液…
+		ENDIF
+	ENDIF
+	;口交
+ELSEIF GETBIT(TFLAG:1,射精箇所_口淫)
+	IF CFLAG:うふふ == 2
+		PRINTFORML %CALLNAME:MASTER%在%CALLNAME:TARGET%的嘴里射出了精液…
+		PRINTFORMW %CALLNAME:TARGET%红着脸、一边陶醉地吞咽着精液，一边用舌头不停地刺激着龟头、仿佛在催促着射出更多精液…
+	ELSEIF SELECTCOM == 140
+		PRINTFORML %CALLNAME:PLAYER%将肉棒深深地插入了%CALLNAME:TARGET%的喉咙、射出了精液
+		PRINTFORMW 直接将精液送进了食道里…
+	ELSE
+		PRINTFORMW %CALLNAME:PLAYER%在%CALLNAME:TARGET%的嘴里射精了
+		;精飲
+		IF EXP_UP(15) == NOWEX:PLAYER:射精 * 3
+			IF NOWEX:PLAYER:射精 == 1
+				PRINTFORML %CALLNAME:TARGET%的嘴巴紧紧含着阴茎、不让任何一滴精液漏出去
+				PRINTFORMW 让精液在注入自己的喉咙、然后咽了下去…
+			ELSE
+				PRINTFORMW %CALLNAME:TARGET%紧紧含着龟头、任由大量的精液灌入自己的喉咙…
+			ENDIF
+			RETURN 1
+		ELSE
+			IF TCVAR:精饮经验 == 0
+				PRINTFORML %CALLNAME:TARGET%吓了一跳、急忙把嘴巴拿开了
+				PRINTFORMW 喷射而出的白浊液体脏了%CALLNAME:TARGET%的脸
+				PRINTFORMW 品味着口腔里残留的奇异味道，%CALLNAME:TARGET%有些不知所措…
+			ELSEIF TCVAR:精饮经验 < 20
+				PRINTFORML 射精结束后、%CALLNAME:TARGET%将口中的精液吐了出来
+				PRINTFORMW 看来还是没有习惯精液的味道…
+			ELSE
+				IF NOWEX:PLAYER:射精 == 1
+					PRINTFORML %CALLNAME:TARGET%的嘴巴紧紧含着阴茎、将所有的精液都封在了口腔里
+					PRINTFORMW 然后慢慢的吐在了手上、让%CALLNAME:PLAYER%看到…
+				ELSE
+					PRINTFORML %CALLNAME:TARGET%的嘴巴紧紧含着阴茎、将所有的精液都封在了口腔里、
+					PRINTFORMW 然后张开嘴、让%CALLNAME:PLAYER%看清楚嘴巴里的白浊后，才慢慢地咽了下去…
+				ENDIF
+			ENDIF
+			RETURN 2
+		ENDIF
+	ENDIF
+	;乳交
+ELSEIF GETBIT(TFLAG:1,射精箇所_乳交)
+	IF NOWEX:PLAYER:射精 == 1
+		IF TALENT:胸部尺寸 > 0
+			PRINTFORMW 白浊的液体在%CALLNAME:TARGET%的双乳间流淌着…
+		ELSE
+			PRINTFORMW 精液从%CALLNAME:TARGET%胸部上的肉棒前端射了出来、溅到了%CALLNAME:TARGET%的脸上…
+		ENDIF
+	ELSE
+		PRINTFORML 飞散的精液将%CALLNAME:TARGET%的脸和胸口都弄脏了…
+	ENDIF
+	;素股
+ELSEIF GETBIT(TFLAG:1,射精箇所_素股)
+	PRINTFORMW %CALLNAME:PLAYER%PLAYER在两片娇嫩的花瓣间射精了…
+	;足交
+ELSEIF GETBIT(TFLAG:1,射精箇所_足交)
+	IF TALENT:施虐狂
+		PRINTFORM %CALLNAME:TARGET%看了看脚上沾满的精液、眼神立刻冷了下来，往%CALLNAME:PLAYER%仍在射精的肉棒狠狠踩了一脚
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%的脚被%CALLNAME:PLAYER%射出的精液弄脏了
+	ENDIF
+	;泡澡
+ELSEIF GETBIT(TFLAG:1,射精箇所_体表)
+	IF NOWEX:射精 && NOWEX:MASTER:射精
+		PRINTFORML %CALLNAME:TARGET%和%CALLNAME:PLAYER%互相拥抱着、同时射精了…
+		PRINTFORMW 两人一边释放着精液、一边不停地爱抚着彼此的身体、将精液混合着水擦拭在对方身上…
+	ELSEIF NOWEX:射精
+		PRINTFORMW %CALLNAME:TARGET%一边从阴茎射出精液，一边将精液混合着水擦拭在%CALLNAME:PLAYER%的身体上…
+	ELSE
+		PRINTFORMW %CALLNAME:TARGET%一边用身体蹭着%CALLNAME:PLAYER%射出精液的肉棒、一边混合着水将精液擦拭在自己身上…
+	ENDIF
+	;舔肛侍奉
+ELSEIF GETBIT(TFLAG:1,射精箇所_舔肛侍奉)
+	PRINTFORMW %CALLNAME:TARGET%的脸沾满了大量的精液…
+	;爱抚
+ELSEIF GETBIT(TFLAG:1,射精箇所_爱抚)
+	PRINTFORMW 在%CALLNAME:TARGET%淫靡的爱抚下，明明都没有碰到阴茎、%CALLNAME:PLAYER%却控制不住地激烈地射出了精液…
+ENDIF

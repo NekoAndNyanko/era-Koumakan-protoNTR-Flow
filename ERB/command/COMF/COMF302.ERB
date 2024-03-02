@@ -1,0 +1,107 @@
+﻿@COM302
+;身体接触
+LOCAL = RAND:100
+LOCAL:1 = 90 + GET_SUCCESS_RATE() / 5
+SIF LOCAL:1 > 99
+	LOCAL:1 = 99
+IF LOCAL <= 9
+	;10％で大成功
+	TFLAG:193 = 1
+ELSEIF LOCAL >= LOCAL:1
+	;10～1％で失敗
+	TFLAG:193 = -1
+ELSE
+	;残りは成功
+	TFLAG:193 = 0
+ENDIF
+;先制発生時は失敗しない
+SIF TCVAR:20
+	TFLAG:193 = MAX(TFLAG:193,0)
+
+DOWNBASE:气力 += 30
+DOWNBASE:MASTER:气力 += 30
+
+;固定で獲得するソース
+SOURCE:欢乐 = 100
+SOURCE:情爱 = 100
+SOURCE:露出 = 20
+SOURCE:反感 = 50
+
+;ABL:亲密をみる
+IF ABL:亲密 <= 1
+	SOURCE:情爱 += (ABL:亲密 * 30)
+ELSEIF ABL:亲密 <= 3
+	SOURCE:欢乐 += 100 + (ABL:亲密 * 40)
+	SOURCE:情爱 += 200 + (ABL:亲密 * 30)
+ELSEIF ABL:亲密 <= 5
+	SOURCE:欢乐 += 400 + (ABL:亲密 * 50)
+	SOURCE:情爱 += 400 + (ABL:亲密 * 30)
+ELSEIF ABL:亲密 <= 8
+	SOURCE:欢乐 += 700 + (ABL:亲密 * 60)
+	SOURCE:情爱 += 600 + (ABL:亲密 * 40)
+ELSEIF ABL:亲密 <= 11
+	SOURCE:欢乐 += 1200 + (ABL:亲密 * 80)
+	SOURCE:情爱 += 800 + (ABL:亲密 * 40)
+ELSE
+	SOURCE:欢乐 += 2000 + (ABL:亲密 * 50)
+	SOURCE:情爱 += 1800 + (ABL:亲密 * 20)
+ENDIF
+
+;好感度をみる
+IF CFLAG:好感度 <= 500
+	SOURCE:欢乐 += CFLAG:2
+ELSEIF CFLAG:好感度 <= 5000
+	SOURCE:欢乐 += 500 + (CFLAG:好感度 - 500) / 3
+ELSE
+	SOURCE:欢乐 += 2000 + (CFLAG:好感度 - 5000) / 5
+ENDIF
+SIF SOURCE:欢乐 < 0
+	SOURCE:欢乐 = 0
+
+LOCAL = 0
+;亲密が低いと好感度低下
+IF ABL:亲密 == 0
+	LOCAL -= 3
+ELSEIF ABL:亲密 == 1
+	LOCAL -= 2
+ELSEIF ABL:亲密 == 2
+	LOCAL -= 1
+ENDIF
+;好感度が低いと好感度低下
+IF CFLAG:好感度 <= 50
+	LOCAL -= 3
+ELSEIF CFLAG:好感度 <= 100
+	LOCAL -= 2
+ELSEIF CFLAG:好感度 <= 250
+	LOCAL -= 1
+ENDIF
+
+
+SOURCE:被动 = 100 + 200 * ABL:顺从
+SOURCE:征服 = 100 + 200 * ABL:抖Ｓ之气
+
+;好感度変化
+TFLAG:97 += LOCAL
+
+IF TFLAG:193 == -1
+	TIMES SOURCE:欢乐 , 0.10
+	TIMES SOURCE:情爱 , 0.50
+	TIMES SOURCE:征服 , 0.50
+	TIMES SOURCE:被动 , 0.50
+ELSEIF TFLAG:193 == 0
+	TIMES SOURCE:欢乐 , 1.00
+	TIMES SOURCE:情爱 , 1.00
+	TIMES SOURCE:征服 , 1.00
+	TIMES SOURCE:被动 , 1.00
+ELSE
+	TIMES SOURCE:欢乐 , 2.00
+	TIMES SOURCE:情爱 , 2.00
+	TIMES SOURCE:征服 , 2.00
+	TIMES SOURCE:被动 , 2.00
+ENDIF
+TIME += 10
+
+;身体接触したフラグ
+TCVAR:303 = DATETIME()
+RETURN 1
+

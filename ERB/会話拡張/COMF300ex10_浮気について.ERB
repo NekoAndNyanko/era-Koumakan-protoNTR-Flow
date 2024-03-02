@@ -1,0 +1,511 @@
+﻿;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 浮気について話す 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_10_ENABLE
+#DIM 奴隷
+
+奴隷 = TARGET:0
+RESULTS:0 = %"[10]-关于"+CALLNAME:奴隷+"出轨的事"%
+IF FLAG:非公开NTR模式
+	;todo
+	RETURN 0
+ELSEIF TCVAR:奴隷:会话不能
+	RETURN 0
+ELSE
+	IF TALENT:奴隷:浮気公認 > 0
+		RETURN 1
+	ELSEIF CFLAG:奴隷:浮気证据有效 > 0
+		;ELSEIF STRCOUNT(SAVESTR:10,@"%CALLNAME:奴隷+"15PH/"%") + STRCOUNT(SAVESTR:10,@"%CALLNAME:奴隷+"16PH/"%")
+		;浮気の証拠がある
+		RETURN 1
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い) == 0 && NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) == 0 && NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) == 0
+		RETURN 0
+	ELSEIF TALENT:奴隷:恋慕 == 0
+		RETURN 0
+	ELSE
+		RETURN 1
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 浮気について話す
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+;SOURCEは合計300ぐらいの変化でいいかな
+@COM300_10
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+調教者 = PLAYER:0
+;会话累積値を増やしたりの処理は共通、時間は少し多めに
+LOSEBASE:气力 += 100
+DOWNBASE:調教者:气力 += 100
+DOWNBASE:奴隷:气力 += 100
+TCVAR:会话累積値 += 200 / (3 + ABL:MASTER:话术技能)
+TIME += 15
+;-----------------------------------------------------------------------------
+;会话不能があると失敗
+IF TCVAR:奴隷:会话不能
+	PRINTFORML %"想去跟"+CALLNAME:奴隷+"搭话但不知道说些什么"%
+	PRINTFORML %"尴尬的空气在四周流动……"%
+	TFLAG:コマンド成功度 = -1
+	RETURN 0
+ELSE
+	;特殊会话すると会话不能が増える
+	TCVAR:奴隷:会话不能 ++
+ENDIF
+;-----------------------------------------------------------------------------
+EXP:MASTER:会话经验 ++
+TFLAG:コマンド成功度 = 0
+IF FLAG:非公开NTR模式
+	;todo
+ELSE
+	IF TALENT:奴隷:浮気公認 > 0
+		;すでに浮気公認してるなら
+		CALL COM300_10_02
+	ELSE
+		;まだ浮気公認していないなら
+		CALL COM300_10_01
+	ENDIF
+	; どちらの場合もここでフラグを消す。
+	CFLAG:奴隷:NTR处女喪失 = 0
+ENDIF
+RETURN RESULT:0
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気について問い詰める
+@COM300_10_01
+#DIM 奴隷
+#DIM 調教者
+#DIM 浮気の証拠がある = 0
+
+奴隷 = TARGET:0
+調教者 = PLAYER:0
+;浮気の証拠がある = STRCOUNT(SAVESTR:10,@"%"/"+CALLNAME:奴隷+"15PH\d*/"%") + STRCOUNT(SAVESTR:10,@"%"/"+CALLNAME:奴隷+"16PH\d*/"%")
+PRINTL
+PRINTFORM %CALLNAME:調教者+"质问起和"+NTR_NAME(0)+"之间的关系"%
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	IF CFLAG:汚れ発覚 == 汚れ発覚_あり
+		;精液汚れを見つけられた場合
+		PRINTFORML %CALLNAME:奴隷+"坦率地承认了出轨，反问有什么问题。"%
+		CFLAG:覗き発覚回数 = 0
+		CFLAG:覗き発覚時行為 = 0
+		CFLAG:同席目撃回数 = 0
+		CFLAG:同席目撃時行為 = 0
+		SOURCE:奴隷:挑衅 += 200
+		SOURCE:奴隷:逸脱 += 100
+	ELSEIF (CFLAG:覗き発覚回数 > 0 && CFLAG:覗き発覚時行為 > 0) || (CFLAG:同席目撃回数 > 0 && CFLAG:同席目撃時行為 > 0)
+		;覗きバレしていた場合
+		PRINTFORML %CALLNAME:奴隷+"毫无愧疚地承认了出轨，反问"+MSG_RE_LOVER(奴隷)+"一直窥视而没有挺身而出、是因为看到"+CALLNAME:奴隷+"被肆意侵犯的样子而感到兴奋了吗？"%
+		CFLAG:覗き発覚回数 = 0
+		CFLAG:覗き発覚時行為 = 0
+		CFLAG:同席目撃回数 = 0
+		CFLAG:同席目撃時行為 = 0
+		SOURCE:奴隷:挑衅 += 200
+		SOURCE:奴隷:逸脱 += 100
+	ELSE
+		;寝取られ寸前なら、証拠が無くても隠そうとしない
+		PRINTFORML %CALLNAME:奴隷+"坦率地承认了出轨，反问有什么问题。"%
+		SOURCE:奴隷:逸脱 += 300
+	ENDIF
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;寝取られそうなら嘘を吐こうとする
+	IF CFLAG:汚れ発覚 == 汚れ発覚_あり
+		;精液汚れを見つけられた場合、逆ギレで開き直る
+		PRINTFORML %CALLNAME:奴隷+"坦率地承认了出轨，反问有什么问题。"%
+		CFLAG:覗き発覚回数 = 0
+		CFLAG:覗き発覚時行為 = 0
+		CFLAG:同席目撃回数 = 0
+		CFLAG:同席目撃時行為 = 0
+		SOURCE:奴隷:反感 += 300
+	ELSEIF (CFLAG:覗き発覚回数 > 0 && CFLAG:覗き発覚時行為 > 0) || (CFLAG:同席目撃回数 > 0 && CFLAG:同席目撃時行為 > 0)
+		;覗きバレしていた場合
+		PRINTFORML %CALLNAME:奴隷+"将自己的出轨行为放在一边、反而出声质问"+MSG_RE_LOVER(奴隷)+"为什么一直偷窥而不出来帮助呢、该不会是看到"+CALLNAME:奴隷+"被侵犯的样子而兴奋了吧？"%
+		CFLAG:覗き発覚回数 = 0
+		CFLAG:覗き発覚時行為 = 0
+		CFLAG:同席目撃回数 = 0
+		CFLAG:同席目撃時行為 = 0
+		SOURCE:奴隷:反感 += 300
+	ELSEIF CFLAG:奴隷:浮気证据有效 > 0
+		CFLAG:奴隷:浮気证据有效 = 0
+		;浮気の証拠がある場合、嘘を暴かれてしまう
+		PRINTFORML %CALLNAME:奴隷+"撒谎说并没有出轨，但看到证据的写真后慌慌张张地进行辩解了。"%
+		SOURCE:奴隷:反感 += 100
+		SOURCE:奴隷:恐怖 += 200
+	ELSE
+		;浮気の証拠がない場合、嘘と責任転嫁で切り抜ける
+		PRINTFORML %CALLNAME:奴隷+"生气地说自己并没有出轨、并对怀疑自己的"+MSG_RE_LOVER(奴隷)+"大发脾气。"%
+		HTML_PRINT @"<font color='#" +TOSTR(色設定_テキスト_備考,"x") +"'>拿到证据的照片之后，就能让承认自己出轨了吧。</font>"
+		SOURCE:奴隷:反感 += 150
+		SOURCE:奴隷:恐怖 += 100
+		SOURCE:奴隷:抑郁 += 50
+		TFLAG:コマンド成功度 = -1
+		;会话はここで終わる
+		RETURN 0
+	ENDIF
+ELSE
+	;それ以外の場合
+	IF CFLAG:汚れ発覚 == 汚れ発覚_あり
+		;精液汚れを見つけられた場合、強姦だったということにして切り抜ける
+		PRINTFORML %CALLNAME:奴隷+"辩解说自己是被强奸了。"%
+		HTML_PRINT @"<font color='#" +TOSTR(色設定_テキスト_備考,"x") +"'>拿到证据的照片之后，就能让承认自己出轨了吧。。</font>"
+		CFLAG:覗き発覚回数 = 0
+		CFLAG:覗き発覚時行為 = 0
+		CFLAG:同席目撃回数 = 0
+		CFLAG:同席目撃時行為 = 0
+		SOURCE:奴隷:反感 += 150
+		SOURCE:奴隷:抑郁 += 150
+		TFLAG:コマンド成功度 = -1
+		;会话はここで終わる
+		RETURN 1
+	ELSEIF (CFLAG:覗き発覚回数 > 0 && CFLAG:覗き発覚時行為 > 0) || (CFLAG:同席目撃回数 > 0 && CFLAG:同席目撃時行為 > 0)
+		;覗きバレしていた場合、強姦だったということにして切り抜ける
+		PRINTFORML %CALLNAME:奴隷+"质问"+MSG_LOVER(奴隷)+"明明看到自己被强奸为什么不出来帮助自己、是自己没有被帮助的价值吗？"%
+		HTML_PRINT @"<font color='#" +TOSTR(色設定_テキスト_備考,"x") +"'>拿到证据的照片之后，就能让承认自己出轨了吧。。</font>"
+		CFLAG:覗き発覚回数 = 0
+		CFLAG:覗き発覚時行為 = 0
+		CFLAG:同席目撃回数 = 0
+		CFLAG:同席目撃時行為 = 0
+		SOURCE:奴隷:反感 += 150
+		SOURCE:奴隷:抑郁 += 150
+		TFLAG:コマンド成功度 = -1
+		;会话はここで終わる
+		RETURN 1
+	ELSEIF CFLAG:奴隷:浮気证据有效 > 0
+		CFLAG:奴隷:浮気证据有效 = 0
+		;浮気の証拠がある場合、嘘を暴かれてしまう
+		PRINTFORML %CALLNAME:奴隷+"虽然撒谎自己并没有出轨、但看到作为出轨证据的写真一时什么话也说不出来了。"%
+		SOURCE:奴隷:恐怖 += 300
+	ELSE
+		;浮気の証拠がない場合、嘘と責任転嫁で切り抜ける
+		PRINTFORML %CALLNAME:奴隷+"生气地说自己并没有出轨、难道不值得信任吗？"%
+		HTML_PRINT @"<font color='#" +TOSTR(色設定_テキスト_備考,"x") +"'>拿到证据的照片之后，就能让承认自己出轨了吧。。</font>"
+		SOURCE:奴隷:反感 += 100
+		SOURCE:奴隷:恐怖 += 100
+		SOURCE:奴隷:抑郁 += 100
+		TFLAG:コマンド成功度 = -1
+		;会话はここで終わる
+		RETURN 0
+	ENDIF
+ENDIF
+;ここで表示する口上は「それで、どうしたいの？」とかそんな感じ？
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_01(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_01(奴隷, 調教者)
+ENDFUNC
+PRINTL
+PRINTFORML %"[1]-出轨是绝对不行的"%
+PRINTFORML %"[2]-出轨也没有关系"%
+PRINTFORML %"[3]-更加积极地出轨也没有关系吧"%
+PRINTFORML %"[4]-沉默不言..."%
+$COM300_10_01_INPUT_LOOP
+INPUT
+SIF RESULT == 4
+	RETURN 0
+TRYCCALLFORM COM300_10_01_%TOSTR(RESULT:0,"00")%
+	RETURN RESULT:0
+CATCH
+	CLEARLINE 1
+	GOTO COM300_10_01_INPUT_LOOP
+ENDCATCH
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気について話す - 許せない
+@COM300_10_01_01
+#DIM 屈服度減少分
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+PRINTFORM %CALLNAME:調教者+"说出轨是绝对不行的"%
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;寝取られ寸前ならもう手遅れ
+	PRINTFORML %CALLNAME:奴隷+"冷冷地说并不打算罢手、非要分手也无所谓。"%
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;寝取られそうなぐらいなら、止めさせるきっかけになる程度まで屈服度が下がる
+	;屈服度が1000以上あなたの好感度以下まで減少
+	PRINTFORML %CALLNAME:奴隷+"挣扎了一会儿，默默点了点头，并承诺以后不会再做了"%
+	屈服度減少分 = MIN(CFLAG:奴隷:屈服度-1000,CFLAG:奴隷:屈服度-CFLAG:奴隷:好感度)
+ELSE
+	;それ以外なら身体を許さない程度まで屈服度が下がる
+	;屈服度が500まで減少
+	PRINTFORML %CALLNAME:奴隷+"沉默了一会儿、然后哭着说：“我不会再做了，请原谅我吧！”"%
+	屈服度減少分 = MAX(0,CFLAG:奴隷:屈服度-500)
+ENDIF
+;口上表示は屈服度再計算前
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_01_01(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_01_01(奴隷, 調教者)
+ENDFUNC
+IF 屈服度減少分 > 0
+	PRINTFORML %"(屈服度 -"%{屈服度減少分}%")"%
+	CFLAG:奴隷:屈服度 -= 屈服度減少分
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気について話す - 許せる
+@COM300_10_01_02
+#DIM 屈服度減少分
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+PRINTFORM %CALLNAME:調教者+"说出轨也没有关系"%
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;寝取られ寸前
+	PRINTFORML %CALLNAME:奴隷+"沉默了一会儿、然后有些放荡地问，如果不是被动出轨的角色、而是被动出轨的角色也可以吗……。"%
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;寝取られそうなら、別れ話と思い少し不安を感じる
+	;屈服度が１割下がる
+	PRINTFORML %CALLNAME:奴隷+"非常惊讶，怀疑"+CALLNAME:調教者+"本来就有分手的打算、现在正好答应了……。"%
+	屈服度減少分 = MAX(0,CFLAG:奴隷:屈服度/10)
+ELSE
+	;それ以外なら自分のしたことを悔いる
+	;屈服度が1000まで減少
+	PRINTFORML %CALLNAME:奴隷+"拼命辩解出轨是没有的事，但最终还是接受了这番话。"%
+	屈服度減少分 = MAX(0,CFLAG:奴隷:屈服度-1000)
+ENDIF
+;浮気公認レベルが最低1に
+TALENT:奴隷:浮気公認 = MAX(1,TALENT:奴隷:浮気公認)
+;口上表示は屈服度再計算前
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_01_02(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_01_02(奴隷, 調教者)
+ENDFUNC
+IF 屈服度減少分 > 0
+	PRINTFORML %"(屈服度 -"%{屈服度減少分}%")"%
+	CFLAG:奴隷:屈服度 -= 屈服度減少分
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気について話す - 寝取られたい
+@COM300_10_01_03
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+PRINTFORM %CALLNAME:調教者+"说更加积极地出轨也没有关系吧、"%
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;寝取られ寸前なら
+	PRINTFORML %CALLNAME:奴隷+"淫荡地笑了，责骂"+MSG_RE_LOVER(奴隷)+"是喜欢看自己的爱人被别人侵犯的变态。"%
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;寝取られそうなら
+	PRINTFORML %CALLNAME:奴隷+"虽然不太理解、但听了这番话，觉得自己也不用在客气了。"%
+ELSE
+	;それ以外なら
+	PRINTFORML %CALLNAME:奴隷+"根本搞不懂这番话是什么意思、表现得非常狼狈，但最终还是不得不接受了。"%
+ENDIF
+;浮気公認レベルが最低1に
+TALENT:奴隷:浮気公認 = MAX(1,TALENT:奴隷:浮気公認)
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_01_03(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_01_03(奴隷, 調教者)
+ENDFUNC
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気公認について
+@COM300_10_02
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+PRINTL
+PRINTFORM %CALLNAME:調教者+"问起跟"+NTR_NAME(0)+"的关系怎么样、"%
+IF TALENT:奴隷:妊娠
+	PRINTFORML %"在孩子出生之前都会这样呆在家里吧。"%
+ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) == (DATETIME()/(24*60))
+	;同じ日にセックスしてたら
+	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
+			PRINTFORML %"刚刚做完吧这样的回答道。"%
+		CASE IS > (DATETIME() - 1*04*60) ;４時間以内
+			PRINTFORML %"几小时前在一起做了这样的回答道。"%
+		CASEELSE
+			PRINTFORML %"今天做过了这样的回答道。"%
+	ENDSELECT
+ELSE
+	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
+			PRINTFORML %"刚刚做完吧这样的回答道。"%
+		CASE IS > (DATETIME() - 1*08*60) ;８時間以内
+			PRINTFORML %"几小时前在一起做了这样的回答道。"%
+		CASE IS > (DATETIME() - 1*24*60) ;１日以内
+			PRINTFORML %"昨天也在一起做了这样的回答道。"%
+		CASE IS > (DATETIME() - 3*24*60) ;２日以内
+			PRINTFORML %"昨天没能跟我一起做呢这样的回答道。"%
+		CASEELSE
+			PRINTFORML %"已经好久没有一起做爱了，这样叹着气回答道。"%
+	ENDSELECT
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_02(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_02(奴隷, 調教者)
+ENDFUNC
+SELECTCASE TALENT:奴隷:浮気公認
+	CASE 浮気_浮気公認
+		PRINTFORML %CALLNAME:奴隷 + "には浮気を許していたはずだ……"%
+	CASE 浮気_诱惑公認
+		PRINTFORML %CALLNAME:奴隷 + "は" + CALLNAME:PLAYER + "の前で" + NTR_NAME(0) + "を诱惑すると言っていたはずだ……"%
+	CASE 浮気_性交公認
+		PRINTFORML %CALLNAME:奴隷 + "は" + CALLNAME:PLAYER + "に" + NTR_NAME(0) + "とのセックスを見せつけると言っていたはずだ……"%
+	CASE 浮気_外泊公認
+		PRINTFORML %CALLNAME:奴隷 + "は時々" + NTR_NAME(0) + "の家に泊まりに行くと言っていたはずだ……"%
+ENDSELECT
+IF TALENT:奴隷:浮気公認 == 5
+	PRINTFORML [1]-果然还是不希望%CALLNAME:奴隷%做%NTR_NAME(0)%的妻子...
+ELSE
+	PRINTFORML [1]-果然还是不想要%CALLNAME:奴隷%出轨
+ENDIF
+PRINTFORML %"[2]-就现在这样也行吧"%
+PRINTFORML %"[3]-希望可以更加积极地出轨"%
+PRINTFORML %"[4]-沉默不言..."%
+$COM300_10_02_INPUT_LOOP
+INPUT
+SIF RESULT == 4
+	RETURN 0
+TRYCCALLFORM COM300_10_02_%TOSTR(RESULT:0,"00")%
+	RETURN RESULT:0
+CATCH
+	CLEARLINE 1
+	GOTO COM300_10_02_INPUT_LOOP
+ENDCATCH
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気公認について - やっぱりやだ
+@COM300_10_02_01
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+PRINTFORM %CALLNAME:調教者+"说出了还是不希望出轨的话、"%
+IF TALENT:奴隷:浮気公認 == 5
+	IF TALENT:奴隷:亲爱
+		PRINTFORML %CALLNAME:奴隷+"听到之后非常开心，表示要不会再过去了。"%
+		TALENT:奴隷:浮気公認 = 1
+		IF TALENT:奴隷:访问者之妻
+			PRINTFORMW %CALLNAME:奴隷+"摘掉了"+NTR_NAME(0)+"的结婚戒指，不再是"+NTR_NAME(0)+"的妻子了。"%
+			TALENT:奴隷:访问者之妻 = 0
+		ENDIF
+		RETURN 1
+	ELSE
+		IF TALENT:奴隷:访问者之妻
+			PRINTFORML %CALLNAME:奴隷+"表示即使不想再让自己做"+NTR_NAME(0)+"的妻子了，也没办法说停下就停下，毕竟自己已经做了"+NTR_NAME(0)+"的妻子了..."%
+			RETURN 1
+		ELSE
+			PRINTFORML %CALLNAME:奴隷+"听到"+CALLNAME:MASTER+"反悔的话，表情不知道是高兴还是失望，但仍然听从"+CALLNAME:MASTER+"的请求留在这里..."%
+			TALENT:奴隷:浮気公認 = 1
+		ENDIF
+	ENDIF
+ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+	;亲爱つき公众便所は０にはならない
+	TALENT:奴隷:浮気公認 = 1
+	PRINTFORML %CALLNAME:奴隷+"说虽然自己也不想再继续下去了，但是因为被威胁了所以也没办法停下来..."%
+ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:浮気公認 >= 4
+	;公众便所の場合4以下にはならない
+	TALENT:奴隷:浮気公認 = 4
+	PRINTFORML %CALLNAME:奴隷+"表示即使这么说，和"+NTR_NAME(0)+"的关系也不能停止，所以也没办法停止卖春..."%
+ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+	;快楽を覚えてしまっている場合０にはならない
+	TALENT:奴隷:浮気公認 = 1
+	PRINTFORML %CALLNAME:奴隷+"表示即使是这样，但是与"+CALLNAME:調教者+"在一起是根本无法满足的，所以与"+NTR_NAME(0)+"的关系是不能停止的..."%
+ELSE
+	;快楽を覚えていない場合０になる
+	TALENT:奴隷:浮気公認 = 0
+	PRINTFORML %CALLNAME:奴隷+"表示自己不会再去邀请"+NTR_NAME(0)+"了，但是如果被邀请了，也许也无法拒绝。"+CALLNAME:奴隷+"的脸上露出为难的样子。"%
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_02_01(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_02_01(奴隷, 調教者)
+ENDFUNC
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気公認について - いまのままで
+@COM300_10_02_02
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+PRINTFORM %CALLNAME:調教者+"说了保持这样就好了的话、"%
+IF TALENT:奴隷:浮気公認 == 5
+	IF TALENT:奴隷:亲爱
+		PRINTFORML %CALLNAME:奴隷+"听了之后也只能微微笑着，继续做"+NTR_NAME(0)+"的妻子..."%
+	ELSEIF TALENT:奴隷:访问者之妻
+		PRINTFORML %CALLNAME:奴隷+"说还要继续做"+NTR_NAME(0)+"的妻子吗？不过毕竟已经做了"+NTR_NAME(0)+"的妻子了，就算说停下也是停不下的啦..."%
+	ELSE
+		PRINTFORML %CALLNAME:奴隷+"问道真的要去做"+NTR_NAME(0)+"的妻子吗？现在反悔还可以哦，只是一句话的事情···"%
+	ENDIF
+ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+	PRINTFORML %CALLNAME:奴隷+"疑惑这样真的好吗、看起来有些不安。"%
+ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+	IF TALENT:奴隷:浮気公認 < MARK:奴隷:浮気快乐刻印
+		PRINTFORML %CALLNAME:奴隷+"还想再被多侵犯几次、神色显得很遗憾。"%
+	ELSE
+		PRINTFORML %CALLNAME:奴隷+"真的好吗？"+CALLNAME:奴隷+"淫靡地笑了。"%
+	ENDIF
+ELSE
+	PRINTFORML %CALLNAME:奴隷+"疑惑这样真的好吗、看起来有些不安。"%
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_02_02(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_02_02(奴隷, 調教者)
+ENDFUNC
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気公認について - もっと寝取られたい
+@COM300_10_02_03
+#DIM 奴隷
+#DIM 調教者
+#DIMS MSG0
+
+奴隷 = TARGET:0
+調教者 = PLAYER:0
+MSG0 = %"然后这么笑着。"%
+IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+	MSG0 = %"就这样说着。"%
+ENDIF
+IF TALENT:奴隷:浮気公認 == 4
+	PRINTFORMW %CALLNAME:調教者+"说出了希望"+CALLNAME:奴隷+"成为"+NTR_NAME(0)+"的妻子的话、"%
+	PRINTFORMW %CALLNAME:奴隷+"在惊讶过后，认真地问了一次「真的吗？要我做"+NTR_NAME(0)+"的妻子吗？」"+MSG0%
+	PRINTL [0] - 是…这样的……
+	PRINTL [1] - 不…没什么……
+	INPUT
+	SIF RESULT
+		RETURN 0
+ELSEIF TALENT:奴隷:浮気公認 == 5
+	PRINTFORM %CALLNAME:調教者+"说出了希望"+CALLNAME:奴隷+"继续做"+NTR_NAME(0)+"的妻子的话、"%
+ELSE
+	PRINTFORM %CALLNAME:調教者+"说出了希望更加积极地出轨的话、"%
+ENDIF
+;現在の所最大で４まで。将来的に５まで拡張したい
+TALENT:奴隷:浮気公認 = MIN(5,TALENT:奴隷:浮気公認+1)
+SELECTCASE TALENT:奴隷:浮気公認
+	CASE 1 ;最低１からスタートなので発生しないはず
+		PRINTFORML %CALLNAME:奴隷+"说如果这就是"+CALLNAME:調教者+"的期待的话、"+MSG0%
+	CASE 2
+		PRINTFORML %CALLNAME:奴隷+"说之后会在"+CALLNAME:調教者+"的面前诱惑"+NTR_NAME(0)+"的、"+MSG0%
+	CASE 3
+		PRINTFORML %CALLNAME:奴隷+"说会把"+NTR_NAME(0)+"侵犯过的地方给"+CALLNAME:調教者+"看的、"+MSG0%
+	CASE 4
+		PRINTFORML %CALLNAME:奴隷+"说如果这样希望的话，会经常去"+NTR_NAME(0)+"的家里住、"+MSG0%
+	CASEELSE ;５以上
+		PRINTFORML %CALLNAME:奴隷+"说如果这样希望的话，会做为"+NTR_NAME(0)+"的妻子住到对面去、不过也会时不时回来看看"+CALLNAME:調教者+"的、"+MSG0%
+ENDSELECT
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{奴隷}_300_10_02_03(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_10_02_03(奴隷, 調教者)
+ENDFUNC
+RETURN 1
+RETURN 0

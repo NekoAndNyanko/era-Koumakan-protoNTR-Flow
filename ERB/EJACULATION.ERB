@@ -1,0 +1,185 @@
+﻿; EJACULATION.ERB
+;	射精関係の関数
+;
+
+;口内射精
+;好感度、屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@EJACULATION_M(对象, 射精者)
+#DIM 对象
+#DIM 射精者
+#DIM 精液经验増量
+
+CFLAG:对象:射精者M = 射精者
+TRYCALL 精力取得, 射精者
+;Vと違い对象側の精子取得はない
+;TRYCALL 精子取得, 射精者, 对象
+;精液经验
+精液经验増量 = MAX(TFLAG:精子量 / 100, 1)
+;NekoAdd
+IF 射精者 == 人物_訪問者
+	CFLAG:对象:M累积内射 += TFLAG:精子量
+	CFLAG:对象:浮気M累积内射 += TFLAG:精子量
+ELSEIF 射精者 == MASTER
+	CFLAG:对象:M累积内射 += TFLAG:精子量
+ENDIF
+IF MASTER == 射精者
+	EXP:对象:精液经验 += 精液经验増量
+	EXP:对象:精饮经验 += 精液经验増量
+ENDIF
+;相手により分岐のある処理
+SELECTCASE 射精者
+	CASE 人物_客, 人物_村人, 人物_催眠者
+		IF 对象 != MASTER && !TALENT:对象:亲爱
+			CALL NTR_EXP_ADD_SEMEN(对象,精液经验増量)
+			CALL NTR_EXP_ADD_DRINK_SEMEN(对象,精液经验増量)
+		ENDIF
+	CASE 人物_訪問者
+		IF 对象 != MASTER && !TALENT:对象:亲爱
+			CALL NTR_EXP_ADD_SEMEN(对象,精液经验増量)
+			CALL NTR_EXP_ADD_DRINK_SEMEN(对象,精液经验増量)
+		ENDIF
+	CASE IS < CHARANUM
+		EXP:射精者:射精经验 ++
+		EXP:射精者:Ｃ经验 ++
+		IF ABL:射精者:Ｃ感觉 > RAND:5
+			EXP:射精者:Ｃ绝顶经验 ++
+			EXP:射精者:绝顶经验 ++
+		ENDIF
+		IF MASTER == 射精者
+			SETBIT CFLAG:对象:あなた射精フラグ,被射精箇所_口
+		ENDIF
+	CASEELSE
+		;什麽也不做
+ENDSELECT
+
+;射精に伴う汚れ追加
+CALL STAIN_ADD_SEMEN_M(对象, 射精者)
+RETURN 0
+
+;膣内射精
+;好感度、屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@EJACULATION_V(对象, 射精者)
+#DIM 对象
+#DIM 射精者
+#DIM 精液经验増量
+
+TEQUIP:对象:Ｖ性爱 = 射精者
+CFLAG:对象:射精者V = 射精者
+IF MASTER == 射精者
+	IF CFLAG:对象:淫纹 > 0
+		IF 获取子宫精液填充率(对象) > 0
+			PRINTFORMW %CALLNAME:射精者%的精液被射入了%CALLNAME:对象%的膣内
+			PRINTFORMW 注入子宫的精液，与子宫里的其他人的精液混合在了一起
+			PRINTFORMW 原本%COM417_GetProstituteMarkColor(对象)%的淫纹慢慢暗淡下来
+			PRINTFORMW 最后变成了普通的紫色……
+		ENDIF
+	ENDIF
+ENDIF
+TRYCALL 精力取得, 射精者
+TRYCALL 精子取得, 射精者, 对象
+CFLAG:对象:精液残留中 = 40
+;精液经验
+精液经验増量 = MAX(TFLAG:精子量 / 100, 1)
+SIF MASTER == 射精者
+	EXP:对象:精液经验 += 精液经验増量
+;NekoAdd
+IF 射精者 == 人物_訪問者
+	CFLAG:对象:V累积内射 += TFLAG:精子量
+	CFLAG:对象:浮気V累积内射 += TFLAG:精子量
+ELSEIF 射精者 == MASTER
+	CFLAG:对象:V累积内射 += TFLAG:精子量
+ENDIF
+;中出しフラグ
+TCVAR:对象:102 = 2
+TCVAR:对象:103 = 射精者
+;相手により分岐のある処理
+SELECTCASE 射精者
+	CASE 人物_客, 人物_村人, 人物_催眠者
+		IF 对象 != MASTER && !TALENT:对象:亲爱
+			CALL NTR_EXP_ADD_SEMEN(对象,精液经验増量)
+		ENDIF
+		IF TALENT:对象:处女
+		ENDIF
+	CASE 人物_訪問者
+		IF 对象 != MASTER && !TALENT:对象:亲爱
+			CALL NTR_EXP_ADD_SEMEN(对象,精液经验増量)
+		ENDIF
+		IF TALENT:对象:处女
+		ENDIF
+	CASE IS < CHARANUM
+		EXP:射精者:射精经验 ++
+		EXP:射精者:Ｃ经验 ++
+		IF ABL:射精者:Ｃ感觉 > RAND:5
+			EXP:射精者:Ｃ绝顶经验 ++
+			EXP:射精者:绝顶经验 ++
+		ENDIF
+		IF TALENT:对象:处女
+		ENDIF
+		IF MASTER == 射精者
+			SETBIT CFLAG:对象:あなた射精フラグ,被射精箇所_Ｖ
+		ENDIF
+	CASEELSE
+		;什麽也不做
+ENDSELECT
+;射精に伴う汚れ追加
+CALL STAIN_ADD_SEMEN_V(对象, 射精者)
+RETURN 0
+
+;腸内射精
+;好感度、屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@EJACULATION_A(对象, 射精者)
+#DIM 对象
+#DIM 射精者
+#DIM 精液经验増量
+
+TEQUIP:对象:Ａ性爱 = 射精者
+CFLAG:对象:射精者A = 射精者
+TRYCALL 精力取得, 射精者
+;Vと違い对象側の精子取得はない
+;TRYCALL 精子取得, 射精者, 对象
+;精液经验
+精液经验増量 = MAX(TFLAG:精子量 / 100, 1)
+SIF MASTER == 射精者
+	EXP:对象:精液经验 += 精液经验増量
+;中出しフラグ
+TCVAR:对象:104 = 2
+TCVAR:对象:105 = 射精者
+;NekoAdd
+IF 射精者 == 人物_訪問者
+	CFLAG:对象:A累积内射 += TFLAG:精子量
+	CFLAG:对象:浮気A累积内射 += TFLAG:精子量
+ELSEIF 射精者 == MASTER
+	CFLAG:对象:A累积内射 += TFLAG:精子量
+ENDIF
+;相手により分岐のある処理
+SELECTCASE 射精者
+	CASE 人物_客, 人物_村人, 人物_催眠者
+		IF 对象 != MASTER && !TALENT:对象:亲爱
+			CALL NTR_EXP_ADD_SEMEN(对象,精液经验増量)
+		ENDIF
+		IF TALENT:对象:处女
+		ENDIF
+	CASE 人物_訪問者
+		IF 对象 != MASTER && !TALENT:对象:亲爱
+			CALL NTR_EXP_ADD_SEMEN(对象,精液经验増量)
+		ENDIF
+		IF TALENT:对象:处女
+		ENDIF
+	CASE IS < CHARANUM
+		EXP:射精者:射精经验 ++
+		EXP:射精者:Ｃ经验 ++
+		IF ABL:射精者:Ｃ感觉 > RAND:5
+			EXP:射精者:Ｃ绝顶经验 ++
+			EXP:射精者:绝顶经验 ++
+		ENDIF
+		IF TALENT:对象:处女
+		ENDIF
+		IF MASTER == 射精者
+			SETBIT CFLAG:对象:あなた射精フラグ,被射精箇所_Ａ
+		ENDIF
+	CASEELSE
+		;什麽也不做
+ENDSELECT
+;射精に伴う汚れ追加
+CALL STAIN_ADD_SEMEN_A(对象, 射精者)
+RETURN 0

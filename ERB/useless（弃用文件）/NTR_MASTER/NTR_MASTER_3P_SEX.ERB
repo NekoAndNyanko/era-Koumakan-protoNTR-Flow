@@ -1,0 +1,2200 @@
+﻿;女あなたと住人と訪問者の3P
+;
+;欲求不満度の意味
+; 欲求不満度:1	主人公の欲求不満度(十の位が住人に対して、一の位が訪問者に対して)
+; 欲求不満度:2	住人の欲求不満度(十の位が主人公に対して、一の位がもう一人に対して)
+; 欲求不満度:3	訪問者の欲求不満度(同じく)
+
+;性交回数の意味
+; 性交回数:0 訪問者×主人公 V性交回数
+; 性交回数:1 訪問者×主人公 A性交回数
+; 性交回数:2 訪問者×住人 V性交回数
+; 性交回数:3 訪問者×住人 A性交回数
+; 性交回数:4 訪問者 素股射精回数
+; 性交回数:5 住人×主人公 V性交回数
+; 性交回数:6 住人×主人公 A性交回数
+; 性交回数:7 主人公×住人 V性交回数
+; 性交回数:8 主人公×住人 A性交回数
+;
+;FLAG:1840の意味　3人の行動
+;   0 : 開始→キス
+; 100 : キス（訪問者、住人）→爱抚、主人公参加 
+; 101 : キス（訪問者、主人公）→爱抚、住人参加 
+; 102 : キス（住人、主人公）→爱抚、訪問者参加 
+; 200 : 爱抚→本番、訪問者×主人公＋住人
+; 201 : 爱抚→本番、訪問者×住人＋主人公
+; 202 : 爱抚→本番、住人＆主人公＋訪問者×主人公
+; 203 : 爱抚→本番、住人＆主人公＋訪問者×住人
+; 300 : 本番→本番2、住人×主人公 or 訪問者×住人
+; 301 : 本番→本番2、主人公×住人 or 訪問者×主人公
+; 302 : 本番→本番2、訪問者×主人公→訪問者×住人
+; 303 : 本番→本番2、訪問者×住人→訪問者×主人公
+; 304 : 本番→本番2、訪問者×主人公＋住人 or 訪問者×住人＋主人公
+; 400 : 本番2→本番3、住人(双)×主人公→訪問者×主人公
+; 401 : 本番2→本番3、訪問者×主人公→訪問者×住人
+; 402 : 本番2→本番3、主人公(双)×住人→訪問者×住人
+; 403 : 本番2→本番3、訪問者×主人公→訪問者×住人
+; 404 : 本番2→本番3、訪問者×主人公→訪問者×主人公＆住人
+; 405 : 本番2→本番3、訪問者×住人→訪問者×住人＆主人公
+; 500 : 本番4、主人公＆住人 or 訪問者
+; 501 : 本番4、訪問者＆主人公 or 住人
+; 502 : 本番4、住人＆主人公 or 訪問者
+; 503 : 本番4、訪問者＆主人公 or 住人
+; 600 : 終了、主人公
+; 601 : 終了、訪問者
+; 602 : 終了、住人
+; 603 : 終了、訪問者(素股含む)
+;
+
+@NTR_MASTER_3P_SEX(奴隷)
+#DIM 奴隷
+#DIM 欲求不満度,4
+#DIM 挿入部位,2
+#DIM 性交回数,9
+#DIM 経過時間
+#DIM 累積時間
+#DIM WK_A
+#DIM WK_B
+
+FLAG:1840 = 0
+欲求不満度:1 = 0
+欲求不満度:2 = 0
+欲求不満度:3 = 0
+; 二人状態と違って逃げられると困るのでワンループで全部済ませる
+WHILE 1
+	IF FLAG:1840 == 0
+		経過時間 = 10
+		;   0 : 開始→キス
+		CALL NTR_MASTER_3P_SEX_0(経過時間, 奴隷, 欲求不満度)
+		TIME += 経過時間
+	ELSEIF FLAG:1840/100 == 1
+		PRINTL
+		経過時間 = RAND:10 + 10
+		IF FLAG:1840 == 100
+			; 100 : キス（訪問者、住人）→爱抚、主人公参加 
+			CALL NTR_MASTER_3P_SEX_100(経過時間, 奴隷, 欲求不満度)
+		ELSEIF FLAG:1840 == 101
+			; 101 : キス（訪問者、主人公）→爱抚、住人参加 
+			CALL NTR_MASTER_3P_SEX_101(経過時間, 奴隷, 欲求不満度)
+		ELSE
+			; 102 : キス（住人、主人公）→爱抚、訪問者参加 
+			CALL NTR_MASTER_3P_SEX_102(経過時間, 奴隷, 欲求不満度)
+		ENDIF
+		TIME += 経過時間
+	ELSEIF FLAG:1840/100 == 2
+		PRINTL
+		経過時間 = RAND:10 + 20
+		IF FLAG:1840 == 200
+			; 200 : 爱抚→本番、訪問者×主人公＋住人
+			CALL NTR_MASTER_3P_SEX_200(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ELSEIF FLAG:1840 == 201
+			; 201 : 爱抚→本番、訪問者×住人＋主人公
+			CALL NTR_MASTER_3P_SEX_201(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ELSEIF FLAG:1840 == 202 || FLAG:1840 == 203
+			; 202 : 爱抚→本番、住人＆主人公＋訪問者×主人公
+			; 203 : 爱抚→本番、住人＆主人公＋訪問者×住人
+			; 202と203は同一関数、内部で分岐
+			CALL NTR_MASTER_3P_SEX_202(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ENDIF
+		TIME += 経過時間
+	ELSEIF FLAG:1840/100 == 3
+		経過時間 = RAND:10 + 20
+		IF FLAG:1840 == 300
+			; 300 : 本番→本番、住人×主人公 or 訪問者×住人
+			CALL NTR_MASTER_3P_SEX_300(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ELSEIF FLAG:1840 == 301
+			; 301 : 本番→本番、主人公×住人 or 訪問者×主人公
+			CALL NTR_MASTER_3P_SEX_301(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ELSEIF FLAG:1840 == 302
+			; 302 : 本番→本番、訪問者×主人公→訪問者×住人
+			CALL NTR_MASTER_3P_SEX_302(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ELSEIF FLAG:1840 == 303
+			; 303 : 本番→本番、訪問者×住人→訪問者×主人公
+			CALL NTR_MASTER_3P_SEX_303(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ELSEIF FLAG:1840 == 304
+			; 304 : 本番→本番、訪問者×主人公＋住人 or 訪問者×住人＋主人公
+			CALL NTR_MASTER_3P_SEX_304(経過時間, 奴隷, 欲求不満度, 挿入部位)
+		ENDIF
+	ELSEIF FLAG:1840/100 == 4
+		性交回数:0 = 0
+		性交回数:1 = 0
+		性交回数:2 = 0
+		性交回数:3 = 0
+		性交回数:4 = 0
+		経過時間 = RAND:10 + 20
+		IF FLAG:1840 == 400
+			; 400 : 本番2→本番3、住人(双)×主人公→訪問者×主人公
+			CALL NTR_MASTER_3P_SEX_400(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+		ELSEIF FLAG:1840 == 401
+			; 401 : 本番2→本番3、訪問者×主人公→訪問者×住人
+			CALL NTR_MASTER_3P_SEX_401(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+		ELSEIF FLAG:1840 == 402
+			; 402 : 本番2→本番3、主人公(双)×住人→訪問者×住人
+			CALL NTR_MASTER_3P_SEX_402(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+		ELSEIF FLAG:1840 == 403
+			; 403 : 本番2→本番3、訪問者×主人公→訪問者×住人
+			CALL NTR_MASTER_3P_SEX_403(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+		ELSEIF FLAG:1840 == 404
+			; 404 : 本番2→本番3、訪問者×主人公→訪問者×主人公＆住人
+			CALL NTR_MASTER_3P_SEX_404(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+		ELSEIF FLAG:1840 == 405
+			; 405 : 本番2→本番3、訪問者×住人→訪問者×住人＆主人公
+			CALL NTR_MASTER_3P_SEX_405(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+		ENDIF
+	ELSEIF FLAG:1840/100 == 5
+		累積時間 = 0
+		WHILE 1
+			経過時間 = RAND:10 + 10
+			累積時間 += 経過時間 
+			IF FLAG:1840 == 500
+				; 500 : 本番4、主人公＆住人 or 訪問者
+				CALL NTR_MASTER_3P_SEX_500(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+			ELSEIF FLAG:1840 == 501
+				; 501 : 本番4、訪問者＆主人公 or 住人
+				CALL NTR_MASTER_3P_SEX_501(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+			ELSEIF FLAG:1840 == 502
+				; 502 : 本番4、住人＆主人公 or 訪問者
+				CALL NTR_MASTER_3P_SEX_502(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+			ELSEIF FLAG:1840 == 503
+				; 503 : 本番4、訪問者＆主人公 or 住人
+				CALL NTR_MASTER_3P_SEX_503(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+			ENDIF
+			IF FLAG:1840 >= 600
+				; 次の段階に移行
+				BREAK
+			ENDIF
+			IF 性交回数:0 + 性交回数:2 > 100
+				PRINTL
+				PRINTFORMW ループ回数が100回を越えました。エラーの可能性があるのでループを抜けます。
+				BREAK
+			ENDIF
+		WEND
+	ELSEIF FLAG:1840/100 == 6
+		PRINTFORMW 　　　　　　・
+		PRINTFORMW 　　　　　　・
+		PRINTFORMW 　　　　　　・
+		IF FLAG:1840 == 600
+			CALL NTR_MASTER_3P_SEX_600(累積時間, 奴隷, 欲求不満度, 性交回数)
+		ELSEIF FLAG:1840 == 601
+			CALL NTR_MASTER_3P_SEX_601(累積時間, 奴隷, 欲求不満度, 性交回数)
+		ELSEIF FLAG:1840 == 602
+			CALL NTR_MASTER_3P_SEX_602(累積時間, 奴隷, 欲求不満度, 性交回数)
+		ELSEIF FLAG:1840 == 603
+			CALL NTR_MASTER_3P_SEX_603(累積時間, 奴隷, 欲求不満度, 性交回数)
+		ENDIF
+		BASE:奴隷:怒意 = 0
+		BREAK
+	ENDIF
+WEND
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 行動0 … 開始→キス
+@NTR_MASTER_3P_SEX_0(経過時間, 奴隷, 欲求不満度)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+
+PRINTFORML 部屋に入ると、それぞれ服を脱いでベッドに座っていく
+IF CFLAG:奴隷:MASTERの弱味
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORMW %CALLNAME:奴隷%が%CALLNAME:MASTER%に見せ付けるように%NTR_NAME(0)%と口付けを交わした
+		PRINTFORMW %NTR_NAME(0)%もそれに応えるように頭を軽く引き寄せながらお互いの唇を味わっている
+		PRINTFORMW %CALLNAME:MASTER%は羨ましく思いながらも二人のそれが終わるのを待っていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,人物_訪問者)
+		IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+			欲求不満度:1 += 2
+		ELSE
+			欲求不満度:1 += 20
+		ENDIF
+		FLAG:1840 = 100
+	ELSE
+		PRINTFORMW %CALLNAME:奴隷%が%NTR_NAME(0)%に見せ付けるように%CALLNAME:MASTER%と口付けをしてきた
+		PRINTFORMW %CALLNAME:MASTER%は驚き、思わず顔を離そうとしても%CALLNAME:奴隷%に頭を引き寄せられていてそれもできない
+		PRINTFORMW %NTR_NAME(0)%は出遅れたことを少し後悔しつつも、その扇情的な光景に阴茎を硬くしていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,奴隷)
+		IF (CFLAG:奴隷:屈服度 > CFLAG:MASTER:屈服度 || FLAG:訪問者のお気に入り == 奴隷) && FLAG:訪問者のお気に入り != 0
+			欲求不満度:3 += 2
+		ELSE
+			欲求不満度:3 += 20
+		ENDIF
+		FLAG:1840 = 102
+	ENDIF
+ELSE
+	PRINTFORML [0] %NTR_NAME(0)%と絡む　[1] %CALLNAME:奴隷%と絡む　[2] 二人の様子を見る
+	$INPUT_LOOP_NM3_0_0
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW %CALLNAME:MASTER%は%NTR_NAME(0)%を引き寄せ、口付けを交わした
+		PRINTFORMW %NTR_NAME(0)%もそれに応えるように頭を軽く引き寄せながらお互いの唇を味わっている
+		PRINTFORMW %CALLNAME:奴隷%は羨ましく思いながらも二人のそれが終わるのを待っていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,人物_訪問者)
+		IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+			欲求不満度:1 += 2
+		ELSE
+			欲求不満度:1 += 20
+		ENDIF
+		FLAG:1840 = 101
+	ELSEIF RESULT == 1
+		PRINTFORMW %CALLNAME:MASTER%は%NTR_NAME(0)%に見せ付けるように%CALLNAME:奴隷%と口付けを交わした
+		PRINTFORM %CALLNAME:奴隷%は
+		IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+			PRINT 少し驚きながらも
+		ELSE
+			PRINT それに応えるように舌を絡ませて
+		ENDIF
+		PRINTW お互いの唇を味わっている
+		PRINTFORMW %NTR_NAME(0)%は出遅れたことを少し後悔しつつも、その扇情的な光景に阴茎を硬くしていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,MASTER)
+		IF (CFLAG:奴隷:屈服度 > CFLAG:MASTER:屈服度 || FLAG:訪問者のお気に入り == 奴隷) && FLAG:訪問者のお気に入り != 0
+			欲求不満度:1 += 2
+		ELSE
+			欲求不満度:1 += 20
+		ENDIF
+		FLAG:1840 = 102
+	ELSEIF RESULT == 2
+		PRINTFORM 二人の様子を見ていると
+		IF (CFLAG:奴隷:屈服度 > CFLAG:MASTER:屈服度 || FLAG:訪問者のお気に入り == 奴隷) && FLAG:訪問者のお気に入り != 0
+			PRINTFORMW %NTR_NAME(0)%が%CALLNAME:奴隷%の手を取り、顔を引き寄せながら唇を奪った
+			IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+				PRINTFORMW %CALLNAME:奴隷%もそれに応えるように唇を啄みながらお互いの唇を味わっている
+			ELSE
+				PRINTFORMW %CALLNAME:奴隷%は驚きながらも%NTR_NAME(0)%に身を任せている
+			ENDIF
+			PRINTFORMW %CALLNAME:MASTER%は出遅れたことを少し後悔しながら二人のそれが終わるのを待っていた
+			CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,人物_訪問者)
+			IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+				欲求不満度:1 += 2
+			ELSE
+				欲求不満度:1 += 20
+			ENDIF
+			FLAG:1840 = 100
+		ELSE
+			PRINTFORMW %NTR_NAME(0)%が%CALLNAME:MASTER%の手を取り、顔を引き寄せながら唇を奪った
+			IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+				PRINTFORMW %CALLNAME:MASTER%は積極的に舌を絡め、お互いの唇を味わっている
+			ELSE
+				PRINTFORMW %CALLNAME:MASTER%は少し驚きながらも口の中に入ってくる%NTR_NAME(0)%の舌を味わっている
+			ENDIF
+			PRINTFORMW %CALLNAME:奴隷%は羨ましく思いながらも二人のそれが終わるのを待っていた
+			CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,人物_訪問者)
+			IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+				欲求不満度:1 += 2
+			ELSE
+				欲求不満度:1 += 20
+			ENDIF
+			FLAG:1840 = 101
+		ENDIF
+	ELSE
+		GOTO INPUT_LOOP_NM3_0_0
+	ENDIF
+ENDIF
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 行動100 … キス（訪問者、住人）→爱抚、主人公参加 
+@NTR_MASTER_3P_SEX_100(経過時間, 奴隷, 欲求不満度)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+
+IF (CFLAG:奴隷:屈服度 > CFLAG:MASTER:屈服度 || FLAG:訪問者のお気に入り == 奴隷) && FLAG:訪問者のお気に入り != 0
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:奴隷%の唇を味わった後、%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+	IF TALENT:奴隷:胸部尺寸 > 0
+		PRINT 揉みながら
+	ELSE
+		PRINT 撫でながら
+	ENDIF
+	PRINTW ベッドに押し倒した
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORM %CALLNAME:奴隷%は
+		IF TALENT:奴隷:Ｂ感度
+			PRINTW 胸に触れられる快楽に身を震わせている
+		ELSE
+			PRINTFORMW %NTR_NAME(0)%のされるままに身を任せている
+		ENDIF
+		PRINTFORMW %CALLNAME:MASTER%が悶々としながら二人に近づくと、%NTR_NAME(0)%は空いていた手で%CALLNAME:MASTER%の阴蒂を指で爱抚し始めた
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,人物_訪問者)
+		CALL NTR_MASTER_3P_SEX_CLI(経過時間,MASTER,人物_訪問者)
+	ELSE
+		PRINTFORM %CALLNAME:奴隷%は横になりながらも%CALLNAME:MASTER%を招き、%NTR_NAME(0)%に胸を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉ま
+		ELSE
+			PRINT 撫でら
+		ENDIF
+		PRINTFORMW れながらも%CALLNAME:MASTER%と口付けを交わした
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,奴隷)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,人物_訪問者)
+	ENDIF
+	FLAG:1840 = 201
+ELSE
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:奴隷%の唇を味わった後、%CALLNAME:MASTER%を招き、味を比べるかのように%CALLNAME:MASTER%の唇を奪いながら%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+	IF TALENT:MASTER:胸部尺寸 > 0
+		PRINT 揉み
+	ELSE
+		PRINT 撫で
+	ENDIF
+	PRINTW 、ベッドに押し倒した
+	CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,人物_訪問者)
+	CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,人物_訪問者)
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORMW その様子を%CALLNAME:奴隷%が眺めていると、%NTR_NAME(0)%は空いていた手で%CALLNAME:奴隷%の阴蒂を指で爱抚し始めた
+		CALL NTR_MASTER_3P_SEX_CLI(経過時間,奴隷,人物_訪問者)
+	ELSE
+		PRINTFORMW その様子を%CALLNAME:奴隷%が眺め、%NTR_NAME(0)%と一緒に%CALLNAME:MASTER%を攻めるべく%CALLNAME:MASTER%の阴蒂を指で爱抚し始めた
+		CALL NTR_MASTER_3P_SEX_CLI(経過時間,MASTER,奴隷)
+	ENDIF
+ENDIF
+FLAG:1840 = 200
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 行動101 … キス（訪問者、主人公）→爱抚、住人参加 
+@NTR_MASTER_3P_SEX_101(経過時間, 奴隷, 欲求不満度)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+
+IF (CFLAG:奴隷:屈服度 > CFLAG:MASTER:屈服度 || FLAG:訪問者のお気に入り == 奴隷) && FLAG:訪問者のお気に入り != 0
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:MASTER%の唇を味わった後、%CALLNAME:奴隷%を招き、味を比べるかのように%CALLNAME:奴隷%の唇を奪いながら%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+	IF TALENT:奴隷:胸部尺寸 > 0
+		PRINT 揉み
+	ELSE
+		PRINT 撫で
+	ENDIF
+	PRINTW 、ベッドに押し倒した
+	CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,人物_訪問者)
+	CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,人物_訪問者)
+	IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORMW その様子を%CALLNAME:MASTER%が眺めていると、%NTR_NAME(0)%は空いていた手で%CALLNAME:MASTER%の阴蒂を指で爱抚し始めた
+		CALL NTR_MASTER_3P_SEX_CLI(経過時間,MASTER,人物_訪問者)
+	ELSE
+		PRINTFORMW その様子を%CALLNAME:MASTER%が眺め、%NTR_NAME(0)%と一緒に%CALLNAME:奴隷%を攻めるべく%CALLNAME:奴隷%の阴蒂を指で爱抚し始めた
+		CALL NTR_MASTER_3P_SEX_CLI(経過時間,奴隷,MASTER)
+	ENDIF
+	FLAG:1840 = 201
+ELSE
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:MASTER%の唇を味わった後、%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+	IF TALENT:(MASTER):胸部尺寸 > 0
+		PRINT 揉みながら
+	ELSE
+		PRINT 撫でながら
+	ENDIF
+	PRINTW ベッドに押し倒した
+	IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORM %CALLNAME:MASTER%は
+		IF TALENT:MASTER:Ｂ感度
+			PRINTW 胸に触れられる快楽に身を震わせている
+		ELSE
+			PRINTFORMW %NTR_NAME(0)%のされるままに身を任せている
+		ENDIF
+		PRINTFORMW %CALLNAME:奴隷%が悶々としながら二人に近づくと、%NTR_NAME(0)%は空いていた手で%CALLNAME:奴隷%の阴蒂を指で爱抚し始めた
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,人物_訪問者)
+		CALL NTR_MASTER_3P_SEX_CLI(経過時間,奴隷,人物_訪問者)
+	ELSE
+		PRINTFORM %CALLNAME:MASTER%は横になりながらも%CALLNAME:奴隷%を招き、%NTR_NAME(0)%に胸を
+		IF TALENT:MASTER:胸部尺寸 > 0
+			PRINT 揉ま
+		ELSE
+			PRINT 撫でら
+		ENDIF
+		PRINTFORMW れながらも%CALLNAME:奴隷%と口付けを交わした
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,MASTER)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,人物_訪問者)
+	ENDIF
+	FLAG:1840 = 200
+ENDIF
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 行動102 … キス（住人、主人公）→爱抚、訪問者参加 
+@NTR_MASTER_3P_SEX_102(経過時間, 奴隷, 欲求不満度)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+
+IF CFLAG:奴隷:屈服度 > CFLAG:MASTER:屈服度
+	PRINTFORM %CALLNAME:MASTER%と%CALLNAME:奴隷%の扇情的な姿を見ながら、%NTR_NAME(0)%は%CALLNAME:奴隷%の背後から%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+	IF TALENT:奴隷:胸部尺寸 > 0
+		PRINT 揉み
+	ELSE
+		PRINT 撫で
+	ENDIF
+	PRINTFORMW 始めた
+	PRINTFORMW 負けじと%CALLNAME:MASTER%が%CALLNAME:奴隷%の阴蒂を爱抚し始めると、堪らず%CALLNAME:奴隷%が嬌声を奏でた
+	PRINTFORMW %NTR_NAME(0)%は辛抱たまらなくなったのか、二人まとめてベッドに押し倒した
+	CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,人物_訪問者)
+	CALL NTR_MASTER_3P_SEX_CLI(経過時間,奴隷,MASTER)
+	FLAG:1840 = 203
+ELSE
+	PRINTFORM %CALLNAME:MASTER%と%CALLNAME:奴隷%の扇情的な姿を見ながら、%NTR_NAME(0)%は%CALLNAME:MASTER%の背後から%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+	IF TALENT:MASTER:胸部尺寸 > 0
+		PRINT 揉み
+	ELSE
+		PRINT 撫で
+	ENDIF
+	PRINTW 始めた
+	PRINTFORMW 負けじと%CALLNAME:奴隷%が%CALLNAME:MASTER%の阴蒂を爱抚し始めると、堪らず%CALLNAME:MASTER%が嬌声を奏でた
+	PRINTFORMW %NTR_NAME(0)%は辛抱たまらなくなったのか、二人まとめてベッドに押し倒した
+	CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,人物_訪問者)
+	CALL NTR_MASTER_3P_SEX_CLI(経過時間,MASTER,奴隷)
+	FLAG:1840 = 202
+ENDIF
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 200 : 爱抚→本番、訪問者×主人公＋住人
+@NTR_MASTER_3P_SEX_200(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+	; V挿入
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:MASTER%の足を抱え、%CALLNAME:MASTER%の%MSG_SLIT(MASTER)%に阴茎をあてがい
+	IF TALENT:MASTER:处女
+		PRINTW 亀頭を浅く挿入してから、处女膜を引き裂きながら一つになっていった
+	ELSE
+		PRINTW 一つになった
+	ENDIF
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORM %CALLNAME:奴隷%は羨ましそうにしながらも%CALLNAME:MASTER%の
+		欲求不満度:2 += 2
+	ELSE
+		PRINTFORM %CALLNAME:奴隷%は%NTR_NAME(0)%と一緒に%CALLNAME:MASTER%を攻めるべく%CALLNAME:MASTER%の
+	ENDIF
+	IF RAND:2
+		PRINTFORMW 唇を奪い、味わっていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,奴隷)
+	ELSE
+		PRINTFORM %OPPAI_DESCRIPTION(MASTER)%を
+		IF TALENT:MASTER:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,奴隷)
+	ENDIF
+	PRINTFORMW %CALLNAME:MASTER%と%NTR_NAME(0)%は{経過時間}分間交わり、%NTR_NAME(0)%の精液を子宮で受け止めた
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+ELSE
+	; A挿入
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:MASTER%の足を抱え、%CALLNAME:MASTER%の菊門に阴茎をあてがい深々と貫いた。
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORM %CALLNAME:奴隷%は羨ましそうにしながらも%CALLNAME:MASTER%の
+		欲求不満度:2 += 2
+	ELSE
+		PRINTFORM %CALLNAME:奴隷%は%NTR_NAME(0)%と一緒に%CALLNAME:MASTER%を攻めるべく%CALLNAME:MASTER%の
+	ENDIF
+	IF RAND:2
+		PRINTFORMW 唇を奪い、味わっていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,奴隷)
+	ELSE
+		PRINTFORM %OPPAI_DESCRIPTION(MASTER)%を
+		IF TALENT:MASTER:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,奴隷)
+	ENDIF
+	PRINTFORMW %CALLNAME:MASTER%と%NTR_NAME(0)%は{経過時間}分間交わり、%NTR_NAME(0)%の精液を直腸に注がれた。
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:1%10 >= 2
+	欲求不満度:1 -= 2
+ELSEIF 欲求不満度:1%10 == 1
+	欲求不満度:1 -= 1
+ENDIF
+IF 欲求不満度:3/10 >= 2
+	欲求不満度:3 -= 20
+ELSEIF 欲求不満度:3/10 == 1
+	欲求不満度:3 -= 10
+ENDIF
+FLAG:1840 = 300
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 201 : 爱抚→本番、訪問者×住人＋主人公
+@NTR_MASTER_3P_SEX_201(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+	; V挿入
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:奴隷%の足を抱え、%CALLNAME:奴隷%の%MSG_SLIT(奴隷)%に阴茎をあてがい
+	IF TALENT:奴隷:处女
+		PRINTW 亀頭を浅く挿入してから、处女膜を引き裂きながら一つになっていった
+	ELSE
+		PRINTW 一つになった
+	ENDIF
+	IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORM %CALLNAME:MASTER%は羨ましく思いながらも%CALLNAME:奴隷%の
+		欲求不満度:1 += 2
+	ELSE
+		PRINTFORM %CALLNAME:MASTER%は%NTR_NAME(0)%と一緒に%CALLNAME:奴隷%を攻めるべく%CALLNAME:奴隷%の
+	ENDIF
+	IF RAND:2
+		PRINTFORMW 唇を奪い、味わっていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,MASTER)
+	ELSE
+		PRINTFORM %OPPAI_DESCRIPTION(奴隷)%を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,MASTER)
+	ENDIF
+	PRINTFORMW %CALLNAME:奴隷%と%NTR_NAME(0)%は{経過時間}分間交わり、%NTR_NAME(0)%の精液を子宮で受け止めた
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+ELSE
+	; A挿入
+	PRINTFORM %NTR_NAME(0)%は%CALLNAME:奴隷%の足を抱え、%CALLNAME:奴隷%の菊門に阴茎をあてがい深々と貫いた。
+	IF CFLAG:MASTER:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORM %CALLNAME:MASTER%は羨ましく思いながらも%CALLNAME:奴隷%の
+		欲求不満度:1 += 2
+	ELSE
+		PRINTFORM %CALLNAME:MASTER%は%NTR_NAME(0)%と一緒に%CALLNAME:奴隷%を攻めるべく%CALLNAME:奴隷%の
+	ENDIF
+	IF RAND:2
+		PRINTFORMW 唇を奪い、味わっていた
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,MASTER)
+	ELSE
+		PRINTFORM %OPPAI_DESCRIPTION(奴隷)%を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,MASTER)
+	ENDIF
+	PRINTFORMW %CALLNAME:奴隷%と%NTR_NAME(0)%は{経過時間}分間交わり、%NTR_NAME(0)%の精液を直腸に注がれた。
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:2/10 >= 2
+	欲求不満度:2 -= 20
+ELSEIF 欲求不満度:2/10 == 1
+	欲求不満度:2 -= 10
+ENDIF
+IF 欲求不満度:3%10 >= 2
+	欲求不満度:3 -= 2
+ELSEIF 欲求不満度:3%10 == 1
+	欲求不満度:3 -= 1
+ENDIF
+FLAG:1840 = 301
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 202 : 爱抚→本番、住人＆主人公＋訪問者×主人公
+; 203 : 爱抚→本番、住人＆主人公＋訪問者×住人
+@NTR_MASTER_3P_SEX_202(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+PRINTFORM %NTR_NAME(0)%は抱き合ってるような形で横になっている二人を見ながら、
+IF 欲求不満度:3/10 > 欲求不満度:3%10 && RAND:2
+	; 挿入相手：あなた
+	挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+	IF FLAG:1840 == 202
+		PRINTFORM %NTR_NAME(0)%と%CALLNAME:奴隷%の間に挟まれている
+	ELSE
+		PRINTFORM %NTR_NAME(0)%と%CALLNAME:奴隷%の二人に押し倒されている
+	ENDIF
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+		; V挿入
+		PRINTFORM %CALLNAME:MASTER%の%MSG_SLIT(MASTER)%に阴茎をあてがい
+		IF TALENT:MASTER:处女
+			PRINTW 亀頭を浅く挿入してから、处女膜を引き裂きながら一つになっていった
+		ELSE
+			PRINTW 一つになった
+		ENDIF
+		PRINTFORM %NTR_NAME(0)%に突かれている%CALLNAME:MASTER%を見て%CALLNAME:奴隷%は%CALLNAME:MASTER%にキスをしながら%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+		IF TALENT:MASTER:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		PRINTFORMW 二人がかりで{経過時間}分間攻められ、%CALLNAME:MASTER%は快楽に体を震わせながら%NTR_NAME(0)%の精液を子宮で受け止めた
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,奴隷)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,奴隷)
+	ELSE
+		; A挿入
+		PRINTFORM %CALLNAME:MASTER%の菊門に阴茎をあてがい深々と貫いた。
+		PRINTFORM %NTR_NAME(0)%に突かれている%CALLNAME:MASTER%を見て%CALLNAME:奴隷%は%CALLNAME:MASTER%にキスをしながら%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+		IF TALENT:MASTER:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		PRINTFORMW 二人がかりで{経過時間}分間攻められ、%CALLNAME:MASTER%は快楽に体を震わせながら%NTR_NAME(0)%の精液を直腸に注がれた。
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,奴隷)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,奴隷)
+	ENDIF
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		欲求不満度:2 += 2
+	ELSEIF CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
+		欲求不満度:2 += 20
+	ENDIF
+	IF 欲求不満度:1%10 >= 2
+		欲求不満度:1 -= 2
+	ELSEIF 欲求不満度:1%10 == 1
+		欲求不満度:1 -= 1
+	ENDIF
+	IF 欲求不満度:3/10 >= 2
+		欲求不満度:3 -= 20
+	ELSEIF 欲求不満度:3/10 == 1
+		欲求不満度:3 -= 10
+	ENDIF
+	FLAG:1840 = 302
+ELSEIF 欲求不満度:3/10 < 欲求不満度:3%10 && RAND:2
+	; 挿入相手：奴隷
+	挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+	IF FLAG:1840 == 203
+		PRINTFORM %NTR_NAME(0)%と%CALLNAME:MASTER%の間に挟まれている
+	ELSE
+		PRINTFORM %NTR_NAME(0)%と%CALLNAME:MASTER%の二人に押し倒されている
+	ENDIF
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+		; V挿入
+		PRINTFORM %CALLNAME:奴隷%の%MSG_SLIT(奴隷)%に阴茎をあてがい
+		IF TALENT:奴隷:处女
+			PRINTW 亀頭を浅く挿入してから、处女膜を引き裂きながら一つになっていった
+		ELSE
+			PRINTW 一つになった
+		ENDIF
+		PRINTFORM %NTR_NAME(0)%に突かれている%CALLNAME:奴隷%を見て%CALLNAME:MASTER%は%CALLNAME:奴隷%にキスをしながら%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		PRINTFORMW 二人がかりで{経過時間}分間攻められ、%CALLNAME:奴隷%は快楽に体を震わせながら%NTR_NAME(0)%の精液を子宮で受け止めた
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,MASTER)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,MASTER)
+	ELSE
+		; A挿入
+		PRINTFORM %CALLNAME:奴隷%の菊門に阴茎をあてがい深々と貫いた。
+		PRINTFORM %NTR_NAME(0)%に突かれている%CALLNAME:奴隷%を見て%CALLNAME:MASTER%は%CALLNAME:奴隷%にキスをしながら%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉み
+		ELSE
+			PRINT 撫で
+		ENDIF
+		PRINTW 始めた
+		PRINTFORMW 二人がかりで{経過時間}分間攻められ、%CALLNAME:奴隷%は快楽に体を震わせながら%NTR_NAME(0)%の精液を直腸に注がれた。
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,MASTER)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,MASTER)
+	ENDIF
+	IF CFLAG:MASTER:屈服度 > CFLAG:MASTER:好感度
+		欲求不満度:1 += 2
+	ELSEIF CFLAG:MASTER:屈服度 < CFLAG:MASTER:好感度
+		欲求不満度:1 += 20
+	ENDIF
+	IF 欲求不満度:2/10 >= 2
+		欲求不満度:2 -= 20
+	ELSEIF 欲求不満度:2/10 == 1
+		欲求不満度:2 -= 10
+	ENDIF
+	IF 欲求不満度:3%10 >= 2
+		欲求不満度:3 -= 2
+	ELSEIF 欲求不満度:3%10 == 1
+		欲求不満度:3 -= 1
+	ENDIF
+	FLAG:1840 = 303
+ELSE
+	PRINTFORMW %CALLNAME:MASTER%の%MSG_SLIT(MASTER)%と%CALLNAME:奴隷%の%MSG_SLIT(奴隷)%の間を阴茎で貫いた
+	PRINTFORMW 二人の陰唇や阴蒂を%NTR_NAME(0)%の阴茎が擦り、三人同時に快楽を味わっていく
+	IF 欲求不満度:3/10 > 欲求不満度:3%10 && RAND:2
+		; 挿入相手：あなた
+		挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+			; V挿入
+			PRINTFORMW {経過時間}分間性器を擦り合わせ、%CALLNAME:MASTER%と%CALLNAME:奴隷%が絶頂に達すると同時に%NTR_NAME(0)%は二人の間から阴茎を引き抜き、一気に%CALLNAME:MASTER%を貫いて最奥に精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+		ELSE
+			; A挿入
+			PRINTFORMW {経過時間}分間性器を擦り合わせ、%CALLNAME:MASTER%と%CALLNAME:奴隷%が絶頂に達すると同時に%NTR_NAME(0)%は二人の間から阴茎を引き抜き、一気に%CALLNAME:MASTER%のアヌスを貫いて最奥に精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+		ENDIF
+		IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+			欲求不満度:2 += 1
+		ELSEIF CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
+			欲求不満度:2 += 10
+		ENDIF
+		IF 欲求不満度:1%10 >= 1
+			欲求不満度:1 -= 1
+		ENDIF
+		IF 欲求不満度:3/10 >= 1
+			欲求不満度:3 -= 10
+		ENDIF
+		FLAG:1840 = 302
+	ELSEIF 欲求不満度:3/10 < 欲求不満度:3%10 && RAND:2
+		; 挿入相手：奴隷
+		挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+			PRINTFORMW {経過時間}分間性器を擦り合わせ、%CALLNAME:MASTER%と%CALLNAME:奴隷%が絶頂に達すると同時に%NTR_NAME(0)%は二人の間から阴茎を引き抜き、一気に%CALLNAME:奴隷%を貫いて最奥に精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+		ELSE
+			PRINTFORMW {経過時間}分間性器を擦り合わせ、%CALLNAME:MASTER%と%CALLNAME:奴隷%が絶頂に達すると同時に%NTR_NAME(0)%は二人の間から阴茎を引き抜き、一気に%CALLNAME:奴隷%のアヌスを貫いて最奥に精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+		ENDIF
+		IF CFLAG:MASTER:屈服度 > CFLAG:MASTER:好感度
+			欲求不満度:1 += 1
+		ELSEIF CFLAG:MASTER:屈服度 < CFLAG:MASTER:好感度
+			欲求不満度:1 += 10
+		ENDIF
+		IF 欲求不満度:2/10 >= 1
+			欲求不満度:2 -= 10
+		ENDIF
+		IF 欲求不満度:3%10 >= 1
+			欲求不満度:3 -= 1
+		ENDIF
+		FLAG:1840 = 303
+	ELSE
+		PRINTFORMW {経過時間}分間性器を擦り合わせ、%CALLNAME:MASTER%と%CALLNAME:奴隷%が絶頂に達すると同時に%NTR_NAME(0)%の阴茎は二人に挟まれながら精液を吐き出した
+		FLAG:1840 = 304
+	ENDIF
+	CALL NTR_MASTER_3P_SEX_SLIT(経過時間,MASTER,人物_訪問者)
+	CALL NTR_MASTER_3P_SEX_SLIT(経過時間,奴隷,人物_訪問者)
+ENDIF
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 300 : 本番→本番、住人×主人公 or 訪問者×住人
+@NTR_MASTER_3P_SEX_300(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+;再判定はせず続けて同じ部位に挿入とする
+PRINTFORM %NTR_NAME(0)%が阴茎を引き抜くと、
+IF CFLAG:奴隷:好感度 > CFLAG:奴隷:屈服度
+	IF HAS_PENIS(奴隷)
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+			PRINTFORMW %CALLNAME:奴隷%と交代し、%NTR_NAME(0)%の精液で濡れた%CALLNAME:MASTER%の%MSG_SLIT(MASTER)%を阴茎で貫いた
+			PRINTFORMW %NTR_NAME(0)%が先に射精した精液でぬるつく%CALLNAME:MASTER%の膣内の感触を味わいながら腰を動かしていく
+		ELSE
+			PRINTFORMW %CALLNAME:奴隷%と交代し、%NTR_NAME(0)%の精液で濡れた%CALLNAME:MASTER%のアヌスを阴茎で貫いた
+			PRINTFORMW %NTR_NAME(0)%が先に射精した精液でぬるつく%CALLNAME:MASTER%の腸内の感触を味わいながら腰を動かしていく
+		ENDIF
+		PRINTFORM %NTR_NAME(0)%は休息を兼ねて%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+		IF TALENT:MASTER:胸部尺寸 > 0
+			PRINT 揉んで
+		ELSE
+			PRINT 撫でて
+		ENDIF
+		PRINTW いる
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+			PRINTFORMW {経過時間}分後、%CALLNAME:奴隷%の阴茎の鈴口と%CALLNAME:MASTER%の子宮口がキスをしながら精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,奴隷,-1)
+		ELSE
+			PRINTFORMW {経過時間}分後、%CALLNAME:奴隷%の阴茎が%CALLNAME:MASTER%の腸内深くに精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,奴隷)
+		ENDIF
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,人物_訪問者)
+		IF 欲求不満度:1/10 >= 2
+			欲求不満度:1 -= 20
+		ELSEIF 欲求不満度:1/10 == 1
+			欲求不満度:1 -= 10
+		ENDIF
+		IF 欲求不満度:2/10 >= 2
+			欲求不満度:2 -= 20
+		ELSEIF 欲求不満度:2/10 == 1
+			欲求不満度:2 -= 10
+		ENDIF
+		IF 欲求不満度:3/10 <= 8
+			欲求不満度:3 += 10
+		ENDIF
+	ELSE
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+			PRINTFORMW %CALLNAME:奴隷%と交代し、%NTR_NAME(0)%の精液で濡れた%CALLNAME:MASTER%の%MSG_SLIT(MASTER)%に自分の%MSG_SLIT(奴隷)%を擦りつけ始めた
+		ELSE
+			PRINTFORMW %CALLNAME:奴隷%と交代し、アヌスから零れる%NTR_NAME(0)%の精液と自身の愛液で濡れた%CALLNAME:MASTER%の%MSG_SLIT(MASTER)%に自分の%MSG_SLIT(奴隷)%を擦りつけ始めた
+		ENDIF
+		PRINTFORM %NTR_NAME(0)%は休息を兼ねて%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(奴隷)%を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉んで
+		ELSE
+			PRINT 撫でて
+		ENDIF
+		PRINTW いる
+		PRINTFORMW {経過時間}分後、二人は愛液を溢れさせながら絶頂に達した
+		CALL NTR_MASTER_3P_SEX_LESBIAN(経過時間,MASTER,奴隷)
+		CALl NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,人物_訪問者)
+		IF 欲求不満度:1/10 >= 2
+			欲求不満度:1 -= 20
+		ELSEIF 欲求不満度:1/10 == 1
+			欲求不満度:1 -= 10
+		ENDIF
+		IF 欲求不満度:2/10 >= 2
+			欲求不満度:2 -= 20
+		ELSEIF 欲求不満度:2/10 == 1
+			欲求不満度:2 -= 10
+		ENDIF
+		IF 欲求不満度:3/10 <= 8
+			欲求不満度:3 += 10
+		ENDIF
+	ENDIF
+	FLAG:1840 = 400
+ELSE
+	挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+		PRINTFORMW %CALLNAME:奴隷%がおねだりするように足を広げ、%NTR_NAME(0)%に愛液で濡れた%MSG_SLIT(奴隷)%を見せた
+		PRINTFORMW %NTR_NAME(0)%は自身の精液で濡れた阴茎を挿入し、最奥まで貫いた
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:MASTER%に続けて%CALLNAME:奴隷%に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+	ELSE
+		PRINTFORMW %CALLNAME:奴隷%がおねだりするように足を広げ、%NTR_NAME(0)%に%MSG_SLIT(奴隷)%から零れた愛液で濡れたアヌスを見せた
+		PRINTFORMW %NTR_NAME(0)%は自身の精液で濡れた阴茎を挿入し、最奥まで貫いた
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:MASTER%に続けて%CALLNAME:奴隷%に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+	ENDIF
+	IF CFLAG:MASTER:屈服度 > CFLAG:MASTER:好感度
+		IF 欲求不満度:1%10 <= 7
+			欲求不満度:1 += 2
+		ELSEIF 欲求不満度:1%10 == 8
+			欲求不満度:1 += 1
+		ENDIF
+	ELSEIF CFLAG:MASTER:屈服度 < CFLAG:MASTER:好感度
+		IF 欲求不満度:1/10 <= 7
+			欲求不満度:1 += 20
+		ELSEIF 欲求不満度:1/10 == 8
+			欲求不満度:1 += 10
+		ENDIF
+	ENDIF
+	IF 欲求不満度:2%10 >= 2
+		欲求不満度:2 -= 2
+	ELSEIF 欲求不満度:2%10 == 1
+		欲求不満度:2 -= 1
+	ENDIF
+	IF 欲求不満度:3%10 >= 2
+		欲求不満度:3 -= 2
+	ELSEIF 欲求不満度:3%10 == 1
+		欲求不満度:3 -= 1
+	ENDIF
+ENDIF
+FLAG:1840 = 401
+RETURN
+;---------------------------------------------------------------------------------------
+; 301 : 本番→本番、主人公×住人 or 訪問者×主人公
+@NTR_MASTER_3P_SEX_301(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+PRINTFORML [0] %CALLNAME:奴隷%を攻める　[1] %NTR_NAME(0)%におねだりする
+$INPUT_LOOP_NM3_3_1
+INPUT
+PRINTFORM %NTR_NAME(0)%が阴茎を引き抜くと、
+IF RESULT == 0
+	IF HAS_PENIS(MASTER)
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+			PRINTFORMW %CALLNAME:MASTER%と交代し、%NTR_NAME(0)%の精液で濡れた%CALLNAME:奴隷%の%MSG_SLIT(奴隷)%を阴茎で貫いた
+			PRINTFORMW %NTR_NAME(0)%が先に射精した精液でぬるつく%CALLNAME:奴隷%の膣内の感触を味わいながら腰を動かしていく
+		ELSE
+			PRINTFORMW %CALLNAME:MASTER%と交代し、%NTR_NAME(0)%の精液で濡れた%CALLNAME:奴隷%のアヌスを阴茎で貫いた
+			PRINTFORMW %NTR_NAME(0)%が先に射精した精液でぬるつく%CALLNAME:奴隷%の腸内の感触を味わいながら腰を動かしていく
+		ENDIF
+		PRINTFORM %NTR_NAME(0)%は休息を兼ねて%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉んで
+		ELSE
+			PRINT 撫でて
+		ENDIF
+		PRINTW いる
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+			PRINTFORMW {経過時間}分後、%CALLNAME:MASTER%の阴茎の鈴口と%CALLNAME:奴隷%の子宮口がキスをしながら精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,MASTER,-1)
+		ELSE
+			PRINTFORMW {経過時間}分後、%CALLNAME:MASTER%の阴茎が%CALLNAME:奴隷%の腸内深くに精液を注ぎ込んだ
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,MASTER,-1)
+		ENDIF
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,人物_訪問者)
+		IF 欲求不満度:1/10 >= 2
+			欲求不満度:1 -= 20
+		ELSEIF 欲求不満度:1/10 == 1
+			欲求不満度:1 -= 10
+		ENDIF
+		IF 欲求不満度:2/10 >= 2
+			欲求不満度:2 -= 20
+		ELSEIF 欲求不満度:2/10 == 1
+			欲求不満度:2 -= 10
+		ENDIF
+		IF 欲求不満度:3%10 <= 8
+			欲求不満度:3 += 1
+		ENDIF
+	ELSE
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+			PRINTFORMW %CALLNAME:MASTER%と交代し、%NTR_NAME(0)%の精液で濡れた%CALLNAME:奴隷%の%MSG_SLIT(奴隷)%に自分の%MSG_SLIT(MASTER)%を擦りつけ始めた
+		ELSE
+			PRINTFORMW %CALLNAME:MASTER%と交代し、アヌスから零れる%NTR_NAME(0)%の精液と自身の愛液で濡れた%CALLNAME:奴隷%の%MSG_SLIT(奴隷)%に自分の%MSG_SLIT(奴隷)%を擦りつけ始めた
+		ENDIF
+		PRINTFORM %NTR_NAME(0)%は休息を兼ねて%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+		IF TALENT:奴隷:胸部尺寸 > 0
+			PRINT 揉んで
+		ELSE
+			PRINT 撫でて
+		ENDIF
+		PRINTW いる
+		PRINTFORMW {経過時間}分後、二人は愛液を溢れさせながら絶頂に達した
+		CALL NTR_MASTER_3P_SEX_LESBIAN(経過時間,奴隷,MASTER)
+		CALl NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,人物_訪問者)
+		IF 欲求不満度:1/10 >= 2
+			欲求不満度:1 -= 20
+		ELSEIF 欲求不満度:1/10 == 1
+			欲求不満度:1 -= 10
+		ENDIF
+		IF 欲求不満度:2/10 >= 2
+			欲求不満度:2 -= 20
+		ELSEIF 欲求不満度:2/10 == 1
+			欲求不満度:2 -= 10
+		ENDIF
+		IF 欲求不満度:3%10 <= 8
+			欲求不満度:3 += 1
+		ENDIF
+	ENDIF
+	FLAG:1840 = 402
+ELSEIF RESULT == 1
+	挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+		PRINTFORMW %CALLNAME:MASTER%は足を広げ、%NTR_NAME(0)%に愛液で濡れた%MSG_SLIT(MASTER)%を見せ、おねだりした
+		PRINTFORMW %NTR_NAME(0)%は自身の精液で濡れた阴茎を挿入し、最奥まで貫いた
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:奴隷%に続けて%CALLNAME:MASTER%に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+	ELSE
+		PRINTFORMW %CALLNAME:MASTER%は足を広げ、%NTR_NAME(0)%に%MSG_SLIT(MASTER)%から零れた愛液で濡れたアヌスを見せ、おねだりした
+		PRINTFORMW %NTR_NAME(0)%は自身の精液で濡れた阴茎を挿入し、最奥まで貫いた
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:奴隷%に続けて%CALLNAME:MASTER%に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+	ENDIF
+	IF 欲求不満度:1%10 >= 2
+		欲求不満度:1 -= 2
+	ELSEIF 欲求不満度:1%10 == 1
+		欲求不満度:1 -= 1
+	ENDIF
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		IF 欲求不満度:1%10 <= 7
+			欲求不満度:1 += 2
+		ELSEIF 欲求不満度:1%10 == 8
+			欲求不満度:1 += 1
+		ENDIF
+	ELSEIF CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
+		IF 欲求不満度:1/10 <= 7
+			欲求不満度:1 += 20
+		ELSEIF 欲求不満度:1/10 == 8
+			欲求不満度:1 += 10
+		ENDIF
+	ENDIF
+	IF 欲求不満度:3/10 >= 2
+		欲求不満度:3 -= 20
+	ELSEIF 欲求不満度:3/10 == 1
+		欲求不満度:3 -= 10
+	ENDIF
+	FLAG:1840 = 403
+ELSE
+	GOTO INPUT_LOOP_NM3_3_1
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 302 : 本番→本番、訪問者×主人公→訪問者×住人
+@NTR_MASTER_3P_SEX_302(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+	PRINTFORMW %NTR_NAME(0)%は阴茎を抜かず、絶頂の余韻に震えている%CALLNAME:MASTER%の膣内でさらに動き始めた
+ELSE
+	PRINTFORMW %NTR_NAME(0)%は阴茎を抜かず、絶頂の余韻に震えている%CALLNAME:MASTER%の腸内でさらに動き始めた
+ENDIF
+PRINTFORM %CALLNAME:奴隷%は%CALLNAME:MASTER%の嬌声を聞きながら%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+IF TALENT:MASTER:胸部尺寸 > 0
+	PRINT 揉み
+ELSE
+	PRINT 撫で
+ENDIF
+PRINTW 、二人がかりで攻めた
+挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+	PRINTFORMW {経過時間}分後、%CALLNAME:MASTER%が再び絶頂に達するのと同時に%NTR_NAME(0)%は阴茎を引き抜き、%CALLNAME:奴隷%の秘裂を一気に貫き精液を注ぎ込んだ
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+ELSE
+	PRINTFORMW {経過時間}分後、%CALLNAME:MASTER%が再び絶頂に達するのと同時に%NTR_NAME(0)%は阴茎を引き抜き、%CALLNAME:奴隷%の尻穴を一気に貫き精液を注ぎ込んだ
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+ENDIF
+CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,奴隷)
+FLAG:1840 = 405
+RETURN
+;---------------------------------------------------------------------------------------
+; 303 : 本番→本番、訪問者×住人→訪問者×主人公
+@NTR_MASTER_3P_SEX_303(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+	PRINTFORMW %NTR_NAME(0)%は阴茎を抜かず、絶頂の余韻に震えている%CALLNAME:奴隷%の膣内でさらに動き始めた
+ELSE
+	PRINTFORMW %NTR_NAME(0)%は阴茎を抜かず、絶頂の余韻に震えている%CALLNAME:奴隷%の腸内でさらに動き始めた
+ENDIF
+PRINTFORM %CALLNAME:MASTER%は%CALLNAME:奴隷%の嬌声を聞きながら%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+IF TALENT:奴隷:胸部尺寸 > 0
+	PRINT 揉み
+ELSE
+	PRINT 撫で
+ENDIF
+PRINTW 、二人がかりで攻めた
+挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+	PRINTFORMW {経過時間}分後、%CALLNAME:奴隷%が再び絶頂に達するのと同時に%NTR_NAME(0)%は阴茎を引き抜き、%CALLNAME:MASTER%の秘裂を一気に貫き精液を注ぎ込んだ
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+ELSE
+	PRINTFORMW {経過時間}分後、%CALLNAME:奴隷%が再び絶頂に達するのと同時に%NTR_NAME(0)%は阴茎を引き抜き、%CALLNAME:MASTER%のアヌスを一気に貫き精液を注ぎ込んだ
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+ENDIF
+CALl NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,MASTER)
+FLAG:1840 = 404
+RETURN
+;---------------------------------------------------------------------------------------
+; 304 : 本番→本番、訪問者×主人公＋住人 or 訪問者×住人＋主人公
+@NTR_MASTER_3P_SEX_304(経過時間, 奴隷, 欲求不満度, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 挿入部位,0
+
+IF 欲求不満度:3/10 > 欲求不満度:3%10
+	挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+		PRINTFORMW %NTR_NAME(0)%は二人の間から阴茎を抜き、絶頂の余韻に震えている%CALLNAME:MASTER%の%MSG_SLIT(MASTER)%を貫いた
+	ELSE
+		PRINTFORMW %NTR_NAME(0)%は二人の間から阴茎を抜き、絶頂の余韻に震えている%CALLNAME:MASTER%のアヌスを貫いた
+	ENDIF
+	PRINTFORM %CALLNAME:奴隷%は%CALLNAME:MASTER%の嬌声を聞きながら%CALLNAME:MASTER%の%OPPAI_DESCRIPTION(MASTER)%を
+	IF TALENT:MASTER:胸部尺寸 > 0
+		PRINT 揉み
+	ELSE
+		PRINT 撫で
+	ENDIF
+	PRINTW 、二人がかりで攻めた
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:MASTER%が再び絶頂に達するのと同時に膣内に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+	ELSE
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:MASTER%が再び絶頂に達するのと同時に腸内に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+	ENDIF
+	CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,奴隷)
+	IF 欲求不満度:1%10 >= 2
+		欲求不満度:1 -= 2
+	ELSEIF 欲求不満度:1%10 == 1
+		欲求不満度:1 -= 1
+	ENDIF
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		IF 欲求不満度:1%10 <= 7
+			欲求不満度:1 += 2
+		ELSEIF 欲求不満度:1%10 == 8
+			欲求不満度:1 += 1
+		ENDIF
+	ELSEIF CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
+		IF 欲求不満度:1/10 <= 8
+			欲求不満度:1 += 10
+		ENDIF
+	ENDIF
+	IF 欲求不満度:3/10 >= 2
+		欲求不満度:3 -= 20
+	ELSEIF 欲求不満度:3/10 == 1
+		欲求不満度:3 -= 10
+	ENDIF
+	FLAG:1840 = 404
+ELSE
+	挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+		PRINTFORMW %NTR_NAME(0)%は二人の間から阴茎を抜き、絶頂の余韻に震えている%CALLNAME:奴隷%の%MSG_SLIT(奴隷)%を貫いた
+	ELSE
+		PRINTFORMW %NTR_NAME(0)%は二人の間から阴茎を抜き、絶頂の余韻に震えている%CALLNAME:奴隷%のアヌスを貫いた
+	ENDIF
+	PRINTFORM %CALLNAME:MASTER%は%CALLNAME:奴隷%の嬌声を聞きながら%CALLNAME:奴隷%の%OPPAI_DESCRIPTION(奴隷)%を
+	IF TALENT:奴隷:胸部尺寸 > 0
+		PRINT 揉み
+	ELSE
+		PRINT 撫で
+	ENDIF
+	PRINTW 、二人がかりで攻めた
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:奴隷%が再び絶頂に達するのと同時に膣内に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+	ELSE
+		PRINTFORMW {経過時間}分後、%NTR_NAME(0)%は%CALLNAME:奴隷%が再び絶頂に達するのと同時に腸内に精液を注ぎ込んだ
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+	ENDIF
+	CALl NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,MASTER)
+	IF CFLAG:MASTER:屈服度 > CFLAG:MASTER:好感度
+		IF 欲求不満度:1%10 <= 7
+			欲求不満度:1 += 2
+		ELSEIF 欲求不満度:1%10 == 8
+			欲求不満度:1 += 1
+		ENDIF
+	ELSEIF CFLAG:MASTER:屈服度 < CFLAG:MASTER:好感度
+		IF 欲求不満度:1/10 <= 8
+			欲求不満度:1 += 10
+		ENDIF
+	ENDIF
+	IF 欲求不満度:2%10 >= 2
+		欲求不満度:2 -= 2
+	ELSEIF 欲求不満度:2%10 == 1
+		欲求不満度:2 -= 1
+	ENDIF
+	IF 欲求不満度:3%10 >= 2
+		欲求不満度:3 -= 2
+	ELSEIF 欲求不満度:3%10 == 1
+		欲求不満度:3 -= 1
+	ENDIF
+	FLAG:1840 = 405
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 400 : 本番2→本番3、住人(双)×主人公→訪問者×主人公
+@NTR_MASTER_3P_SEX_400(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+
+PRINTFORMW %CALLNAME:奴隷%が%CALLNAME:MASTER%から体を離すと二人の混ざり合った体液が糸を引いた
+挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+	PRINTFORMW 次は自分の番だと%NTR_NAME(0)%が%CALLNAME:MASTER%の足を抱える
+	PRINTFORMW 二人は交代しながら何度も%CALLNAME:MASTER%との性交を楽しんだ
+	性交回数:0 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+ELSE
+	PRINTFORMW 次は自分の番だと%NTR_NAME(0)%が%CALLNAME:MASTER%の尻を掴みアヌスに狙いを定める
+	PRINTFORMW 二人は交代しながら何度も%CALLNAME:MASTER%との性交を楽しんだ
+	性交回数:1 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:1%10 >= 2
+	欲求不満度:1 -= 2
+ELSEIF 欲求不満度:1%10 == 1
+	欲求不満度:1 -= 1
+ENDIF
+IF 欲求不満度:2/10 <= 7
+	欲求不満度:2 += 20
+ELSEIF 欲求不満度:2/10 == 8
+	欲求不満度:2 += 10
+ENDIF
+IF 欲求不満度:3/10 >= 2
+	欲求不満度:3 -= 20
+ELSEIF 欲求不満度:3/10 == 1
+	欲求不満度:3 -= 10
+ENDIF
+FLAG:1840 = 500
+RETURN
+;---------------------------------------------------------------------------------------
+; 401 : 本番2→本番3、訪問者×主人公→訪問者×住人
+@NTR_MASTER_3P_SEX_401(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+
+PRINTFORMW %NTR_NAME(0)%が%CALLNAME:奴隷%から阴茎を引き抜くと、二人の交わりを見ていた%CALLNAME:MASTER%は再び体が疼いてしまい、%NTR_NAME(0)%を求めた
+挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+	PRINTFORMW %NTR_NAME(0)%は硬いままの阴茎を%CALLNAME:MASTER%に挿入し、再び腰を動かし始めた
+	性交回数:0 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+ELSE
+	PRINTFORMW %NTR_NAME(0)%は硬いままの阴茎を%CALLNAME:MASTER%のアヌスに挿入し、再び腰を動かし始めた
+	性交回数:1 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:1%10 >= 2
+	欲求不満度:1 -= 2
+ELSEIF 欲求不満度:1%10 == 1
+	欲求不満度:1 -= 1
+ENDIF
+IF 欲求不満度:2%10 <= 7
+	欲求不満度:2 += 2
+ELSEIF 欲求不満度:2%10 == 8
+	欲求不満度:2 += 1
+ENDIF
+IF 欲求不満度:3/10 >= 2
+	欲求不満度:3 -= 20
+ELSEIF 欲求不満度:3/10 == 1
+	欲求不満度:3 -= 10
+ENDIF
+FLAG:1840 = 501
+RETURN
+;---------------------------------------------------------------------------------------
+; 402 : 本番2→本番3、主人公(双)×住人→訪問者×住人
+@NTR_MASTER_3P_SEX_402(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+
+PRINTFORMW %CALLNAME:MASTER%が%CALLNAME:奴隷%から体を離すと二人の混ざり合った体液が糸を引いた
+挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+	PRINTFORMW 次は自分の番だと%NTR_NAME(0)%が%CALLNAME:奴隷%の足を抱える
+	PRINTFORMW 二人は交代しながら何度も%CALLNAME:奴隷%との性交を楽しんだ
+	性交回数:2 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+ELSE
+	PRINTFORMW 次は自分の番だと%NTR_NAME(0)%が%CALLNAME:奴隷%の尻を掴みアヌスに狙いを定める
+	PRINTFORMW 二人は交代しながら何度も%CALLNAME:奴隷%との性交を楽しんだ
+	性交回数:3 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:1/10 <= 7
+	欲求不満度:1 += 20
+ELSEIF 欲求不満度:1/10 == 8
+	欲求不満度:1 += 10
+ENDIF
+IF 欲求不満度:2%10 >= 2
+	欲求不満度:2 -= 2
+ELSEIF 欲求不満度:2%10 == 1
+	欲求不満度:2 -= 1
+ENDIF
+IF 欲求不満度:3%10 >= 2
+	欲求不満度:3 -= 2
+ELSEIF 欲求不満度:3%10 == 1
+	欲求不満度:3 -= 1
+ENDIF
+FLAG:1840 = 502
+RETURN
+;---------------------------------------------------------------------------------------
+; 403 : 本番2→本番3、訪問者×主人公→訪問者×住人
+@NTR_MASTER_3P_SEX_403(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+
+PRINTFORMW %NTR_NAME(0)%が%CALLNAME:MASTER%から阴茎を引き抜くと、二人の交わりを見ていた%CALLNAME:奴隷%は再び体が疼いてしまい、%NTR_NAME(0)%を求めた
+挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+	PRINTFORMW %NTR_NAME(0)%は硬いままの阴茎を%CALLNAME:奴隷%に挿入し、再び腰を動かし始めた
+	性交回数:2 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+ELSE
+	PRINTFORMW %NTR_NAME(0)%は硬いままの阴茎を%CALLNAME:奴隷%のアヌスに挿入し、再び腰を動かし始めた
+	性交回数:3 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:1%10 <= 7
+	欲求不満度:1 += 2
+ELSEIF 欲求不満度:1%10 == 8
+	欲求不満度:1 += 1
+ENDIF
+IF 欲求不満度:2%10 >= 2
+	欲求不満度:2 -= 2
+ELSEIF 欲求不満度:2%10 == 1
+	欲求不満度:2 -= 1
+ENDIF
+IF 欲求不満度:3%10 >= 2
+	欲求不満度:3 -= 2
+ELSEIF 欲求不満度:3%10 == 1
+	欲求不満度:3 -= 1
+ENDIF
+FLAG:1840 = 501
+RETURN
+;---------------------------------------------------------------------------------------
+; 404 : 本番2→本番3、訪問者×主人公→訪問者×主人公＆住人
+@NTR_MASTER_3P_SEX_404(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+
+PRINTFORMW %NTR_NAME(0)%の射精が止まると、次は%CALLNAME:奴隷%が%NTR_NAME(0)%を求める
+PRINTFORMW しかし%CALLNAME:MASTER%も抜かずにもう一回と%NTR_NAME(0)%を求め、%NTR_NAME(0)%は欲望の赴くままに二人との性交を楽しんだ
+挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+	性交回数:2 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+ELSE
+	性交回数:3 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:1%10 <= 7
+	欲求不満度:1 += 2
+ELSEIF 欲求不満度:1%10 == 8
+	欲求不満度:1 += 1
+ENDIF
+IF 欲求不満度:2%10 >= 2
+	欲求不満度:2 -= 2
+ELSEIF 欲求不満度:2%10 == 1
+	欲求不満度:2 -= 1
+ENDIF
+IF 欲求不満度:3%10 >= 2
+	欲求不満度:3 -= 2
+ELSEIF 欲求不満度:3%10 == 1
+	欲求不満度:3 -= 1
+ENDIF
+FLAG:1840 = 503
+RETURN
+;---------------------------------------------------------------------------------------
+; 405 : 本番2→本番3、訪問者×住人→訪問者×住人＆主人公
+@NTR_MASTER_3P_SEX_405(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+
+PRINTFORMW %NTR_NAME(0)%の射精が止まると、次は%CALLNAME:MASTER%が%NTR_NAME(0)%を求める
+PRINTFORMW しかし%CALLNAME:奴隷%も抜かずにもう一回と%NTR_NAME(0)%を求め、%NTR_NAME(0)%は欲望の赴くままに二人との性交を楽しんだ
+挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+	性交回数:0 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+ELSE
+	性交回数:1 += 1
+	CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+ENDIF
+IF 欲求不満度:1%10 >= 2
+	欲求不満度:1 -= 2
+ELSEIF 欲求不満度:1%10 == 1
+	欲求不満度:1 -= 1
+ENDIF
+IF 欲求不満度:2%10 <= 7
+	欲求不満度:2 += 2
+ELSEIF 欲求不満度:2%10 == 8
+	欲求不満度:2 += 1
+ENDIF
+IF 欲求不満度:3/10 >= 2
+	欲求不満度:3 -= 20
+ELSEIF 欲求不満度:3/10 == 1
+	欲求不満度:3 -= 10
+ENDIF
+FLAG:1840 = 503
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 500 : 本番4、主人公＆住人 or 訪問者
+@NTR_MASTER_3P_SEX_500(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+#DIM WK_A
+#DIM WK_B
+
+WK_A = 欲求不満度:1/10 + 欲求不満度:2/10	; 主人公＆住人欲求不満度
+WK_B = 欲求不満度:1%10 + 欲求不満度:3/10	; 主人公＆訪問者欲求不満度
+IF RAND:(WK_A + WK_B) < WK_A && BASE:奴隷:体力 >= 500
+	IF HAS_PENIS(奴隷)
+		挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+			性交回数:5 += 1
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,奴隷,-1)
+		ELSE
+			性交回数:6 += 1
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,奴隷)
+		ENDIF
+	ELSE
+		CALL NTR_MASTER_3P_SEX_LESBIAN(経過時間,MASTER,奴隷)
+	ENDIF
+	IF 欲求不満度:1/10 >= 2
+		欲求不満度:1 -= 20
+	ELSEIF 欲求不満度:1/10 == 1
+		欲求不満度:1 -= 10
+	ENDIF
+	IF 欲求不満度:2/10 >= 2
+		欲求不満度:2 -= 20
+	ELSEIF 欲求不満度:2/10 == 1
+		欲求不満度:2 -= 10
+	ENDIF
+	IF 欲求不満度:3/10 <= 7
+		欲求不満度:3 += 20
+	ELSEIF 欲求不満度:3/10 == 8
+		欲求不満度:3 += 10
+	ENDIF
+ELSE
+	挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+		性交回数:0 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+	ELSE
+		性交回数:1 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+	ENDIF
+	IF 欲求不満度:1%10 >= 2
+		欲求不満度:1 -= 2
+	ELSEIF 欲求不満度:1%10 == 1
+		欲求不満度:1 -= 1
+	ENDIF
+	IF 欲求不満度:2/10 <= 7
+		欲求不満度:2 += 20
+	ELSEIF 欲求不満度:2/10 == 8
+		欲求不満度:2 += 10
+	ENDIF
+	IF 欲求不満度:3/10 >= 2
+		欲求不満度:3 -= 20
+	ELSEIF 欲求不満度:3/10 == 1
+		欲求不満度:3 -= 10
+	ENDIF
+ENDIF
+IF BASE:MASTER:体力 < 500
+	FLAG:1840 = 601
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 501 : 本番4、訪問者＆主人公 or 住人
+@NTR_MASTER_3P_SEX_501(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+#DIM WK_A
+#DIM WK_B
+
+WK_A = 欲求不満度:1%10 + 欲求不満度:3/10	; 主人公＆訪問者欲求不満度
+WK_B = 欲求不満度:2%10 + 欲求不満度:3%10	; 住人＆訪問者欲求不満度
+IF RAND:(WK_A + WK_B) < WK_A && BASE:MASTER:体力 >= 500
+	挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+		性交回数:0 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+	ELSE
+		性交回数:1 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+	ENDIF
+	IF 欲求不満度:1%10 >= 2
+		欲求不満度:1 -= 2
+	ELSEIF 欲求不満度:1%10 == 1
+		欲求不満度:1 -= 1
+	ENDIF
+	IF 欲求不満度:2%10 <= 7
+		欲求不満度:2 += 2
+	ELSEIF 欲求不満度:2%10 == 8
+		欲求不満度:2 += 1
+	ENDIF
+	IF 欲求不満度:3/10 >= 2
+		欲求不満度:3 -= 20
+	ELSEIF 欲求不満度:3/10 == 1
+		欲求不満度:3 -= 10
+	ENDIF
+ELSEIF BASE:奴隷:体力 >= 500
+	挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+		性交回数:2 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+	ELSE
+		性交回数:3 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+	ENDIF
+	IF 欲求不満度:1%10 <= 7
+		欲求不満度:1 += 2
+	ELSEIF 欲求不満度:1%10 == 8
+		欲求不満度:1 += 1
+	ENDIF
+	IF 欲求不満度:2%10 >= 2
+		欲求不満度:2 -= 2
+	ELSEIF 欲求不満度:2%10 == 1
+		欲求不満度:2 -= 1
+	ENDIF
+	IF 欲求不満度:3%10 >= 2
+		欲求不満度:3 -= 2
+	ELSEIF 欲求不満度:3%10 == 1
+		欲求不満度:3 -= 1
+	ENDIF
+ELSE
+	IF BASE:MASTER:体力 < 500 && BASE:奴隷:体力 < 500
+		FLAG:1840 = 601
+	ELSEIF BASE:MASTER:体力 < 500 && BASE:奴隷:体力 >= 500
+		IF 欲求不満度:3%10 <= 4
+			欲求不満度:3 += 5
+		ELSEIF 欲求不満度:3%10 <= 8
+			欲求不満度:3 += 1
+		ENDIF
+	ELSE
+		IF 欲求不満度:3/10 <= 4
+			欲求不満度:3 += 50
+		ELSEIF 欲求不満度:3/10 <= 8
+			欲求不満度:3 += 10
+		ENDIF
+	ENDIF
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 502 : 本番4、住人＆主人公 or 訪問者
+@NTR_MASTER_3P_SEX_502(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+#DIM WK_A
+#DIM WK_B
+
+WK_A = 欲求不満度:1/10 + 欲求不満度:2/10	; 住人＆主人公欲求不満度
+WK_B = 欲求不満度:2%10 + 欲求不満度:3%10	; 住人＆訪問者欲求不満度
+IF RAND:(WK_A + WK_B) < WK_A && BASE:MASTER:体力 >= 500
+	IF HAS_PENIS(MASTER)
+		挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+		IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+			性交回数:7 += 1
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,MASTER,-1)
+		ELSE
+			性交回数:8 += 1
+			CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,MASTER)
+		ENDIF
+	ELSE
+		CALL NTR_MASTER_3P_SEX_LESBIAN(経過時間,奴隷,MASTER)
+	ENDIF
+	IF 欲求不満度:1/10 >= 2
+		欲求不満度:1 -= 20
+	ELSEIF 欲求不満度:1/10 == 1
+		欲求不満度:1 -= 10
+	ENDIF
+	IF 欲求不満度:2/10 >= 2
+		欲求不満度:2 -= 20
+	ELSEIF 欲求不満度:2/10 == 1
+		欲求不満度:2 -= 10
+	ENDIF
+	IF 欲求不満度:3%10 <= 7
+		欲求不満度:3 += 2
+	ELSEIF 欲求不満度:3%10 == 8
+		欲求不満度:3 += 1
+	ENDIF
+ELSE
+	挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+		性交回数:2 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+	ELSE
+		性交回数:3 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+	ENDIF
+	IF 欲求不満度:1/10 <= 7
+		欲求不満度:1 += 20
+	ELSEIF 欲求不満度:1/10 == 8
+		欲求不満度:1 += 10
+	ENDIF
+	IF 欲求不満度:2%10 >= 2
+		欲求不満度:2 -= 2
+	ELSEIF 欲求不満度:2%10 == 1
+		欲求不満度:2 -= 1
+	ENDIF
+	IF 欲求不満度:3%10 >= 2
+		欲求不満度:3 -= 2
+	ELSEIF 欲求不満度:3%10 == 1
+		欲求不満度:3 -= 1
+	ENDIF
+ENDIF
+IF BASE:奴隷:体力 < 500
+	FLAG:1840 = 602
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 503 : 本番4、訪問者＆主人公 or 住人
+@NTR_MASTER_3P_SEX_503(経過時間, 奴隷, 欲求不満度, 性交回数, 挿入部位)
+#DIM 経過時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+#DIM REF 挿入部位,0
+#DIM WK_A
+#DIM WK_B
+
+WK_A = 欲求不満度:1%10 + 欲求不満度:3/10	; 主人公＆訪問者欲求不満度
+WK_B = 欲求不満度:2%10 + 欲求不満度:3%10	; 住人＆訪問者欲求不満度
+IF RAND:(WK_A + WK_B) < WK_A && BASE:MASTER:体力 >= 500 && RAND:2
+	挿入部位:挿入部位3P_あなた = NTR_MASTER_3P_CHK_SEX_AV(MASTER)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_あなた
+		性交回数:0 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,人物_訪問者,-1)
+	ELSE
+		性交回数:1 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,MASTER,-1,人物_訪問者)
+	ENDIF
+	IF RAND:10 < (欲求不満度:2/10)
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,MASTER,奴隷)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,MASTER,奴隷)
+	ENDIF
+	IF CFLAG:奴隷:好感度 > CFLAG:奴隷:屈服度
+		IF 欲求不満度:2/10 <= 7
+			欲求不満度:2 += 20
+		ELSEIF 欲求不満度:2/10 == 8
+			欲求不満度:2 += 10
+		ENDIF
+	ENDIF
+	IF 欲求不満度:1%10 >= 2
+		欲求不満度:1 -= 2
+	ELSEIF 欲求不満度:1%10 == 1
+		欲求不満度:1 -= 1
+	ENDIF
+	IF 欲求不満度:2%10 <= 7
+		欲求不満度:2 += 2
+	ELSEIF 欲求不満度:2%10 == 8
+		欲求不満度:2 += 1
+	ENDIF
+	IF 欲求不満度:3/10 >= 2
+		欲求不満度:3 -= 20
+	ELSEIF 欲求不満度:3/10 == 1
+		欲求不満度:3 -= 10
+	ENDIF
+ELSEIF BASE:奴隷:体力 >= 500 && RAND:2
+	挿入部位:挿入部位3P_奴隷 = NTR_MASTER_3P_CHK_SEX_AV(奴隷)
+	IF 挿入部位3P_V挿入 == 挿入部位:挿入部位3P_奴隷
+		性交回数:2 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,人物_訪問者,-1)
+	ELSE
+		性交回数:3 += 1
+		CALL NTR_MASTER_3P_SEX_SEX(経過時間,奴隷,-1,人物_訪問者)
+	ENDIF
+	IF RAND:10 < (欲求不満度:1/10)
+		CALL NTR_MASTER_3P_SEX_KISS(経過時間,奴隷,MASTER)
+		CALL NTR_MASTER_3P_SEX_BUST(経過時間,奴隷,MASTER)
+	ENDIF
+	IF CFLAG:奴隷:好感度 > CFLAG:MASTER:屈服度
+		IF 欲求不満度:1/10 <= 7
+			欲求不満度:1 += 20
+		ELSEIF 欲求不満度:1/10 == 8
+			欲求不満度:1 += 10
+		ENDIF
+	ENDIF
+	IF 欲求不満度:1%10 <= 7
+		欲求不満度:1 += 2
+	ELSEIF 欲求不満度:1%10 == 8
+		欲求不満度:1 += 1
+	ENDIF
+	IF 欲求不満度:2%10 >= 2
+		欲求不満度:2 -= 2
+	ELSEIF 欲求不満度:2%10 == 1
+		欲求不満度:2 -= 1
+	ENDIF
+	IF 欲求不満度:3%10 >= 2
+		欲求不満度:3 -= 2
+	ELSEIF 欲求不満度:3%10 == 1
+		欲求不満度:3 -= 1
+	ENDIF
+ELSE
+	IF BASE:MASTER:体力 < 500 && BASE:奴隷:体力 < 500
+		FLAG:1840 = 603
+	ELSEIF BASE:MASTER:体力 < 500 && BASE:奴隷:体力 >= 500
+		IF 欲求不満度:3%10 <= 4
+			欲求不満度:3 += 5
+		ELSEIF 欲求不満度:3%10 <= 8
+			欲求不満度:3 += 1
+		ENDIF
+	ELSEIF BASE:MASTER:体力 >= 500 && BASE:奴隷:体力 < 500
+		IF 欲求不満度:3/10 <= 4
+			欲求不満度:3 += 50
+		ELSEIF 欲求不満度:3/10 <= 8
+			欲求不満度:3 += 10
+		ENDIF
+	ELSE
+		性交回数:4 += 1
+		CALL NTR_MASTER_3P_SEX_SLIT(経過時間,MASTER,人物_訪問者)
+		CALL NTR_MASTER_3P_SEX_SLIT(経過時間,奴隷,人物_訪問者)
+	ENDIF
+ENDIF
+RETURN
+
+;---------------------------------------------------------------------------------------
+; 600 : 終了、主人公
+@NTR_MASTER_3P_SEX_600(累積時間, 奴隷, 欲求不満度, 性交回数)
+#DIM 累積時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+
+PRINTFORM その後、%CALLNAME:MASTER%は%MSG_HOUR_MIN(累積時間)%かけて
+IF (性交回数:7 + 性交回数:8) > 0 && (性交回数:0 + 性交回数:1) > 0
+	PRINTFORMW %CALLNAME:奴隷%と%性交回数MSG(性交回数:7, 性交回数:8)%、%NTR_NAME(0)%と%性交回数MSG(性交回数:0, 性交回数:1)%交わった
+ELSEIF (性交回数:7 + 性交回数:8) > 0
+	PRINTFORMW %CALLNAME:奴隷%と%性交回数MSG(性交回数:7, 性交回数:8)%交わって体力の限界を迎えた
+ELSE
+	PRINTFORMW %NTR_NAME(0)%と%性交回数MSG(性交回数:0, 性交回数:1)%交わって体力の限界を迎えた
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 601 : 終了、訪問者
+@NTR_MASTER_3P_SEX_601(累積時間, 奴隷, 欲求不満度, 性交回数)
+#DIM 累積時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+
+PRINTFORM その後、%NTR_NAME(0)%は%MSG_HOUR_MIN(累積時間)%かけて
+IF (性交回数:0+性交回数:1) > 0 && (性交回数:2+性交回数:3) > 0
+	PRINTFORMW %CALLNAME:MASTER%と%性交回数MSG(性交回数:0, 性交回数:1)%、%CALLNAME:奴隷%と%性交回数MSG(性交回数:2, 性交回数:3)%交わった
+ELSEIF (性交回数:0+性交回数:1) > 0
+	PRINTFORMW %CALLNAME:MASTER%と%性交回数MSG(性交回数:0, 性交回数:1)%交わった
+ELSE
+	PRINTFORMW %CALLNAME:奴隷%と%性交回数MSG(性交回数:2, 性交回数:3)%交わった
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 602 : 終了、住人
+@NTR_MASTER_3P_SEX_602(累積時間, 奴隷, 欲求不満度, 性交回数)
+#DIM 累積時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+
+PRINTFORM その後、%CALLNAME:奴隷%は%MSG_HOUR_MIN(累積時間)%かけて
+IF (性交回数:5+性交回数:6) > 0 && (性交回数:2+性交回数:3) > 0
+	PRINTFORMW %CALLNAME:MASTER%と%性交回数MSG(性交回数:5,性交回数:6)%、%NTR_NAME(0)%と%性交回数MSG(性交回数:2,性交回数:3)%交わった
+ELSEIF (性交回数:5+性交回数:6) > 0
+	PRINTFORMW %CALLNAME:MASTER%と%性交回数MSG(性交回数:5,性交回数:6)%交わって体力の限界を迎えた
+ELSE
+	PRINTFORMW %NTR_NAME(0)%と%性交回数MSG(性交回数:2,性交回数:3)%交わって体力の限界を迎えた
+ENDIF
+RETURN
+;---------------------------------------------------------------------------------------
+; 603 : 終了、訪問者(素股含む)
+@NTR_MASTER_3P_SEX_603(累積時間, 奴隷, 欲求不満度, 性交回数)
+#DIM 累積時間
+#DIM 奴隷
+#DIM REF 欲求不満度,0
+#DIM REF 性交回数,0
+
+PRINTFORM その後、%NTR_NAME(0)%は%MSG_HOUR_MIN(累積時間)%かけて
+IF (性交回数:0+性交回数:1) > 0 && (性交回数:2+性交回数:3) > 0 && 性交回数:4 > 0
+	PRINTFORMW %CALLNAME:MASTER%と%性交回数MSG(性交回数:0, 性交回数:1)%、%CALLNAME:奴隷%と%性交回数MSG(性交回数:2, 性交回数:3)%交わり、二人の間で{性交回数:4}回射精した
+ELSEIF (性交回数:0+性交回数:1) > 0 && 性交回数:4 > 0
+	PRINTFORMW %CALLNAME:MASTER%と%性交回数MSG(性交回数:0, 性交回数:1)%交わり、二人の間で{性交回数:4}回射精した
+ELSEIF (性交回数:2+性交回数:3) > 0 && 性交回数:4 > 0
+	PRINTFORMW %CALLNAME:奴隷%と%性交回数MSG(性交回数:2, 性交回数:3)%交わり、二人の間で{性交回数:4}回射精した
+ELSEIF (性交回数:0+性交回数:1) > 0
+	PRINTFORMW %CALLNAME:MASTER%と%性交回数MSG(性交回数:0, 性交回数:1)%交わった
+ELSEIF (性交回数:2+性交回数:3) > 0
+	PRINTFORMW %CALLNAME:奴隷%と%性交回数MSG(性交回数:2, 性交回数:3)%交わった
+ELSE
+	PRINTFORMW エラー？
+ENDIF
+RETURN
+
+;---------------------------------------------------------------------------------------
+;性交回数表示用文字列作成
+@性交回数MSG(性交回数V, 性交回数A)
+#FUNCTIONS
+#DIM 性交回数V
+#DIM 性交回数A
+#DIMS MSG
+
+IF 性交回数V > 0 && 性交回数A >0
+	MSG = 前で{性交回数V}回、後ろで{性交回数A}回
+ELSEIF 性交回数V > 0 
+	MSG = 前で{性交回数V}回
+ELSEIF 性交回数A > 0
+	MSG = 後ろで{性交回数A}回
+ELSE
+	MSG = 0回
+ENDIF
+RETURNF MSG
+
+;---------------------------------------------------------------------------------------
+;性交部位判定(A or V)
+;　訪問者が対象の处女を奪わない設定のとき
+;　　対象が处女…常にA挿入
+;　　対象が非处女…2/3でV挿入、1/3でA挿入
+;　訪問者が対象の处女を奪う設定のとき
+;　　対象が处女…2/3でV挿入、1/3でA挿入
+;　　対象が非处女…2/3でV挿入、1/3でA挿入
+;@param 被害者…犯されている人
+;@retval 0:V挿入 1:A挿入
+@NTR_MASTER_3P_CHK_SEX_AV(被害者)
+#FUNCTION
+#DIM 被害者
+#DIM 挿入部位 = 挿入部位3P_A挿入
+
+IF IS_NTR_KEEP_VIRGIN() && TALENT:被害者:处女	
+	挿入部位 = 挿入部位3P_A挿入
+ELSE
+	IF RAND:3 == 0
+		挿入部位 = 挿入部位3P_A挿入
+	ELSE
+		挿入部位 = 挿入部位3P_V挿入
+	ENDIF
+ENDIF
+RETURNF 挿入部位
+
+;---------------------------------------------------------------------------------------
+;セックス（V,A)
+;@param 経過時間…経過時間
+;@param 被害者…犯されている人
+;@param 加害者V…前から犯している人(-1:无)
+;@param 加害者A…後ろから犯している人(-1:无)
+@NTR_MASTER_3P_SEX_SEX(経過時間,被害者,加害者V,加害者A)
+#DIM 経過時間
+#DIM 被害者
+#DIM 加害者V
+#DIM 加害者A
+#DIM iLoop
+
+;Ｖ側処理
+IF -1 != 加害者V
+	TEQUIP:被害者:Ｖ性爱 = 加害者V
+	IF 加害者V == 人物_訪問者
+		CALL NTR_ADD_SURRENDER(被害者, (5 + RAND:5))
+	ELSEIF 被害者 != MASTER
+		CFLAG:被害者:好感度 += (5 + RAND:5)
+	ELSE
+		CFLAG:加害者V:好感度 += (5 + RAND:5)
+	ENDIF
+	BASE:(被害者):体力 = MAX(0,BASE:被害者:体力 - 50)
+	;屈服度が高い場合は抵抗しないので气力消費が少ない？
+	BASE:被害者:气力 = MAX(0,BASE:被害者:气力-(150-LIMIT(0,70,CFLAG:被害者:屈服度/10)))
+	SOURCE:被害者:快Ｖ = 400
+	FOR iLoop,0,経過時間,5
+		CALL 締り具合変動, 被害者, 3, 0
+	NEXT
+	;SOURCE:被害者:情爱 = 150
+	;SOURCE:被害者:苦痛 = 500
+	;SOURCE:被害者:露出 = 50
+	;SOURCE:被害者:反感 = 300
+	;SIF TALENT:被害者:自己爱 < 0 || TALENT:(被害者):抵抗
+	;	SOURCE:被害者:抑郁 += 300
+	;SIF TALENT:被害者:贞操 > 0 && CFLAG:(被害者):屈服度 < 1000
+	;	SOURCE:被害者:反感 += 1000
+	;IF TALENT:被害者:处女 == 1
+	;	SOURCE:被害者:苦痛 += 2000
+	;	SOURCE:被害者:反感 += 3000
+	;ELSEIF TALENT:被害者:处女 == 2
+	;	SOURCE:被害者:苦痛 += 500
+	;	SOURCE:被害者:反感 += 1000
+	;ENDIF
+	EXP:被害者:Ｖ经验 ++
+	EXP:被害者:Ｖ性交经验 ++
+	IF 加害者V == 人物_訪問者 && 訪問者_Ｐ大きさ == 2
+		EXP:被害者:Ｖ扩张经验 += 1
+		PRINTFORML %CALLNAME:被害者%的膣，跟着%NTR_NAME(0)%的大阴茎的形状被扩张了…
+		IF ( TALENT:被害者:受虐狂 || ABL:被害者:抖Ｍ之气 > 2 ) && EXP:被害者:Ｖ扩张经验 < 450
+			CUP:被害者:欲情 += 500
+			CUP:被害者:苦痛 += 250
+		ELSEIF EXP:被害者:Ｖ扩张经验 < 450
+			CUP:被害者:苦痛 += 500
+		ENDIF
+	ENDIF
+	IF ABL:被害者:Ｖ感觉 > RAND:5
+		EXP:被害者:Ｖ绝顶经验 ++
+		EXP:被害者:绝顶经验 ++
+	ENDIF
+
+	IF 加害者V == 人物_訪問者
+		IF TALENT:被害者:处女
+			CALL LOST_VIRGIN(被害者, 加害者V)
+			CALL NTR_ADD_SURRENDER(被害者, (10 + RAND:10))
+		ENDIF
+	ELSE
+		IF TALENT:被害者:处女
+			CALL LOST_VIRGIN(被害者, 加害者V)
+			CFLAG:被害者:好感度 += (10 + RAND:10)
+			CFLAG:加害者V:好感度 += (10 + RAND:10)
+		ENDIF
+		TALENT:加害者V:童贞 |= 2
+	ENDIF	
+	IF 加害者V != 人物_訪問者
+		BASE:加害者V:体力 = MAX(0,BASE:加害者V:体力 - 50)
+		BASE:加害者V:气力 = MAX(0,BASE:加害者V:气力-(150-LIMIT(0,70,CFLAG:加害者V:屈服度/10)))
+		SOURCE:加害者V:快Ｃ = 400
+		EXP:被害者:百合经验 += 2
+		EXP:加害者V:百合经验 += 2
+	ENDIF
+	;V射精処理
+	CALL EJACULATION_V(被害者, 加害者V)
+	;V感覚が高いと绝顶经验加算（強絶頂扱い）
+	;CALL NTR_V_EXP_PLUS(被害者)
+ENDIF
+;Ａ側処理
+IF -1 != 加害者A
+	TEQUIP:被害者:Ａ性爱 = 加害者A
+	IF 加害者A == 人物_訪問者
+		CALL NTR_ADD_SURRENDER(被害者, (5 + RAND:5))
+	ELSEIF 被害者 != MASTER
+		CFLAG:被害者:好感度 += (5 + RAND:5)
+	ELSE
+		CFLAG:加害者A:好感度 += (5 + RAND:5)
+	ENDIF
+	BASE:(被害者):体力 = MAX(0,BASE:被害者:体力 - 50)
+	;屈服度が高い場合は抵抗しないので气力消費が少ない？
+	BASE:被害者:气力 = MAX(0,BASE:被害者:气力-(150-LIMIT(0,70,CFLAG:被害者:屈服度/10)))
+	SOURCE:被害者:快Ａ = 400
+	FOR iLoop,0,経過時間,5
+		CALL 締り具合変動, 被害者, 3, 1
+	NEXT
+	;SOURCE:被害者:情爱 = 150
+	;SOURCE:被害者:苦痛 = 500
+	;SOURCE:被害者:露出 = 50
+	;SOURCE:被害者:反感 = 300
+	;SIF TALENT:被害者:自己爱 < 0 || TALENT:(被害者):抵抗
+	;	SOURCE:被害者:抑郁 += 300
+	;SIF TALENT:被害者:贞操 > 0 && CFLAG:(被害者):屈服度 < 1000
+	;	SOURCE:被害者:反感 += 1000
+	;IF TALENT:被害者:处女 == 1
+	;	SOURCE:被害者:苦痛 += 2000
+	;	SOURCE:被害者:反感 += 3000
+	;ELSEIF TALENT:被害者:处女 == 2
+	;	SOURCE:被害者:苦痛 += 500
+	;	SOURCE:被害者:反感 += 1000
+	;ENDIF
+	EXP:被害者:Ａ经验 ++
+	EXP:被害者:Ａ性交经验 ++
+	IF 加害者A == 人物_訪問者 && 訪問者_Ｐ大きさ == 2
+		EXP:被害者:Ａ扩张经验 += 1
+		PRINTFORML %CALLNAME:被害者%的菊穴，跟着%NTR_NAME(0)%的大阴茎的形状被扩张了…
+		IF ( TALENT:被害者:受虐狂 || ABL:被害者:抖Ｍ之气 > 2 ) && EXP:被害者:Ａ扩张经验 < 450
+			CUP:被害者:欲情 += 500
+			CUP:被害者:苦痛 += 250
+		ELSEIF EXP:被害者:Ａ扩张经验 < 450
+			CUP:被害者:苦痛 += 500
+		ENDIF
+	ENDIF
+	IF ABL:被害者:Ａ感觉 > RAND:5
+		EXP:被害者:Ａ绝顶经验 ++
+		EXP:被害者:绝顶经验 ++
+	ENDIF
+	;A射精処理
+	CALL EJACULATION_A(被害者, 加害者A)
+	IF 加害者A == 人物_訪問者
+		;A处女喪失記録
+		CALL LOST_VIRGIN_A(被害者, 加害者A)
+		CALL NTR_ADD_SURRENDER(被害者, (15 + RAND:10))
+	ELSE
+		CALL LOST_VIRGIN_A(被害者, 加害者A)
+		TALENT:加害者A:童贞 |= 2
+	ENDIF
+ENDIF
+RETURN
+
+;---------------------------------------------------------------------------------------
+;キス
+;@param 経過時間…経過時間
+;@param 被害者…キスされている人
+;@param 加害者…キスしている人
+@NTR_MASTER_3P_SEX_KISS(経過時間,被害者,加害者)
+#DIM 経過時間
+#DIM 被害者
+#DIM 加害者
+TCVAR:被害者:行為者 = 加害者
+IF 加害者 == 人物_訪問者
+	CALL NTR_ADD_SURRENDER(被害者, (2 + (EXP:被害者:NTR陷落经验>0)) )
+	CALL NTR_ADD_SURRENDER(被害者, TALENT:被害者:浮気的蜜唇)
+ELSEIF 被害者 != MASTER
+	CFLAG:被害者:好感度 += 2
+ELSE
+	CFLAG:加害者:好感度 += 2
+ENDIF
+BASE:被害者:气力 -= 80
+SOURCE:被害者:情爱 += 50
+SOURCE:被害者:性行动 += 10
+SOURCE:被害者:屈从 += 10
+SOURCE:被害者:逸脱 += 10
+;SOURCE:被害者:反感 += 10 * !TALENT:被害者:浮気的蜜唇
+SIF TALENT:被害者:自己爱 < 0 || TALENT:被害者:抵抗
+	SOURCE:被害者:抑郁 += 10
+EXP:被害者:接吻经验 ++
+;SIF !TALENT:被害者:亲爱
+;	EXP:被害者:浮気接吻经验 ++
+;SIF TALENT:被害者:亲爱
+;	EXP:被害者:紧缚经验 ++
+IF 加害者 != 人物_訪問者
+	BASE:加害者:气力 -= 80
+	SOURCE:加害者:情爱 += 50
+	SOURCE:加害者:性行动 += 10
+	SOURCE:加害者:屈从 += 10
+	SOURCE:加害者:逸脱 += 10
+	SIF TALENT:加害者:自己爱 < 0 || TALENT:加害者:抵抗
+		SOURCE:加害者:抑郁 += 10
+	EXP:加害者:接吻经验 ++
+	EXP:被害者:百合经验 += 2
+	EXP:加害者:百合经验 += 2
+ENDIF
+RETURN 0
+
+;---------------------------------------------------------------------------------------
+;胸爱抚
+;@param 経過時間…経過時間
+;@param 被害者…胸爱抚されている人
+;@param 加害者…胸爱抚している人
+@NTR_MASTER_3P_SEX_BUST(経過時間,被害者,加害者)
+#DIM 経過時間
+#DIM 被害者
+#DIM 加害者
+;NTR陷落经验があれば屈服度が増加
+IF 加害者 == 人物_訪問者
+	CALL NTR_ADD_SURRENDER(被害者, (1 * (EXP:被害者:NTR陷落经验>0)) )
+ELSE
+	CFLAG:被害者:好感度 += 2
+	CFLAG:加害者:好感度 += 2
+ENDIF
+;体力、气力の減少
+BASE:被害者:体力 -= 5 * (経過時間/5)
+BASE:被害者:气力 -= 50 * (経過時間/5)
+;調教ソースの増加。通常プレイが５分毎なのでその分乗算する
+SOURCE:被害者:快Ｂ   += 120 * (経過時間/5)
+SOURCE:被害者:欢乐   += 100 * (経過時間/5)
+SOURCE:被害者:情爱   += 150 * (経過時間/5)
+SOURCE:被害者:欲情   += 170 * (経過時間/5)
+SOURCE:被害者:露出   +=  70 * (経過時間/5)
+;	SOURCE:被害者:反感   += 350 * (経過時間/5)
+;抑圧 or 抵抗があると抑郁が溜まる
+SIF TALENT:被害者:自己爱 < 0 || TALENT:被害者:抵抗
+	SOURCE:被害者:抑郁 += 20
+;	SIF TALENT:被害者:亲爱
+;		EXP:被害者:紧缚经验 ++
+IF 加害者 != 人物_訪問者
+	BASE:加害者:体力 -= 5 * (経過時間/5)
+	BASE:加害者:气力 -= 50 * (経過時間/5)
+	SOURCE:加害者:欢乐   += 100 * (経過時間/5)
+	SOURCE:加害者:情爱   += 150 * (経過時間/5)
+	SOURCE:加害者:欲情   += 170 * (経過時間/5)
+	EXP:被害者:百合经验 += 2
+	EXP:加害者:百合经验 += 2
+ENDIF
+RETURN 0
+
+;Ｃ爱抚
+@NTR_MASTER_3P_SEX_CLI(経過時間,被害者,加害者)
+#DIM 経過時間
+#DIM 被害者
+#DIM 加害者
+;NTR陷落经验があれば屈服度が増加
+IF 加害者 == 人物_訪問者
+	CALL NTR_ADD_SURRENDER(被害者, (1 * (EXP:被害者:NTR陷落经验>0)) )
+ELSE
+	CFLAG:被害者:好感度 += 2
+	CFLAG:加害者:好感度 += 2
+ENDIF
+;体力、气力の減少
+BASE:被害者:体力 -= 5 * (経過時間/5)
+BASE:被害者:气力 -= 50 * (経過時間/5)
+;調教ソースの増加。通常プレイが５分毎なのでその分乗算する
+SOURCE:被害者:欢乐   += 100 * (経過時間/5)
+SOURCE:被害者:情爱   += 100 * (経過時間/5)
+SOURCE:被害者:欲情   += 150 * (経過時間/5)
+SOURCE:被害者:露出   += 100 * (経過時間/5)
+;	SOURCE:被害者:反感   += 370 * (経過時間/5)
+SOURCE:被害者:快Ｃ   += 100 * (経過時間/5)
+SOURCE:被害者:被动   += (145+270*ABL:被害者:顺从) * (経過時間/5)
+;抑圧 or 抵抗があると抑郁が溜まる
+SIF TALENT:被害者:自己爱 < 0 || TALENT:被害者:抵抗
+	SOURCE:被害者:抑郁 += 20
+;	SIF TALENT:被害者:亲爱
+;		EXP:被害者:紧缚经验 ++
+IF 加害者 != 人物_訪問者
+	BASE:加害者:体力 -= 5 * (経過時間/5)
+	BASE:加害者:气力 -= 50 * (経過時間/5)
+	SOURCE:加害者:欢乐   += 100 * (経過時間/5)
+	SOURCE:加害者:情爱   += 100 * (経過時間/5)
+	SOURCE:加害者:欲情   += 150 * (経過時間/5)
+	EXP:加害者:百合经验 += 2
+	EXP:加害者:百合经验 += 2
+ENDIF
+RETURN 0
+
+;素股
+@NTR_MASTER_3P_SEX_SLIT(経過時間,被害者,加害者)
+#DIM 経過時間
+#DIM 被害者
+#DIM 加害者
+IF 加害者 == 人物_訪問者
+	CALL NTR_ADD_SURRENDER(被害者, (1 * (EXP:被害者:NTR陷落经验>0)) )
+ELSE
+	CFLAG:被害者:好感度 += 2
+	CFLAG:加害者:好感度 += 2
+ENDIF
+
+DOWNBASE:被害者:体力 += 40
+DOWNBASE:被害者:气力 += 130
+
+SOURCE:被害者:快Ｃ += 150
+SOURCE:被害者:情爱 += 80
+SOURCE:被害者:性行动 += 250
+SOURCE:被害者:达成 += 50
+SOURCE:被害者:屈从 += 500
+SOURCE:被害者:逸脱 += 120
+;SOURCE:被害者:反感 += 120
+IF 加害者 != 人物_訪問者
+	DOWNBASE:加害者:体力 += 40
+	DOWNBASE:加害者:气力 += 130
+	SOURCE:加害者:快Ｃ += 150
+	SOURCE:加害者:情爱 += 80
+	SOURCE:加害者:性行动 += 250
+	SOURCE:加害者:达成 += 50
+	SOURCE:加害者:逸脱 += 120
+	EXP:被害者:百合经验 += 2
+	EXP:加害者:百合经验 += 2
+ENDIF
+
+CALL STAIN_ADD_SEMEN_Sumata(被害者, 加害者)
+CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 被害者, 加害者)
+
+EXP:被害者:Ｃ绝顶经验 ++
+EXP:被害者:绝顶经验 ++
+RETURN 0
+
+@NTR_MASTER_3P_SEX_LESBIAN(経過時間,被害者,加害者)
+#DIM 経過時間
+#DIM 被害者
+#DIM 加害者
+DOWNBASE:被害者:体力 += 30
+DOWNBASE:被害者:气力 += 90
+SOURCE:被害者:快Ｃ += 200
+SOURCE:被害者:性行动 += 200
+SOURCE:被害者:达成 += 100
+SOURCE:被害者:露出 += 50
+SOURCE:被害者:屈从 += 400
+SOURCE:被害者:逸脱 += 400
+;SOURCE:被害者:反感 += 400
+DOWNBASE:加害者:体力 += 30
+DOWNBASE:加害者:气力 += 90
+SOURCE:被害者:快Ｃ += 200
+SOURCE:被害者:性行动 += 200
+SOURCE:被害者:达成 += 100
+SOURCE:被害者:露出 += 50
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:被害者:自己爱 < 0 || TALENT:被害者:抵抗
+	SOURCE:被害者:抑郁 += 400
+;奴隷のＶ⇔調教者のＶの汚れが移动
+STAIN:被害者:Ｖ |= STAIN:加害者:Ｖ
+STAIN:加害者:Ｖ |= STAIN:被害者:Ｖ
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+EXP:被害者:百合经验 += 2
+EXP:加害者:百合经验 += 2
+;爱情经验
+EXP:被害者:爱情经验 += 2 * TALENT:被害者:恋慕
+EXP:加害者:爱情经验 += 2 * TALENT:加害者:恋慕
+EXP:被害者:Ｃ绝顶经验 ++
+EXP:被害者:绝顶经验 ++
+EXP:加害者:Ｃ绝顶经验 ++
+EXP:加害者:绝顶经验 ++
+RETURN 1

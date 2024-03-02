@@ -1,0 +1,799 @@
+﻿;-------------------------------------------------------------------------------
+;410,扫除中に受けるセクハラ
+;-------------------------------------------------------------------------------
+@SOJI_SexHara
+VARSET LOCAL
+TRYCALLFORM SOJI_SexHara_Easy(MASTER)
+SIF RESULT == 1
+	RETURN 0
+WAIT
+TRYCALLFORM SOJI_SexHara_Normal(MASTER)
+SIF RESULT == 1
+	RETURN 0
+WAIT
+TRYCALLFORM SOJI_SexHara_Extra(MASTER)
+SIF RESULT == 1
+	RETURN 0
+WAIT
+TRYCALLFORM SOJI_SexHara_Hard(MASTER)
+SIF RESULT == 1
+	RETURN 0
+WAIT
+TRYCALLFORM SOJI_SexHara_Lunatic(MASTER)
+SIF RESULT == 1
+	RETURN 0
+WAIT
+TRYCALLFORM SOJI_SexHara_Phantasm(MASTER)
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;視姦
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Easy(被害者)
+#DIM 被害者
+VARSET LOCAL
+PRINTFORML %CALLNAME:被害者%在打扫的时候，感觉到背后不寻常的气息
+PRINT [0] - 回头看 [1] - 不去在意
+$INPUT_LOOP_1
+INPUT
+SIF RESULT != 0 && RESULT != 1
+	GOTO INPUT_LOOP_1
+IF !RESULT
+	PRINTFORML %CALLNAME:被害者%回头一看，%NTR_NAME(0)%就在背后站着
+	IF CFLAG:被害者:屈服度 > 200 ;屈服度が高い場合は我慢するしかない
+		PRINTFORML 当问到有什么事的时候，%NTR_NAME(0)%只是命令%CALLNAME:被害者%继续打扫
+		PRINT [0] - 忍受
+		INPUT
+	ELSE
+		PRINTFORML 当问到有什么事的时候，%NTR_NAME(0)%便保持了距离
+		RETURN 1
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;おさわり
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Normal(被害者)
+#DIM 被害者
+#DIM V_MIN
+#DIM V_MAX
+#DIM 補正値
+VARSET LOCAL
+IF CFLAG:被害者:屈服度 > 200 ;屈服度が高い場合
+	PRINTFORML %CALLNAME:被害者%が扫除を続けていると%NTR_NAME(0)%が腰の辺りを撫でてきた
+	PRINTFORML 我慢できずにふりかえると、%NTR_NAME(0)%はあなたの腰や尻を撫で回しながら扫除を続けるように促した
+ELSE
+	PRINTFORML %CALLNAME:被害者%が気のせいだと思い扫除を続けていると誰かが腰の辺りを撫でてきた
+	PRINTFORML ふりかえると%NTR_NAME(0)%が厭らしい笑みを浮かべながらあなたの腰や尻を撫で回している
+ENDIF
+V_MIN = 1
+V_MAX = 1
+IF TALENT:被害者:公众便所 ;公众便所だから受け入れないとね
+	PRINT [1] - 接受
+ELSEIF CFLAG:被害者:屈服度 > 400 ;屈服度が高い場合我慢するしかない
+	PRINT [1] - 无视
+ELSE
+	PRINT [0] - 摆脱 [1] - 无视
+	V_MIN = 0
+ENDIF
+$INPUT_LOOP_1
+INPUT
+SIF V_MIN == V_MAX
+	RESULT = V_MAX
+SIF RESULT < V_MIN || V_MAX < RESULT
+	GOTO INPUT_LOOP_1
+IF !RESULT
+	PRINTFORML %CALLNAME:被害者%が手を振り払い、放弃ように伝えると
+	PRINTFORML %NTR_NAME(0)%は口先では謝りつつ、先ほどまで尻に触れていた
+	PRINTFORML 手をさすりながら%CALLNAME:被害者%から離れていった
+	SOURCE:被害者:欢乐 = 100
+	SOURCE:被害者:露出 = 100
+	SOURCE:被害者:欲情 = 100 + 200 * ABL:被害者:欲望
+	SOURCE:被害者:被动 = 100 + 200 * ABL:被害者:顺从
+	RETURN 1 ;怒られたのでここまで
+ELSE
+	補正値 = 0
+	IF TALENT:被害者:公众便所
+		;バランス適当なので通常時の+50で処理。快Cも追加。ソースの値は要調整
+		IF TEQUIP:被害者:上半身着衣状況 > 1
+			PRINTFORML %CALLNAME:被害者%がわざとらしく胸元を開いて扫除を続けると
+			PRINTFORML %NTR_NAME(0)%は遠慮無く服の中に手を伸ばしてきた……
+		ELSE
+			PRINTFORML %CALLNAME:被害者%が高いところへ腕を伸ばして胸を無防備にすると
+			PRINTFORML %NTR_NAME(0)%は遠慮無く胸に手を伸ばしてきた……
+		ENDIF
+		補正値 = 50
+		;快Ｃは死に判定になっちゃうんでちょっと除去、共通部分はまとめた
+	ELSE
+		PRINTFORML %CALLNAME:被害者%が%NTR_NAME(0)%を無視して扫除を続けていると
+		PRINTFORML %NTR_NAME(0)%は鼻息を荒くし、尻だけでなく胸にも手を伸ばし、%CALLNAME:被害者%の肢体を堪能した
+	ENDIF
+	;上昇判定
+	DOWNBASE:被害者:体力 += 5
+	DOWNBASE:被害者:气力 += 50
+	SOURCE:被害者:快Ｂ = 120 + 補正値
+	SOURCE:被害者:欢乐 = 100 + 補正値
+	SOURCE:被害者:情爱 = 150 + 補正値
+	SOURCE:被害者:欲情 = 170 + 補正値
+	SOURCE:被害者:露出 =  70 + 補正値
+	SOURCE:被害者:欲情 = 120 + 補正値 + 240 * ABL:被害者:欲望
+	SOURCE:被害者:被动 = 120 + 補正値 + 240 * ABL:被害者:顺从
+	;着衣補正、上半身着衣がはだけ不可だったら0.8倍
+	IF TEQUIP:被害者:上半身着衣状況 > 1
+		TIMES SOURCE:被害者:快Ｂ , 0.80
+		TIMES SOURCE:被害者:欲情 , 0.80
+		TIMES SOURCE:被害者:露出 , 0.80
+	ENDIF
+ENDIF
+CALL ROOM_SMELL_NTR_PET(被害者)
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;ぱんつ脱がす（穿いてる場合だけね）
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Extra(被害者)
+#DIM 被害者
+#DIM V_MIN
+#DIM V_MAX
+VARSET LOCAL
+IF EQUIP:被害者:下半身上着１ || EQUIP:被害者:下半身上着２ || EQUIP:被害者:赛车服 || EQUIP:被害者:紧身衣
+	;めくれないのでこのへんで满足しておく
+	PRINTFORML 一通り感触を堪能すると、%NTR_NAME(0)%は满足して%CALLNAME:被害者%から離れていった
+	RETURN 1
+ELSEIF EQUIP:被害者:裙子 || EQUIP:被害者:连衣裙 || EQUIP:被害者:着物
+	;裙子は誘ってる証拠なのでイタズラ継続
+	PRINTFORMW 一通り感触を堪能すると、%NTR_NAME(0)%は%CLOTHNAME(9,EQUIP:被害者:裙子)%をめくりあげて
+ENDIF
+;ノーパンならこれは間違いなく誘ってるよね
+IF EQUIP:被害者:下半身下着１ == 0 && EQUIP:被害者:下半身下着２ == 0
+	IF HAS_VAGINA(被害者)
+		IF STAIN:被害者:Ｖ & 汚れ_精液
+			;Vが精液で汚れてるか見るのはこれでいいのかな？
+			IF STAIN:被害者:Ｖ & 汚れ_破瓜の血
+				;更に处女を散らされた日なら文言変化。汚れだけで見てるので状況と全然合わない可能性もあるよ。要改造
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の初めてを奪ったことを改めて確認し、满足した笑みを浮かべた
+			ELSEIF TALENT:被害者:公众便所
+				;公众便所だったらちゃんと使っていただいてるかチェックしないとね
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%が便所として働いているのを確認し、满足した笑みを浮かべた
+			ELSE
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の秘所から垂れ落ちる精液を確認し、にやにやしながら罵声を浴びせてきた
+			ENDIF
+		ELSEIF STAIN:被害者:Ｖ == 1
+			;愛液でトロトロのとき台詞を変える
+			IF PALAM:被害者:润滑 >= PALAMLV:3
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%のトロトロになっている秘部を目にし、好色そうな歓声を上げた
+				PRINTFORML 羞恥か期待か、太腿を伝う川は勢いを増し、ぽたぽた垂れ落ちる雫が足元に小さな水溜りを作っていた
+			ELSE
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の湿り気を帯びた秘部を確認し、いやらしく感想を述べた
+			ENDIF
+		ELSEIF STAIN:被害者:Ｖ == 0
+			;Vが汚れていなかったら別なことを言う
+			IF TALENT:MASTER:公众便所
+				;便所が綺麗なままはけしからんね
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の汚れていない秘所を見て、ちゃんと使ってもらえと怒声を浴びせた
+			ELSE
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の綺麗にしてある秘部を確認し、いやらしく笑った
+			ENDIF
+		ELSE
+			;それ以外のV汚れの場合。Vが母乳で汚れてるとか特殊すぎね？と追加しようかとも思ったけど、eratohoは簡単に喷乳するからそんなに特殊でもなかったわ
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の秘部の汚れを確認し、いやらしく口笛を吹いた
+		ENDIF
+	ELSE
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%が下着を穿いていないのを確認すると、秘部に息を吹きかけた
+	ENDIF
+	SOURCE:被害者:露出 += 200
+	SOURCE:被害者:欲情 += 100 + 200 * ABL:被害者:欲望
+	SOURCE:被害者:被动 += 100 + 200 * ABL:被害者:顺从
+ELSEIF EQUIP:被害者:下半身下着１ == 100
+	;贞操帯
+	PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%が贞操帯を着けているのを確認すると、满足そうに頷いて離れていった
+	SOURCE:被害者:露出 += 100
+	SOURCE:被害者:欲情 += 100 + 100 * ABL:被害者:欲望
+	SOURCE:被害者:被动 += 100 + 100 * ABL:被害者:顺从
+	RETURN 1
+ELSE	;ぱんつはかせたくない
+	PRINTFORM %CALLNAME:被害者%の
+	IF EQUIP:被害者:下半身下着１
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着１)%%PANTSNAME(EQUIP:被害者:下半身下着１)%
+	ELSEIF EQUIP:被害者:下半身下着２
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着２)%%PANTSNAME(EQUIP:被害者:下半身下着２)%
+	ELSE
+		PRINTFORM 秘所を隠すそれ
+		;発生しないはず
+	ENDIF
+	PRINTFORML に手がかけられた……
+	V_MIN = 1
+	V_MAX = 1
+	IF TALENT:被害者:公众便所 ;公众便所なら要求に応えないとね
+		PRINT [1] - 接受
+	ELSEIF CFLAG:被害者:屈服度 > 600 ;屈服度が高い場合我慢するしかない
+		PRINT [1] - 无视
+	ELSE
+		PRINT [0] - 瞪过去 [1] - 无视
+		V_MIN = 0
+	ENDIF
+	$INPUT_LOOP_1
+	INPUT
+	SIF V_MIN == V_MAX
+		RESULT = V_MAX
+	SIF RESULT < V_MIN || V_MAX < RESULT
+		GOTO INPUT_LOOP_1
+	IF !RESULT
+		PRINTFORML %CALLNAME:被害者%がふりかえって睨みつけると、
+		PRINTFORML %NTR_NAME(0)%はにやにやと笑みを浮かべたまま%CALLNAME:被害者%から離れていった
+		SOURCE:被害者:露出 += 100
+		SOURCE:被害者:欲情 += 100 + 200 * ABL:被害者:欲望
+		SOURCE:被害者:被动 += 100 + 200 * ABL:被害者:顺从
+		RETURN 1 ;怒られたのでここまで
+	ELSE
+		;ぱんつはかせない
+		CFLAG:被害者:服装_下半身下着２ = 0
+		IF TALENT:被害者:公众便所
+			;脱がせるときに糸引かせたいけどひとまずここまで
+			PRINTFORML %NTR_NAME(0)%は卑猥な言葉を浴びせながら%CALlNAME:被害者%の下着を脱がせると
+			PRINTFORML 脱ぎたてのにおいを堪能してから自分のポケットにねじ込んだ
+			PRINTFORML %CALLNAME:被害者%は頬を染めて俯きつつ、許しを得るまで股間を晒していた
+			SOURCE:被害者:露出 += 250
+			SOURCE:被害者:欲情 += 150 + 200 * ABL:被害者:欲望
+			SOURCE:被害者:被动 += 150 + 200 * ABL:被害者:顺从
+			SOURCE:被害者:屈从 += 100
+		ELSE
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の下着を脱がせると、自分のポケットにねじ込んだ
+			SOURCE:被害者:露出 += 200
+			SOURCE:被害者:欲情 += 100 + 200 * ABL:被害者:欲望
+			SOURCE:被害者:被动 += 100 + 200 * ABL:被害者:顺从
+		ENDIF
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;前後跳蛋挿入(あるいは新品に交換)
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Hard(被害者)
+#DIM 被害者
+#DIM V_MIN
+#DIM V_MAX
+VARSET LOCAL
+PRINTFORML %NTR_NAME(0)%は露わになった秘部を眺めていたが、やがて何かを取りだしたようだ……
+V_MIN = 1
+V_MAX = 1
+IF TALENT:被害者:公众便所 ;公众便所なら何でも受け入れないとね
+	PRINT [1] - 接受
+ELSEIF CFLAG:被害者:屈服度 > 1000 ;屈服度が高い場合我慢するしかない
+	PRINT [1] - 无视
+ELSE
+	PRINT [0] - もう我慢できない！ [1] - 无视
+	V_MIN = 0
+ENDIF
+$INPUT_LOOP_1
+INPUT
+SIF V_MIN == V_MAX
+	RESULT = V_MAX
+SIF RESULT < V_MIN || V_MAX < RESULT
+	GOTO INPUT_LOOP_1
+IF !RESULT
+	PRINTFORML %CALLNAME:被害者%が耐えられずにふりかえると、%NTR_NAME(0)%は手に持っていた跳蛋をサッと隠した
+	PRINTFORML %CALLNAME:被害者%が何か言おうとする前に、%NTR_NAME(0)%はそそくさと離れていった……
+	RETURN 1
+ELSE
+	IF HAS_VAGINA(被害者)
+		IF TALENT:被害者:处女
+			;見るまでわからないからね、仕方がないね
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の秘唇を押し広げ、处女膜を確認すると指を離した
+		ELSE
+			IF CFLAG:被害者:跳蛋挿入 != 0
+				;跳蛋は新しいのに交換しようねー
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の秘所に押し込まれている跳蛋の電池を取り替えた
+			ELSE
+				PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の秘所に跳蛋を挿入して固定した
+			ENDIF
+			CFLAG:被害者:跳蛋挿入 = 240
+		ENDIF
+		PRINT そのまま
+	ENDIF
+	IF CFLAG:被害者:跳蛋A挿入 != 0
+		;跳蛋は新しいのに交換しようねー
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%のアヌスに押し込まれている跳蛋の電池を取り替えた
+	ELSE
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%のアヌスに跳蛋を挿入して固定した
+	ENDIF
+	CFLAG:被害者:跳蛋A挿入 = 240
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;性的侍奉を要求する
+;超勝手に内容追加。訪問者のペニペニも扫除しちゃう。訪問者の汚れはどこにとりに行けばいいんだろう？ 訪問者が男であるという大前提で作るよ
+;扫除先 RAND 0:手扱き,1:フェラ 2:乳交 3:立ち素股 4:後背立位 5:A後背立位 6:～他になにかあれば
+;ひとまず直接受け入れるのはカット。必要ならコメント切ってね
+;NTR訪問者との行為をとりあえず勝手に使用。要求を済ませると０に戻しておく
+;
+;扫除の手を止めさせず、扫除中にイタズラする感じにしたいなあ。
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Lunatic(被害者)
+#DIM 被害者
+#DIM V_MIN
+#DIM V_MAX
+#DIM LOOP_CHR
+VARSET LOCAL
+PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%に見せ付けるように阴茎を取り出すと
+CFLAG:被害者:NTR訪問者との行為 = 0 ;一時的な格納先。要整理
+SELECTCASE RAND:6
+	CASE 0
+		PRINTFORML 手で扱きあげるよう要求してきた
+		CFLAG:被害者:NTR訪問者との行為 = 0
+	CASE 1
+		PRINTFORML 口で綺麗にするよう要求してきた
+		CFLAG:被害者:NTR訪問者との行為 = 1
+	CASE 2
+		PRINTFORML 胸で挟むよう要求してきた
+		IF TALENT:被害者:胸部尺寸 == -2
+			PRINTFORML が、%CALLNAME:被害者%の洗濯板ぶりに首を振って諦めた
+			CFLAG:被害者:NTR訪問者との行為 = 0
+			RETURN 1
+		ELSE
+			CFLAG:被害者:NTR訪問者との行為 = 2 
+		ENDIF
+	CASE 3
+		PRINTFORML 秘貝で擦りあげるよう要求してきた
+		CFLAG:被害者:NTR訪問者との行為 = 3
+	CASE 4
+		IF TALENT:被害者:处女
+			PRINTFORML が、%CALLNAME:被害者%が处女なのを思い出し、秘貝で侍奉させることにした
+			CFLAG:被害者:NTR訪問者との行為 = 3
+		ELSEIF EQUIP:PLAYER:下半身上着１ || EQUIP:PLAYER:下半身上着２
+			PRINTFORML %CALLNAME:被害者%の服を脱がせて後ろから抱きつくと、ゆっくりと秘部に狙いを定めた
+		ELSEIF EQUIP:被害者:赛车服
+			PRINTFORML すぐに脱がせられなかったため、素股させることにした
+			CFlAG:被害者:NTR訪問者との行為 = 3
+		ELSEIF EQUIP:被害者:紧身衣
+			PRINTFORML 股の部分をずらして後ろから抱きつくと、ゆっくりと秘部に狙いを定めた
+		ELSE
+			PRINTFORML 後ろから抱きつき、ゆっくりと秘部に狙いを定めた
+		ENDIF
+		CFLAG:被害者:NTR訪問者との行為 = 4
+	CASE 5
+		IF EQUIP:PLAYER:下半身上着１ || EQUIP:PLAYER:下半身上着２
+			PRINTFORML %CALLNAME:被害者%の服を脱がせて後ろから抱きつくと、ゆっくりと小菊にあてがった
+		ELSEIF EQUIP:被害者:赛车服
+			PRINTFORML すぐに脱がせられなかったため、素股させることにした
+			CFlAG:被害者:NTR訪問者との行為 = 3
+		ELSEIF EQUIP:被害者:紧身衣
+			PRINTFORML 股の部分をずらして後ろから抱きつくと、ゆっくりと小菊にあてがった
+		ELSE
+			PRINTFORML 後ろから抱きつき、ゆっくりと小菊にあてがった
+		ENDIF
+		CFLAG:被害者:NTR訪問者との行為 = 5
+ENDSELECT
+V_MIN = 0
+V_MAX = 2
+IF TALENT:被害者:公众便所 ;公众便所だからご侍奉しないとね
+	PRINT [2] - 侍奉
+	V_MIN = 2
+ELSEIF CFLAG:被害者:屈服度 > 1500 ;屈服度高いから逆らえないね
+	PRINT [2] - 勉强服从
+	V_MIN = 2
+ELSEIF CFLAG:被害者:屈服度 > 1000 ;屈服度高いと自分からは追い払えないね
+	PRINT [1] - 无视 [2] - 勉强服从
+	V_MIN = 1
+ELSEIF CFLAG:被害者:屈服度 > 600 ;流石にちょっと我慢できないよね
+	PRINT [0] - 推开 [1] - 无视 [2] - 勉强服从
+ELSEIF CFLAG:被害者:屈服度 < 100 ;え、こいつばかなの？　死ぬの？　屈服させてない相手にちんこ差し出すなんて狂気の沙汰だよ
+	PRINT [0] - 推开 [1] - 无视 [2] - 勉强服从 [3] - 握り潰す
+	V_MAX = 3
+ELSE ;屈服度がちょっとあるとペニペニどうこうしようとは思えないね
+	PRINT [0] - 推开 [1] - 无视 [2] - 勉强服从
+ENDIF
+$INPUT_LOOP_1
+INPUT
+SIF V_MIN == V_MAX
+	RESULT = V_MAX
+SIF RESULT < V_MIN || V_MAX < RESULT
+	GOTO INPUT_LOOP_1
+IF !RESULT
+	PRINTFORML %CALLNAME:被害者%が抗議するようにやんわりと%NTR_NAME(0)%の胸を押すと
+	PRINTFORML %NTR_NAME(0)%は残念そうに距離をとった
+	CFLAG:被害者:NTR訪問者との行為 = 0
+	RETURN 1
+	;無理やりするのは降りかかる火の粉を払ったときだけ……多分
+ELSEIF RESULT == 1
+	PRINTFORML %CALLNAME:被害者%が自発的に相手にしないと分かると
+	SELECTCASE RAND:3
+			;諦めるか否か　０：諦める　１：手に擦り付ける　２：服に擦り付ける　３：～他に何かあれば
+		CASE 0
+			PRINTFORML やる気が削げたのか少し距離をとった
+		CASE 1
+			PRINTFORML %CALLNAME:被害者%の手を取って気をやるまで阴茎を擦りつけた
+			SETBIT STAIN:被害者:手,汚れB_阴茎
+			SETBIT STAIN:被害者:手,汚れB_精液
+			EXP:被害者:精液经验 ++
+			CALL ROOM_SMELL_NTR_ORAL(被害者)
+		CASE 2
+			;思い出したら全裸判定入れるよ
+			IF EQUIP:被害者:下半身上着１ || EQUIP:被害者:下半身上着２ || EQUIP:被害者:赛车服 || EQUIP:被害者:紧身衣
+				PRINTFORML %CALLNAME:被害者%の服で阴茎を擦り、心行くまで射精して白く染めた
+			ELSEIF EQUIP:被害者:裙子 || EQUIP:被害者:连衣裙 || EQUIP:被害者:着物
+				PRINTFORML %CALLNAME:被害者%の裙子で阴茎を包み、内側へとたっぷり欲望を吐き出した
+			ELSEIF EQUIP:被害者:下半身下着２ == 0 && EQUIP:被害者:下半身下着２ == 0
+				PRINTFORML %CALLNAME:被害者%の尻や太腿に阴茎を擦りつけ、尾てい骨より少し上の辺りを狙って射精した
+				EXP:被害者:精液经验 ++
+			ELSE
+				THROW 無視された場合の処理で問題が発生しました。
+			ENDIF
+			CALL ROOM_SMELL_CHARA_SUB(被害者, 人物_訪問者, においの強さ_精液_大量, 气味类型_精液)
+	ENDSELECT
+	CFLAG:被害者:NTR訪問者との行為 = 0
+	RETURN 1
+ELSEIF RESULT == 2
+	;後でエッチしちゃう処理入れるよ。覚えてたら
+	PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の侍奉を堪能し、射精の終わった阴茎の汚れを綺麗にさせた
+	IF CFLAG:被害者:NTR訪問者との行為 == 0 ;手扱き
+		SETBIT STAIN:被害者:手,汚れB_阴茎
+		SETBIT STAIN:被害者:手,汚れB_精液
+		EXP:被害者:手淫经验 ++
+		EXP:被害者:精液经验 ++
+		SOURCE:被害者:达成 += 100
+		SOURCE:被害者:屈从 += 100
+		CALL ROOM_SMELL_NTR_ORAL(被害者) 
+	ELSEIF CFLAG:被害者:NTR訪問者との行為 == 1 ;フェラ
+		SETBIT STAIN:被害者:口,汚れB_阴茎
+		SETBIT STAIN:被害者:口,汚れB_精液
+		EXP:被害者:口淫经验 ++
+		EXP:被害者:精液经验 ++
+		EXP:被害者:精饮经验 ++
+		SOURCE:被害者:达成 += 150
+		SOURCE:被害者:屈从 += 100
+		SIF TALENT:被害者:污臭耐性 <= 2
+			SOURCE:被害者:肮脏 += 50
+		CALL ROOM_SMELL_NTR_ORAL(被害者)
+	ELSEIF CFLAG:被害者:NTR訪問者との行為 == 2 ;乳交
+		SETBIT STAIN:被害者:Ｂ,汚れB_阴茎
+		SETBIT STAIN:被害者:Ｂ,汚れB_精液
+		EXP:被害者:乳交经验 ++
+		EXP:被害者:精液经验 ++
+		EXP:被害者:侍奉快乐经验 ++
+		SOURCE:被害者:快Ｂ += 50 * ABL:被害者:Ｂ感觉
+		SOURCE:被害者:达成 += 150
+		SOURCE:被害者:屈从 += 100
+		SOURCE:被害者:露出 += 50
+		CALL ROOM_SMELL_NTR_ORAL(被害者)
+		;乳夹口交にランダムで変更したいけどとりあえず置いておく
+	ELSEIF CFLAG:被害者:NTR訪問者との行為 == 3 ;スマタ
+		SETBIT STAIN:被害者:Ｖ,汚れB_阴茎
+		SETBIT STAIN:被害者:Ｖ,汚れB_精液
+		EXP:被害者:精液经验 ++
+		EXP:被害者:侍奉快乐经验 ++
+		SOURCE:被害者:快Ｃ += 50 * ABL:被害者:Ｃ感觉
+		SOURCE:被害者:液体 += 100
+		SOURCE:被害者:达成 += 150
+		SOURCE:被害者:屈从 += 100
+		SOURCE:被害者:欲情 += 100 + 50 * ABL:被害者:欲望
+		SOURCE:被害者:露出 += 100 + 50 * ABL:被害者:露出癖
+		CALL ROOM_SMELL_NTR_SEX(被害者)
+	ELSEIF CFLAG:被害者:NTR訪問者との行為 == 4 ;后背位
+		EXP:被害者:Ｖ经验 ++
+		EXP:被害者:Ｖ性交经验 ++
+		SOURCE:被害者:快Ｖ += 50 * ABL:被害者:Ｖ感觉
+		SOURCE:被害者:液体 += 100
+		SOURCE:被害者:性行动 += 150
+		SOURCE:被害者:达成 += 150
+		SOURCE:被害者:屈从 += 100
+		SOURCE:被害者:欲情 += 100 + 50 * ABL:被害者:欲望
+		SOURCE:被害者:被动 += 100 + 50 * ABL:被害者:顺从
+		SOURCE:被害者:露出 += 100 + 50 * ABL:被害者:露出癖
+		CALL 締り具合変動, 被害者, 3, 0
+		CALL EJACULATION_V(MASTER, 人物_訪問者)
+		CALL ROOM_SMELL_NTR_SEX(被害者)
+	ELSEIF CFLAG:被害者:NTR訪問者との行為 == 5 ;A后背位
+		EXP:被害者:Ａ经验 ++
+		EXP:被害者:Ａ性交经验 ++
+		SOURCE:被害者:快Ａ += 50 * ABL:被害者:Ａ感觉
+		SOURCE:被害者:液体 += 100
+		SOURCE:被害者:性行动 += 150
+		SOURCE:被害者:达成 += 150
+		SOURCE:被害者:屈从 += 100
+		SOURCE:被害者:肮脏 += 50
+		SOURCE:被害者:欲情 += 100 + 50 * ABL:被害者:欲望
+		SOURCE:被害者:被动 += 100 + 50 * ABL:被害者:顺从
+		SOURCE:被害者:露出 += 100 + 50 * ABL:被害者:露出癖
+		CALL 締り具合変動, 被害者, 3, 1
+		CALL ROOM_SMELL_NTR_SEX(被害者)
+		CALL EJACULATION_A(MASTER, 人物_訪問者)
+	ELSE
+		THROW 行為の決定で問題が発生しました。
+		RETURN 1
+	ENDIF
+	CFLAG:被害者:NTR訪問者との行為 = 0
+ELSEIF RESULT == 3
+	PRINTFORMW こきゅり
+	PRINTFORML そんな音がしそうなほど、%CALLNAME:被害者%は二つの宝玉を力強く握って擦り合わせた
+	PRINTFORML %NTR_NAME(0)%は死に瀕したような情けない悲鳴を上げて膝から崩れ落ち
+	PRINTFORML 股間を押さえながらのた打ち回っている
+	PRINTFORMW その姿を見下ろしながら%CALLNAME:被害者%は思わず呟いた
+	PRINTFORMW 「足元がお留守ですよ」
+	;訪問者撃退フラグとか入れてみた。暫くあなたから逃跑ように移动パターンを変えてみたいねそのうち
+	PRINTFORMW %CALLNAME:被害者%は%NTR_NAME(0)%を追い出す事に成功した！
+	FLAG:訪問者の現在位置 = 位置_訪問者宅
+	FLAG:訪問者同行フラグ = 0
+	CALL NTR_RESET_VISITOR_ACTION(-1)
+	FLAG:訪問者との汚れ判定に使用 = 0
+	FLAG:訪問者滞在時間カウンタ = 0
+	;屈服度減算。握り潰しちゃったからね。結構下げるよ
+	CFLAG:被害者:屈服度 = MAX(CFLAG:被害者:屈服度 - 100 - RAND:100, 0)
+	;勝利時住人の評価UP、同時にNTR状態の住人の評価ダウン、訪問者の情けない姿に皆幻滅
+	FOR LOOP_CHR,0,CHARANUM
+		IF LOOP_CHR == 被害者
+			;自分自身は評価しない
+		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:被害者:現在位置
+			IF CFLAG:LOOP_CHR:好感度 > CFLAG:LOOP_CHR:屈服度
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 + 50
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 100
+				PRINTFORMW %CALLNAME:LOOP_CHR%は%CALLNAME:被害者%を褒めてくれた。
+			ELSE
+				IF TALENT:LOOP_CHR:公众便所
+					CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 100
+					CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 100
+					PRINTFORML %CALLNAME:LOOP_CHR%は泡を吹いて妖精メイドたちに運ばれて行く%NTR_NAME(0)%の股間を心配そうに見つめていた
+					;便所だから自分のご侍奉先である大好きなものを粗末にする莫迦達に幻滅するよ
+				ELSEIF TALENT:LOOP_CHR:NTR
+					CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 50
+					CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 200
+					PRINTFORML %CALLNAME:LOOP_CHR%は泡を吹いて妖精メイドたちに運ばれて行く%NTR_NAME(0)%を呆れた目で見ていた
+					;NTRだから大事な人のを潰したから評価は下がるけど、自分以外に手を出して自業自得とも思ってるよ
+				ELSE
+					CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 100
+					PRINTFORML %CALLNAME:LOOP_CHR%はそこで起きたことを見なかったことにした
+					;まだ陥落はしてないから、自分以外へのセクハラで倒れたんだし自業自得と思ってるよ
+				ENDIF
+			ENDIF
+		ENDIF
+	NEXT
+	RETURN 1
+ELSE
+	THROW 反応の決定で問題が発生しました。
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;あなたを管理しちゃう
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Phantasm(被害者)
+#DIM 被害者
+VARSET LOCAL
+IF HAS_VAGINA (被害者) && GET_N_WITH_VISITER(0) == 1 && IS_NTR_IMPRISON_ENABLE()
+	;Vがあって設定で監禁ONの場合お持ち帰り優先
+	CALL SOJI_SexHara_Phantasm_Route2(被害者) 
+	RETURN 1
+ELSEIF HAS_PENIS (被害者)
+	;Pがある場合
+	CALL SOJI_SexHara_Phantasm_Route1(被害者)
+	RETURN 1
+ELSE
+	RETURN 0
+ENDIF
+;-------------------------------------------------------------------------------
+;あなたを管理しちゃう - 阴茎用贞操帯をつけさせる
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Phantasm_Route1(被害者)
+#DIM 被害者
+#DIM V_MIN
+#DIM V_MAX
+VARSET LOCAL
+IF CFLAG:被害者:阴茎用贞操帯着用 == 0
+	;つけていない場合
+	PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の目の前で、小さな阴茎用の贞操帯を取りだした
+	V_MIN = 0
+	V_MAX = 1
+	IF CFLAG:被害者:屈服度 > 2000 ;屈服度が高い場合は拒否できない
+		PRINT [1] - 穿上
+		V_MIN = 0
+	ELSE
+		PRINT [0] - 那是绝对不被允许的！ [1] - 做出反应就输了……做出反应就输了……
+	ENDIF
+	$INPUT_LOOP_1
+	INPUT
+	SIF V_MIN == V_MAX
+		RESULT = V_MAX
+	SIF RESULT < V_MIN || V_MAX < RESULT
+		GOTO INPUT_LOOP_1
+	IF !RESULT
+		PRINTFORML %CALLNAME:被害者%が腕を掴んで止めると、%NTR_NAME(0)%は贞操帯を片付け離れていった……
+		RETURN 1
+	ELSE
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の阴茎に贞操帯を着けると、１週間後に外してやると言って離れていった……
+		;屈服度が劇的に増える。満たない場合は強制的に1500に
+		CFLAG:被害者:屈服度 = MAX (CFLAG:被害者:屈服度 + 20 + RAND:20,1500)
+		;阴茎用贞操帯装着
+		CALL MOUNT_P_CHASTITY_BELT(被害者, 人物_訪問者, 2)
+	ENDIF
+ELSEIF CFLAG:被害者:阴茎用贞操帯着用 > 1000 && CHK_DISMOUNT_P_CHASTITY_BELT(被害者, 人物_訪問者)
+	;すでに着けている場合。ちょっとクソ管理だけど、1000未満は別で使う
+	PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の贞操帯を指でコンコンと叩き、鍵をちらつかせた
+	V_MIN = 0
+	V_MAX = 1
+	IF CFLAG:被害者:屈服度 > 4000
+		;屈服度が非常に高い場合は耐えることしかできない
+		PRINT [1] - 直到摘下来位置都要忍耐
+		V_MIN = 1
+	ELSE
+		PRINT [0] - 求求你把它摘下来 [1] - 直到摘下来位置都要忍耐
+	ENDIF
+	$INPUT_LOOP_2
+	INPUT
+	SIF V_MIN == V_MAX
+		RESULT = V_MAX
+	SIF RESULT < V_MIN || V_MAX < RESULT
+		GOTO INPUT_LOOP_2
+	IF RESULT==0 ;もう外してくれと頼んだ
+		IF TIME_PROGRESS(CFLAG:被害者:阴茎用贞操帯着用) < 時間_1WEEK
+			;７日経過していない
+			PRINTFORML %NTR_NAME(0)%说如果不记得时间了的话，就再从今天开始数起吧。
+			;立場をわからされる事で屈服度が増加
+			SOURCE:被害者:被动 += 100 + 200 * ABL:被害者:顺从
+			CALL NTR_ADD_SURRENDER(被害者, (20 + RAND:20))
+			;着用日をリセット
+			CFLAG:被害者:阴茎用贞操帯着用 = TIME_PROGRESS(0)
+		ELSE
+			;７日我慢できた
+			PRINTFORML %NTR_NAME(0)%はそろそろ許してやると言い、%CALLNAME:被害者%の贞操帯を取り外した。
+			;阴茎用贞操帯解除
+			CALL DISMOUNT_P_CHASTITY_BELT(被害者)
+			SOURCE:被害者:被动 += 100 + 200 * ABL:被害者:顺从
+		ENDIF
+	ELSE ;外して貰えるまで我慢している
+		IF TIME_PROGRESS(CFLAG:被害者:阴茎用贞操帯着用) < 時間_1WEEK
+			;７日経過していない
+			PRINTFORML %NTR_NAME(0)%は意地悪く笑い、贞操帯の鍵をポケットにしまい込んだ
+			CALL NTR_ADD_SURRENDER(被害者, RAND:20)
+		ELSEIF TIME_PROGRESS(CFLAG:被害者:阴茎用贞操帯着用) < RAND(86400)
+			;７日以上経過しているがもう少し付けさせておきたい場合
+			PRINTFORML %NTR_NAME(0)%は贞操帯が気に入ったようだからもう少し着けていろと言い、贞操帯の鍵をポケットにしまい込んだ
+			CALL NTR_ADD_SURRENDER(被害者, RAND:20)
+		ELSE
+			;７日以上経過していて気が向いた場合(最大で60日我慢させる)
+			PRINTFORML %NTR_NAME(0)%は、贞操帯を着けてから{TIME_PROGRESS(CFLAG:被害者:阴茎用贞操帯着用)/時間_1DAY}日になるし、そろそろ許してやると言い、%CALLNAME:被害者%の贞操帯を取り外した。
+			;阴茎用贞操帯解除
+			CALL DISMOUNT_P_CHASTITY_BELT(MASTER)
+			SOURCE:被害者:被动 += 100 + 200 * ABL:被害者:顺从
+		ENDIF
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;あなたを管理しちゃう - ○○をつけさせる(お持ち帰り勝手に足しました)
+;(前提条件となるパッチを作成中)
+;@param 被害者 対象となるキャラクター番号
+@SOJI_SexHara_Phantasm_Route2(被害者)
+#DIM 被害者
+#DIM V_MIN
+#DIM V_MAX
+VARSET LOCAL
+IF CFLAG:120 == 0
+	;お持ち帰り
+	PRINTFORML %NTR_NAME(0)%は%CALLNAME:被害者%の目の前で、绳や猿轡などの拘束具を取りだした
+	V_MIN = 0
+	V_MAX = 1
+	IF CFLAG:被害者:屈服度 > 2000 ;屈服度が高い場合は拒否できない
+		PRINT [1] - 抵抗できない
+		V_MIN = 1
+	ELSE
+		PRINT [0] - 那是绝对不被允许的！ [1] - 做出反应就输了……做出反应就输了……
+	ENDIF
+	$INPUT_LOOP_1
+	INPUT
+	SIF V_MIN == V_MAX
+		RESULT = V_MAX
+	SIF RESULT < V_MIN || V_MAX < RESULT
+		GOTO INPUT_LOOP_1
+	IF !RESULT
+		PRINTFORML %CALLNAME:被害者%が腕を掴んで止めると、%NTR_NAME(0)%は拘束具を片付け離れていった……
+		RETURN 1
+	ELSE
+		PRINTFORML %NTR_NAME(0)%は手際よく%CALLNAME:被害者%の口と手足を縛り、自宅に連れて帰った……
+		;屈服度が増える。
+		CFLAG:被害者:屈服度 = MAX (CFLAG:被害者:屈服度 + 20 + RAND:20,100)
+		CFLAG:被害者:現在位置 = 位置_訪問者宅
+		FLAG:訪問者の現在位置 = 位置_訪問者宅
+		;場所は牢屋に (お持ち帰りパッチの構文から拝借しました。)
+		CFLAG:MASTER:現在位置詳細 = 25
+		;鍵は全部かける
+		FLAG:訪問者宅の施錠状態 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
+		CFLAG:MASTER:NTR訪問者宅監禁状況 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;勃起に対するペナルティ処理
+;@param キャラ番号 対象となるキャラクター
+@SOJI_SexHara_ErectPunishment(キャラ番号,メッセージ表示=1)
+#DIM 勃起上限
+#DIM 勃起ダメージ
+#DIM メッセージ表示
+#DIM キャラ番号
+
+IF !HAS_PENIS(キャラ番号)
+	;ちんこが無ければ勃起しないので処理しない
+	RETURN 0
+ENDIF
+
+IF CFLAG:キャラ番号:現在位置 != CFLAG:MASTER:現在位置
+	;見えてないものは聞こえてこない
+	メッセージ表示 = 0
+ENDIF
+
+;NTRなんで、あなた相手は例外処理しとこう……初期値-1だったらあなたも対象に含めれたんだけどね
+IF TCVAR:キャラ番号:行為者 > 0 && TCVAR:キャラ番号:行為者 != キャラ番号 && CFLAG:キャラ番号:勃起条件_キャラ == TCVAR:キャラ番号:行為者
+	;好感度をキャラ別にしたら、正しく好感度依存にしたいですね
+	勃起上限 = MAX(MAXBASE:キャラ番号:勃起, MAXBASE:キャラ番号:勃起+ABL:(TCVAR:キャラ番号:行為者):侍奉精神*50)
+	SIF メッセージ表示
+		PRINTFORML %CALLNAME:(TCVAR:キャラ番号:行為者)+"を相手にすると、"+CALLNAME:キャラ番号+"の阴茎はいつもより少し堅くなるようだ。"%
+ELSE
+	勃起上限 = MAXBASE:キャラ番号:勃起
+ENDIF
+
+;現在の勃起値は勃起上限までとする
+BASE:キャラ番号:勃起 = LIMIT(BASE:キャラ番号:勃起,0,勃起上限)
+IF CFLAG:キャラ番号:阴茎用贞操帯着用 == 0 || CFLAG:キャラ番号:阴茎用贞操帯種別 == -1
+	;贞操帯をつけてなければペナルティなし、一時的解除も同様
+	IF BASE:キャラ番号:勃起 >= 勃起上限
+		;最大まで勃起していると上限が徐々に回復。
+		SELECTCASE 勃起上限
+			CASE 1000 TO 2000
+				MAXBASE:キャラ番号:勃起 = MIN(MAXBASE:キャラ番号:勃起+1,1500)
+				SIF メッセージ表示
+					PRINTFORML %CALLNAME:キャラ番号+"的阴茎十分坚挺，已经完全可以插入了！"%
+			CASE 400 TO 999
+				MAXBASE:キャラ番号:勃起 = MIN(MAXBASE:キャラ番号:勃起+1,1500)
+				SIF メッセージ表示
+					PRINTFORML %"まだ"+CALLNAME:キャラ番号+"の阴茎は十分に勃起できないようだ……"%
+			CASEELSE
+				SIF メッセージ表示
+					PRINTFORML %CALLNAME:キャラ番号+"的阴茎似乎已经失去了勃起能力……"%
+		ENDSELECT
+	ENDIF
+ELSEIF CFLAG:キャラ番号:阴茎用贞操帯種別 == 1
+	;苦痛のない贞操帯装着時。窮屈なだけ
+	勃起ダメージ = LIMIT ((BASE:キャラ番号:勃起-勃起制限)/10,0,100)
+	IF 勃起ダメージ && メッセージ表示
+		SELECTCASE 勃起ダメージ
+			CASE IS > 40
+				PRINTFORML %"贞操帯の中で勃起した阴茎がひどく窮屈だ"%
+			CASE IS > 10
+				PRINTFORML %"贞操帯の中で勃起した阴茎が窮屈だ"%
+			CASEELSE
+				PRINTFORML %"贞操帯の中で勃起した阴茎がやや窮屈だ"%
+		ENDSELECT
+	ENDIF
+ELSE
+	;苦痛のある贞操帯装着時
+	;一応リセットしとこう。外されたらまた別のキャラにお願いできるように。
+	CFLAG:キャラ番号:勃起条件_キャラ = -1
+	CFLAG:キャラ番号:勃起条件_プレイ = -1
+	IF BASE:キャラ番号:勃起 > 勃起制限
+		;贞操帯がある状態で勃起したら痛い。ただしダメージにも上限はある
+		勃起ダメージ = LIMIT ((BASE:キャラ番号:勃起-勃起制限)/10,0,100)
+		IF 勃起ダメージ && メッセージ表示
+			SELECTCASE 勃起ダメージ
+				CASE IS > 40
+					PRINTFORML %"贞操带中勃起的阴茎非常痛！(体力-"+TOSTR(勃起ダメージ)+"、苦痛+"+TOSTR(勃起ダメージ)+")"%
+				CASE IS > 10
+					PRINTFORML %"贞操带中勃起的阴茎很痛！(体力-"+TOSTR(勃起ダメージ)+"、苦痛+"+TOSTR(勃起ダメージ)+")"%
+				CASEELSE
+					PRINTFORML %"贞操带中勃起的阴茎有些痛！(体力-"+TOSTR(勃起ダメージ)+"、苦痛+"+TOSTR(勃起ダメージ)+")"%
+			ENDSELECT
+		ENDIF
+		SOURCE:キャラ番号:苦痛 += 勃起ダメージ
+		BASE:キャラ番号:体力 -= 勃起ダメージ
+		BASE:キャラ番号:勃起 = MIN(BASE:キャラ番号:勃起,勃起制限)
+		;勃起を強制的に制限されて屈服度UP
+		CALL NTR_ADD_SURRENDER(キャラ番号, RAND:5)
+		;勃起力上限減少(だんだん勃起できない状況に慣れていく)
+		MAXBASE:キャラ番号:勃起 = MAXBASE:キャラ番号:勃起-(勃起ダメージ/5+1)
+	ENDIF
+ENDIF
+RETURN 0

@@ -1,0 +1,413 @@
+﻿;-------------------------------------------------------------------------------
+;与女仆妖精对话(我TM魔改版) - 各种各样的事情
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM420_05_ENABLE
+RESULTS:0 = %"[ 5]-各种各样的事情"%
+;常に実行可能
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;与女仆妖精对话(我TM魔改版) - 各种各样的事情
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM420_05
+#DIMS 指令,100
+#DIM 指令值 = 0
+指令值 = 0
+FOR LOCAL:0,0,100
+	TRYCCALLFORM %@"COM420_05_{LOCAL}_ENABLE"%
+		IF RESULT:0
+			指令:指令值 = %RESULTS:0%
+			指令值++
+		ENDIF
+	CATCH
+	ENDCATCH
+NEXT
+;直接番号叩かれたら呼べるけど、まあ妥協。
+IF (指令值 > 0)
+	FOR LOCAL,0,指令值
+		PRINTFORML %指令:LOCAL%
+	NEXT
+	PRINTL --------------------
+	PRINTFORML %"[ 0]-果然还是算了"%
+	$重选
+	INPUT
+	SIF RESULT == 0
+		RETURN 0
+	TRYCCALLFORM COM420_05_{RESULT}
+		RETURN RESULT:0
+	CATCH
+		CLEARLINE 1
+		GOTO 重选
+	ENDCATCH
+ELSE
+	CALL COM420_01
+	RETURN RESULT:0
+ENDIF
+RETURN 0
+
+
+@COM420_05_1_ENABLE
+RESULTS:0 = %"[ 1]-避孕药的事"%
+;常に実行可能
+RETURN 1
+RETURN 0
+@COM420_05_1_购买吃避孕药写真
+#DIMS 临时写真集,100
+#DIM 写真数量
+#DIMS 购买的写真
+#DIM 妖精持有的写真数量
+#DIM 购买选项值
+VARSET 临时写真集
+妖精持有的写真数量 = 0
+PRINTL 妖精女仆「200元一张，不挑选，不退货。」
+FOR LOCAL,1,CHARANUM
+	IF CSTR:LOCAL:妖精持有的吃避孕药的写真 != ""
+		PRINTFORML [{LOCAL,2}] - 有%CALLNAME:LOCAL%的写真
+		妖精持有的写真数量 += STRCOUNT(CSTR:LOCAL:妖精持有的吃避孕药的写真,",")
+	ENDIF
+NEXT
+PRINTFORML 妖精女仆「一共有{妖精持有的写真数量}张写真，如果全都买的话，价格是 {妖精持有的写真数量 * 200} 元。」
+PRINTFORML 手头有 {MONEY:MASTER} 元，要买一张谁的写真呢？
+PRINTL [ 0] - 还是不买吧…
+SIF 妖精持有的写真数量 > 1
+	PRINTL [-1] - 我全都要！
+INPUT
+购买选项值 = RESULT
+IF 购买选项值 == 0
+	PRINTW 妖精女仆「明白了，改变主意了的话，随时欢迎~~」
+	TIME += 2
+	RETURN 1
+ELSEIF 购买选项值 == -1 && 妖精持有的写真数量 > 1
+	IF MONEY:MASTER < 妖精持有的写真数量 * 200
+		PRINTW 钱不够…
+		RESTART
+	ENDIF
+	MONEY:MASTER -= 妖精持有的写真数量 * 200
+	FOR LOCAL,1,CHARANUM
+		CSTR:LOCAL:吃避孕药的写真 += CSTR:LOCAL:妖精持有的吃避孕药的写真
+		CSTR:LOCAL:妖精持有的吃避孕药的写真 = ""
+	NEXT
+	PRINTFORMW 妖精女仆「谢谢惠顾~~」
+	PRINTFORMW 买下了所有的写真，回去再拆开看吧。
+	TIME += 2
+	RETURN 1
+ELSEIF CSTR:购买选项值:妖精持有的吃避孕药的写真 != ""
+	IF MONEY:MASTER < 200
+		PRINTW 钱不够…
+		RESTART
+	ENDIF
+	SPLIT CSTR:购买选项值:妖精持有的吃避孕药的写真,",",临时写真集
+	FOR LOCAL,0,VARSIZE("临时写真集")
+		SIF 临时写真集:LOCAL == ""
+			CONTINUE
+		写真数量 = LOCAL+1
+	NEXT
+	MONEY:MASTER -= 200
+	购买的写真 '= 临时写真集:RAND(0,写真数量)
+	CSTR:购买选项值:吃避孕药的写真 += 购买的写真 + ","
+	;移除妖精手里的这张写真
+	CSTR:购买选项值:妖精持有的吃避孕药的写真 '= REPLACE(CSTR:购买选项值:妖精持有的吃避孕药的写真,ESCAPE(购买的写真 + ","),"")
+	PRINTFORMW 妖精女仆「谢谢惠顾~~」
+	PRINTFORMW 付钱之后马上拆开看了
+	PRINTFORMW 「%购买的写真%」是记录了这样的情况的写真
+	TIME += 2
+	RETURN 1
+ELSE
+	RESTART
+ENDIF
+@COM420_05_1_查看访问者的避孕药数量
+#DIM 价格 = 200
+PRINTFORML 妖精女仆「会在意这种事啊？不过作为妖精怎么能放弃这种简单的生意呢！」
+PRINTFORML 妖精女仆「每次探查的价格是 {价格} 元！」
+PRINTL [0] - 付钱
+PRINTFORML [1] - 还是算了（手头有 {MONEY:MASTER} 元）
+INPUT
+IF RESULT == 0
+	IF MONEY:MASTER < 价格
+		PRINTL 钱不够……
+		RESTART
+	ENDIF
+	MONEY:MASTER -= 价格
+	PRINTFORML 妖精女仆「谢谢惠顾~~」
+	PRINTFORMW 妖精女仆「%NTR_NAME(0)%的手里还有 {FLAG:访问者的避孕药} 粒避孕药~~」
+	TIME += 2
+	RETURN 1
+ELSEIF RESULT == 1
+	PRINTW 想了想还是算了…
+	PRINTW 妖精女仆「随时恭候~~」
+	TIME += 1
+	RETURN 1
+ENDIF
+RESTART
+@COM420_05_1_让妖精送避孕药给访问者
+#DIM 价格 = 200
+PRINTFORML 妖精女仆「送药给%NTR_NAME(0)%是吗，好的没问题~~」
+PRINTFORML 妖精女仆「每次递送的价格是 {价格} 元！」
+PRINTL [0] - 付钱
+PRINTFORML [1] - 还是算了（手头有 {MONEY:MASTER} 元）
+INPUT
+IF RESULT == 0
+	IF MONEY:MASTER < 价格
+		PRINTL 钱不够……
+		RESTART
+	ENDIF
+	MONEY:MASTER -= 价格
+	PRINTFORML 妖精女仆「谢谢惠顾~~」
+	$重新打印1
+	PRINTFORML 妖精女仆「那么要送多少过去呢？」
+	PRINTL [0]-给1个  [1]-给5个  [2]-给10个  [3]-给20个
+	PRINTFORML [4]-全部给出（手头有 {ITEM:避孕药} 粒避孕药）
+	INPUT
+	SELECTCASE RESULT
+		CASE 0
+			FLAG:访问者的避孕药 += 1
+			ITEM:避孕药 -= 1
+		CASE 1
+			SIF ITEM:避孕药 < 5
+				GOTO 重新打印1
+			FLAG:访问者的避孕药 += 5
+			ITEM:避孕药 -= 5
+		CASE 2
+			SIF ITEM:避孕药 < 10
+				GOTO 重新打印1
+			FLAG:访问者的避孕药 += 10
+			ITEM:避孕药 -= 10
+		CASE 3
+			SIF ITEM:避孕药 < 20
+				GOTO 重新打印1
+			FLAG:访问者的避孕药 += 20
+			ITEM:避孕药 -= 20
+		CASE 4
+			FLAG:访问者的避孕药 += ITEM:避孕药
+			ITEM:避孕药 = 0
+		CASEELSE
+			GOTO 重新打印1
+	ENDSELECT
+	TIME += 2
+	RETURN 1
+ELSEIF RESULT == 1
+	PRINTW 想了想还是算了…
+	PRINTW 妖精女仆「随时恭候~~」
+	TIME += 1
+	RETURN 1
+ENDIF
+RESTART
+
+
+@COM420_05_1
+#DIM 有吃避孕药写真
+有吃避孕药写真 = 0
+PRINTW 妖精女仆「避孕药吗？妖精不会怀孕，所以也不是很懂啦。」
+FOR LOCAL,1,CHARANUM
+	IF CSTR:LOCAL:妖精持有的吃避孕药的写真 != ""
+		有吃避孕药写真++
+	ENDIF
+NEXT
+IF 有吃避孕药写真 > 0
+	PRINTFORML 妖精女仆「不过依靠着我等妖精的力量，相关的写真倒是有的哦❤~要买吗？」
+	PRINTFORML [0] - 要！
+ENDIF
+PRINTFORML [1] - 想知道%NTR_NAME(0)%手里有多少避孕药
+SIF ITEM:避孕药 > 0
+	PRINTFORML [2] - 想拜托妖精帮忙把避孕药送到%NTR_NAME(0)%那里去
+PRINTFORML [-1] - 还是算了吧……
+INPUT
+SELECTCASE RESULT
+	CASE -1
+		RETURN 1
+	CASE 0
+		SIF 有吃避孕药写真 == 0
+			RESTART
+		CALL COM420_05_1_购买吃避孕药写真
+		RETURN RESULT
+	CASE 1
+		CALL COM420_05_1_查看访问者的避孕药数量
+		RETURN RESULT
+	CASE 2
+		SIF ITEM:避孕药 <= 0
+			RESTART
+		CALL COM420_05_1_让妖精送避孕药给访问者
+	CASEELSE
+
+ENDSELECT
+RETURN 1
+
+
+@COM420_05_2_ENABLE
+RESULTS:0 = %"[ 2]-淫纹的事"%
+;只有接触到淫纹之后才能问
+SIF CFLAG:MASTER:淫纹押下回数 > 0
+	RETURN 1
+RETURN 0
+
+@COM420_05_2
+#DIMS 指令,100
+#DIM 指令值 = 0
+PRINTL 妖精女仆「淫纹？这个东西话——吾等妖精还是十分了解的说！」
+PRINTFORML 妖精女仆「那，想知道些什么呢？就算是问一万遍吾等也会解释给%CALLNAME:MASTER%听哦~~」
+指令值 = 0
+FOR LOCAL:0,0,100
+	TRYCCALLFORM %@"COM420_05_2_{LOCAL}_ENABLE"%
+		IF RESULT:0
+			指令:指令值 = %RESULTS:0%
+			指令值++
+		ENDIF
+	CATCH
+	ENDCATCH
+NEXT
+;直接番号叩かれたら呼べるけど、まあ妥協。
+IF (指令值 > 0)
+	FOR LOCAL,0,指令值
+		PRINTFORML %指令:LOCAL%
+	NEXT
+	PRINTL --------------------
+	PRINTFORML %"[ 0]-果然还是算了"%
+	$重选
+	INPUT
+	SIF RESULT == 0
+		RETURN 0
+	TRYCCALLFORM COM420_05_2_{RESULT}
+		RETURN RESULT:0
+	CATCH
+		CLEARLINE 1
+		GOTO 重选
+	ENDCATCH
+ELSE
+	CALL COM420_01
+	RETURN RESULT:0
+ENDIF
+RETURN 0
+
+@COM420_05_2_1_ENABLE
+RESULTS:0 = %"[ 1]-淫纹到底是什么？"%
+RETURN 1
+
+@COM420_05_2_1
+PRINTW 妖精女仆「淫纹嘛~就是刻在人身上看起来很漂亮但是却有着许多淫靡功效的花纹！」
+PRINTW 妖精女仆「被刻上淫纹的人，只要肚子里没有足够的精液，性欲就会不停地增长。」
+PRINTW 妖精女仆「真是淫乱的设定……但还不止这样，被刻上淫纹的地方，连自慰都做不到，只能在高涨的性欲下求着别人来帮自己解决。」
+PRINTW 妖精女仆「刻下淫纹的人也会对淫纹施加自己的规则，比如说不允许某个人触碰刻上淫纹的地方，还有淫纹的消失条件等等等等~~」
+PRINTW 妖精女仆「有时候淫纹也会在一定条件下改造被刻上淫纹的人的身体，大概就是变成那种…特别淫靡的样子吧………」
+PRINTW 妖精女仆「就是这样的说！」
+PRINTW 稍微了解了一点……
+SIF 问过淫纹是什么 == 0
+	问过淫纹是什么 = 1
+SIF 可以询问淫纹身体改造 == 0
+	可以询问淫纹身体改造 = 1
+TIME += 3
+RETURN 1
+@COM420_05_2_2_ENABLE
+RESULTS:0 = %"[ 2]-淫纹身体改造是什么？"%
+SIF 可以询问淫纹身体改造 > 0
+	RETURN 1
+RETURN 0
+
+@COM420_05_2_2
+PRINTFORMW 白发褐肌的妖精女仆「呼呼……这个问题当由我这个经过淫纹身体改造的妖精来回答啦！」
+PRINTFORMW 一只白发褐肌的妖精跳到面前来了，笑容十分调皮，但是微微亮光的蔷薇色眼睛却显得十分魅惑。
+PRINTFORMW 白发褐肌的妖精女仆「喂~喂~~看入迷了吗？没错！很不一样的外观吧！被改造之后就会变成这样哦！」
+PRINTFORMW 这只妖精突然抱了上来，磨蹭着%CALLNAME:MASTER%的身体。
+PRINTFORMW 白发褐肌的妖精女仆「要不要在里面射一发，我会好好地保存%CALLNAME:MASTER%的精液的~❤~~」
+PRINTFORMW 白发褐肌的妖精女仆「因为呐……如果被淫纹改造了身体，那么射进肚子里的精液，就不会过期，无论在肚子里待上多久也不会失去活性~❤~」
+PRINTFORMW 白发褐肌的妖精女仆「而且因为集齐了所有部位的淫纹，所以精液也会流失得更慢一些，所以能在肚子里保存好久呢~~」
+PRINTFORMW 白发褐肌的妖精女仆「对于吾等妖精来说是再好不过了，但是对于会怀孕的家伙嘛……就不一定是那么好了。」
+PRINTFORMW 白发褐肌的妖精女仆「不过要是没有被改造身体的话，集齐所有部位的淫纹只会让精液流失速度变慢，该过期还是要过期的，但也会延长保质时间~~」
+PRINTFORMW 白发褐肌的妖精女仆「大概就是如此了，去把喜欢的人进行一次淫纹身体改造如何？把自己的精液射进去，让精液流上好久—好久——好久———」
+PRINTFORMW 这只妖精似乎已经想入非非了……
+SIF 可以询问淫纹身体改造 == 1
+	可以询问淫纹身体改造 = 2
+TIME += 3
+RETURN 1
+
+@COM420_05_2_3_ENABLE
+RESULTS:0 = %"[ 3]-因为我想要守护喜欢的人的处女，被迫亲手按下"+NTR_NAME(0)+"给的淫纹印章了……"%
+SIF 问过淫纹是什么 > 0
+	RETURN 1
+RETURN 0
+
+@COM420_05_2_3
+PRINTW 妖精女仆「嗯嗯！」
+PRINTW ···
+PRINTW 妖精女仆「嗯嗯！！」
+PRINTW 妖精女仆「原来如此、原来如此！」
+PRINTFORMW 妖精女仆「那么吾等能推测出这个淫纹有什么作用了，就讲给可怜的%CALLNAME:MASTER%听吧~」
+PRINTFORMW 妖精女仆「首先会跟一般的淫纹有同样的作用，如果肚子里的精液没有填满子宫的话，性欲就会不停增长，刻上淫纹的部位也没办法进行自慰，所以%CALLNAME:MASTER%可得想办法好好满足她，不然就会很难办呢……」
+PRINTFORMW 妖精女仆「然后的话，根据%NTR_NAME(0)%说的话，如果她是真正的处女的话，%CALLNAME:MASTER%是可以穿透守护膣道的淫纹的，但是如果夺去了处女…」
+PRINTFORMW 妖精女仆「那她身上的淫纹就再也没办法消失了，%CALLNAME:MASTER%再想要碰她就没那么容易了！」
+PRINTFORMW 妖精女仆「只有让%CALLNAME:MASTER%以外的人夺去她的处女才可以使淫纹消失……」
+PRINTFORMW 妖精女仆「不过！要是她不是真正的处女，而是再生的处女的话……残念……只要被刻上淫纹就不会再消失了……至少吾等妖精不知道要如何消去……」
+PRINTFORMW 妖精女仆「但是！一般实行这种规则的淫纹，总是还有能让%CALLNAME:MASTER%可以触碰她的方法！」
+PRINTFORMW 妖精女仆「就是精液……要好多好多的精液………只要%CALLNAME:MASTER%以外的人的精液填满她的肚子，就会使淫纹变成粉红色！」
+PRINTFORMW 妖精女仆「要是被注入的精液已经多到可以把肚子撑大了，就会使淫纹变成超级鲜艳的粉红色！」
+PRINTFORMW 妖精女仆「变成粉红色之后发出来的光真的超级淫乱的——哈哈——哈哈…………」
+PRINTFORMW 这只妖精似乎想入非非了……不过马上就又恢复状态了一脸严肃了。
+PRINTFORMW 妖精女仆「嗯…所以只要看到淫纹变成粉红色了，%CALLNAME:MASTER%就可以去触碰她了~~」
+PRINTFORMW 妖精女仆「但是必须要强调刚才说过的，她子宫里的精液必须要是%CALLNAME:MASTER%以外的人的精液，如果%CALLNAME:MASTER%的精液混入其中的话…」
+PRINTFORMW 妖精女仆「淫纹马上就会黯淡下来，这时候就会像子宫里没有足够的精液一样，%CALLNAME:MASTER%会失去触碰她的资格……」
+PRINTFORMW 妖精女仆「不过嘛，精液是会流出来的，也会随着时间过期，就算不小心射在里面了，只要过段时间，子宫里%CALLNAME:MASTER%的精液就不复存在了！」
+PRINTFORMW 妖精女仆「但要是她已经经过了淫纹的身体改造，情况又会有所不同了，真的是很麻烦的事情…」
+IF 可以询问淫纹身体改造 == 0
+	PRINTFORMW 妖精女仆「所以呢！我说累了！换别的妖精来跟%CALLNAME:MASTER%解释淫纹身体改造吧！」
+	PRINTFORMW 白发褐肌的妖精女仆「呼呼……这个问题当由我这个经过淫纹身体改造的妖精来回答啦！」
+	PRINTFORMW 一只白发褐肌的妖精跳到面前来了，笑容十分调皮，但是微微亮光的蔷薇色眼睛却显得十分魅惑。
+	PRINTFORMW 白发褐肌的妖精女仆「喂~喂~~看入迷了吗？没错！很不一样的外观吧！被改造之后就会变成这样哦！」
+	PRINTFORMW 这只妖精突然抱了上来，磨蹭着%CALLNAME:MASTER%的身体。
+	PRINTFORMW 白发褐肌的妖精女仆「要不要在里面射一发，我会好好地保存%CALLNAME:MASTER%的精液的~❤~~」
+	PRINTFORMW 白发褐肌的妖精女仆「因为呐……如果被淫纹改造了身体，那么射进肚子里的精液，就不会过期，无论在肚子里待上多久也不会失去活性~❤~」
+	PRINTFORMW 白发褐肌的妖精女仆「而且因为集齐了所有部位的淫纹，所以精液也会流失得更慢一些，所以能在肚子里保存好久呢~~」
+	PRINTFORMW 白发褐肌的妖精女仆「对于吾等妖精来说是再好不过了，但是对于会怀孕的家伙嘛……就不一定是那么好了。」
+	PRINTFORMW 白发褐肌的妖精女仆「不过要是没有被改造身体的话，集齐所有部位的淫纹只会让精液流失速度变慢，该过期还是要过期的，但也会延长保质时间~~」
+	PRINTFORMW 白发褐肌的妖精女仆「大概就是如此了，去把喜欢的人进行一次淫纹身体改造如何？把自己的精液射进去，让精液流上好久—好久——好久———」
+	PRINTFORMW 这只妖精似乎已经想入非非了……
+	可以询问淫纹身体改造 = 2
+ENDIF
+PRINTFORMW 妖精女仆「如果%CALLNAME:MASTER%的精液混进了她的子宫里的话，在%CALLNAME:MASTER%的精液完全消失之前淫纹会一直保持黯淡的样子。」
+PRINTFORMW 妖精女仆「但是因为淫纹的身体改造，精液在肚子里是不会过期的，去除精液的方法只有两种。」
+PRINTFORMW 妖精女仆「一种是等待精液缓慢流失，要是%CALLNAME:MASTER%射进去的精液比较多的话，恐怕要流上好久了……」
+PRINTFORMW 妖精女仆「第二种就是注入精液，子宫里的精液量超出可以容纳的量的话，多余的精液就会溢出来。」
+PRINTFORMW 妖精女仆「所以只要注入好多的精液，像洗胃一样清洗子宫，如果有足够多的精液注入的话，很快%CALLNAME:MASTER%的精液就会被清理干净了。」
+PRINTFORMW 妖精女仆「不过用这种方法虽然快速，但%CALLNAME:MASTER%可是要狠下心让别的男人在她的膣道里射精哦——」
+PRINTFORMW 妖精女仆「那么，就这么多了，说了这么久……就不给些什么奖励吗！」
+PRINTFORMW 为什么妖精会对这种东西这么了解啊……不对…怎么突然要起奖励来了……
+SIF 对淫纹的了解 == 0
+	对淫纹的了解 = 1
+IF MONEY:MASTER >= 200
+	MONEY:MASTER -= 200
+	PRINTFORMW 那就给 200 元吧……
+	PRINTFORMW 妖精女仆「呼呼……再让吾等解释多少遍也没有问题哦~~」
+ELSEIF MONEY:MASTER >= 100
+	MONEY:MASTER -= 100
+	PRINTFORMW 没有太多的钱啊……给 100 元吧……给出之后就更加贫穷了……
+	PRINTFORMW 妖精女仆「呼呼……再让吾等解释多少遍也没有问题哦~~」
+ELSE
+	PRINTFORMW 自己的这点私产，几乎给不出能拿得出手的数量……
+	PRINTFORMW 妖精女仆「知道了知道了…一穷二白的可怜人……反正吾等闲着也是闲着，对这种话题很热衷呢~~」
+ENDIF
+TIME += 5
+RETURN 1
+@COM420_05_2_4_ENABLE
+RESULTS:0 = %"[ 4]-就算是等到淫纹变成了粉红色却也什么也不能做啊……"%
+SIF 对淫纹的了解 == 0
+	RETURN 0
+SIF 粉红色淫纹无法触碰的问题 > 0
+	RETURN 1
+RETURN 0
+
+@COM420_05_2_4
+PRINTFORMW 妖精女仆「这样啊……」
+PRINTFORMW 妖精女仆「有别的什么变化吗？」
+PRINTFORMW 妖精女仆「诶？外表变成这样了？那么就是被淫纹改造了身体……」
+PRINTFORMW 妖精女仆「这样的话，就得要等到淫纹变成鲜艳的粉红色的时候才能做了，真是残念呢~~」
+PRINTFORMW 白发褐肌的妖精女仆「嗯嗯~~残念~~残念~~~」
+PRINTFORMW 原来如此啊……只能等她的子宫被注入更多的精液了…………
+SIF 对淫纹的了解 == 1
+	对淫纹的了解 = 2
+
+
+
+
+
+

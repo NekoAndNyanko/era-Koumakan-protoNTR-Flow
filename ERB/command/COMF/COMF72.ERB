@@ -1,0 +1,203 @@
+﻿;-------------------------------------------------
+;二穴插入侍奉
+;セックス系派生コマンド
+;-------------------------------------------------
+@COM72
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_太股)
+SIF RESULT
+	RETURN 0
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
+SIF RESULT
+	RETURN 0
+
+
+VARSET LOCAL
+LOCAL:1 = MASTER_POSE(1,6,1)
+LOCAL:2 = MASTER_POSE(1,7,1)
+IF LOCAL:1
+	LOCAL = LOCAL:1
+ELSEIF LOCAL:2
+	LOCAL = LOCAL:2
+ENDIF
+;LOCAL 先に挿入する人
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = LOCAL
+TCVAR:LOCAL:116 = LOCAL
+;-------------------------------------------------
+;挿入部位管理
+;-------------------------------------------------
+;TCVAR:2 射精箇所フラグ（-1=避孕套 1=膣内 2=菊花 3=手淫 4=口淫 5=乳交 6=素股 7=足交 8=体表 9=舔肛侍奉 10=道具 11=触手）
+
+;LOCALがA,TARGETがV挿入
+IF LOCAL == LOCAL:2
+	LOCALS = {LOCAL}/
+	CSTR:射精判定用 += LOCALS
+	TCVAR:2 = 1
+	;強度
+	TCVAR:4 = 1500
+
+	LOCALS = {LOCAL}/
+	CSTR:LOCAL:射精判定用 += LOCALS
+	TCVAR:LOCAL:2 = 2
+	;強度
+	TCVAR:LOCAL:4 = 1500
+	;LOCALがV,TARGETがA挿入
+ELSE
+	LOCALS = {LOCAL}/
+	CSTR:LOCAL:射精判定用 += LOCALS
+	TCVAR:LOCAL:2 = 1
+	;強度
+	TCVAR:LOCAL:4 = 1500
+
+	LOCALS = {LOCAL}/
+	CSTR:射精判定用 += LOCALS
+	TCVAR:2 = 2
+	;強度
+	TCVAR:4 = 1500
+ENDIF
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 40
+DOWNBASE:气力 += 220
+DOWNBASE:MASTER:体力 += 160
+DOWNBASE:MASTER:气力 += 350
+
+SOURCE:MASTER:快Ｖ = 400
+SOURCE:MASTER:快Ａ = 400
+SOURCE:MASTER:情爱 = 300
+SOURCE:MASTER:性行动 = 300
+SOURCE:MASTER:苦痛 = 1300
+SOURCE:MASTER:屈从 = 1000
+SOURCE:MASTER:逸脱 = 500
+
+SOURCE:快Ｃ = 400
+SOURCE:性行动 = 500
+SOURCE:征服 = 800
+SOURCE:屈从 = 500
+SOURCE:逸脱 = 500
+SOURCE:反感 = 500
+
+DOWNBASE:LOCAL:体力 += 40
+DOWNBASE:LOCAL:气力 += 220
+
+SOURCE:LOCAL:快Ｃ = 400
+SOURCE:LOCAL:性行动 = 500
+SOURCE:LOCAL:征服 = 800
+SOURCE:LOCAL:屈从 = 500
+SOURCE:LOCAL:逸脱 = 500
+SOURCE:LOCAL:反感 = 500
+
+CALL 締り具合変動, MASTER, 3, 0
+CALL 締り具合変動, MASTER, 3, 1
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+
+;あなたが处女だった場合は、苦痛のソースを追加する
+IF TALENT:MASTER:处女 == 1
+	SOURCE:MASTER:苦痛 += 5500
+ENDIF
+
+;再生处女だった場合は、苦痛のソースを追加する
+IF TALENT:MASTER:处女 == 2
+	SOURCE:MASTER:苦痛 += 3500
+ENDIF
+;Vへの苦痛は先に処理しておく
+CALL PAIN_CHECK_V(MASTER)
+;Aへの苦痛は先に処理しておく
+CALL PAIN_CHECK_A(MASTER)
+;-------------------------------------------------
+;处女喪失処理
+;-------------------------------------------------
+IF LOCAL == LOCAL:1
+	;MASTERがV,TARGETがA挿入
+	TEQUIP:LOCAL:Ｖ性爱 = LOCAL
+	TEQUIP:LOCAL:Ａ性爱 = TARGET
+	CALL LOST_VIRGIN(MASTER, LOCAL)
+	CALL LOST_VIRGIN_A(MASTER, TARGET)
+ELSE
+	;MASTERがA,TARGETがV挿入
+	TEQUIP:LOCAL:Ｖ性爱 = TARGET
+	TEQUIP:LOCAL:Ａ性爱 = LOCAL
+	CALL LOST_VIRGIN(MASTER, TARGET)
+	CALL LOST_VIRGIN_A(MASTER, LOCAL)
+ENDIF
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;前TARGETがV,現TARGETがA挿入
+IF LOCAL == LOCAL:1
+	;膣内に破瓜の血の汚れを付加
+	SIF TALENT:MASTER:处女
+		STAIN:MASTER:膣内 |= 汚れ_破瓜の血
+	;LOCALのＰ⇔主人の膣内の汚れが移动
+	IF HAS_PENIS(LOCAL)
+		STAIN:MASTER:膣内 |= STAIN:LOCAL:Ｐ
+		STAIN:MASTER:Ｖ |= STAIN:LOCAL:Ｐ
+		STAIN:LOCAL:Ｐ |= STAIN:MASTER:膣内
+		STAIN:LOCAL:Ｐ |= STAIN:MASTER:Ｖ
+	ENDIF
+	;主人の腸内⇔TARGETのＰの汚れが移动
+	IF HAS_PENIS(TARGET)
+		STAIN:MASTER:腸内 |= STAIN:Ｐ
+		STAIN:MASTER:Ａ |= STAIN:Ｐ
+		STAIN:Ｐ |= STAIN:MASTER:腸内
+		STAIN:Ｐ |= STAIN:MASTER:Ａ
+	ENDIF
+ELSE
+	;膣内に破瓜の血の汚れを付加
+	SIF TALENT:LOCAL:处女
+		STAIN:LOCAL:膣内 |= 汚れ_破瓜の血
+	;LOCALのＰ⇔主人の腸内の汚れが移动
+	IF HAS_PENIS(LOCAL)
+		STAIN:MASTER:腸内 |= STAIN:LOCAL:Ｐ
+		STAIN:MASTER:Ａ |= STAIN:LOCAL:Ｐ
+		STAIN:LOCAL:Ｐ |= STAIN:MASTER:腸内
+		STAIN:LOCAL:Ｐ |= STAIN:MASTER:Ａ
+	ENDIF
+	;主人の膣内⇔TARGETのＰの汚れが移动
+	IF HAS_PENIS(TARGET)
+		STAIN:MASTER:膣内 |= STAIN:Ｐ
+		STAIN:MASTER:Ｖ |= STAIN:Ｐ
+		STAIN:Ｐ |= STAIN:MASTER:膣内
+		STAIN:Ｐ |= STAIN:MASTER:Ｖ
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:MASTER:Ｖ经验 ++
+EXP:MASTER:Ａ经验 ++
+
+EXP:MASTER:Ｖ性交经验 ++
+EXP:MASTER:Ａ性交经验 ++
+
+;异常经验
+IF TALENT:MASTER:处女 && !GETBIT(CFLAG:3,9)
+	EXP:MASTER:异常经验 += 2
+	SETBIT CFLAG:MASTER:异常经验,9
+ENDIF
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+ENDIF
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(LOCAL,PLAYER)
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+	EXP:LOCAL:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+ENDIF
+;IF HETEROSEX(TARGET,LOCAL)
+;	EXP:(50 + HETEROSEX(TARGET,LOCAL)) += 3
+;	EXP:LOCAL:(50 + HETEROSEX(TARGET,LOCAL)) += 3
+;ENDIF
+CALL 改变小穴色素(MASTER,1)
+CALL 改变肛门色素(MASTER,1)
+RETURN 1

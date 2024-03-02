@@ -1,0 +1,98 @@
+﻿;泡一杯茶
+@COM301
+LOCAL = RAND:100
+LOCAL:1 = 90 + GET_SUCCESS_RATE() / 5
+SIF LOCAL:1 > 99
+	LOCAL:1 = 99
+IF LOCAL <= 9
+	;10％で大成功
+	EXP:MASTER:会话经验 ++
+	TFLAG:193 = 1
+ELSEIF LOCAL >= LOCAL:1
+	;10～1％で失敗
+	TFLAG:193 = -1
+ELSE
+	;残りは成功
+	TFLAG:193 = 0
+ENDIF
+;先制発生時は失敗しない
+SIF TCVAR:20
+	TFLAG:193 = MAX(TFLAG:193,0)
+DOWNBASE:MASTER:气力 += 100
+DOWNBASE:MASTER:体力 += 50
+
+;その場に居るTARGET全員で回す
+LOCAL:1 = TARGET
+FOR LOCAL,1,CHARANUM
+	SIF TARGET:LOCAL <= 0
+		CONTINUE
+	SIF CFLAG:(TARGET:LOCAL):睡眠
+		CONTINUE
+	TARGET = TARGET:LOCAL
+	CALL COM301_1
+NEXT
+TARGET = LOCAL:1
+
+TIME += 30
+RETURN 1
+
+@COM301_1
+
+DOWNBASE:气力 += 10
+
+;固定で獲得するソース
+SOURCE:欢乐 = 500
+
+;ABL:顺从をみる
+IF ABL:顺从 <= 1
+	SOURCE:欢乐 += (ABL:顺从 * 60)
+ELSEIF ABL:亲密 <= 3
+	SOURCE:欢乐 += 200 + (ABL:顺从 * 60)
+ELSEIF ABL:亲密 <= 5
+	SOURCE:欢乐 += 500 + (ABL:顺从 * 60)
+ELSEIF ABL:亲密 <= 8
+	SOURCE:欢乐 += 750 + (ABL:顺从 * 75)
+ELSEIF ABL:亲密 <= 11
+	SOURCE:欢乐 += 1000 + (ABL:顺从 * 75)
+ELSE
+	SOURCE:欢乐 += 2000 + (ABL:顺从 * 30)
+ENDIF
+
+;好感度をみる
+IF CFLAG:好感度 <= 500
+	SOURCE:欢乐 += CFLAG:2
+ELSEIF CFLAG:好感度 <= 5000
+	SOURCE:欢乐 += 500 + (CFLAG:好感度 - 500) / 3
+ELSE
+	SOURCE:欢乐 += 2000 + (CFLAG:好感度 - 5000) / 5
+ENDIF
+SIF SOURCE:欢乐 < 0
+	SOURCE:欢乐 = 0
+
+
+SOURCE:被动 = 200 + 100 * ABL:顺从
+SOURCE:征服 = 200 + 100 * ABL:抖Ｓ之气
+
+IF TFLAG:193 == -1
+	TIMES SOURCE:欢乐 , 0.10
+	TIMES SOURCE:征服 , 0.50
+	TIMES SOURCE:被动 , 0.50
+ELSEIF TFLAG:193 == 0
+	TIMES SOURCE:欢乐 , 1.00
+	TIMES SOURCE:征服 , 1.00
+	TIMES SOURCE:被动 , 1.00
+ELSE
+	TIMES SOURCE:欢乐 , 2.00
+	TIMES SOURCE:征服 , 2.00
+	TIMES SOURCE:被动 , 2.00
+ENDIF
+
+;お茶を飲んだフラグ
+TCVAR:飲茶日時 = DATETIME()
+
+;お手洗い勝手に拡張パッチ対応
+;水分過剰摂取量上昇。単位はマイクロリットル。
+TCVAR:水分過剰摂取量 += 110000
+
+;お茶を飲むことで口の汚れ解消
+STAIN:口 = 汚れ_なし

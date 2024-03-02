@@ -1,0 +1,330 @@
+﻿;--------------------------------------------------------------------
+;受け攻めの決定に抖Ｓ之气, 抖Ｍ之气, 地位で計算されます
+;如果计算后的值相同的话，在立场上强制决定，所以请不要使用相同的数值
+;数值大的人容易成为攻方
+
+@INHABITANT_SETTINGS_FIRST
+LOCAL:1 = 0
+LOCAL:2 = INHABITANT_LOOP_MAX()
+SIF !GETBIT(FLAG:住人同士イベント設定,0)
+	RETURN 0
+FOR LOCAL:0,1,LOCAL:2
+	LOCAL:1 += CFLAG:(LOCAL:0):住人同士イベント地位
+	LOCAL:1 += CFLAG:(LOCAL:0):住人同士イベント立場
+NEXT
+IF LOCAL:1 == 0
+	CFLAG:人物_美铃:住人同士イベント地位 = 1
+	CFLAG:人物_小恶魔:住人同士イベント地位 = 1
+	CFLAG:人物_帕秋莉:住人同士イベント地位 = 3
+	CFLAG:人物_咲夜:住人同士イベント地位 = 2
+	CFLAG:人物_蕾米莉亚:住人同士イベント地位 = 4
+	CFLAG:人物_芙兰朵露:住人同士イベント地位 = 3
+	CFLAG:人物_艾丽娅:住人同士イベント地位 = 1
+	CFLAG:人物_琪露诺:住人同士イベント地位 = 0
+	CFLAG:人物_大妖精:住人同士イベント地位 = 0
+	CFLAG:人物_魔理沙:住人同士イベント地位 = 1
+	CFLAG:人物_灵梦:住人同士イベント地位 = 3
+	CFLAG:人物_露米娅:住人同士イベント地位 = 0
+	CFLAG:人物_爱丽丝:住人同士イベント地位 = 3
+
+	CFLAG:人物_美铃:住人同士イベント立場 = 5
+	CFLAG:人物_小恶魔:住人同士イベント立場 = 4
+	CFLAG:人物_帕秋莉:住人同士イベント立場 = 9
+	CFLAG:人物_咲夜:住人同士イベント立場 = 7
+	CFLAG:人物_蕾米莉亚:住人同士イベント立場 = 12
+	CFLAG:人物_芙兰朵露:住人同士イベント立場 = 10
+	CFLAG:人物_艾丽娅:住人同士イベント立場 = 3
+	CFLAG:人物_琪露诺:住人同士イベント立場 = 2
+	CFLAG:人物_大妖精:住人同士イベント立場 = 0
+	CFLAG:人物_魔理沙:住人同士イベント立場 = 6
+	CFLAG:人物_灵梦:住人同士イベント立場 = 11
+	CFLAG:人物_露米娅:住人同士イベント立場 = 1
+	CFLAG:人物_爱丽丝:住人同士イベント立場 = 8
+
+	CFLAG:人物_美铃:体を許す好感度 = 500
+	CFLAG:人物_小恶魔:体を許す好感度 = 500
+	CFLAG:人物_帕秋莉:体を許す好感度 = 500
+	CFLAG:人物_咲夜:体を許す好感度 = 500
+	CFLAG:人物_蕾米莉亚:体を許す好感度 = 500
+	CFLAG:人物_芙兰朵露:体を許す好感度 = 500
+	CFLAG:人物_艾丽娅:体を許す好感度 = 500
+	CFLAG:人物_琪露诺:体を許す好感度 = 500
+	CFLAG:人物_大妖精:体を許す好感度 = 500
+	CFLAG:人物_魔理沙:体を許す好感度 = 500
+	CFLAG:人物_灵梦:体を許す好感度 = 500
+	CFLAG:人物_露米娅:体を許す好感度 = 500
+	CFLAG:人物_爱丽丝:体を許す好感度 = 500
+
+	CFLAG:人物_美铃:行為の上限 = 2000
+	CFLAG:人物_小恶魔:行為の上限 = 2000
+	CFLAG:人物_帕秋莉:行為の上限 = 2000
+	CFLAG:人物_咲夜:行為の上限 = 2000
+	CFLAG:人物_蕾米莉亚:行為の上限 = 2000
+	CFLAG:人物_芙兰朵露:行為の上限 = 2000
+	CFLAG:人物_艾丽娅:行為の上限 = 2000
+	CFLAG:人物_琪露诺:行為の上限 = 2000
+	CFLAG:人物_大妖精:行為の上限 = 2000
+	CFLAG:人物_魔理沙:行為の上限 = 2000
+	CFLAG:人物_灵梦:行為の上限 = 2000
+	CFLAG:人物_露米娅:行為の上限 = 2000
+	CFLAG:人物_爱丽丝:行為の上限 = 2000
+ENDIF
+FOR LOCAL:0,1,LOCAL:2
+	SIF CFLAG:(LOCAL:0):体を許す好感度 == 0 
+		CFLAG:(LOCAL:0):体を許す好感度 = 1000
+	SIF CFLAG:(LOCAL:0):行為の上限 == 0
+		CFLAG:(LOCAL:0):行為の上限 = 2000
+NEXT
+RETURN 0
+
+@INHABITANT_SETTINGS
+CALL INHABITANT_SETTINGS_FIRST
+$INPUT_INHABITANT_SETTINGS_START
+LOCAL:2 = 0
+IF GETBIT(FLAG:住人同士イベント設定,0)
+	LOCAL:2 = INHABITANT_LOOP_MAX()
+ENDIF
+DRAWLINE
+PRINTL 由各种地位决定攻受
+PRINTL 如果计算后的值相同的话，在立场上强制决定，所以请不要使用相同的数值
+PRINTL 数值大的人容易成为攻方
+DRAWLINE
+PRINTFORML [0] 居民们的活动：\@ GETBIT(FLAG:住人同士イベント設定,0) ?ON#OFF\@
+IF GETBIT(FLAG:住人同士イベント設定,0)
+	PRINTFORM 対象者：初期メンバー
+	SIF GETBIT(FLAG:住人同士イベント設定,1)
+		PRINTFORM 、娘\@ GETBIT(FLAG:住人同士イベント設定,3) ?、息子#\@
+	PRINTFORML
+ENDIF
+DRAWLINE
+FOR LOCAL:0,1,LOCAL:2
+	IF GETBIT(TALENT:(LOCAL:0):性別,0) || GETBIT(FLAG:住人同士イベント設定,3)
+		PRINTFORM [{LOCAL:0,2}]
+		PRINTFORM %CALLNAME:(LOCAL:0),16,LEFT%
+		PRINTFORM 地位：{CFLAG:(LOCAL:0):住人同士イベント地位,2}　
+		PRINTFORM 立場：{CFLAG:(LOCAL:0):住人同士イベント立場,2}　
+		PRINTFORM 体を許す好感度：{CFLAG:(LOCAL:0):体を許す好感度,4}　
+		PRINTFORML 行為の上限：{CFLAG:(LOCAL:0):行為の上限,4}
+	ENDIF
+NEXT
+DRAWLINE
+SIF GETBIT(FLAG:住人同士イベント設定,0)
+	PRINT [999] 好感度表示　
+PRINTL [1000] 返回
+$INPUT_INHABITANT_SETTINGS_0
+INPUT
+LOCAL:1 = RESULT
+IF RESULT == 0
+	$INPUT_INHABITANT_SETTINGS_1_1
+	DRAWLINE
+	PRINTFORML %"[0] - 住人同士イベント",28, LEFT%：\@ GETBIT(FLAG:住人同士イベント設定,0) ?ON#OFF\@
+	IF GETBIT(FLAG:住人同士イベント設定,0)
+		PRINTFORML %"[1] - 子供もイベント対象",28, LEFT%：\@ GETBIT(FLAG:住人同士イベント設定,1) ?ON#OFF\@
+		IF GETBIT(FLAG:住人同士イベント設定,1)
+			PRINTFORML %"[2] - 子供の性別対象",28, LEFT%：\@ GETBIT(FLAG:住人同士イベント設定,3) ?娘と息子#娘のみ\@
+		ELSE
+			PRINTFORML
+		ENDIF
+		IF GETBIT(FLAG:住人同士イベント設定,1)
+			PRINTFORML %"[3] - 子供による屈服度増加",28, LEFT%：\@ GETBIT(FLAG:住人同士イベント設定,4) ?ON#OFF\@
+		ELSE
+			PRINTFORML
+		ENDIF
+		PRINTFORML %"[4] - 筒抜けモード",28, LEFT%：\@ GETBIT(FLAG:住人同士イベント設定,2) ?ON#OFF\@
+	ELSE
+		PRINTFORML
+		PRINTFORML
+		PRINTFORML
+	ENDIF
+	DRAWLINE
+	PRINTL [1000] 返回
+	$INPUT_INHABITANT_SETTINGS_1_2
+	INPUT
+	IF RESULT == 0
+		PRINTL 住人同士イベントのON/OFFを切り替えます
+		PRINTL [0] ON　[1] OFF
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:住人同士イベント設定,0
+			CALL INHABITANT_SETTINGS_FIRST
+		ELSE
+			CLEARBIT FLAG:住人同士イベント設定,0
+		ENDIF
+		GOTO INPUT_INHABITANT_SETTINGS_1_1
+	ELSEIF RESULT == 1
+		PRINTL 住人同士イベントで子供も対象にしますか？
+		PRINTL [0] ON　[1] OFF
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:住人同士イベント設定,1
+			CALL INHABITANT_SETTINGS_FIRST
+		ELSE
+			CLEARBIT FLAG:住人同士イベント設定,1
+		ENDIF
+		GOTO INPUT_INHABITANT_SETTINGS_1_1
+	ELSEIF RESULT == 2
+		PRINTL 住人同士イベントで息子も対象に含めますか？
+		PRINTL [0] ON　[1] OFF
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:住人同士イベント設定,3
+			CALL INHABITANT_SETTINGS_FIRST
+		ELSE
+			CLEARBIT FLAG:住人同士イベント設定,3
+		ENDIF
+		GOTO INPUT_INHABITANT_SETTINGS_1_1
+	ELSEIF RESULT == 3
+		PRINTFORML 与有着素质[访问者的血统]的孩子进行交流的情况下，随着好感度的增加，屈服度也会增加
+		PRINTL [0] ON　[1] OFF
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:住人同士イベント設定,4
+			PRINTFORMW 进行了屈服度的增加处理
+		ELSE
+			CLEARBIT FLAG:住人同士イベント設定,4
+			PRINTFORMW 不进行屈服度的增加处理
+		ENDIF
+		GOTO INPUT_INHABITANT_SETTINGS_1_1
+	ELSEIF RESULT == 4
+		PRINTFORML 能看到居民的行动吗？
+		PRINTL [0] ON　[1] OFF
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:住人同士イベント設定,2
+			PRINTFORMW 居民的行动能看见了
+		ELSE
+			CLEARBIT FLAG:住人同士イベント設定,2
+			PRINTFORMW 居民的行动变得看不见了
+		ENDIF
+		GOTO INPUT_INHABITANT_SETTINGS_1_1
+	ELSEIF RESULT == 1000
+		GOTO INPUT_INHABITANT_SETTINGS_START
+	ENDIF
+	GOTO INPUT_INHABITANT_SETTINGS_1_2
+ELSEIF RESULT > 0 && RESULT <= LOCAL:2
+	$INPUT_INHABITANT_SETTINGS_3
+	DRAWLINE
+	PRINTFORML %CALLNAME:(LOCAL:1)%
+	PRINTFORML [0] 地位：{CFLAG:(LOCAL:1):住人同士イベント地位}
+	PRINTFORML [1] 立場：{CFLAG:(LOCAL:1):住人同士イベント立場}
+	PRINTFORML [2] 体を許す好感度：{CFLAG:(LOCAL:1):体を許す好感度}
+	PRINTFORML [3] 行為の上限：{CFLAG:(LOCAL:1):行為の上限}
+	DRAWLINE
+	PRINTFORML [1000] 返回
+	$INPUT_INHABITANT_SETTINGS_2
+	INPUT
+	IF RESULT == 0
+		PRINTFORML %CALLNAME:(LOCAL:1)%の地位の値を入力してください
+		INPUT
+		CFLAG:(LOCAL:1):住人同士イベント地位 = RESULT
+		GOTO INPUT_INHABITANT_SETTINGS_3
+	ELSEIF RESULT == 1
+		PRINTFORML %CALLNAME:(LOCAL:1)%の立場の値を入力してください
+		INPUT
+		CFLAG:(LOCAL:1):住人同士イベント立場 = RESULT
+		GOTO INPUT_INHABITANT_SETTINGS_3
+	ELSEIF RESULT == 2
+		PRINTFORML %CALLNAME:(LOCAL:1)%の体を許す好感度の値を入力してください
+		PRINTFORML 好感度がこの値に満たない状態で性交されると強姦扱いになります
+		INPUT
+		CFLAG:(LOCAL:1):体を許す好感度 = RESULT
+		GOTO INPUT_INHABITANT_SETTINGS_3
+	ELSEIF RESULT == 3
+		PRINTFORML %CALLNAME:(LOCAL:1)%の行為の上限を選択してください
+		PRINTL [0] 会话・お茶　[1] 身体接触　[2] 抚摸臀部　[3] 抱きつく　[4] キス　[5] 胸爱抚
+		PRINTL [6] 肛门爱抚　[7] 阴蒂爱抚　　　[8] 手指插入　　　[9] 性交　　 [10] 性交多め
+		PRINTL [11] 直接入力する
+		$INPUT_INHABITANT_SETTINGS_4
+		INPUT
+		IF RESULT == 0
+			CFLAG:(LOCAL:1):行為の上限 = 49
+		ELSEIF RESULT == 1
+			CFLAG:(LOCAL:1):行為の上限 = 199
+		ELSEIF RESULT == 2
+			CFLAG:(LOCAL:1):行為の上限 = 299
+		ELSEIF RESULT == 3
+			CFLAG:(LOCAL:1):行為の上限 = 499
+		ELSEIF RESULT == 4
+			CFLAG:(LOCAL:1):行為の上限 = 599
+		ELSEIF RESULT == 5
+			CFLAG:(LOCAL:1):行為の上限 = 699
+		ELSEIF RESULT == 6
+			CFLAG:(LOCAL:1):行為の上限 = 799
+		ELSEIF RESULT == 7
+			CFLAG:(LOCAL:1):行為の上限 = 899
+		ELSEIF RESULT == 8
+			CFLAG:(LOCAL:1):行為の上限 = 999
+		ELSEIF RESULT == 9
+			CFLAG:(LOCAL:1):行為の上限 = 1099
+		ELSEIF RESULT == 10
+			CFLAG:(LOCAL:1):行為の上限 = 2000
+		ELSEIF RESULT == 11
+			PRINTFORML %CALLNAME:(LOCAL:1)%の行為の上限の値を入力してください
+			PRINTFORML 参考：500で自らキスを、600から徐々に爱抚を、1000から自ら性交をするようになります
+			PRINTL 数値を高くすればするほど性交確率が上がります(好感度が同様に高くないといけませんが)
+			INPUT
+			CFLAG:(LOCAL:1):行為の上限 = RESULT
+		ELSE
+			GOTO INPUT_INHABITANT_SETTINGS_4
+		ENDIF
+		GOTO INPUT_INHABITANT_SETTINGS_3
+	ELSEIF RESULT == 1000
+		GOTO INPUT_INHABITANT_SETTINGS_START
+	ELSE
+		GOTO INPUT_INHABITANT_SETTINGS_2
+	ENDIF
+ELSEIF RESULT == 999
+	CALL INHABITANT_DISPLAY
+	GOTO INPUT_INHABITANT_SETTINGS_START
+ELSEIF RESULT == 1000
+	RETURN 0
+ELSE
+	GOTO INPUT_INHABITANT_SETTINGS_0
+ENDIF
+RETURN 0
+
+@INHABITANT_DISPLAY
+LOCAL:1 = 0
+LOCAL:2 = 0
+IF GETBIT(FLAG:住人同士イベント設定,0)
+	LOCAL:2 = INHABITANT_LOOP_MAX()
+ENDIF
+$INPUT_INHABITANT_DISPLAY
+DRAWLINE
+PRINTFORML %CALLNAME:(LOCAL:1)%の住人同士好感度
+PRINTFORM 体を許す好感度：{CFLAG:(LOCAL:1):体を許す好感度,4}　
+PRINTFORML 行為の上限：{CFLAG:(LOCAL:1):行為の上限,4}
+DRAWLINE
+FOR LOCAL:0,0,LOCAL:2
+	IF GETBIT(TALENT:(LOCAL:0):性別,0) || GETBIT(FLAG:住人同士イベント設定,3)
+		SIF LOCAL:0 == LOCAL:1
+			SETCOLOR 色設定_兄弟_自分
+		PRINTFORM [{LOCAL:0,2}]
+		PRINTFORM %CALLNAME:(LOCAL:0),16,LEFT%
+		PRINTFORM 対象へ：{TA:(LOCAL:1):(LOCAL:0):TA_好感度,5}　
+		PRINTFORM 対象から：{TA:(LOCAL:0):(LOCAL:1):TA_好感度,5}　
+		PRINTFORML %TUDUKIGARA_OUTPUT_ALL(LOCAL:1 ,LOCAL:0)%
+		RESETCOLOR
+	ENDIF
+NEXT
+DRAWLINE
+PRINTFORML [1000] 返回
+$INPUT_INHABITANT_DISPLAY_RETRY
+INPUT
+IF 0 <= RESULT && RESULT <= LOCAL:2
+	LOCAL:1 = RESULT
+	GOTO INPUT_INHABITANT_DISPLAY
+ELSEIF RESULT == 1000
+	RETURN 0
+ELSE
+	GOTO INPUT_INHABITANT_DISPLAY_RETRY
+ENDIF
+RETURN 0
+
+@INHABITANT_LOOP_MAX
+#FUNCTION
+IF GETBIT(FLAG:住人同士イベント設定,1)
+	RETURNF CHARANUM
+ELSE
+	RETURNF 人物_爱丽丝+1
+ENDIF

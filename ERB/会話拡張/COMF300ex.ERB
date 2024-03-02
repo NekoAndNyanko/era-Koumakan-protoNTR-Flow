@@ -1,0 +1,47 @@
+﻿;-------------------------------------------------------------------------------
+;会话コマンド(拡張版)
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300
+#DIMS コマンド,100
+#DIM コマンド数 = 0
+コマンド数 = 0
+; IF CFLAG:怒意
+; 	PRINTFORML %CALLNAME:TARGET%正在生气的样子，不愿意说话……
+; 	RETURN 0
+; ENDIF
+IF TCVAR:会话不能
+	PRINTFORML 不停搭话是不好的，还是暂时不要打扰%CALLNAME:TARGET%了吧……
+	RETURN 0
+ENDIF
+FOR LOCAL:0,0,100
+	SIF LOCAL:0 == 20 && !FLAG:真实模式
+		CONTINUE
+	TRYCCALLFORM %"COM300_"+TOSTR(LOCAL:0,"00")+"_ENABLE"%
+		IF RESULT:0
+			コマンド:コマンド数 = %RESULTS:0%
+			コマンド数++
+		ENDIF
+	CATCH
+	ENDCATCH
+NEXT
+;特殊会话は会话不能が0の場合だけ表示。直接番号叩かれたら呼べるけど、まあ妥協。
+IF (TCVAR:(TARGET:0):会话不能 == 0) && (コマンド数 > 0)
+	PRINTFORML %"说些什么呢……？"%
+	PRINTFORML %"[ 1]-随便聊些什么"%
+	FOR LOCAL,0,コマンド数
+		PRINTFORML %コマンド:LOCAL%
+	NEXT
+	$COM300_INPUT_LOOP
+	INPUT
+	TRYCCALLFORM COM300_%TOSTR(RESULT:0,"00")%
+		RETURN RESULT:0
+	CATCH
+		CLEARLINE 1
+		GOTO COM300_INPUT_LOOP
+	ENDCATCH
+ELSE
+	CALL COM300_01
+	RETURN RESULT:0
+ENDIF
+RETURN 0

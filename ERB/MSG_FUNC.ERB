@@ -1,0 +1,119 @@
+﻿;--------------------------------------------------
+;汎用メッセージ関数群
+;何か引数から文字列を取得できる関数など
+;--------------------------------------------------
+
+;ハートマーク
+@MSG_HEART
+#FUNCTIONS
+RETURNF UNICODE(0x2764)
+
+;壁または木取得(訪問者)
+@MSG_WALL_OR_TREE
+#FUNCTIONS
+#DIM 場所
+場所 = FLAG:訪問者の現在位置 
+IF 場所 == 位置_院子 || 場所 == 位置_湖 || 場所 == 位置_湖南部 || 場所 == 位置_魔法の森内部
+	RETURNF "树干"
+ELSE
+	RETURNF "墙壁"
+ENDIF
+
+;壁または木取得(汎用)
+@MSG_WallOrTree(場所)
+#FUNCTIONS
+#DIM 場所
+IF 場所 == 位置_院子 || 場所 == 位置_湖 || 場所 == 位置_湖南部 || 場所 == 位置_魔法の森内部
+	RETURNF "木"
+ELSE
+	RETURNF "壁"
+ENDIF
+
+;割れ目描写文字列取得
+@MSG_SLIT(奴隷)
+#FUNCTIONS
+#DIM 奴隷
+IF TALENT:奴隷:处女 == 1
+	IF PALAM:润滑 > PALAMLV:1 || PALAM:欲情 >= PALAMLV:3
+		LOCALS += "尽管还不识男人滋味，却依然"
+	ELSE
+		LOCALS += "还不识男人滋味的"
+	ENDIF
+ENDIF
+IF PALAM:欲情 >= PALAMLV:3
+	LOCALS += "在放出浓厚雌性的气味"
+	IF PALAM:润滑 > PALAMLV:1
+		LOCALS += "的同时，"
+	ELSE
+		LOCALS += "的"
+	ENDIF
+ENDIF
+IF PALAM:润滑 > PALAMLV:4
+	LOCALS += "让满溢而出的爱欲之蜜洒满了大腿的"
+ELSEIF PALAM:润滑 > PALAMLV:3
+	LOCALS += "被粘稠爱液浸透的"
+ELSEIF PALAM:润滑 > PALAMLV:2
+	LOCALS += "被爱液湿润得非常顺滑的"
+ELSEIF PALAM:润滑 > PALAMLV:1
+	LOCALS += "散发着湿润热气的"
+ENDIF
+IF TALENT:奴隷:体型 == -1
+	IF RAND:2 == 0
+		LOCALS += "惹人怜爱的"
+	ELSE
+		LOCALS += "稚嫩的"
+	ENDIF
+ELSEIF TALENT:奴隷:体型 == -2
+	SELECTCASE RAND:6
+		CASE 0
+			LOCALS += "滑溜溜的"
+		CASE 1
+			LOCALS += "幼小的"
+		CASE 2
+			LOCALS += "光洁的"
+		CASE 3
+			LOCALS += "无毛的"
+		CASE 4
+			LOCALS += "小小的"
+		CASEELSE
+			LOCALS += "未成熟的"
+	ENDSELECT
+ENDIF
+IF TALENT:奴隷:处女 == 1 && !RAND:3
+	LOCALS += "处女"
+ELSE
+	SELECTCASE RAND:8
+		CASE 0
+			LOCALS += "秘縫"
+		CASE 1
+			LOCALS += "小穴"
+		CASE 2
+			LOCALS += "膣穴"
+		CASE 3
+			LOCALS += "雌穴"
+		CASE 4
+			LOCALS += "肉壺"
+		CASE 5
+			LOCALS += "蜜壺"
+		CASE 6
+			LOCALS += "阴唇"
+		CASEELSE
+			LOCALS += "秘裂"
+	ENDSELECT
+ENDIF
+RETURNF LOCALS
+
+;分単位の数値を時間、分文字列に変換
+@MSG_HOUR_MIN(時間_分)
+#FUNCTIONS
+#DIM 時間_分
+#DIMS 時間分文字列
+IF 時間_分 >= 60 && 時間_分 % 60 == 0
+	時間分文字列 = {時間_分/60}時間
+ELSEIF 時間_分 > 60
+	時間分文字列 = {時間_分/60}時間{時間_分%60}分
+ELSE
+	時間分文字列 = {時間_分%60}分
+ENDIF
+RETURNF 時間分文字列
+

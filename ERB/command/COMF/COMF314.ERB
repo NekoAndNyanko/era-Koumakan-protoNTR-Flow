@@ -1,0 +1,101 @@
+﻿;肛门爱抚
+@COM314
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
+SIF RESULT
+	RETURN 0
+
+TRYCALL NTR_UNLOCK_CHASTITY_BELT(TARGET)
+IF !RESULT
+	DRAWLINE
+	PRINTFORML %CALLNAME:MASTER%本来想伸手去爱抚%CALLNAME:TARGET%
+	PRINTFORML 但是被%CALLNAME:TARGET%身上的贞操带阻止了。
+	CFLAG:TARGET:ぱんつ確認 = 1
+
+	IF CFLAG:TARGET:好感度 > 0
+		PRINTFORML %CALLNAME:TARGET%似乎对无法触碰到身体而感到不满
+		;欲情していると反感が伸びる
+		PALAM:TARGET:反感 += MIN( PALAM:TARGET:欲情/MAX(CFLAG:TARGET:好感度,1),300)
+		;欲情していると好感度も下がる
+		CFLAG:TARGET:好感度 = MAX( CFLAG:TARGET:好感度 - MIN(PALAM:TARGET:欲情 ,30),0)
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%很无聊地看着%CALLNAME:MASTER%……
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 40
+DOWNBASE:气力 += 100
+
+SOURCE:快Ａ = 100
+SOURCE:苦痛 = 50
+SOURCE:屈从 = 100
+SOURCE:露出 = 120
+SOURCE:欲情 = 170
+SOURCE:欢乐 = 50
+SOURCE:逸脱 = 80
+SOURCE:反感 = 60
+SOURCE:被动 = 150 + 300 * ABL:顺从
+
+;手を突っ込めない衣装
+IF TEQUIP:0 & 16
+	TIMES SOURCE:快Ａ , 0.60
+	TIMES SOURCE:欲情 , 0.60
+	TIMES SOURCE:露出 , 0.60
+	;裙子以外の何かを履いてる
+ELSEIF TEQUIP > 1
+	TIMES SOURCE:快Ａ , 0.80
+	TIMES SOURCE:欲情 , 0.80
+	TIMES SOURCE:露出 , 0.80
+ENDIF
+CALL 締り具合変動, TARGET, 1, 1
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 100
+
+;Aへの苦痛は先に処理しておく
+SIF TCVAR:20 == 72 && !TEQUIP:六九式
+	CALL PAIN_CHECK_A(TARGET)
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+IF TCVAR:20 == 72 && !TEQUIP:六九式
+	;奴隷のＡ⇔調教者の指の汚れが移动
+	STAIN:PLAYER:口 |= STAIN:Ａ
+	STAIN:Ａ |= STAIN:PLAYER:口
+ELSE
+	;奴隷のＡ⇔調教者の指の汚れが移动
+	STAIN:PLAYER:手 |= STAIN:Ａ
+	STAIN:PLAYER:手 |= STAIN:腸内
+	STAIN:Ａ |= STAIN:PLAYER:手
+	STAIN:腸内 |= STAIN:PLAYER:手
+ENDIF
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 4
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 4
+ENDIF
+SIF TFLAG:60 < 2
+	EXP:PLAYER:手淫经验 ++
+SIF TEQUIP:六九式 || TCVAR:20 == 72
+	EXP:PLAYER:口淫经验 ++
+TIME += 10
+CALL 改变肛门色素(TARGET,1)
+CALL 触觉确认肛门松弛度(TARGET)
+RETURN 1

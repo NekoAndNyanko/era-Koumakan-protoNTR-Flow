@@ -1,0 +1,5331 @@
+﻿;==============================================================================================
+;文件名：	SYSTEM_DEBUG_Maid.ERB
+;版本：		Ver.1.52_23/02/05
+;原作者：	Tsubasa
+;原文件:		SYSTEM_DEBUG_Universal_eraTW.ERB
+;作者：		likulisu
+;參考:		[star],[LJ],[112233]
+;啟動用函式：@DEBUG_Maid
+;使用例子：
+;   ELSEIF RESULT == 9988
+;       CALL DEBUG_Maid
+;==============================================================================================
+;---------------------------------------------資訊---------------------------------------------
+;取自於ERA用之於ERA，通知一下歡迎搬運魔改
+;想加的項目
+;   增加搜尋對象，更多修改模式,增加溫度，改變RESULT存取資料的方式(5812)
+;   角色管理完工，暫且不知道能做些什麼調整，也應該沒錯誤吧...
+;
+;RESULT90~99記錄一些東西，可能會改掉可能不會。(@DEBUG_MaidLOG)
+;目前用空值來先儲存資料，接著使用，結束後歸還，理論上應該不會出錯...
+;
+;v1.52(23/02/05)
+;   新增全體單一數值編輯
+;v1.5(22/06/01)
+;   角色管理完工
+;   除錯
+;v1.4(22/04/21)
+;   UI修改(這樣子有比較好看嗎?)
+;   追加直接修改系統
+;v1.2(22/01/14)
+;   更改變數的處理辦法(之後可能再改可能不會)
+;v1.13(21/12/19)
+;   部分排錯
+;v1.12(21/02/13)
+;   角色選擇頁錯誤修改
+;v1.11(21/02/08)
+;   部分函式更名
+;v1.1(21/02/07)
+;   部分通用變數變成自訂、　增加DEBUG自用存檔、　主畫面的女僕碎念、　記住最後選擇對象
+;==============================================================================================
+;-------------------------------------------主選單---------------------------------------------
+;==============================================================================================
+@DEBUG_Maid
+;#DIM debugCOUNT
+;debugCOUNT++
+;IF debugCOUNT == 1
+;    CALL DEBUG_MaidLOG(8,100,-1)
+;    CALL DEBUG_MaidLOG(11,0,-1)
+;    CALL DEBUG_MaidLOG(12,1,-1)
+;ENDIF
+REPEAT 100
+    PRINTL
+REND
+RESULT = GET_CLINE(0)
+GETTIME
+SAVEDATA 991, RESULTS + " " + @"{DAY}日目 DEBUG修改前"
+CALL DEBUG_myMaid(1,DAY)
+
+@DEBUG_myMaid(LOCALflag,oldDAY)
+#DIM oldDAY
+#DIM oldTARGET
+#DIM menuFLAG,10
+#DIM myMODE
+#DIM myPAGE
+#DIM LOCALflag,101
+#DIM reSAVE
+#DIMS mySAVE,3
+#DIM debugCOUNT
+#DIM Maidtxt,10
+#DIM Maidlog,10
+myPAGE = MY_PAGE(0,0)
+$PRINT_LIST
+myMODE = NXP_MODE(1,0,0)
+debugCOUNT++
+if LOCALflag == 1
+REPEAT 10
+    LOCALflag:COUNT = LOCAL:COUNT
+    LOCALflag:(10+COUNT) = RESULT:(90+COUNT)
+    SIF debugCOUNT >= 2
+        RESULT:(90+COUNT) = LOCALflag:(20+COUNT)
+REND
+LOCALflag = 0
+IF debugCOUNT == 1
+    RESULT:95 = 0
+    RESULT:96 = 1
+    RESULT:99 = 100
+ENDIF
+LOCALflag:31 = RESULT:89
+RESULT:89 = 0
+LOCAL:1 = TARGET
+TARGET = 0
+ENDIF
+CLEARLINE LINECOUNT-GET_CLINE(1)
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORML %GAMEBASE_TITLE%　Ver.{GAMEBASE_VERSION}
+PRINTFORML ＤＥＢＵＧＭＯＤＥ　Ver.1.52
+ALIGNMENT LEFT
+DRAWLINEFORM =
+PRINTFORM %"　"%\@(oldDAY != DAY) ? 經過{DAY}天＊注意天數被修改(原{oldDAY}天)＊ # 經過{DAY}天\@
+PRINTFORML %"　時間:"%{TIME:LOCAL/60}時{TIME:LOCAL-(TIME:LOCAL/60)*60}分({TIME:LOCAL}分)
+PRINTFORML 　親愛的MASTER，請問您要準備做什麼？(持有{MONEY}元)
+DRAWLINE
+PRINTBUTTON  \@(!menuFLAG:1) ? ⊞ 基本操作 ⊞ # ⊟ 基本操作 ⊟\@,1101
+PRINTL
+IF menuFLAG:1
+PRINTLC [101] - 角色全回復
+PRINTLC [102] - ITEM編輯
+PRINTLC [103] - 修改金錢
+ENDIF
+PRINTL
+PRINTBUTTON \@(!menuFLAG:2) ? ⊞ 事件操作  ⊞ # ⊟ 事件操作  ⊟\@,1102
+PRINTL
+IF menuFLAG:2
+PRINTLC [104] - FLAG操作
+PRINTLC [105] - TFLAG編輯
+ENDIF
+PRINTL
+PRINTBUTTON \@(!menuFLAG:3) ? ⊞ 時間操作（慎用！） ⊞ # ⊟ 時間操作（慎用！） ⊟\@,1103
+PRINTL
+IF menuFLAG:3
+PRINTLC [191] - TIME編輯
+PRINTLC [198] - 日期編輯
+PRINTLC [199] - 跳至下一天
+ENDIF
+PRINTL
+PRINTBUTTON \@(!menuFLAG:4) ? ⊞ DEBUG用存檔（僅讀取） ⊞ # ⊟ DEBUG用存檔（僅讀取） ⊟\@,1104
+PRINTL
+IF menuFLAG:4
+PRINTFORMLC [991] - {DAY}日_修改前
+PRINTFORMLC [992] - %mySAVE:1%
+PRINTFORMLC [993] - %mySAVE:2%
+ENDIF
+PRINTL
+DRAWLINE
+CALL NXP_BCHARAR(0)
+PRINTBUTTON \@(!menuFLAG:6) ? ⊟ 數值編輯 ⊟ # ⊞ 數值編輯 ⊞\@,1106
+PRINTL
+IF !menuFLAG:6
+PRINTLC [201] - 能力編輯(ABL)
+PRINTLC [202] - 經驗編輯(EXP)
+PRINTLC [203] - 素質編輯(TALENT)
+PRINTLC [204] - 刻印編輯(MARK)
+PRINTL
+PRINTLC [205] - 珠編輯(JUEL)
+PRINTLC [206] - 體質編輯(BASE)
+PRINTLC [207] - 裝備編輯(EQUIP)
+PRINTLC [208] - 裝備編輯(TEQUIP)
+PRINTL
+PRINTLC [209] - 狀態編輯(PALAM)
+PRINTLC [210] - 絕頂編輯(EX)
+PRINTLC [211] - SOURCE編輯
+PRINTLC [212] - 角色事件(CFLAG)
+ENDIF
+PRINTL
+PRINTBUTTON \@(!menuFLAG:7) ? ⊞ 文字編輯 ⊞ # ⊟ 文字編輯 ⊟\@,1107
+PRINTL
+IF menuFLAG:7
+PRINTLC [301] - CSTR編輯
+PRINTLC [302] - TSTR編輯
+PRINTLC [303] - STR編輯
+;   PRINTLC [---] -
+ENDIF
+PRINTL
+PRINTBUTTON \@(!menuFLAG:8) ? ⊞ 其他項目 ⊞ # ⊟ 其他項目 ⊟\@,1108
+PRINTL
+IF menuFLAG:8
+PRINTLC [401] - 角色管理
+PRINTLC [402] - 指令名展示(TRAIN)
+PRINTLC [403] - RELATION編輯
+PRINTLC [---] -
+PRINTL
+PRINTLC [405] - TCVAR編輯
+PRINTLC [406] - STAIN編輯
+PRINTLC [407] - GOTJUEL編輯
+PRINTLC [408] - NOWEX編輯
+PRINTL
+PRINTLC [---] -
+PRINTLC [---] -
+PRINTLC [---] -
+PRINTLC [499] - 記事本
+ENDIF
+PRINTL
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL DEBUG_MAID_K
+PRINTL
+ALIGNMENT CENTER
+IF CHARANUM == 1
+PRINTFORMLC [1000]返回
+ELSE
+PRINTFORMLC [1011]\@(TARGET == 0) ? %CALLNAME:(CHARANUM-1)% # %CALLNAME:(TARGET - 1)%\@
+PRINTFORMLC [1000]返回
+PRINTFORMLC [1019]\@(TARGET == CHARANUM-1) ? %CALLNAME:0% # %CALLNAME:(TARGET + 1)%\@
+ENDIF
+PRINTL
+ALIGNMENT LEFT
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+CASE 1000, 8990 TO 8992
+    SIF DAY > oldDAY
+        BEGIN AFTERTRAIN
+    CLEARLINE LINECOUNT-(GET_CLINE(1)-100)
+    TARGET = LOCAL:1
+    GETTIME
+    IF mySAVE != "B"
+        SAVEDATA 992, RESULTS + " " + @"{DAY}日目 DEBUG修改Ａ"
+        mySAVE = B
+        mySAVE:1 = {DAY}日_%SUBSTRING(RESULTS,11,2)%時%SUBSTRING(RESULTS,14,2)%分
+    ELSE
+        SAVEDATA 993, RESULTS + " " + @"{DAY}日目 DEBUG修改Ｂ"
+        mySAVE = A
+        mySAVE:2 = {DAY}日_%SUBSTRING(RESULTS,11,2)%時%SUBSTRING(RESULTS,14,2)%分
+    ENDIF
+    REPEAT 10
+        LOCAL:COUNT = LOCALflag:COUNT
+        LOCALflag:(20+COUNT) = RESULT:(90+COUNT)
+        RESULT:(90+COUNT) = LOCALflag:(10+COUNT)
+    REND
+    RESULT:89 = LOCALflag:31
+    RETURN 0
+CASE 1011
+    TARGET --
+    SIF TARGET <= -1
+        TARGET = CHARANUM - 1
+    GOTO PRINT_LIST
+CASE 1019
+    TARGET ++
+    SIF TARGET >= CHARANUM
+        TARGET = 0
+    GOTO PRINT_LIST
+CASE 1101 TO 1109
+    RESULT -= 1100
+    menuFLAG:RESULT = !menuFLAG:RESULT
+    ;通用系統修改
+CASE 101
+    CALL EDIT_HEAL_ALL
+CASE 102
+    CALL EDIT_ITEM("ITEM",myMODE,0)
+CASE 103
+    CALL EDIT_MONEY("MONEY",myMODE,0)
+CASE 104
+    CALL EDIT_FLAG("FLAG",myMODE,0)
+CASE 105
+    CALL EDIT_TFLAG("TFLAG",myMODE,0)
+CASE 191
+    CALL EDIT_TIME("TIME",myMODE,0)
+CASE 198
+    CALL EDIT_DAY("DAY",myMODE,0)
+CASE 199
+    CALL EDIT_DAY("DAY",myMODE,0)
+    ;角色修改
+CASE 201
+    CALL EDIT_ABL("ABL",myMODE,0)
+CASE 202
+    CALL EDIT_EXP("EXP",myMODE,0)
+CASE 203
+    CALL EDIT_TALENT("TALENT",myMODE,0)
+CASE 204
+    CALL EDIT_MARK("MARK",myMODE,0)
+CASE 205
+    CALL EDIT_JUEL("TUEL",myMODE,0)
+CASE 206
+    CALL EDIT_BASE("BASE",myMODE,0)
+CASE 207
+    CALL EDIT_EQUIP("EQUIP",myMODE,0)
+CASE 208
+    CALL EDIT_TEQUIP("TEQUIP",myMODE,0)
+CASE 209
+    CALL EDIT_PALAM("PALAM",myMODE,0)
+CASE 210
+    CALL EDIT_EX("EX",myMODE,0)
+CASE 211
+    CALL EDIT_SOURCE("SOURCE",myMODE,0)
+CASE 212
+    CALL EDIT_CFLAG("CFLAG",myMODE,0)
+CASE 301
+    CALL EDIT_CSTR("CSTR",myMODE,0)
+CASE 302
+    CALL EDIT_TSTR("TSTR",myMODE,0)
+CASE 303
+    CALL EDIT_STR("STR",myMODE,0)
+CASE 304
+    ;其他
+CASE 401
+    CALL EDIT_CHARA("CHARAlist",myMODE,0)
+CASE 402
+    CALL EDIT_TRAIN("TRAIN",myMODE,0)
+CASE 403
+    CALL EDIT_RELATION("RELATION",myMODE,0)
+CASE 404
+CASE 405
+    CALL EDIT_TCVAR("TCVAR",myMODE,0)
+CASE 406
+    CALL EDIT_STAIN("STAIN",myMODE,0)
+CASE 407
+    CALL EDIT_GOTJUEL("GOTJUEL",myMODE,0)
+CASE 408
+    CALL EDIT_NOWEX("NOWEX",myMODE,0)
+CASE 499
+    CALL EDIT_MYLOG("記事本",myMODE,0)
+CASE  20000 TO 30000
+    CALL NXP_BRESULT(1,RESULT,"DEBUGMENU",myPAGE,myPAGE,myMODE)
+CASE 991 TO 993
+    reSAVE = RESULT
+    IF RESULT > 990 && RESULT < 999
+        IF RESULT == 992
+            SIF STRLENS(mySAVE:1) < 1
+                GOTO INPUT_LOOP
+        ELSEIF RESULT == 993
+            SIF STRLENS(mySAVE:2) < 1
+                GOTO INPUT_LOOP
+        ENDIF
+        LOADDATA RESULT
+    ENDIF
+    CHKDATA reSAVE
+    LOADDATA reSAVE
+ENDSELECT
+RESTART
+
+$DEBUG_END
+
+
+;--------------------------------------------------
+; 選擇角色
+;--------------------------------------------------
+@NEXT_CHARA(RESULTS,RESULT,myPAGE:1)
+#DIM myPAGE,2
+#DIM newNAME,3
+#DIM listINT
+listINT = 40
+myPAGE = GET_PAGE(0,listINT,CHARANUM,0,0,0)
+
+$PRINT_LIST
+CLEARLINE LINECOUNT-GET_CLINE(1)
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORML 當前為「角色選擇」頁面
+PRINTFORML 現在對象是:「%CALLNAME:TARGET%」，請問您要更換為哪個對象？
+ALIGNMENT LEFT
+DRAWLINE
+PRINTFORMC |   |%" ",9%%"全名",11,LEFT%｜%" ",3%%"稱呼",7,LEFT%｜|   |%" ",9%%"全名",11,LEFT%｜%" ",3%%"稱呼",7,LEFT%｜
+PRINTL
+REPEAT CHARANUM
+    IF COUNT < ((myPAGE:1+1) * listINT) && COUNT >= (myPAGE:1 * listINT)
+        SIF COUNT != 0 && (COUNT % listINT) != 0 && (COUNT % 2) == 0
+            PRINTL
+        newNAME:1 = GET_INTname(0,NAME:COUNT)
+        newNAME:2 = GET_INTname(0,CALLNAME:COUNT)
+        PRINTFORMLC [{COUNT,3}]%NAME:COUNT,(20-newNAME:1)%｜%CALLNAME:COUNT,(10-newNAME:2),LEFT%｜
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1001]上一頁\@
+PRINTLC [1000]返回
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1009]下一頁\@
+PRINTL
+ALIGNMENT LEFT
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 1000
+        RETURN 0
+    CASE 1001
+        myPAGE:1 = MY_PAGE(-1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 1009
+        myPAGE:1 = MY_PAGE(1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 0 TO CHARANUM
+        TARGET = RESULT
+        PRINTFORMW 「%CALLNAME:TARGET%」 已選擇
+        RETURN 0
+    CASEELSE
+        GOTO INPUT_LOOP
+ENDSELECT
+RETURN 0
+
+;--------------------------------------------------
+;對象情報
+;--------------------------------------------------
+@DEBUG_CHARADATA(cTARGET)
+#DIM newLINE
+#DIM sCOUNT
+#DIM cTARGET
+newLINE = GET_LINEint(1,8,"0")
+
+$PRINT_LIST
+CLEARLINE LINECOUNT-GET_CLINE(1)
+PRINTL
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORML 當前為 「角色情報」 頁面
+ALIGNMENT LEFT
+DRAWLINE
+PRINTFORMC 　「%NAME:cTARGET% / %CALLNAME:cTARGET%」
+PRINTBUTTON @"  [改名]",99
+PRINTL
+PRINTFORMC %" " * 2% 体力 : ({BASE:cTARGET:0} / {MAXBASE:cTARGET:0})%" " * 2% 氣力 : ({BASE:cTARGET:1} / {MAXBASE:cTARGET:1})
+PRINTBUTTON @"  [回復]",90
+PRINTL
+PRINTBUTTON @"□ 能力 □",91
+;PRINTFORM \@(newLINE != 0) ? %"-" * newLINE% # %"-" * 100%\@
+PRINTFORM %"-" * newLINE%
+sCOUNT = 0
+;REPEAT VARSIZE("ABL")
+REPEAT 100
+    SIF STRLENS(ABLNAME:COUNT) == 0 || COUNT > 30 && ABL:cTARGET:COUNT <= 0
+        CONTINUE
+    IF (sCOUNT % 3) == 0 && newLINE < 75
+        PRINTL
+    ELSEIF (sCOUNT % 4) == 0 && newLINE >= 75
+        PRINTL
+    ENDIF
+    PRINTFORMC %ABLNAME:COUNT,12%:{ABL:cTARGET:COUNT,3,LEFT}
+    sCOUNT ++
+REND
+
+PRINTL
+PRINTBUTTON @"□ 刻印 □",92
+;PRINTFORM \@(newLINE != 0) ? %"-" * newLINE% # %"-" * 100%\@
+PRINTFORM %"-" * newLINE%
+sCOUNT = 0
+REPEAT VARSIZE("MARK")
+    SIF STRLENS(MARKNAME:COUNT) == 0 || COUNT > 30 && MARK:cTARGET:COUNT <= 0
+        CONTINUE
+    IF (sCOUNT % 3) == 0 && newLINE < 75
+        PRINTL
+    ELSEIF (sCOUNT % 4) == 0 && newLINE >= 75
+        PRINTL
+    ENDIF
+    PRINTFORMC %MARKNAME:COUNT,12%:{MARK:cTARGET:COUNT,3,LEFT}
+    sCOUNT ++
+REND
+PRINTL
+PRINTBUTTON @"□ 素質 □",93
+;PRINTFORM \@(newLINE != 0) ? %"-" * newLINE% # %"-" * 100%\@
+PRINTFORM %"-" * newLINE%
+PRINTL
+LOCALS = ""
+PRINTFORM 　
+REPEAT VARSIZE("TALENT")
+    SIF STRLENS(TALENTNAME:COUNT) == 0
+        CONTINUE
+    IF TALENTNAME:COUNT == "性別"
+        IF TALENT:cTARGET:COUNT == 3
+            PRINTFORM [扶她]
+        ELSE
+            CONTINUE
+        ENDIF
+    ELSEIF TALENTNAME:COUNT == "開朗／阴郁"
+        IF TALENT:cTARGET:COUNT == 1
+            PRINTFORM [陽気]
+        ELSEIF  TALENT:cTARGET:COUNT == 2
+            PRINTFORM [陰気]
+        ELSE
+            CONTINUE
+        ENDIF
+    ELSEIF TALENT:cTARGET:COUNT > 0
+        LOCALS += TALENTNAME:COUNT+"["
+        IF STRLENS(TOFULL(LOCALS)) > newLINE
+            PRINTL
+            PRINTFORM 　
+            LOCALS = "　"
+        ENDIF
+        PRINTFORM [%TALENTNAME:COUNT%]
+    ENDIF
+REND
+PRINTL
+PRINTBUTTON @"□ 經驗 □",94
+;PRINTFORM \@(newLINE != 0) ? %"-" * newLINE% # %"-" * 100%\@
+PRINTFORM %"-" * newLINE%
+sCOUNT = 0
+REPEAT VARSIZE("EXP")
+    SIF STRLENS(EXPNAME:COUNT) == 0 || EXP:cTARGET:COUNT == 0
+        CONTINUE
+    IF (sCOUNT % 3) == 0 && newLINE < 75
+        PRINTL
+    ELSEIF (sCOUNT % 4) == 0 && newLINE >= 75
+        PRINTL
+    ENDIF
+    IF EXP:COUNT != 0
+        PRINTFORMC %EXPNAME:COUNT,12%:{EXP:cTARGET:COUNT,6,LEFT}
+        sCOUNT ++
+    ENDIF
+REND
+
+PRINTL
+DRAWLINE
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORMLC [1011]\@(cTARGET == 0) ? %CALLNAME:(CHARANUM - 1)% # %CALLNAME:(cTARGET - 1)%\@
+PRINTFORMLC [1000]返回
+PRINTFORMLC [1019]\@(cTARGET == CHARANUM - 1) ? %CALLNAME:0% # %CALLNAME:(cTARGET + 1)%\@
+PRINTL
+ALIGNMENT LEFT
+INPUT
+SELECTCASE RESULT
+    CASE 1000
+        RETURN 0
+    CASE 1011
+        cTARGET --
+        SIF cTARGET <= -1
+            cTARGET = CHARANUM - 1
+        GOTO PRINT_LIST
+    CASE 1019
+        cTARGET ++
+        SIF cTARGET >= CHARANUM -1
+            cTARGET = 0
+        GOTO PRINT_LIST
+    CASE 90
+        BASE:cTARGET:0 = MAXBASE:cTARGET:0
+        BASE:cTARGET:1 = MAXBASE:cTARGET:1
+        RESTART
+    CASE 91
+        CALL EDIT_ABL("ABL",0,0)
+    CASE 92
+        CALL EDIT_MARK("MARK",0,0)
+    CASE 93
+        CALL EDIT_TALENT("TALENT",0,0)
+    CASE 94
+        CALL EDIT_EXP("EXP",0,0)
+    CASE 99
+        CALL EDIT_CHARAname(cTARGET)
+    CASEELSE
+ENDSELECT
+RETURN 0
+;--------------------------------------------------
+;改名稱
+;--------------------------------------------------
+@EDIT_CHARAname(cTARGET)
+#DIM nameFLAG
+#DIM cTARGET
+#DIMS CHARAint
+SIF cTARGET != 0
+    CHARAint = 0{cTARGET}
+GOTO PRINT_LIST
+
+$PRINT_NAMEedit
+PRINTL
+DRAWLINE
+IF nameFLAG == 1
+    IF cTARGET == 0
+        PRINTFORML 主人「%CALLNAME:cTARGET%」您好♥
+        PRINTFORML 您想換名子嗎！
+        PRINTFORML 我很喜歡主人目前的名子，但如果您堅持的話...不，只要是主人的意思我都會執行。
+        PRINTFORML 請問該如何稱呼您的新名子？
+    ELSEIF  cTARGET != 0
+        PRINTFORML 奴隸%CHARAint%號，奴隸的名子就是奴隸，頂多就上個編號而已，竟然妄想有個好聽的新名子。
+        PRINTFORML 什麼！是主人的意思...
+        PRINTFORMW (呿！)沒辦法，只能做了...只能做了不是嗎！
+        PRINTFORML 那您的新名子決定好了嗎？聽好了這可不是為了你！%CHARAint%
+    ENDIF
+    PRINTFORM (請輸入新的名稱)%" " * 12%
+ELSEIF nameFLAG == 2
+    IF cTARGET == 0
+        PRINTFORML %SUBSTRING(CALLNAME:cTARGET,0,1)%...%SUBSTRING(CALLNAME:cTARGET,1,1)%...，主人您好♥
+        PRINTFORML 您想換暱稱嗎！
+        PRINTFORML 主人就叫主人，用稱呼什麼的...太不敬了！
+        PRINTFORML 希望我多用稱呼稱呼是嗎...如果是%CALLNAME:cTARGET%...(主人)的意思的話
+        PRINTFORML 請問該如何稱呼您的新暱稱？
+    ELSEIF  cTARGET != 0
+        PRINTFORML 「%CALLNAME:cTARGET%」？
+        PRINTFORML  奴隸%CHARAint%號 你想換暱稱？
+        PRINTFORML 別開玩笑了！奴隸的暱稱不是編號嗎？那是固定的！你身為奴隸一點自覺都沒有嗎%TOFULL(CHARAint)%號？
+        PRINTFORML 什麼！是主人的意思...
+        PRINTFORMW (呿！)沒辦法，只能做了...只能做了不是嗎！
+        PRINTFORML 那你的暱稱決定好了嗎？聽好了這可不是為了你！
+    ENDIF
+    DRAWLINE
+    PRINTFORM (請輸入新的暱稱)%" " * 12%
+ENDIF
+PRINTL
+PRINTFORM %" " * 25%
+PRINTBUTTON @" [返回] ","返回"
+PRINTL
+INPUTS
+
+IF RESULTS == "返回"
+    SIF cTARGET == 0
+        PRINTFORMW 　主人不改了嗎? 這並沒有造成我的麻煩，我也很喜歡原本的名稱♥
+    SIF cTARGET != 0
+        PRINTFORMW 　區區奴隸竟敢浪費我的時間，氣死我了！
+    GOTO PRINT_LIST
+ELSE
+    IF nameFLAG == 1
+        NAME:cTARGET = %RESULTS%
+        IF cTARGET == 0
+            PRINTFORML 　%SUBSTRING(NAME:cTARGET,0,1)%..%SUBSTRING(NAME:cTARGET,1,1)%..「%NAME:cTARGET%」主人，請問新的名子還習慣嗎？
+            PRINTFORML 　我的感想？明明是重要的事情卻問我的感想(\\\\\\)
+            PRINTFORMW 　我很喜歡喔♥
+        ELSEIF  cTARGET != 0
+            PRINTFORML 　%NAME:cTARGET%嗎...以一個奴隸來說不算太差
+            PRINTFORMW 　嘛..不喜歡也不能反悔，這可不是我的工作，我只負責主人吩咐的事物與決定罷了。
+        ENDIF
+    ELSEIF nameFLAG == 2
+        CALLNAME:cTARGET = %RESULTS%
+        IF cTARGET == 0
+            PRINTFORML 　主人您的暱稱已更改完成。
+            PRINTFORML 　什！什麼！暱稱...，要我叫暱稱太不敬了！
+            PRINTFORML 　既然是主人的意思...%SUBSTRING(CALLNAME:cTARGET,0,1)%..%SUBSTRING(CALLNAME:cTARGET,1,1)%..%CALLNAME:cTARGET%...「%CALLNAME:cTARGET%」♥
+            PRINTFORMW   非常好聽的暱稱 我很喜歡。
+        ELSEIF  TARGET != 0
+            PRINTFORML 　%CALLNAME:cTARGET%嗎...以一個奴隸來說還挺有品味的嘛！
+            PRINTFORMW 　但是對我而言%TOFULL(CHARAint)%才是你的稱呼方式，懂嗎?
+        ENDIF
+    ENDIF
+ENDIF
+GOTO PRINT_LIST
+
+$PRINT_LIST
+CLEARLINE LINECOUNT-GET_CLINE(1)
+DRAWLINEFORM =
+CALL NXP_CHARAtitle(1,"更改名稱",cTARGET)
+CALL NXP_BCHARAR(1)
+PRINTFORMLC 　名稱 -- %NAME:cTARGET%
+PRINTBUTTON " [修改]", 1
+PRINTL
+PRINTL
+PRINTFORMLC 　暱稱 -- %CALLNAME:cTARGET%
+PRINTBUTTON " [修改]", 2
+PRINTL
+DRAWLINE
+DRAWLINEFORM =
+PRINTFORMLC %" " * 16%
+PRINTBUTTON " [返回]", 0
+PRINTL
+$PRINT_NAMEmode
+INPUT
+SELECTCASE RESULT
+    CASE 0
+        RETURN 0
+    CASE 1
+        nameFLAG = 1
+        GOTO PRINT_NAMEedit
+    CASE 2
+        nameFLAG = 2
+        GOTO PRINT_NAMEedit
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,"NEWNAME",0,0,0)
+    CASEELSE
+        GOTO PRINT_NAMEmode
+ENDSELECT
+
+;--------------------------------------------------
+;換主人
+;--------------------------------------------------
+@EDIT_MASTERswitch(RESULTS,RESULT,myPAGE:1)
+#DIM myPAGE,2
+#DIM CHARAlist,1
+#DIM overALL
+#DIM newNAME,3
+#DIM listINT
+listINT = 20
+overALL = CHARANUM
+myPAGE = GET_PAGE(0,listINT,overALL,0,0,0)
+
+$PRINT_LIST
+CLEARLINE LINECOUNT-GET_CLINE(1)
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORML 當前為 「主人變更」 頁面
+PRINTFORML 「%CALLNAME:(LOCAL:1)%」大人您好，請問您要將職位交接給誰？
+ALIGNMENT LEFT
+DRAWLINE
+REPEAT overall
+    SIF LOCAL:1 == COUNT || COUNT == 0
+        CONTINUE
+    IF COUNT < (myPAGE:1+1) * listINT && COUNT >= myPAGE:1 * listINT
+        newNAME:1 = GET_INTname(0,NAME:COUNT)
+        newNAME:2 = GET_INTname(0,CALLNAME:COUNT)
+        PRINTFORMLC [{COUNT,3}]%NAME:COUNT,(20-newNAME:1)%｜%CALLNAME:COUNT,(10-newNAME:2),LEFT%
+        PRINTBUTTON " [資訊] ",(100000+COUNT)
+        PRINTFORM | 
+        SIF COUNT%2 == 0 || COUNT == (overall-1)
+            PRINTL
+    ENDIF
+
+REND
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+DRAWLINEFORM =
+PRINTL
+PRINTFORML 請注意，部分遊戲的主人可能是0號也可能是1號位，
+PRINTFORML 或是藉由角色管理下的角色排序做調換也是可以的。
+PRINTL
+ALIGNMENT CENTER
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1001]上一頁\@
+PRINTLC [1000]返回
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1009]下一頁\@
+PRINTL
+ALIGNMENT LEFT
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 1000
+        RETURN 0
+    CASE 1001
+        myPAGE:1 = MY_PAGE(-1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 1009
+        myPAGE:1 = MY_PAGE(1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 1 TO overALL
+        SWAPCHARA LOCAL:1,RESULT
+        PRINTFORMW 恭喜「%CALLNAME:(LOCAL:1)%」 成為新的主人。
+    CASE  100000 TO 199999
+        CHARAlist:0 = RESULT -100000
+        CALL DEBUG_CHARADATA(CHARAlist:0)
+    CASE  200000 TO 299999
+        CHARAlist:0 = RESULT -200000
+        CALL EDIT_CHARAname(CHARAlist:0)
+        ;   CASE  300000 TO 399999
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; 人物管理
+;--------------------------------------------------
+@EDIT_CHARA(RESULTS,RESULT,myPAGE:1)
+#DIM myPAGE,2
+#DIM newNAME,3
+#DIM listINT
+#DIM CHARAlist,3
+#DIM overall
+#DIMS dataNAME,2
+VARSET CHARAlist,0
+$reload_LIST
+overall = CHARANUM
+listINT = 20
+myPAGE = GET_PAGE(0,listINT,overall,0,0,0)
+
+$PRINT_LIST
+CLEARLINE LINECOUNT-GET_CLINE(1)
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORML 當前為「角色管理」頁面 (合計 {overall}員)
+ALIGNMENT LEFT
+DRAWLINE
+;PRINTFORMC |   |%" ",9%%"全名",11,LEFT%｜%" ",3%%"稱呼",7,LEFT%｜
+REPEAT overall
+    IF COUNT < (myPAGE:1+1) * listINT && COUNT >= myPAGE:1 * listINT
+        newNAME:1 = GET_INTname(0,NAME:COUNT)
+        newNAME:2 = GET_INTname(0,CALLNAME:COUNT)
+        PRINTFORMLC [{COUNT,3}]%NAME:COUNT,(20-newNAME:1)%｜%CALLNAME:COUNT,(10-newNAME:2),LEFT% -
+        PRINTBUTTON "資訊-",(100000+COUNT)
+        PRINTBUTTON "更名-",(200000+COUNT)
+        PRINTBUTTON "複製-",(300000+COUNT)
+        PRINTBUTTON "保存-",(700000+COUNT)
+        PRINTBUTTON "刪除-",(800000+COUNT)
+        PRINTBUTTON "新主人-",(900000+COUNT)
+        SIF COUNT != overall
+            PRINTL
+    ENDIF
+REND
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+ALIGNMENT CENTER
+PRINTBUTTON @"  [角色排列]  ",-1001
+PRINTBUTTON @"  [角色存檔]  ",-1002
+PRINTL
+DRAWLINEFORM =
+PRINTFORML 這裡的功能比主頁的再多一些，主要進行角色的增減與排序的作業，
+PRINTFORML 並且提供角色調教進度的存取，善用該功能能避免自己在遊戲初/末期時需要進行過多的更改。
+PRINTL
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1001]上一頁\@
+PRINTLC [1000]返回
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1009]下一頁\@
+PRINTL
+ALIGNMENT LEFT
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 1000
+        RETURN 0
+    CASE 1001
+        myPAGE:1 = MY_PAGE(-1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 1009
+        myPAGE:1 = MY_PAGE(1,myPAGE)
+        GOTO PRINT_LIST
+    CASE  0 TO CHARANUM
+        GOTO INPUT_LOOP
+    CASE  100000 TO 199999
+        CHARAlist:0 = RESULT -100000
+        CALL DEBUG_CHARADATA(CHARAlist:0)
+    CASE  200000 TO 299999
+        CHARAlist:0 = RESULT -200000
+        CALL EDIT_CHARAname(CHARAlist:0)
+    CASE  300000 TO 399999
+        CHARAlist:0 = RESULT -300000
+        PRINTFORML 請問是否複製【%NAME:(CHARAlist:0)%】的資料?
+        PRINTL
+        PRINTBUTTON @"    [確認]    ",-1
+        PRINTBUTTON @"    [取消]    ",-9
+        INPUT
+        IF RESULT == -1
+            PRINTFORMW 您已經複製【%NAME:(CHARAlist:0)%】的資料了！
+            ADDCOPYCHARA CHARAlist:0
+        ELSE
+            PRINTFORMW 您取消了動作，現在返回！
+        ENDIF
+        GOTO reload_LIST
+    CASE  700000 TO 799999
+        CHARAlist:0 = RESULT -700000
+        PRINTFORML 請問是否保存【%NAME:(CHARAlist:0)%】的資料?
+        PRINTL
+        PRINTBUTTON @"    [確認]    ",-1
+        PRINTBUTTON @"    [取消]    ",-9
+        INPUT
+        IF RESULT == -1
+            dataNAME = 【%NAME:(CHARAlist:0)%】_{DAY}日
+            dataNAME:1 = %GAMEBASE_TITLE , 30% - {GAMEBASE_VERSION , 30}
+            PRINTFORMW 您已經保存【%NAME:(CHARAlist:0)%】的資料了！
+            SAVECHARA dataNAME,dataNAME:1,CHARAlist:0
+            ;SAVECHARA 1,2,3
+        ELSE
+            PRINTFORMW 您取消了動作，現在返回！
+        ENDIF
+        GOTO reload_LIST
+    CASE  800000 TO 899999
+        CHARAlist:0 = RESULT -800000
+        PRINTFORML 請問是否刪除【%NAME:(CHARAlist:0)%】的資料?
+        PRINTL
+        PRINTBUTTON @"    [確認]    ",-1
+        PRINTBUTTON @"    [取消]    ",-9
+        INPUT
+        IF RESULT == -1
+            PRINTFORMW 您已經刪除【%NAME:(CHARAlist:0)%】的資料了！
+            DELCHARA CHARAlist:0
+        ELSE
+            PRINTFORMW 您取消了動作，現在返回！
+        ENDIF
+        GOTO reload_LIST
+    CASE  900000 TO 999999
+        CHARAlist:0 = RESULT -900000
+        PRINTFORML 請問是否讓【%NAME:(CHARAlist:0)%】成為新主人?
+        PRINTL
+        PRINTBUTTON @"    [確認]    ",-1
+        PRINTBUTTON @"    [取消]    ",-9
+        INPUT
+        IF RESULT == -1
+            PRINTFORMW 您已經讓【%NAME:(CHARAlist:0)%】成為新主人了！
+            SWAPCHARA CHARAlist:0,LOCAL:1
+        ELSE
+            PRINTFORMW 您取消了動作，現在返回！
+        ENDIF
+        GOTO reload_LIST
+    CASE -1001
+        CALL EDIT_CHARAlist(0)
+    CASE -1002
+        CALL EDIT_CHARASAVE(0)
+    CASEELSE
+        TARGET = RESULT
+        PRINTFORMW 「%CALLNAME:TARGET%」 已選擇
+        RETURN 0
+ENDSELECT
+RETURN 0
+;--------------------------------------------------
+; 人物列表管理
+;--------------------------------------------------
+@EDIT_CHARAlist(myPAGE:1)
+#DIM myPAGE,2
+#DIM newNAME,3
+#DIM listINT
+#DIM TCHARA,2
+#DIM overall
+#DIM cCOUNT
+$reload_LIST
+VARSET TCHARA,-1
+overall = CHARANUM
+listINT = 20
+myPAGE = GET_PAGE(0,listINT,overall,0,0,0)
+
+$PRINT_LIST
+cCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORML 當前為 「角色排列」 頁面
+ALIGNMENT LEFT
+DRAWLINE
+REPEAT overall
+    SIF TCHARA:1 == COUNT
+        CONTINUE
+    cCOUNT ++
+    IF COUNT < (myPAGE:1+1) * listINT && COUNT >= myPAGE:1 * listINT
+        newNAME:1 = GET_INTname(0,NAME:COUNT)
+        newNAME:2 = GET_INTname(0,CALLNAME:COUNT)
+        PRINTFORMLC [{COUNT,3}]%NAME:COUNT,(20-newNAME:1)%｜%CALLNAME:COUNT,(10-newNAME:2),LEFT% | 
+        SIF cCOUNT%2 == 0 && COUNT != overall
+            PRINTL
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+DRAWLINEFORM =
+PRINTFORML 這邊能排列角色的順序，但可能會出錯請自己多注意。
+IF TCHARA == -1
+    PRINTFORML 目前還未選擇任何人 ，請選擇第一個對象。
+ELSEIF TCHARA == 0
+    PRINTFORML 已選擇 「%CALLNAME:RESULT%」 ，請選擇欲互換的對象。
+ENDIF
+PRINTL
+ALIGNMENT CENTER
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1001]上一頁\@
+PRINTLC [1000]返回
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1009]下一頁\@
+PRINTL
+ALIGNMENT LEFT
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 1000
+        PRINTFORMW 您取消了動作，現在返回。
+        RETURN 0
+    CASE 1001
+        myPAGE:1 = MY_PAGE(-1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 1009
+        myPAGE:1 = MY_PAGE(1,myPAGE)
+        GOTO PRINT_LIST
+    CASEELSE
+        TCHARA += 1
+        IF TCHARA == 0
+            TCHARA:1 = RESULT
+            PRINTFORML 第一個對象為 「%CALLNAME:(TCHARA:1)%」 。
+        ELSEIF TCHARA == 1
+            PRINTFORMW 現在將 「%CALLNAME:(TCHARA:1)%」 與 「%CALLNAME:RESULT%」 互換位置。
+            SWAPCHARA RESULT,TCHARA:1
+            GOTO reload_LIST
+        ENDIF
+        GOTO PRINT_LIST
+ENDSELECT
+RETURN 0
+;--------------------------------------------------
+; 角色存檔
+;--------------------------------------------------
+@EDIT_CHARASAVE(myPAGE:1)
+#DIM myPAGE,2
+#DIM newNAME
+#DIM listINT
+#DIM overall
+#DIM CHARASAVEint
+#DIMS CHARASAVEname,1000
+;VARSET CHARASAVEname, 
+$reload_LIST
+FIND_CHARADATA
+overall = RESULT
+listINT = 20
+myPAGE = GET_PAGE(0,listINT,overall,0,0,0)
+$PRINT_LIST
+CLEARLINE LINECOUNT-GET_CLINE(1)
+DRAWLINEFORM =
+ALIGNMENT CENTER
+PRINTFORML 當前為 「角色存檔」 頁面
+ALIGNMENT LEFT
+DRAWLINE
+FIND_CHARADATA
+REPEAT overall
+    CHARASAVEname:COUNT = %RESULTS:COUNT%
+    IF COUNT < (myPAGE:1+1) * listINT && COUNT >= myPAGE:1 * listINT
+        newNAME = GET_INTname(0,CHARASAVEname:COUNT)
+        PRINTFORMLC [{COUNT,3}]%CHARASAVEname:COUNT,(20-newNAME)%
+        PRINTBUTTON " [資訊] ",(100000+COUNT)
+        PRINTFORM | 
+        PRINTL
+    ENDIF
+REND
+
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+DRAWLINEFORM =
+PRINTFORML 這邊能進行存檔角色的讀取，但可能會出錯請自己多注意。
+PRINTFORML 如果有不要的角色檔案，請自行前往根目錄進行相對的「.dat」檔進行刪除。
+PRINTL
+ALIGNMENT CENTER
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1001]上一頁\@
+PRINTLC [1000]返回
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [1009]下一頁\@
+PRINTL
+ALIGNMENT LEFT
+INPUT
+SELECTCASE RESULT
+    CASE 1000
+        PRINTFORMW 您取消了動作，現在返回。
+        RETURN 0
+    CASE 1001
+        myPAGE:1 = MY_PAGE(-1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 1009
+        myPAGE:1 = MY_PAGE(1,myPAGE)
+        GOTO PRINT_LIST
+    CASE 0 TO overall
+        CHARASAVEint = RESULT
+        PRINTFORML 請問是否加入【%CHARASAVEname:RESULT%】呢?
+        PRINTL
+        PRINTBUTTON @"    [確認]    ",-1
+        PRINTBUTTON @"    [取消]    ",-9
+        INPUT
+        IF RESULT == -1
+            PRINTFORMW 【%CHARASAVEname:CHARASAVEint%】已成為您的新奴隸！
+            LOADCHARA CHARASAVEname:CHARASAVEint
+        ELSE
+            PRINTFORMW 您取消了動作，現在返回！
+        ENDIF
+    CASE  100000 TO 199999
+        CHARASAVEint = RESULT - 100000
+        LOADCHARA CHARASAVEname:CHARASAVEint
+        CALL DEBUG_CHARADATA(CHARANUM-1)
+        DELCHARA (CHARANUM-1)
+        ;        CHKCHARADATA CHARASAVEname:CHARASAVEint
+    CASEELSE
+ENDSELECT
+GOTO reload_LIST
+;--------------------------------------------------
+; ABL操作
+;--------------------------------------------------
+@EDIT_ABL(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM sCOUNT
+#DIM NEWitem,2
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE ABL
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF ABL:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(ABLNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(ABLNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ABLNAME:COUNT) == 0) ? ABL:{COUNT} # %ABLNAME:COUNT%\@ = ({ABL:COUNT})
+    ELSEIF myMODE == 1
+        SIF STRLENS(ABLNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ABLNAME:COUNT) == 0) ? ABL:{COUNT} # %ABLNAME:COUNT%\@ = ({ABL:COUNT})
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ABLNAME:COUNT) == 0) ? ABL:{COUNT} # %ABLNAME:COUNT%\@ = ({ABL:COUNT})
+    ELSEIF myMODE == 3
+        SIF ABL:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ABLNAME:COUNT) == 0) ? ABL:{COUNT} # %ABLNAME:COUNT%\@ = ({ABL:COUNT})
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(ABLNAME:COUNT) == 0
+                    CONTINUE
+                ABL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                ABL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(ABLNAME:COUNT) == 0
+                    CONTINUE
+                ABL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                ABL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(ABLNAME:RESULT),(ABL:RESULT),9999,(-9999))
+            SIF RESULT:91 == 1
+                ABL:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            ABL:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                ABL:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            ABL:(RESULT:92) = RESULT:96
+        ELSE
+            ABL:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; EXP操作
+;--------------------------------------------------
+@EDIT_EXP(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE EXP
+overALL = RESULT
+
+$PRINT_LIST
+myMODE = NXP_MODE(1,0,0)
+VARSET NEWitem,0
+REPEAT overALL
+    SIF EXP:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(EXPNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(EXPNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXPNAME:COUNT) == 0) ? EXP:{COUNT} # %EXPNAME:COUNT%\@ = {EXP:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(EXPNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXPNAME:COUNT) == 0) ? EXP:{COUNT} # %EXPNAME:COUNT%\@ = {EXP:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXPNAME:COUNT) == 0) ? EXP:{COUNT} # %EXPNAME:COUNT%\@ = {EXP:COUNT}
+    ELSEIF myMODE == 3
+        SIF EXP:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXPNAME:COUNT) == 0) ? EXP:{COUNT} # %EXPNAME:COUNT%\@ = {EXP:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+ALIGNMENT CENTER
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(EXPNAME:COUNT) == 0
+                    CONTINUE
+                EXP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                EXP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(EXPNAME:COUNT) == 0
+                    CONTINUE
+                EXP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                EXP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(EXPNAME:RESULT),(EXP:RESULT),99999,0)
+            SIF RESULT:91 == 1
+                EXP:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            EXP:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                EXP:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            EXP:(RESULT:92) = RESULT:96
+        ELSE
+            EXP:(RESULT:92) = 0
+        ENDIF
+
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;素質編集
+;--------------------------------------------------
+@EDIT_TALENT(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE TALENT
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF TALENT:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(TALENTNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(TALENTNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF TALENT:COUNT < 0
+            PRINTFORMLC [{COUNT, 3}]－【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 0
+            PRINTFORMLC [{COUNT, 3}]×【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 1
+            PRINTFORMLC [{COUNT, 3}]◎【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 2
+            PRINTFORMLC [{COUNT, 3}]○【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT > 2
+            PRINTFORMLC [{COUNT, 3}]△【%TALENTNAME:COUNT%】
+        ENDIF
+        ;       PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TALENTNAME:COUNT) == 0) ? TALENT:{COUNT} # %TALENTNAME:COUNT%\@ = {TALENT:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(TALENTNAME:COUNT) == 0
+            CONTINUE
+        IF TALENT:COUNT < 0
+            PRINTFORMLC [{COUNT, 3}]－【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 0
+            PRINTFORMLC [{COUNT, 3}]×【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 1
+            PRINTFORMLC [{COUNT, 3}]◎【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 2
+            PRINTFORMLC [{COUNT, 3}]○【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT > 2
+            PRINTFORMLC [{COUNT, 3}]△【%TALENTNAME:COUNT%】
+        ENDIF
+        ;       PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TALENTNAME:COUNT) == 0) ? TALENT:{COUNT} # %TALENTNAME:COUNT%\@ = {TALENT:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF TALENT:COUNT < 0
+            PRINTFORMLC [{COUNT, 3}]－【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 0
+            PRINTFORMLC [{COUNT, 3}]×【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 1
+            PRINTFORMLC [{COUNT, 3}]◎【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT == 2
+            PRINTFORMLC [{COUNT, 3}]○【%TALENTNAME:COUNT%】
+        ELSEIF TALENT:COUNT > 2
+            PRINTFORMLC [{COUNT, 3}]△【%TALENTNAME:COUNT%】
+        ENDIF
+        ;       PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TALENTNAME:COUNT) == 0) ? TALENT:{COUNT} # %TALENTNAME:COUNT%\@ = {TALENT:COUNT}
+    ELSEIF myMODE == 3
+        SIF TALENT:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TALENTNAME:COUNT) == 0) ? TALENT:{COUNT} # %TALENTNAME:COUNT%\@ = {TALENT:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+ALIGNMENT CENTER
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(TALENTNAME:COUNT) == 0
+                    CONTINUE
+                TALENT:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                TALENT:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(TALENTNAME:COUNT) == 0
+                    CONTINUE
+                TALENT:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                TALENT:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(TALENTNAME:RESULT),(TALENT:RESULT),99,(-1))
+            SIF RESULT:91 == 1
+                TALENT:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            TALENT:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                TALENT:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            TALENT:(RESULT:92) = RESULT:96
+        ELSE
+            TALENT:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; MARK操作
+;--------------------------------------------------
+@EDIT_MARK(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE MARK
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF MARK:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(MARKNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(MARKNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(MARKNAME:COUNT) == 0) ? MARK:{COUNT} # %MARKNAME:COUNT%\@ = {MARK:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(MARKNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(MARKNAME:COUNT) == 0) ? MARK:{COUNT} # %MARKNAME:COUNT%\@ = {MARK:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(MARKNAME:COUNT) == 0) ? MARK:{COUNT} # %MARKNAME:COUNT%\@ = {MARK:COUNT}
+    ELSEIF myMODE == 3
+        SIF MARK:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(MARKNAME:COUNT) == 0) ? MARK:{COUNT} # %MARKNAME:COUNT%\@ = {MARK:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(MARKNAME:COUNT) == 0
+                    CONTINUE
+                MARK:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                MARK:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(MARKNAME:COUNT) == 0
+                    CONTINUE
+                MARK:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                MARK:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(MARKNAME:RESULT),(MARK:RESULT),99,0)
+            SIF RESULT:91 == 1
+                MARK:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            MARK:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                MARK:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            MARK:(RESULT:92) = RESULT:96
+        ELSE
+            MARK:(RESULT:92) = 0
+        ENDIF
+
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; JUEL操作
+;--------------------------------------------------
+@EDIT_JUEL(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE JUEL
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF JUEL:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(PALAMNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(PALAMNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? JUEL:{COUNT} # %PALAMNAME:COUNT%の珠\@ = {JUEL:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(PALAMNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? JUEL:{COUNT} # %PALAMNAME:COUNT%の珠\@ = {JUEL:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? JUEL:{COUNT} # %PALAMNAME:COUNT%の珠\@ = {JUEL:COUNT}
+    ELSEIF myMODE == 3
+        SIF JUEL:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? JUEL:{COUNT} # %PALAMNAME:COUNT%の珠\@ = {JUEL:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        RESULT:90 = 1
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(PALAMNAME:COUNT) == 0
+                    CONTINUE
+                JUEL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                JUEL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(PALAMNAME:COUNT) == 0
+                    CONTINUE
+                IF RESULT:90 == 2
+                    SIF PALAMNAME:COUNT == "反感"
+                        CONTINUE
+                    SIF PALAMNAME:COUNT == "不快"
+                        CONTINUE
+                    SIF PALAMNAME:COUNT == "抑郁"
+                        CONTINUE
+                    SIF PALAMNAME:COUNT == "否定"
+                        CONTINUE
+                ENDIF
+                JUEL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！\@(RESULT:90 != 2) ? (不含空值) # (不含空值、負面值)\@
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                IF RESULT:90 == 2
+                    SIF PALAMNAME:COUNT == "反感"
+                        CONTINUE
+                    SIF PALAMNAME:COUNT == "不快"
+                        CONTINUE
+                    SIF PALAMNAME:COUNT == "抑郁"
+                        CONTINUE
+                    SIF PALAMNAME:COUNT == "否定"
+                        CONTINUE
+                ENDIF
+                JUEL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！\@(RESULT:90 != 2) ? (不含空值) # (不含空值、負面值)\@
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        RESULT:90 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(PALAMNAME:RESULT),(JUEL:RESULT),9999999,0)
+            SIF RESULT:91 == 1
+                JUEL:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            JUEL:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                JUEL:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            JUEL:(RESULT:92) = RESULT:96
+        ELSE
+            JUEL:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; BASE/MAXBASE操作
+;--------------------------------------------------
+@EDIT_BASE(myTITTLE,myMODE,myPAGE:1)
+#DIM baseEDIT,3
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE BASE
+overALL = RESULT
+SIF !baseEDIT:1
+    baseEDIT:1 = !baseEDIT:1
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF STRLENS(BASENAME:COUNT) != 0
+        NEWitem ++
+    SIF STRLENS(BASENAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+ALIGNMENT CENTER
+PRINTBUTTON \@ (!baseEDIT:1) ? × 修改BASE%" " * 5% # ○ 修改BASE%" " * 5%\@,19001
+PRINTBUTTON \@ (!baseEDIT:2) ? × 修改MAXBASE%" " * 5% # ○ 修改MAXBASE%" " * 5%\@,19002
+PRINTL
+ALIGNMENT LEFT
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(BASENAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(BASENAME:COUNT) == 0) ? BASE:{COUNT, 3} # %BASENAME:COUNT%\@ = {BASE:COUNT}({MAXBASE:COUNT})
+    ELSEIF myMODE == 1
+        SIF STRLENS(BASENAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(BASENAME:COUNT) == 0) ? BASE:{COUNT, 3} # %BASENAME:COUNT%\@ = {BASE:COUNT}({MAXBASE:COUNT})
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(BASENAME:COUNT) == 0) ? BASE:{COUNT, 3} # %BASENAME:COUNT%\@ = {BASE:COUNT}({MAXBASE:COUNT})
+    ELSEIF myMODE == 3
+        SIF BASE:COUNT == 0 && MAXBASE:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(BASENAME:COUNT) == 0) ? BASE:{COUNT, 3} # %BASENAME:COUNT%\@ = {BASE:COUNT}({MAXBASE:COUNT})
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+IF RESULT == 20009
+    PRINTFORML 要搜尋BASE還是MAXBASE？
+    PRINTLC [1] 搜尋BASE
+    PRINTLC [2] 搜尋MAXBASE
+    PRINTLC [9] 返回
+    INPUT
+    IF RESULT == 1
+        myTITTLE = BASE
+        CALL SEARCHFOR(1,myTITTLE)
+    ELSEIF RESULT == 2
+        myTITTLE = MAXBASE
+        CALL SEARCHFOR(1,myTITTLE)
+    ELSEIF RESULT == 9
+        GOTO PRINT_LIST
+    ENDIF
+    GOTO PRINT_LIST
+ENDIF
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE  19001
+        baseEDIT:1 = !baseEDIT:1
+        SIF !baseEDIT:1 && !baseEDIT:2
+            baseEDIT:2 = !baseEDIT:2
+    CASE 19002
+        baseEDIT:2 = !baseEDIT:2
+        SIF !baseEDIT:1 && !baseEDIT:2
+            baseEDIT:1 = !baseEDIT:1
+    CASE 19999
+        PRINTFORML 要批量編輯BASE還是MAXBASE？
+        PRINTLC [1] 編輯 BASE
+        PRINTLC [2] 編輯 MAXBASE
+        PRINTLC [3] 編輯 BASE & MAXBASE
+        PRINTLC [9] 返回
+        INPUT
+        IF RESULT == 1
+            myTITTLE = BASE
+            baseEDIT:0 = 1
+        ELSEIF RESULT == 2
+            myTITTLE = MAXBASE
+            baseEDIT:0 = 2
+        ELSEIF RESULT == 3
+            myTITTLE = BASE/MAXBASE
+            baseEDIT:0 = 3
+        ELSEIF RESULT == 9
+            GOTO PRINT_LIST
+        ENDIF
+        GOTO BASE_GROUP
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        DRAWLINE
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            SIF baseEDIT:1
+                PRINTFORML BASE:{RESULT:92} %BASENAME:(RESULT:92)%修改為(現在{BASE:(RESULT:92)})
+            SIF baseEDIT:2
+                PRINTFORML MAXBASE:{RESULT:92} %BASENAME:(RESULT:92)%修改為(現在{MAXBASE:(RESULT:92)})
+            PRINTFORML 請選擇或直接輸入（不修改請按返回）
+            PRINTL
+            PRINTBUTTON @" [  0 ]",0
+            PRINTBUTTON @" [  1 ]",1
+            PRINTBUTTON @" [  5 ]",5
+            PRINTBUTTON @" [ 10 ]",10
+            PRINTL
+            PRINTBUTTON @" [一百]",99
+            PRINTBUTTON @" [一千]",999
+            PRINTBUTTON @" [一萬]",9999
+            PRINTBUTTON @" [十萬]",99999
+            PRINTL
+            PRINTBUTTON @" [百萬]",999999
+            PRINTBUTTON @" [千萬]",9999999
+            PRINTBUTTON @" [一億]",99999999
+            PRINTBUTTON @" [百億]",9999999999
+            PRINTBUTTON @"   　[返回]   　",-98989
+            INPUT
+            IF RESULT == -98989
+                PRINTW 您輸入了無效值，現在返回。
+            ELSE
+                SIF baseEDIT:1
+                    BASE:(RESULT:92) = RESULT
+                SIF baseEDIT:2
+                    MAXBASE:(RESULT:92) = RESULT
+            ENDIF
+        ELSEIF RESULT:95 == 1
+            SIF baseEDIT:1
+                BASE:(RESULT:92) += RESULT:96
+            SIF baseEDIT:2
+                MAXBASE:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                SIF baseEDIT:1
+                    BASE:COUNT:(RESULT:92) = RESULT:96
+                SIF baseEDIT:2
+                    MAXBASE:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            SIF baseEDIT:1
+                BASE:(RESULT:92) = RESULT:96
+            SIF baseEDIT:2
+                MAXBASE:(RESULT:92) = RESULT:96
+        ELSE
+            SIF baseEDIT:1
+                BASE:(RESULT:92) = 0
+            SIF baseEDIT:2
+                MAXBASE:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+$BASE_GROUP
+CALL EDIT_GROUP(myTITTLE)
+IF RESULT:91 == 0
+    FOR COUNT, RESULT:92, RESULT:93
+        SIF STRLENS(BASENAME:COUNT) == 0
+            CONTINUE
+        SIF baseEDIT:0 == 1 || baseEDIT:0 == 3
+            BASE:COUNT = RESULT:94
+        SIF baseEDIT:0 == 2 || baseEDIT:0 == 3
+            MAXBASE:COUNT = RESULT:94
+    NEXT
+    PRINTFORMW 全部 \@(baseEDIT:0 != 3) ? %myTITTLE% # BASE/MAXBASE\@ 修改為({RESULT:94})了！
+ELSEIF RESULT:91 == 3
+    FOR COUNT, RESULT:92, RESULT:93
+        SIF baseEDIT:0 == 1 || baseEDIT:0 == 3
+            BASE:COUNT = RESULT:94
+        SIF baseEDIT:0 == 2 || baseEDIT:0 == 3
+            MAXBASE:COUNT = RESULT:94
+    NEXT
+    PRINTFORMW 全部 \@(baseEDIT:0 != 3) ? %myTITTLE% # BASE/MAXBASE\@ 修改為({RESULT:94})了！
+ELSEIF RESULT:91 == 1
+    FOR COUNT, 0, overALL
+        SIF STRLENS(BASENAME:COUNT) == 0
+            CONTINUE
+        SIF baseEDIT:0 == 1 || baseEDIT:0 == 3
+            BASE:COUNT = RESULT:94
+        SIF baseEDIT:0 == 2 || baseEDIT:0 == 3
+            MAXBASE:COUNT = RESULT:94
+    NEXT
+    PRINTFORMW 全部 \@(baseEDIT:0 != 3) ? %myTITTLE% # BASE/MAXBASE\@ 修改為({RESULT:94})了！(不含空值)
+ELSEIF RESULT:91 == 2
+    FOR COUNT, 0, overALL
+        SIF baseEDIT:0 == 1 || baseEDIT:0 == 3
+            BASE:COUNT = RESULT:94
+        SIF baseEDIT:0 == 2 || baseEDIT:0 == 3
+            MAXBASE:COUNT = RESULT:94
+    NEXT
+    PRINTFORMW 全部 \@(baseEDIT:0 != 3) ? %myTITTLE% # BASE/MAXBASE\@ 修改為({RESULT:94})了！(含空值)
+ELSEIF RESULT:91 == 4
+    PRINTFORMW 返回。
+ENDIF
+RESULT:91 = 0
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; EQUIP操作
+;--------------------------------------------------
+@EDIT_EQUIP(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE EQUIP
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF EQUIP:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(EQUIPNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(EQUIPNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EQUIPNAME:COUNT) == 0) ? EQUIP:{COUNT} # %EQUIPNAME:COUNT%\@ = {EQUIP:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(EQUIPNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EQUIPNAME:COUNT) == 0) ? EQUIP:{COUNT} # %EQUIPNAME:COUNT%\@ = {EQUIP:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EQUIPNAME:COUNT) == 0) ? EQUIP:{COUNT} # %EQUIPNAME:COUNT%\@ = {EQUIP:COUNT}
+    ELSEIF myMODE == 3
+        SIF EQUIP:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EQUIPNAME:COUNT) == 0) ? EQUIP:{COUNT} # %EQUIPNAME:COUNT%\@ = {EQUIP:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(EQUIPNAME:COUNT) == 0
+                    CONTINUE
+                EQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                EQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(EQUIPNAME:COUNT) == 0
+                    CONTINUE
+                EQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                EQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(EQUIPNAME:RESULT),(EQUIP:RESULT),999,0)
+            SIF RESULT:91 == 1
+                EQUIP:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            EQUIP:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                EQUIP:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            EQUIP:(RESULT:92) = RESULT:96
+        ELSE
+            EQUIP:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; TEQUIP操作
+;--------------------------------------------------
+@EDIT_TEQUIP(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE TEQUIP
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF TEQUIP:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(TEQUIPNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(TEQUIPNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TEQUIPNAME:COUNT) == 0) ? TEQUIP:{COUNT} # %TEQUIPNAME:COUNT%\@ = {TEQUIP:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(TEQUIPNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TEQUIPNAME:COUNT) == 0) ? TEQUIP:{COUNT} # %TEQUIPNAME:COUNT%\@ = {TEQUIP:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TEQUIPNAME:COUNT) == 0) ? TEQUIP:{COUNT} # %TEQUIPNAME:COUNT%\@ = {TEQUIP:COUNT}
+    ELSEIF myMODE == 3
+        SIF TEQUIP:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TEQUIPNAME:COUNT) == 0) ? TEQUIP:{COUNT} # %TEQUIPNAME:COUNT%\@ = {TEQUIP:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(TEQUIPNAME:COUNT) == 0
+                    CONTINUE
+                TEQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                TEQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(TEQUIPNAME:COUNT) == 0
+                    CONTINUE
+                TEQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                TEQUIP:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(TEQUIPNAME:RESULT),(TEQUIP:RESULT),999,0)
+            SIF RESULT:91 == 1
+                TEQUIP:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            TEQUIP:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                TEQUIP:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            TEQUIP:(RESULT:92) = RESULT:96
+        ELSE
+            TEQUIP:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; PALAM操作
+;--------------------------------------------------
+@EDIT_PALAM(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE PALAM
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF PALAM:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(PALAMNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(PALAMNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? PALAM:{COUNT} # %PALAMNAME:COUNT%\@ = {PALAM:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(PALAMNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? PALAM:{COUNT} # %PALAMNAME:COUNT%\@ = {PALAM:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? PALAM:{COUNT} # %PALAMNAME:COUNT%\@ = {PALAM:COUNT}
+    ELSEIF myMODE == 3
+        SIF PALAM:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(PALAMNAME:COUNT) == 0) ? PALAM:{COUNT} # %PALAMNAME:COUNT%\@ = {PALAM:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(PALAMNAME:COUNT) == 0
+                    CONTINUE
+                PALAM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                PALAM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(PALAMNAME:COUNT) == 0
+                    CONTINUE
+                PALAM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                PALAM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(PALAMNAME:RESULT),(PALAM:RESULT),9999999,0)
+            SIF RESULT:91 == 1
+                PALAM:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            PALAM:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                PALAM:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            PALAM:(RESULT:92) = RESULT:96
+        ELSE
+            PALAM:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; EX操作
+;--------------------------------------------------
+@EDIT_EX(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE EX
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF EX:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(EXNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(EXNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXNAME:COUNT) == 0) ? EX:{COUNT} # %EXNAME:COUNT%\@ = {EX:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(EXNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXNAME:COUNT) == 0) ? EX:{COUNT} # %EXNAME:COUNT%\@ = {EX:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXNAME:COUNT) == 0) ? EX:{COUNT} # %EXNAME:COUNT%\@ = {EX:COUNT}
+    ELSEIF myMODE == 3
+        SIF EX:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(EXNAME:COUNT) == 0) ? EX:{COUNT} # %EXNAME:COUNT%\@ = {EX:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(EXNAME:COUNT) == 0
+                    CONTINUE
+                EX:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                EX:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(EXNAME:COUNT) == 0
+                    CONTINUE
+                EX:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                EX:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(EXNAME:RESULT),(EX:RESULT),9999999,0)
+            SIF RESULT:91 == 1
+                EX:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            EX:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                EX:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            EX:(RESULT:92) = RESULT:96
+        ELSE
+            EX:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; SOURCE操作
+;--------------------------------------------------
+@EDIT_SOURCE(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE SOURCE
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF SOURCE:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(SOURCENAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(SOURCENAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(SOURCENAME:COUNT) == 0) ? SOURCE:{COUNT} # %SOURCENAME:COUNT%\@ = {SOURCE:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(SOURCENAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(SOURCENAME:COUNT) == 0) ? SOURCE:{COUNT} # %SOURCENAME:COUNT%\@ = {SOURCE:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(SOURCENAME:COUNT) == 0) ? SOURCE:{COUNT} # %SOURCENAME:COUNT%\@ = {SOURCE:COUNT}
+    ELSEIF myMODE == 3
+        SIF SOURCE:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(SOURCENAME:COUNT) == 0) ? SOURCE:{COUNT} # %SOURCENAME:COUNT%\@ = {SOURCE:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(SOURCENAME:COUNT) == 0
+                    CONTINUE
+                SOURCE:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                SOURCE:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(SOURCENAME:COUNT) == 0
+                    CONTINUE
+                SOURCE:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                SOURCE:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(SOURCENAME:RESULT),(SOURCE:RESULT),9999999,0)
+            SIF RESULT:91 == 1
+                SOURCE:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            SOURCE:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                SOURCE:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            SOURCE:(RESULT:92) = RESULT:96
+        ELSE
+            SOURCE:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+
+;--------------------------------------------------
+; CFLAG操作
+;--------------------------------------------------
+@EDIT_CFLAG(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE CFLAG
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF CFLAG:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(CFLAGNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(CFLAGNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(CFLAGNAME:COUNT) == 0) ? CFLAG:{COUNT} # %CFLAGNAME:COUNT%\@ = {CFLAG:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(CFLAGNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(CFLAGNAME:COUNT) == 0) ? CFLAG:{COUNT} # %CFLAGNAME:COUNT%\@ = {CFLAG:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(CFLAGNAME:COUNT) == 0) ? CFLAG:{COUNT} # %CFLAGNAME:COUNT%\@ = {CFLAG:COUNT}
+    ELSEIF myMODE == 3
+        SIF CFLAG:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(CFLAGNAME:COUNT) == 0) ? CFLAG:{COUNT} # %CFLAGNAME:COUNT%\@ = {CFLAG:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(CFLAGNAME:COUNT) == 0
+                    CONTINUE
+                CFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                CFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(CFLAGNAME:COUNT) == 0
+                    CONTINUE
+                CFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                CFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(CFLAGNAME:RESULT),(CFLAG:RESULT),999999,(-9999))
+            SIF RESULT:91 == 1
+                CFLAG:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            CFLAG:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                CFLAG:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            CFLAG:(RESULT:92) = RESULT:96
+        ELSE
+            CFLAG:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;STR操作
+;--------------------------------------------------
+@EDIT_STR(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM maxINT,4
+#DIMS nNAME
+#DIMS myTITTLE
+VARSET maxINT,0
+VARSIZE STR
+overALL = RESULT
+maxINT = GET_LINEint(2,20,"0")
+maxINT:1 = GET_LINEint(2,8,"0")
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF STRLENS(STR:COUNT) != 0
+        NEWitem:1 ++
+    SIF STRLENS(STRNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(STRNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@(STRLENS(STR:COUNT) != 0) ? %STR:COUNT% # STR:{COUNT,2}\@
+    ELSEIF myMODE == 1
+        SIF STRLENS(STRNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@(STRLENS(STR:COUNT) != 0) ? %STR:COUNT% # STR:{COUNT,2}\@
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@(STRLENS(STR:COUNT) != 0) ? %STR:COUNT% # STR:{COUNT,2}\@
+    ELSEIF myMODE == 3
+        SIF STRLENS(STR:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@(STRLENS(STR:COUNT) != 0) ? %STR:COUNT% # STR:{COUNT,2}\@
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,0)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(2,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        CALL GET_txtEDIT(RESULT,myTITTLE,(STRNAME:RESULT),(STR:RESULT),TARGET,1)
+        SIF STRLENS(RESULTS) != 0
+            STR:RESULT = %RESULTS%
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;CSTR編輯
+;--------------------------------------------------
+@EDIT_CSTR(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM maxINT,4
+#DIMS nNAME
+#DIMS myTITTLE
+VARSET maxINT,0
+VARSIZE CSTR
+overALL = RESULT
+maxINT = GET_LINEint(2,20,"0")
+maxINT:1 = GET_LINEint(2,8,"0")
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF STRLENS(CSTR:COUNT) != 0
+        NEWitem:1 ++
+    SIF STRLENS(CSTRNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(CSTRNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF STRLENS(TOFULL(CSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(CSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ : %CSTR:COUNT%
+        ENDIF
+    ELSEIF myMODE == 1
+        SIF STRLENS(CSTRNAME:COUNT) == 0
+            CONTINUE
+        IF STRLENS(TOFULL(CSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(CSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ : %CSTR:COUNT%
+        ENDIF
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF STRLENS(TOFULL(CSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(CSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ : %CSTR:COUNT%
+        ENDIF
+    ELSEIF myMODE == 3
+        SIF STRLENS(CSTR:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF STRLENS(TOFULL(CSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(CSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(CSTRNAME:COUNT) == 0) ? CSTR:{COUNT,3} # %CSTRNAME:COUNT%\@ : %CSTR:COUNT%
+        ENDIF
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,0)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(2,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        CALL GET_txtEDIT(RESULT,myTITTLE,(CSTRNAME:RESULT),(CSTR:RESULT),TARGET,1)
+        SIF STRLENS(RESULTS) != 0
+            CSTR:RESULT = %RESULTS%
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;TSTR編輯
+;--------------------------------------------------
+@EDIT_TSTR(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM maxINT,4
+#DIMS nNAME
+#DIMS myTITTLE
+VARSET maxINT,0
+VARSIZE TSTR
+overALL = RESULT
+maxINT = GET_LINEint(2,20,"0")
+maxINT:1 = GET_LINEint(2,8,"0")
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF STRLENS(TSTR:COUNT) != 0
+        NEWitem:1 ++
+    SIF STRLENS(TSTRNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(TSTRNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF STRLENS(TOFULL(TSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(TSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ : %TSTR:COUNT%
+        ENDIF
+    ELSEIF myMODE == 1
+        SIF STRLENS(TSTRNAME:COUNT) == 0
+            CONTINUE
+        IF STRLENS(TOFULL(TSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(TSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ : %TSTR:COUNT%
+        ENDIF
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF STRLENS(TOFULL(TSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(TSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ : %TSTR:COUNT%
+        ENDIF
+    ELSEIF myMODE == 3
+        SIF STRLENS(TSTR:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        IF STRLENS(TOFULL(TSTR:COUNT)) > maxINT
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ :
+            CALL NXP_PRINTlist(TSTR:COUNT,maxINT)
+        ELSE
+            PRINTFORML [{COUNT, 3}] \@ (STRLENS(TSTRNAME:COUNT) == 0) ? TSTR:{COUNT,3} # %TSTRNAME:COUNT%\@ : %TSTR:COUNT%
+        ENDIF
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,0)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(2,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        CALL GET_txtEDIT(RESULT,myTITTLE,(TSTRNAME:RESULT),(TSTR:RESULT),TARGET,1)
+        SIF STRLENS(RESULTS) != 0
+            TSTR:RESULT = %RESULTS%
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;======================================================================================================
+;------------------------------------------------其他資訊-----------------------------------------------
+;======================================================================================================
+;--------------------------------------------------
+;全角色全回復
+;--------------------------------------------------
+@EDIT_HEAL_ALL
+#DIM sCOUNT,5
+#DIM s2COUNT,5
+VARSET sCOUNT,0
+REPEAT VARSIZE("BASE")
+    IF COUNT == 0 || COUNT == 1
+        sCOUNT ++
+        sCOUNT:sCOUNT = COUNT
+    ENDIF
+    STRFIND BASENAME:COUNT,"勃起"
+    IF RESULT > -1
+        sCOUNT ++
+        sCOUNT:sCOUNT = COUNT
+    ENDIF
+    STRFIND BASENAME:COUNT,"精力"
+    IF RESULT > -1
+        sCOUNT:0 ++
+        sCOUNT:sCOUNT = COUNT
+    ENDIF
+REND
+REPEAT VARSIZE("BASE")
+    STRFIND BASENAME:COUNT,"ストレス"
+    IF RESULT > -1
+        s2COUNT ++
+        s2COUNT:sCOUNT = COUNT
+    ENDIF
+    STRFIND BASENAME:COUNT,"压力"
+    IF RESULT > -1
+        s2COUNT ++
+        s2COUNT:sCOUNT = COUNT
+    ENDIF
+    STRFIND BASENAME:COUNT,"疲労"
+    IF RESULT > -1
+        s2COUNT ++
+        s2COUNT:sCOUNT = COUNT
+    ENDIF
+    STRFIND BASENAME:COUNT,"眠気"
+    IF RESULT > -1
+        s2COUNT ++
+        s2COUNT:sCOUNT = COUNT
+    ENDIF
+    STRFIND BASENAME:COUNT,"不潔"
+    IF RESULT > -1
+        s2COUNT ++
+        s2COUNT:sCOUNT = COUNT
+    ENDIF
+REND
+FOR s2COUNT,0,5
+    REPEAT CHARANUM
+        BASE:COUNT:(s2COUNT:s2COUNT) = 0
+    REND
+NEXT
+FOR sCOUNT,0,5
+    REPEAT CHARANUM
+        BASE:COUNT:(sCOUNT:sCOUNT) = MAXBASE:COUNT:(sCOUNT:sCOUNT)
+    REND
+NEXT
+PRINTW ＊＊＊全員体力、氣力已經回復＊＊＊
+
+;--------------------------------------------------
+; ITEM操作
+;--------------------------------------------------
+@EDIT_ITEM(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE ITEM
+overALL = RESULT
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF ITEM:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(ITEMNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(ITEMNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ITEMNAME:COUNT) == 0) ? ITEM:{COUNT} # %ITEMNAME:COUNT%\@ = {ITEM:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(ITEMNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ITEMNAME:COUNT) == 0) ? ITEM:{COUNT} # %ITEMNAME:COUNT%\@ = {ITEM:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ITEMNAME:COUNT) == 0) ? ITEM:{COUNT} # %ITEMNAME:COUNT%\@ = {ITEM:COUNT}
+    ELSEIF myMODE == 3
+        SIF ITEM:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(ITEMNAME:COUNT) == 0) ? ITEM:{COUNT} # %ITEMNAME:COUNT%\@ = {ITEM:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(ITEMNAME:COUNT) == 0
+                    CONTINUE
+                ITEM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                ITEM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(ITEMNAME:COUNT) == 0
+                    CONTINUE
+                ITEM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                ITEM:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(ITEMNAME:RESULT),(ITEM:RESULT),999,0)
+            SIF RESULT:91 == 1
+                ITEM:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            ITEM:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:95 == 2
+            ITEM:(RESULT:92) = RESULT:96
+        ELSE
+            ITEM:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;MONEY変更処理
+;--------------------------------------------------
+@EDIT_MONEY(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM myEDIT,4
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE MONEY
+overALL = RESULT
+myMODE = 3
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF MONEY:COUNT != 0
+        NEWitem:1 ++
+    ;   SIF MONEYNAME:COUNT != 0
+    ;       NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(2,myTITTLE,overALL,0,NEWitem:1,myMODE)
+DRAWLINE
+IF myMODE != 3
+    REPEAT overALL
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]貨幣:{COUNT, 3} = %TOSTR(MONEY:COUNT, "#,##0"),10,LEFT%
+    REND
+ELSEIF myMODE == 3
+    REPEAT overALL
+        SIF MONEY:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] MONEY:{COUNT} = %TOSTR(MONEY:COUNT, "#,##0"),10,LEFT%
+    REND
+ENDIF
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(MONEYNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               MONEYCOUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                MONEY:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(MONEYNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               MONEY:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                MONEY:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"MONEY",MONEY:RESULT,999999999,0)
+            SIF RESULT:91 == 1
+                MONEY:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            MONEY:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:95 == 2
+            MONEY:(RESULT:92) = RESULT:96
+        ELSE
+            MONEY:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+;--------------------------------------------------
+;FLAG編集
+;--------------------------------------------------
+@EDIT_FLAG(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM myEDIT,4
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE FLAG
+overALL = RESULT
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF FLAG:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(FLAGNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(FLAGNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(FLAGNAME:COUNT) == 0) ? FLAG:{COUNT} # %FLAGNAME:COUNT%\@ = {FLAG:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(FLAGNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(FLAGNAME:COUNT) == 0) ? FLAG:{COUNT} # %FLAGNAME:COUNT%\@ = {FLAG:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(FLAGNAME:COUNT) == 0) ? FLAG:{COUNT} # %FLAGNAME:COUNT%\@ = {FLAG:COUNT}
+    ELSEIF myMODE == 3
+        SIF FLAG:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(FLAGNAME:COUNT) == 0) ? FLAG:{COUNT} # %FLAGNAME:COUNT%\@ = {FLAG:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(FLAGNAME:COUNT) == 0
+                    CONTINUE
+                FLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                FLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(FLAGNAME:COUNT) == 0
+                    CONTINUE
+                FLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                FLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(FLAGNAME:RESULT),(FLAG:RESULT),999999,(-9999))
+            SIF RESULT:91 == 1
+                FLAG:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            FLAG:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:95 == 2
+            FLAG:(RESULT:92) = RESULT:96
+        ELSE
+            FLAG:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;TFLAG編集
+;--------------------------------------------------
+@EDIT_TFLAG(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM myEDIT,4
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE TFLAG
+overALL = RESULT
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF TFLAG:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(TFLAGNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF myMODE == 0
+        SIF STRLENS(TFLAGNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TFLAGNAME:COUNT) == 0) ? TFLAG:{COUNT} # %TFLAGNAME:COUNT%\@ = {TFLAG:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(TFLAGNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TFLAGNAME:COUNT) == 0) ? TFLAG:{COUNT} # %TFLAGNAME:COUNT%\@ = {TFLAG:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TFLAGNAME:COUNT) == 0) ? TFLAG:{COUNT} # %TFLAGNAME:COUNT%\@ = {TFLAG:COUNT}
+    ELSEIF myMODE == 3
+        SIF TFLAG:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TFLAGNAME:COUNT) == 0) ? TFLAG:{COUNT} # %TFLAGNAME:COUNT%\@ = {TFLAG:COUNT}
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            FOR COUNT, RESULT:92, RESULT:93
+                SIF STRLENS(TFLAGNAME:COUNT) == 0
+                    CONTINUE
+                TFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                TFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            FOR COUNT, 0, overALL
+                SIF STRLENS(TFLAGNAME:COUNT) == 0
+                    CONTINUE
+                TFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                TFLAG:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,(TFLAGNAME:RESULT),(TFLAG:RESULT),999999,(-9999))
+            SIF RESULT:91 == 1
+                TFLAG:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            TFLAG:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:95 == 2
+            TFLAG:(RESULT:92) = RESULT:96
+        ELSE
+            TFLAG:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+
+;--------------------------------------------------
+;EDIT_TIME
+;--------------------------------------------------
+@EDIT_TIME(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM myEDIT,4
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE TIME
+overALL = RESULT
+myMODE = 3
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF TIME:COUNT != 0
+        NEWitem:1 ++
+    ;	SIF TIMENAME:COUNT != 0
+    ;       NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(2,myTITTLE,overALL,0,NEWitem:1,myMODE)
+DRAWLINE
+IF myMODE != 3
+    REPEAT overALL
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]TIME:{COUNT, 3} = {TIME:COUNT,4,LEFT}
+    REND
+ELSEIF myMODE == 3
+    REPEAT overALL
+        SIF TIME:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] TIME:{COUNT} = {TIME:COUNT,4,LEFT}
+    REND
+ENDIF
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(TIMENAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               TIME:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                TIME:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(TIMENAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               TIME:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                TIME:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"TIME",TIME:RESULT,999999999,0)
+            SIF RESULT:91 == 1
+                TIME:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            TIME:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:95 == 2
+            TIME:(RESULT:92) = RESULT:96
+        ELSE
+            TIME:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;EDIT_DAY
+;--------------------------------------------------
+@EDIT_DAY(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM myEDIT,4
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+SIF RESULT ==199
+    GOTO GONEXTDAY
+VARSIZE DAY
+overALL = RESULT
+myMODE = 3
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF DAY:COUNT != 0
+        NEWitem:1 ++
+    ;   SIF DAYNAME:COUNT != 0
+    ;       NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(2,myTITTLE,overALL,0,NEWitem:1,myMODE)
+DRAWLINE
+IF myMODE != 3
+    REPEAT overALL
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]DAY:{COUNT, 3} = {DAY:COUNT,3,LEFT}
+    REND
+ELSEIF myMODE == 3
+    REPEAT overALL
+        SIF DAY:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] DAY:{COUNT} = {DAY:COUNT,3,LEFT}
+    REND
+ENDIF
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(DAYNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               DAY:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                DAY:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(DAYNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               DAY:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                DAY:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"DAY",DAY:RESULT,9999,0)
+            SIF RESULT:91 == 1
+                DAY:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            DAY:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:95 == 2
+            DAY:(RESULT:92) = RESULT:96
+        ELSE
+            DAY:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+$GONEXTDAY
+PRINTL 確定到下一天?
+PRINTL
+DRAWLINEFORM =
+PRINTC [0]NO
+PRINTC [1]YES
+INPUT
+IF RESULT
+    DAY += 1
+    PRINTFORMW 注意！退出DEBUG菜单后生效
+    RETURN 0
+ELSE
+    RETURN 0
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+; RELATION操作
+;--------------------------------------------------
+@EDIT_RELATION(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM myEDIT,4
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE RELATION
+overALL = RESULT
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF RELATION:COUNT != 0
+        NEWitem:1 ++
+    ;   SIF RELATIONNAME:COUNT != 0
+    ;       NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(2,myTITTLE,overALL,0,NEWitem:1,myMODE)
+DRAWLINE
+IF myMODE != 3
+    REPEAT overALL
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]RELATION:{COUNT, 3} = {RELATION:COUNT,3}
+    REND
+ELSEIF myMODE == 3
+    REPEAT overALL
+        SIF RELATION:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]RELATION:{COUNT,3} = {RELATION:COUNT,3}
+    REND
+ENDIF
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(RELATIONNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               RELATION:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                RELATION:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(RELATIONNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               RELATION:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                RELATION:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"RELATION",RELATION:RESULT,999999999,0)
+            SIF RESULT:91 == 1
+                RELATION:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            RELATION:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:95 == 2
+            RELATION:(RESULT:92) = RESULT:96
+        ELSE
+            RELATION:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+; TCVAR操作
+;--------------------------------------------------
+@EDIT_TCVAR(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM myEDIT,4
+#DIMS myTITTLE
+VARSIZE TCVAR
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF TCVAR:COUNT != 0
+        NEWitem:1 ++
+    SIF STRLENS(TCVARNAME:COUNT) != 0
+        NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,NEWitem,0,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    ;DRAWLINE
+    IF myMODE == 0
+        SIF STRLENS(TCVARNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TCVARNAME:COUNT) == 0) ? TCVAR:{COUNT} # %TCVARNAME:COUNT%\@ = {TCVAR:COUNT}
+    ELSEIF myMODE == 1
+        SIF STRLENS(TCVARNAME:COUNT) == 0
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TCVARNAME:COUNT) == 0) ? TCVAR:{COUNT} # %TCVARNAME:COUNT%\@ = {TCVAR:COUNT}
+    ELSEIF myMODE == 2
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TCVARNAME:COUNT) == 0) ? TCVAR:{COUNT} # %TCVARNAME:COUNT%\@ = {TCVAR:COUNT}
+    ELSEIF myMODE == 3
+        SIF TCVAR:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@ (STRLENS(TCVARNAME:COUNT) == 0) ? TCVAR:{COUNT} # %TCVARNAME:COUNT%\@ = {TCVAR:COUNT}
+    ENDIF
+REND
+PRINTL
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(TCVARNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               TCVAR:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                TCVAR:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(TCVARNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               TCVAR:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                TCVAR:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"TCVAR",TCVAR:RESULT,99999,0)
+            SIF RESULT:91 == 1
+                TCVAR:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            TCVAR:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                TCVAR:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            TCVAR:(RESULT:92) = RESULT:96
+        ELSE
+            TCVAR:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;EDIT_STAIN
+;--------------------------------------------------
+@EDIT_STAIN(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM myEDIT,4
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE STAIN
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF STAIN:COUNT != 0
+        NEWitem:1 ++
+    ;   SIF STAINNAME:COUNT != 0
+    ;       NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(2,myTITTLE,overALL,0,NEWitem:1,myMODE)
+DRAWLINE
+IF myMODE != 3
+    REPEAT overALL
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]STAIN:{COUNT, 3} = {STAIN:COUNT,3}
+    REND
+ELSEIF myMODE == 3
+    REPEAT overALL
+        SIF STAIN:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] STAIN:{COUNT} = {STAIN:COUNT,3}
+    REND
+ENDIF
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(STAINNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               STAIN:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                STAIN:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(STAINNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               STAIN:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                STAIN:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"STAIN",STAIN:RESULT,99999,0)
+            SIF RESULT:91 == 1
+                STAIN:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            STAIN:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                STAIN:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            STAIN:(RESULT:92) = RESULT:96
+        ELSE
+            STAIN:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;EDIT_GOTJUEL
+;--------------------------------------------------
+@EDIT_GOTJUEL(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM myEDIT,4
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE GOTJUEL
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF GOTJUEL:COUNT != 0
+        NEWitem:1 ++
+    ;   SIF GOTJUELNAME:COUNT != 0
+    ;       NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(2,myTITTLE,overALL,0,NEWitem:1,myMODE)
+DRAWLINE
+IF myMODE != 3
+    REPEAT overALL
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]GOTJUEL:{COUNT, 3} = {GOTJUEL:COUNT,7}
+    REND
+ELSEIF myMODE == 3
+    REPEAT overALL
+        SIF GOTJUEL:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] GOTJUEL:{COUNT} = {GOTJUEL:COUNT,7}
+    REND
+ENDIF
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(GOTJUELNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               GOTJUEL:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                GOTJUEL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(GOTJUELNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               GOTJUEL:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                GOTJUEL:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"GOTJUEL",GOTJUEL:RESULT,99999,0)
+            SIF RESULT:91 == 1
+                GOTJUEL:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            GOTJUEL:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                GOTJUEL:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            GOTJUEL:(RESULT:92) = RESULT:96
+        ELSE
+            GOTJUEL:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;EDIT_NOWEX
+;--------------------------------------------------
+@EDIT_NOWEX(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM myEDIT,4
+#DIM sCOUNT
+#DIM overALL
+#DIMS myTITTLE
+VARSIZE NOWEX
+overALL = RESULT
+
+$PRINT_LIST
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    SIF NOWEX:COUNT != 0
+        NEWitem:1 ++
+    ;   SIF NOWEXNAME:COUNT != 0
+    ;       NEWitem ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(2,myTITTLE,overALL,0,NEWitem:1,myMODE)
+DRAWLINE
+IF myMODE != 3
+    REPEAT overALL
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}]NOWEX:{COUNT, 3} = {NOWEX:COUNT}
+    REND
+ELSEIF myMODE == 3
+    REPEAT overALL
+        SIF NOWEX:COUNT == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] NOWEX:{COUNT} = {NOWEX:COUNT}
+    REND
+ENDIF
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 19999
+        CALL EDIT_GROUP(myTITTLE)
+        IF RESULT:91 == 0
+            ;           FOR COUNT, RESULT:92, RESULT:93
+            ;               SIF STRLENS(NOWEXNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               NOWEX:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 3
+            FOR COUNT, RESULT:92, RESULT:93
+                NOWEX:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 範圍內 %myTITTLE% 全部修改為({RESULT:94})了！
+        ELSEIF RESULT:91 == 1
+            ;           FOR COUNT, 0, overALL
+            ;               SIF STRLENS(NOWEXNAME:COUNT) == 0
+            ;                   CONTINUE
+            ;               NOWEX:COUNT = RESULT:94
+            ;           NEXT
+            ;           PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(不含空值)
+            PRINTFORMW 無效動作，返回
+        ELSEIF RESULT:91 == 2
+            FOR COUNT, 0, overALL
+                NOWEX:COUNT = RESULT:94
+            NEXT
+            PRINTFORMW 全部 %myTITTLE% 修改為({RESULT:94})了！(含空值)
+        ELSEIF RESULT:91 == 4
+            PRINTFORMW 返回。
+        ENDIF
+        RESULT:91 = 0
+        GOTO PRINT_LIST
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(1,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        RESULT:92 = RESULT
+        IF RESULT:95 == 0
+            CALL GET_intEDIT(RESULT:92,myTITTLE,"NOWEX",NOWEX:RESULT,99999,0)
+            SIF RESULT:91 == 1
+                NOWEX:(RESULT:92) = RESULT:94
+            RESULT:91 = 0
+        ELSEIF RESULT:95 == 1
+            NOWEX:(RESULT:92) += RESULT:96
+        ELSEIF RESULT:89 == 1
+            REPEAT CHARANUM
+                NOWEX:COUNT:(RESULT:92) = RESULT:96
+            REND
+        ELSEIF RESULT:95 == 2
+            NOWEX:(RESULT:92) = RESULT:96
+        ELSE
+            NOWEX:(RESULT:92) = 0
+        ENDIF
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;TRAIN操作
+;--------------------------------------------------
+@EDIT_TRAIN(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM myEDIT,4
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM maxINT,4
+#DIMS nNAME
+#DIMS myTITTLE
+VARSET maxINT,0
+VARSIZE TRAINNAME
+overALL = RESULT
+maxINT = GET_LINEint(2,20,"0")
+maxINT:1 = GET_LINEint(2,8,"0")
+
+$PRINT_LIST
+RESULT:89 = 0
+VARSET NEWitem,0
+myMODE = NXP_MODE(1,0,0)
+REPEAT overALL
+    ;   SIF TRAIN:COUNT != 0
+    ;       NEWitem:1 ++
+    SIF STRLENS(TRAINNAME:COUNT) != 0
+        NEWitem:1 ++
+REND
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = GET_PAGE(myMODE,RESULT:99,overALL,overALL,overALL,NEWitem:1)
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    ;   IF myMODE == 0
+    ;       SIF STRLENS(TRAINNAME:COUNT) == 0
+    ;           CONTINUE
+    ;       sCOUNT ++
+    ;       SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+    ;           CONTINUE
+    ;       PRINTFORMLC [{COUNT, 3}] \@(STRLENS(TRAINNAME:COUNT) != 0) ? %TRAINNAME:COUNT% # TRAIN:{COUNT,3}\@
+    IF myMODE != 3
+        SIF COUNT < myPAGE:1 * RESULT:99 || COUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@(STRLENS(TRAINNAME:COUNT) != 0) ? %TRAINNAME:COUNT% # TRAIN:{COUNT,3}\@
+        ;   ELSEIF myMODE == 2
+        ;       SIF STRLENS(TRAINNAME:COUNT) == 0
+        ;           CONTINUE
+        ;       PRINTFORMLC [{COUNT, 3}] \@(STRLENS(TRAINNAME:COUNT) != 0) ? %TRAINNAME:COUNT% # TRAIN:{COUNT,3}\@
+    ELSEIF myMODE == 3
+        SIF STRLENS(TRAINNAME:COUNT) == 0
+            CONTINUE
+        sCOUNT ++
+        SIF sCOUNT < myPAGE:1 * RESULT:99 || sCOUNT >= (myPAGE:1 + 1) * RESULT:99
+            CONTINUE
+        PRINTFORMLC [{COUNT, 3}] \@(STRLENS(TRAINNAME:COUNT) != 0) ? %TRAINNAME:COUNT% # TRAIN:{COUNT,3}\@
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(myPAGE:1,myPAGE)
+DRAWLINE
+CALL NXP_BMODE(2,myMODE)
+CALL NXP_BUSER(myPAGE,1)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(2,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+        myPAGE:1 =  MY_PAGE(0,-1)
+    CASE 0 TO overALL
+        CALL GET_txtEDIT(RESULT,myTITTLE,(TRAINNAME:RESULT),(TRAINNAME:RESULT),TARGET,1)
+        SIF STRLENS(RESULTS) != 0
+            ;           TRAINNAME:RESULT = %RESULTS%
+            RESULT = 0
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;--------------------------------------------------
+;EDIT_MYLOG 記事本
+;--------------------------------------------------
+@EDIT_MYLOG(myTITTLE,myMODE,myPAGE:1)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM NEWitem,2
+#DIM sCOUNT
+#DIM overALL
+#DIM maxINT,4
+#DIMS nNAME
+#DIMS myTITTLE
+#DIMS myLOG,10
+VARSET maxINT,0
+VARSIZE myLOG
+overALL = RESULT
+maxINT = GET_LINEint(2,20,"0")
+maxINT:1 = GET_LINEint(2,8,"0")
+
+$PRINT_LIST
+VARSET NEWitem,10
+myMODE = NXP_MODE(1,0,0)
+sCOUNT = 0
+CLEARLINE LINECOUNT-GET_CLINE(1)
+myPAGE = 1
+PRINTL
+DRAWLINEFORM =
+CALL NXP_title(1,myTITTLE,overALL,NEWitem,NEWitem:1,myMODE)
+CALL NXP_BCHARAR(1)
+REPEAT overALL
+    IF STRLENS(TOFULL(myLOG:COUNT)) > maxINT
+        PRINTFORML [{COUNT, 2}] \@ (STRLENS(myLOG:COUNT) == 0) ?紀錄{(COUNT+1),2} # 紀錄{(COUNT+1)}\@ :
+        CALL NXP_PRINTlist(myLOG:COUNT,maxINT)
+    ELSE
+        PRINTFORML [{COUNT, 2}] \@ (STRLENS(myLOG:COUNT) == 0) ?紀錄{(COUNT+1),2} # 紀錄{(COUNT+1)}\@ :%myLOG:COUNT%
+    ENDIF
+REND
+PRINTL
+CALL NXP_BPAGE(0,0)
+DRAWLINE
+CALL NXP_BMODE(1,myMODE)
+CALL NXP_BUSER(myPAGE,0)
+
+$INPUT_LOOP
+INPUT
+SELECTCASE RESULT
+    CASE 10000
+        RETURN 0
+    CASE 20000 TO 30000
+        CALL NXP_BRESULT(2,RESULT,myTITTLE,myPAGE:1,myPAGE,myMODE)
+    CASE 0 TO overALL
+        CALL GET_txtEDIT(RESULT,myTITTLE,"記事",(myLOG:RESULT),TARGET,1)
+        SIF STRLENS(RESULTS) != 0
+            myLOG:RESULT = %RESULTS%
+    CASEELSE
+        GOTO PRINT_LIST
+ENDSELECT
+GOTO PRINT_LIST
+
+;==============================================================================================
+;--------------------------------------------以下補丁--------------------------------------------
+;==============================================================================================
+;=================
+;---------顯示與結果--------
+;=================
+;检索函数___by.LJ
+@SEARCHFOR(resultFLAG,SEARCHFORname)
+#DIM resultFLAG
+#DIM SEARCHFORlog
+#DIMS SEARCHFORname
+#DIMS ESCname,3
+ESCname:0 = 返回
+ESCname:1 = ESC
+ESCname:2 = esc
+PRINTL
+$LOOP_SEARCH
+DRAWLINEFORM =
+PRINTFORML 輸入想搜尋的%SEARCHFORname%的值\@(resultFLAG == 1) ?（輸入-999999則返回） # （離開請輸入返回/ESC）\@
+PRINTFORM %" "*10%
+IF resultFLAG == 1
+    PRINTBUTTON @" [返回] ",-999989
+    INPUT
+ELSEIF resultFLAG == 2
+    PRINTBUTTON @" [返回] ","返回"
+    INPUTS
+ENDIF
+SEARCHFORlog = 0
+IF resultFLAG == 1
+    IF RESULT == -999989
+        PRINTW 返回
+        DRAWLINE
+        RETURN
+    ELSE
+        PRINTFORML %SEARCHFORname%的值為【{RESULT}】的搜尋結果：
+        SELECTCASE SEARCHFORname
+            CASE "FLAG"
+                REPEAT VARSIZE("FLAG")
+                    IF FLAG:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%FLAGNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "CFLAG"
+                REPEAT VARSIZE("CFLAG")
+                    IF CFLAG:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%CFLAGNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "TFLAG"
+                REPEAT VARSIZE("TFLAG")
+                    IF TFLAG:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%TFLAGNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "BASE"
+                REPEAT VARSIZE("BASE")
+                    IF BASE:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%BASENAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "BASE","MAXBASE"
+                REPEAT VARSIZE("MAXBASE")
+                    IF MAXBASE:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%BASENAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "EXP"
+                REPEAT VARSIZE("EXP")
+                    IF EXP:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%EXPNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "ABL"
+                REPEAT VARSIZE("ABL")
+                    IF ABL:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%ABLNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "TALENT"
+                REPEAT VARSIZE("TALENT")
+                    IF TALENT:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%TALENTNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "PALAM"
+                REPEAT VARSIZE("PALAM")
+                    IF PALAM:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%PALAMNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "JUEL"
+                REPEAT VARSIZE("JUEL")
+                    IF JUEL:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%PALAMNAME:COUNT%の珠】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "EX"
+                REPEAT VARSIZE("EX")
+                    IF EX:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%EXNAME:COUNT%の珠】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "SOURCE"
+                REPEAT VARSIZE("SOURCE")
+                    IF SOURCE:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%SOURCENAME:COUNT%の珠】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "EQUIP"
+                REPEAT VARSIZE("EQUIP")
+                    IF EQUIP:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%EQUIPNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "TEQUIP"
+                REPEAT VARSIZE("TEQUIP")
+                    IF TEQUIP:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%TEQUIPNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "ITEM"
+                REPEAT VARSIZE("ITEM")
+                    IF ITEM:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%ITEMNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "MARK"
+                REPEAT VARSIZE("MARK")
+                    IF MARK:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【%MARKNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "RELATION"
+                REPEAT VARSIZE("RELATION")
+                    IF RELATION:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【{RELATION:COUNT}】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "STAIN"
+                REPEAT VARSIZE("STAIN")
+                    IF STAIN:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【{STAIN:COUNT}】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "GOTJUEL"
+                REPEAT VARSIZE("GOTJUEL")
+                    IF GOTJUEL:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【{GOTJUEL:COUNT}】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "NOWEX"
+                REPEAT VARSIZE("NOWEX")
+                    IF NOWEX:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【{NOWEX:COUNT}】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "TCVAR"
+                REPEAT VARSIZE("TCVAR")
+                    IF TCVAR:COUNT == RESULT
+                        PRINTFORMLC [{COUNT}]:【{TCVAR:COUNT}】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASEELSE
+                RETURN 0
+        ENDSELECT
+        PRINTL
+        PRINTFORML 合計【{SEARCHFORlog}】筆
+    ENDIF
+ELSEIF resultFLAG == 2
+    IF RESULTS == ESCname:0 || RESULTS == ESCname:1 || RESULTS == ESCname:2
+        PRINTW 返回
+        DRAWLINE
+        RETURN
+    ELSE
+        PRINTFORML %SEARCHFORname%的值為【%RESULTS%】的搜尋結果
+        SELECTCASE SEARCHFORname
+            CASE "STR"
+                REPEAT VARSIZE("STR")
+                    IF STRFIND(STR:COUNT,RESULTS,-1) != -1
+                        PRINTFORMLC [{COUNT}]:【%STR:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "CSTR"
+                REPEAT VARSIZE("CSTR")
+                    IF STRFIND(CSTR:TARGET:COUNT,RESULTS,-1) != -1
+                        PRINTFORMLC [{COUNT}]:【%CSTR:TARGET:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "TSTR"
+                REPEAT VARSIZE("TSTR")
+                    IF STRFIND(TSTR:COUNT,RESULTS,-1) != -1
+                        PRINTFORMLC [{COUNT}]:【%TSTR:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASE "TRAIN"
+                REPEAT VARSIZE("TRAINNAME")
+                    IF STRFIND(TRAINNAME:COUNT,RESULTS,-1) != -1
+                        PRINTFORMLC [{COUNT}]:【%TRAINNAME:COUNT%】
+                        SEARCHFORlog ++
+                    ENDIF
+                REND
+            CASEELSE
+                RETURN 0
+        ENDSELECT
+        PRINTL
+        PRINTFORML 合計【{SEARCHFORlog}】筆
+    ENDIF
+ENDIF
+PRINTL
+GOTO LOOP_SEARCH
+
+
+;字串編輯
+@GET_txtEDIT(nINT,nTXT,nTXT:1,nTXT:2,TARGET,showMODE)
+#DIM showMODE
+#DIM nINT,3
+#DIMS nTXT,3
+DRAWLINE
+PRINTFORML 　%nTXT%:{nINT}【%nTXT:1%】
+PRINTFORML 　(%nTXT:2%)
+PRINTFORML 　修改為...　(如要離開請輸入返回)
+PRINTBUTTON @"　[返回]　","返回"
+INPUTS
+IF RESULTS == "返回"
+    PRINTW 您輸入了無效值，現在返回。
+    RESULTS = 
+ENDIF
+RETURN RESULT
+
+
+;數值編輯
+@GET_intEDIT(nINT:1,showNAME,showNAME:1,nINT:0,nINT:2,nINT:3)
+#DIM nINT,4
+#DIMS showNAME,2
+DRAWLINE
+PRINTFORML [%showNAME%:{nINT:1,3}] %showNAME%修改為(現在{nINT:0})
+PRINTFORML 請選擇或直接輸入（不修改請按返回）
+PRINTL
+PRINTBUTTON @" [  0 ]",0
+PRINTBUTTON @" [  1 ]",1
+PRINTBUTTON @" [  5 ]",5
+PRINTBUTTON @" [ 10 ]",10
+PRINTL
+PRINTBUTTON @" [一百]",99
+PRINTBUTTON @" [一千]",999
+PRINTBUTTON @" [一萬]",9999
+PRINTBUTTON @" [十萬]",99999
+PRINTL
+PRINTBUTTON @" [百萬]",999999
+PRINTBUTTON @" [千萬]",9999999
+PRINTBUTTON @" [一億]",99999999
+PRINTBUTTON @" [百億]",9999999999
+PRINTBUTTON @"   　[返回]   　",-98989
+INPUT
+IF RESULT == -98989
+    PRINTW 您輸入了無效值，現在返回。
+ELSE
+    RESULT:94 = RESULT
+    RESULT:91 = 1
+ENDIF
+
+;批量數值編輯
+@EDIT_GROUP(myTITTLE)
+#DIMS myTITTLE
+#DIM GROUPint,3
+VARSET GROUPint,0
+$LOOP_GROUP
+CLEARLINE 1
+DRAWLINE
+SIF GROUPint:1 != 4
+    PRINTFORML 現在編輯對象%myTITTLE%
+IF GROUPint:1 == 0
+    PRINTFORML 編輯起始值[0~99999](負值返回)
+ELSEIF GROUPint:1 == 1
+    PRINTFORML 現在起始值 ({RESULT:92})
+    PRINTFORML 編輯終點值[0~99999](負值返回)
+ENDIF
+PRINTLC [-9]返回
+IF GROUPint:1 == 0
+    PRINTLC [-1]全部修改(無空值)
+    PRINTLC [-2]全部修改(含空值)
+ENDIF
+IF RESULT:90 == 1
+    PRINTLC [-3]全部修改(無空值、無負面值)
+    PRINTLC [-4]全部修改(含空值、無負面值)
+ENDIF
+INPUT
+IF RESULT < -8 || RESULT > 99999
+    RESULT:91 = 4
+    RETURN 0
+ELSEIF RESULT == -1 || RESULT == -2 || RESULT == -3 || RESULT == -4
+    SIF RESULT == -1 || RESULT == -3
+        RESULT:91 = 1
+    SIF RESULT == -2 || RESULT == -4
+        RESULT:91 = 2
+    SIF RESULT == -3 || RESULT == -4
+        RESULT:90 = 2
+    GROUPint:1 = 4
+    GOTO LOOP_GROUP2
+ELSE
+    GROUPint:1 ++
+    IF GROUPint:1 == 1
+        RESULT:92= RESULT
+        GOTO LOOP_GROUP
+    ELSEIF GROUPint:1 == 2
+        RESULT:93 = (RESULT+1)
+        GOTO LOOP_GROUP2
+    ENDIF
+ENDIF
+$LOOP_GROUP2
+CLEARLINE 1
+DRAWLINE
+IF GROUPint:1 == 2
+    PRINTFORML 現在編輯對象%myTITTLE%
+    PRINTFORML 現在起始值 ({RESULT:92})，現在終點值 ({RESULT:93})
+    PRINTFORML 欲修改結果 (請選擇或直接輸入)
+ELSEIF GROUPint:1 == 4
+    PRINTFORML 現在編輯對象%myTITTLE%全部\@(RESULT:90 == 2) ? (空白值：有) # (空白值：無)\@
+    PRINTFORML 欲修改結果 (請選擇或直接輸入)
+ENDIF
+SIF GROUPint:1 != 4
+    PRINTBUTTON \@(GROUPint:2 == 0) ? 　× 批量編輯(含空白值) # 　○ 批量編輯(含空白值)\@,-100001
+PRINTL
+PRINTBUTTON @" [  0 ]",0
+PRINTBUTTON @" [  1 ]",1
+PRINTBUTTON @" [  5 ]",5
+PRINTBUTTON @" [ 10 ]",10
+PRINTL
+PRINTBUTTON @" [一百]",99
+PRINTBUTTON @" [一千]",999
+PRINTBUTTON @" [一萬]",9999
+PRINTBUTTON @" [十萬]",99999
+PRINTL
+PRINTBUTTON @" [百萬]",999999
+PRINTBUTTON @" [千萬]",9999999
+PRINTBUTTON @" [一億]",99999999
+PRINTBUTTON @" [百億]",9999999999
+PRINTBUTTON @"   　[返回]   　",-98989
+INPUT
+IF RESULT == -100001
+    GROUPint:2 ++
+    IF GROUPint:2 == 2
+        GROUPint:2 = 0
+        RESULT:91 = 0
+    ENDIF
+    GOTO LOOP_GROUP2
+ELSEIF RESULT == -98989
+    RESULT:91 = 4
+    RETURN 0
+ELSE
+    IF GROUPint:1 == 4
+        RESULT:94 = RESULT
+    ELSEIF GROUPint:2 == 1
+        RESULT:91 = 3
+        RESULT:94 = RESULT
+    ELSEIF GROUPint:1 == 2
+        RESULT:91 = 0
+        RESULT:94 = RESULT
+    ENDIF
+    RETURN 0
+ENDIF
+RETURN 0
+
+;儲存刪除點
+@GET_CLINE(lineLOG:0)
+#FUNCTION
+#DIM lineLOG,2
+SIF lineLOG:0 != 1
+    lineLOG:1 = LINECOUNT
+RETURNF lineLOG:1
+
+;現在頁數
+@MY_PAGE(myPAGE:1,myPAGE:2)
+#FUNCTION
+#DIM myPAGE,3
+IF myPAGE:2 == -1
+    RETURNF myPAGE:0
+ELSEIF myPAGE:2 == -2
+    myPAGE:0 = myPAGE:1
+    RETURNF myPAGE:0
+ELSEIF myPAGE:1 == 0
+    myPAGE:0 = 0
+ELSE
+    myPAGE:0 += myPAGE:1
+    IF myPAGE:0 < 0 && myPAGE:0 == myPAGE:1
+        myPAGE:0 = myPAGE:2
+    ELSEIF myPAGE:0 < 0 && myPAGE:0 > myPAGE:1
+        myPAGE:0 = 0
+    ELSEIF myPAGE:0 > myPAGE:2 && myPAGE:0 == (myPAGE:2 + myPAGE:1)
+        myPAGE:0 = 0
+    ELSEIF myPAGE:0 > myPAGE:2 && myPAGE:0 >= myPAGE:2
+        myPAGE:0 = myPAGE:2
+    ENDIF
+ENDIF
+RETURNF myPAGE:0
+
+
+;獲得頁數
+@GET_PAGE(myMODE,cCOUNT,NEWitem,NEWitem:1,NEWitem:2,NEWitem:3)
+#FUNCTION
+#DIM myMODE
+#DIM NEWitem,10
+#DIM cCOUNT
+NEWitem:9 = NEWitem:myMODE / cCOUNT -1
+SIF (NEWitem:myMODE % cCOUNT) != 0
+    NEWitem:9 ++
+SIF (NEWitem:myMODE - cCOUNT) <= 0
+    NEWitem:9 = 0
+RETURNF NEWitem:9
+
+;名稱盡可能對齊， 計算預留空白數>
+@GET_INTname(nameFLAG,oldNAME)
+#FUNCTION
+#DIM nameFLAG
+#DIM INTform
+#DIM sCOUNT,3
+#DIM newNAME
+#DIMS oldNAME
+#DIMS nowNAME,3
+VARSET sCOUNT,0
+
+nowNAME:1 = %TOFULL(oldNAME)%
+newNAME = STRLENS(nowNAME:1)
+STRLENS oldNAME
+IF newNAME != RESULT
+    IF (newNAME / RESULT) == 2
+        INTform = newNAME / 2
+        nowNAME:2 = % "？" * INTform%
+        newNAME= 0
+        SIF nowNAME:1 == nowNAME:2
+            newNAME = INTform
+    ELSE
+        newNAME = newNAME - RESULT
+        $LOOP_STRFIND
+        STRFIND NAME:COUNT," ",sCOUNT:1
+        IF RESULT > -1
+            sCOUNT:2 ++
+            sCOUNT:1 = RESULT+1
+            GOTO LOOP_STRFIND
+        ENDIF
+        newNAME = newNAME - sCOUNT:2
+    ENDIF
+ELSEIF newNAME == RESULT
+    newNAME = 0
+ENDIF
+RETURNF newNAME
+
+;修改顯示模式
+@NXP_MODE(myMODE,myMODE:1,myMODE:2)
+#FUNCTION
+#DIM myMODE,4
+IF myMODE == 0
+    IF myMODE:3 != myMODE:2
+        myMODE:3 = myMODE:2
+    ELSEIF myMODE:3 == myMODE:2
+        myMODE:3 = 0
+    ENDIF
+ENDIF
+RETURNF myMODE:3
+
+;修改編輯數
+@GET_myedit
+DRAWLINE
+PRINTFORML 修改自動編輯的修改量。
+PRINTFORML 自動修改下區分為[加減]與[變更]兩種模式，
+PRINTFORML [加減]正數為增加負數為減少，[變更]設定數值後套用結果，
+PRINTFORML 當前自動編輯量為 {RESULT:96}，請輸入數值
+PRINTL
+PRINTBUTTON @" [   0]",0
+PRINTBUTTON @" [   1]",1
+PRINTBUTTON @" [   5]",5
+PRINTBUTTON @" [  10]",10
+PRINTL
+PRINTBUTTON @" [  30]",30
+PRINTBUTTON @" [  50]",50
+PRINTBUTTON @" [ 100]",100
+PRINTBUTTON @" [ 500]",500
+PRINTL
+PRINTBUTTON @" [一千]",1000
+PRINTBUTTON @" [五千]",5000
+PRINTBUTTON @" [一萬]",10000
+PRINTBUTTON @" [十萬]",100000
+PRINTL
+PRINTBUTTON @" [  -1]",-1
+PRINTBUTTON @" [  -5]",-5
+PRINTBUTTON @" [ -10]",-10
+PRINTBUTTON @" [-100]",-100
+PRINTBUTTON @"   　[返回]   　",-98989
+INPUT
+SIF RESULT <= -98989
+    RETURN 0
+RESULT:96 = RESULT
+
+;修改顯示數
+@GET_check
+DRAWLINE
+PRINTFORML 修改每一頁顯示參數量，建議數值在100至250之間(依字體大小決定)
+PRINTFORML 當前一頁顯示參數為 {RESULT:99}，請輸入數值 (零或負數則取消)
+PRINTL
+PRINTLC [ 50] [100] [150]
+PRINTL
+PRINTLC [200] [250] [300]
+PRINTBUTTON @"[返回]",-98989
+INPUT
+SIF RESULT <= 0
+    RETURN 0
+RESULT:99 = RESULT
+
+;計算行字數
+@GET_LINEint(LINEmode,getINT,getNAME)
+#FUNCTION
+#DIM LINEmode
+#DIM getINT,4
+#DIMS getNAME
+VARSET getINT,0,1,3
+getINT:2 = LINECOUNT
+getINT:3 = 100
+REPEAT getINT:3
+    PRINTFORM -
+    IF LINECOUNT == getINT:2
+        getINT:1 ++
+    ELSEIF LINECOUNT != getINT:2
+        CONTINUE
+    ENDIF
+REND
+PRINTL
+CLEARLINE LINECOUNT-GET_CLINE(1)
+getINT:1 -= getINT
+RETURNF getINT:1
+
+;顯示字串的(換行試算)
+@NXP_PRINTlist(txtPRINT:10,intPRINT)
+#DIM  intPRINT,3
+#DIMS txtPRINT,11
+VARSET intPRINT,0,1,2
+VARSET txtPRINT,"",0,10
+intPRINT:1 = intPRINT+8
+intPRINT:2 = STRLENS(TOFULL(txtPRINT:10))
+IF (intPRINT:2 - intPRINT:1) > 0
+    FOR RESULT,0,10
+        txtPRINT:RESULT = %SUBSTRING(txtPRINT:10,(intPRINT:1*RESULT),intPRINT:1)%
+        SIF STRLENS(txtPRINT:RESULT) != 0
+            PRINTFORML %" "*6%%txtPRINT:RESULT%
+    NEXT
+ELSE
+    PRINTFORML %" "*6%%txtPRINT:10%
+ENDIF
+
+;--------------------------------------------------
+;顯示與通用按鈕
+;--------------------------------------------------
+;標題插件
+@NXP_title(NEWitem:0,nowTITLE,NEWitem:1,NEWitem:2,NEWitem:3,NEWitem:4)
+#DIM NEWitem,5
+#DIMS nowTITLE
+ALIGNMENT CENTER
+IF NEWitem:0 == 1
+    IF NEWitem:4 == 0
+        PRINTFORM 當前為 「%TOFULL(nowTITLE)%」 頁面 (顯示模式-有效)(合計{NEWitem:2,3}筆)
+    ELSEIF NEWitem:4 == 1
+        PRINTFORM 當前為 「%TOFULL(nowTITLE)%」 頁面 (顯示模式-展開)(合計{NEWitem:2,3}筆)
+    ELSEIF NEWitem:4 == 2
+        PRINTFORM 當前為 「%TOFULL(nowTITLE)%」 頁面 (顯示模式-全部)(合計{NEWitem:1,3}筆)
+    ELSEIF NEWitem:4 == 3
+        PRINTFORM 當前為 「%TOFULL(nowTITLE)%」 頁面 (顯示模式-不為0)(合計{NEWitem:3,3}筆)
+    ENDIF
+ELSEIF NEWitem:0 == 2
+    IF NEWitem:4 != 3
+        PRINTFORM 當前為 「%TOFULL(nowTITLE)%」 頁面 (顯示模式-全部)(合計{NEWitem:0,3}筆)
+    ELSEIF NEWitem:4 == 3
+        PRINTFORM 當前為 「%TOFULL(nowTITLE)%」 頁面 (顯示模式-不為0)(合計{NEWitem:1,3}筆)
+    ENDIF
+ENDIF
+PRINTL
+ALIGNMENT LEFT
+
+;標題插件2
+@NXP_CHARAtitle(nowTYPE,nowTITLE,nowTARGET)
+#DIM nowTYPE
+#DIM nowTARGET
+#DIMS nowTITLE
+ALIGNMENT CENTER
+PRINTFORML 當前為 「%nowTITLE%」 頁面
+ALIGNMENT LEFT
+;DRAWLINE
+
+;角色插件
+@NXP_BCHARAR(charaFLAG)
+#DIM charaFLAG
+ALIGNMENT CENTER
+
+PRINTFORM \@(TARGET == 0) ? 主人 # 奴隸\@「%NAME%/%CALLNAME%」選擇中
+;SIF charaFLAG != 0
+;    PRINTL
+PRINTBUTTON @" [換人]",29001
+PRINTBUTTON @" [情報]",29002
+SIF charaFLAG != 2
+    PRINTBUTTON @" [更名]",29003
+SIF charaFLAG == 0
+    PRINTBUTTON @" [新主人]",29009
+IF charaFLAG == 1
+    PRINTBUTTON @" [上一位]",29901
+    PRINTBUTTON @" [下一位]",29909
+ENDIF
+PRINTL
+ALIGNMENT LEFT
+DRAWLINE
+
+;模式插件
+@NXP_BMODE(bmodeFLAG,bmodeFLAG:3)
+#DIM bmodeFLAG,4
+#DIM sFLAG,4
+VARSET sFLAG,0
+SIF bmodeFLAG:3 == 1
+    sFLAG:1 = !sFLAG:1
+SIF bmodeFLAG:3 == 2
+    sFLAG:2 = !sFLAG:2
+SIF bmodeFLAG:3 == 3
+    sFLAG:3 = !sFLAG:3
+ALIGNMENT CENTER
+PRINTBUTTON \@(!RESULT:98) ? 　⊟ 編輯設定 ⊟　 # 　⊞ 編輯設定 ⊞　\@,21301
+IF !RESULT:98
+    PRINTL
+    PRINTBUTTON \@(!RESULT:89) ? 【單人自由編輯】 # 【全體直接編輯】\@,21309
+    IF RESULT:95 == 0
+        PRINTBUTTON "【手動修改：直接變更】",21302
+    ELSEIF RESULT:95 == 1
+        PRINTBUTTON "【自動修改：數值增減】",21302
+    ELSEIF RESULT:95 == 2
+        PRINTBUTTON "【自動修改：直接變更】",21302
+    ENDIF
+    PRINTBUTTON @" 【修改量[{RESULT:96}]】",21303
+    PRINTBUTTON @" 【範圍修改】",19999
+    PRINTBUTTON @" 【數值搜索】",20009
+    PRINTL
+ENDIF
+PRINTBUTTON \@(!RESULT:97) ? 　⊟ 顯示設定 ⊟　 # 　⊞ 顯示設定 ⊞　\@,21201
+IF !RESULT:97
+    PRINTL
+    SIF bmodeFLAG == 1
+        PRINTBUTTON \@(!sFLAG:1) ? 　【全展開：×】 # 　【全展開：○】\@,21202
+    SIF bmodeFLAG == 1
+        PRINTBUTTON \@(!sFLAG:2) ? 　【顯示：有效】 # 　【顯示：全部】\@,21203
+    PRINTBUTTON \@(!sFLAG:3) ? 　【僅顯示非0項目：×】 # 　【僅顯示非0項目：○】\@,21204
+    PRINTBUTTON @"　【項目({RESULT:99}/頁)】",21209
+ENDIF
+PRINTL
+ALIGNMENT LEFT
+DRAWLINE
+DRAWLINEFORM =
+
+;頁數插件
+@NXP_BPAGE(myPAGE:1,myPAGE)
+#DIM myPAGE,2
+#DIMS PAGEname
+PAGEname = ＜%TOSTR(myPAGE:1+1)%/%TOSTR(myPAGE+1)%＞
+ALIGNMENT CENTER
+PRINTBUTTON PAGEname,21109
+PRINTL
+ALIGNMENT LEFT
+
+;頁數跳躍====
+@NXP_GOpage(GOpage:1,GOpage)
+#DIM GOpage,2
+PRINTFORML 現在頁數{GOpage:1+1},最大頁數{GOpage+1}
+PRINTFORM 飛躍至指定頁數 > ,請不超越最大頁數，0以下返回)
+PRINTBUTTON @"　[返回]",-1
+PRINTL
+$LOOP_INPUT
+INPUT
+IF RESULT < 1
+    RETURN
+ELSEIF RESULT > (GOpage+1)
+    PRINTFORML 再試一次，請不超越最大頁數
+    GOTO LOOP_INPUT
+ELSE
+    GOpage:1 = MY_PAGE(RESULT-1,-2)
+ENDIF
+
+
+;動作按鈕
+@NXP_BUSER(myPAGE,BUSERflag)
+#DIM myPAGE
+#DIM BUSERflag
+ALIGNMENT CENTER
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [21101]上一頁\@
+PRINTLC [10000]返回
+PRINTFORMLC \@(myPAGE == 0) ? %" " * 17% # [21102]下一頁\@
+PRINTL
+IF myPAGE >= 9
+    PRINTFORMLC \@(9 > myPAGE) ? %" " * 17% # [21103]上十頁\@
+    PRINTLC [---]
+    ;   SIF BUSERflag == 1
+    ;       PRINTLC [19999]範圍修改
+    ;   PRINTLC [20009]检索
+    PRINTFORMLC \@(9 > myPAGE) ? %" " * 17% # [21104]下十頁\@
+    PRINTL
+ENDIF
+ALIGNMENT LEFT
+
+;按鈕結果(20000-30000)
+@NXP_BRESULT(resultFLAG,BREint,BREtxt,myPAGE:1,myPAGE,myMODE)
+#DIM myPAGE,2
+#DIM myMODE
+#DIM BREint
+#DIM resultFLAG
+#DIMS BREtxt
+SELECTCASE BREint
+    CASE 20009
+        CALL SEARCHFOR(resultFLAG,BREtxt)
+    CASE 21101
+        myPAGE:1 = MY_PAGE(-1,myPAGE)
+    CASE 21102
+        myPAGE:1 = MY_PAGE(1,myPAGE)
+    CASE 21103
+        myPAGE:1 = MY_PAGE(-10,myPAGE)
+    CASE 21104
+        myPAGE:1 = MY_PAGE(10,myPAGE)
+    CASE 21109
+        CALL NXP_GOpage(myPAGE:1,myPAGE)
+    CASE 21201
+        RESULT:97 = !RESULT:97
+    CASE 21202
+        myMODE = NXP_MODE(0,myMODE,1)
+        myPAGE:1 = MY_PAGE(0,0)
+    CASE 21203
+        myMODE = NXP_MODE(0,myMODE,2)
+        myPAGE:1 = MY_PAGE(0,0)
+    CASE 21204
+        myMODE = NXP_MODE(0,myMODE,3)
+        myPAGE:1 = MY_PAGE(0,0)
+    CASE 21209
+        CALL GET_check
+        myPAGE:1 = MY_PAGE(0,0)
+    CASE 21301
+        RESULT:98 = !RESULT:98
+    CASE 21302
+        RESULT:95++
+        SIF RESULT:95 >= 3
+            RESULT:95 = 0
+        SIF RESULT:89 == 1
+            RESULT:95 = 2
+    CASE 21303
+        CALL GET_myedit
+    CASE 21309
+        RESULT:89 = !RESULT:89
+        SIF RESULT:89 == 1
+            RESULT:95 = 2
+    CASE 29001
+        CALL NEXT_CHARA("sCHARA",myMODE,myPAGE:1)
+    CASE 29002
+        CALL DEBUG_CHARADATA(TARGET)
+    CASE 29003
+        CALL EDIT_CHARAname(TARGET)
+    CASE 29009
+        CALL EDIT_MASTERswitch("MASTERswitch",myMODE,myPAGE:1)
+    CASE 29901
+        TARGET --
+        SIF TARGET <= -1
+            TARGET = CHARANUM - 1
+    CASE 29909
+        TARGET ++
+        SIF TARGET >= CHARANUM
+            TARGET = 0
+    CASEELSE
+        RETURN 0
+ENDSELECT
+RETURN
+
+;--------------------------------------------------
+;其他顯示
+;--------------------------------------------------
+@DEBUG_MAID_K
+#DIM nowTIME
+GETTIME
+;抓取電腦時間，先把數字轉字串取指定文字再轉回數字，8,2是小時 8,4是小時與分鐘，須注意這不是字串所以第一個字不能是0
+nowTIME = TOINT(SUBSTRING(TOSTR(RESULT),8,2))
+PRINTDATAL
+    DATAFORM 　我是DEBUG女僕喔❤
+    DATAFORM 　MASTER❤
+    DATAFORM 　マスター❤
+    DATAFORM 　ご主人様❤
+    DATAFORM 　主人需要什麼服務嗎？
+    DATAFORM 　主人...?
+    DATAFORM 　主❤人❤
+    DATAFORM 　。 。 。 . . . 　　　z Z z Z z　　　 . . . ！　沒有，我一點也不累！
+    DATAFORM 　诶嘿　　☆（ゝω●）
+    DATAFORM 　您沒有花時間刷新資訊吧...？
+    DATAFORM 　有任何錯誤可以在深淵、巴哈進行回報喔❤
+    DATAFORM 　這是一個功能強大，且不限定您現在遊玩的遊戲使用的DEBUG喔❤
+    DATAFORM 　主頁面太亂時，記得善用活頁把不常用的選項作收納喔❤
+    DATAFORM 　進行修改如果太過撩亂，試著活用顯示模式的修改喔❤
+    DATAFORM 　請注意！修改日期有一定的風險，修改結果在退出後啟用，判定模式為日期變動❤
+    DATAFORM 　角色全恢復的實際效果仍會因不同的遊戲有所差異，如果有沒改到的部分要自己去修改MAXBASE喔❤
+    DATAFORM 　請不要過度依賴DEBUG，雖然可以增加遊戲樂趣，也可能會降低遊戲樂趣喔❤
+    DATAFORM 　"其他項目"下的標籤目前可以點但不全有用喔❤
+    DATAFORM 　還有許多想加的功能沒加，是否更新還是看心情。但是有BUG會優先改唷❤
+    DATAFORM 　DEBUG只是工具，有些修改可以接近理想但無法接近完美喔❤
+    DATAFORM 　角色資訊在不同的遊戲下標籤、涵式會有所差別，所以DEBUG內的資訊僅列出比較重要的而已喔❤
+    DATAFORM 　"主人變更"僅是個娛樂性質偏高的功能，會連CFLAG都交換，可能會導致部分事件出錯唷❤
+    DATAFORM 　遊戲要玩，身體也要照顧喔❤
+    DATAFORM 　DEBUG專用的存檔是自動存檔，您只能做讀取而已唷❤
+    DATAFORM 　DEBUG專用的存檔分別是991.2.3，分別是修改前(991)、上次修改、上上次修改(992.3輪流存)。
+    DATAFORM 　修改後發生錯誤可以善用DEBUG存檔喔。看是從DEBUG做讀檔，或是更名後從正規地方讀取都可以唷❤
+    DATAFORM 　不要修改太入迷，記得遊戲也要玩唷❤
+    DATAFORM 　角色管理頁已經完善，假如有什麼想新增的也能回報喔❤
+    DATAFORM 　善用角色管理頁的功能，可以讓你在新一輪的遊戲或末盤時快速叫出自己想要的進度喔❤
+    DATALIST
+        DATAFORM 一般主人做調整時比較少動到CFLAG，
+        DATA 可以利用角色存檔回歸進度，或是叫出其他存檔的角色進度喔❤
+    ENDLIST
+ENDDATA
+
+;預計作為常用變數的中繼點，目前只是先這麼寫
+;使用方法:進入時先把需要的函數傳至此處，藉由編輯對象、編輯數值，編輯方法做變更後進行通用變數的取出
+;考慮到每次到不同地方變數變動後可能出現落差，所以只取近遊戲的第一次
+@DEBUG_MaidLOG(MaidTARGET,MaidINT,MaidFLAG)
+#DIM MaidLOG,100;預計載入的變數量
+#DIM Maidtemp,3
+#DIM DYNAMIC MaidTARGET;對象
+#DIM DYNAMIC MaidINT;計算直
+#DIM DYNAMIC MaidFLAG;計算模式
+
+;作為初次近來取得資訊
+SIF MaidFLAG == -1
+    MaidLOG:MaidTARGET = MaidINT
+
+;確認模式後進行對應的動作，0是取代 1是加減
+IF MaidFLAG == 0
+    MaidLOG:MaidTARGET = MaidINT
+    RESULT:100 = MaidLOG:MaidTARGET ;賦予至通用變數後使用
+ELSEIF MaidFLAG == 1
+    MaidLOG:MaidTARGET += MaidINT
+    RESULT:100 = MaidLOG:MaidTARGET ;賦予至通用變數後使用
+ENDIF
+
+@DEBUG_test
+#DIM DYNAMIC FUNCTION_ARG
+#DIMS DYNAMIC FUNCTION_ARGS
+;DIM DYNAMIC 函數結束時，每次內容都清空

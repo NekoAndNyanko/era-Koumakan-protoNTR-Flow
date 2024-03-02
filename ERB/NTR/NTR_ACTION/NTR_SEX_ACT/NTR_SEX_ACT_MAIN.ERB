@@ -1,0 +1,305 @@
+;-------------------------------------------------------------------------------
+;訪問者の行為開始
+@VISITER_FRIENDSHIP_START(奴隷, 密室度)
+#DIM 奴隷
+#DIM 密室度
+#DIM 訪問者气氛
+訪問者气氛 = FLAG:訪問者の气氛
+; お持ち帰りフラグがない場合、气氛Lv5は抑制する。;副作用が怖いのでローカル変数で。
+IF IS_NTR_TAKINGOUT_ENABLE() == 0
+	訪問者气氛 = MIN(訪問者气氛, NTR_MOOD_性交)
+ELSE
+	訪問者气氛 = MIN(訪問者气氛, NTR_MOOD_同伴)
+ENDIF
+;浮気公認状態で見せつけることにしていた場合、見せつけるために結構な確率で持ち帰りを防いでくれる
+IF (TALENT:奴隷:浮気公認 == 浮気_性交公認) && ( 100 < RAND:(CFLAG:奴隷:好感度) )
+	訪問者气氛 = MIN(訪問者气氛, NTR_MOOD_性交)
+ENDIF
+[SKIPSTART]
+IF CFLAG:奴隷:睡眠 && ((IS_NTR_ATTACK_LOVER_ONLY() && TALENT:奴隷:恋慕) || TALENT:奴隷:NTR)
+	訪問者气氛 = 0
+	;睡姦実行
+	CALL VISITER_FRIENDSHIP_SLEEP(奴隷)
+ELSEIF CFLAG:奴隷:自慰中 && !TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:睡眠
+	; 自慰目撃による弱み獲得
+	CALL NTR_GET_WEAKNESS_1(奴隷)
+ELSEIF RAND:100 < 30 && CFLAG:奴隷:自慰中 && TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:NTR野外調教  && !CFLAG:奴隷:睡眠
+	; 弱みを握られた状態で自慰を目撃されるとNTR野外調教開始
+	SIF IS_NTR_EXHIBITION()
+		CALL NTR_EXHIBITION_START(奴隷)
+ELSEIF RAND:100 < 5 && TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:NTR野外調教 && !CFLAG:奴隷:睡眠 
+	; 弱みを握られた状態で5%でNTR野外調教開始
+	SIF IS_NTR_EXHIBITION()
+		CALL NTR_EXHIBITION_START(奴隷)
+ENDIF
+[SKIPEND]
+IF CFLAG:奴隷:自慰中 && !TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:睡眠
+	;被发现自慰而被握住把柄
+	CALL NTR_GET_WEAKNESS_1(奴隷)
+ENDIF
+IF CFLAG:奴隷:NTR野外調教 && !CFLAG:奴隷:睡眠
+	; 訪問者による野外調教実行
+	CALL NTR_EXHIBITION(奴隷)
+ELSE
+	;NTR野外調教ではない
+	SELECTCASE 訪問者气氛
+		CASE NTR_MOOD_会话
+			$SELECT_CASE_ELSE
+			; 行動選択→会话
+			IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && !CFLAG:奴隷:睡眠
+				;会话（主人同席）
+				CALL NTR_MESSAGE_1_1(奴隷)
+				CALL NTR_RESET_VISITOR_ACTION(奴隷)
+				TRYCALLLIST
+					FUNC NTR_KOJO_KW{CFLAG:奴隷:口上パターン}_1(奴隷)
+					FUNC NTR_KOJO_KW_1(奴隷)
+				ENDFUNC
+			ELSEIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) && !CFLAG:奴隷:睡眠
+				;会话（主人不在）
+				CALL NTR_MESSAGE_1_0(奴隷)
+				CALL NTR_RESET_VISITOR_ACTION(奴隷)
+				SIF FLAG:口上颜色
+					CALL KOJO_COLOR(奴隷)
+				TRYCALLLIST 
+					FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_1(奴隷)
+					FUNC NTR_KOJO_K_1(奴隷)
+				ENDFUNC
+				RESETCOLOR
+			ENDIF
+			CALL NTR_COUNTER(奴隷)
+		CASE NTR_MOOD_キス
+			; 行動選択→キス
+			CALL NTR_KISS(奴隷)
+			CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
+		CASE NTR_MOOD_爱抚
+			; 行動選択→爱抚
+			;前回住人がNTRカウンターで胸を揉ませていた場合胸爱抚
+			IF CFLAG:奴隷:NTRカウンターセクハラ == NTR_CNT_揉胸
+				CALL NTR_BUST_PET(奴隷)
+				;前回住人がNTRカウンターで裙子の中身を見せていた場合爱抚
+			ELSEIF CFLAG:奴隷:NTRカウンターセクハラ == NTR_CNT_掀裙子看内裤
+				CALL NTR_PET(奴隷)
+				;その他
+			ELSE
+				IF RAND:2 == 0
+					;爱抚
+					CALL NTR_PET(奴隷)
+				ELSE
+					;胸爱抚
+					CALL NTR_BUST_PET(奴隷)
+				ENDIF
+			ENDIF
+			CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
+		CASE NTR_MOOD_侍奉
+			; 行動選択→侍奉
+			IF 密室度 != 3  && CFLAG:奴隷:現在位置 != 位置_仓库
+				CALL VISITOR_GOWITH_ROOM(奴隷)
+			ENDIF
+			;前回住人がNTRカウンターで股間をまさぐっていた場合口交
+			IF CFLAG:奴隷:NTRカウンターセクハラ == NTR_CNT_揉搓股间
+				CALL NTR_FELLATIO(奴隷)
+				;前回住人がNTRカウンターでディープキスした場合口交か69
+			ELSEIF CFLAG:奴隷:NTRカウンターセクハラ == NTR_CNT_深吻
+				IF RAND:2
+					CALL NTR_FELLATIO(奴隷)
+				ELSE
+					CALL NTR_69(奴隷)
+				ENDIF
+				;その他
+			ELSE
+				IF RAND:3 == 0
+					CALL NTR_FELLATIO(奴隷)
+				ELSEIF RAND:2 == 1
+					CALL NTR_69(奴隷)
+				ELSE
+					CALL NTR_THUG(奴隷)
+				ENDIF
+			ENDIF
+			CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
+		CASE NTR_MOOD_性交
+			; 行動選択→性交(お持ち帰り抑制時も)に成功
+			IF 密室度 != 3  && CFLAG:奴隷:現在位置 != 位置_仓库
+				CALL VISITOR_GOWITH_ROOM(奴隷)
+			ENDIF
+			IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女
+				;处女菊花厨の時は菊花貫通の閾値が低い
+				IF EXP:奴隷:Ａ经验 > 20
+					CALL NTR_A_SEX(奴隷, 密室度)
+				ELSE
+					;条件を満たしていない時は69で我慢
+					CALL NTR_69(奴隷)
+				ENDIF
+			ELSEIF RAND(3) == 0
+				IF EXP:奴隷:Ａ经验 + EXP:奴隷:浮気Ａ经验 > 20
+					CALL NTR_A_SEX(奴隷, 密室度)
+				ELSE
+					CALL NTR_69(奴隷)
+				ENDIF
+			ELSE
+				CALL NTR_SEX(奴隷, 密室度)
+			ENDIF
+			CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
+		CASE NTR_MOOD_同伴
+			; 行動選択→お持ち帰り
+			;好感度が"あなた"より高ければお持ち帰り
+			CALL VISITER_TAKINGOUT(奴隷)
+		CASEELSE
+			GOTO SELECT_CASE_ELSE
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------------------------------------
+;訪問者の行為継続
+@VISITER_FRIENDSHIP_CONT(奴隷, 密室度)
+#DIM 奴隷
+#DIM 密室度
+CALL VISITER_FRIENDSHIP_TIMEPLUS(奴隷)
+CALL NTR_SIMPLE_FULFIL(奴隷)
+IF FLAG:睡姦フラグ == 1
+	SELECTCASE FLAG:訪問者との行為
+		CASE NTR_行为_睡奸_接吻
+			CALL NTR_SLEEP_接吻(奴隷)
+		CASE NTR_行为_睡奸_爱抚
+			CALL NTR_SLEEP_爱抚(奴隷)
+		CASE NTR_行为_睡奸_胸爱抚
+			CALL NTR_SLEEP_胸爱抚(奴隷)
+		CASE NTR_行为_睡奸_舔菊
+			CALL NTR_SLEEP_舔菊(奴隷)
+		CASE NTR_行为_睡奸_口交
+			CALL NTR_SLEEP_口交(奴隷)
+		CASE NTR_行为_睡奸_６９
+			CALL NTR_SLEEP_69(奴隷)
+		CASE NTR_行为_睡奸_素股
+			CALL NTR_SLEEP_素股(奴隷)
+		CASE NTR_行为_睡奸_Ｖ正常位
+			CALL NTR_SLEEP_SEX_0(奴隷)
+		CASE NTR_行为_睡奸_Ｖ后背位
+			CALL NTR_SLEEP_SEX_1(奴隷)
+		CASE NTR_行为_睡奸_Ｖ骑乘位
+			CALL NTR_SLEEP_SEX_2(奴隷)
+		CASE NTR_行为_睡奸_Ｖ对面座位
+			CALL NTR_SLEEP_SEX_3(奴隷)
+		CASE NTR_行为_睡奸_Ｖ背面座位
+			CALL NTR_SLEEP_SEX_4(奴隷)
+		CASE NTR_行为_睡奸_Ｖ对面立位
+			CALL NTR_SLEEP_SEX_5(奴隷)
+		CASE NTR_行为_睡奸_Ｖ背面立位
+			CALL NTR_SLEEP_SEX_6(奴隷)
+		CASE NTR_行为_睡奸_Ａ正常位
+			CALL NTR_SLEEP_A_SEX_0(奴隷)
+		CASE NTR_行为_睡奸_Ａ后背位
+			CALL NTR_SLEEP_A_SEX_1(奴隷)
+		CASE NTR_行为_睡奸_Ａ骑乘位
+			CALL NTR_SLEEP_A_SEX_2(奴隷)
+		CASE NTR_行为_睡奸_Ａ对面座位
+			CALL NTR_SLEEP_A_SEX_3(奴隷)
+		CASE NTR_行为_睡奸_Ａ背面座位
+			CALL NTR_SLEEP_A_SEX_4(奴隷)
+		CASE NTR_行为_睡奸_Ａ对面立位
+			CALL NTR_SLEEP_A_SEX_5(奴隷)
+		CASE NTR_行为_睡奸_Ａ背面立位
+			CALL NTR_SLEEP_A_SEX_6(奴隷)
+	ENDSELECT
+ELSE
+	SELECTCASE FLAG:訪問者との行為
+		CASE NTR_行为_キス
+			CALL NTR_KISS(奴隷)
+		CASE NTR_行为_爱抚
+			CALL NTR_PET(奴隷)
+		CASE NTR_行为_胸爱抚
+			CALL NTR_BUST_PET(奴隷)
+		CASE NTR_行为_口交
+			CALL NTR_FELLATIO(奴隷)
+		CASE NTR_行为_六九式
+			CALL NTR_69(奴隷)
+		CASE NTR_行为_素股
+			CALL NTR_THUG(奴隷)
+		CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+			CALL NTR_SEX(奴隷, 密室度)
+		CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+			CALL NTR_A_SEX(奴隷, 密室度)
+	ENDSELECT
+	CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
+ENDIF
+
+;-------------------------------------------------------------------------------
+;訪問者の行為終了
+@VISITER_FRIENDSHIP_FINISH(奴隷)
+#DIM 奴隷
+#DIM カウンター		;1:カウンターセクハラ実行 0:実行しない
+カウンター = 0
+CALL VISITER_FRIENDSHIP_TIMEPLUS(奴隷)
+CALL ORGASM_ADD(奴隷,人物_訪問者)
+CALL NTR_SIMPLE_FULFIL(奴隷)
+IF FLAG:睡姦フラグ == 1
+	SELECTCASE FLAG:訪問者との行為
+		CASE NTR_行为_睡奸_接吻
+			CALL NTR_SLEEP_接吻_结束(奴隷)
+		CASE NTR_行为_睡奸_爱抚
+			CALL NTR_SLEEP_爱抚_结束(奴隷)
+		CASE NTR_行为_睡奸_胸爱抚
+			CALL NTR_SLEEP_胸爱抚_结束(奴隷)
+		CASE NTR_行为_睡奸_舔菊
+			CALL NTR_SLEEP_舔菊_结束(奴隷)
+		CASE NTR_行为_睡奸_口交
+			CALL NTR_SLEEP_口交_结束(奴隷)
+		CASE NTR_行为_睡奸_６９
+			CALL NTR_SLEEP_69_结束(奴隷)
+		CASE NTR_行为_睡奸_素股
+			CALL NTR_SLEEP_素股_结束(奴隷)
+		CASE NTR_行为_睡奸_Ｖ正常位
+			CALL NTR_SLEEP_SEX_0_结束(奴隷)
+		CASE NTR_行为_睡奸_Ｖ后背位
+			CALL NTR_SLEEP_SEX_1_结束(奴隷)
+		CASE NTR_行为_睡奸_Ｖ骑乘位
+			CALL NTR_SLEEP_SEX_2_结束(奴隷)
+		CASE NTR_行为_睡奸_Ｖ对面座位
+			CALL NTR_SLEEP_SEX_3_结束(奴隷)
+		CASE NTR_行为_睡奸_Ｖ背面座位
+			CALL NTR_SLEEP_SEX_4_结束(奴隷)
+		CASE NTR_行为_睡奸_Ｖ对面立位
+			CALL NTR_SLEEP_SEX_5_结束(奴隷)
+		CASE NTR_行为_睡奸_Ｖ背面立位
+			CALL NTR_SLEEP_SEX_6_结束(奴隷)
+		CASE NTR_行为_睡奸_Ａ正常位
+			CALL NTR_SLEEP_A_SEX_0_结束(奴隷)
+		CASE NTR_行为_睡奸_Ａ后背位
+			CALL NTR_SLEEP_A_SEX_1_结束(奴隷)
+		CASE NTR_行为_睡奸_Ａ骑乘位
+			CALL NTR_SLEEP_A_SEX_2_结束(奴隷)
+		CASE NTR_行为_睡奸_Ａ对面座位
+			CALL NTR_SLEEP_A_SEX_3_结束(奴隷)
+		CASE NTR_行为_睡奸_Ａ背面座位
+			CALL NTR_SLEEP_A_SEX_4_结束(奴隷)
+		CASE NTR_行为_睡奸_Ａ对面立位
+			CALL NTR_SLEEP_A_SEX_5_结束(奴隷)
+		CASE NTR_行为_睡奸_Ａ背面立位
+			CALL NTR_SLEEP_A_SEX_6_结束(奴隷)
+	ENDSELECT
+	CALL NTR_RESET_VISITOR_ACTION(奴隷)
+ELSE
+	SELECTCASE FLAG:訪問者との行為
+		CASE NTR_行为_キス
+			CALL NTR_KISS_FINISH(奴隷)
+			カウンター = 1
+		CASE NTR_行为_爱抚
+			CALL NTR_PET_FINISH(奴隷)
+		CASE NTR_行为_胸爱抚
+			CALL NTR_BUST_PET_FINISH(奴隷)
+		CASE NTR_行为_口交
+			CALL NTR_FELLATIO_FINISH(奴隷)
+		CASE NTR_行为_六九式
+			CALL NTR_69_FINISH(奴隷)
+		CASE NTR_行为_素股
+			CALL NTR_THUG_FINISH(奴隷)
+		CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+			CALL NTR_SEX_FINISH(奴隷)
+		CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+			CALL NTR_A_SEX_FINISH(奴隷)
+	ENDSELECT
+	CALL NTR_RESET_VISITOR_ACTION(奴隷)
+	CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
+	IF カウンター == 1
+		CALL NTR_COUNTER(奴隷)
+	ENDIF
+ENDIF

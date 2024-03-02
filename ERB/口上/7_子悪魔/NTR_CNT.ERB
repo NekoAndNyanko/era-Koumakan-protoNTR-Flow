@@ -1,0 +1,53 @@
+
+
+
+@NTR_CNT_7_10(奴隷)
+#DIM 奴隷
+IF FLAG:非公开NTR模式
+	IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 艾丽娅自然地落后%CALLNAME:MASTER%一步，在%CALLNAME:MASTER%身后对着%NTR_NAME(0)%露出一副甜腻的笑容
+			PRINTFORM 艾丽娅用一只手优雅地将女仆装的裙摆提起，露出了裙下
+			IF EQUIP:奴隷:下半身下着１
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着１)%%PANTSNAME(EQUIP:奴隷:下半身下着１)%
+			ELSEIF !EQUIP:奴隷:下半身下着２
+				PRINTFORM 一览无余的真空
+			ELSE
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着２)%%PANTSNAME(EQUIP:奴隷:下半身下着２)%
+			ENDIF
+			PRINTFORML 
+			PRINTFORML 与此同时，另一只手竖起食指，轻柔地点在微张的唇齿间，满怀爱意地轻轻扭动身躯……
+		ELSE
+			PRINTFORML 艾丽娅轻轻咬着下嘴唇，似乎在纠结着什么事，片刻后艾丽娅抬起头满脸通红地看着%NTR_NAME(0)%
+			PRINTFORM 在%CALLNAME:MASTER%身前用细小的动作将小腹下方的裙摆一点一点提起，露出了裙下
+			IF EQUIP:奴隷:下半身下着１
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着１)%%PANTSNAME(EQUIP:奴隷:下半身下着１)%
+			ELSEIF !EQUIP:奴隷:下半身下着２
+				PRINTFORM 一览无余的真空
+			ELSE
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着２)%%PANTSNAME(EQUIP:奴隷:下半身下着２)%
+			ENDIF
+			PRINTFORML 
+			PRINTFORML 在%NTR_NAME(0)%满意地目光中，艾丽娅不着边际地轻轻放下了裙摆，嘴唇咬得更紧了。
+		ENDIF
+	ELSE
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 艾丽娅将手放到小腹，露出专业女仆的标致笑容
+			PRINTFORML 沐浴着%NTR_NAME(0)%饶有兴致的目光，艾丽娅双手轻捏女仆裙的下摆，一边提起，一边优雅地微微躬身
+			PRINTFORM 在艾丽娅高高提起的裙摆之下，少女身下
+			IF EQUIP:奴隷:下半身下着１
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着１)%%PANTSNAME(EQUIP:奴隷:下半身下着１)%
+			ELSEIF !EQUIP:奴隷:下半身下着２
+				PRINTFORM 一览无余的真空
+			ELSE
+				PRINTFORM %PANTS_DESCRIPTION(EQUIP:奴隷:下半身下着２)%%PANTSNAME(EQUIP:奴隷:下半身下着２)%
+			ENDIF
+			PRINTFORML 毫无保留地展现在%NTR_NAME(0)%的眼中……
+			PRINTFORML 起身后的艾丽娅唇齿微张，黄金般的眼眸里满怀爱意与情欲……
+		ELSE
+			CALL NTR_CNT_U_10(奴隷)
+		ENDIF
+	ENDIF
+ELSE
+	CALL NTR_CNT_U_10(奴隷)
+ENDIF

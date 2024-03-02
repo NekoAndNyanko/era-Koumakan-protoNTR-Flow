@@ -1,0 +1,43 @@
+﻿;-------------------------------------------------
+;战斗训练
+;-------------------------------------------------
+@COM411
+DOWNBASE:MASTER:体力 = 100
+DOWNBASE:MASTER:气力 = 200
+
+IF TARGET > 0 && !CFLAG:睡眠
+	;固定で獲得するソース
+	SOURCE:欢乐 = 400
+
+	;ABL:顺从をみる
+	IF ABL:顺从 <= 1
+		SOURCE:欢乐 += (ABL:顺从 * 60)
+	ELSEIF ABL:顺从 <= 3
+		SOURCE:欢乐 += 200 + (ABL:顺从 * 60)
+	ELSEIF ABL:顺从 <= 5
+		SOURCE:欢乐 += 500 + (ABL:顺从 * 60)
+	ELSEIF ABL:顺从 <= 8
+		SOURCE:欢乐 += 750 + (ABL:顺从 * 75)
+	ELSEIF ABL:顺从 <= 11
+		SOURCE:欢乐 += 1000 + (ABL:顺从 * 75)
+	ELSE
+		SOURCE:欢乐 += 2000 + (ABL:顺从 * 30)
+	ENDIF
+
+	;好感度をみる
+	IF CFLAG:好感度 <= 500
+		SOURCE:欢乐 += CFLAG:2
+	ELSEIF CFLAG:好感度 <= 5000
+		SOURCE:欢乐 += 500 + (CFLAG:好感度 - 500) / 3
+	ELSE
+		SOURCE:欢乐 += 2000 + (CFLAG:好感度 - 5000) / 5
+	ENDIF
+	SIF SOURCE:欢乐 < 0
+		SOURCE:欢乐 = 0
+	EXP:MASTER:战斗经验 ++
+	EXP:战斗经验 ++
+ENDIF
+
+TIME += 60
+EXP:MASTER:战斗经验 ++
+RETURN 1

@@ -1,0 +1,60 @@
+;-------------------------------------------------------------------------------
+;骑乘位
+@NTR_SEX_2(奴隷)
+#DIM 奴隷
+TEQUIP:奴隷:Ｖ性爱 = 人物_訪問者
+;性交時メッセージ・口上の前に設定
+FLAG:訪問者との行為 = NTR_行为_Ｖ骑乘位
+CFLAG:奴隷:訪問者行為 = NTR_行为_Ｖ骑乘位
+;性交時メッセージ・口上 主人同席での見せつけも考慮
+CALL NTR_SEX_MSG_KOJO(奴隷)
+CALL NTR_EXP_ADD_V_SEX(奴隷,1)
+IF FLAG:訪問者との行為の終了時刻 == 0
+	BASE:奴隷:体力 -= 60
+	BASE:奴隷:气力 -= 150
+	IF TALENT:奴隷:浮気的蜜壶
+		SOURCE:奴隷:快Ｖ = 700
+		SOURCE:奴隷:情爱 = 400
+		SOURCE:奴隷:苦痛 = 200
+	ELSE
+		SOURCE:奴隷:快Ｖ = 500
+		SOURCE:奴隷:情爱 = 250
+		SOURCE:奴隷:苦痛 = 500
+	ENDIF
+	SOURCE:奴隷:性行动 = 250
+	SOURCE:奴隷:达成 = 250
+	SOURCE:奴隷:露出 = 120
+	SOURCE:奴隷:逸脱 = 600
+	IF TALENT:奴隷:NTR || TALENT:奴隷:浮気的蜜壶
+		SOURCE:奴隷:反感 = 400
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:反感 = 600
+	ELSE
+		SOURCE:奴隷:反感 = 800
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 800
+	SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		SOURCE:奴隷:反感 += 1000
+	IF TALENT:奴隷:处女 == 1
+		SOURCE:奴隷:苦痛 += 2000
+		SOURCE:奴隷:反感 += 3000
+	ENDIF
+	IF TALENT:奴隷:处女 == 2
+		SOURCE:奴隷:苦痛 += 500
+		SOURCE:奴隷:反感 += 1000
+	ENDIF
+	CALL 改变小穴色素(奴隷,1)
+	SIF TALENT:奴隷:亲爱
+		EXP:奴隷:被强奸经验 += 1
+	SIF TALENT:奴隷:处女
+		EXP:奴隷:浮気异常经验 += 2
+	SIF TALENT:奴隷:处女 && !GETBIT(CFLAG:奴隷:异常经验,1)
+		SETBIT CFLAG:奴隷:异常经验,1
+	CALL NTR_GET_WEAKNESS_2(奴隷)
+	FLAG:訪問者との行為の終了時刻 = DATETIME() + (RAND:30 + 30)
+	FLAG:訪問者との行為 = NTR_行为_Ｖ骑乘位
+	CFLAG:奴隷:訪問者行為 = NTR_行为_Ｖ骑乘位
+	CALL NTR_SOURCE_CHECK_LITE(奴隷)
+ENDIF
+RETURN 0

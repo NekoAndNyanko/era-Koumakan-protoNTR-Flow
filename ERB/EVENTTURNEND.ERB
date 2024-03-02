@@ -1,0 +1,820 @@
+﻿;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@EVENTTURNEND
+#DIM LOOP_CHR
+
+FLAG:侵入者の現在位置 = 0
+;-------------------------------------------------------------------------------
+[SKIPSTART]
+;肉便器获得判定
+CALL  CHK_RBQ_GET	
+[SKIPEND]
+
+FOR LOOP_CHR,1,CHARANUM
+	;-------------------------------------------------------------------------------
+	CALL 従者E_確率変動(LOOP_CHR)
+	;-------------------------------------------------------------------------------
+	CALL 体変化_１日経過(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;恋慕獲得判定
+	CALL CHK_FALL_IN_LOVE(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;亲爱獲得判定
+	CALL CHK_LOVING_KINDNESS_GET(LOOP_CHR)
+	;-------------------------------------------------------------------------------
+	;性的魅力獲得判定
+	CALL CHK_SEX_APPEAL_GET(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;肉体改造
+	CALL CHK_BODY_STATE_CHANGE(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;寝取られ判定
+	CALL CHK_NTR_CHANGE(LOOP_CHR)
+[SKIPSTART]
+	;-------------------------------------------------------------------------------		
+	;管理人獲得判定
+	CALL CHK_CARETAKER_GET(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;公众便所判定
+	CALL CHK_PUBLIC_TOILET_CHANGE(LOOP_CHR)
+[SKIPEND]
+	;---------------------------------------------------------------------------
+	;淫乱・娼婦取得判定
+	CALL CHK_LEWDNESS_GET(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;浮気素質変化判定
+	CALL CHK_UNFAITHFUL_TALENT_CHANGE(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;不機嫌であれば反発
+	CALL CHK_ILL_HUMORE_REBOUND(LOOP_CHR)
+	;---------------------------------------------------------------------------
+	;伤心消滅判定
+	CALL CHK_HEART_BREAK_CLEAR(LOOP_CHR)
+NEXT
+FOR LOOP_CHR,1,CHARANUM
+	;满足度の変動
+	CALL CHK_SATISFACION_CHANGE(LOOP_CHR)
+	;气力の回復
+	CALL CHK_WILL_POWER_RECOVERY(LOOP_CHR)
+	;体力の回復
+	CALL CHK_BODY_POWER_RECOVERY(LOOP_CHR)
+	;拡張経験による締まり具合変動
+	CALL CHK_TIGHTNESS_CHANGE(LOOP_CHR)
+	;精力増減
+	CALL CHK_VITARITY_CHANGE(LOOP_CHR)
+	CFLAG:LOOP_CHR:自慰中 = 0
+	CFLAG:LOOP_CHR:桃霧性欲フラグ = 0
+NEXT
+FLAG:休息FLAG = 0
+CALL RANK_POINT
+BEGIN SHOP
+
+;-------------------------------------------------------------------------------
+;恋慕獲得判定
+@CHK_FALL_IN_LOVE(奴隷)
+#DIM 奴隷
+#DIM 閾値
+;恋慕獲得閾値
+;通常時は好感度1000以上が必要
+;[淫乱]であれば好感度は1500以上が必要
+;[娼婦]であれば好感度は2000以上が必要
+;;あなたが[肉便器]なら、さらに+2000
+;[浮気癖]があれば1/3で済む
+;NTR陷落经验１回につき5%上昇(寝取り返しは徐々に難しくなる)
+;;		閾値 = (1000+(500*TALENT:奴隷:淫乱))*(100+EXP:奴隷:NTR陷落经验*5)/100
+閾値 = (1000+(500*TALENT:奴隷:淫乱)+(2000*TALENT:MASTER:肉便器))*(100+EXP:奴隷:NTR陷落经验*5)/100
+IF TALENT:奴隷:浮気癖
+	閾値 /= 3
+ENDIF
+;---------------------------------------------------------------------------
+;恋慕獲得条件
+;好感度が閾値を超えている
+;経験:侍奉快乐经验が30以上
+;能力:顺从が3以上
+IF CFLAG:奴隷:好感度 > 閾値 && EXP:奴隷:侍奉快乐经验 >= 30 && ABL:奴隷:顺从 >= 3 && !TALENT:奴隷:恋慕
+	SIF FLAG:非公开NTR模式 && TALENT:奴隷:NTR && TALENT:奴隷:恋人
+		RETURN 0
+	;两人都被NTR则无法取得恋慕
+	SIF TALENT:奴隷:NTR && TALENT:MASTER:NTR
+		RETURN 0
+	PRINTFORML %CALLNAME:奴隷%似乎对与%CALLNAME:MASTER%一起度过的这段时光感到很高兴
+	PRINTFORML %CALLNAME:奴隷%对%CALLNAME:MASTER%的[恋慕]获得了
+	PRINTFORMW %CALLNAME:奴隷%给出了房间的钥匙
+	FLAG:陥落人数 ++
+	TALENT:奴隷:恋慕 = 1
+	CFLAG:奴隷:屈服度 = 0
+	CFLAG:奴隷:NTR陥落イベントフラグ = 1
+	IF TALENT:奴隷:NTR
+		PRINTL
+		IF EXP:奴隷:NTR陷落经验 < 10
+			PRINTFORML %CALLNAME:奴隷%打破了对%NTR_NAME(0)%的依赖
+			PRINTFORML %CALLNAME:奴隷%的眼里含着泪水微笑着
+			PRINTFORMW %CALLNAME:奴隷%不再是[NTR]了
+		ELSE
+			PRINTFORML %"虽然"+CALLNAME:奴隷+"已经是不知道第几次回到"+CALLNAME:MASTER+"的身边"%
+			PRINTFORML %"但对于"+CALLNAME:奴隷+"来说，只要是能给她温柔的人，不管是谁都是可以的……"%
+			PRINTFORMW %CALLNAME:奴隷+"虽然已经不是[NTR]了、但[浮気癖]已经没得治了"%
+			TALENT:奴隷:浮気癖 = 1
+		ENDIF
+		IF TALENT:奴隷:访问者之妻
+			PRINTFORML 「回来了哦……不再做%NTR_NAME(0)%的妻子了……」%CALLNAME:奴隷%含着泪站在%CALLNAME:MASTER%的面前。
+			PRINTFORMW %CALLNAME:奴隷%不再是[访问者之妻]了。
+			TALENT:奴隷:访问者之妻 = 0
+			SIF CFLAG:奴隷:現在位置 == 位置_訪問者宅
+				CFLAG:奴隷:現在位置 = 位置_红魔馆正门
+		ENDIF
+		;浮気公認は消えます
+		IF TALENT:奴隷:浮気公認 > 0
+			PRINTFORML 「不要再对我说你想要我出轨了」%CALLNAME:奴隷%哭着抱了上来。
+			PRINTFORMW %CALLNAME:奴隷%的[浮気公認]失去了。
+			TALENT:奴隷:浮気公認 = 0
+		ENDIF
+		TALENT:奴隷:NTR = 0
+	ENDIF
+	;主人の屈服度減算ボーナス
+	CFLAG:MASTER:屈服度 = MAX(CFLAG:MASTER:屈服度 - 20 - RAND:20, 0)
+	;恋慕獲得で公众便所も消失。贞操帯の鍵を持っていたらそれもクリア。
+	IF TALENT:奴隷:公众便所
+		PRINTL
+		PRINTFORML %CALLNAME:奴隷%从肉便器的身份中被解放出来
+		IF TALENT:奴隷:淫乱 == 2
+			PRINTFORML 但是到现在为止被许多男人购买过的身体并不会消失
+			PRINTFORMW %CALLNAME:奴隷%无法抹去娼女的污名
+		ENDIF
+		TALENT:奴隷:公众便所 = 0
+		IF 奴隷 == FLAG:贞操帯鍵購入フラグ
+			FLAG:贞操帯鍵購入フラグ = 0
+			FLAG:贞操帯鍵有効カウンタ = 0
+		ENDIF
+	ENDIF
+	IF CFLAG:奴隷:幽閉
+		PRINTL
+		PRINTFORML %CALLNAME:奴隷%的精神似乎稳定下来了
+		PRINTFORMW %CALLNAME:奴隷%从幽闭中走出来了
+		CFLAG:奴隷:幽閉 = 0
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;亲爱獲得判定
+;好感度が閾値を越えている
+;恋慕、爱情经验200以上
+;浮気公認、浮気癖を持っていない
+;寝取られなくなる
+@CHK_LOVING_KINDNESS_GET(奴隷)
+#DIM 奴隷
+IF CFLAG:奴隷:好感度 > 10000 && EXP:奴隷:爱情经验 >= 200 && TALENT:奴隷:恋慕 && !TALENT:奴隷:亲爱 && !TALENT:奴隷:浮気公認 && !TALENT:奴隷:浮気癖
+	PRINTFORML %CALLNAME:奴隷%似乎对%CALLNAME:MASTER%有着发自真心的爱…
+	PRINTFORML %CALLNAME:奴隷%获得了［亲爱］
+	TALENT:奴隷:亲爱 = 1
+	CFLAG:奴隷:屈服度 = 0
+ENDIF
+
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;性的魅力獲得判定
+@CHK_SEX_APPEAL_GET(奴隷)
+#DIM 奴隷
+
+IF EXP:奴隷:情色经验 >= 15 && TALENT:奴隷:性的魅力 == 0
+	PRINTFORML %CALLNAME:奴隷%的内衣写真似乎在年轻男子间很受欢迎…
+	PRINTFORML %CALLNAME:奴隷%获得了［性的魅力］
+	TALENT:奴隷:性的魅力 = 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;寝取られ判定
+@CHK_NTR_CHANGE(奴隷)
+#DIM 奴隷
+#DIM GET_NTR	; 寝取られフラグ
+
+GET_NTR = 0
+IF !FLAG:非公开NTR模式
+	;浮気癖があると寝取られやすくなる
+	;浮気を公認している場合は寝取られにくくなる
+	IF TALENT:奴隷:亲爱
+		;亲爱があれば寝取られない
+		GET_NTR = 0
+	ELSEIF TALENT:奴隷:NTR
+		;寝取られている場合はそれ以上寝取られない（今のところは）
+		GET_NTR = 0
+	ELSEIF TALENT:奴隷:浮気公認 > 0
+		;浮気を公認している場合、屈服度がよほど高くなければ寝取られない
+		;ここの式はNTR_CHK_FAVORABLY()と同一であること
+		GET_NTR = CFLAG:奴隷:屈服度 > (CFLAG:奴隷:好感度 * TALENT:奴隷:浮気公認 * 10 )
+	ELSEIF TALENT:奴隷:浮気癖
+		;浮気を公認している場合、好感度が下限で、屈服度がよほど高くなければ寝取られない
+		IF (CFLAG:奴隷:好感度 == 1599-TALENT:奴隷:浮気公認 * 200)
+			GET_NTR = 0
+		ELSE
+			;ここの式はNTR_CHK_FAVORABLY()と同一であること
+			GET_NTR = CFLAG:奴隷:屈服度 > (CFLAG:奴隷:好感度 * TALENT:奴隷:浮気公認 * 10 )
+		ENDIF
+	ELSE
+		;通常は、好感度が1000未満で屈服度が2000以上、さらに屈服度が好感度より高くなければダメ
+		GET_NTR = CFLAG:奴隷:好感度 < 500 && CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 5000
+	ENDIF
+ELSE
+	GET_NTR = CFLAG:奴隷:好感度 < 500 && CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 12000
+	SIF !TALENT:奴隷:恋慕 || (TALENT:奴隷:NTR && TALENT:奴隷:恋人)
+		GET_NTR = 0
+ENDIF
+
+IF GET_NTR
+	IF FLAG:非公开NTR模式
+		;todo 加口上
+		PRINTFORML 在%NTR_NAME(0)%的调教下，%CALLNAME:奴隷%体会到了身为雌性真正的快乐
+		PRINTFORMW %CALLNAME:奴隷%彻底失去了对%CALLNAME:MASTER%的[恋慕]
+		PRINTFORML 不过，在%NTR_NAME(0)%的要求下，%CALLNAME:奴隷%并没有结束与%CALLNAME:MASTER%的[恋人]关系
+		PRINTFORML 作为两情相悦的纪念%CALLNAME:奴隷%从%NTR_NAME(0)%那里得到了一条尺寸仿佛量身定做的黑色细皮颈环
+		PRINTFORMW 身心都被夺走的%CALLNAME:奴隷%每天将它戴在身上，展示着自己属于%NTR_NAME(0)%的象征
+		PRINTFORMW %CALLNAME:奴隷%失去了[恋慕]
+		PRINTFORMW %CALLNAME:奴隷%得到了[NTR]
+		TALENT:奴隷:恋慕 = 0
+		TALENT:奴隷:NTR = 1
+		EXP:奴隷:NTR陷落经验 ++
+	ELSE
+[SKIPSTART]
+		;恋慕＋告白済みの状態でNTRを取得
+		SIF CFLAG:奴隷:NTR陥落イベントフラグ == 1 && GETBIT(CFLAG:奴隷:既成事実 , 0)
+			TRYCALL NTR陥落イベント, 奴隷
+[SKIPEND]
+		SIF CFLAG:奴隷:NTR陥落イベントフラグ == 1 && TALENT:奴隷:恋人
+			TRYCALL NTR陥落イベント, 奴隷
+		;初回
+		IF EXP:奴隷:NTR陷落经验 == 0
+			;対象が訪問者の阴茎を前の穴or後ろの穴から体内に受け入れた事が無い
+			IF EXP:奴隷:浮気Ｖ性交经验 == 0 || EXP:奴隷:浮気Ａ性交经验 == 0
+				PRINTFORMW %CALLNAME:奴隷%无法抵抗被%NTR_NAME(0)%赐予的快乐···
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%已经无法违抗%NTR_NAME(0)%的肉棒了···
+			ENDIF
+			IF TALENT:奴隷:恋慕
+				PRINTFORMW %CALLNAME:奴隷%对%CALLNAME:MASTER%的[恋慕]失去了
+			ENDIF
+			; 2回目以降
+		ELSE
+			;対象が訪問者の阴茎を前の穴or後ろの穴から体内に受け入れた事が無い
+			IF EXP:奴隷:浮気Ｖ性交经验 == 0 || EXP:奴隷:浮気Ａ性交经验 == 0
+				PRINTFORMW %CALLNAME:奴隷%好像忘不掉与%NTR_NAME(0)%在一起的快乐···
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%好像忘不掉%NTR_NAME(0)%的肉棒给自己带来的快乐···
+			ENDIF
+			IF TALENT:奴隷:恋慕
+				PRINTFORMW %CALLNAME:奴隷%再次失去对%CALLNAME:MASTER%的[恋慕]
+			ENDIF
+		ENDIF
+		IF TALENT:奴隷:人妻
+			PRINTFORMW %CALLNAME:奴隷%不再是%CALLNAME:MASTER%的[人妻]了
+		ENDIF
+		TRYCALLLIST
+			FUNC NTR_KOJO_K{奴隷}_12(奴隷)
+			FUNC NTR_KOJO_K_12(奴隷)
+		ENDFUNC
+		IF TALENT:奴隷:访问者之妻
+			PRINTFORML 作为%NTR_NAME(0)%之妻所获得的快乐是与%CALLNAME:MASTER%在一起所不可及的
+			PRINTFORMW 所以%CALLNAME:奴隷%将作为妻子，全心全意地侍奉%NTR_NAME(0)%
+		ENDIF
+		PRINTFORML %CALLNAME:奴隷%带着空虚的眼神微笑着传达了成为%NTR_NAME(0)%的雌奴隶的事实
+		PRINTFORMW %CALLNAME:奴隷%被寝取了
+		PRINTFORMW %CALLNAME:奴隷%获得了[NTR]
+		PRINTFORML 作为隶属于%NTR_NAME(0)%的证明，%CALLNAME:奴隷%得到了细黑色皮革项圈，每天都有佩戴项圈的义务。
+		TALENT:奴隷:恋慕 = 0
+		TALENT:奴隷:人妻 = 0
+		TALENT:奴隷:NTR = 1
+		EXP:奴隷:NTR陷落经验 ++
+		CFLAG:奴隷:好感度 = 0
+		CFLAG:奴隷:既成事実 = 0
+		CFLAG:奴隷:亲密程度 = 0
+	ENDIF
+	IF ABL:奴隷:顺从 > 20
+		ABL:奴隷:顺从 = 10
+	ELSEIF ABL:奴隷:顺从 > 10
+		ABL:奴隷:顺从 = 5
+	ELSEIF ABL:奴隷:顺从 > 5
+		ABL:奴隷:顺从 = 3
+	ENDIF
+	IF ABL:奴隷:亲密 > 20
+		ABL:奴隷:亲密 = 10
+	ELSEIF ABL:奴隷:亲密 > 10
+		ABL:奴隷:亲密 = 5
+	ELSEIF ABL:奴隷:亲密 > 5
+		ABL:奴隷:亲密 = 3
+	ENDIF
+	;浮気公認時ペナルティ
+	IF TALENT:奴隷:浮気公認 > 0
+		ABL:奴隷:顺从 /= 2
+		ABL:奴隷:亲密 /= 2
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;淫乱・娼婦取得判定
+@CHK_LEWDNESS_GET(奴隷)
+#DIM 奴隷
+#DIM 閾値
+
+閾値 = EXP:奴隷:浮気绝顶经验 + EXP:奴隷:浮気Ｖ性交经验 + EXP:奴隷:浮気Ａ性交经验
+IF 閾値 >= 1000 && TALENT:奴隷:淫乱 == 0
+	PRINTFORML %CALLNAME:奴隷%似乎沉溺于被其他男人所赋予的快感之中…
+	PRINTFORMW %CALLNAME:奴隷%[淫乱]获得了
+	TALENT:奴隷:淫乱 = 1
+	MAXBASE:奴隷:满足 = MAX(MAXBASE:奴隷:满足, 5000)
+ENDIF
+IF !FLAG:非公开NTR模式 && TALENT:奴隷:公众便所 && EXP:奴隷:卖春经验 >= 200 && TALENT:奴隷:淫乱 == 1
+	PRINTFORML %CALLNAME:奴隷%似乎沉溺在用身体交换金钱的快感与快乐之中了…
+	PRINTFORMW %CALLNAME:奴隷%[娼女]获得了
+	TALENT:奴隷:淫乱 = 2
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;浮気素質変化
+@CHK_UNFAITHFUL_TALENT_CHANGE(奴隷)
+#DIM 奴隷
+
+;浮気的蜜唇取得判定
+IF TALENT:奴隷:NTR && EXP:奴隷:浮気接吻经验 >= 200 && TALENT:奴隷:浮気的蜜唇 == 0
+	PRINTFORML %CALLNAME:奴隷%似乎被%NTR_NAME(0)%的嘴唇俘虏了…
+	PRINTFORMW %CALLNAME:奴隷%获得了[浮気的蜜唇]
+	TALENT:奴隷:浮気的蜜唇 = 1
+ENDIF
+;---------------------------------------------------------------------------
+;浮気的蜜壶取得判定
+IF TALENT:奴隷:NTR && EXP:奴隷:浮気Ｖ性交经验 >= 150 && TALENT:奴隷:浮気的蜜壶 == 0
+	PRINTFORML %CALLNAME:奴隷%似乎成为了%NTR_NAME(0)%的阴茎的俘虏…
+	PRINTFORMW %CALLNAME:奴隷%获得了[浮気的蜜壶]
+	TALENT:奴隷:浮気的蜜壶 = 1
+ENDIF
+;---------------------------------------------------------------------------
+;浮気的菊花取得判定
+IF TALENT:奴隷:NTR && EXP:奴隷:浮気Ａ性交经验 >= 100 && TALENT:奴隷:浮気的菊花 == 0
+	PRINTFORML %CALLNAME:奴隷%完全迷上了被%NTR_NAME(0)%玩弄菊花的快乐…
+	PRINTFORMW %CALLNAME:奴隷%获得了[浮気的菊花]
+	TALENT:奴隷:浮気的菊花 = 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;不機嫌であれば反発
+@CHK_ILL_HUMORE_REBOUND(奴隷)
+#DIM 奴隷
+
+IF CFLAG:奴隷:不機嫌
+	CFLAG:奴隷:不機嫌 --
+	IF !CFLAG:奴隷:不機嫌
+		SIF MARK:奴隷:反発刻印
+			CFLAG:奴隷:不機嫌 = -- MARK:奴隷:反発刻印
+	ENDIF
+ENDIF
+RETURN 0
+
+;---------------------------------------------------------------------------
+;伤心消滅判定
+@CHK_HEART_BREAK_CLEAR(奴隷)
+#DIM 奴隷
+
+IF TALENT:奴隷:伤心 && (TALENT:奴隷:亲爱 || TALENT:奴隷:淫乱 || TALENT:奴隷:NTR || TALENT:奴隷:公众便所)
+	PRINTFORMW %CALLNAME:奴隷%从伤心状态恢复了
+	TALENT:奴隷:伤心 = 0
+ENDIF
+
+RETURN 0
+
+;---------------------------------------------------------------------------
+;满足度変動
+@CHK_SATISFACION_CHANGE(奴隷)
+#DIM 奴隷
+
+IF CFLAG:奴隷:满足度上昇
+	MAXBASE:奴隷:满足 += RAND(50, 100)
+	CFLAG:奴隷:满足度上昇 = 0
+ELSE
+	IF TALENT:奴隷:淫乱
+		MAXBASE:奴隷:满足 = MAX(MAXBASE:奴隷:满足 - RAND(1, 10), 5000)
+	ELSE
+		MAXBASE:奴隷:满足 = MAX(MAXBASE:奴隷:满足 - RAND(1, 10), 1000)
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;气力回復
+@CHK_WILL_POWER_RECOVERY(奴隷)
+#DIM 奴隷
+
+BASE:奴隷:气力 = MAXBASE:奴隷:气力
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;体力回復
+@CHK_BODY_POWER_RECOVERY(奴隷)
+#DIM 奴隷
+#DIM 体力回復分
+
+体力回復分 = MAXBASE:奴隷:体力 / 3
+;回復早い、回復遅い
+体力回復分 = 体力回復分 * 3 / (3 - TALENT:奴隷:恢复速度)
+BASE:奴隷:体力 = MIN(MAXBASE:奴隷:体力, BASE:奴隷:体力 + 体力回復分)
+;CFLAG:奴隷:衰弱 = 0
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;精力増減
+@CHK_VITARITY_CHANGE(奴隷)
+#DIM 奴隷
+
+BASE:奴隷:精力 = MIN(MAXBASE:奴隷:精力, BASE:奴隷:精力 + MAXBASE:奴隷:精力 * BASE:奴隷:体力 / MAXBASE:奴隷:体力)
+;ついでに性欲も増減	
+;淫纹による発情処理
+CALL COM417_add_sexual_desire(奴隷)
+IF TALENT:奴隷:淫乱
+	CFLAG:奴隷:性欲 += RAND:(((ABL:奴隷:欲望 + 1)*4) + 5)
+ELSEIF !TALENT:奴隷:妊娠
+	CFLAG:奴隷:性欲 += RAND:(ABL:奴隷:欲望 + 1) + 1
+ELSE
+	CFLAG:奴隷:性欲 += RAND:(((ABL:奴隷:欲望)*2)+2)
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;肉体改造
+@CHK_BODY_STATE_CHANGE(奴隷)
+#DIM 奴隷
+
+IF FLAG:素質変動onoff == 1
+	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 50 && ABL:奴隷:Ｃ感觉 >=3 && TALENT:奴隷:Ｃ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的阴蒂记住了快乐的感觉，逐渐开花的阴蒂变得不再那么迟钝
+		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(101,-1)%]
+		TALENT:奴隷:Ｃ感度 = 0
+	ENDIF
+
+	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 50 && ABL:奴隷:Ｂ感觉 >=3 && TALENT:奴隷:Ｂ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的胸部记住了快乐的感觉，逐渐觉醒的乳房变得不再那么迟钝
+		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(104,-1)%]
+		TALENT:奴隷:Ｂ感度 = 0
+	ENDIF
+
+	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 50 && ABL:奴隷:Ｖ感觉 >=3 && TALENT:奴隷:Ｖ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的膣腔记住了快乐的感觉，原本迟钝的蜜穴开始苏醒
+		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(102,-1)%]
+		TALENT:奴隷:Ｖ感度 = 0
+	ENDIF
+
+	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 50 && ABL:奴隷:Ａ感觉 >=3 && TALENT:奴隷:Ａ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的肛门记住了快乐的感觉，原本迟钝的尻穴逐渐苏醒
+		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(103,-1)%]
+		TALENT:奴隷:Ａ感度 = 0
+	ENDIF
+	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 100 && ABL:奴隷:Ｃ感觉 >=5 && TALENT:奴隷:Ｃ感度 == 0
+		PRINTFORML 因%CALLNAME:奴隷%在爱抚中不断地感受着绝顶的快乐，两腿间饱满的珍珠开始慢慢绽放
+		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(101,1)%]
+		TALENT:奴隷:Ｃ感度 = 1
+	ENDIF
+
+	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 100 && ABL:奴隷:Ｂ感觉 >=5 && TALENT:奴隷:Ｂ感度 == 0
+		PRINTFORML %CALLNAME:奴隷%在爱抚中不断地感受着绝顶的快乐，胸前两颗雌性的象征开始逐渐成熟
+		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(104,1)%]
+		TALENT:奴隷:Ｂ感度 = 1
+	ENDIF
+
+	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 100 && ABL:奴隷:Ｖ感觉 >=5 && TALENT:奴隷:Ｖ感度 == 0
+		PRINTFORML %CALLNAME:奴隷%在交合中不断地感受着绝顶的快乐，两腿间美丽的花朵开始盛开
+		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(102,1)%]
+		TALENT:奴隷:Ｖ感度 = 1
+	ENDIF
+
+	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 100 && ABL:奴隷:Ａ感觉 >=5 && TALENT:奴隷:Ａ感度 == 0
+		PRINTFORML %CALLNAME:奴隷%在交合中不断地感受着绝顶的快乐，后方的庭院盛开着性的美丽
+		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(103,1)%]
+		TALENT:奴隷:Ａ感度 = 1
+	ENDIF
+
+	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 500 && ABL:奴隷:Ｃ感觉 >=7 && TALENT:奴隷:Ｃ感度 == 1
+		PRINTFORML 经过长时间的开发，%CALLNAME:奴隷%两腿间的珍珠娇嫩欲滴，贪求快感的阴蒂仿佛过敏，几乎轻轻一触就让人浑身酥软
+		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(101,1)%]变成了[%GET_TALENTNAME(101,2)%]
+		TALENT:奴隷:Ｃ感度 = 2
+	ENDIF
+
+	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 500 && ABL:奴隷:Ｂ感觉 >=7 && TALENT:奴隷:Ｂ感度 == 1
+		PRINTFORML 经过长时间的开发，%CALLNAME:奴隷%胸前的两颗果实完全成熟，贪求快感的乳房仿佛过敏，几乎轻轻一触就让人浑身酥软
+		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(104,1)%]变成了[%GET_TALENTNAME(104,2)%]
+		TALENT:奴隷:Ｂ感度 = 2
+	ENDIF
+
+	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 500 && ABL:奴隷:Ｖ感觉 >=7 && TALENT:奴隷:Ｖ感度 == 1
+		PRINTFORML 经过长久的灌溉，%CALLNAME:奴隷%两腿间的花朵娇艳地盛开，蜜穴深处为贪求快乐而一张一合的花瓣分外妖娆，显示着属于女人的真正魅力
+		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(102,1)%]变成了[%GET_TALENTNAME(102,2)%]
+		TALENT:奴隷:Ｖ感度 = 2
+	ENDIF
+
+	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 500 && ABL:奴隷:Ａ感觉 >=7 && TALENT:奴隷:Ａ感度 == 1
+		PRINTFORML 经过长久的灌溉，%CALLNAME:奴隷%股间的庭院动情地绽放，湿润的内壁如呼吸般蠕动着快乐的吐息，彰显着第二性器诱人的魅力
+		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(103,1)%]变成了[%GET_TALENTNAME(103,2)%]
+		TALENT:奴隷:Ａ感度 = 2
+	ENDIF
+	;快感应答
+	IF TALENT:奴隷:快感应答 < 1 && TALENT:奴隷:Ｃ感度 == 1 && TALENT:奴隷:Ｂ感度 == 1 && TALENT:奴隷:Ｖ感度 == 1 && TALENT:奴隷:Ａ感度 == 1 && EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 100 && EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 100 && EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 100 && EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 100
+		IF TALENT:奴隷:快感应答 < 0
+			PRINTFORML %CALLNAME:奴隷%不断地绝顶，内心在快感不断的冲刷之下，已经不再反抗快感。
+			PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(70,-1)%]，获得了[%GET_TALENTNAME(70,1)%]
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%不断地绝顶，内心在快感不断的冲刷之下，渴望着更多快乐。
+			PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(70,1)%]
+		ENDIF
+		TALENT:奴隷:快感应答 = 1
+	ENDIF
+
+	IF TALENT:奴隷:阴道深度 == 0 && EXP:奴隷:浮気Ｖ扩张经验 >=50 && ABL:奴隷:Ｖ感觉 >= 3
+		PRINTFORML 在一段时间的调教下，深处被%NTR_NAME(0)%的超规格肉棒无数次冲刺的%CALLNAME:奴隷%，身体本能地为接纳更强大的雄性而发生着改变，即使在睡梦中都能感到小腹深处的异样。
+		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(108,1)%]
+		TALENT:奴隷:阴道深度 = 1
+	ENDIF
+
+	IF TALENT:奴隷:阴道深度 == 1 && EXP:奴隷:浮気Ｖ扩张经验 >=150 && ABL:奴隷:Ｖ感觉 >= 5
+		PRINTFORML 与自身意志无关，在快乐的冲刷下%CALLNAME:奴隷%的身体不断地主动契合着%NTR_NAME(0)%，为接纳%NTR_NAME(0)%而向内延展的小穴即使在不做爱时也不会恢复原状。
+		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(108,1)%]变成了[%GET_TALENTNAME(108,2)%]
+		TALENT:奴隷:阴道深度 = 2
+	ENDIF
+	IF TALENT:奴隷:阴道深度 == 2 && EXP:奴隷:浮気Ｖ扩张经验 >=200 && ABL:奴隷:Ｖ感觉 >= 7 && TALENT:奴隷:NTR
+		PRINTFORML 配合着%NTR_NAME(0)%的调教，%CALLNAME:奴隷%被完全开发完成的小穴如同工艺品一般完美，收缩自如的肉壁造就了世间仅有的名器。
+		PRINTFORML %CALLNAME:奴隷%双腿之间的缝隙，收缩时宛如处女般紧致，而扩张时却连荡妇都要自愧不如。玩弄女人的老手都看不出她无数的经验，单纯的男人都会认为她是纯情的少女。
+		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(108,2)%]，获得了[%GET_TALENTNAME(108,3)%]
+		TALENT:奴隷:阴道深度 = 3
+	ENDIF
+
+[SKIPSTART]
+	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 1000 && EXP:奴隷:Ｃ经验+EXP:奴隷:浮気Ｃ经验 >= 10000  && TALENT:奴隷:Ｃ感度 == 2
+		PRINTFORML %CALLNAME:奴隷%的阴蒂使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:奴隷:Ｃ感度 = -2
+	ENDIF
+
+	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 1000 && EXP:奴隷:Ｂ经验+EXP:奴隷:浮気Ｂ经验 >= 10000 && TALENT:奴隷:Ｂ感度 == 2
+		PRINTFORML %CALLNAME:奴隷%的乳头使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:奴隷:Ｂ感度 = -2
+	ENDIF
+
+	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 1000 && EXP:奴隷:Ｖ经验+EXP:奴隷:浮気Ｖ经验 >= 10000 && TALENT:奴隷:Ｖ感度 == 2
+		PRINTFORML %CALLNAME:奴隷%的膣道使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:奴隷:Ｖ感度 = -2
+	ENDIF
+
+	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 1000 && EXP:奴隷:Ａ经验+EXP:奴隷:浮気Ａ经验 >= 10000 && TALENT:奴隷:Ａ感度 == 2
+		PRINTFORML %CALLNAME:奴隷%的肛门使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:奴隷:Ａ感度 = -2
+	ENDIF
+[SKIPEND]
+
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;緩んだ括約筋を少し締め直す処理
+;基本的には一度緩んでしまうとなかなか戻らない。
+@CHK_TIGHTNESS_CHANGE(奴隷)
+#DIM 奴隷
+#DIM 回復力
+; [IF_DEBUG]
+; SETCOLOR 品红色
+; PRINTFORML （%CALLNAME:奴隷%）
+; SETCOLOR 0xFFFF00
+; PRINTFORML 结算前Ａ松弛度为{BASE:奴隷:Ａ松弛度},MAXＡ松弛度为{MAXBASE:奴隷:Ａ松弛度}
+; RESETCOLOR
+; [ENDIF]
+;Ａ締め
+;回復力は拡張経験から決定(1%～20%)。拡張経験400以上の場合は常に1%。
+回復力 = MAX(1,RAND(MAX(21-SQRT(EXP:奴隷:Ａ扩张经验+EXP:奴隷:浮気Ａ扩张经验+(EXP:奴隷:Ａ性交经验+EXP:奴隷:浮気Ａ性交经验)/5),1))) * BASE:奴隷:Ａ松弛度 / 100
+SIF BASE:奴隷:Ａ松弛度 >= 450
+	回復力 /= 2
+SIF BASE:奴隷:Ａ松弛度 >= 700
+	回復力 /= 2
+SIF BASE:奴隷:Ａ松弛度 >= 900
+	回復力 = 0
+BASE:奴隷:Ａ松弛度 = MAX(MAXBASE:奴隷:Ａ松弛度/2, BASE:奴隷:Ａ松弛度 - 回復力)
+MAXBASE:奴隷:Ａ松弛度 = MAX(MAXBASE:奴隷:Ａ松弛度,BASE:奴隷:Ａ松弛度)
+; [IF_DEBUG]
+; SETCOLOR 0xFFFF00
+; PRINTFORML Ａ回復力为 {回復力}
+; PRINTFORML 结算后Ａ松弛度为{BASE:奴隷:Ａ松弛度},MAXＡ松弛度为{MAXBASE:奴隷:Ａ松弛度}
+; RESETCOLOR
+; PRINTL
+; [ENDIF]
+; [IF_DEBUG]
+; SETCOLOR 0xFFFF00
+; PRINTFORML 结算前Ｖ松弛度为{BASE:奴隷:Ｖ松弛度},MAXＶ松弛度为{MAXBASE:奴隷:Ｖ松弛度}
+; RESETCOLOR
+; [ENDIF]
+;Ｖ締め
+;回復力は拡張経験から決定(1%～20%)。拡張経験400以上の場合は常に1%。
+回復力 = MAX(1,RAND(MAX(21-SQRT(EXP:奴隷:Ｖ扩张经验+EXP:奴隷:浮気Ｖ扩张经验+(EXP:奴隷:Ｖ性交经验+EXP:奴隷:浮気Ｖ性交经验)/10),1))) * BASE:奴隷:Ｖ松弛度 / 100
+SIF BASE:奴隷:Ｖ松弛度 >= 450
+	回復力 /= 2
+SIF BASE:奴隷:Ｖ松弛度 >= 700
+	回復力 /= 2
+SIF BASE:奴隷:Ｖ松弛度 >= 900
+	回復力 = 0
+BASE:奴隷:Ｖ松弛度 = MAX(MAXBASE:奴隷:Ｖ松弛度/2, BASE:奴隷:Ｖ松弛度 - 回復力)
+MAXBASE:奴隷:Ｖ松弛度 = MAX(MAXBASE:奴隷:Ｖ松弛度,BASE:奴隷:Ｖ松弛度)
+; [IF_DEBUG]
+; SETCOLOR 0xFFFF00
+; PRINTFORML Ｖ回復力为 {回復力}
+; PRINTFORML 结算后Ｖ松弛度为{BASE:奴隷:Ｖ松弛度},MAXＶ松弛度为{MAXBASE:奴隷:Ｖ松弛度}
+; RESETCOLOR
+; [ENDIF]
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@RANK_POINT
+VARSET LOCAL
+[SKIPSTART]
+;清潔度不足による減算処理
+FOR LOCAL,0,21
+	IF FLAG:(100 + LOCAL) >= 5000
+		;清潔度:ゴミの山１室につき$400減算
+		LOCAL:1 += 400
+	ELSEIF FLAG:(100 + LOCAL) >= 2000
+		;清潔度:やや低or低１室につき$200減算
+		LOCAL:1 += 200
+	ELSEIF FLAG:(100 + LOCAL) >= 500
+		;清潔度:やや高or中１室につき$100減算
+		LOCAL:1 += 100
+	ENDIF
+NEXT
+;部屋数増えてるんで、多少増額しておきたい感
+LOCAL:1 = MAX(0,1400 - LOCAL:1)
+;主人公がお嬢様かふらんちゃんならお小遣い(紅主)
+IF CALLNAME:MASTER == "蕾米莉亚"
+	LOCAL:2 = 100
+ELSEIF CALLNAME:MASTER == "芙兰朵露"
+	LOCAL:2 = 50
+ENDIF
+SIF CALLNAME:MASTER == "蕾米莉亚" || CALLNAME:MASTER == "芙兰朵露"
+	PRINTFORML 定期収入 {LOCAL:2}元
+[SKIPEND]
+;以清洁度计算收入
+FOR LOCAL,0,21
+	IF FLAG:(100 + LOCAL) >= 5000
+		LOCAL:1 -= 300
+	ELSEIF FLAG:(100 + LOCAL) >= 3000
+		LOCAL:1 -= 200
+	ELSEIF FLAG:(100 + LOCAL) >= 1500
+		LOCAL:1 += 200
+	ELSEIF FLAG:(100 + LOCAL) >= 800
+		LOCAL:1 += 500
+	ELSEIF FLAG:(100 + LOCAL) >= 500
+		LOCAL:1 += 800
+	ELSE
+		LOCAL:1 += 1000
+	ENDIF
+NEXT
+LOCAL:1 = MIN(LOCAL:1,0)
+PRINTFORML 因为清扫馆内而获得的奖金 {LOCAL:1}元
+PRINTFORML 提高好感度而获得的奖金 {FLAG:今日好感度累计上升值 * 5}元
+LOCAL:2 += LOCAL:1 +  LOCAL:2 +FLAG:今日好感度累计上升值 * 5
+FLAG:今日好感度累计上升值 = 0
+MONEY += LOCAL:2
+
+[SKIPSTART]
+;-------------------------------------------------------------------------------
+;肉便器获得判定	
+@CHK_RBQ_GET
+#DIM LOOP_CHR
+#DIM 弱点计数
+;;掌握你弱点的住人在5人以上
+;;淫乱、娼妇、公众便所素质会降低人数要求1
+FOR LOOP_CHR,1,CHARANUM
+	IF  CFLAG:LOOP_CHR:MASTERの弱味
+		弱点计数 ++
+	ENDIF
+NEXT
+IF TALENT:MASTER:淫乱 || TALENT:MASTER:公众便所 
+	弱点计数 ++
+ENDIF	
+
+IF !TALENT:MASTER:肉便器 && 弱点计数 > 4
+	PRINTFORML ;%CALLNAME:MASTER%的抖M本质已经在馆内流传开了,在%CALLNAME:MASTER%不知道的时候,住民们已经做出了决议
+	PRINTFORML 红魔馆的主人雷米莉亚宣布,从今天开始,%CALLNAME:MASTER%将成为馆内地位最低的人
+	PRINTFORML 也就是『肉便器』	
+	PRINTFORMW %CALLNAME:MASTER%成为了『肉便器』
+	TALENT:MASTER:肉便器 = 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;管理人獲得判定
+@CHK_CARETAKER_GET(奴隷)
+	#DIM 奴隷
+	;;あなたが[肉便器]の時の、管理人獲得条件
+	;;・好感度は通常の恋慕並み（＝1000以上が必要）
+	;;　淫乱や娼婦は影響せず
+	;;・好感度順位が、１位
+	;;・まだ管理人がいない
+	;;・告白を受けている（CFLAG:既成事実,0）
+	;;・チルノ、大妖精、魔理沙は管理人になれない
+	;;・そもそもあなたが肉便器じゃないとだめ
+	;;--------------------------------------------
+	IF TALENT:MASTER:肉便器 && GETBIT(CFLAG:奴隷:既成事実,0) && WC_LOVEranking(奴隷) == 1 && CFLAG:奴隷:好感度 >= 1000 && CFLAG:PLAYER:WC_管理人は誰 == 0 && 奴隷 < 人物_琪露诺
+		;;管理人宣言
+		TRYCALLFORM KOJO_WC_COUNTER_caretaker_K{奴隷}
+
+		PRINTFORML %CALLNAME:奴隷%宣布，从今以后，自己就是肉便器%CALLNAME:MASTER%的管理人了。
+		IF 奴隷 == 人物_蕾米莉亚
+			PRINTFORML 因为%CALLNAME:奴隷%本身就是紅魔館的主人，所以没有任何人对此异议。
+		ELSE
+			PRINTFORML %CALLNAME:人物_蕾米莉亚%对于%CALLNAME:奴隷%成为肉便器的管理人，没有意见。
+		ENDIF
+		PRINTL
+		PRINTFORMW %CALLNAME:奴隷%获得了[管理人]的头衔
+		CFLAG:PLAYER:WC_管理人は誰 = 奴隷
+		TALENT:奴隷:管理人 = 1
+		IF CFLAG:奴隷:幽閉
+			PRINTL
+			PRINTFORML %CALLNAME:奴隷%的精神似乎稳定下来了
+			PRINTFORMW %CALLNAME:奴隷%从幽闭中走出来了
+			CFLAG:奴隷:幽閉 = 0
+		ENDIF
+	ENDIF
+
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;公众便所判定
+@CHK_PUBLIC_TOILET_CHANGE(奴隷)
+	#DIM 奴隷
+
+	IF CFLAG:奴隷:屈服度 > 10000 && EXP:奴隷:浮気人数 >= 10 && !TALENT:奴隷:公众便所
+		; 初回
+		IF EXP:奴隷:公众便所陷落经验 == 0
+			PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%蹂躏的快乐被刻在身上
+			PRINTFORM %CALLNAME:奴隷%作为
+			IF TALENT:奴隷:恋慕
+				PRINTFORM %CALLNAME:MASTER%的%MSG_LOVER(奴隷)%的身体成为了
+			ENDIF
+			PRINTFORML %NTR_NAME(0)%的肉便器被客人取用
+			; 2回目以降
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%无法忘记被%NTR_NAME(0)%蹂躏所获得的快乐
+			PRINTFORM %CALLNAME:奴隷%作为
+			IF TALENT:奴隷:恋慕
+				PRINTFORM %CALLNAME:MASTER%的%MSG_LOVER(奴隷)%的身体再次成为了
+			ENDIF
+			PRINTFORML %NTR_NAME(0)%的肉便器被客人取用
+		ENDIF
+		TRYCALLLIST
+			FUNC NTR_KOJO_K{奴隷}_13(奴隷)
+			FUNC NTR_KOJO_K_13(奴隷)
+		ENDFUNC
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%以%CALLNAME:MASTER%的%MSG_LOVER(奴隷)%的身份宣告自己成为%CALLNAME:MASTER%的肉便器
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%用黯淡浑浊的眼神宣告自己成为了肉便器
+		ENDIF
+		PRINTFORMW %CALLNAME:奴隷%获得了[公众便所]
+		PRINTFORML 作为隶属于%NTR_NAME(0)%的证明，%CALLNAME:奴隷%得到了一个项圈，每天都有佩戴项圈的义务。
+		PRINTFORML 项圈上刻着%CALLNAME:奴隷%的名字和作为娼女之证的淫靡纹样。
+		IF TALENT:奴隷:淫乱 == 2
+			PRINTFORML 娼女%CALLNAME:奴隷%回归的消息瞬间在原来的顾客间传开
+			PRINTFORMW 已经有很多客人在预约购买%CALLNAME:奴隷%的身体
+		ENDIF
+		PRINTFORML %NTR_NAME(0)%为了管理好这一切，%CALLNAME:奴隷%有义务穿着贞操带。
+		EQUIP:奴隷:下半身下着１ = 100
+		EQUIP:奴隷:下半身下着２ = 0
+		TALENT:奴隷:公众便所 = 1
+		EXP:奴隷:公众便所陷落经验 ++
+		IF !TALENT:奴隷:恋慕
+			CFLAG:奴隷:好感度 = 0
+			CFLAG:奴隷:既成事実 = 0
+			CFLAG:奴隷:亲密程度 = 0
+		ENDIF
+		IF ABL:奴隷:顺从 > 20
+			ABL:奴隷:顺从 = 10
+		ELSEIF ABL:奴隷:顺从 > 10
+			ABL:奴隷:顺从 = 5
+		ELSEIF ABL:奴隷:顺从 > 5
+			ABL:奴隷:顺从 = 3
+		ENDIF
+		IF ABL:奴隷:亲密 > 20
+			ABL:奴隷:亲密 = 10
+		ELSEIF ABL:奴隷:亲密 > 10
+			ABL:奴隷:亲密 = 5
+		ELSEIF ABL:奴隷:亲密 > 5
+			ABL:奴隷:亲密 = 3
+		ENDIF
+		;浮気公認時ペナルティ
+		IF TALENT:奴隷:浮気公認 > 0
+			ABL:奴隷:顺从 /= 2
+			ABL:奴隷:亲密 /= 2
+		ENDIF
+	ENDIF
+RETURN 0
+[SKIPEND]

@@ -1,0 +1,263 @@
+﻿;────────────────────────────────────
+;調教終了の処理
+;────────────────────────────────────
+@EVENTEND
+#LATER
+#DIM LOOP_CHR
+#DIM 場所番号記憶
+#DIM 精子量
+SIF FLAG:真实模式
+	SKIPDISP 1
+
+;一時退避してあなたを「ここではないどこか」へ
+場所番号記憶 = CFLAG:MASTER:現在位置
+CFLAG:MASTER:現在位置  = -1
+WHILE (TIME_PROGRESS(CFLAG:MASTER:起床時間) < 要睡眠経過時間)
+	CALL CHARA_MOVEMENT_AFTERTRA(場所番号記憶) ; キャラの移动
+	CALL INHABITANT_DO  ; 住人同士の交流
+	CALL VISITER_DO     ; 訪問者のアクション
+	CALL EVENTCOMEND2   ; コマンド終了後
+	TFLAG:300 = DATETIME()
+	TIME += 30
+WEND
+SELECTCASE 場所番号記憶
+	CASE 位置_訪問者宅,位置_売春宿
+		CFLAG:MASTER:現在位置 = 場所番号記憶
+	CASEELSE
+		;初期位置をリセット
+		CFLAG:MASTER:現在位置 = CFLAG:MASTER:開始位置
+ENDSELECT
+;解除同行
+FOR LOCAL,0,CHARANUM
+	CFLAG:LOCAL:同行 = 0
+NEXT
+;訪問者関係のフラグをリセット
+FLAG:訪問者の現在位置 = 0
+FLAG:訪問者同行フラグ = 0
+
+SIF FLAG:真实模式
+	SKIPDISP 0
+
+PRINTL 一天结束了
+CALL INHABITANT_FRIENDSHIP_DAYEND
+FLAG:訪問者同行フラグ = 0
+SIF STRLENS(TSTR:1)
+	CALL SELL_VIDEO
+;访问者给住人避孕
+FOR LOOP_CHR, 0, CHARANUM
+	;PRINTFORMW 访问者的避孕药{FLAG:访问者的避孕药}
+	IF (TALENT:LOOP_CHR:NTR || TALENT:LOOP_CHR:公众便所 || TALENT:LOOP_CHR:浮気公認 > 0 || NTR_CHK_FAVORABLY(LOOP_CHR, FAV_主人より高い)) && FLAG:访问者的避孕药 > 0 && CFLAG:LOOP_CHR:卵子生存日数 == 1 && CFLAG:LOOP_CHR:避孕药使用 != 3 && TALENT:LOOP_CHR:妖精 == 0
+		;精子量
+		精子量 = 0
+		FOR LOCAL, 0, 301
+			REPEAT 9
+				IF TA:LOOP_CHR:LOCAL:COUNT > 0
+					精子量 += TA:LOOP_CHR:LOCAL:COUNT
+				ENDIF
+			REND
+		NEXT
+		;PRINTFORMW %CALLNAME:LOOP_CHR%肚里的精液:{精子量}
+		IF 精子量 > 0
+			;PRINTFORMW %NTR_NAME(0)%喂给了%CALLNAME:LOOP_CHR%一粒避孕药
+			CFLAG:LOOP_CHR:避孕药使用 = 3
+			FLAG:访问者的避孕药--
+			CALL 妖精写真_吃避孕药(LOOP_CHR)
+		ENDIF
+	ENDIF
+NEXT
+TRYCALL 精子処理_生存日数振り分け
+TRYCALL 妊娠処理変更パッチ
+SIF !FLAG:禁止受精
+	TRYCALL PREGNACY_S_ANNOUNCEMENT
+TRYCALL 子供訪問_2
+FLAG:1840 = 0
+
+FOR LOOP_CHR, 0, CHARANUM
+	TRYCALL 生理周期, LOOP_CHR
+	;うふふ強制解除
+	CFLAG:LOOP_CHR:うふふ = 0
+NEXT
+
+;睡眠フラグ
+CFLAG:MASTER:睡眠 = 1
+
+;何の珠を得られたか
+FOR LOOP_CHR,0,CHARANUM
+	CALL JUEL_CHECK(LOOP_CHR)
+	CALL DENIAL_CHECK(LOOP_CHR)
+NEXT
+BEGIN ABLUP
+
+
+
+@JUEL_CHECK(奴隷)
+#DIM 奴隷
+#DIM 珠獲得
+#DIM LOOP_I
+FOR LOOP_I,0,100
+	IF PALAM:奴隷:LOOP_I < PALAMLV:1
+		珠獲得 = 0
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:1*3
+		珠獲得 = 1
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:2
+		珠獲得 = 2
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:2*3
+		珠獲得 = 10
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:3
+		珠獲得 = 20
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:3*2
+		珠獲得 = 100
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:4
+		珠獲得 = 200
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:5
+		珠獲得 = 1000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:6
+		珠獲得 = 2000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:7
+		珠獲得 = 3000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:8
+		珠獲得 = 5000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:9
+		珠獲得 = 8000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:10
+		珠獲得 = 12000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:11
+		珠獲得 = 25000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:12
+		珠獲得 = 40000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:13
+		珠獲得 = 60000
+	ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:14
+		珠獲得 = 100000
+	ELSE
+		珠獲得 = 150000
+	ENDIF
+	;快感系
+	IF LOOP_I >= 0 && LOOP_I < 9
+		GOTJUEL:奴隷:LOOP_I = 珠獲得 + EX:奴隷:LOOP_I * 1000
+		;その他
+	ELSEIF LOOP_I < 30
+		GOTJUEL:奴隷:LOOP_I = 珠獲得
+		;否定の珠
+	ELSEIF LOOP_I == 30 || LOOP_I == 31 || LOOP_I == 32
+		GOTJUEL:奴隷:100 += 珠獲得
+	ENDIF
+NEXT
+JUEL:奴隷:100 += GOTJUEL:奴隷:100
+FOR LOOP_I,0,100
+	SIF !STRLENS(PALAMNAME:LOOP_I)
+		CONTINUE
+	SIF LOOP_I != 9 &&LOOP_I != 30 && LOOP_I != 31 && LOOP_I != 32
+		JUEL:奴隷:LOOP_I += GOTJUEL:奴隷:LOOP_I
+NEXT
+
+@DENIAL_CHECK(奴隷)
+#DIM 奴隷
+#DIM 増減値
+#DIM 珠種別
+SIF JUEL:奴隷:100 == 0
+	RETURN 0
+WHILE 1
+	SIF !JUEL:奴隷:否定 || (!JUEL:奴隷:恭顺 && !JUEL:奴隷:欲情 && !JUEL:奴隷:屈服)
+		BREAK
+	増減値 = JUEL:奴隷:否定 == 1 ? 1 # JUEL:奴隷:否定 / 2
+	;JUEL:10～12で消費
+	珠種別 = RAND:3 + 10
+	SIF 増減値 > JUEL:奴隷:珠種別
+		増減値 = JUEL:奴隷:珠種別
+	JUEL:奴隷:否定 -= 増減値
+	JUEL:奴隷:珠種別 -= 増減値
+WEND
+WHILE 1
+	SIF !JUEL:奴隷:否定 || (!JUEL:奴隷:耻情 && !JUEL:奴隷:苦痛 && !JUEL:奴隷:恐怖 && !JUEL:奴隷:好意 && !JUEL:奴隷:优越)
+		BREAK
+	増減値 = JUEL:奴隷:否定 == 1 ? 1 # JUEL:奴隷:否定 / 2
+	;JUEL:14～16で消費
+	珠種別 = RAND:5
+	SELECTCASE 珠種別
+		CASE 0
+			珠種別 = 14
+		CASE 1
+			珠種別 = 15
+		CASE 2
+			珠種別 = 16
+		CASE 3
+			珠種別 = 20
+		CASE 4
+			珠種別 = 21
+	ENDSELECT
+	SIF 増減値 > JUEL:奴隷:珠種別
+		増減値 = JUEL:奴隷:珠種別
+	JUEL:奴隷:否定 -= 増減値
+	JUEL:奴隷:珠種別 -= 増減値
+WEND
+
+@CHARA_MOVEMENT_AFTERTRA(場所番号記憶)
+;此函数与CHARA_MOVEMENT连动仅在本文件中使用
+;不直接在CHARA_MOVEMENT修改是为减少日版更新的工作量
+#DIM 場所番号記憶
+#DIM LOOP_CHR
+#DIM WK
+;冻结同行者
+FOR LOOP_CHR,0,CHARANUM
+	IF CFLAG:LOOP_CHR:同行
+		CFLAG:LOOP_CHR:現在位置 = CFLAG:MASTER:現在位置
+		CFLAG:LOOP_CHR:好感度 += 5
+	ENDIF
+NEXT
+;訪問者の移动処理
+CALL VISITER_MOVEMENT
+;同行者への影響チェック
+CALL NTR_CHK_GOWITH(TIME_PROGRESS(TFLAG:300))
+FOR LOOP_CHR,0,CHARANUM
+	;同行者跳过判定
+	SIF CFLAG:LOOP_CHR:同行
+		CONTINUE
+	;尿量/便量増加@お手洗い勝手に拡張パッチ
+	TRYCALL REST_PeePoo_Increase(LOOP_CHR)
+	; 紅魔館エリアの外なら移动しない（霊夢の寝床は特殊）
+	SIF CFLAG:LOOP_CHR:現在位置 >= 位置_訪問者宅 && CFLAG:LOOP_CHR:現在位置 != 位置_博麗神社 && CFLAG:LOOP_CHR:現在位置 != 位置_人間の里
+		CONTINUE
+	;MASTERを部屋から追い出すチェック
+	CALL TURN_OUT_WHEN_SLEEP(LOOP_CHR)
+	;BASEの自然変動
+	CALL CHANGE_BASE(LOOP_CHR)
+	;会话累積値の変動
+	CALL CHANGE_TALK_VALUE(LOOP_CHR)
+	;身体の清潔度の変動
+	CALL CHANGE_CLEANLINESS(LOOP_CHR)
+	;同行フラグ（1時間持続）
+	CALL CHANGE_GOWITH(LOOP_CHR)
+	;起床後の着替え
+	CALL CHANGE_CLOTHES(LOOP_CHR)
+
+	IF LOOP_CHR != MASTER
+		;あなた以外の処理
+		CALL MOVEMENT_CHARA_SUB(LOOP_CHR)
+	ENDIF
+	;母乳ダダ漏れ対応
+	CALL PREGNACY_S_Milking(LOOP_CHR)
+	;汚れを付ける
+	WK = CFLAG:LOOP_CHR:睡眠 ? 0 # 1 + TALENT:LOOP_CHR:幼稚 - 2 * ABL:LOOP_CHR:清扫技能
+	FLAG:(100 + CFLAG:LOOP_CHR:現在位置) = MAX(FLAG:(100 + CFLAG:LOOP_CHR:現在位置) + WK * TIME_PROGRESS(TFLAG:300),0)
+	FLAG:(100 + CFLAG:LOOP_CHR:現在位置) = MIN(FLAG:(100 + CFLAG:LOOP_CHR:現在位置),2000)
+NEXT
+
+FOR LOOP_CHR,0,CHARANUM
+	;同行者跳过判定
+	SIF CFLAG:LOOP_CHR:同行
+		CONTINUE
+	;トイレを済ませれたか、漏らしたかのチェック@お手洗い勝手に拡張パッチ
+	CALL REST_MovementCheck(LOOP_CHR)
+NEXT
+
+;相机设置パッチ対応
+TRYCALL SECRET_CAMERA
+;恋恋 先注释 有生之年填坑 TODO
+; CALL INTRUDER_MOVEMENT
+;解除冻结同行者
+FOR LOCAL,0,CHARANUM
+	IF CFLAG:LOCAL:同行
+		CFLAG:LOCAL:現在位置 = 場所番号記憶
+	ENDIF
+	NEXT

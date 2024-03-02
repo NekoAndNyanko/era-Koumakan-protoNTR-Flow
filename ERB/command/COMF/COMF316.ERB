@@ -1,0 +1,93 @@
+﻿;指挿入れ
+@COM316
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_太股)
+SIF RESULT
+	RETURN 0
+
+TRYCALL NTR_UNLOCK_CHASTITY_BELT(TARGET)
+IF !RESULT
+	DRAWLINE
+	PRINTFORML %CALLNAME:MASTER%想要用手指插入%CALLNAME:TARGET%的小穴里
+	PRINTFORML 但是被%CALLNAME:TARGET%身上的贞操带阻止了。
+
+	IF CFLAG:TARGET:好感度 > 0
+		PRINTFORML %CALLNAME:TARGET%似乎对无法触碰到身体而感到不满
+		;欲情していると反感が伸びる
+		PALAM:TARGET:反感 += MIN( PALAM:TARGET:欲情/MAX(CFLAG:TARGET:好感度,1),300)
+		;欲情していると好感度も下がる
+		CFLAG:TARGET:好感度 = MAX( CFLAG:TARGET:好感度 - MIN(PALAM:TARGET:欲情 ,30),0)
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%很无聊地看着%CALLNAME:MASTER%……
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;破瓜抑制
+TFLAG:2 = 1
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 30
+DOWNBASE:气力 += 80
+
+IF !TALENT:处女
+	SOURCE:快Ｖ = 120
+	SOURCE:情爱 = 150
+	SOURCE:苦痛 = 250
+	SOURCE:欲情 = 200
+	SOURCE:露出 = 120
+	SOURCE:逸脱 = 150
+	SOURCE:反感 = 200
+	;V経験が0の時はV経験を伴わない物に派生
+	;Vの珠は入らないが、快Vが高いと慣らしてあるため处女喪失時に影響
+ELSE
+	SOURCE:快Ｖ = 60
+	SOURCE:情爱 = 150
+	SOURCE:苦痛 = 250
+	SOURCE:欲情 = 200
+	SOURCE:露出 = 120
+	SOURCE:逸脱 = 300
+	SOURCE:反感 = 400
+	CALL 締り具合変動, TARGET, 1, 0
+ENDIF
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+IF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 20
+	;处女
+	SIF TALENT:处女
+		SOURCE:抑郁 += 10
+ENDIF
+;Vへの苦痛
+CALL PAIN_CHECK_V(TARGET)
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;奴隷の膣内⇔調教者の指の汚れが移动
+STAIN:膣内 |= STAIN:PLAYER:手
+STAIN:PLAYER:手 |= STAIN:膣内
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:百合经验 += 3
+	EXP:MASTER:百合经验 += 3
+ENDIF
+
+TIME += 10
+CALL 改变小穴色素(TARGET,1)
+CALL 触觉确认小穴松弛度(TARGET)
+RETURN 1
+

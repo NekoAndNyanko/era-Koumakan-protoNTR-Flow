@@ -1,0 +1,65 @@
+﻿;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 结婚戒指について 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_14_ENABLE
+#DIM 奴隷
+
+奴隷 = TARGET:0
+RESULTS:0 = %"[14]-结婚戒指怎么了？"%
+IF TCVAR:奴隷:会话不能
+	RETURN 0
+ELSEIF TALENT:奴隷:人妻 == 0
+	RETURN 0
+ELSEIF EQUIP:奴隷:配件 == 衣装_配件_结婚戒指
+	RETURN 0
+ELSE
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 结婚戒指について話す
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_14
+#DIM 奴隷
+#DIM 調教者
+
+奴隷 = TARGET:0
+調教者 = PLAYER:0
+PRINTFORML %CALLNAME:奴隷+"被询问了没有戴结婚戒指的理由……。"%
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_14_01(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_14_01(奴隷, 調教者)
+	FUNC MESSAGE_COM_300_14_01(調教者, 奴隷)
+ENDFUNC
+
+RETURN 1
+;RETURN 0
+
+
+@MESSAGE_COM_300_14_01(調教者,奴隷)
+#DIM 調教者
+#DIM 奴隷
+IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
+	;项圈が優先
+	PRINTFORML %"因为自己已经被调教成【商品】了，所以有义务摘下象征爱情的戒指、戴上代表奴隶的项圈。"%
+ELSEIF TALENT:奴隷:公众便所
+	;项圈が優先
+	PRINTFORML %"因为【客人们】表示了不满，所以才摘下了戒指、戴上奴隶项圈。"%
+ELSEIF TALENT:奴隷:NTR
+	;チョーカーが優先
+	PRINTFORML %"因为已经不是"+CALLNAME:MASTER+"的人了，所以没必要戴着戒指了。"%
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;装着率３割
+	PRINTFORML %"因为感觉手指不怎么舒服，所以最近不怎么戴着戒指。"%
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;装着率５割
+	PRINTFORML %"因为最近手指有点肿了，所以不怎么戴戒指了"%
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+	;装着率９割
+	PRINTFORML %"为了保养双手，所以戒指摘下来就忘了，抱歉抱歉"%
+ENDIF
+
+RETURN 1

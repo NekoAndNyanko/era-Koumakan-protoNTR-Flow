@@ -1,0 +1,104 @@
+﻿;-------------------------------------------------------------------------------
+;会话命令(我TM魔改版) - 询问避孕药事宜 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_26_ENABLE
+IF TALENT:TARGET:NTR || TALENT:TARGET:公众便所 || TALENT:TARGET:浮気公認 > 0
+	RESULTS = %"[26]-询问"+CALLNAME:TARGET+"有没有好好做避孕措施"%
+ELSEIF TALENT:TARGET:恋慕 || TALENT:TARGET:人妻 || TALENT:TARGET:亲爱
+	RESULTS = %"[26]-跟"+CALLNAME:TARGET+"谈谈关于避孕的事情"%
+ELSE
+	RETURN 0
+ENDIF
+
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会话命令(我TM魔改版) - 询问避孕药事宜
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_26
+IF TALENT:TARGET:NTR || TALENT:TARGET:公众便所 || TALENT:TARGET:浮気公認 > 0
+	PRINTFORMW 「%NTR_NAME(0)%说如果要避孕的话他不会给我买药的，而且也不准我买药。」
+	PRINTFORMW 「说只能准吃%CALLNAME:MASTER%买的药，所以……如果%CALLNAME:MASTER%不给我买药吃的话，我就要做好妊娠的准备了……」
+	IF FLAG:访问者的避孕药 == 0
+		PRINTFORMW 「现在的话，%NTR_NAME(0)%说已经没有避孕药可以吃了，可以给我一点吗？」
+		CALL 给出避孕药
+		IF RESULT == 0
+			PRINTFORMW 「这样啊…残念……」
+			RETURN 0
+		ENDIF
+	ELSE
+		PRINTFORMW 「现在的话，%NTR_NAME(0)%说还有一些避孕药可以用，记得是还有{FLAG:访问者的避孕药}粒的样子，可以的话，能再多给一些吗？」
+		CALL 给出避孕药
+		IF RESULT == 0
+			PRINTFORMW 「这样啊…残念……」
+			RETURN 0
+		ENDIF
+	ENDIF
+	PRINTFORMW 「感谢！%CALLNAME:MASTER%给的药我会好好交给%NTR_NAME(0)%的，在需要的时候%NTR_NAME(0)%会喂给我吃的。」%CALLNAME:TARGET%看起来很开心的样子…
+ELSEIF TALENT:TARGET:恋慕 || TALENT:TARGET:人妻 || TALENT:TARGET:亲爱
+	PRINTFORMW 「避孕药是吗？%CALLNAME:MASTER%给我吃的话，我会吃的。」
+	IF CFLAG:TARGET:避孕药使用 == 3
+		PRINTFORMW 「不过今天已经吃过了，再吃就太浪费了。」
+		RETURN 0
+	ENDIF
+	PRINTFORML [0]-喂一粒避孕药（手头有 {ITEM:避孕药} 粒避孕药）  [1]-放弃
+	INPUT
+	IF RESULT == 0
+		IF ITEM:避孕药 == 0
+			PRINTW 没有避孕药可以喂……
+			RETURN 0
+		ENDIF
+		ITEM:避孕药--
+		CFLAG:TARGET:避孕药使用 = 3
+	ELSE
+		RETURN 0
+	ENDIF
+	PRINTFORMW 喂%CALLNAME:TARGET%吃了一粒避孕药，至少今天不用担心怀孕了。
+ENDIF
+RETURN 1
+
+@给出避孕药
+PRINTL [0]-给1个  [1]-给5个  [2]-给10个  [3]-给20个 [4]-全部给出
+PRINTFORML [5]-现在手头上没有药…（实际上有 {ITEM:避孕药} 粒避孕药）
+INPUT
+SELECTCASE RESULT
+	CASE 0
+		SIF ITEM:避孕药 == 0
+			RESTART
+		FLAG:访问者的避孕药 += 1
+		ITEM:避孕药 -= 1
+		TFLAG:97++
+	CASE 1
+		SIF ITEM:避孕药 < 5
+			RESTART
+		FLAG:访问者的避孕药 += 5
+		ITEM:避孕药 -= 5
+		TFLAG:97 += 5
+	CASE 2
+		SIF ITEM:避孕药 < 10
+			RESTART
+		FLAG:访问者的避孕药 += 10
+		ITEM:避孕药 -= 10
+		TFLAG:97 += 10
+	CASE 3
+		SIF ITEM:避孕药 < 20
+			RESTART
+		FLAG:访问者的避孕药 += 20
+		ITEM:避孕药 -= 20
+		TFLAG:97 += 20
+	CASE 4
+		SIF ITEM:避孕药 == 0
+			RESTART
+		FLAG:访问者的避孕药 += ITEM:避孕药
+		ITEM:避孕药 = 0
+		TFLAG:97 += ITEM:避孕药
+	CASE 5
+		RETURN 0
+	CASEELSE
+		RESTART
+ENDSELECT
+TIME += 2
+RETURN 1
+

@@ -1,0 +1,212 @@
+;-------------------------------------------------------------------------------
+;ハーレムイベント関連
+;同一箇所に屈服度>好意度な住人だけがいる時のnPイベント
+;-------------------------------------------------------------------------------
+;ハーレムイベント可否判定
+@NTR_HARAM_ABLE
+#DIM LOOP_CHR
+#DIM 同席人数
+;主人がいるとNG
+SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+	RETURN 0
+同席人数 = 0
+FOR LOOP_CHR,1,CHARANUM
+	;訪問者と同じ場所にいる住人についてチェック
+	IF CFLAG:LOOP_CHR:現在位置 == FLAG:訪問者の現在位置
+		;オトコがいたら自粛
+		SIF !HAS_VAGINA(LOOP_CHR)
+			RETURN 0
+		;妊婦がいたら自粛
+		SIF CFLAG:LOOP_CHR:にんっしんっ > 0
+			RETURN 0
+		;寝ている住人がいたら自粛
+		SIF CFLAG:LOOP_CHR:睡眠 
+			RETURN 0
+		;主人より好意度が高くないとNG
+		SIF CFLAG:LOOP_CHR:屈服度 <= CFLAG:LOOP_CHR:好感度
+			RETURN 0
+		;ストライクゾーン範囲外の時NG
+		SIF !NTR_CHK_STRIKE_ZONE(LOOP_CHR)
+			RETURN 0
+		;非恋慕住人が対象外のときNG
+		SIF IS_NTR_ATTACK_LOVER_ONLY() && !TALENT:LOOP_CHR:恋慕 && !TALENT:LOOP_CHR:NTR
+			RETURN 0
+		同席人数 ++
+	ENDIF
+NEXT
+;2人以上必要
+SIF 同席人数 <= 1
+	RETURN 0
+;確率で失敗
+SIF RAND:3 
+	RETURN 0
+IF FLAG:ハーレム時カウンタ == 0
+	FLAG:ハーレム時カウンタ = 1
+ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;ハーレムイベント
+;基本はVISITER_FRIENDSHIPと同じ。同時に多人数相手。
+@NTR_HARAM
+#DIM 浮気快楽強度
+#DIM 密室度
+#DIM 行為上限値
+#DIM LOOP_CHR
+IF FLAG:ハーレム時カウンタ == 1
+	FOR LOOP_CHR,1,CHARANUM
+		CFLAG:LOOP_CHR:NTRハーレム行為種別 = 0
+		CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻 = 0
+		CFLAG:LOOP_CHR:NTR訪問者との行為 = NTR_行为_なし
+	NEXT
+	密室度 = GET_ROOM_SECURITY(FLAG:訪問者の現在位置)
+	;条件を満たしていくと行動の選択肢が増える
+	行為上限値 = 0
+	FOR LOOP_CHR,1,CHARANUM
+		CFLAG:LOOP_CHR:NTRハーレム行為種別 = 0
+		;訪問者と同じ場所にいる住人についてチェック
+		IF CFLAG:LOOP_CHR:現在位置 == FLAG:訪問者の現在位置
+			;SIF CFLAG:LOOP_CHR:屈服度 > CFLAG:LOOP_CHR:好感度 / 4
+			SIF NTR_CHK_FAVORABLY(LOOP_CHR, FAV_接吻程度)
+				行為上限値 += 1
+			;光明正大地していない場所
+			IF 密室度 > 0
+				;SIF CFLAG:LOOP_CHR:屈服度 > CFLAG:LOOP_CHR:好感度 / 3
+				SIF NTR_CHK_FAVORABLY(LOOP_CHR, FAV_体を触らせる程度)
+					行為上限値 += 1
+				;さらに目立たない場所または私室
+				IF 密室度 >= 2
+					;SIF CFLAG:LOOP_CHR:屈服度 > CFLAG:LOOP_CHR:好感度 / 2
+					SIF NTR_CHK_FAVORABLY(LOOP_CHR, FAV_侍奉する程度)
+						行為上限値 += 1
+					;SIF CFLAG:LOOP_CHR:屈服度 > CFLAG:LOOP_CHR:好感度 * 3 / 4
+					SIF NTR_CHK_FAVORABLY(LOOP_CHR, FAV_うふふする程度)
+						行為上限値 += 1
+				ENDIF
+			ENDIF
+			SIF CFLAG:LOOP_CHR:屈服度 > CFLAG:LOOP_CHR:好感度
+				行為上限値 += 1
+			SIF 行為上限値 == 0
+				行為上限値 += 1
+			;ハーレム時さらに+1
+			CFLAG:LOOP_CHR:NTRハーレム行為種別 = RAND:(行為上限値) + 1
+		ENDIF
+	NEXT
+	;ハーレム状態の時の施錠処理を外す
+	;IF !FLAG:(300 + FLAG:訪問者の現在位置)
+	;	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	;		PRINTFORMW %NTR_NAME(0)%のハーレム状態のため【%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%】に入りづらくなった。
+	;	ENDIF
+	;ENDIF
+	;FLAG:(300 + FLAG:訪問者の現在位置) = 1
+	FLAG:ハーレム時カウンタ ++
+ENDIF
+;全員に対して実行
+FOR LOOP_CHR,1,CHARANUM
+	浮気快楽強度 = 0
+	;訪問者と同じ場所にいる住人について処理
+	IF CFLAG:LOOP_CHR:現在位置 == FLAG:訪問者の現在位置
+		;好感度変化
+		IF TALENT:LOOP_CHR:亲爱 && CFLAG:LOOP_CHR:屈服度 > 500
+			CFLAG:LOOP_CHR:屈服度 -= 100
+		ENDIF
+		CALL NTR_ADD_SURRENDER(LOOP_CHR, (MIN(TIME_PROGRESS(TFLAG:300), 0) + RAND:2 + 1) )
+		;好感度吸収あり
+		CALL NTR_DRAIN_LOVE(LOOP_CHR, RAND:5)
+		;その他の状態で行動中か行動が未決定(終了時間が0なら未決定とする)
+		IF CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻 == 0
+			FLAG:訪問者との行為の終了時刻 = 0
+			IF CFLAG:LOOP_CHR:NTRハーレム行為種別 == 0 || CFLAG:LOOP_CHR:NTRハーレム行為種別 == 1
+				CALL NTR_KISS(LOOP_CHR)
+			ELSEIF CFLAG:LOOP_CHR:NTRハーレム行為種別 == 2
+				IF RAND:2 == 0
+					CALL NTR_PET(LOOP_CHR)
+				ELSE
+					CALL NTR_BUST_PET(LOOP_CHR)
+				ENDIF
+			ELSEIF CFLAG:LOOP_CHR:NTRハーレム行為種別 == 3
+				IF RAND:3 == 0
+					CALL NTR_FELLATIO(LOOP_CHR)
+				ELSEIF RAND:2 == 0
+					CALL NTR_69(LOOP_CHR)
+				ELSE
+					CALL NTR_THUG(LOOP_CHR)
+				ENDIF
+			ELSE
+				IF IS_NTR_KEEP_VIRGIN() && TALENT:LOOP_CHR:处女
+					;处女菊花厨の時は菊花貫通の閾値が低い
+					IF EXP:LOOP_CHR:Ａ经验 + EXP:LOOP_CHR:浮気Ａ经验 > 20
+						CALL NTR_A_SEX(LOOP_CHR, 密室度)
+					ELSE
+						;条件を満たしていない時は69で我慢
+						CALL NTR_69(LOOP_CHR)
+					ENDIF
+				ELSEIF RAND:2 == 0
+					CALL NTR_SEX(LOOP_CHR, 密室度)
+				ELSE
+					CALL NTR_A_SEX(LOOP_CHR, 密室度)
+				ENDIF
+			ENDIF
+			CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻 = FLAG:訪問者との行為の終了時刻
+			CFLAG:LOOP_CHR:NTR訪問者との行為 = FLAG:訪問者との行為 
+		ELSEIF CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻 > DATETIME()
+			FLAG:訪問者との行為の終了時刻 = CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻
+			FLAG:訪問者との行為 = CFLAG:LOOP_CHR:NTR訪問者との行為
+			SELECTCASE FLAG:訪問者との行為
+				CASE NTR_行为_キス
+					CALL NTR_KISS(LOOP_CHR)
+				CASE NTR_行为_爱抚
+					CALL NTR_PET(LOOP_CHR)
+				CASE NTR_行为_胸爱抚
+					CALL NTR_BUST_PET(LOOP_CHR)
+				CASE NTR_行为_口交
+					CALL NTR_FELLATIO(LOOP_CHR)
+				CASE NTR_行为_六九式
+					CALL NTR_69(LOOP_CHR)
+				CASE NTR_行为_素股
+					CALL NTR_THUG(LOOP_CHR)
+				CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+					CALL NTR_SEX(LOOP_CHR, 密室度)
+				CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+					CALL NTR_A_SEX(LOOP_CHR, 密室度)
+				CASE 21 TO 27
+					; 予約しますby別人の別人
+				CASEELSE
+					; なに？
+			ENDSELECT
+			CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻 = FLAG:訪問者との行為の終了時刻
+			CFLAG:LOOP_CHR:NTR訪問者との行為 = FLAG:訪問者との行為 
+		ELSE
+			FLAG:訪問者との行為の終了時刻 = CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻
+			FLAG:訪問者との行為 = CFLAG:LOOP_CHR:NTR訪問者との行為
+			SELECTCASE FLAG:訪問者との行為
+				CASE NTR_行为_キス
+					CALL NTR_KISS_FINISH(LOOP_CHR)
+				CASE NTR_行为_爱抚
+					CALL NTR_PET_FINISH(LOOP_CHR)
+				CASE NTR_行为_胸爱抚
+					CALL NTR_BUST_PET_FINISH(LOOP_CHR)
+				CASE NTR_行为_口交
+					CALL NTR_FELLATIO_FINISH(LOOP_CHR)
+				CASE NTR_行为_六九式
+					CALL NTR_69_FINISH(LOOP_CHR)
+				CASE NTR_行为_素股
+					CALL NTR_THUG_FINISH(LOOP_CHR)
+				CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+					CALL NTR_SEX_FINISH(LOOP_CHR)
+				CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+					CALL NTR_A_SEX_FINISH(LOOP_CHR)
+				CASE 21 TO 27
+					; 予約しますby別人の別人
+				CASEELSE
+					; なに？
+			ENDSELECT
+			CFLAG:LOOP_CHR:NTRハーレム行為種別 = 0
+			CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻 = 0
+			CFLAG:LOOP_CHR:NTR訪問者との行為 = NTR_行为_なし
+			FLAG:ハーレム時カウンタ = 0
+		ENDIF
+		PRINTL
+	ENDIF
+NEXT
+RETURN 0

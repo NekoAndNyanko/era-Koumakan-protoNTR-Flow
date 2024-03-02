@@ -1,0 +1,14 @@
+﻿;-------------------------------------------------
+;收藏
+;-------------------------------------------------
+@COM401
+PRINTW 收藏起来了
+SAVESTR:10 += CSTR:MASTER:収集品
+;判断是否是有效的出轨证据
+FOR LOCAL,1,CHARANUM
+	IF STRCOUNT(CSTR:MASTER:収集品,@"%CALLNAME:LOCAL+"15PH/"%") + STRCOUNT(CSTR:MASTER:収集品,@"%CALLNAME:LOCAL+"16PH/"%")
+		CFLAG:LOCAL:浮気证据有效 = 1
+	ENDIF
+NEXT
+CSTR:MASTER:収集品 =
+RETURN 1

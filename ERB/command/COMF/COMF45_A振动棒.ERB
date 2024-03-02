@@ -1,0 +1,136 @@
+﻿;-------------------------------------------------
+;肛门振动棒
+;道具使用コマンド、レベル2
+;-------------------------------------------------
+@COM45
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
+SIF RESULT
+	RETURN 0
+
+;着脱の処理
+TEQUIP:肛门振动棒 = !TEQUIP:肛门振动棒 
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 60
+DOWNBASE:气力 += 150
+
+SOURCE:快Ａ = 250
+SOURCE:苦痛 = 250
+SOURCE:露出 = 50
+SOURCE:屈从 = 50
+SOURCE:逸脱 = 50
+SOURCE:反感 = 200
+CALL 締り具合変動, TARGET, 2, 1
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 70
+
+;Aへの苦痛は先に処理しておく
+CALL PAIN_CHECK_A(TARGET)
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+STAIN:腸内 |= STAIN:Ａ
+STAIN:Ａ |= STAIN:腸内
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;Ａ经验
+EXP:Ａ经验 ++
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+ENDIF
+
+EXP:PLAYER:道具使用经验 ++
+CALL 改变肛门色素(TARGET,1)
+CALL 确认小穴颜色(TARGET)
+CALL 确认小穴松弛度(TARGET)
+CALL 确认肛门颜色(TARGET)
+CALL 确认肛门松弛度(TARGET)
+RETURN 1
+;-------------------------------------------------
+;装着継続の処理
+;-------------------------------------------------
+@EQUIP_COM45(ARG)
+;肛门振动棒挿入中
+PRINTL ＜肛门振动棒插入中＞
+
+DOWNBASE:ARG:体力 += 30
+DOWNBASE:ARG:气力 += 80
+
+SOURCE:ARG:快Ａ += 125
+SOURCE:ARG:苦痛 += 100
+SOURCE:ARG:露出 += 25
+SOURCE:ARG:逸脱 += 25
+SOURCE:ARG:反感 += 40
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:ARG:自己爱 < 0 || TALENT:ARG:抵抗
+	SOURCE:ARG:抑郁 += 35
+
+;Aへの苦痛は先に処理しておく
+;EXP:Ａ经验をみる
+LOCAL = 100
+LOCAL:1 = 40
+IF EXP:ARG:Ａ经验 < EXPLV:1
+	TIMES LOCAL , 3.00
+	TIMES LOCAL:1 , 3.00
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:2
+	TIMES LOCAL , 1.20
+	TIMES LOCAL:1 , 2.00
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:3
+	TIMES LOCAL , 0.80
+	TIMES LOCAL:1 , 1.50
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:4
+	TIMES LOCAL , 0.60
+	TIMES LOCAL:1 , 1.20
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:5
+	TIMES LOCAL , 0.40
+ELSEIF EXP:ARG:Ａ经验 >= EXPLV:5
+	TIMES LOCAL , 0.20
+ENDIF
+
+;PALAM:润滑をみる
+IF PALAM:ARG:润滑 < PALAMLV:1
+	TIMES LOCAL , 1.20
+	TIMES LOCAL:1 , 2.00
+ELSEIF PALAM:ARG:润滑 < PALAMLV:2
+	TIMES LOCAL , 1.00
+	TIMES LOCAL:1 , 1.50
+ELSEIF PALAM:ARG:润滑 < PALAMLV:3
+	TIMES LOCAL , 0.60
+ELSEIF PALAM:ARG:润滑 < PALAMLV:4
+	TIMES LOCAL , 0.30
+ELSEIF PALAM:ARG:润滑 >= PALAMLV:4
+	TIMES LOCAL , 0.20
+ENDIF
+SOURCE:ARG:苦痛 += LOCAL
+SOURCE:ARG:反感 += LOCAL:1
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;自慰実行時は経験＋１
+SIF EXP_UP(22,TARGET)
+	EXP:ARG:Ａ经验 ++
+
+RETURN 1
+

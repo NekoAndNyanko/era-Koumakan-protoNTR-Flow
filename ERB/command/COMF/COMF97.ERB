@@ -1,0 +1,321 @@
+﻿;-------------------------------------------------
+;正常位させる
+;-------------------------------------------------
+@COM97
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
+SIF RESULT
+	RETURN 0
+
+
+;ベッドがないと立位に
+SIF !BEDROOM(CFLAG:PLAYER:現在位置)
+	TFLAG:193 = 1
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = TARGET
+
+LOCALS = {PLAYER}/
+CSTR:TARGET:射精判定用 += LOCALS
+
+;射精箇所フラグ（-1=避孕套 1=膣内 2=菊花 3=手淫 4=口淫 5=乳交 6=素股 7=足交 8=体表 9=舔肛侍奉 10=道具 11=触手）
+TCVAR:TARGET:2 = 1
+TCVAR:PLAYER:2 = 0
+
+;強度
+TCVAR:TARGET:4 = 1700
+TCVAR:PLAYER:4 = 1000 + (200 * ABL:PLAYER:Ｖ感觉)
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 50
+DOWNBASE:气力 += 150
+DOWNBASE:PLAYER:体力 += 50
+DOWNBASE:PLAYER:气力 += 150
+
+SOURCE:PLAYER:快Ｃ = 200
+SOURCE:PLAYER:快Ｖ = 400
+SOURCE:快Ｃ = 400
+SOURCE:情爱 = 500
+SOURCE:性行动 = 500
+SOURCE:达成 = 150
+SOURCE:征服 = 1000
+SOURCE:逸脱 = 300
+SOURCE:反感 = 300
+
+;上のほうで計算した汚れデータ
+SOURCE:肮脏 = GET_STAINCOUNT(PLAYER, 部位_膣内, TARGET) * 10 + 60
+CALL 締り具合変動, PLAYER, 3, 0
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 500
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;射精に関係なく行われる処理はここから
+;膣内に破瓜の血の汚れを付加
+SIF TALENT:PLAYER:处女
+	STAIN:PLAYER:膣内 |= 汚れ_破瓜の血
+;奴隷のＰ⇔調教者のＡの汚れが移动
+STAIN:Ｐ |= STAIN:PLAYER:Ｖ
+STAIN:Ｐ |= STAIN:PLAYER:膣内
+STAIN:PLAYER:Ｖ |= STAIN:Ｐ
+STAIN:PLAYER:膣内 |= STAIN:Ｐ
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:PLAYER:Ｖ经验 ++
+EXP:PLAYER:Ｖ性交经验 ++
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 4
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 4
+ENDIF
+
+;爱情经验
+SIF !ASSIPLAY
+	EXP:爱情经验 += TALENT:恋慕
+
+IF !BEDROOM(CFLAG:PLAYER:現在位置)
+	STR:0 = 対面立位させる
+ELSE
+	STR:0 = 正常位させる
+ENDIF
+CALL 改变小穴色素(PLAYER,1)
+CALL LOST_VIRGIN(PLAYER, TARGET)
+RETURN 1
+
+@CAN_COM97(ARG)
+;-------------------------------------------------
+;実行判定処理
+;-------------------------------------------------
+;绳で縛られている場合は無視（绳が無い時のみ実行判定を行う）
+IF !TEQUIP:绳
+	SKIPDISP ARG
+	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+		PRINTL 対面立位させる
+	ELSE
+		PRINTL 正常位させる
+	ENDIF
+
+	TFLAG:実行値 = 0
+	TFLAG:実行値表示用フラグ = 0
+
+	;すべての命令に共通の要素を考慮
+	;(顺从が高いと命令に従いやすいなど)
+	CALL COM_ORDER
+
+	;ABL:欲望
+	IF ABL:欲望
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += ABL:欲望 * 2
+		PRINT 欲望
+		PRINTV 'LV,ABL:欲望,'(,ABL:欲望 * 2,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;ABL:侍奉精神
+	IF ABL:侍奉精神
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += ABL:侍奉精神
+		PRINT 侍奉精神
+		PRINTV 'LV,ABL:侍奉精神,'(,ABL:侍奉精神,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;ABL:抖Ｓ之气
+	IF ABL:抖Ｓ之气
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += ABL:抖Ｓ之气 * 4
+		PRINT 抖Ｓ之气
+		PRINTV 'LV,ABL:抖Ｓ之气,'(,ABL:抖Ｓ之气 * 4,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	IF MARK:快乐刻印
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += MARK:快乐刻印 * 2
+		PRINT 快乐刻印
+		PRINTV 'LV,MARK:快乐刻印,'(,MARK:快乐刻印 * 2,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;PALAM:欲情
+	IF GETPALAMLV(PALAM:欲情,5)
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += GETPALAMLV(PALAM:欲情,5) * 2
+		PRINT 欲情
+		PRINTV 'LV,GETPALAMLV(PALAM:欲情,5),'(,GETPALAMLV(PALAM:欲情,5) * 2,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;恥じらい
+	IF TALENT:羞耻心 > 0
+		PRINT  - 
+		TFLAG:実行値 -= 1
+		PRINT 恥じらい
+		PRINTV '(,1,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;献身的
+	IF TALENT:献身的
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 6
+		PRINT 献身的
+		PRINTV '(,2,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;快感に素直
+	IF TALENT:快感应答 > 0
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 2
+		PRINT 快感に素直
+		PRINTV '(,2,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;快感の否定（淫乱、娼婦で無効）
+	IF TALENT:快感应答 < 0 && !TALENT:淫乱
+		PRINT  - 
+		TFLAG:実行値 -= 2
+		PRINT 快感の否定
+		PRINTV '(,2,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;倒错的
+	IF TALENT:倒错的
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 4
+		PRINT 倒错的
+		PRINTV '(,4,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;施虐狂
+	IF TALENT:施虐狂
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 3
+		PRINT 施虐狂
+		PRINTV '(,6,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;小恶魔
+	IF TALENT:小恶魔
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 4
+		PRINT 小恶魔
+		PRINTV '(,4,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+
+	;恋慕
+	IF TALENT:恋慕 && ASSIPLAY == 0
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 5
+		PRINT 恋慕
+		PRINTV '(,5,')
+		TFLAG:実行値表示用フラグ = 5
+	ENDIF
+
+	;亲爱
+	IF TALENT:恋慕 > 1 && ASSIPLAY == 0
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 5
+		PRINT 亲爱
+		PRINTV '(,5,')
+		TFLAG:実行値表示用フラグ = 5
+	ENDIF
+
+	;淫乱
+	IF TALENT:淫乱 && ASSIPLAY == 0
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 5
+		PRINT 淫乱
+		PRINTV '(,5,')
+		TFLAG:実行値表示用フラグ = 5
+	ENDIF
+
+	;娼婦
+	IF TALENT:淫乱 > 1 && ASSIPLAY == 0
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 5
+		PRINT 娼婦
+		PRINTV '(,5,')
+		TFLAG:実行値表示用フラグ = 5
+	ENDIF
+
+	;STAIN関係の計算
+	LOCAL = GET_STAINCOUNT(PLAYER, 部位_膣内, TARGET)
+	;汚れあり
+	IF LOCAL
+		PRINT  - 
+		TFLAG:実行値 -= LOCAL
+		PRINT 汚れあり
+		;汚臭鈍感
+		IF TALENT:污臭耐性 > 0
+			PRINT 、汚臭鈍感
+		ELSEIF TALENT:污臭耐性 < 0
+			PRINT 、汚臭敏感
+		ENDIF
+		PRINTV '(,LOCAL,')
+		TFLAG:実行値表示用フラグ = 1
+	ENDIF
+	;鍵を持っていると実行可能
+	IF FLAG:贞操帯鍵購入フラグ == TARGET
+		SIF TFLAG:実行値表示用フラグ
+			PRINT  + 
+		TFLAG:実行値 += 100
+		PRINT 贞操帯の鍵
+		PRINTV '(,100,')
+		TFLAG:実行値表示用フラグ = 100
+	ENDIF	
+
+	;合計を表示(30以上で実行)
+	PRINT  = 
+	PRINTV TFLAG:実行値
+
+	LOCAL = 30
+	SIF TFLAG:実行値 < LOCAL
+		PRINT  < 
+	SIF TFLAG:実行値 == LOCAL
+		PRINT  = 
+	SIF TFLAG:実行値 > LOCAL
+		PRINT  > 
+	PRINT 実行値
+	PRINTV LOCAL
+
+	WAIT
+	SKIPDISP 0
+	;実行できない
+	SIF TFLAG:実行値 < LOCAL
+		RETURN 0
+ENDIF
+RETURN 1

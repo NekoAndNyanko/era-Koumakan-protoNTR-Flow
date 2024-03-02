@@ -1,0 +1,79 @@
+﻿;-------------------------------------------------
+;与访问者同寝
+;-------------------------------------------------
+@COM467
+#DIM 添い寝種類
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+;;─────────────────────
+SELECTCASE RAND:2
+	CASE 1
+		添い寝種類 = 1	;;腕枕
+	CASEELSE
+		添い寝種類 = 2	;;抱っこ
+ENDSELECT
+;;─────────────────────
+
+
+
+PRINTFORMW %CALLNAME:奴隷+"向"+NTR_NAME(0)+"陪睡的申请。"%
+PRINTFORMW %NTR_NAME(0)+"听了后温柔地笑了，在床上招了招手。"%
+IF BASE:MASTER:体力 <= 1000
+	PRINTFORMW %"征得同意后，"+CALLNAME:奴隷+"爬上了床……但"+NTR_NAME(0)+"突然一把将"+CALLNAME:奴隷+"压在了身下。"%
+	PRINTFORMW %"『你看起来还很精神嘛，就让我侵犯到睡过去位置好了』"%
+	PRINTFORMW %"说完，也不等"+CALLNAME:奴隷+"的回复，剥光衣服、像野兽般粗暴地侵犯了"+CALLNAME:奴隷+"……"%
+	回数 = 0
+	累計時間 = 0
+	IF TALENT:MASTER:处女 || !HAS_VAGINA(MASTER)
+		回数 = 0
+		累計時間 = 0
+		DO
+			回数++
+			行為時間 = 11 + RAND:10
+			CALL NTR_Play_A_1(奴隷,人物_訪問者,1,行為時間)
+			CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+			CALL ORGASM_ADD(奴隷,人物_訪問者)
+			累計時間 += 行為時間
+			TIME += 行為時間
+		LOOP BASE:奴隷:体力 > 0
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次肛穴"%
+		ENDDATA
+	ELSE
+		DO
+			回数++
+			行為時間 = 11 + RAND:10
+			CALL NTR_Play_V_1(奴隷,人物_訪問者,1,行為時間)
+			CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+			CALL ORGASM_ADD(奴隷,人物_訪問者)
+			累計時間 += 行為時間
+			TIME += 行為時間
+		LOOP BASE:奴隷:体力 > 0
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次小穴"%
+		ENDDATA
+	ENDIF
+ELSE
+	SELECTCASE 添い寝種類
+		CASE 1	;;腕枕
+			PRINTFORMW %"乖巧地爬上床躺下后、"+NTR_NAME(0)+"把自己的手臂当作枕头伸了过来。"%
+		CASEELSE	;;抱っこ
+			PRINTFORMW %"乖巧地爬上床躺下后、"+NTR_NAME(0)+"温柔地将"+CALLNAME:奴隷+"抱在了怀里。"%
+	ENDSELECT
+	PRINTFORM %"对此，"+CALLNAME:奴隷+"也开心地撒起娇来、"%
+	SELECTCASE 添い寝種類
+		CASE 1	;;腕枕
+			PRINTFORMW %"将头贴在了"+NTR_NAME(0)+"的胳膊上"%
+		CASEELSE	;;抱っこ
+			PRINTFORMW %"紧紧的捉住那双的手臂，贴上了"+NTR_NAME(0)+"温热的胸膛"%
+	ENDSELECT
+	PRINTFORMW %NTR_NAME(0)+"看着那样的"+CALLNAME:奴隷+"，宠溺的抚摸着"+CALLNAME:奴隷+"的头发。"%
+	PRINTFORMW %"温柔又舒服的行为、让"+CALLNAME:奴隷+"的双眼自然而然地合上了……。"%
+ENDIF
+CFLAG:MASTER:WC_訪問者セクハラ屈服上昇値 += WC_SURRENDER(MASTER, 1)
+CFLAG:MASTER:睡眠 = 1
+CFLAG:MASTER:睡觉時間 = DATETIME()
+BEGIN AFTERTRAIN
+RETURN 1

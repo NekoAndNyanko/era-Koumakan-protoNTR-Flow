@@ -1,0 +1,166 @@
+﻿;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 通常会话 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_01_ENABLE
+RESULTS:0 = %"[ 1]-随便聊些什么"%
+;常に実行可能だが別枠で処理してあるので実行不可扱いしておく
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 通常会话
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_01
+;-----------------------------------------------------------------------------
+;会话累積値が閾値を超えると失敗
+IF TCVAR:会话不能 && !TALENT:恋慕
+	PRINTFORML 想去跟%CALLNAME:TARGET%搭话但不知道说些什么
+	PRINTW 尴尬的空气在四周流动…
+	TIME += 10
+	LOSEBASE:气力 += 100
+	DOWNBASE:MASTER:气力 += 100
+	TFLAG:コマンド成功度 = -1
+	RETURN 0
+ENDIF
+;-----------------------------------------------------------------------------
+;NTR覗きバレしていると失敗
+IF CFLAG:覗き発覚回数 > 0 && CFLAG:覗き発覚時行為 > 0
+	;覗きバレ指摘メッセージ
+	CALL NTR_MESSAGE_300_NG_PEEP(TARGET)
+	TIME += 10
+	LOSEBASE:气力 += 100
+	DOWNBASE:MASTER:气力 += 100
+	TFLAG:コマンド成功度 = -1
+	;一度この会话が発生するとフラグをクリア
+	CFLAG:覗き発覚回数 = 0 
+	CFLAG:覗き発覚時行為 = 0
+	RETURN 0
+ENDIF
+;-----------------------------------------------------------------------------
+;寝取られ寸前、寝取られそうな時稀に失敗
+LOCAL = 0
+IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ)
+	;寝取られの時は却って失敗しない。漠不关心？
+ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前)
+	SIF RAND:2 == 0
+		LOCAL = 1
+ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られそう)
+	SIF RAND:3 == 0
+		LOCAL = 1
+ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_主人より高い)
+	SIF RAND:4 == 0
+		LOCAL = 1
+ENDIF
+IF LOCAL
+	PRINTFORML 跟%CALLNAME:TARGET%搭话，但好像心不在焉似的。
+	PRINTFORML %CALLNAME:TARGET%说在想其他的事，从%CALLNAME:MASTER%身上移开了视线。
+	PRINTW 尴尬的空气在四周流动…
+	TIME += 10
+	LOSEBASE:气力 += 100
+	DOWNBASE:MASTER:气力 += 100
+	TFLAG:コマンド成功度 = -1
+	RETURN 0
+ENDIF
+;-----------------------------------------------------------------------------
+;会话の成否判定
+LOCAL = RAND:100
+LOCAL:1 = 90 + GET_SUCCESS_RATE() / 5
+SIF LOCAL:1 > 99
+	LOCAL:1 = 99
+IF LOCAL <= 9
+	;10％で大成功
+	TFLAG:コマンド成功度 = 1
+	EXP:MASTER:会话经验 ++
+ELSEIF LOCAL >= LOCAL:1
+	;10～1％で失敗
+	TFLAG:コマンド成功度 = -1
+ELSE
+	;残りは成功
+	TFLAG:コマンド成功度 = 0
+ENDIF
+;先制発生時は失敗しない
+SIF TCVAR:20
+	TFLAG:コマンド成功度 = MAX(TFLAG:コマンド成功度,0)
+;-----------------------------------------------------------------------------
+;会话の結果によるソース変動
+DOWNBASE:气力 += 10
+DOWNBASE:MASTER:气力 += 10
+;固定で獲得するソース
+SOURCE:欢乐 = 200
+;ABL:亲密をみる
+IF CFLAG:TARGET:性欲 >= 100 && RAND:10 > 7
+	PRINTFORML 虽然%CALLNAME:TARGET%在和你聊天，但总是微微感觉有一点点心不在焉，微妙的有种情热的气氛...
+ELSEIF CFLAG:TARGET:性欲 >= 50 && RAND:10 > 8
+	PRINTFORML 和%CALLNAME:TARGET%聊着聊着，话题居然微妙地有一点点向H的方向发展了，奇怪。
+ENDIF
+IF ABL:亲密 <= 1
+	SOURCE:欢乐 += (ABL:顺从 * 60)
+ELSEIF ABL:亲密 <= 3
+	SOURCE:欢乐 += 200 + (ABL:顺从 * 60)
+ELSEIF ABL:亲密 <= 5
+	SOURCE:欢乐 += 500 + (ABL:顺从 * 60)
+ELSEIF ABL:亲密 <= 8
+	SOURCE:欢乐 += 750 + (ABL:顺从 * 75)
+ELSEIF ABL:亲密 <= 11
+	SOURCE:欢乐 += 1000 + (ABL:顺从 * 75)
+ELSE
+	SOURCE:欢乐 += 2000 + (ABL:顺从 * 30)
+ENDIF
+;好感度をみる
+IF CFLAG:好感度 <= 500
+	SOURCE:欢乐 += CFLAG:2
+ELSEIF CFLAG:好感度 <= 5000
+	SOURCE:欢乐 += 500 + (CFLAG:好感度 - 500) / 3
+ELSE
+	SOURCE:欢乐 += 2000 + (CFLAG:好感度 - 5000) / 5
+ENDIF
+SIF SOURCE:欢乐 < 0
+	SOURCE:欢乐 = 0
+SOURCE:被动 = 100 + 100 * ABL:顺从
+SOURCE:征服 = 100 + 100 * ABL:抖Ｓ之气
+IF TFLAG:コマンド成功度 == -1
+	TIMES SOURCE:欢乐 , 0.10
+	TIMES SOURCE:征服 , 0.50
+	TIMES SOURCE:被动 , 0.50
+ELSEIF TFLAG:コマンド成功度 == 0
+	TIMES SOURCE:欢乐 , 1.00
+	TIMES SOURCE:征服 , 1.00
+	TIMES SOURCE:被动 , 1.00
+ELSE
+	TIMES SOURCE:欢乐 , 2.00
+	TIMES SOURCE:征服 , 2.00
+	TIMES SOURCE:被动 , 2.00
+ENDIF
+SELECTCASE ABL:MASTER:话术技能
+	CASE 0
+		TIMES SOURCE:欢乐 , 0.20
+		TIMES SOURCE:征服 , 0.20
+		TIMES SOURCE:被动 , 0.20
+	CASE 1
+		TIMES SOURCE:欢乐 , 0.40
+		TIMES SOURCE:征服 , 0.40
+		TIMES SOURCE:被动 , 0.40
+	CASE 2
+		TIMES SOURCE:欢乐 , 0.70
+		TIMES SOURCE:征服 , 0.70
+		TIMES SOURCE:被动 , 0.70
+	CASE 3
+		TIMES SOURCE:欢乐 , 1.00
+		TIMES SOURCE:征服 , 1.00
+		TIMES SOURCE:被动 , 1.00
+	CASE 4
+		TIMES SOURCE:欢乐 , 1.50
+		TIMES SOURCE:征服 , 1.50
+		TIMES SOURCE:被动 , 1.50
+	CASEELSE
+		TIMES SOURCE:欢乐 , 2.00
+		TIMES SOURCE:征服 , 2.00
+		TIMES SOURCE:被动 , 2.00
+ENDSELECT
+;会话累積値
+TCVAR:会话累積値 += 200 / (3 + ABL:MASTER:话术技能)
+TIME += 10
+EXP:MASTER:会话经验 ++
+RETURN 1
+RETURN 0

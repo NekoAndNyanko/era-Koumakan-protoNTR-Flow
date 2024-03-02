@@ -1,0 +1,227 @@
+﻿;-------------------------------------------------
+;逆强奸
+;セックス系コマンド、レベル1
+;-------------------------------------------------
+@COM64
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_太股)
+SIF RESULT
+	RETURN 0
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+;TCVAR:2 射精箇所フラグ（-1=避孕套 1=膣内 2=菊花 3=手淫 4=口淫 5=乳交 6=素股 7=足交 8=体表 9=舔肛侍奉 10=道具 11=触手）
+
+LOCALS = {PLAYER}/
+CSTR:TARGET:射精判定用 += LOCALS
+TCVAR:TARGET:2 = 1
+;強度
+TCVAR:TARGET:4 = 1500
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 40
+DOWNBASE:气力 += 220
+
+SOURCE:快Ｃ = 400
+SOURCE:性行动 = 500
+SOURCE:屈从 = 1000
+SOURCE:逸脱 = 500
+SOURCE:反感 = 500
+
+;上のほうで計算した汚れデータ
+SOURCE:肮脏 = GET_STAINCOUNT(PLAYER, 部位_膣内, TARGET) * 10 + 60
+
+TEQUIP:PLAYER:Ｖ性爱 = TARGET
+
+CALL 締り具合変動, PLAYER, 3, 0
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 700
+
+;調教者が处女（一回のみ）
+IF TALENT:PLAYER:处女 && !GETBIT(CFLAG:3,10)
+	TIMES SOURCE:逸脱 , 20.00
+	TIMES SOURCE:屈从 , 3.00
+	PRINTFORML ＜%CALLNAME:PLAYER%は处女を失いました＞
+	;异常经验追加
+	IF TALENT:PLAYER:处女 == 1
+		EXP:异常经验 += 1
+		SETBIT CFLAG:异常经验,10
+		TEQUIP:PLAYER:Ｖ性爱 = TARGET
+		CALL LOST_VIRGIN(PLAYER, TARGET)
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+IF HAS_PENIS(TARGET)
+	;奴隷のＰ⇔調教者の膣内の汚れが移动
+	STAIN:Ｐ |= STAIN:PLAYER:Ｖ
+	STAIN:Ｐ |= STAIN:PLAYER:膣内
+	STAIN:PLAYER:Ｖ |= STAIN:Ｐ
+	STAIN:PLAYER:膣内 |= STAIN:Ｐ
+
+ENDIF
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:PLAYER:Ｖ经验 ++
+EXP:PLAYER:Ｖ性交经验 ++
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 4
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 4
+ENDIF
+CALL 改变小穴色素(PLAYER,1)
+
+RETURN 1
+
+@CAN_COMF64(ARG)
+SKIPDISP ARG
+PRINTL 逆强奸
+;-------------------------------------------------
+;実行判定処理
+;-------------------------------------------------
+TFLAG:実行値 = 0
+TFLAG:実行値表示用フラグ = 0
+
+;すべての命令に共通の要素を考慮
+;(顺从が高いと命令に従いやすいなど)
+CALL COM_ORDER
+
+
+;ABL:欲望
+IF ABL:欲望
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:欲望 * 2
+	PRINT 欲望
+	PRINTV 'LV,ABL:欲望,'(,ABL:欲望 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+IF MARK:快乐刻印
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += MARK:快乐刻印 * 2
+	PRINT 快乐刻印
+	PRINTV 'LV,MARK:快乐刻印,'(,MARK:快乐刻印 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;快感に素直
+IF TALENT:快感应答 > 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 2
+	PRINT 快感に素直
+	PRINTV '(,2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;快感の否定（淫乱、娼婦で無効）
+IF TALENT:快感应答 < 0 && !TALENT:淫乱
+	PRINT  - 
+	TFLAG:実行値 -= 2
+	PRINT 快感の否定
+	PRINTV '(,2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;淫乱
+IF TALENT:淫乱 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 5
+	PRINT 淫乱
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+;娼婦
+IF TALENT:淫乱 > 1 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 5
+	PRINT 娼婦
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+
+;調教者が处女
+IF TALENT:PLAYER:处女
+	PRINT  - 
+	TFLAG:実行値 -= 15
+	PRINTFORM %NAME:PLAYER%が处女
+	PRINTV '(,15,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;調教者が贞操観念
+IF TALENT:PLAYER:贞操 > 0
+	PRINT  - 
+	TFLAG:実行値 -= 10
+	PRINTFORM %NAME:PLAYER%が贞操観念
+	PRINTV '(,10,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;調教者が贞操無頓着
+IF TALENT:PLAYER:贞操 < 0
+	PRINT  + 
+	TFLAG:実行値 += 5
+	PRINTFORM %NAME:PLAYER%が贞操無頓着
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;調教者のABL:技巧
+IF ABL:PLAYER:技巧
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:PLAYER:技巧 * 4
+	PRINTFORM %NAME:PLAYER%の技巧
+	PRINTV 'LV,ABL:PLAYER:技巧,'(,ABL:PLAYER:技巧 * 4,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;鍵を持っていると実行可能
+IF FLAG:贞操帯鍵購入フラグ == TARGET
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 100
+	PRINT 贞操帯の鍵
+	PRINTV '(,100,')
+	TFLAG:実行値表示用フラグ = 100
+ENDIF	
+
+;合計を表示(15以上で実行)
+PRINT  = 
+PRINTV TFLAG:実行値
+
+LOCAL = 15
+SIF TFLAG:実行値 < LOCAL
+	PRINT  < 
+SIF TFLAG:実行値 == LOCAL
+	PRINT  = 
+SIF TFLAG:実行値 > LOCAL
+	PRINT  > 
+PRINT 実行値
+PRINTV LOCAL
+
+WAIT
+SKIPDISP 0
+;実行できない
+SIF TFLAG:実行値 < LOCAL
+	RETURN 0
+RETURN 1
+
+

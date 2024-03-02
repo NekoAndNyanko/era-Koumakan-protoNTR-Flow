@@ -1,0 +1,406 @@
+﻿;-------------------------------------------------------------------------------
+;１日の開始時の処理
+@EVENTTRAIN
+#PRI
+#DIM キャラ番号
+#DIM LOOP_FLG
+VARSET TARGET
+;各種数値の初期化
+FOR キャラ番号,0,CHARANUM
+	;BASEの初期化
+	CALL BEFORETRAIN_ResetBases(キャラ番号)
+	;CFLAGの初期化
+	CFLAG:キャラ番号:勃起度 = 0
+	CFLAG:キャラ番号:あなた射精フラグ = 0
+	CFLAG:キャラ番号:汚れ発覚 = 汚れ発覚_なし
+	CFLAG:キャラ番号:汚れ継続時間 = 0
+	CFLAG:キャラ番号:催眠中 = 0 ;角色是否處於催眠中，同時用於防止移动至浴場
+	CFLAG:キャラ番号:本日催眠次數 = 0
+	CFLAG:キャラ番号:催眠气氛 = 0
+	CFLAG:キャラ番号:前回催眠行為 = 0
+	FLAG:催眠 = 0
+	;TCVARSの初期化
+	CALL BEFORETRAIN_ResetTCVars(キャラ番号)
+	;性交フラグ
+	TEQUIP:キャラ番号:Ｖ性爱 = -1
+	TEQUIP:キャラ番号:Ａ性爱 = -1
+	;射精処理用文字列変数
+	CSTR:キャラ番号:射精判定用 = /
+	CSTR:キャラ番号:射精後処理用 = /
+	;移动ルート初期化
+	CALLF RESET_ROUTE(キャラ番号, 1)
+
+NEXT
+
+
+;催眠で出て行ったまま帰ってこない人の救済措置
+FOR キャラ番号, 1, CHARANUM
+	IF CFLAG:キャラ番号:現在位置 == 位置_人間の里 || CFLAG:キャラ番号:現在位置 == 位置_民家
+		CFLAG:キャラ番号:現在位置 = 位置_红魔馆正门
+		PRINTFORMW %CALLNAME:キャラ番号%不知道从哪里回来了
+	ENDIF
+NEXT
+SIF SAVESTR:10 == ""
+	SAVESTR:10 = /
+;料理
+FLAG:料理 = 0
+;時間
+IF TIME > CFLAG:MASTER:通常起床時間
+	DAY ++
+	TIME -= 1440
+	CALL 日付変更
+	CALL 日間気温設定
+ENDIF
+CALL 天候状態
+;30分毎に館内のキャラを移动させる
+LOOP_FLG = 1
+WHILE LOOP_FLG
+	IF TIME + 30 < CFLAG:MASTER:通常起床時間
+		TFLAG:300 = DATETIME()
+		TIME += 30
+		CALL CHARA_MOVEMENT
+	ELSE
+		FOR キャラ番号,0,CHARANUM
+			;現在位置の保存
+			CFLAG:キャラ番号:前ターン位置 = CFLAG:キャラ番号:現在位置
+		NEXT
+		TIME =  CFLAG:MASTER:通常起床時間
+		TFLAG:300 = DATETIME()
+		CALL CHARA_MOVEMENT
+		BREAK
+	ENDIF
+WEND
+CALL GOODMORNING
+
+IF FLAG:ランダム_訪問者のお気に入り > 7
+	FLAG:ランダム_訪問者のお気に入り = 1
+	FLAG:訪問者のお気に入り = RAND:CHARANUM
+	IF FLAG:訪問者のお気に入り == FLAG:訪問者の嫌いな相手
+		FLAG:訪問者のお気に入り = 2
+	ENDIF
+ELSE 
+	FLAG:ランダム_訪問者のお気に入り += RAND:2
+ENDIF
+
+IF FLAG:ランダム_訪問者の嫌いな相手 > 7
+	FLAG:ランダム_訪問者の嫌いな相手 = 1
+	FLAG:訪問者の嫌いな相手 = RAND:CHARANUM
+	IF FLAG:訪問者の嫌いな相手 == FLAG:訪問者のお気に入り
+		FLAG:訪問者の嫌いな相手 = 1
+	ENDIF	
+ELSE 
+	FLAG:ランダム_訪問者の嫌いな相手 += RAND:2
+ENDIF
+
+IF FLAG:ランダム_訪問者の気になる場所 > 7
+	FLAG:ランダム_訪問者の気になる場所 = 1
+	FLAG:訪問者の気になる場所 = RAND:MAXROOM()
+ELSE 
+	FLAG:ランダム_訪問者の気になる場所 += RAND:2
+ENDIF	
+
+IF FLAG:ランダム_訪問者のお気に入りの場所 > 7
+	FLAG:ランダム_訪問者のお気に入りの場所 = 1
+	FLAG:訪問者のお気に入りの場所 = RAND:MAXROOM()
+ELSE 
+	FLAG:ランダム_訪問者のお気に入りの場所 += RAND:2
+ENDIF
+[SKIPSTART]
+IF RAND:10 && CFLAG:MASTER:現在位置 != 位置_訪問者宅
+	FLAG:侵入者の現在位置 = 位置_红魔馆正门
+	PRINTFORMW 馆里好像有入侵者进来了！
+ELSE
+	FLAG:侵入者の現在位置 = 0
+ENDIF
+[SKIPEND]
+;霊夢の移动可能判定
+IF 霊夢移动フラグ == 0
+	霊夢移动フラグ = MAX(10 - ( CFLAG:人物_灵梦:好感度 > 0 ? CFLAG:人物_灵梦:好感度 / 300 # 0) - ( CFLAG:人物_灵梦:屈服度 > 0 ? CFLAG:人物_灵梦:屈服度 / 300 # 0), 0)
+	;元の場所へ戻す
+	SIF CFLAG:人物_灵梦:現在位置 <= 場所番号最大値
+		CFLAG:人物_灵梦:現在位置 = CFLAG:人物_灵梦:開始位置
+	;PRINTFORMW テスト 霊夢移动OFF {霊夢移动フラグ}
+ELSE
+	;PRINTFORMW テスト 霊夢移动ON1 {霊夢移动フラグ}
+	IF RAND(1, 11) > 霊夢移动フラグ
+		;霊夢移动可能
+		霊夢移动フラグ = 0
+		;PRINTFORMW テスト 霊夢移动ON2 {霊夢移动フラグ} CLEAR
+	ELSE
+		霊夢移动フラグ --
+		;PRINTFORMW テスト 霊夢移动ON3 {霊夢移动フラグ} NOT
+	ENDIF
+ENDIF
+
+TRYCALL 子供訪問_1
+;NTR関連フラグの日毎クリア
+CALL NTR_CLEAR_FLG
+CALL VISITER_APPEARANCE
+;起床時間の記録
+CFLAG:MASTER:起床時間 = DATETIME()
+;体力气力の回復
+BASE:MASTER:体力 += MAXBASE:MASTER:体力 * (CFLAG:MASTER:起床時間 - CFLAG:MASTER:睡觉時間 ) / 2 * (480 -120 * TALENT:MASTER:恢复速度)
+BASE:MASTER:气力 += MAXBASE:MASTER:气力 * (CFLAG:MASTER:起床時間 - CFLAG:MASTER:睡觉時間 ) / (480 -120 * TALENT:MASTER:恢复速度)
+BASE:MASTER:体力 = MIN(MAXBASE:MASTER:体力,BASE:MASTER:体力)
+BASE:MASTER:气力 = MIN(MAXBASE:MASTER:气力,BASE:MASTER:气力)
+BASE:MASTER:勃起 = MIN(1000 * BASE:MASTER:体力 / MAXBASE:MASTER:体力,1500)
+;勃起ペナルティ判定
+CALL SOJI_SexHara_ErectPunishment(MASTER)
+;調教者は誰か
+IF ASSIPLAY == 0
+	PLAYER = MASTER
+ELSE
+	PLAYER = ASSI
+ENDIF
+;MASTER寝間着変更(ここを通る時は睡眠フラグが立っているので一度0にして着替えてからフラグを戻す)
+CFLAG:MASTER:睡眠 = 0
+CALL CLOTHES_SETTING(MASTER,1)
+;女やふたなりでない時服装によって[女装]を与える
+IF HAS_VAGINA(MASTER) == 0 && ( EQUIP:MASTER:裙子 && ( EQUIP:MASTER:上半身上着１ || EQUIP:MASTER:上半身上着２ ) || EQUIP:MASTER:连衣裙 && !EQUIP:MASTER:下半身上着１ )
+	TALENT:MASTER:女装 = 1
+	;[女装]を持っていて裙子、连衣裙、上半身上着を着ていない、または连衣裙を着ているが下半身上着を履いている(チャイナ服+ズボン)とき[女装]を消す
+ELSEIF TALENT:MASTER:女装 && ( ( !EQUIP:MASTER:裙子 || !EQUIP:MASTER:连衣裙 || !EQUIP:MASTER:上半身上着１ || !EQUIP:MASTER:上半身上着２ ) || ( EQUIP:MASTER:连衣裙 && EQUIP:MASTER:下半身上着１ ) )
+	TALENT:MASTER:女装 = 0
+ENDIF
+CFLAG:MASTER:睡眠 = 1
+;気になる場所到達判定のクリア
+IF FLAG:1832 >= 0
+	FLAG:1832 = 0
+ENDIF
+
+
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@BEFORETRAIN_ResetBases(キャラ番号)
+#DIM キャラ番号
+
+;CSVの記述ミスがあった場合のフォロー
+IF MAXBASE:キャラ番号:理性 == 0
+	MAXBASE:キャラ番号:理性 = 1000
+ENDIF
+IF MAXBASE:キャラ番号:精力 == 0
+	MAXBASE:キャラ番号:精力 = 1000
+ENDIF
+;MAXBASE:??:射精が初期化されていない場合のフォロー
+IF HAS_PENIS(キャラ番号)
+	IF MAXBASE:キャラ番号:射精 == 0
+		MAXBASE:キャラ番号:射精 = 10000
+		PRINTFORML -> {MAXBASE:キャラ番号:射精}
+	ENDIF
+ENDIF
+
+;射精、勃起、气氛、理性、怒意
+BASE:キャラ番号:射精 = 0
+BASE:キャラ番号:气氛 = 0
+BASE:キャラ番号:理性 = MAXBASE:キャラ番号:理性
+BASE:キャラ番号:怒意 = 0
+BASE:キャラ番号:勃起 = 0
+BASE:キャラ番号:满足 = 0
+BASE:(キャラ番号):精力 = 0
+IF HAS_PENIS(キャラ番号)
+	MAXBASE:キャラ番号:精力 = LIMIT(MAXBASE:キャラ番号:精力,200,1000)
+	BASE:キャラ番号:精力 = MAXBASE:キャラ番号:精力
+ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@BEFORETRAIN_ResetCFlags(ARG:0)
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@BEFORETRAIN_ResetTCVars(キャラ番号)
+#DIM キャラ番号
+#DIM LOOP_I
+;経験表示用
+FOR LOOP_I,0,100
+	TCVAR:キャラ番号:(400 + LOOP_I) = EXP:キャラ番号:(LOOP_I)
+NEXT
+TCVAR:キャラ番号:100 = -1
+TCVAR:キャラ番号:101 = -1
+;中出し表示用フラグ
+TCVAR:キャラ番号:103 = -1
+TCVAR:キャラ番号:105 = -1
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;起床処理
+;@return 1:xxx,0:xxx
+@GOODMORNING
+#DIM LOOP_CHR
+#DIM LOOP_I
+#DIM 全员NTR
+TARGET = 0
+全员NTR = 1
+FOR LOOP_CHR,1,CHARANUM
+	;ぱんつ確認フラグをOFF
+	CFLAG:LOOP_CHR:ぱんつ確認 = 0
+	SIF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置
+		TARGET = LOOP_CHR
+	SIF TALENT:LOOP_CHR:NTR == 0
+		全员NTR = 0
+NEXT
+[SKIPSTART]
+IF 全员NTR == 1 && MASTER == 0 && FLAG:全员NTR主人公女体化 == 0 && RAND(100) < 5
+	PRINTFORMW 睡梦中感觉身体很难受，也无法动弹，挣扎了好一会儿才从梦中醒来
+	PRINTFORMW 迷迷糊糊地走下床，但是衣服都拖在了地上，感觉到不同寻常的事情发生了
+	PRINTFORMW 跑去镜子旁，多眨了几下眼睛，想让视野变得清楚一些
+	PRINTFORMW 图像多次交织过后，终于映出镜子上的自己
+	PRINTFORMW 变成女孩子了……还很…可爱……
+	CALL 肌色SET(0)
+	PRINTFORM ■ 
+	RESETCOLOR
+	PRINTFORMW 白皙无暇的肌肤、
+	PRINTFORMW 齐腰的长发、
+	PRINTFORMW 红着脸看了看私密的部位
+	PRINTFORMW 果然是毫无经验的那种样子
+	PRINTFORMW 去把衣柜打开想要找点衣服，但是发现里面的衣服全都被替换成合身的女孩子的衣服了
+	PRINTFORMW 赶紧的把柜子关上，对这一切的疑问和不安开始爆发出来
+	PRINTFORMW 所有焦躁都转移到口舌上了，喝水的时候发现桌上有封信件
+	PRINTFORMW 「%CALLNAME:MASTER%~❤~~」
+	PRINTFORMW 「大家现在都与主人生活（淫乱）得很愉快，但是留着%CALLNAME:MASTER%一个人，实在是令人不忍心…」
+	PRINTFORMW 「于是商量着让%CALLNAME:MASTER%来一起体会快乐，所以就把%CALLNAME:MASTER%变成可爱的女孩子了！」
+	PRINTFORMW 「也许这时候%CALLNAME:MASTER%也发现这具身体很敏感了吧？」
+	PRINTFORMW 「然后呢，大家的房间钥匙也会给%CALLNAME:MASTER%，是作为同伴的特权哦！」
+	PRINTFORMW 「但是如果%CALLNAME:MASTER%实在不想与我们一起侍奉主人的话，我们也不会勉强，会把%CALLNAME:MASTER%变回去的。」
+	PRINTFORMW 「不过%CALLNAME:MASTER%不想变回去也不想侍奉主人也没关系，尽管做自己想做的人吧~~」
+	PRINTFORMW                                                                             ——蕾米莉亚·斯卡雷特 执笔敬上~❤~
+	PRINTL ---------------------------------------
+	PRINTL [0] - 接受这封信
+	PRINTL [1] - 撕毁这封信
+	INPUT
+	IF RESULT == 0
+		FLAG:全员NTR主人公女体化 = 1
+
+		TALENT:MASTER:处女 = 1
+		TALENT:MASTER:性別 = 1
+		TALENT:MASTER:体型 = -1
+		TALENT:MASTER:胸部尺寸 = 0
+		TALENT:MASTER:Ｃ感度 = 1
+		TALENT:MASTER:Ｖ感度 = 1
+		TALENT:MASTER:Ａ感度 = 1
+		TALENT:MASTER:Ｂ感度 = 1
+
+		ABL:MASTER:Ｃ感觉 = 0
+		ABL:MASTER:Ｖ感觉 = 0
+		ABL:MASTER:Ａ感觉 = 0
+		ABL:MASTER:Ｂ感觉 = 0
+		ABL:MASTER:亲密 = 0
+		ABL:MASTER:顺从 = 0
+		ABL:MASTER:欲望 = 0
+		ABL:MASTER:自慰中毒 = 0
+		ABL:MASTER:精液中毒 = 0
+		ABL:MASTER:精饮中毒 = 0
+		ABL:MASTER:百合中毒 = 0
+		ABL:MASTER:搞基中毒 = 0
+		ABL:MASTER:战斗技能 = 0
+
+		BASE:MASTER:日晒度 = 0
+		CFLAG:MASTER:肌原色 = 0
+		CFLAG:MASTER:肌色 = 0
+		CFLAG:MASTER:髪の長さ = 550
+		BASE:MASTER:乳头色素 = 0
+		CFLAG:MASTER:乳头颜色 = 0
+		CFLAG:MASTER:已知的乳头颜色 = 0
+		BASE:MASTER:小穴色素 = 0
+		CFLAG:MASTER:小穴颜色 = 0
+		CFLAG:MASTER:已知的小穴颜色 = 0
+		BASE:MASTER:肛门色素 = 0
+		CFLAG:MASTER:肛门颜色 = 0
+		CFLAG:MASTER:已知的肛门颜色 = 0
+		BASE:MASTER:乳头大小 = 100
+		BASE:MASTER:Ｖ松弛度 = 0
+		BASE:MASTER:Ａ松弛度 = 0
+		PRINTW 把信收起来了，既然已经这样了，就这样继续生活吧。
+		PRINTW 变成女孩子了也就不用再去想以前的情事了吧，就算大家都投进那家伙的怀抱中，也已经不是什么重要的事了吧。
+		PRINTW 换件好看的衣服吧……
+		CALL CLOTHES_CHOOSE(MASTER)
+	ELSE
+		PRINTW 果然还是接受不了……一怒之下把信撕………………
+		PRINTW ………………
+		PRINTW ………………………………
+		PRINTW 什么啊……原来在做梦啊……
+		PRINTW 但是大家的确都投进那家伙的怀抱里了……
+		PRINTW 努力一点的话，还能夺回来吧……
+		PRINTW 可以的吧……
+	ENDIF
+	RETURN
+ENDIF
+[SKIPEND]
+FOR LOOP_CHR,1,CHARANUM
+	CALL SANTA(LOOP_CHR)
+NEXT
+IF TARGET
+	IF CFLAG:TARGET:睡眠
+		PRINTFORMW %CALLNAME:MASTER%醒来的时候，%CALLNAME:TARGET%还睡得很香甜
+		SIF CFLAG:TARGET:淫纹身体改造 == 1
+			PRINTFORMW 外表变得淫靡的%CALLNAME:TARGET%在熟睡中稍稍变得有些可爱。
+		SIF CFLAG:MASTER:淫纹身体改造
+			PRINTFORMW 转头看了看自己的褐色身体，还有%COM417_GetProstituteMarkColor(MASTER)%的淫纹，忍不住凑过去抱了抱%CALLNAME:TARGET%、
+		PRINTFORMW 为了不吵醒%CALLNAME:TARGET%，%CALLNAME:MASTER%溜下床，开始了新一天的准备
+	ELSE
+		IF TALENT:恋慕
+			PRINTFORMW %CALLNAME:MASTER%醒来的时候跟%CALLNAME:TARGET%的视线对上了
+			SIF CFLAG:TARGET:淫纹身体改造 == 1
+				PRINTFORMW %CALLNAME:TARGET%蔷薇色的眼睛发出了些许光芒，褐色的肌肤在蔷薇色的渲染下变得更加淫靡了
+			SIF CFLAG:MASTER:淫纹身体改造
+				PRINTFORMW 「%CALLNAME:MASTER%的褐色肌肤和眼睛看起来好淫荡呢~❤~~」%CALLNAME:TARGET%如此说道
+			PRINTFORMW 过了一会儿，避开了%CALLNAME:TARGET%视线开始了新一天的准备
+		ELSE
+			PRINTFORMW %CALLNAME:MASTER%醒来的时候跟%CALLNAME:TARGET%的视线对上了
+			IF 親子関係(MASTER, TARGET)
+				SIF CFLAG:TARGET:淫纹身体改造 == 1
+					PRINTFORMW %CALLNAME:TARGET%蔷薇色的眼睛发出了些许光芒，褐色的肌肤在蔷薇色的渲染下变得更加淫靡了
+				SIF CFLAG:MASTER:淫纹身体改造
+					PRINTFORMW 但是看了看自己，也是一样的感觉嘛~
+				PRINTFORMW %CALLNAME:MASTER%跟自己的孩子打了声招呼，起床开始了新一天的准备
+			ELSE
+				PRINTFORMW 不知道为什么%CALLNAME:TARGET%会在这里，虽然觉得很可疑，但还是起床开始了新一天的准备
+			ENDIF
+		ENDIF
+		CALL KOJO_EVENT(6, TARGET, 1)
+	ENDIF
+ELSEIF CFLAG:MASTER:現在位置 == 位置_人間の里周辺 && HAS_VAGINA(MASTER) && !(TALENT:公众便所 == 1 && EQUIP:MASTER:下半身下着２ == 0 && EQUIP:MASTER:下半身下着１ == 1)
+	PRINTFORMW 在人间之里昏倒睡着后的%CALLNAME:MASTER%醒来了，但眼前的景色并不是睡着之前看到的景色
+	PRINTFORMW 好像是在睡着的时候被带到了暗处
+	PRINTFORMW 空气中漂浮着的腥味，让%CALLNAME:MASTER%怀疑是自己身上涂着的那些都是精液
+	PRINTFORMW %CALLNAME:MASTER%明白了被轮奸的事情，含着泪将自己整理打扮好
+	TEQUIP:MASTER:Ｖ性爱 = 人物_客
+	FOR LOOP_I,1,(RAND:20 + 10)
+		IF RAND:2
+			EXP:MASTER:Ｖ经验 ++
+			EXP:MASTER:Ｖ性交经验 ++
+			IF ABL:MASTER:Ｖ感觉 > RAND:5
+				EXP:MASTER:Ｖ绝顶经验 ++
+				EXP:MASTER:绝顶经验 ++
+			ENDIF
+			CALL EJACULATION_V(MASTER, 人物_客)
+			IF TALENT:MASTER:处女
+				CALL LOST_VIRGIN(MASTER, 人物_客)
+			ENDIF
+			;V感覚が高いと绝顶经验加算（強絶頂扱い）
+			;CALL NTR_V_EXP_PLUS(MASTER)
+		ELSEIF !RAND:3
+			EXP:MASTER:精液经验 ++
+			EXP:MASTER:手淫经验 ++
+			CALL STAIN_ADD_SEMEN_HAND(MASTER, 人物_客)
+		ELSEIF RAND:2
+			EXP:MASTER:精液经验 ++
+			EXP:MASTER:口淫经验 ++
+			CALL STAIN_ADD_SEMEN_M(MASTER, 人物_客)
+		ELSE
+			EXP:MASTER:精液经验 ++
+			EXP:MASTER:乳交经验 ++
+			IF ABL:MASTER:Ｂ感觉 > RAND:5
+				EXP:MASTER:Ｂ绝顶经验 ++
+				EXP:MASTER:绝顶经验 ++
+			ENDIF
+			CALL STAIN_ADD_SEMEN_B(MASTER, 人物_客)
+		ENDIF
+	NEXT
+ENDIF

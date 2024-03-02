@@ -1,0 +1,253 @@
+﻿;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて 実行判定
+; @return 0 コマンドの実行不可, 1 コマンドの実行可能
+@COM460_02_ENABLE(奴隷)
+#DIM 奴隷
+RESULTS:0 = %"[ 2]-お互いについて"%
+;常に実行可能
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて
+;「あなた」以外で呼び出しても大丈夫(選択肢はランダムになる)
+; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02(奴隷)
+#DIM 奴隷
+#DIM SKIPDISP退避
+#DIMS 形容１
+#DIMS 形容２
+CALL COM460_02_ENABLE
+IF RESULT:0 == 0
+	RETURN 0
+ENDIF
+;SKIPDISPが既に設定されているかもしれないので退避して後で復帰
+SKIPDISP退避 = ISSKIP()
+IF !NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+	SKIPDISP 1
+ENDIF
+SELECTCASE ( TALENT:奴隷:态度 + TALENT:奴隷:应答 + TALENT:奴隷:胆量 + TALENT:奴隷:自尊心 )
+	CASE IS < 0
+		形容１ = %"容易处理"%
+	CASEELSE
+		形容１ = %"虽然很费事"%
+ENDSELECT
+SELECTCASE ( TALENT:奴隷:胆量 + TALENT:奴隷:体型 )
+	CASE IS < 0
+		形容２ = %"可爱"%
+	CASEELSE
+		形容２ = %"漂亮的"%
+ENDSELECT
+PRINTFORML %CALLNAME:奴隷+"问她如何看待自己……"%
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  200
+		PRINTFORML %NTR_NAME(0)+"认为"+CALLNAME:奴隷+"是『商品』候补"%
+		PRINTFORML %"[0]-"+NTR_NAME(0)+"最差劲的强奸狂"%
+		PRINTFORML %"[1]-不打算成为『商品』"%
+	CASE IS <  400
+		PRINTFORML %NTR_NAME(0)+"认为"+CALLNAME:奴隷+"是『商品』候补"%
+		PRINTFORML %"[0]-"+NTR_NAME(0)+"最差劲的强奸狂"%
+		PRINTFORML %"[1]-不打算成为『商品』"%
+		PRINTFORML %"[2]-如果说是『商品』的话，希望能够更加认真地对待"%
+	CASE IS <  600
+		PRINTFORML %NTR_NAME(0)+"认为"+CALLNAME:奴隷+"的事『"+形容１+形容２+"商品』候补"%
+		PRINTFORML %"[1]-不打算成为『商品』"%
+		PRINTFORML %"[2]-如果说是『商品』的话，希望能够更加认真地对待"%
+		PRINTFORML %"[3]-（……即使被称赞了也不知道高兴不高兴）"%
+	CASE IS <  800
+		PRINTFORML %NTR_NAME(0)+"认为"+形容１+形容２+CALLNAME:奴隷+"作为『商品』似乎觉得这样做太可惜了"%
+		PRINTFORML %"[2]-如果说是『商品』的话，希望能够更加认真地对待"%
+		PRINTFORML %"[3]-（……即使被称赞了也不知道高兴不高兴）"%
+		PRINTFORML %"[4]-（……算了、因为受到了赞扬，所以没有什么不好的感觉）"%
+	CASE IS < 1000
+		PRINTFORML %NTR_NAME(0)+"认为"+CALLNAME:奴隷+"的事"+形容１+形容２+"看起来像是宠物一样"%
+		PRINTFORML %"[3]-（……即使被称赞了也不知道高兴不高兴）"%
+		PRINTFORML %"[4]-（……算了、因为受到了赞扬，所以没有什么不好的感觉）"%
+		PRINTFORML %"[5]-被"+NTR_NAME(0)+"这么一说，总觉得很高兴。"%
+	CASEELSE
+		PRINTFORML %NTR_NAME(0)+"认为"+CALLNAME:奴隷+"的事"+形容１+形容２+"好像觉得像恋人一样"%
+		PRINTFORML %"[4]-（……算了、因为受到了赞扬，所以没有什么不好的感觉）"%
+		PRINTFORML %"[5]-被"+NTR_NAME(0)+"这么一说感到很高兴"%
+		PRINTFORML %"[6]-"+NTR_NAME(0)+"喜欢"%
+ENDSELECT
+;選択
+$COM460_02_INPUT_LOOP
+IF 奴隷 == MASTER
+	;対象が「あなた」の場合だけ入力を要求する
+	INPUT
+ELSE
+	RESULT:0 = RAND:7
+	;CLEARLINE可能会在家里散散步，但还是妥协了
+	PRINTFORML %"("+CALLNAME:奴隷+"は "+TOSTR(RESULT:0)+" を選択しました)"%
+ENDIF
+TRYCALLFORM COM460_02_%TOSTR(RESULT:0,"00")%
+IF RESULT:0 == 1
+	TIME += 5
+	EXP:奴隷:会话经验 ++
+ELSE
+	CLEARLINE 1
+	GOTO COM460_02_INPUT_LOOP
+ENDIF
+SKIPDISP SKIPDISP退避
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて - 強姦魔と罵る
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02_00(奴隷)
+#DIM 奴隷
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  200
+		PRINTFORML %CALLNAME:奴隷+"骂"+NTR_NAME(0)+"是最差劲的强奸魔"%
+		PRINTFORMW %"……气氛有点不妙了"%
+		FLAG:訪問者の气氛 -= 2
+		CFLAG:奴隷:屈服度 -= 4
+		RETURN 1
+	CASE IS <  400
+		PRINTFORML %CALLNAME:奴隷+"骂"+NTR_NAME(0)+"是最差劲的强奸魔"%
+		PRINTFORMW %"……气氛有点不妙了"%
+		FLAG:訪問者の气氛 -= 2
+		CFLAG:奴隷:屈服度 -= 4
+		RETURN 1
+ENDSELECT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて - 『商品』になるつもりはない
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02_01(奴隷)
+#DIM 奴隷
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  200
+		PRINTFORML %CALLNAME:奴隷+"并不打算变成『商品』"%
+		PRINTFORMW %"……气氛有点不妙了"%
+		FLAG:訪問者の气氛 -= 1
+		CFLAG:奴隷:屈服度 -= 2
+		RETURN 1
+	CASE IS <  400
+		PRINTFORML %CALLNAME:奴隷+"并不打算变成『商品』"%
+		PRINTFORMW %"……气氛有点不妙了"%
+		FLAG:訪問者の气氛 -= 1
+		CFLAG:奴隷:屈服度 -= 2
+		RETURN 1
+	CASE IS <  600
+		PRINTFORML %CALLNAME:奴隷+"并不打算变成『商品』"%
+		PRINTFORMW %"……气氛有点不妙了"%
+		FLAG:訪問者の气氛 -= 1
+		CFLAG:奴隷:屈服度 -= 2
+		RETURN 1
+ENDSELECT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて - 丁寧に扱って欲しい
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02_02(奴隷)
+#DIM 奴隷
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  200
+		RETURN 0
+	CASE IS <  400
+		PRINTFORML %CALLNAME:奴隷+"如果说是『商品』的话希望被更认真的对待"%
+		CFLAG:奴隷:屈服度 -= 1
+		RETURN 1
+	CASE IS <  600
+		PRINTFORML %CALLNAME:奴隷+"如果说是『商品』的话希望被更认真的对待"%
+		CFLAG:奴隷:屈服度 -= 1
+		RETURN 1
+	CASE IS <  800
+		PRINTFORML %CALLNAME:奴隷+"如果说是『商品』的话希望被更认真的对待"%
+		CFLAG:奴隷:屈服度 -= 1
+		RETURN 1
+ENDSELECT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて - 反応に困る
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02_03(奴隷)
+#DIM 奴隷
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  400
+		RETURN 0
+	CASE IS <  600
+		PRINTFORML %CALLNAME:奴隷+"被夸奖也不知道该高不高兴，露出了微妙的表情"%
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+		RETURN 1
+	CASE IS <  800
+		PRINTFORML %CALLNAME:奴隷+"被夸奖也不知道该高不高兴，露出了微妙的表情"%
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+		RETURN 1
+	CASE IS <  1000
+		PRINTFORML %CALLNAME:奴隷+"被夸奖也不知道该高不高兴，露出了微妙的表情"%
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+		RETURN 1
+ENDSELECT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて - 悪い気はしない
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02_04(奴隷)
+#DIM 奴隷
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  600
+		RETURN 0
+	CASE IS <  800
+		PRINTFORML %CALLNAME:奴隷+"被夸奖并不会感到不愉快，但一旦意识到这一点，就会突然感到羞耻，把目光从"+NTR_NAME(0)+"身上移开"%
+		PRINTFORMW %"……气氛稍微好些了"%
+		FLAG:訪問者の气氛 += 1
+		CALL NTR_ADD_SURRENDER(奴隷, 2)
+		RETURN 1
+	CASE IS <  1000
+		PRINTFORML %CALLNAME:奴隷+"被夸奖并不会感到不愉快，但一旦意识到这一点，就会突然感到羞耻，把目光从"+NTR_NAME(0)+"身上移开"%
+		PRINTFORMW %"……气氛稍微好些了"%
+		FLAG:訪問者の气氛 += 1
+		CALL NTR_ADD_SURRENDER(奴隷, 2)
+		RETURN 1
+ENDSELECT
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて - 嬉しい
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02_05(奴隷)
+#DIM 奴隷
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  800
+		RETURN 0
+	CASE IS <  1000
+		PRINTFORML %CALLNAME:奴隷+"受到表扬而坦率地感到高兴"%
+		PRINTFORML %"看着她高兴的样子、"+NTR_NAME(0)+"摸了摸她的头"%
+		PRINTFORMW %"……气氛稍微好些了"%
+		FLAG:訪問者の气氛 += 2
+		CALL NTR_ADD_SURRENDER(奴隷, 4)
+		RETURN 1
+	CASEELSE
+		PRINTFORML %CALLNAME:奴隷+"受到表扬而坦率地感到高兴"%
+		PRINTFORML %"看着她高兴的样子、"+NTR_NAME(0)+"摸了摸她的头"%
+		PRINTFORMW %"……气氛稍微好些了"%
+		FLAG:訪問者の气氛 += 2
+		CALL NTR_ADD_SURRENDER(奴隷, 4)
+		RETURN 1
+ENDSELECT
+RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话コマンド(拡張版) - お互いについて - 好きになってしまった
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_02_06(奴隷)
+#DIM 奴隷
+SELECTCASE CFLAG:奴隷:屈服度
+	CASE IS <  1000
+		RETURN 0
+	CASEELSE
+		PRINTFORML 当%CALLNAME:奴隷+"也喜欢"+NTR_NAME(0)+"时、"+NTR_NAME(0)+"似乎很高兴"%
+		PRINTFORMW %"……气氛稍微好些了"%
+		FLAG:訪問者の气氛 += 4
+		RETURN 1
+ENDSELECT
+RETURN 0

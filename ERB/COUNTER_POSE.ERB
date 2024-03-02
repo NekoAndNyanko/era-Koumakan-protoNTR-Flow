@@ -1,0 +1,130 @@
+﻿@EVENT_COUNTER_POSE(ARG,ARG:1)
+VARSET LOCAL
+SIF TCVAR:ARG:30 > 1
+	RETURN 0
+SELECTCASE TCVAR:ARG:20
+		;キス
+	CASE CNT_キス
+		TFLAG:60 ++
+		;胸を揉ませる
+	CASE CNT_胸を揉ませる
+		TFLAG:61 ++
+		;股間をまさぐる
+	CASE CNT_股間をまさぐる
+		TFLAG:62 ++
+		;胸を揉む
+	CASE CNT_胸を揉む
+		TFLAG:65 ++
+		;手淫
+	CASE CNT_手淫
+		TFLAG:62 ++
+		;口交
+	CASE CNT_口交
+		TFLAG:62 ++
+		;素股
+	CASE CNT_素股
+		TFLAG:62 ++
+		;乳交
+	CASE CNT_乳交
+		TFLAG:62 ++
+		;足交
+	CASE CNT_足交
+		TFLAG:62 ++
+		;肛门爱抚
+	CASE CNT_肛门爱抚
+		TFLAG:64 ++
+		;舔舐肛门
+	CASE CNT_舔舐肛门
+		TFLAG:64 ++
+		;指挿入
+	CASE CNT_指挿入
+		TFLAG:63 ++
+		;胸爱抚
+	CASE CNT_胸爱抚
+		TFLAG:65 ++
+		;吮吸乳首
+	CASE CNT_吮吸乳首
+		TFLAG:65 ++
+		;ディープキス
+	CASE CNT_ディープキス
+		TFLAG:60 ++
+		;强制舔阴
+	CASE CNT_强制舔阴
+		TFLAG:60 ++
+		;口交強制
+	CASE CNT_口交強制
+		TFLAG:60 ++
+		;舔肛侍奉
+	CASE CNT_舔肛侍奉
+		TFLAG:60 ++
+		;ぱふぱふ
+	CASE CNT_ぱふぱふ
+		TFLAG:60 ++
+		;乳合わせ
+	CASE CNT_乳合わせ
+		TFLAG:65 ++
+		;タワシ洗い
+	CASE CNT_タワシ洗い
+		TFLAG:61 ++
+		;挿入される
+	CASE CNT_正常位挿入される
+		TFLAG:63 ++
+		;肛交骑乘位
+	CASE CNT_骑乘位A挿入される
+		TFLAG:64 ++
+		;肛交后背位
+	CASE CNT_后背位A挿入される
+		TFLAG:64 ++
+		;肛交背面座位
+	CASE CNT_背面座位A挿入される
+		TFLAG:64 ++
+		;骑乘位(逆强奸）
+	CASE CNT_骑乘位逆强奸
+		TFLAG:62 ++
+ENDSELECT
+;69体勢
+SELECTCASE TCVAR:ARG:20
+		;手淫
+	CASE CNT_手淫
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+		;口交
+	CASE CNT_口交
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+		;乳交
+	CASE CNT_乳交
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+		;肛门爱抚
+	CASE CNT_肛门爱抚
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+		;指挿入
+	CASE CNT_指挿入
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+		;强制舔阴
+	CASE CNT_强制舔阴
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+		;口交強制
+	CASE CNT_口交強制
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+		;舔肛侍奉
+	CASE CNT_舔肛侍奉
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	CASEELSE
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,0)
+ENDSELECT
+
+;引数1 対象のキャラ番号 2 行動順 3 六九式移行への確率
+@EVENT_COUNTER_POSE_69(ARG,ARG:1,ARG:2)
+IF ARG:2 == 0
+	TEQUIP:ARG:六九式 = 0
+	RETURN 0
+ENDIF
+IF TEQUIP:ARG:六九式
+	TFLAG:60 ++
+	RETURN 0
+ENDIF
+SIF TFLAG:60
+	RETURN 0
+IF RAND:(ARG:2) == 0
+	TEQUIP:ARG:六九式 = 1
+	TCVAR:ARG:27 = 1
+ENDIF

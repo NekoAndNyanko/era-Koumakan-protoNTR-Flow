@@ -1,0 +1,270 @@
+;--------------------------------------------
+;控制EXP
+;总体思路是xx绝顶相加等于绝顶经验，一般经验包含玩家造成的经验以及NTR经验。
+;使用时避免重复累加，如增加接吻经验本就包含M经验，不需要再增加一次M经验。
+@NTR_EXP_ADD_C(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｃ经验 += 次数
+EXP:对象:浮気Ｃ经验 += 次数
+
+@NTR_EXP_ADD_V(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｖ经验 += 次数
+EXP:对象:浮気Ｖ经验 += 次数
+
+@NTR_EXP_ADD_A(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ａ经验 += 次数
+EXP:对象:浮気Ａ经验 += 次数
+
+@NTR_EXP_ADD_B(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｂ经验 += 次数
+EXP:对象:浮気Ｂ经验 += 次数
+
+@NTR_EXP_ADD_M(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｍ经验 += 次数
+EXP:对象:浮気Ｍ经验 += 次数
+
+@NTR_EXP_ADD_C_EX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｃ经验 += 次数
+EXP:对象:浮気Ｃ经验 += 次数
+EXP:对象:Ｃ绝顶经验 += 次数
+EXP:对象:浮気Ｃ绝顶经验 += 次数
+EXP:对象:绝顶经验 += 次数
+EXP:对象:浮気绝顶经验 += 次数
+
+@NTR_EXP_ADD_V_EX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｖ经验 += 次数
+EXP:对象:浮気Ｖ经验 += 次数
+EXP:对象:Ｖ绝顶经验 += 次数
+EXP:对象:浮気Ｖ绝顶经验 += 次数
+EXP:对象:绝顶经验 += 次数
+EXP:对象:浮気绝顶经验 += 次数
+
+@NTR_EXP_ADD_A_EX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ａ经验 += 次数
+EXP:对象:浮気Ａ经验 += 次数
+EXP:对象:Ａ绝顶经验 += 次数
+EXP:对象:浮気Ａ绝顶经验 += 次数
+EXP:对象:绝顶经验 += 次数
+EXP:对象:浮気绝顶经验 += 次数
+
+@NTR_EXP_ADD_B_EX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｂ经验 += 次数
+EXP:对象:浮気Ｂ经验 += 次数
+EXP:对象:Ｂ绝顶经验 += 次数
+EXP:对象:浮気Ｂ绝顶经验 += 次数
+EXP:对象:绝顶经验 += 次数
+EXP:对象:浮気绝顶经验 += 次数
+
+@NTR_EXP_ADD_M_EX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｍ经验 += 次数
+EXP:对象:浮気Ｍ经验 += 次数
+EXP:对象:Ｍ绝顶经验 += 次数
+EXP:对象:浮気Ｍ绝顶经验 += 次数
+EXP:对象:绝顶经验 += 次数
+EXP:对象:浮気绝顶经验 += 次数
+
+@NTR_EXP_ADD_V_SEX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｖ经验 += 次数
+EXP:对象:浮気Ｖ经验 += 次数
+EXP:对象:Ｖ性交经验 += 次数
+EXP:对象:浮気Ｖ性交经验 += 次数
+IF 訪問者_Ｐ大きさ == 2
+	CALL NTR_EXP_ADD_V_EXPANSION(对象,1)
+	CALL 締り具合変動, 对象, 18, 0
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
+		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORML %CALLNAME:对象%的小穴被%NTR_NAME(0)%超常规的肉棒不断拓展着…
+	ENDIF
+	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ｖ扩张经验+EXP:对象:Ｖ扩张经验 < 450
+		CUP:对象:欲情 += 500
+		CUP:对象:苦痛 += 250
+	ELSEIF EXP:对象:浮気Ｖ扩张经验+EXP:对象:Ｖ扩张经验 < 450
+		CUP:对象:苦痛 += 500
+	ENDIF
+ENDIF
+
+@NTR_EXP_ADD_A_SEX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ａ经验 += 次数
+EXP:对象:浮気Ａ经验 += 次数
+EXP:对象:Ａ性交经验 += 次数
+EXP:对象:浮気Ａ性交经验 += 次数
+IF 訪問者_Ｐ大きさ >= 2
+	CALL NTR_EXP_ADD_A_EXPANSION(对象,1)
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
+		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORML %CALLNAME:对象%的尻穴被%NTR_NAME(0)%超常规的肉棒不断拓展着…
+	ENDIF
+	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ａ扩张经验+EXP:对象:Ａ扩张经验 < 450
+		CUP:对象:欲情 += 500
+		CUP:对象:苦痛 += 250
+		CFLAG:对象:覚醒 += 1
+	ELSEIF EXP:对象:浮気Ａ扩张经验+EXP:对象:Ａ扩张经验 < 450
+		CUP:对象:苦痛 += 500
+		CFLAG:对象:覚醒 += 1
+	ENDIF
+ENDIF
+
+@NTR_EXP_ADD_V_SEX_EX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｖ经验 += 次数
+EXP:对象:浮気Ｖ经验 += 次数
+EXP:对象:Ｖ性交经验 += 次数
+EXP:对象:浮気Ｖ性交经验 += 次数
+EXP:对象:绝顶经验 += 次数
+EXP:对象:浮気绝顶经验 += 次数
+EXP:对象:Ｖ绝顶经验 += 次数
+EXP:对象:浮気Ｖ绝顶经验 += 次数
+IF 訪問者_Ｐ大きさ == 2
+	CALL NTR_EXP_ADD_V_EXPANSION(对象,1)
+	CALL 締り具合変動, 对象, 18, 0
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
+		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORML %CALLNAME:对象%的小穴被%NTR_NAME(0)%超常规的肉棒开拓得更深了…
+	ENDIF
+	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ｖ扩张经验+EXP:对象:Ｖ扩张经验 < 450
+		CUP:对象:欲情 += 500
+		CUP:对象:苦痛 += 250
+	ELSEIF EXP:对象:浮気Ｖ扩张经验+EXP:对象:Ｖ扩张经验 < 450
+		CUP:对象:苦痛 += 500
+	ENDIF
+ENDIF
+
+@NTR_EXP_ADD_A_SEX_EX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ａ经验 += 次数
+EXP:对象:浮気Ａ经验 += 次数
+EXP:对象:Ａ性交经验 += 次数
+EXP:对象:浮気Ａ性交经验 += 次数
+EXP:对象:绝顶经验 += 次数
+EXP:对象:浮気绝顶经验 += 次数
+EXP:对象:Ａ绝顶经验 += 次数
+EXP:对象:浮気Ａ绝顶经验 += 次数
+IF 訪問者_Ｐ大きさ >= 2
+	CALL NTR_EXP_ADD_A_EXPANSION(对象,1)
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
+		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORML %CALLNAME:对象%的尻穴被%NTR_NAME(0)%超常规的肉棒开拓得更深了…
+	ENDIF
+	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ａ扩张经验+EXP:对象:Ａ扩张经验 < 450
+		CUP:对象:欲情 += 500
+		CUP:对象:苦痛 += 250
+		CFLAG:对象:覚醒 += 1
+	ELSEIF EXP:对象:浮気Ａ扩张经验+EXP:对象:Ａ扩张经验 < 450
+		CUP:对象:苦痛 += 500
+		CFLAG:对象:覚醒 += 1
+	ENDIF
+ENDIF
+
+@NTR_EXP_ADD_V_EXPANSION(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:浮気Ｖ扩张经验 += 次数
+
+@NTR_EXP_ADD_A_EXPANSION(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:浮気Ａ扩张经验 += 次数
+
+@NTR_EXP_ADD_M_SEX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｍ经验 += 次数
+EXP:对象:浮気Ｍ经验 += 次数
+EXP:对象:浮気口淫经验 += 次数
+
+@NTR_EXP_ADD_B_SEX(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:浮気乳交经验 += 次数
+
+@NTR_EXP_ADD_KISS(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:Ｍ经验 += 次数
+EXP:对象:浮気Ｍ经验 += 次数
+EXP:对象:接吻经验 += 次数
+EXP:对象:浮気接吻经验 += 次数
+
+@NTR_EXP_ADD_DRINK_SEMEN(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:精饮经验 += 次数
+EXP:对象:浮気精饮经验 += 次数
+
+@NTR_EXP_ADD_SEMEN(对象,次数)
+#DIM 对象
+#DIM 次数
+EXP:对象:精液经验 += 次数
+EXP:对象:浮気精液经验 += 次数
+
+;--------------------------------------------
+
+;-------------------------------------------------------------------------------
+;Ｖ感觉高いときの绝顶经验加算（強絶頂のようなもの）
+@NTR_V_EXP_PLUS(奴隷)
+#DIM 奴隷
+IF ABL:奴隷:Ｖ感觉 >= 2
+	IF RAND:3 == 0
+		CALL NTR_EXP_ADD_V_EX(奴隷,1)
+	ENDIF
+ELSEIF ABL:奴隷:Ｖ感觉 >= 4
+	IF RAND:2 == 0
+		CALL NTR_EXP_ADD_V_EX(奴隷,1)
+		; EXP:奴隷:浮気绝顶经验 ++
+	ENDIF
+ENDIF
+IF TALENT:奴隷:浮気的蜜壶
+	IF RAND:2 == 0
+		CALL NTR_EXP_ADD_V_EX(奴隷,1)
+		; EXP:奴隷:浮気绝顶经验 ++
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;Ａ感觉高いときの绝顶经验加算（強絶頂のようなもの）
+@NTR_A_EXP_PLUS(奴隷)
+#DIM 奴隷
+IF ABL:奴隷:Ａ感觉 >= 2
+	IF RAND:3 == 0
+		CALL NTR_EXP_ADD_A_EX(奴隷,1)
+		; EXP:奴隷:浮気绝顶经验 ++
+	ENDIF
+ELSEIF ABL:奴隷:Ａ感觉 >= 4
+	IF RAND:2 == 0
+		CALL NTR_EXP_ADD_A_EX(奴隷,1)
+		; EXP:奴隷:浮気绝顶经验 ++
+	ENDIF
+ENDIF
+IF TALENT:奴隷:浮気的菊花
+	IF RAND:2 == 0
+		CALL NTR_EXP_ADD_A_EX(奴隷,1)
+		; EXP:奴隷:浮気绝顶经验 ++
+	ENDIF
+ENDIF
+RETURN 0

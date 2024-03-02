@@ -1,0 +1,23 @@
+﻿;-------------------------------------------------
+;与访问者分开
+;-------------------------------------------------
+@COM465
+PRINTFORM 向导就到这里了，在这里分手吧、
+IF FLAG:訪問者のお気に入り == 0
+	PRINTFORMW %NTR_NAME(0)%说想再在一起待一会儿
+	PRINTL [0] 点头　[1] 拒绝
+	$INPUT_COM465_0
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW %CALLNAME:MASTER%决定继续待在一起了
+		FLAG:訪問者同行フラグ = DATETIME() + 60
+	ELSEIF RESULT == 1
+		PRINTFORMW %CALLNAME:MASTER%拒绝后，%NTR_NAME(0)%感到有点遗憾
+		FLAG:訪問者同行フラグ = 0
+	ELSE
+		GOTO INPUT_COM465_0
+	ENDIF
+ELSE
+	PRINTFORMW %NTR_NAME(0)%答应了，决定与%CALLNAME:MASTER%分开行动
+	FLAG:訪問者同行フラグ = 0
+ENDIF

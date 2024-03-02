@@ -1,0 +1,310 @@
+﻿;客口上======================================
+@客口上(奴隷, 行為, 客種別)
+#DIM 奴隷
+#DIM 行為
+#DIM 客種別
+SIF TALENT:奴隷:公众便所 == 0
+	RETURN 0
+;公众便所の持帰分岐1（Ｓプレイ）時に客種別を性経験少ない系で固定する処理。お好みで以下の[SKIP○○]を消してください
+;[SKIPSTART]
+IF CFLAG:奴隷:持帰分岐 == 1
+	客種別 = 客種別_性経験少ない系
+ENDIF
+;[SKIPEND]
+SELECTCASE 行為
+		;訪問者宅からお帰り
+	CASE 0
+		CALL 客口上_帰宅(奴隷, 行為, 客種別)
+		;会话
+	CASE 1
+		CALL 客口上_会话(奴隷, 行為, 客種別)
+		;キス
+	CASE 2
+		CALL 客口上_キス(奴隷, 行為, 客種別)
+		;６９
+	CASE 3
+		CALL 客口上_６９(奴隷, 行為, 客種別)
+		;性交
+	CASE 4
+		CALL 客口上_セックス(奴隷, 行為, 客種別)
+		;射精
+	CASE 5
+		CALL 客口上_射精(奴隷, 行為, 客種別)
+ENDSELECT
+RETURN 1
+
+@客口上_帰宅(奴隷, 行為, 客種別)
+#DIM 奴隷
+#DIM 行為
+#DIM 客種別
+SELECTCASE 客種別
+	CASE 客種別_擬音系
+		PRINTDATAL
+			DATAFORM （ﾉｼ）
+		ENDDATA
+	CASE 客種別_DQN・口悪い系
+		PRINTDATAL
+			DATAFORM 『哎呀,這個不錯』
+		ENDDATA
+	CASE 客種別_紳士のような変態系
+		PRINTDATAL
+			DATAFORM 『太好了%CALLNAME:奴隷%、以后还请您多多关照』
+		ENDDATA
+	CASE 客種別_おっさん系
+		PRINTDATAL
+			DATAFORM 『那么、再拜托你了%CALLNAME:奴隷%酱』
+		ENDDATA
+	CASE 客種別_キモデブ系
+		PRINTDATAL
+			DATAFORM 『下次见面的时候，只有两个人比较好啊~』
+		ENDDATA
+	CASE 客種別_性経験少ない系
+		PRINTDATAL
+			DATAFORM 『再次点一下%CALLNAME:奴隷%吧』
+		ENDDATA
+ENDSELECT
+RETURN 0
+
+@客口上_会话(奴隷, 行為, 客種別)
+#DIM 奴隷
+#DIM 行為
+#DIM 客種別
+SELECTCASE 客種別
+	CASE 客種別_擬音系
+		PRINTDATAL
+			DATAFORM 『・・・』
+		ENDDATA
+	CASE 客種別_DQN・口悪い系
+		PRINTDATAL
+			DATAFORM 『这家伙的对手就拜托你啦』
+		ENDDATA
+	CASE 客種別_紳士のような変態系
+		PRINTDATAL
+			DATAFORM 『嗯，相当不错』
+			; 何言ってんだこいつ
+			DATAFORM 『像这样简单的对话也是性行为的一种』
+		ENDDATA
+	CASE 客種別_おっさん系
+		PRINTDATAL
+			DATAFORM 『你多大年纪了？你总是在做什么？』
+			DATAFORM 『这样的事情做多久了？不會是第一次吧？
+		ENDDATA
+	CASE 客種別_キモデブ系
+		PRINTDATAL
+			DATAFORM 『那、那么、%CALL_K_NAME(奴隷)%可以这样叫吗…？』
+			DATAFORM 『呵呵』
+		ENDDATA
+	CASE 客種別_性経験少ない系
+		PRINTDATAL
+			DATAFORM 『那，那个，请多关照』
+			DATAFORM 『可以握一下手吗？』
+		ENDDATA
+ENDSELECT
+RETURN 0
+
+@客口上_キス(奴隷, 行為, 客種別)
+#DIM 奴隷
+#DIM 行為
+#DIM 客種別
+SELECTCASE 客種別
+	CASE 客種別_擬音系
+		PRINTDATAL
+			DATAFORM 『ん～～まっ、ちゅぱっちゅばっ、ちゅるるる…んぐッ』
+			DATAFORM 『れるれるれるれるれろれるれるれるれろれろれるれるれるれるれる』
+		ENDDATA
+	CASE 客種別_DQN・口悪い系
+		PRINTDATAL
+			DATAFORM 『嘿，嘿，你的脸长得那么可爱不是很好吗？』
+			DATAFORM 『ぢ嘿，嘿，这家伙买东西挺不错的』
+		ENDDATA
+	CASE 客種別_紳士のような変態系
+		PRINTDATAL
+			DATAFORM 『把舌头摩擦在一起……嗯……是的，那个样子』
+			DATAFORM 『从嘴唇的边缘舔到边缘』
+		ENDDATA
+	CASE 客種別_おっさん系
+		PRINTDATAL
+			DATAFORM 『哼，果然还是舔女孩子的牙齿最好。』
+			DATAFORM 『把口水全部喝下去吧』
+		ENDDATA
+	CASE 客種別_キモデブ系
+		PRINTDATAL
+			DATAFORM 『%CALL_K_NAME(奴隷)%的舌头，稍微有些粗糙，很舒服啊～』
+			DATAFORM 『为了%CALL_K_NAME(奴隷)%好好地刷牙是有价值的』
+		ENDDATA
+	CASE 客種別_性経験少ない系
+		PRINTDATAL
+			DATAFORM 『噗哈・・・很柔软・・・很好』
+			DATAFORM 『也想再多做一些。』
+		ENDDATA
+ENDSELECT
+RETURN 0
+
+@客口上_６９(奴隷, 行為, 客種別)
+#DIM 奴隷
+#DIM 行為
+#DIM 客種別
+SELECTCASE 客種別
+	CASE 客種別_擬音系
+		PRINTDATAL
+			DATAFORM 『ん～～まっ、ちゅぱっちゅばっ、ちゅるるる…んぐッ』
+			DATAFORM 『れるれるれるれるれろれるれるれるれろれろれるれるれるれるれる』
+		ENDDATA
+	CASE 客種別_DQN・口悪い系
+		PRINTDATAL
+			DATAFORM 『嘩、小穴汁都滴下來了、真是个色情的女人啊%CALLNAME:奴隷%』
+			DATAFORM 『給我努力舔！我也会舔你的』
+		ENDDATA
+	CASE 客種別_紳士のような変態系
+		PRINTDATAL
+			DATAFORM 『这么湿……你那么想要我吗？』
+			DATAFORM 『噢噢，非常舒服的舌头呢，那么我也……』
+		ENDDATA
+	CASE 客種別_おっさん系
+		PRINTDATAL
+			DATAFORM 『非常利害的臭味，叔叔光是这个就感觉很迷人了。』
+			DATAFORM 『颜色意外的漂亮呢。因为这样做，所以觉得被更多人使用過』
+		ENDDATA
+	CASE 客種別_キモデブ系
+		PRINTDATAL
+			DATAFORM 『呀呀～%CALL_K_NAME(奴隷)%的小穴汁，很，粘非常甜哟%UNICODE(0x2764)%』
+			DATAFORM 『喔、%CALL_K_NAME(奴隷)%的舌头喔喔喔喔』
+		ENDDATA
+	CASE 客種別_性経験少ない系
+		PRINTDATAL
+			DATAFORM 『（哇，好厉害……”已经这么湿了……）』
+			DATAFORM 『这……用这种姿势给我做……那么，我在这里……』
+		ENDDATA
+ENDSELECT
+RETURN 0
+
+@客口上_セックス(奴隷, 行為, 客種別)
+#DIM 奴隷
+#DIM 行為
+#DIM 客種別
+SELECTCASE 客種別
+	CASE 客種別_擬音系
+		PRINTDATAL
+			; とある漫画の性交時の男の声
+			DATAFORM 『ハフハフ、ハフハフ』
+			; ELONA（うろ覚え）
+			DATAFORM 『フゥーーーッ！…フーー…フーーーンッ！！』
+		ENDDATA
+	CASE 客種別_DQN・口悪い系
+		PRINTDATAL
+			DATAFORM 『喂，給我叫大聲點，明明是肉便器,猪就要有猪的樣子！』
+			DATAFORM 『啊～糟了、%CALLNAME:奴隷%的小穴超級舒服呀~』
+		ENDDATA
+	CASE 客種別_紳士のような変態系
+		PRINTDATAL
+			DATAFORM 『舒服吗？但是从今往后会变得更舒畅哦』
+			DATAFORM 『%CALLNAME:奴隷%君、请再用那种状态感受一下吧』
+			DATALIST
+				DATAFORM 『%CALLNAME:奴隷%君是\@ RAND:2 == 0 ?奥を突かれるのが#浅い所を攻められるのが\@是喜欢吧』
+				DATAFORM 『你看，这样一来……嗯……紧紧地束缚着我』
+			ENDLIST
+		ENDDATA
+	CASE 客種別_おっさん系
+		PRINTDATAL
+			DATAFORM 『很好的表情呢%CALLNAME:奴隷%你那么喜欢叔叔的阴茎吗？』
+			DATAFORM 『來，求求我吧，說“请把叔叔的鸡巴，插往小穴的深處吧。”』
+		ENDDATA
+	CASE 客種別_キモデブ系
+		PRINTDATAL
+			DATAFORM 『啊，好，好啊…%CALL_K_NAME(奴隷)%的阴道内紧紧地系住哟～』
+			DATAFORM 『这、这么紧…难道我的阴茎和%CALLNAME:(奴隷)%たん的小穴也许相性非常我呀』
+			DATAFORM 『好啊，好啊！%CALL_K_NAME(奴隷)%的喘息声，是最棒的』
+		ENDDATA
+	CASE 客種別_性経験少ない系
+		PRINTDATAL
+			DATAFORM 『哇，太紧了……这样看来很快會射呢』
+			DATAFORM 『ふぅっ、んっ、…あぁ、十分舒服喔、%CALLNAME:奴隷%』
+		ENDDATA
+ENDSELECT
+RETURN 0
+
+@客口上_射精(奴隷, 行為, 客種別)
+#DIM 奴隷
+#DIM 行為
+#DIM 客種別
+SELECTCASE 客種別
+	CASE 客種別_擬音系
+		PRINTDATAL
+			DATAFORM 『あ、あ、ぁ、ぉ、お、おおぉおおおぉおおおぉぉんっ…っ』
+		ENDDATA
+	CASE 客種別_DQN・口悪い系
+		PRINTDATAL
+			DATAFORM 『喂!要射了!嗚!』
+			DATAFORM 『啊~已经不行了，已经要射了、%CALLNAME:奴隷%、射在小穴…給我好好懷孕吧！』
+			DATAFORM 『你要做媽媽了喔！！』
+		ENDDATA
+	CASE 客種別_紳士のような変態系
+		PRINTDATAL
+			DATAFORM 『啊…要出來了出，我的1亿的精子向%CALLNAME:奴隷%君的子宫对准发射！』
+			DATAFORM 『哦哦哦,这个，这就是我和%CALLNAME:奴隷%君製作孩子的终点！！！』
+		ENDDATA
+	CASE 客種別_おっさん系
+		PRINTDATAL
+			DATAFORM 『ん…我要射了……来%CALLNAME:奴隷%要好好地接好呀啊！』
+			DATAFORM 『来吧%CALLNAME:奴隷%我会全部注入其中的』
+		ENDDATA
+	CASE 客種別_キモデブ系
+		PRINTDATAL
+			DATAFORM 『%CALL_K_NAME(奴隷)%、呀呀、%CALL_K_NAME(奴隷)%、%CALL_K_NAME(奴隷)%、要射了!射在小穴裹!!!!』
+			DATAFORM 『呀哦哦哦哦哦、射在%CALL_K_NAME(奴隷)%小穴裹了了了了了了了！！』
+		ENDDATA
+	CASE 客種別_性経験少ない系
+		PRINTDATAL
+			DATAFORM 『呜…对不起%CALLNAME:奴隷%已经…極限了！！』
+			DATAFORM 『要、要射了、呀呀呀呀呀！！』
+		ENDDATA
+ENDSELECT
+RETURN 0
+
+@CALL_K_NAME(奴隷)
+#FUNCTIONS
+#DIM 奴隷
+#DIMS 呼称
+
+呼称 = %CALLNAME:奴隷+"たん"%
+SELECTCASE 奴隷
+	CASE 人物_美铃
+		IF CALLNAME:奴隷 == "美鈴"
+			呼称 = "メイリンたん"
+		ENDIF
+	CASE 人物_小恶魔
+		IF CALLNAME:奴隷 == "小恶魔"
+			呼称 = "こぁ"
+		ENDIF
+	CASE 人物_帕秋莉
+		IF CALLNAME:奴隷 == "パチュリー"
+			呼称 = "ぱっちぇたん"
+		ENDIF
+	CASE 人物_咲夜
+		IF CALLNAME:奴隷 == "咲夜"
+			呼称 = "さっきゅん"
+		ENDIF
+	CASE 人物_蕾米莉亚
+		IF CALLNAME:奴隷 == "蕾米莉亚"
+			呼称 = "れみぃたん"
+		ENDIF
+	CASE 人物_芙兰朵露
+		IF CALLNAME:奴隷 == "フラン" || CALLNAME:奴隷 == "芙兰朵露"
+			呼称 = "フランたん"
+		ENDIF
+	CASE 人物_艾丽娅
+		IF CALLNAME:奴隷 == "小恶魔"
+			呼称 = "ここぁ"
+		ENDIF
+	CASE 人物_琪露诺
+		IF CALLNAME:奴隷 == "チルノ"
+			呼称 = "ちるのたん"
+		ENDIF
+	CASE 人物_大妖精
+		IF CALLNAME:奴隷 == "大妖精"
+			呼称 = "だいちゃん"
+		ENDIF
+ENDSELECT
+RETURNF 呼称
+
+

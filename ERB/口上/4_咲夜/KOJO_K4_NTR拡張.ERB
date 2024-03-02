@@ -1,0 +1,446 @@
+﻿;-------------------------------------------------
+;翻译全为脑补+机翻,欢迎提供意见修改,括号内为原句
+;-------------------------------------------------
+;-------------------------------------------------
+;咲夜口上NTR対応ラッパ口上
+;
+;NTRに対応していない咲夜口上に、NTR独自の分岐を追加するためのラッパ口上。
+;たとえばコマンド311の時に KOJO_MESSAGE_COM_K4_311 が実行される場合、
+;NTR_KOJO_MESSAGE_COM_K4_311があればそちらが優先される。
+;さらにNTR_KOJO_MESSAGE_COM_K4_311 の中で、NTR固有の分岐がすべて条件が
+;叶わなかったとき、通常の(非NTR対応の) KOJO_MESSAGE_COM_K4_311 を実行できる。
+;-------------------------------------------------
+;※※※※※※他者による修正、加筆、改変についての但し書き※※※※※※
+;前提としてオリジナル作者以外が手を入れる場合は、オリジナル作者の許可を求めること
+;オリジナル作者とコンタクトが取れない場合には以下の但し書きに従ってUPできるかどうか判断してください。
+
+;◎修正（誤字、脱字、条件分岐等ERB構文のバグ修正、本体のバージョンアップ、ダウン対応など）
+;（　許可　）※どちらかを選択してください
+;
+;◎加筆（未記入箇所、ランダム分岐、条件分岐等の増補）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎改変（オリジナル作者によって書かれた部分に対しての上書き、消去を含む）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎製作中などの理由で時限を設ける
+;（　年　月　日）まで上記の一切を認めない
+;
+;記　　寝の人
+;追記　
+;基本的に作者の意思を確認出来ない場合、加筆改変は可能ということにします
+
+;==================================================
+;302,身体接触
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K4_302
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K4_302_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K4_302_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K4_302_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_咲夜
+RET_VAL = 0
+
+IF TALENT:奴隷:公众便所
+
+	IF TALENT:奴隷:恋慕 && TALENT:奴隷:亲爱
+		PRINTFORML 「..嗯嗯、很开心哦..」
+	ELSEIF TALENT:奴隷:恋慕
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTDATAL
+				DATAFORM 「..没钥匙的话、也就这样了呢」
+				DATAFORM 「..如果要停止这事的话。需要钥匙吧」
+				DATAFORM 「..我想..你应该明白了吧？」
+				DATAFORM 「实在不知道怎么翻了,以下原句」
+				DATAFORM 「・・鍵なしでは、この程度ね」
+				DATAFORM 「・・これ以上は駄目よ。鍵がいるわ」
+				DATAFORM 「・・これ以上は・・わかっているわね？」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「..嗯嗯、这样的话..哼哼、不需要钥匙的吧？」
+				DATAFORM 「..哼哼、那么、给我钥匙怎么样？」
+				DATAFORM 「..这样的话也没关系吧」
+				DATAFORM 「实在不知道怎么翻了,以下原句」
+				DATAFORM 「・・ええ、これくらいなら・・ふふっ、鍵もいらないものね？」
+				DATAFORM 「・・ふふっ、これ以上は、鍵がいるわよ？」
+				DATAFORM 「・・これくらいなら構わないわ」
+			ENDDATA
+		ENDIF
+	ELSE
+		PRINTDATAL
+			DATAFORM 「不可以」
+			DATAFORM 「请停手」
+			DATAFORM 「..不要」
+		ENDDATA
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+
+	PRINTDATAL
+		DATAFORM 「..这样的话、可以呢」
+		DATAFORM 「..对那个人保密哦」
+		DATAFORM 「..这是只属于我们两个人的秘密。对吧？」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
+
+	PRINTDATAL
+		DATAFORM 「请停手」
+		DATAFORM 「不要」
+		DATAFORM 「不行的啦」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTFORML 「..！」
+	PRINTFORML 在%CALLNAME:MASTER%的手触碰的一瞬间、%CALLNAME:奴隷%浑身僵直地站在那里。
+
+ELSE
+	; それ以外の場合、非NTR口上を実行する
+	RET_VAL = 1
+ENDIF 
+
+RETURN RET_VAL
+
+
+;==================================================
+;311,抱住
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K4_311
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K4_311_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K4_311_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K4_311_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_咲夜
+RET_VAL = 0
+
+IF TALENT:奴隷:公众便所
+
+	IF TALENT:奴隷:恋慕 && TALENT:奴隷:亲爱
+		PRINTFORML 「嗯....抱紧我..更多、更用力地......抱紧我....」
+	ELSEIF TALENT:奴隷:恋慕
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTDATAL
+				DATAFORM 「..没钥匙的话、也就只能这样了哦。你知道的吧？」
+				DATAFORM 「..不能再继续了哦。除非你给我钥匙？」
+				DATAFORM 「..我想..你应该明白了吧？」
+				DATAFORM 「实在不知道怎么翻了,以下原句」
+				DATAFORM 「・・鍵なしでは、ここまでよ。わかっているわね？」
+				DATAFORM 「・・これ以上は駄目よ。鍵がないとね？」
+				DATAFORM 「・・これ以上は・・わかっているわね？」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「嗯....哼哼、如果只是拥抱的话、也不用钥匙呢..」
+				DATAFORM 「是的哦..紧紧地抱在一起....」
+				DATAFORM 「嗯....很喜欢的呢..」
+			ENDDATA
+		ENDIF
+	ELSE
+		PRINTFORML 「....请停手」
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+
+	PRINTDATAL
+		DATAFORM 「真拿你没办法啊....」
+		DATAFORM 「....嗯、别让那个人知道哦..」
+		DATAFORM 「..哼哼、这是只属于我们两个人的秘密对吧？」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
+
+	PRINTDATAL
+		DATAFORM 「..不可以..」
+		DATAFORM 「..请停手」
+		DATAFORM 「..不要..」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	IF TALENT:奴隷:浮気公認
+		PRINTDATAL
+			DATAFORM 「唔哼哼、即使是被别人睡了也无所谓、这算是什么奇怪的心理呢？」
+			DATAFORM 「怎么了？ 现在才感到后悔？」
+			DATAFORM 「..%NTR_NAME(4)%的嫉妒心..」
+		ENDDATA
+	ELSE
+		PRINTFORML 「..・」
+		PRINTFORML 在%CALLNAME:奴隷%抱着%CALLNAME:MASTER%的时候%CALLNAME:奴隷%稍微侧过去的脸上露出了不安的表情。
+		PRINTFORML 实在不知道怎么翻了,以下原句
+		PRINTFORML 抱き寄せられた%CALLNAME:奴隷%は%CALLNAME:MASTER%からわずかに顔を背け何かに怯えたような表情を浮かべていた。
+	ENDIF
+
+ELSE
+	; それ以外の場合、非NTR口上を実行する
+	RET_VAL = 1
+ENDIF 
+RETURN RET_VAL
+
+;==================================================
+;312,接吻
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K4_312
+IF TFLAG:193 == 0
+	CALL TRAIN_MESSAGE
+ENDIF
+CALL NTR_KOJO_MESSAGE_COM_K4_312_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K4_312_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K4_312_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_咲夜
+RET_VAL = 0
+
+;唇の汚れで拒否された時
+IF TFLAG:193 == -2
+	IF TALENT:奴隷:浮気公認
+		PRINTFORML 「哼哼..这这种事还是算了吧..品尝别人的味道、这算是什么恶趣味呢？」
+		PRINTFORML 以嘴唇有污物为由拒绝了接吻。
+		PRINTFORML 「但是..能不能给我倒杯茶呢？」
+		PRINTFORML %CALLNAME:奴隷%好像是想用茶水来清洁嘴唇。
+	ELSE
+		PRINTFORML 「不、不行哦」
+		PRINTFORML 以嘴唇有污物为由拒绝了接吻。
+		PRINTFORML 「呐、能不能给我倒杯茶呢？」
+		PRINTFORML %CALLNAME:奴隷%把茶喝了下去。
+	ENDIF
+	;失敗時
+ELSEIF TFLAG:193 == -1
+	PRINTFORML 「你、你在干什么」
+	PRINTFORML 拒绝之后、被用力地推开了。
+	;成功時
+ELSE
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+		;唇が精液で汚れていたとき
+		IF CFLAG:射精者M != 0 && STAIN:口 & 汚れ_精液
+			PRINTFORML %CALLNAME:MASTER%察觉到%CALLNAME:奴隷%嘴里的意味之后将嘴唇分开了。
+			PRINTFORML 「..哼哼..味道很重吗？」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中)
+			PRINTFORML 「..要对主人保密..哦..」
+			;好意度低いと冷たい
+		ELSE
+			PRINTFORML 「..不行..唔呃..」
+		ENDIF
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「唔..啾..」
+			DATAFORM 「啾..啾..」
+			DATAFORM 「唔..呼唔..啾..」
+		ENDDATA
+		IF TALENT:奴隷:浮気公認
+			PRINTDATAL
+				DATAFORM 「..是挺好。不过、想让我教你更好的吗。%NTR_NAME(4)%好像更擅长这种事哦？」
+				DATAFORM 「接吻是挺不错的。但是、跟%NTR_NAME(4)%好像更好吧？」
+				DATAFORM 「唔哼哼、是心动的感觉呢。想知道你和他技术谁更好吗？(あの人とどちらが上手か聞きたい？)」
+			ENDDATA
+		ELSE
+			PRINTFORML （果然、还是%NTR_NAME(4)%的技术更胜一筹）
+		ENDIF
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTDATAL
+			DATAFORM 「ん..ちゅっ..」
+			DATAFORM 「ちゅっ..ちゅ..」
+			DATAFORM 「ん..んん..ちゅ..」
+		ENDDATA
+		IF TALENT:奴隷:浮気公認 >= 浮気_性交公認
+			PRINTDATAL
+				DATAFORM 「..是挺好。不过、想让我教你更好的吗。%NTR_NAME(4)%好像更擅长这种事哦？」
+				DATAFORM 「接吻是挺不错的。但是、跟%NTR_NAME(4)%好像更好吧？」
+				DATAFORM 「唔哼哼、是心动的感觉呢。想知道你和他技术谁更好吗？(あの人とどちらが上手か聞きたい？)」
+			ENDDATA
+		ELSEIF TALENT:奴隷:浮気公認 > 浮気_非公認
+			PRINTDATAL
+				DATAFORM 「..是挺好。不过、想让我教你更好的吗。%NTR_NAME(4)%好像更擅长这种事哦？」
+				DATAFORM 「接吻是挺不错的。但是、跟%NTR_NAME(4)%好像更好吧？」
+				DATAFORM （果然、还是%NTR_NAME(4)%的技术更胜一筹）
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM （..比起跟%CALLNAME:MASTER%接吻、跟%NTR_NAME(4)%接吻更让人心跳加速呢..）
+				DATAFORM （..不行.还是不够满足..）
+				DATAFORM （果然、还是%NTR_NAME(4)%的技术更胜一筹）
+			ENDDATA
+		ENDIF
+
+	ELSE
+		RET_VAL = 1
+	ENDIF
+ENDIF
+RETURN RET_VAL
+
+;==================================================
+;351,连行/离开
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K4_351
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K4_351_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K4_351_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K4_351_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = TARGET
+IF CFLAG:同行
+	;同行するとき
+	RET_VAL = 1
+ELSE
+	RET_VAL = 0
+	;離れるとき
+	IF CFLAG:奴隷:現在位置 == FLAG:訪問者の現在位置
+		; 訪問者が同じ場所にいる
+		IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+			PRINTFORML 「..」
+			PRINTFORML 感受到%NTR_NAME(0)%那视奸一样的眼神的%CALLNAME:奴隷%露出不安的表情在%CALLNAME:MASTER%的旁边停下。
+		ELSEIF TALENT:奴隷:公众便所
+			PRINTFORML 「啊啦、%NTR_NAME(4)%来了啊。又是关于工作的事情吗？」
+			PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并向%NTR_NAME(4)%那边走去。
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
+			PRINTFORML 「啊啦、%NTR_NAME(4)%来了。待会见。」
+			PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并微微脸红地向%NTR_NAME(4)%那边走去。
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+			PRINTFORML 「啊啦」
+			PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并微微脸红地向%NTR_NAME(4)%那边走去。
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			IF TALENT:奴隷:恋慕
+				IF TALENT:奴隷:浮気公認
+					PRINTFORML 「啊啦。好像%NTR_NAME(4)%在叫我呢？」
+					PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并微微脸红地向%NTR_NAME(4)%那边走去。
+				ELSE
+					PRINTFORML 「..」
+					PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%一脸若无其事地离开%CALLNAME:MASTER%并在%NTR_NAME(4)%旁边停下。
+				ENDIF
+			ELSE
+				PRINTFORML 「啊啦」
+				PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并向%NTR_NAME(4)%那边走去。
+			ENDIF
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い) 
+			IF TALENT:奴隷:恋慕
+				IF TALENT:奴隷:浮気公認
+					PRINTFORML 「啊啦。好像%NTR_NAME(4)%在叫我呢？」
+					PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并向%NTR_NAME(4)%那边走去。
+				ELSE
+					PRINTFORML 「..」
+					PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%一脸若无其事地离开%CALLNAME:MASTER%并在%NTR_NAME(0)%的附近停下。
+				ENDIF
+			ELSE
+				PRINTFORML 「啊啦」
+				PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%一脸若无其事地离开%CALLNAME:MASTER%并在%NTR_NAME(0)%的附近停下。
+			ENDIF
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
+			IF TALENT:奴隷:恋慕 
+				IF IS_NTR_SOFT()
+					PRINTFORML 「..」
+					PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%在%CALLNAME:MASTER%和%NTR_NAME(0)%之间停了下来。
+				ELSE
+					PRINTFORML 「..」
+					PRINTFORML 感受到%NTR_NAME(0)%那视奸一样的眼神的%CALLNAME:奴隷%并没有露出任何不适的表情。
+					PRINTFORML %CALLNAME:MASTER%と%NTR_NAME(0)%の間で足をとめた。
+				ENDIF
+			ELSE
+				RET_VAL = 1
+			ENDIF
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_侍奉する程度)
+			IF TALENT:奴隷:恋慕 && !IS_NTR_SOFT()
+				PRINTFORML 「..」
+				PRINTFORML 感受到%NTR_NAME(0)%那视奸一样的眼神的%CALLNAME:奴隷%警戒了起来。
+				PRINTFORML %CALLNAME:MASTER%在%NTR_NAME(0)%之间停了下来。
+			ELSE
+				RET_VAL = 1
+			ENDIF
+		ELSE
+			IF TALENT:奴隷:恋慕 && !IS_NTR_SOFT()
+				PRINTFORML 「..」
+				PRINTFORML 感受到%NTR_NAME(0)%那视奸一样的眼神的%CALLNAME:奴隷%往%CALLNAME:MASTER%那边凑了过去。
+			ELSE
+				RET_VAL = 1
+			ENDIF
+		ENDIF
+	ELSE
+		RET_VAL = 1
+	ENDIF
+ENDIF
+RETURN RET_VAL
+
+;==================================================
+;352,告白
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K4_352
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K4_352_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K4_352_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K4_352_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_咲夜
+RET_VAL = 0
+;告白成功
+IF TFLAG:193
+	RET_VAL = 1
+	;告白失敗
+ELSE
+	;公众便所
+	IF TALENT:奴隷:公众便所
+		IF IS_DOUTEI(MASTER)
+			PRINTFORML 「就那么想失去童真？」
+		ELSE
+			PRINTFORML 「就那么想抱我吗？」
+		ENDIF
+		PRINTFORML 「但是，很抱歉。的确、我是谁都可以付钱使用的精液肉便器」
+		PRINTFORML 「主人曾严厉地跟我说只有%CALLNAME:MASTER%不可用做」
+		;寝取られ
+	ELSEIF TALENT:奴隷:NTR
+		IF 400 < CFLAG:奴隷:好感度
+			PRINTFORML 「并不是讨厌你..%CALLNAME:MASTER%..但是..非常抱歉..」
+		ELSEIF 300 < CFLAG:奴隷:好感度
+			PRINTFORML 「非常抱歉..%CALLNAME:MASTER%,我不能答应你的请求..」
+		ELSE
+			PRINTFORML 「还真耳旁风了么。我之前就说过了、我只是属于私人的犬仆」
+			PRINTFORML 「所以、不能答应你,%CALLNAME:MASTER%」
+		ENDIF
+		;その他
+	ELSE
+		RET_VAL = 1
+	ENDIF
+
+ENDIF
+RETURN RET_VAL

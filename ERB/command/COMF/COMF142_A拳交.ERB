@@ -1,0 +1,99 @@
+﻿;-------------------------------------------------
+;肛门拳交
+;系コマンド、レベル
+;-------------------------------------------------
+@COM142
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
+SIF RESULT
+	RETURN 0
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 300
+DOWNBASE:气力 += 150
+
+SOURCE:快Ａ = 200
+SOURCE:苦痛 = 1500
+SOURCE:露出 = 100
+SOURCE:屈从 = 1200
+SOURCE:逸脱 = 1200
+SOURCE:反感 = 1200
+
+CALL 締り具合変動, TARGET, 7, 1
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;フィストなどのAへの大きな苦痛は先に処理しておく
+;EXP:Ａ经验をみる
+IF EXP:Ａ经验 < EXPLV:1
+	TIMES SOURCE:苦痛 , 3.00
+	TIMES SOURCE:反感 , 4.00
+ELSEIF EXP:Ａ经验 < EXPLV:2
+	TIMES SOURCE:苦痛 , 2.50
+	TIMES SOURCE:反感 , 3.50
+ELSEIF EXP:Ａ经验 < EXPLV:3
+	TIMES SOURCE:苦痛 , 2.40
+	TIMES SOURCE:反感 , 3.00
+ELSEIF EXP:Ａ经验 < EXPLV:4
+	TIMES SOURCE:苦痛 , 2.00
+	TIMES SOURCE:反感 , 2.50
+ELSEIF EXP:Ａ经验 < EXPLV:5
+	TIMES SOURCE:苦痛 , 1.80
+	TIMES SOURCE:反感 , 2.00
+ELSEIF EXP:Ａ经验 >= EXPLV:5
+	TIMES SOURCE:苦痛 , 1.60
+	TIMES SOURCE:反感 , 1.50
+ENDIF
+
+;PALAM:润滑をみる
+IF PALAM:润滑 < PALAMLV:1
+	TIMES SOURCE:苦痛 , 3.00
+	TIMES SOURCE:反感 , 2.00
+ELSEIF PALAM:润滑 < PALAMLV:2
+	TIMES SOURCE:苦痛 , 2.50
+	TIMES SOURCE:反感 , 1.50
+ELSEIF PALAM:润滑 < PALAMLV:3
+	TIMES SOURCE:苦痛 , 2.00
+	TIMES SOURCE:反感 , 1.20
+ELSEIF PALAM:润滑 < PALAMLV:4
+	TIMES SOURCE:苦痛 , 1.50
+ELSEIF PALAM:润滑 >= PALAMLV:4
+	TIMES SOURCE:苦痛 , 1.00
+ENDIF
+
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;Ａ经验
+EXP:Ａ经验 += 24
+
+;Ａ扩张经验
+IF !EXP:Ｖ扩张经验 && !EXP:Ａ扩张经验 && !GETBIT(CFLAG:3,5)
+	EXP:异常经验 += 1
+	SETBIT CFLAG:异常经验,5
+ENDIF
+
+EXP:Ａ扩张经验 += 5
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+ENDIF
+CALL 改变肛门色素(TARGET,1)
+CALL 确认小穴颜色(TARGET)
+CALL 确认小穴松弛度(TARGET)
+CALL 确认肛门颜色(TARGET)
+CALL 确认肛门松弛度(TARGET)
+CALL LOST_VIRGIN_A(TARGET, PLAYER)
+RETURN 1

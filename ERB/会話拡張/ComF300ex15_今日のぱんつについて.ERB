@@ -1,0 +1,210 @@
+﻿;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 今日のぱんつについて 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_15_ENABLE
+#DIM 奴隷
+#DIM 下着１ = GETNUM(EQUIP,"下半身下着１")
+#DIMS 下着名
+奴隷 = TARGET:0
+下着名 = %下着名１_２(奴隷)%
+RESULTS:0 = %"[15]- 关于"+CALLNAME:奴隷+"穿着的"+下着名+"的信息"%
+IF TCVAR:奴隷:会话不能
+	RETURN 0
+ELSEIF Unknown下着(奴隷, 下着１)
+	;下着不明ならダメ
+	RETURN 0
+ELSEIF SHOW_BOTTOM(奴隷) == ""
+	;下半身丸出しだとダメ
+	RETURN 0
+ELSEIF CFLAG:奴隷:ぱんつ確認 == 3
+	;既にぱんつについて会话してたらダメ(1であれば脱がしたこと、2であれば覗きによる確認)
+	RETURN 0
+ELSE
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;会话コマンド(拡張版) - 今日のぱんつについて話す
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_15
+#DIM 調教者
+#DIM 奴隷
+調教者 = PLAYER:0
+奴隷 = TARGET:0
+IF TALENT:奴隷:公众便所
+	CALL MESSAGE_COM_300_15_01(調教者,奴隷)
+ELSEIF TALENT:奴隷:小恶魔 || TALENT:奴隷:淫乱
+	CALL MESSAGE_COM_300_15_02(調教者,奴隷)
+ELSEIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 999
+	CALL MESSAGE_COM_300_15_03(調教者,奴隷)
+ELSEIF CFLAG:奴隷:ぱんつ確認 == 2
+	CALL MESSAGE_COM_300_15_04(調教者,奴隷)
+ELSE
+	CALL MESSAGE_COM_300_15_05(調教者,奴隷)
+ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会话拡張：ぱんつについて：贞操帯
+;　前提：公众便所
+@MESSAGE_COM_300_15_01(調教者,奴隷)
+#DIM 調教者
+#DIM 奴隷
+#DIMS 下着名
+#DIM ノーパン
+
+CFLAG:奴隷:ぱんつ確認 = 3
+;はいてないかチェック
+ノーパン = CHK_NO_PANTS(奴隷)
+IF 1 == ノーパン
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"下面有没有穿、"%
+	PRINTFORML “现在是真空的喔，什么都没有穿。”
+	PRINTFORML %"因为"+CALLNAME:奴隷+"的身体是受"+NTR_NAME(0)+"管理的『商品』、"%
+	PRINTFORML %"所以本来为了不让"+CALLNAME:調教者+"随意使用，而穿上了"+下着名+""%
+	PRINTFORML %"但不管是谁，只要从"+NTR_NAME(0)+"那买来了钥匙、"%
+	PRINTFORML %"在时间允许的情况下，无论多么变态的行为，"+CALLNAME:奴隷+"都得乖乖接受……。"%
+ELSE
+	下着名 = %下着名１_２(奴隷)%
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"穿着的"+下着名+"是怎么回事、"%
+	PRINTFORML %"因为"+CALLNAME:奴隷+"的身体是受"+NTR_NAME(0)+"管理的『商品』、"%
+	PRINTFORML %"所以为了不让"+CALLNAME:調教者+"随意使用，而穿上了"+下着名+""%
+	PRINTFORML %"但不管是谁，只要从"+NTR_NAME(0)+"那买来了钥匙、"%
+	PRINTFORML %"在时间允许的情况下，无论多么变态的行为，"+CALLNAME:奴隷+"都会乖乖接受……。"%
+	PRINTFORML %""%
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_15_01(奴隷, 調教者, ノーパン)
+	FUNC KOJO_MESSAGE_COM_KU_300_15_01(奴隷, 調教者, ノーパン)
+ENDFUNC
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会话拡張：ぱんつについて：ADULT下着（小恶魔/淫乱)
+;　前提：小恶魔または淫乱
+@MESSAGE_COM_300_15_02(調教者,奴隷)
+#DIM 調教者
+#DIM 奴隷
+#DIMS 下着名
+#DIM ノーパン
+
+CFLAG:奴隷:ぱんつ確認 = 3
+;はいてないかチェック
+ノーパン = CHK_NO_PANTS(奴隷)
+IF 1 == ノーパン
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"是不是没有穿内裤、"%
+	PRINTFORML %CALLNAME:奴隷+"眼瞳中充满了粉红的情欲，带着淫媚的笑容反问，如果"+CALLNAME:奴隷+"下面是真空的，"+CALLNAME:調教者+"会不会变得很兴奋。"%
+ELSE
+	下着名 = %下着名１_２(奴隷)%
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"是不是穿着"+下着名+"的时候、"%
+	PRINTFORML %CALLNAME:奴隷+"脸上浮现出淫媚的表情，反问"+下着名+"合不合适、让"+CALLNAME:調教者+"感到兴奋了吗。"%
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_15_02(奴隷, 調教者, ノーパン)
+	FUNC KOJO_MESSAGE_COM_KU_300_15_02(奴隷, 調教者, ノーパン)
+ENDFUNC
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会话拡張：ぱんつについて：ADULT下着（NTR)
+;　前提：屈服度が好感度より高く、屈服度が999以上
+@MESSAGE_COM_300_15_03(調教者,奴隷)
+#DIM 調教者
+#DIM 奴隷
+#DIMS 下着名
+#DIM ノーパン
+#DIM 積極度
+
+CFLAG:奴隷:ぱんつ確認 = 3
+;はいてないかチェック
+ノーパン = CHK_NO_PANTS(奴隷)
+;積極度チェック
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	積極度 = 1
+ELSEIF TALENT:奴隷:小恶魔 || TALENT:奴隷:淫乱
+	積極度 = 1
+ELSEIF TALENT:奴隷:浮気公認 > 0
+	IF TALENT:奴隷:施虐狂
+		積極度 = 1
+	ELSE
+		積極度 = 0
+	ENDIF
+ELSE
+	積極度 = 0
+ENDIF
+;はいてないかチェック
+IF 1 == ノーパン
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"下面是不是真空的、"%
+	IF 1 == 積極度
+		PRINTFORML %CALLNAME:奴隷+"一时间满脸通红，解释说、是听从"+NTR_NAME(0)+"的话才这样做的。"%
+	ELSE
+		PRINTFORML %CALLNAME:奴隷+"一时间满脸通红，解释说、是因为被"+NTR_NAME(0)+"要求了、才不得不这么做。"%
+	ENDIF
+ELSE
+	下着名 = %下着名１_２(奴隷)%
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"是不是穿着"+下着名+"的时候、"%
+	IF 1 == 積極度
+		PRINTFORML %CALLNAME:奴隷+"双颊绯红，解释说、是听从"+NTR_NAME(0)+"的话才这样做的。"%
+	ELSE
+		PRINTFORML %CALLNAME:奴隷+"双颊绯红，解释说、是因为被"+NTR_NAME(0)+"要求了、才不得不这么做。"%
+	ENDIF
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_15_03(奴隷, 調教者, ノーパン, 積極度)
+	FUNC KOJO_MESSAGE_COM_KU_300_15_03(奴隷, 調教者, ノーパン, 積極度)
+ENDFUNC
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会话拡張：ぱんつについて：普通の下着(覗きで確認した場合)
+@MESSAGE_COM_300_15_04(調教者,奴隷)
+#DIM 調教者
+#DIM 奴隷
+#DIMS 下着名
+
+CFLAG:奴隷:ぱんつ確認 = 3
+;はいてないかチェック
+IF 1 == CHK_NO_PANTS(奴隷)
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"的下面是不是什么都没穿、"%
+	PRINTFORML %CALLNAME:奴隷+"顿时满脸通红，生气地反过来质问"+CALLNAME:調教者+"、是怎么知道的，是什么时候偷看的！"%
+ELSE
+	下着名 = %下着名１_２(奴隷)%
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"是不是穿着"+下着名+"的时候、"%
+	PRINTFORML %CALLNAME:奴隷+"顿时满脸通红，生气地反过来质问"+CALLNAME:調教者+"、是怎么知道的，是什么时候偷看的！"%
+ENDIF
+;怒意は好感度で相殺できる
+IF 0 != CFLAG:奴隷:好感度
+	SOURCE:奴隷:反感 = LIMIT(100000/CFLAG:奴隷:好感度,0,1000)
+ELSE
+	SOURCE:奴隷:反感 = 1000
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_15_04(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_15_04(奴隷, 調教者)
+ENDFUNC
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会话拡張：ぱんつについて：普通の下着(脱がせて確認した場合)
+@MESSAGE_COM_300_15_05(調教者,奴隷)
+#DIM 調教者
+#DIM 奴隷
+#DIMS 下着名
+
+CFLAG:奴隷:ぱんつ確認 = 3
+;はいてないかチェック
+IF 1 == CHK_NO_PANTS(奴隷)
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"的下面是不是什么都没穿、"%
+	PRINTFORML %CALLNAME:奴隷+"红着脸，祈求"+CALLNAME:調教者+"不要对别人说。"%
+ELSE
+	下着名 = %下着名１_２(奴隷)%
+	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"是不是穿着"+下着名+"的时候、"%
+	PRINTFORML %CALLNAME:奴隷+"责备了"+CALLNAME:調教者+"，希望不要再说那种话。"%
+ENDIF
+TRYCALLLIST
+	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_15_05(奴隷, 調教者)
+	FUNC KOJO_MESSAGE_COM_KU_300_15_05(奴隷, 調教者)
+ENDFUNC
+RETURN 1

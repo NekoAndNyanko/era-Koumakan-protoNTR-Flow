@@ -1,0 +1,770 @@
+﻿;===========================================================================
+;	リソース表示関連で使用する関数群
+;
+;PRINT_TARGET_IMAGE				ターゲットの画像を人数分表示　AAの場所で呼ぶ
+;PRINT_STATE_IMAGE				ステータス画面の表示専用
+;PRINT_IMAGE					どこでも呼べば画像表示してくれる関数
+;PRINT_IMAGE_ANIMATION			連番画像图像_动画
+;PRINT_IMAGE_ANIMATION_正常位	正常位の图像_动画画像表示
+;PRINT_IMAGE_ANIMATION_後背位	後背位の图像_动画画像表示
+;PRINT_IMAGE_ANIMATION_射精後	射精後の图像_动画画像表示
+;
+;===========================================================================
+
+;=========================================================
+;	ターゲットの画像を人数分表示
+;	テキストタグとボタン付き画像表示処理
+;
+;	pTARGET		：特に何も考えずTARGET配列を入れればいい
+;				：どこでとっても先頭アドレスになる仕様だそうです
+;=========================================================
+@PRINT_TARGET_IMAGE(pTARGET)
+#DIM REF pTARGET
+
+#DIM CONST kFontSize = 1000	;フォントサイズ倍率
+#DIM iFont_Hei_mag			;1行高さの倍率
+#DIM iPrintCount = 0		;FOR用 描画カウント
+#DIM iSpaceSize				;テキストタグの左右何も描画しない範囲
+#DIMS sTemp,3				;服、表情のテンポラリ
+#DIMS sRes_name				;リソース名格納
+#DIMS sSab_Res_name			;マウスオーバーのほう
+#DIMS sPrint_Text			;HTML_PRINTする文字列TEMP
+#DIM iTarget_Num = 0		;TARGET配列番号
+#DIM iTarget_Con = 0		;TARGET人数
+#DIM iPrintStart = 1		;描画を開始するTARGET配列番号
+#DIM iEnter_Con = 0			;改行数　画像描画の縦合わせに使うもの
+#DIM iAlignment				;表情変化のバランス
+#DIM Save_RESULT			;RESULTの保護
+#DIMS sType					;立ち絵の種類
+
+TOOLTIP_SETDELAY 500
+
+SIF !pTARGET 
+	RETURN RESULT
+
+SIF GETCONFIGS("描画インターフェース") == "WINAPI"
+	THROW Please change drawing interface to TextRenderer.
+
+;RESULTの保護
+SAVE_RESULT = RESULT
+iTarget_Con = GET_TARGETNUM()
+iTarget_Num = FINDELEMENT(pTARGET,pTARGET:0,1)
+sType = \@FLAG:图像_立绘类型?顔絵#立ち絵\@
+
+;フォントサイズと高さとの倍率差　四捨五入
+iFont_Hei_mag = GETCONFIG("一行の高さ") * kFontSize*10 / GETCONFIG("フォントサイズ")
+iFont_Hei_mag = (iFont_Hei_mag/10) + (iFont_Hei_mag%10 >= 5?1#0)
+
+IF FLAG:画像表示設定
+	;-----------------
+	;表示設定関連
+	;-----------------
+	sPrint_Text = <p align='\@FLAG:画像表示位置?left#center\@'>
+	sPrint_Text += @"<button value='3105'>"
+	sPrint_Text += @"图像类型 [\@FLAG:图像_立绘类型?颜绘#立绘\@]　</button>"
+	sPrint_Text += @"<button value='3103'>"
+	sPrint_Text += @"图像位置[\@FLAG:画像表示位置?左侧#居中\@]　</button>"
+	sPrint_Text += @"<button value='3104'>"
+	sPrint_Text += @"图像框 [\@FLAG:图像_图像框显示?开#关\@]</button>"
+	sPrint_Text += "<br>"
+
+	;-----------------
+	;表示人数の増減　＜＜＞＞でTARGETを横に移動
+	;-----------------
+	sPrint_Text += @"<button value='{700+pTARGET:(MAX(iTarget_Num-1,1))}' title='Switch Target－'>＜＜</button>"
+	sPrint_Text += @"<button value='3101' title='Number of people to display－'>[－]</button>"
+	sPrint_Text += @"Characters [{FLAG:画像表示}]"
+	sPrint_Text += @"<button value='3102' title='Number of people to display＋'>[＋]</button>"
+	sPrint_Text += @"<button value='{700+pTARGET:(MIN(iTarget_Num+1,iTarget_Con+1))}' title='Switch Target＋'>＞＞</button>"
+
+	HTML_PRINT sPrint_Text
+ENDIF
+
+;描画開始位置の決定
+IF FLAG:画像表示 != 1
+	IF iTarget_Num >= (iPrintStart + FLAG:画像表示) || iTarget_Num < iPrintStart
+		;画面外
+		iPrintStart = iTarget_Num -1
+	ELSEIF iPrintStart == iTarget_Num
+		;画面左端
+		iPrintStart--
+	ELSEIF (iPrintStart + FLAG:画像表示)-1 ==  iTarget_Num && iTarget_Con > FLAG:画像表示
+		;画面右端
+		iPrintStart++
+	ENDIF
+
+	;始端終端
+	iPrintStart = LIMIT(iPrintStart,1,MAX(iTarget_Con-FLAG:画像表示+1,FLAG:画像表示))
+ELSEIF FLAG:画像表示 == 1
+	iPrintStart = iTarget_Num
+ENDIF
+
+
+;-----------------
+;テキストタグボタン
+;-----------------
+sPrint_Text =  <p align='\@FLAG:画像表示位置?left#center\@'><nobr>
+FOR iPrintCount,iPrintStart,FLAG:画像表示+iPrintStart
+	SIF !pTARGET:iPrintCount
+		BREAK
+
+	;左右幅合わせ　[名前] -120は[]分
+	;modded because fuck you english you're too long fuck you
+	;can't make this perfect and this drives me nuts
+	;it's time to kill myself
+	STRLENFORMU %CALLNAME:(pTARGET:iPrintCount)%
+	IF CALLNAME:(pTARGET:iPrintCount) == "艾丽娅"
+		iSpaceSize	=	iFont_Hei_mag-(RESULT*100)+520
+	ELSEIF CALLNAME:(pTARGET:iPrintCount) == "针妙丸" || CALLNAME:(pTARGET:iPrintCount) == "若鹭姬"
+		iSpaceSize	=	iFont_Hei_mag-(RESULT*100)+420
+	ELSEIF CALLNAME:(pTARGET:iPrintCount) == "帕秋莉" || CALLNAME:(pTARGET:iPrintCount) == "大妖精" || CALLNAME:(pTARGET:iPrintCount) == "八桥" || CALLNAME:(pTARGET:iPrintCount) == "克劳恩皮丝"
+		iSpaceSize	=	iFont_Hei_mag-(RESULT*100)+320
+	ELSE
+		iSpaceSize	=	iFont_Hei_mag-(RESULT*100)+180
+	ENDIF
+
+	;iSpaceSize	=	iFont_Hei_mag-(RESULT*100)+200
+	iSpaceSize	/=	2
+	sPrint_Text += @"<shape type = 'space' param = '{iSpaceSize}'>"
+
+
+	SIF pTARGET == pTARGET:iPrintCount
+		sPrint_Text += @"<font color='#%CONVERT(COLOR("aqua"),16)%'>"
+	sPrint_Text += @"<button value='{700+pTARGET:iPrintCount}' title='Target #{iPrintCount}'>[%CALLNAME:(pTARGET:iPrintCount)%]</button>"
+	SIF pTARGET == pTARGET:iPrintCount
+		sPrint_Text += @"</font>"
+
+	sPrint_Text += @"<shape type = 'space' param = '{iSpaceSize}'>"
+
+NEXT
+
+HTML_PRINT sPrint_Text
+iEnter_Con = 0
+
+;-----------------
+;画像表示
+;-----------------
+sPrint_Text =  <p align='\@FLAG:画像表示位置?left#center\@'><nobr>
+FOR iPrintCount,iPrintStart,FLAG:画像表示+iPrintStart
+	SIF !pTARGET:iPrintCount
+		BREAK
+
+	sPrint_Text += @"<button value='{700+pTARGET:iPrintCount}' title='Target #{iPrintCount}'>"
+
+	;-----------------
+	;通常リソース処理
+	;-----------------
+	;SELECTCASE pTARGET:iPrintCount
+	;checking by name since character numbers are not consistent
+	SELECTCASE NAME:(pTARGET:iPrintCount)
+			;-----------------
+			;ここのCASEにリソースファイルに追加したキャラIDを追記する
+			;入れ替え差分用のスペース(ファイル変える)
+			;-----------------
+		CASE "红美铃"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "小恶魔"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "帕秋莉·诺蕾姬"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "十六夜咲夜"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "蕾米莉亚·斯卡雷特"
+			;レミリア
+			IF TALENT:5:恋慕 || TALENT:5:人妻
+				sRes_name = {pTARGET:iPrintCount}_1
+			ELSE
+				sRes_name = {pTARGET:iPrintCount}
+			ENDIF
+		CASE "芙兰朵露·斯卡蕾特"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "艾丽娅"
+			;skipping it altogether
+			sRes_name = 
+			sPrint_Text += @"<img src='ダミー' height='{iFont_Hei_mag}'></button>"
+			CONTINUE
+		CASE "琪露诺"
+			;琪露诺
+			IF FLAG:褐色琪露诺
+				sRes_name = {pTARGET:iPrintCount}_1
+			ELSE
+				sRes_name = {pTARGET:iPrintCount}
+			ENDIF
+		CASE "大妖精"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "雾雨魔理沙"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "博丽灵梦"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "露米娅"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "爱丽丝·玛格特罗依德"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "铃仙·优昙华院·因幡"
+			sRes_name = {pTARGET:iPrintCount}
+		CASE "八意永琳"
+			sRes_name = {pTARGET:iPrintCount}
+			;CASE 1 TO 13, 28, 29
+			;	sRes_name = {pTARGET:iPrintCount}
+
+		CASEELSE
+			sRes_name = 
+			sPrint_Text += @"<img src='ダミー' height='{iFont_Hei_mag}'></button>"
+			CONTINUE
+	ENDSELECT
+
+	;-----------------
+	;拡張リソース処理
+	;ここに条件式を追加して服装を変化させる
+	;-----------------
+	VARSET sTemp
+	IF !TEQUIP:(pTARGET:iPrintCount):下半身着衣状況 && !TEQUIP:(pTARGET:iPrintCount):上半身着衣状況
+		sTemp:0 = _裸
+	ELSE
+		;-----------------
+		;服装差分ここに書く
+		;-----------------
+		SELECTCASE pTARGET:iPrintCount
+
+
+			CASEELSE
+				sTemp:0 = _服
+		ENDSELECT
+	ENDIF
+
+	;-----------------
+	;表示表情変更
+	;機嫌などで判定
+	;-----------------
+	IF CFLAG:(pTARGET:iPrintCount):不機嫌 || CFLAG:(pTARGET:iPrintCount):怒意
+		sTemp:1 = _怒り
+		iAlignment = -1
+
+	{
+		ELSEIF BASE:(pTARGET:iPrintCount):理性 == MAXBASE:(pTARGET:iPrintCount):理性
+	}
+		sTemp:1 = _笑顔
+		iAlignment = 1
+	ELSE
+		sTemp:1 = _通常
+		iAlignment = 0
+	ENDIF
+
+	;-----------------
+	;マウスオーバーの表示表情変更
+	;陥落などで変更
+	;-----------------
+	VARSET sSab_Res_name
+	;-----------------
+	;笑顔表情
+	;陥落あり
+	;-----------------
+	{
+		IF TALENT:(pTARGET:iPrintCount):恋慕 || TALENT:(pTARGET:iPrintCount):淫乱 || TALENT:(MASTER):性的魅力 || TALENT:(pTARGET:iPrintCount):人妻
+	}
+		iAlignment ++
+		;-----------------
+		;怒り表情
+		;陥落なしの風呂突撃
+		;陥落なしの裸の条件がこれくらいしかないかな
+		;-----------------
+		;ELSEIF BATHCHECK(CFLAG:(pTARGET:iPrintCount):現在位置) && 風呂追い出し条件(pTARGET:iPrintCount)
+		;	iAlignment --
+	ENDIF
+	;-----------------
+	;怒り表情
+	;反発刻印 怒りゲージ
+	;-----------------
+	SIF MARK:(pTARGET:iPrintCount):反発刻印
+		iAlignment --
+	SIF BASE:(pTARGET:iPrintCount):怒意 >= 500
+		iAlignment --
+	;-----------------
+	;笑顔表情
+	;理性
+	;-----------------
+	SIF BASE:(pTARGET:iPrintCount):理性 >= 650
+		iAlignment ++
+
+	;-----------------
+	;マウスオーバー変化
+	;-----------------
+	SELECTCASE iAlignment
+		CASE IS >= 1
+			sSab_Res_name = %sType%%sTemp:0%_笑顔_%sRes_name%
+			SIF sTemp:1 == "_怒り"
+				sTemp:1 = _通常
+		CASE IS < 0
+			sSab_Res_name = %sType%%sTemp:0%_怒り_%sRes_name%
+			SIF sTemp:1 == "_笑顔"
+				sTemp:1 = _通常
+		CASEELSE
+			sSab_Res_name = %sType%%sTemp:0%_通常_%sRes_name%
+	ENDSELECT
+
+	sRes_name = %sType%%sTemp:0%%sTemp:1%_%sRes_name%
+	;-----------------
+	;タグセット
+	;-----------------
+	sPrint_Text += @"<img src='%sRes_name%'"
+	IF sSab_Res_name != ""
+		sPrint_Text += @"srcb='%sSab_Res_name%'"
+	ENDIF
+	sPrint_Text += @"height='{iFont_Hei_mag}'>"
+	sPrint_Text += "</button>"
+
+NEXT
+
+HTML_PRINT sPrint_Text
+iEnter_Con++
+
+;----------------------------------
+;	照れ表現　上から重ねる
+;	顔グラの方専用
+;----------------------------------
+IF FLAG:图像_立绘类型
+	sPrint_Text =  <p align='\@FLAG:画像表示位置?left#center\@'><nobr>
+	FOR iPrintCount,iPrintStart,FLAG:画像表示+iPrintStart
+		SIF !pTARGET:iPrintCount
+			BREAK
+		;-----------------
+		;通常リソース処理
+		;-----------------
+		VARSET sTemp
+		;SELECTCASE pTARGET:iPrintCount
+		;checking by name since character numbers are not consistent
+		SELECTCASE NAME:(pTARGET:iPrintCount)
+				;-----------------
+				;ここのCASEにリソースファイルに追加したキャラIDを追記する
+				;-----------------
+			CASE "红美铃"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "小恶魔"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "帕秋莉·诺蕾姬"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "十六夜咲夜"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "蕾米莉亚·斯卡雷特"
+				;レミリア
+				IF TALENT:5:恋慕 || TALENT:5:人妻
+					sRes_name = {pTARGET:iPrintCount}_1
+				ELSE
+					sRes_name = {pTARGET:iPrintCount}
+				ENDIF
+			CASE "芙兰朵露·斯卡蕾特"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "艾丽娅"
+				;skipping it altogether
+				sRes_name = 
+				sPrint_Text += @"<img src='ダミー' height='{iFont_Hei_mag}'>"
+			CASE "琪露诺"
+				;琪露诺
+				IF FLAG:褐色琪露诺
+					sRes_name = {pTARGET:iPrintCount}_1
+				ELSE
+					sRes_name = {pTARGET:iPrintCount}
+				ENDIF
+			CASE "大妖精"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "雾雨魔理沙"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "博丽灵梦"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "露米娅"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "爱丽丝·玛格特罗依德"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "铃仙·优昙华院·因幡"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+			CASE "八意永琳"
+				sRes_name = {pTARGET:iPrintCount}
+				CONTINUE
+
+				;CASE 1 TO 13, 28, 29
+				;sRes_name = {pTARGET:iPrintCount}
+				;CONTINUE
+			CASEELSE
+				sRes_name = 
+				sPrint_Text += @"<img src='ダミー' height='{iFont_Hei_mag}'>"
+				;sPrint_Text += @"ypos='-{iEnter_Con * iFont_Hei_mag / 10+1}'>"
+				CONTINUE
+		ENDSELECT
+		;-----------------
+		;照れ表現
+		;-----------------
+		{
+			IF GETPALAMLV(PALAM:(pTARGET:iPrintCount):欲情, 15) ||
+				TEQUIP:(pTARGET:iPrintCount):媚药
+		}
+
+			sTemp:0 = %sType%_照れ%sTemp:1%_%sRes_name%
+		ELSE
+			;ズレが恐いんでダミー描画しちゃう
+			sTemp:0 = ダミー
+			sTemp:1 = 
+		ENDIF
+
+		sPrint_Text += @"<img src='%sTemp:0%' height='{iFont_Hei_mag}'"
+		sPrint_Text += @"ypos='-{iEnter_Con * iFont_Hei_mag / 10+1}'>"
+	NEXT
+	HTML_PRINT sPrint_Text
+	iEnter_Con++
+ENDIF
+
+;----------------------------------
+;	フレーム描画
+;----------------------------------
+IF FLAG:图像_图像框显示
+	sPrint_Text =  <p align='\@FLAG:画像表示位置?left#center\@'><nobr>
+	FOR iPrintCount,iPrintStart,FLAG:画像表示+iPrintStart
+		SIF !pTARGET:iPrintCount
+			BREAK
+		IF CFLAG:(pTARGET:iPrintCount):不機嫌
+			sTemp = _怒り
+		ELSEIF BASE:(pTARGET:iPrintCount):满足 >= 1000
+			sTemp = _笑顔
+		ELSE
+			sTemp = _通常
+		ENDIF
+		SIF pTARGET == pTARGET:iPrintCount
+			sTemp = _ターゲット%sTemp%
+		sPrint_Text += @"<img src='フレーム%sTemp%' height='{iFont_Hei_mag}'"
+		sPrint_Text += @"ypos='-{iEnter_Con * iFont_Hei_mag / 10+1}'>"
+	NEXT
+	HTML_PRINT sPrint_Text
+	iEnter_Con++
+ENDIF
+
+
+FOR iPrintCount,iEnter_Con+1,(kFontSize/100)
+	HTML_PRINT "<br>"
+NEXT
+RESULT = SAVE_RESULT
+RETURN RESULT
+
+;=========================================================
+;	ステータス画面の画像表示
+;
+;	iID		：キャラIDと同じリソース名を表示します
+;	iSize	：フォントに対するサイズ％数値　縦基準　縦横比維持　省略で1000(10倍)
+;=========================================================
+@PRINT_STATE_IMAGE(iID,iSize=1000)
+#DIM iID
+#DIM iSize
+#DIMS sPrint_Text
+#DIM iFont_Hei_mag
+#DIM iEnter_Con
+;checking by name since character numbers are not consistent
+{
+	SIF !iID || NAME:iID == "艾丽娅" ||
+		!(NAME:iID == "红美铃" || NAME:iID == "小恶魔" || NAME:iID == "帕秋莉·诺蕾姬" || NAME:iID == "十六夜咲夜" || 
+		NAME:iID == "蕾米莉亚·斯卡雷特" || NAME:iID == "芙兰朵露·斯卡蕾特" || 
+		NAME:iID == "琪露诺" || NAME:iID == "大妖精" || 
+		NAME:iID == "雾雨魔理沙" || NAME:iID == "博丽灵梦" || 
+		NAME:iID == "露米娅" || 
+		NAME:iID == "爱丽丝·玛格特罗依德" || 
+		NAME:iID == "铃仙·优昙华院·因幡" || NAME:iID == "八意永琳")
+}
+	RETURN RESULT
+
+iFont_Hei_mag = GETCONFIG("一行の高さ") * iSize*10 / GETCONFIG("フォントサイズ")
+iFont_Hei_mag = (iFont_Hei_mag/10) + (iFont_Hei_mag%10 >= 5?1#0)
+
+sPrint_Text = <p align='left'>
+sPrint_Text += @"<img src='\@FLAG:图像_立绘类型?顔絵#立ち絵\@_服_通常_{iID}' height='{iFont_Hei_mag}'>"
+
+HTML_PRINT sPrint_Text
+iEnter_Con = 1
+
+IF FLAG:图像_图像框显示
+	sPrint_Text =  <p align='left'><nobr>
+	sPrint_Text += @"<img src='フレーム_通常' height='{iFont_Hei_mag}'"
+	sPrint_Text += @"ypos='-{(iEnter_Con) * iFont_Hei_mag / 10+1}'>"
+	HTML_PRINT sPrint_Text
+	iEnter_Con++
+ENDIF
+
+
+FOR LOCAL,iEnter_Con+1,(iSize/100)
+	HTML_PRINT "<br>"
+NEXT
+RETURN RESULT
+;=========================================================
+;	リソースの表示
+;	表示後サイズに合わせて改行を行う
+;	PRINT_IMG の拡張みたいな感じ　文中の挿絵的に使えると思う
+;
+;	sRes_Name	：リソースの名前文字列
+;	iSize		：一行の高さに対するサイズ％数値　縦基準　縦横比維持　省略で1000(10倍)
+;	sAlign		：align属性　省略で左寄せ　left, center, rightの三種が指定できます
+;=========================================================
+@PRINT_IMAGE(sRes_Name,iSize=1000,sAlign="left")
+#DIMS sRes_Name
+#DIM iSize
+#DIMS sAlign
+#DIMS sPrint_Text
+#DIM iEnter_Con
+#DIM iFont_Hei_mag
+
+SIF GETCONFIGS("描画インターフェース") == "WINAPI"
+	THROW Please change drawing interface to TextRenderer.
+
+SIF !FLAG:画像表示 || sRes_Name == ""
+	RETURN RESULT
+
+iEnter_Con = 0
+iFont_Hei_mag = GETCONFIG("一行の高さ") * iSize*10 / GETCONFIG("フォントサイズ")
+iFont_Hei_mag = (iFont_Hei_mag/10) + (iFont_Hei_mag%10 >= 5?1#0)
+
+HTML_PRINT @"<p align='%sAlign%'><nobr><img src='%sRes_Name%' height='{iFont_Hei_mag}'>"
+iEnter_Con++
+
+IF FLAG:图像_图像框显示
+	sPrint_Text =  <p align='%sAlign%'><nobr>
+	sPrint_Text += @"<img src='フレーム_通常' height='{iFont_Hei_mag}'"
+	sPrint_Text += @"ypos='-{iEnter_Con * iFont_Hei_mag / 10+1}'>"
+	HTML_PRINT sPrint_Text
+	iEnter_Con++
+ENDIF
+
+
+FOR LOCAL,iEnter_Con-1,(iSize/100)-1
+	HTML_PRINT "<br>"
+NEXT
+RETURN RESULT
+
+;=========================================================
+;	連番画像图像_动画
+;
+;	sRes_Name	：リソースの名前文字列　この名前の後に連番数字を付ける
+;	iStart		：開始番号
+;	iEnd		：開始からの描画枚数
+;	iAnime_Num	：全体の图像_动画繰り返し回数 省略0でオプション設定したフラグ回数になります
+;	iRollback	：ロールバックさせるかフラグ
+;	iWait		：1枚の表示時間
+;	iSize		：一行の高さに対するサイズ％数値　縦基準　縦横比維持　省略で1000(10倍)
+;	sAlign		：align属性　省略で左寄せ　left, center, rightの三種が指定できます
+;=========================================================
+@PRINT_IMAGE_ANIMATION(sRes_Name,iStart=0,iEnd=4,iAnime_Num=0,iRollback=1,iWait=100,iSize=1000,sAlign="left")
+#DIMS sRes_Name
+#DIM iStart
+#DIM iEnd
+#DIM iAnime_Num
+#DIM iRollback
+#DIM iWait
+#DIM iSize
+#DIMS sAlign
+
+
+SIF !FLAG:画像表示 || sRes_Name == ""
+	RETURN RESULT
+
+SIF !FLAG:图像_动画
+	RETURN RESULT
+
+SIF !iAnime_Num
+	iAnime_Num = FLAG:图像_动画
+
+FOR LOCAL,0,iAnime_Num
+	FOR LOCAL:1,iStart,(iStart+iEnd)
+		CALL PRINT_IMAGE(@"%sRes_Name%{LOCAL:1}",iSize,sAlign)
+		TWAIT iWait, 0
+		CLEARLINE iSize/100
+	NEXT
+
+	;ロールバックさせるか
+	SIF !iRollback
+		CONTINUE
+
+	FOR LOCAL:1,(iStart+iEnd)-2,iStart-1,-1
+		CALL PRINT_IMAGE(@"%sRes_Name%{LOCAL:1}",iSize,sAlign)
+		TWAIT iWait, 0
+		CLEARLINE iSize/100
+	NEXT
+NEXT
+RETURN RESULT
+
+;=========================================================
+;	正常位の图像_动画画像表示
+;
+;	sRes_Name	：最後に表示する画像のリソース名
+;	iSize		：一行の高さに対するサイズ％数値　縦基準　縦横比維持　省略で1000(10倍)
+;	sAlign		：align属性　省略で左寄せ　left, center, rightの三種が指定できます
+;=========================================================
+@PRINT_IMAGE_ANIMATION_正常位(sRes_Name,iSize=1000,sAlign="left")
+#DIMS sRes_Name
+#DIM iSize
+#DIMS sAlign
+
+#DIM iStart
+#DIMS sPrint_Res_Name
+#DIMS sAnime_Res_Name
+
+SIF !FLAG:画像表示 || sRes_Name == "" || !FLAG:图像_插图显示
+	RETURN RESULT
+
+IF sRes_Name == "正常位_射精"
+	sPrint_Res_Name = %sRes_Name%_{FLAG:图像_射精图像类型}
+ELSE
+	sPrint_Res_Name = %sRes_Name%
+ENDIF
+
+IF !FLAG:图像_动画
+	CALL PRINT_IMAGE(sPrint_Res_Name,iSize,sAlign)
+	RETURN RESULT
+ENDIF
+
+sAnime_Res_Name = 正常位_挿入_
+
+IF sRes_Name == "正常位_射精" || sRes_Name == "正常位_絶頂"
+	iStart = 1
+ELSE
+	iStart= 0
+ENDIF
+
+CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,iStart,4-iStart,FLAG:图像_动画,1,,iSize,sAlign)
+CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,iStart,4-iStart,1,0,,iSize,sAlign)
+
+IF sRes_Name == "正常位_射精"
+	sAnime_Res_Name = 正常位_射精_{FLAG:图像_射精图像类型}_
+	CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,0,2,FLAG:图像_动画,0,,iSize,sAlign)
+	CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,2,2,FLAG:图像_动画,1,,iSize,sAlign)
+ENDIF
+CALL PRINT_IMAGE(sPrint_Res_Name,iSize,sAlign)
+
+RETURN RESULT
+
+;=========================================================
+;	後背位の图像_动画画像表示
+;	コマ数など変わったので別で
+;
+;	sRes_Name	：最後に表示する画像のリソース名
+;	iSize		：一行の高さに対するサイズ％数値　縦基準　縦横比維持　省略で1000(10倍)
+;	sAlign		：align属性　省略で左寄せ　left, center, rightの三種が指定できます
+;=========================================================
+@PRINT_IMAGE_ANIMATION_後背位(sRes_Name,iSize=1000,sAlign="left")
+#DIMS sRes_Name
+#DIM iSize
+#DIMS sAlign
+
+#DIMS sPrint_Res_Name
+#DIMS sAnime_Res_Name
+#DIM iAnimeCon
+
+SIF !FLAG:画像表示 || sRes_Name == "" || !FLAG:图像_插图显示
+	RETURN RESULT
+
+IF sRes_Name == "後背位_射精"
+	sPrint_Res_Name = %sRes_Name%_{FLAG:图像_射精图像类型}
+	SIF NOWEX:MASTER:射精 > 1
+		sPrint_Res_Name = %sRes_Name%_{FLAG:图像_射精图像类型}_9
+ELSE
+	sPrint_Res_Name = %sRes_Name%
+ENDIF
+
+IF !FLAG:图像_动画
+	CALL PRINT_IMAGE(sPrint_Res_Name,iSize,sAlign)
+	RETURN RESULT
+ENDIF
+
+
+IF sRes_Name == "後背位_挿入"
+
+	iAnimeCon = FLAG:图像_动画/2?FLAG:图像_动画/2#1
+	CALL PRINT_IMAGE_ANIMATION("後背位_挿入_",0,6,iAnimeCon,1,,iSize,sAlign)
+
+	iAnimeCon = (FLAG:图像_动画-iAnimeCon)?FLAG:图像_动画-iAnimeCon#1
+	CALL PRINT_IMAGE_ANIMATION("後背位_挿入2_",0,12,iAnimeCon,0)
+ELSE
+	IF sRes_Name == "後背位_絶頂"
+		iAnimeCon = FLAG:图像_动画/2?FLAG:图像_动画/2#1
+		CALL PRINT_IMAGE_ANIMATION("後背位_挿入2_",0,12,iAnimeCon,0)
+	ENDIF
+
+	CALL PRINT_IMAGE_ANIMATION("後背位_絶頂_",0,4,FLAG:图像_动画,0)
+	CALL PRINT_IMAGE_ANIMATION("後背位_絶頂_",0,2,1,0)
+ENDIF
+IF sRes_Name == "後背位_射精"
+	sAnime_Res_Name = 後背位_射精_{FLAG:图像_射精图像类型}_
+	CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,0,8,1,0,,iSize,sAlign)
+	CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,6,2,FLAG:图像_动画,1,,iSize,sAlign)
+
+	;大量なら追加で
+	IF NOWEX:MASTER:射精 > 1
+		CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,8,2,FLAG:图像_动画,1,,iSize,sAlign)
+	ENDIF
+
+ENDIF
+CALL PRINT_IMAGE(sPrint_Res_Name,iSize,sAlign)
+
+RETURN RESULT
+;=========================================================
+;	射精後の图像_动画画像表示
+;
+;	sRes_Name	：最後に表示する画像のリソース名
+;	iSize		：一行の高さに対するサイズ％数値　縦基準　縦横比維持　省略で1000(10倍)
+;	sAlign		：align属性　省略で左寄せ　left, center, rightの三種が指定できます
+;=========================================================
+@PRINT_IMAGE_ANIMATION_射精後(sRes_Name="正常位_中出し",iSize=1000,sAlign="left")
+#DIMS sRes_Name
+#DIM iSize
+#DIMS sAlign
+
+#DIM iWait
+#DIMS sAnime_Res_Name
+#DIMS sType
+#DIM SAVE_RESULT
+
+SIF !FLAG:画像表示 || sRes_Name == "" || !FLAG:图像_插图显示
+	RETURN RESULT
+
+IF !FLAG:图像_动画
+	CALL PRINT_IMAGE(sRes_Name,iSize,sAlign)
+	RETURN RESULT
+ENDIF
+SAVE_RESULT = RESULT
+SPLIT sRes_Name,"_",sType
+
+IF sType == "後背位"
+	sAnime_Res_Name = %sType%_射精_{FLAG:图像_射精图像类型}_\@NOWEX:MASTER:射精>1?9#7\@
+ELSE
+	sAnime_Res_Name = %sType%_射精_{FLAG:图像_射精图像类型}_3
+ENDIF
+
+iWait = 500
+CALL PRINT_IMAGE(@"%sAnime_Res_Name%",iSize,sAlign)
+sAnime_Res_Name = %sType%_挿入_
+TWAIT iWait, 0
+CLEARLINE iSize/100
+
+iWait = 100
+FOR LOCAL,3,0,-1
+	CALL PRINT_IMAGE(@"%sAnime_Res_Name%{LOCAL}",iSize,sAlign)
+	TWAIT iWait, 0
+	CLEARLINE iSize/100
+NEXT
+
+;後背位のみアニメ
+IF sType == "後背位"
+	sAnime_Res_Name = %sType%_射精後_
+	CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,0,2,1,0,iWait,iSize,sAlign)
+	CALL PRINT_IMAGE_ANIMATION(sAnime_Res_Name,2,2,0,0,iWait,iSize,sAlign)
+ENDIF
+
+CALL PRINT_IMAGE(sRes_Name,iSize,sAlign)
+
+RESULT = SAVE_RESULT
+RETURN RESULT
+

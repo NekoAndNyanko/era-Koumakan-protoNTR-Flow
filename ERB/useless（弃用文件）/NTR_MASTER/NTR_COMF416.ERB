@@ -1,0 +1,272 @@
+﻿;-------------------------------------------------
+;自慰→MASTERを襲う訪問者編
+;-------------------------------------------------
+@NTR_COM416
+
+#DIM DYNAMIC FLAG_EXECUTE
+#DIM DYNAMIC COUNT_DRESS
+#DIM 行為時間
+#DIM iLoop
+
+FLAG_EXECUTE = 0 ; ｛1→一人情事、2→大欲情、3→露出調教｝が原因
+COUNT_DRESS  = 0
+
+; 除外条件→訪問者と同じ場所ではない ＆ 屋敷外ではない ＆ 住人がいる
+SIF FLAG:訪問者の現在位置 != CFLAG:MASTER:現在位置
+	RETURN
+SIF FLAG:訪問者の現在位置 == 位置_訪問者宅
+	RETURN
+SIF FLAG:訪問者の現在位置 == 901
+	RETURN
+SIF FLAG:訪問者の現在位置 == 950
+	RETURN
+SIF FLAG:訪問者の現在位置 == 951
+	RETURN
+SIF GET_N_IN_ROOM(FLAG:訪問者の現在位置, 0, 0, 1) != 0
+	RETURN
+
+;一定の確率で見逃してもらえる
+IF HAS_VAGINA(MASTER)
+	;オンナ、ふたなりだと2/3の確率で襲われる
+	SIF !RAND(3)
+		RETURN
+ELSE
+	;オトコだと1/10の確率で襲われる
+	;SIF RAND(10)
+	;	RETURN
+ENDIF
+
+; 実行確定条件
+SIF CFLAG:MASTER:うふふ == 3
+	FLAG_EXECUTE = 1 ; MASTERの一人情事
+SIF FLAG:訪問者の現在位置 == 位置_大浴場
+	FLAG_EXECUTE = 2 ; 大欲情なら仕方ない
+SIF FLAG:訪問者のお気に入り == 0 && FLAG:訪問者の現在位置 == 位置_玩家房间 && HAS_VAGINA(MASTER)
+	FLAG_EXECUTE = 4
+
+SIF FLAG_EXECUTE
+	DEBUGPRINTFORML 被袭击了。
+
+IF !FLAG_EXECUTE
+	; 着衣状況チェック
+	COUNT_DRESS = DRESS_LEVEL(MASTER) & ( 1p1 | 1p2 | 1p3 | 1p4 )
+	DEBUGPRINTFORML 主人公的防御力：{COUNT_DRESS}　／　主人公的屈服度：{CFLAG:MASTER:屈服度}
+
+	IF COUNT_DRESS == ( 1p1 | 1p2 | 1p3 | 1p4 )
+		SIF CFLAG:MASTER:屈服度 < RAND:1000 && RAND:100 > 10
+			RETURN ; フル装備なら防御できる
+	ELSEIF COUNT_DRESS == ( 1p1 | 1p3 | 1p4 ) || COUNT_DRESS == ( 1p2 | 1p3 | 1p4 )
+		SIF CFLAG:MASTER:屈服度 < RAND:1000 && RAND:100 > 20
+			RETURN
+	ELSEIF COUNT_DRESS == ( 1p3 | 1p4 )
+		SIF CFLAG:MASTER:屈服度 < RAND:1000 && RAND:100 > 30
+			RETURN
+	ELSEIF COUNT_DRESS == ( 1p1 | 1p2 | 1p3 ) || COUNT_DRESS == ( 1p1 | 1p2 | 1p4 )
+		SIF CFLAG:MASTER:屈服度 < RAND:1000 && RAND:100 > 40
+			RETURN
+	ELSEIF COUNT_DRESS == ( 1p1 | 1p2 )
+		SIF CFLAG:MASTER:屈服度 < RAND:100 && RAND:100 > 60
+			RETURN
+	ELSEIF COUNT_DRESS == ( 1p1 ) || COUNT_DRESS == ( 1p2 )
+		SIF CFLAG:MASTER:屈服度 < RAND:100 && RAND:100 > 80
+			RETURN
+	ELSE
+		SIF 0
+			RETURN
+	ENDIF
+ENDIF
+
+IF FLAG:訪問者同行フラグ && HAS_VAGINA(MASTER) && FLAG_EXECUTE == 2 && (FLAG:1840 == 0 || FLAG:1840 >= 9 || FLAG:1840 <= 15)
+	CALL NTR_COM416_BATHTIME
+	FLAG_EXECUTE = 0
+	RETURN 0
+ELSEIF FLAG_EXECUTE >= 1 && FLAG_EXECUTE <= 3
+	PRINTFORM %NTR_NAME(0)%对
+	SELECTCASE FLAG_EXECUTE
+		CASE 1
+			PRINT 在自己眼前开始自慰的
+		CASE 2
+			PRINT 一丝不挂的
+		CASE 3
+			IF COUNT_DRESS == 0
+				PRINT 一丝不挂的
+			ELSEIF COUNT_DRESS == 4
+				;
+			ELSE
+				PRINT 摆出诱人姿势的
+			ENDIF
+	ENDSELECT
+	PRINTFORM %CALLNAME:MASTER%的淫态兴奋了起来、
+	SIF CFLAG:MASTER:屈服度 < 1000
+		PRINTFORM %CALLNAME:MASTER%\@ BASE:MASTER:气力 <= 0 ? 无力抵抗 # 激烈抗拒着 \@%NTR_NAME(0)%的侵犯
+
+	IF BEDROOM(FLAG:訪問者の現在位置)
+		;大浴場の場合、専用テキスト
+		IF FLAG:訪問者の現在位置 == 位置_大浴場
+			PRINT 在浴场的角落里、强行打开了%CALLNAME:MASTER%的大腿
+		ELSE
+			PRINT 把%CALLNAME:MASTER%压到床上、强行打开了大腿
+		ENDIF
+	ELSEIF OPENPLACE(FLAG:訪問者の現在位置) == 位置_大厅
+		PRINT 走进不显眼的树丛里，强行打开了%CALLNAME:MASTER%的大腿
+	ELSE
+		PRINT 在墙角里、强行打开了%CALLNAME:MASTER%的大腿
+	ENDIF
+
+	FLAG_EXECUTE = 3
+ENDIF
+
+IF FLAG_EXECUTE == 4
+	CALL NTR_MASTER_SEX
+ELSEIF FLAG_EXECUTE
+	IF HAS_VAGINA(MASTER)
+		IF TALENT:MASTER:处女
+			PRINTFORMW 将龟头浅浅的插入后、马上毫不留情地贯穿了那从未被染指的纯洁\@ TALENT:MASTER:体型 < 0 ? 嫩穴 # 小穴 \@…
+		ELSE
+			PRINTFORMW 用阴茎将\@ TALENT:MASTER:体型 < 0 ? 嫩穴 # 小穴 \@狠狠的贯穿了…
+		ENDIF
+		行為時間 = RAND:20 + 10
+		TIME += 行為時間
+		PRINTFORMW 　　　　　　・
+		PRINTFORMW 　　　　　　・
+		PRINTFORMW 　　　　　　・
+		IF TALENT:MASTER:处女
+			PRINTFORML %CALLNAME:MASTER%的处女被%NTR_NAME(0)%夺取了・・
+			PRINTFORML ＜%CALLNAME:MASTER%处女丧失＞
+		ENDIF
+		PRINTFORML 在{行為時間}分钟内充分品尝%CALLNAME:MASTER%小穴的滋味后、%NTR_NAME(0)%将大量精液注入了子宫里
+		PRINTFORMW 一些精液\@ TALENT:MASTER:处女 ? 伴随着处女血 # \@溢了出来、洒落到\@ BEDROOM(FLAG:訪問者の現在位置) && !FLAG:訪問者の現在位置 == 位置_大浴場 ?  床单 # 地面 \@上、慢慢渗了进去
+
+		FOR iLoop,0,行為時間,5
+			CALL 締り具合変動, MASTER, 3, 0
+		NEXT
+
+		CALL NTR_ADD_SURRENDER(MASTER, (5 + RAND:5))
+		BASE:MASTER:体力 = MAX(0,BASE:MASTER:体力 - 50)
+		;屈服度が高い場合は抵抗しないので气力消費が少ない？
+		BASE:MASTER:气力 = MAX(0,BASE:MASTER:气力-(150-LIMIT(0,70,CFLAG:MASTER:屈服度/10)))
+		SOURCE:MASTER:快Ｖ = 400
+		;SOURCE:MASTER:情爱 = 150
+		;SOURCE:MASTER:苦痛 = 500
+		;SOURCE:MASTER:露出 = 50
+		;SOURCE:MASTER:反感 = 300
+		;SIF TALENT:MASTER:自己爱 < 0 || TALENT:MASTER:抵抗
+		;	SOURCE:MASTER:抑郁 += 300
+		;SIF TALENT:MASTER:贞操 > 0 && CFLAG:MASTER:屈服度 < 1000
+		;	SOURCE:MASTER:反感 += 1000
+		;IF TALENT:MASTER:处女 == 1
+		;	SOURCE:MASTER:苦痛 += 2000
+		;	SOURCE:MASTER:反感 += 3000
+		;ELSEIF TALENT:MASTER:处女 == 2
+		;	SOURCE:MASTER:苦痛 += 500
+		;	SOURCE:MASTER:反感 += 1000
+		;ENDIF
+		EXP:MASTER:Ｖ经验 ++
+		EXP:MASTER:Ｖ性交经验 ++
+		IF 訪問者_Ｐ大きさ == 2
+			EXP:MASTER:Ｖ扩张经验 += 1
+			PRINTFORML %CALLNAME:MASTER%的小穴、随着%NTR_NAME(0)%大阴茎的侵犯而扩张了…
+			IF ( TALENT:MASTER:受虐狂 || ABL:MASTER:抖Ｍ之气 > 2 ) && EXP:MASTER:Ｖ扩张经验 < 450
+				CUP:MASTER:欲情 += 500
+				CUP:MASTER:苦痛 += 250
+			ELSEIF EXP:MASTER:Ｖ扩张经验 < 450
+				CUP:MASTER:苦痛 += 500
+			ENDIF
+		ENDIF
+		IF ABL:MASTER:Ｖ感觉 > RAND:5
+			EXP:MASTER:Ｖ绝顶经验 ++
+			EXP:MASTER:绝顶经验 ++
+		ENDIF
+
+		CALL EJACULATION_V(MASTER, 人物_訪問者)
+
+		IF TALENT:MASTER:处女
+			CALL LOST_VIRGIN(MASTER, 人物_訪問者)
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_精液
+			CALL NTR_ADD_SURRENDER(MASTER, (10 + RAND:10))
+		ENDIF
+		;V感覚が高いと绝顶经验加算（強絶頂扱い）
+		;CALL NTR_V_EXP_PLUS(MASTER)
+		TRYCALL 精力取得, 人物_訪問者
+		TRYCALL NTR_SAMEN_EXP_PLUS(MASTER, 0)
+		TRYCALL 精子取得, 人物_訪問者, MASTER
+		CFLAG:MASTER:射精者V = 人物_訪問者
+	ELSE
+		PRINTFORMW 用阴茎将娇嫩的菊穴狠狠的贯穿了…
+		行為時間 = RAND:20 + 10
+		TIME += 行為時間
+		PRINTFORMW 　　　　　　・
+		PRINTFORMW 　　　　　　・
+		PRINTFORMW 　　　　　　・
+		PRINTFORML 在{行為時間}分钟内充分品尝%CALLNAME:MASTER%菊穴的味道后、%NTR_NAME(0)%直接在里面射出了大量精液
+		PRINTFORMW 一部分精液直接溢了出来、洒落到\@ BEDROOM(FLAG:訪問者の現在位置) ? 床单上 # 地面上 \@、慢慢地渗了进去
+
+		FOR iLoop,0,行為時間,5
+			CALL 締り具合変動, MASTER, 3, 1
+		NEXT
+
+		CALL NTR_ADD_SURRENDER(MASTER, (5 + RAND:5))
+		BASE:MASTER:体力 = MAX(0,BASE:MASTER:体力 - 50)
+		;屈服度が高い場合は抵抗しないので气力消費が少ない？
+		BASE:MASTER:气力 = MAX(0,BASE:MASTER:气力-(150-LIMIT(0,70,CFLAG:MASTER:屈服度/10)))
+		SOURCE:MASTER:快Ａ = 400
+		;SOURCE:MASTER:情爱 = 150
+		;SOURCE:MASTER:苦痛 = 1000
+		;SOURCE:MASTER:露出 = 50
+		;SOURCE:MASTER:反感 = 300
+		;SIF TALENT:MASTER:自己爱 < 0 || TALENT:MASTER:抵抗
+		;	SOURCE:MASTER:抑郁 += 300
+		;SIF TALENT:MASTER:贞操 > 0 && CFLAG:MASTER:屈服度 < 1000
+		;	SOURCE:MASTER:反感 += 1000
+		EXP:MASTER:精液经验 ++
+		EXP:MASTER:Ａ经验 ++
+		EXP:MASTER:Ａ性交经验 ++
+		IF 訪問者_Ｐ大きさ == 2
+			EXP:MASTER:Ａ扩张经验 += 1
+			PRINTFORML %CALLNAME:MASTER%的肛门、随着%NTR_NAME(0)%大阴茎的侵犯而扩张了……
+			IF ( TALENT:MASTER:受虐狂 || ABL:MASTER:抖Ｍ之气 > 2 ) && EXP:MASTER:Ａ扩张经验 < 450
+				CUP:MASTER:欲情 += 500
+				CUP:MASTER:苦痛 += 250
+			ELSEIF EXP:MASTER:Ａ扩张经验 < 450
+				CUP:MASTER:苦痛 += 500
+			ENDIF
+		ENDIF
+		IF ABL:MASTER:Ａ感觉 > RAND:5
+			EXP:MASTER:Ａ绝顶经验 ++
+			EXP:MASTER:绝顶经验 ++
+		ENDIF
+
+		CALL LOST_VIRGIN_A(MASTER, 人物_訪問者)
+		CALL EJACULATION_A(MASTER, 人物_訪問者)
+
+	ENDIF
+	FLAG:MASTERが犯された回数 += 1
+ENDIF
+
+
+
+;-------------------------------------------------
+; 服装の被覆レベルを返す / TEQUIPでは作れなかった状況なので。
+; 奴隷→対象キャラ
+; RETURN→例：[ & 20 == 0 で下半身まるみえ ] [ & 10 == 0 で上半身まるみえ ] [ & 24 == 0 で下着姿 ]
+;-------------------------------------------------
+@DRESS_LEVEL(奴隷)
+#FUNCTION
+#DIM 奴隷
+#DIM DYNAMIC LEVEL_DRESS
+
+SIF EQUIP:奴隷:赛车服 || EQUIP:奴隷:连衣裙 || EQUIP:奴隷:着物 || EQUIP:奴隷:紧身衣
+	LEVEL_DRESS |= 1p3 + 1p4
+SIF EQUIP:奴隷:下半身上着１ || EQUIP:奴隷:下半身上着２ || EQUIP:奴隷:裙子
+	LEVEL_DRESS |= 1p4
+SIF EQUIP:奴隷:上半身上着１ || EQUIP:奴隷:上半身上着２
+	LEVEL_DRESS |= 1p3
+SIF EQUIP:奴隷:下半身下着１ || EQUIP:奴隷:下半身下着２
+	LEVEL_DRESS |= 1p2
+SIF EQUIP:奴隷:上半身下着１ || EQUIP:奴隷:上半身下着２
+	LEVEL_DRESS |= 1p1
+SIF EQUIP:奴隷:配件 || EQUIP:奴隷:帽子 || EQUIP:奴隷:鞋子 || EQUIP:奴隷:袜子 || EQUIP:奴隷:手
+	LEVEL_DRESS |= 1p0
+
+RETURNF LEVEL_DRESS
+

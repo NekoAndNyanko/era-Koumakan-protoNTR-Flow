@@ -1,0 +1,171 @@
+﻿;客汎用口上======================================
+;対象の行為におけるキャラの口上が設定されていない場合の口上
+@客汎用地の文(奴隷, 調教者, PLAY内容)
+#DIM 奴隷
+#DIM 調教者
+#DIM PLAY内容
+#DIMS 相手
+
+IF 調教者 == 人物_訪問者
+	相手 = 訪問者
+ELSE
+	相手 = 客
+ENDIF
+
+;訪問者宅往帰ってくる
+IF PLAY内容 == 0
+
+	;会话
+ELSEIF PLAY内容 == 1
+
+	;接吻
+ELSEIF PLAY内容 == 2
+
+	CALL 汎用口上Ｒ, "接吻", 奴隷
+	IF RESULT == 3
+		PRINTFORML %CALLNAME:奴隷%和%相手%激烈地相吻着
+	ELSEIF RESULT == 2
+		PRINTFORML %CALLNAME:奴隷%和%相手%交缠着舌头
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%努力地%相手%行为
+	ENDIF
+
+	;６９
+ELSEIF PLAY内容 == 3
+	CALL 汎用口上Ｒ, "フェラ", 奴隷
+	IF RESULT == 3
+		PRINTFORML %CALLNAME:奴隷%灵巧地使用着舌头侍奉%相手%、想让%相手%高潮
+	ELSEIF RESULT == 2
+		PRINTFORML %CALLNAME:奴隷%用擅长的技巧侍奉着%相手%的肉棒
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%拼命地为%相手%的肉棒服务
+	ENDIF
+	;性交, A性交
+ELSEIF PLAY内容 == 4
+	IF TFLAG:輪姦内容 == 輪姦_1A
+		;肛門セックス分岐
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷%坐着%相手%\@ RAND:2 == 0 ?转过身来#面对面\@跨坐在%相手%的阴部、慢慢地坐下、用肛门接受了%相手%的肉棒
+			DATAFORM %CALLNAME:奴隷%扶着墙翘起屁股诱惑着%相手%
+			DATAFORM %CALLNAME:奴隷%仰躺着、被%相手%压在身下侵犯
+			DATAFORM %CALLNAME:奴隷%像狗一样跪趴着、用肛门接受着了%相手%的肉棒
+			DATAFORM %相手%说快来了便疯狂地晃着腰在%CALLNAME:奴隷%的尻穴里抽插着
+			DATAFORM %CALLNAME:奴隷%被%相手%抱着、把挺立的陰莖插入肛門里晃着腰
+			DATAFORM %CALLNAME:奴隷%的肛門被%相手%插入填满
+			DATAFORM %相手%慢慢地把肉棒插入%CALLNAME:奴隷%因为期待而湿润的尻穴
+		ENDDATA
+	ELSE
+		PRINTDATAL
+			DATALIST
+				DATAFORM %CALLNAME:奴隷%采取了两腿被拉扯到脸前的姿势
+				DATAFORM 在因为爱液而显得光滑发亮的小穴上、%相手%的陰莖毫不留情地捅了进去
+			ENDLIST
+			DATALIST
+				DATAFORM %CALLNAME:奴隷%坐在%相手%身上\@ RAND:2 == 0 ?转过身来#面对面\@跨坐着、\@ RAND:2 == 0 ?用一只手来固定阴茎#确认阴茎的位置\@这样子
+				DATAFORM 把阴茎对准小穴慢慢地坐下、亲自让%相手%的陰莖插进去
+			ENDLIST
+			DATAFORM %CALLNAME:奴隷%坐着%相手%\@ RAND:2 == 0 ?背朝上#面对面\@跨着、把腰坐下，亲自把%相手%的陰莖插了进去
+			DATAFORM %CALLNAME:奴隷%被单脚抬起地站着、在其他%相手%能看见插入部分的姿势被侵犯着
+			DATAFORM %CALLNAME:奴隷%双手扶着墙翘起屁股诱惑着%相手%
+			DATAFORM %CALLNAME:奴隷%仰躺着、被%相手%覆盖全身的样子被侵犯
+			DATAFORM %CALLNAME:奴隷%用狗一样的姿势跪着、小穴接受着在后面侵犯的%相手%的阴茎
+			DATAFORM %相手%说快来了便加速腰振侵犯着%CALLNAME:奴隷%
+			DATAFORM %CALLNAME:奴隷%和%相手%相拥着、陰莖在膣内深处颤抖着
+			DATAFORM %CALLNAME:奴隷%的膣紧紧着吸住了%相手%的陰莖
+			DATAFORM 在%CALLNAME:奴隷%因为期待而湿润的膣口上、%相手%毫不着急的慢慢地插入阴茎
+		ENDDATA
+		;正常位,体面
+		;DATAFORM %CALLNAME:奴隷%把脚缠在%相手%的腰上、努力的晃着腰
+		;骑乘位
+		;DATAFORM %CALLNAME:奴隷%大幅度地晃着腰、%相手%把阴茎拔到阴道口，再一口气狠狠地把阴茎推了进去
+		PRINTDATAL
+			DATAFORM 因为剧烈抽送而发出的水声在整个屋子里回响着
+			DATAFORM 整个屋子里都回响着屁股与腰撞击时的啪啪声
+			DATAFORM %相手%浅浅的插拔着阴茎，集中攻击着%CALLNAME:奴隷%的G点
+			DATAFORM %相手%從慢慢地摆着腰寻找着%CALLNAME:奴隷%的感觉
+			DATAFORM %相手%靠着本能摆着腰
+			DATAFORM %相手%用把子宫口都贯穿的气势，狠狠地在%CALLNAME:奴隷%的膣内深处撞击着
+			DATAFORM 摆动的腰偶尔止住让%CALLNAME:奴隷%非常焦急
+			DATAFORM 每次抽送都让湿濡的结合处发出淫猥的水声不断地响着
+		ENDDATA
+		;PRINTDATAL
+		;	DATAFORM %相手%に每次突进时%CALLNAME:奴隷%都会发出阵阵娇喘
+		;	DATAFORM 快感过于刺激以至于连喘息的时间都没有%CALLNAME:奴隷%连声音都发不出来
+		;	DATAFORM 激烈的快感袭来%CALLNAME:奴隷%连声音都发不出来
+		;ENDDATA
+	ENDIF
+	;射精
+ELSEIF PLAY内容 == 5
+	;口、Ｖ
+	IF TFLAG:輪姦内容 == 輪姦_2MV
+		PRINTFORML %CALLNAME:奴隷%在膣内被激烈地抽插着的同时喝干了嘴里的精液
+		;口、Ａ
+	ELSEIF TFLAG:輪姦内容 == 輪姦_2MA
+		PRINTFORML %CALLNAME:奴隷%在肠内被激烈地抽插着的同时喝干了嘴里的精液
+		;Ｖ、Ａ
+	ELSEIF TFLAG:輪姦内容 == 輪姦_2VA
+		PRINTFORML %CALLNAME:奴隷%因为膣内和腸内同时被精液填满所带来的快感而陶醉着
+		;Ｖ2
+	ELSEIF TFLAG:輪姦内容 == 輪姦_2VV
+		PRINTFORML %CALLNAME:奴隷%的膣内同时被注入了两种不同的精液
+		;Ａ2
+	ELSEIF TFLAG:輪姦内容 == 輪姦_2AA
+		PRINTFORML %CALLNAME:奴隷%的腸内同时被注入了两种不同的精液
+		;3
+	ELSEIF TFLAG:輪姦内容 == 輪姦_3MAV
+		PRINTFORML %CALLNAME:奴隷%身上的洞都被精液填满了
+		;肛門セックス分岐
+	ELSEIF TFLAG:輪姦内容 == 輪姦_1A
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷%的腸内被%相手%的精液填满了
+			DATAFORM 高潮边缘的%相手%抽插着陰莖，精液如怒涛般射出、%CALLNAME:奴隷%的腸内被精液填满了
+			DATAFORM 射精结束后、两人为了精子让充分地到达肠内而紧紧地连接着
+			DATALIST
+				DATAFORM 充分注入腸内后、%相手%把在%CALLNAME:奴隷%的尻穴内的陰莖\@ RAND:2 == 0 ?慢慢地拔出来#一口气拔出来\@
+				DATAFORM 微微颤抖的肛門里、腸内收集到的精液轻轻的\@ RAND:2 == 0 ?滑到了地上#从身体里漏了出来\@
+			ENDLIST
+		ENDDATA
+	ELSE
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷%的膣内被%相手%的精液填的满满的
+			DATAFORM 高潮边缘的%相手%抽插着陰莖，精液如怒涛般射出、%CALLNAME:奴隷%的膣内被精液填满了
+			DATAFORM 射精结束后、两人为了精子让充分地到达子宫而紧紧地连接着
+			DATALIST
+				DATAFORM 充分注入膣内后、%相手%把在%CALLNAME:奴隷%的膣内的陰莖\@ RAND:2 == 0 ?慢慢地拔出来#一口气拔出来\@
+				DATAFORM 微微颤抖的秘所里、膣内收集到的精液轻轻的\@ RAND:2 == 0 ?滑到了地上#从身体里漏了出来\@
+			ENDLIST
+		ENDDATA
+		;PRINTDATAL
+		;	DATAFORM 把拔出来的阴茎舔干净后、%CALLNAME:奴隷%为了下一根阴茎诱惑着其他%相手%
+		;	DATAFORM %CALLNAME:奴隷%把手指伸进残留着精液的膣内让%相手%看着搅拌起来
+		;	DATAFORM %CALLNAME:奴隷%用手指掬起垂下的精液在%相手%面前舔舐着
+		;	DATAFORM %CALLNAME:奴隷%对于被中出而感到幸福
+		;	DATAFORM %CALLNAME:奴隷%用出神的表情看着溢出的精液
+		;	DATAFORM 激烈的抽送让意識变得朦朧%CALLNAME:奴隷%对于被中出而感到幸福
+		;ENDDATA
+	ENDIF
+	;Ｖ２
+ELSEIF PLAY内容 == 101
+
+
+	;Ａ２
+ELSEIF PLAY内容 == 102
+
+	;２点
+ELSEIF PLAY内容 == 103
+	;口、Ｖ
+	IF TFLAG:輪姦内容 == 輪姦_2MV
+
+		;口、Ａ
+	ELSEIF TFLAG:輪姦内容 == 輪姦_2MA
+
+		;Ｖ、Ａ
+	ELSEIF TFLAG:輪姦内容 == 輪姦_2VA
+
+	ENDIF
+	;３点
+ELSEIF PLAY内容 == 104
+
+
+ENDIF
+

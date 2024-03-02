@@ -1,0 +1,1110 @@
+﻿;-------------------------------------------------
+;窥视
+;-------------------------------------------------
+@COM404
+TFLAG:現在覗いている場所 = 0
+CALL COM404_01_TargetSelect()
+IF 0 == RESULT
+	; やっぱやめた
+	RETURN 0
+ENDIF
+; 覗いたら時間経過
+TIME += 3
+WAIT
+RETURN 1
+
+;---------------------------------------------------------------------------------------
+; 窥视部屋を選ぶ
+@COM404_01_TargetSelect()
+#DIM targetArea
+#DIM LOOP_POS	 ; ループ変数：場所
+DRAWLINE
+PRINTFORML 你想窥视哪个房间？
+PRINTL [0] - 放弃
+FOR LOOP_POS,0,MAXROOM()
+	SIF CAN_MOVE(CFLAG:MASTER:現在位置, LOOP_POS)
+		PRINTFORML [{LOOP_POS}] - %GETPLACENAME(LOOP_POS)%
+NEXT
+$INPUT_LABEL
+INPUT
+targetArea = RESULT
+IF 0 ==targetArea
+	RETURN 0
+ENDIF
+IF !CAN_MOVE(CFLAG:MASTER:現在位置, targetArea) 
+	;不適切なtargetAreaならやり直し
+	GOTO INPUT_LABEL
+ENDIF
+
+CALL COM404_02_tryPeeping(targetArea)
+
+RETURN 1
+
+;---------------------------------------------------------------------------------------
+; 覗いてみる
+@COM404_02_tryPeeping(targetArea)
+#DIM targetArea
+#DIM isSoundOnly
+IF !CAN_MOVE(CFLAG:MASTER:現在位置, targetArea)
+	PRINTFORML %GETPLACENAME(CFLAG:MASTER:現在位置)%から%GETPLACENAME(targetArea)%は覗けない。
+	RETURN 0
+ENDIF
+
+IF 天候(天候値) == "白夜"
+	PRINTL 但是周围一片漆黑，什么也看不见…………。
+	RETURN 0
+ENDIF
+
+IF 天候(天候値) == "云雾" && OPENPLACE(targetArea) == 2
+	PRINTL 可是有雾，什么也看不见……。
+	RETURN 0
+ENDIF
+
+; 移动可能な場所であれば扉を開けようとする
+IF CAN_MOVE(CFLAG:MASTER:現在位置, targetArea) == 1
+	IF tryOpenDoor(MASTER, targetArea)
+		PRINTFORML %CALLNAME:MASTER + "は音を立てないように扉を少しだけ開き、" + GETPLACENAME(targetArea) + "の様子をうかがった……。"%
+		isSoundOnly = 0
+	ELSEIF canUnLock(MASTER, targetArea)
+		PRINTFORML %CALLNAME:MASTER + "は鍵を使って扉を少しだけ開き、" + GETPLACENAME(targetArea) + "の様子をうかがった……。"%
+		isSoundOnly = 0
+	ELSE
+		IF isLockedByBolt(targetArea)
+			PRINTFORM どうやら内側から閂がかけられているらしく、
+		ELSE
+			PRINTFORM 鍵がかかっていて、
+		ENDIF
+		PRINTFORML 扉を開けることができなかった。
+		IF IS_NTR_SHOW_ALL()
+			PRINTFORML %CALLNAME:MASTER + "は仕方なく、採光用の小さな窓から" + GETPLACENAME(targetArea) + "の様子をうかがった……。"%
+			isSoundOnly = 0
+		ELSE
+			PRINTFORML %CALLNAME:MASTER + "は仕方なく、耳を寄せて" + GETPLACENAME(targetArea) + "の様子をうかがった……。"%
+			HTML_PRINT @"<font color='#" +TOSTR(色設定_テキスト_備考,"x") +"'>ＮＴＲ筒抜けモードを有効にすると、採光窓から中を窥视事ができるようになります。</font>"
+			isSoundOnly = 1
+		ENDIF
+	ENDIF
+	WAIT
+ENDIF
+
+CALL COM404_03_searchCharacter(targetArea, isSoundOnly)
+RETURN 1
+
+;---------------------------------------------------------------------------------------
+; 誰かいないか探す
+@COM404_03_searchCharacter(targetArea, isSoundOnly)
+#DIM targetArea
+#DIM isSoundOnly
+#DIM 登録番号
+#DIM 見付けたキャラ
+#DIM 見付けた人数
+#DIMS 見付けたキャラ説明
+
+IF targetArea == FLAG:訪問者の現在位置
+	IF 位置_訪問者宅 != FLAG:訪問者の現在位置
+		CALL LOOK_WITH_VISITOR(targetArea, isSoundOnly)
+		RETURN 1
+	ENDIF
+ENDIF
+
+; 自慰しているキャラを探す
+見付けたキャラ = 0
+FOR 登録番号, 1, CHARANUM
+	IF CFLAG:登録番号:現在位置 == targetArea
+		IF CFLAG:登録番号:自慰中 > 0
+			見付けたキャラ = 登録番号
+			BREAK
+		ENDIF
+	ENDIF
+NEXT
+IF INRANGE(見付けたキャラ, 1, CHARANUM)
+	CALL COM404_04_watchMasturbation(targetArea, isSoundOnly, 見付けたキャラ)
+	RETURN 1
+ENDIF
+
+; 自慰しているキャラがいない場合は、通常の発見判定
+見付けた人数 = 0
+見付けたキャラ説明 = %""%
+PRINTFORM %"在" + GETPLACENAME(targetArea) + "，"%
+FOR 登録番号, 1, CHARANUM
+	IF CFLAG:登録番号:現在位置 == targetArea
+		IF 0 == 見付けたキャラ
+			見付けたキャラ = 登録番号
+			見付けたキャラ説明 += CALLNAME:登録番号
+		ELSE
+			見付けたキャラ説明 += " 、 "+CALLNAME:登録番号
+		ENDIF
+		見付けた人数++
+		CALL 确认肌肤颜色(登録番号)
+	ENDIF
+NEXT
+IF FLAG:侵入者の現在位置 == targetArea
+	IF 見付けた人数
+		見付けたキャラ説明 += " 、 恋恋"
+	ELSE
+		見付けたキャラ説明 += "恋恋"
+	ENDIF
+	見付けた人数++
+ENDIF
+IF FLAG:訪問者の現在位置 == targetArea
+	IF 見付けた人数
+		見付けたキャラ説明 += " 、 " + NTR_NAME(0)
+	ELSE
+		見付けたキャラ説明 += NTR_NAME(0)
+	ENDIF
+	見付けた人数++
+ENDIF
+見付けたキャラ説明 += "在这。"
+
+IF 0 == 見付けた人数
+	PRINTL 谁都不在。
+	RETURN 1
+ENDIF
+
+IF !isSoundOnly
+	PRINTFORML %見付けたキャラ説明%
+ELSE
+	IF 1 < 見付けた人数
+		PRINTFORML %CALLNAME:見付けたキャラ + "がいて、誰かと話しているようだ……。"%
+	ELSE
+		PRINTFORML %CALLNAME:見付けたキャラ + "がいるようだが、声を聴くことはできなさそうだ……。"%
+	ENDIF
+ENDIF
+
+IF BATHROOM(targetArea)
+	SOURCE:PLAYER:欲情 = 10
+ENDIF
+
+IF  1 == 見付けた人数
+	IF EQUIP:見付けたキャラ:裙子
+		IF 5 != EQUIP:見付けたキャラ:裙子
+			;裙子着用で、それが袴でないなら、パンチラの可能性がある
+			CALL CHK_PANCHIRA(targetArea, 見付けたキャラ)
+		ENDIF
+	ENDIF
+	IF EQUIP:見付けたキャラ:连衣裙 == 1
+		;连衣裙着用で、それが普通の连衣裙なら、パンチラの可能性がある
+		CALL CHK_PANCHIRA(targetArea, 見付けたキャラ)
+	ENDIF
+ENDIF
+RETURN 1
+
+@COM404_04_watchMasturbation(targetArea, isSoundOnly, 自慰中のキャラ)
+#DIM targetArea
+#DIM isSoundOnly
+#DIM 自慰中のキャラ
+#DIM 自慰中に求めた名前
+CALL LOOK_MASTURBATION(自慰中のキャラ, isSoundOnly)
+自慰中に求めた名前 = RESULT
+;自慰を見た事によるソースの獲得
+SOURCE:PLAYER:欲情 = 10
+SELECTCASE 自慰中に求めた名前
+	CASE 1
+		;あなたの名前を呼びながら
+		SOURCE:PLAYER:欲情 += 10
+	CASE -1
+		;訪問者の名前
+		SELECTCASE TALENT:自慰中のキャラ:浮気公認
+			CASE IS >= 浮気_性交公認
+				PRINTFORML %CALLNAME:MASTER + "は、" + MSG_RE_LOVER(自慰中のキャラ) + "であるはずの" + CALLNAME:自慰中のキャラ + "が" + NTR_NAME(0) + "を求めている事に激しい興奮を覚えた。"%
+				SOURCE:PLAYER:欲情 += 10
+			CASE IS >= 浮気_浮気公認
+				PRINTFORML %CALLNAME:MASTER + "は、" + MSG_RE_LOVER(自慰中のキャラ) + "であるはずの" + CALLNAME:自慰中のキャラ + "が" + NTR_NAME(0) + "を求めている事に興奮を覚えた。"%
+				SOURCE:PLAYER:欲情 += 5
+			CASEELSE
+				SOURCE:PLAYER:欲情 -= 5
+		ENDSELECT
+	CASEELSE
+		SOURCE:PLAYER:欲情 += 5
+ENDSELECT
+RETURN 1
+
+;覗いた先に訪問者と住人がいた場合の処理
+;現状は１対１でないと詳細はわからないものとする。
+;ハーレム状態でも覗けるべきか。
+;@RETURN 0:表示なし　1:表示あり
+@LOOK_WITH_VISITOR(targetArea, isSoundOnly)
+#DIM targetArea
+#DIM LOOP_CHR
+#DIM CNT_CHR
+#DIM isSoundOnly
+#DIMS 訪問者との描写
+#DIMS 訪問者との音声
+
+訪問者との描写 = %""%
+訪問者との音声 = %""%
+
+IF FLAG:訪問者の現在位置 != targetArea
+	RETURN 0
+ENDIF
+
+; 訪問者と同じ場所にいる住人の人数を数える
+CNT_CHR = 0
+FOR LOOP_CHR, 1, CHARANUM
+	IF CFLAG:LOOP_CHR:現在位置 == targetArea
+		CNT_CHR++
+	ENDIF
+NEXT
+
+IF CNT_CHR == 0
+	;同じ場所にいる住人が０人の場合何もなし
+	RETURN 0
+ENDIF
+
+IF CNT_CHR == 1
+	;同じ場所にいる住人が１人の場合詳細を覗ける
+	FOR LOOP_CHR, 1, CHARANUM
+		IF CFLAG:LOOP_CHR:現在位置 == targetArea
+			訪問者との描写 += "【" + GETPLACENAME(targetArea) + "】"
+			IF FLAG:睡姦フラグ == 1
+				訪問者との描写 += NTR_NAME(0) + "袭击了睡眠中的" + CALLNAME:LOOP_CHR 
+			ELSE
+				CALL COM404_VisitorDetail(LOOP_CHR, 訪問者との描写, 訪問者との音声)
+				IF isSoundOnly 
+					PRINTFORML %訪問者との音声%
+				ELSE
+					PRINTFORML %訪問者との描写%
+					;覗きバレ時見せつけ(浮気公認Lvで頻度が変化)
+					IF ( 1 + TALENT:LOOP_CHR:浮気公認 ) > RAND(4)
+						;遗留真实修改标记IF ( 1 + TALENT:LOOP_CHR:浮気公認 * TALENT:LOOP_CHR:浮気公認) > RAND(10)
+						CALL NTR_SHOW_PEEP(LOOP_CHR)
+					ENDIF
+				ENDIF
+			ENDIF
+		ENDIF
+	NEXT
+ELSE
+	;同じ場所にいる住人が２人以上の場合概略を覗ける。覗きバレ見せつけなし
+	FOR LOOP_CHR,1,CHARANUM
+		IF CFLAG:LOOP_CHR:現在位置 == targetArea && !CFLAG:LOOP_CHR:睡眠
+			CALL COM404_VisitorDetail(LOOP_CHR, 訪問者との描写, 訪問者との音声)
+			IF isSoundOnly 
+				PRINTFORML %訪問者との音声%
+			ELSE
+				PRINTFORML %訪問者との描写%
+			ENDIF
+		ENDIF
+	NEXT
+ENDIF
+RETURN 1
+
+@COM404_VisitorDetail(キャラ, 訪問者との描写, 訪問者との音声)
+#DIM キャラ
+#DIMS REF 訪問者との描写
+#DIMS REF 訪問者との音声
+SELECTCASE CFLAG:キャラ:訪問者行為
+	CASE NTR_行为_なし
+		IF FLAG:ハーレム時カウンタ
+			訪問者との描写 += NTR_NAME(0) + "正抱着" + CALLNAME:キャラ
+		ELSE
+			訪問者との描写 += NTR_NAME(0) + "和" + CALLNAME:キャラ + "在说话"
+		ENDIF
+		訪問者との音声 += NTR_NAME(0) + "と" + CALLNAME:キャラ + "の声が聞こえた…話をしているようだ"
+	CASE NTR_行为_キス
+		訪問者との描写 += NTR_NAME(0) + "和" + CALLNAME:キャラ + "在接吻"
+		訪問者との音声 += NTR_NAME(0) + "と" + CALLNAME:キャラ + "の声が聞こえた…キスをしているようだ"
+	CASE NTR_行为_爱抚
+		訪問者との描写 += NTR_NAME(0) + "仔细地爱抚着" + CALLNAME:キャラ + "的身体"
+		訪問者との音声 += CALLNAME:キャラ + "のかすかな喘ぎ声が聞こえた…" + NTR_NAME(0) + "に爱抚されているようだ" 
+	CASE NTR_行为_胸爱抚
+		訪問者との描写 += NTR_NAME(0) + "温柔地抚摸着" + CALLNAME:キャラ + "的胸部"
+		訪問者との音声 += CALLNAME:キャラ + "のかすかな喘ぎ声が聞こえた…" + NTR_NAME(0) + "に爱抚されているようだ" 
+	CASE NTR_行为_口交
+		訪問者との描写 += CALLNAME:キャラ + "正含着" + NTR_NAME(0) + "的阴茎"
+		訪問者との音声 += NTR_NAME(0) + "の声が聞こえた…" + CALLNAME:キャラ + "に口交をさせているようだ"
+	CASE NTR_行为_六九式
+		訪問者との描写 += NTR_NAME(0) + "和" + CALLNAME:キャラ + "互相舔舐对方的性器"
+		訪問者との音声 += NTR_NAME(0) + "と" + CALLNAME:キャラ + "の声が聞こえた…互いに性器を舐め合っているようだ"
+	CASE NTR_行为_素股
+		訪問者との描写 += CALLNAME:キャラ + "正在对" + NTR_NAME(0) + "素股"
+		訪問者との音声 += NTR_NAME(0) + "の声が聞こえた…" + CALLNAME:キャラ + "に素股で腰を振らせているようだ"
+	CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+		訪問者との描写 += NTR_NAME(0) + "正在和" + CALLNAME:キャラ + "性交"
+		訪問者との音声 += NTR_NAME(0) + "の声と、" + CALLNAME:キャラ + "の喘ぎ声が聞こえた…セックスをしているようだ"
+	CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+		訪問者との描写 += NTR_NAME(0) + "正在和" + CALLNAME:キャラ + "肛门性交"
+		訪問者との音声 += NTR_NAME(0) + "の声と、" + CALLNAME:キャラ + "の喘ぎ声が聞こえた…菊花セックスをしているようだ"
+	CASEELSE
+		PRINTW 发现Bug！
+ENDSELECT
+RETURN 1
+
+;パンチラ可否チェック
+@CHK_PANCHIRA(targetArea, TGT_CHR)
+#DIM targetArea	; 覗いてる先の場所
+#DIM TGT_CHR	; 覗いてる先の人物
+#DIM POS		; 覗いてる側の場所
+
+POS =  CFLAG:MASTER:現在位置		; 覗いてる側の場所
+;広間から踊り場を見上げたとき1/3でパンチラ
+IF POS == 位置_大厅 && targetArea == 位置_二楼楼梯间 && !RAND:3
+	CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 0)
+ENDIF
+;踊り場から二階廊下を見上げたとき1/4でパンチラ
+IF POS == 位置_二楼楼梯间 && targetArea == 位置_二楼走廊 && !RAND:4 
+	CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 0)
+ENDIF
+;庭に面した一階から庭を見たとき1/3でパンチラ
+IF POS == 位置_食堂 || POS == 位置_仓库 || POS == 位置_屋外厕所
+	IF targetArea == 位置_院子 && !RAND:3 
+		CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 1)
+	ENDIF
+ENDIF
+;湖に面した一階から湖を見たとき1/3でパンチラ
+IF POS == 位置_红魔馆正门 
+	IF targetArea == 位置_湖 && !RAND:3 
+		CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 1)
+	ENDIF
+ENDIF
+;湖南部に面した一階から湖を見たとき1/3でパンチラ
+IF POS == 位置_琪露诺的家 || POS == 位置_大妖精的家 
+	IF targetArea == 位置_湖南部 && !RAND:3 
+		CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 1)
+	ENDIF
+ENDIF
+RETURN
+
+;パンチラ処理
+@LOOK_PANCHIRA(被害者, 加害者, targetArea, FLG_POS)
+#DIM 被害者		; 見られた人
+#DIM 加害者		; 見た人(998:訪問者, 997:こいし)
+#DIM targetArea	; 覗いた先の場所
+#DIM FLG_POS	; 場所フラグ 0:踊り場、二階廊下 1:庭、湖
+;踊り場 or 二階廊下
+IF FLG_POS == 0
+	;見た人がMASTER
+	IF 被害者 != MASTER && 加害者 == MASTER
+		PRINTFORML 在%GETPLACENAME(targetArea)%抬头看向了%CALLNAME:被害者%的
+		CALL LOOK_PANCHIRA_MSG1(被害者, 加害者, targetArea)
+		SIF 0 == CFLAG:被害者:ぱんつ確認 
+			CFLAG:被害者:ぱんつ確認 = 2
+		;見られた人がMASTER
+	ELSEIF 被害者 == MASTER && 加害者 != MASTER
+		PRINTFORM  恰巧%GETPLACENAME(targetArea)%是会仰头的地方
+		CALL LOOK_PANCHIRA_MSG2(被害者, 加害者, targetArea)
+		;その他の組み合わせは現在未対応
+	ELSE
+	ENDIF
+	;庭 or 湖
+ELSEIF FLG_POS == 1
+	;見た人がMASTER
+	IF 被害者 != MASTER && 加害者 == MASTER
+		PRINTFORML %GETPLACENAME(targetArea)%正在%CALLNAME:被害者%，因为调皮的风吹过
+		CALL LOOK_PANCHIRA_MSG1(被害者, 加害者, targetArea)
+		;見られた人がMASTER
+	ELSEIF 被害者 == MASTER && 加害者 != MASTER
+		;その他の組み合わせは現在未対応
+		PRINTFORML 因为调皮的风吹过，裙子卷起来了，
+		PRINTFORM  恰巧%GETPLACENAME(targetArea)%是能看到的地方
+		CALL LOOK_PANCHIRA_MSG2(被害者, 加害者, targetArea)
+	ELSE
+	ENDIF
+ENDIF
+
+RETURN 0
+
+; 見てしまった時のメッセージ
+@LOOK_PANCHIRA_MSG1(被害者, 加害者, targetArea)
+#DIM 被害者		; 見られた人
+#DIM 加害者		; 見た人(998:訪問者, 997:こいし)
+#DIM targetArea	; 覗いた先の場所
+
+PRINTFORM %CALLNAME:被害者%的裙摆下，那
+IF EQUIP:被害者:下半身下着１
+	IF GETBIT(FLAG:匂いフェチ,1) 
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着１)%%IRUINAME_SMELL(EQUIP:被害者:下半身下着１)%%PANTSNAME(EQUIP:被害者:下半身下着１)%
+	ELSE
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着１)%%PANTSNAME(EQUIP:被害者:下半身下着１)%
+	ENDIF
+ELSEIF !EQUIP:被害者:下半身下着２
+	PRINTFORM 一览无余的真空
+	SOURCE:PLAYER:欲情 = 10
+ELSE
+	IF GETBIT(FLAG:匂いフェチ,1) 
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着２)%%IRUINAME_SMELL(EQUIP:被害者:下半身下着２)%%PANTSNAME(EQUIP:被害者:下半身下着２)%
+	ELSE
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着２)%%PANTSNAME(EQUIP:被害者:下半身下着２)%
+	ENDIF
+ENDIF
+PRINTFORML 被%CALLNAME:MASTER%尽收眼底。
+IF !EQUIP:被害者:下半身下着２
+	IF RAND(100)<30
+		PRINTL 而其中的小穴也一览无余。
+		CALL 确认小穴颜色(被害者)
+		CALL 确认小穴松弛度(被害者)
+		IF RAND(100)<30
+			PRINTFORML 而此刻%CALLNAME:被害者%张开的双腿也让肛门无处可藏。
+			CALL 确认肛门颜色(被害者)
+			CALL 确认肛门松弛度(被害者)
+		ENDIF
+	ENDIF
+ENDIF
+SIF 0 == CFLAG:被害者:ぱんつ確認 
+	CFLAG:被害者:ぱんつ確認 = 2
+RETURN
+
+; 見られてしまった時のメッセージ
+@LOOK_PANCHIRA_MSG2(被害者, 加害者, targetArea)
+#DIM 被害者		; 見られた人
+#DIM 加害者		; 見た人(998:訪問者, 997:こいし)
+#DIM targetArea	; 覗いた先の場所
+
+PRINTFORM %CALLNAME:被害者%的裙摆下，那
+IF EQUIP:被害者:下半身下着１
+	IF GETBIT(FLAG:匂いフェチ,1) 
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着１)%%IRUINAME_SMELL(EQUIP:被害者:下半身下着１)%%PANTSNAME(EQUIP:被害者:下半身下着１)%
+	ELSE
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着１)%%PANTSNAME(EQUIP:被害者:下半身下着１)%
+	ENDIF
+ELSEIF !EQUIP:被害者:下半身下着２
+	PRINTFORM 一览无余的真空
+	IF 加害者 <= CHARANUM
+		SOURCE:加害者:欲情 = 10
+	ENDIF
+ELSE
+	IF GETBIT(FLAG:匂いフェチ,1) 
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着２)%%IRUINAME_SMELL(EQUIP:被害者:下半身下着２)%%PANTSNAME(EQUIP:被害者:下半身下着２)%
+	ELSE
+		PRINTFORM %PANTS_DESCRIPTION(EQUIP:被害者:下半身下着２)%%PANTSNAME(EQUIP:被害者:下半身下着２)%
+	ENDIF
+ENDIF
+PRINTFORM 被
+SELECTCASE 加害者
+	CASE 人物_催眠者
+		PRINTFORM 催眠者
+		;こいし
+	CASE 997
+		PRINTFORM 路过的恋恋
+		;訪問者
+	CASE 人物_訪問者
+		PRINTFORM %NTR_NAME(0)%
+		;他
+	CASEELSE
+		PRINTFORM %CALLNAME:(加害者)%
+ENDSELECT
+PRINTFORML 尽收眼底。
+RETURN
+
+;逆パンチラ
+;パンチラ可能な場所でMASTERが扫除したとき、見ることができる場所にいる誰かに見られてしまう。
+@REV_PANCHIRA
+#DIM LOOP_CHR
+#DIM FLG_LOOKED ; 0:パンチラを見られていない 1:パンチラを見られた
+#DIM RSLT_CHK
+
+;そもそも裙子をはいてない場合見れない
+SIF !EQUIP:MASTER:裙子
+	RETURN 0
+;ロング裙子の場合見える可能性減
+SIF EQUIP:MASTER:裙子 == 3 && RAND:2
+	RETURN 0
+;裳の場合見えない
+SIF EQUIP:MASTER:裙子 == 5
+	RETURN 0
+;パンチラ不可能な場所の場合処理しない（踊り場、二階廊下、庭、湖以外）
+SELECTCASE CFLAG:MASTER:現在位置
+	CASE 位置_二楼楼梯间
+	CASE 位置_二楼走廊
+	CASE 位置_院子
+	CASE 位置_湖
+	CASE 位置_湖南部
+		;パンチラ不可
+	CASEELSE
+		RETURN 0
+ENDSELECT
+;MASTER以外に誰かいたら見られない
+SIF GET_N_IN_ROOM(CFLAG:MASTER:現在位置, 0, 1, 1)
+	RETURN 0
+
+FLG_LOOKED = 0 ; 0:パンチラを見られていない 1:パンチラを見られた
+;全住人についてチェック
+;誰か一人に見られたら処理終了
+FOR LOOP_CHR,1,CHARANUM
+	;睡眠中は見れない
+	SIF CFLAG:LOOP_CHR:睡眠
+		CONTINUE
+	;パンチラを窥视ことのできる場所にいるかチェック
+	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, CFLAG:LOOP_CHR:現在位置)
+	IF RSLT_CHK != -1 && RAND:2
+		CALL LOOK_PANCHIRA(MASTER, LOOP_CHR, CFLAG:MASTER:現在位置, RSLT_CHK)
+		FLG_LOOKED = 1
+	ENDIF
+	SIF FLG_LOOKED
+		BREAK
+NEXT
+;訪問者チェック
+IF FLG_LOOKED == 0
+	;パンチラを窥视ことのできる場所にいるかチェック
+	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, FLAG:訪問者の現在位置)
+	IF RSLT_CHK != -1 && RAND:2
+		CALL LOOK_PANCHIRA(MASTER, 人物_訪問者, CFLAG:MASTER:現在位置, RSLT_CHK)
+		FLG_LOOKED = 1
+	ENDIF
+ENDIF
+;こいしチェック
+IF FLG_LOOKED == 0
+	;パンチラを窥视ことのできる場所にいるかチェック
+	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, FLAG:侵入者の現在位置)
+	IF RSLT_CHK != -1 && RAND:2
+		CALL LOOK_PANCHIRA(MASTER, 997, CFLAG:MASTER:現在位置, RSLT_CHK)
+		FLG_LOOKED = 1
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;パンチラを窥视ことのできる場所にいるかチェック
+;戻り値 … -1:覗けない 0:覗ける(階段、二階廊下) 1:覗ける(庭、湖）
+@CHK_LOOK_PANCHIRA(targetArea, POS)
+#FUNCTION
+#DIM targetArea	; 覗いてる先の場所
+#DIM POS		; 覗いてる側の場所
+
+SELECTCASE targetArea
+		;踊り場
+	CASE 位置_二楼楼梯间
+		;広間のみ
+		SIF POS == 位置_大厅
+			RETURNF 0
+		;二階廊下
+	CASE 位置_二楼走廊
+		;踊り場のみ
+		SIF POS == 位置_二楼楼梯间
+			RETURNF 0
+		;庭
+	CASE 位置_院子
+		;庭に面した一階
+		SIF POS == 位置_食堂 || POS == 位置_仓库 || POS == 位置_屋外厕所
+			RETURNF 1
+		;湖
+	CASE 位置_湖
+		;湖に面した一階から湖を見たとき1/3でパンチラ
+		SIF POS == 位置_红魔馆正门
+			RETURNF 1
+		;湖南部
+	CASE 位置_湖南部
+		;湖に面した一階から湖を見たとき1/3でパンチラ
+		SIF POS == 位置_琪露诺的家 || POS == 位置_大妖精的家
+			RETURNF 1
+ENDSELECT
+RETURNF -1
+
+;湖で住人と訪問者が二人きりで会话している様を覗き見たとき、デートしているように見える件
+;ARG…訪問者と一緒にいる住人
+;戻り値…常に0
+@NTR_LAKE_TALK(ARG)
+IF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ)
+	PRINTDATAL
+		DATAFORM %CALLNAME:ARG%坐在%NTR_NAME(0)%的腿上。
+		DATAFORM %CALLNAME:ARG%枕在%NTR_NAME(0)%的腿上。
+	ENDDATA
+	PRINTFORML 那个样子远远地看上去像亲密的恋人。
+ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ寸前)
+	PRINTDATAL
+		DATAFORM %CALLNAME:ARG%坐在%NTR_NAME(0)%的腿上。
+		DATAFORM %CALLNAME:ARG%枕在%NTR_NAME(0)%的腿上。
+		DATAFORM %CALLNAME:ARG%与%NTR_NAME(0)%相依偎，将头托付在%NTR_NAME(4)%的肩膀上。
+	ENDDATA
+	PRINTFORML 那个样子远远地看上去像亲密的恋人。
+ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_寝取られそう)
+	PRINTDATAL
+		DATAFORM %CALLNAME:ARG%靠在树上，被%NTR_NAME(0)%拥抱着，微笑着。
+		DATAFORM %CALLNAME:ARG%被%NTR_NAME(0)%抱著肩膀。
+		DATAFORM %CALLNAME:ARG%与%NTR_NAME(0)%相依偎，将头托付在%NTR_NAME(4)%的肩膀上。
+	ENDDATA
+	PRINTFORML 那个样子远远的看起来像是在约会。
+ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_主人より高い)
+	PRINTFORML 
+	PRINTDATAL
+		DATAFORM %CALLNAME:ARG%挽着%NTR_NAME(0)%的手臂走着。
+		DATAFORM %CALLNAME:ARG%和%NTR_NAME(0)%牵着恋人的手走着。
+		DATAFORM %CALLNAME:ARG%与%NTR_NAME(0)%相依偎地走着。
+	ENDDATA
+	PRINTFORML 那个样子远远的看起来像是在约会。
+ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_うふふする程度)
+	PRINTFORML %CALLNAME:ARG%挽着%NTR_NAME(0)%的手臂走着。
+	PRINTFORML 那个样子远远的看起来像是在约会。
+ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:ARG%和%NTR_NAME(0)%手牵手走着。
+ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_体を触らせる程度)
+	PRINTFORML %CALLNAME:ARG%和%NTR_NAME(0)%并肩走着。
+ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_接吻程度)
+	PRINTFORML %CALLNAME:ARG%被%NTR_NAME(0)%纠缠着，感到很为难。
+ELSE
+	PRINTFORML %CALLNAME:ARG%被%NTR_NAME(0)%纠缠着，感到很为难。
+ENDIF
+RETURN 0
+
+
+;自慰覗きイベント
+;戻り値：0…誰かの名前　1…あなたの名前　-1…訪問者の名前
+@LOOK_MASTURBATION(奴隷, isSoundOnly)
+#DIM 奴隷
+#DIM 贞操帯着用中
+#DIM 自慰部位１
+#DIM 自慰感覚
+#DIM 戻り値
+#DIMS 名前
+#DIM isSoundOnly
+#DIMS 自慰行為映像
+#DIMS 自慰行為音声
+;自慰行動保存 Bit 0=行為C 1=行為V 2=行為A 3=行為B 4=2点行為 5=絶頂
+
+贞操帯着用中 = (下着名１_２(奴隷)=="贞操帯")
+自慰行為映像 = %CALLNAME:奴隷 + "在里面正"%
+自慰行為音声 = %CALLNAME:奴隷 + "从里面正"%
+IF 贞操帯着用中
+	自慰感覚 = 0
+	IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+		;単一部位
+		IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
+			自慰行為映像 += "想触摸阴蒂而抠着"+下着名１_２(奴隷)+"的表面"
+		ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
+			自慰行為映像 += "想触摸阴道里而抠着"+下着名１_２(奴隷)+"的表面"
+		ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
+			自慰行為映像 += "想要触摸肛门而抠着"+下着名１_２(奴隷)+"的表面"
+		ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,3)
+			自慰感覚 = ABL:奴隷:Ｂ感觉
+			IF ABL:奴隷:Ｂ感觉 >= 4
+				自慰行為映像 += "用手指轻轻捏住乳头给予刺激"
+			ELSEIF TALENT:奴隷:胸部尺寸 >= 0
+				自慰行為映像 += "激烈的揉着胸部"
+			ELSE
+				自慰行為映像 += "像用手指抚摸般地爱抚"
+			ENDIF
+		ENDIF
+	ELSE
+		;複数部位
+		IF GETBIT(CFLAG:奴隷:自慰行動保存,3)
+			;胸とセット
+			IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
+				自慰行為映像 += "想触摸阴蒂而抠着"+下着名１_２(奴隷)+"的表面，一边"
+			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
+				自慰行為映像 += "想触摸阴道里而抠着"+下着名１_２(奴隷)+"的表面，一边"
+			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
+				自慰行為映像 += "想要触摸肛门而抠着"+下着名１_２(奴隷)+"的表面，一边"
+			ENDIF
+			IF ABL:奴隷:Ｂ感觉 >= 4
+				自慰行為映像 += "用手指轻轻捏住乳头给予刺激"
+			ELSEIF TALENT:奴隷:胸部尺寸 >= 0
+				自慰行為映像 += "激烈的揉着胸部"
+			ELSE
+				自慰行為映像 += "像用手指抚摸般地爱抚"
+			ENDIF
+			自慰感覚 = ABL:奴隷:Ｂ感觉
+		ELSE
+			;胸以外のセット、つまり刺激無し
+			IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
+				自慰部位１ = 0
+				自慰行為映像 += "阴蒂和"
+			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
+				自慰部位１ = 1
+				自慰行為映像 += "阴道内和"
+			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
+				自慰部位１ = 2
+				自慰行為映像 += "肛门和"
+			ENDIF
+
+			IF 自慰部位１ != 0 && GETBIT(CFLAG:奴隷:自慰行動保存,0)
+				自慰行為映像 += "想触摸阴蒂而抠着"+下着名１_２(奴隷)+"的表面"
+			ELSEIF 自慰部位１ != 1 && GETBIT(CFLAG:奴隷:自慰行動保存,1)
+				自慰行為映像 += "想触摸阴道里而抠着"+下着名１_２(奴隷)+"的表面"
+			ELSEIF 自慰部位１ != 2 && GETBIT(CFLAG:奴隷:自慰行動保存,2)
+				自慰行為映像 += "想要触摸肛门而抠着"+下着名１_２(奴隷)+"的表面"
+			ENDIF
+		ENDIF
+	ENDIF
+ELSE
+	;贞操帯なし、普通の自慰
+	IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
+		自慰行為映像 += "阴蒂"
+		自慰部位１ = 0
+		自慰感覚 = ABL:奴隷:Ｃ感觉
+		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+			IF 自慰感覚 >= 4
+				自慰行為映像 += "用手指轻轻捏住给予刺激"
+			ELSE
+				自慰行為映像 += "像用手指抚摸般地爱抚着"
+			ENDIF
+		ENDIF
+	ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
+		自慰行為映像 += "膣内"
+		自慰部位１ = 1
+		自慰感覚 = ABL:奴隷:Ｖ感觉
+		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+			IF 自慰感覚 >= 4
+				自慰行為映像 += "用插入阴道内两根手指在不停的搅弄着"
+			ELSE
+				自慰行為映像 += "用插入的手指刺激着阴道"
+			ENDIF
+			CALL 确认小穴颜色(奴隷)
+			CALL 确认小穴松弛度(奴隷)
+		ENDIF
+	ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
+		自慰行為映像 +=  "菊花"
+		自慰部位１ = 2
+		自慰感覚 = ABL:奴隷:Ａ感觉
+		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+			IF 自慰感覚 >= 4
+				自慰行為映像 +=  "用插入肛门的两根手指在肠子里不停的搅弄着"
+			ELSE
+				自慰行為映像 +=  "用插入肛门的手指刺激着肠子"
+			ENDIF
+			CALL 确认肛门颜色(奴隷)
+			CALL 确认肛门松弛度(奴隷)
+		ENDIF
+	ELSE
+		IF 自慰感覚 >= 4
+			自慰行為映像 +=  "乳首"
+		ELSE
+			自慰行為映像 +=  "胸"
+		ENDIF
+		自慰部位１ = 3
+		自慰感覚 = ABL:奴隷:Ｂ感觉
+		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+			IF 自慰感覚 >= 4
+				自慰行為映像 +=  "用手指轻轻捏住给予刺激"
+			ELSE
+				IF TALENT:奴隷:胸部尺寸 >= 0
+					自慰行為映像 +=  "激烈的揉着"
+				ELSE
+					自慰行為映像 +=  "用手指像抚摸般地爱抚着"
+				ENDIF
+				CALL 确认乳头颜色(奴隷)
+				CALL 确认乳头大小(奴隷)
+			ENDIF
+		ENDIF
+	ENDIF
+	IF GETBIT(CFLAG:奴隷:自慰行動保存,4)
+		自慰行為映像 +=  "、"
+		IF 自慰部位１ != 0 && GETBIT(CFLAG:奴隷:自慰行動保存,0)
+			自慰行為映像 +=  "阴蒂"
+			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｃ感觉)
+		ELSEIF 自慰部位１ != 1 && GETBIT(CFLAG:奴隷:自慰行動保存,1)
+			自慰行為映像 +=  "膣内"
+			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｖ感觉)
+		ELSEIF 自慰部位１ != 2 && GETBIT(CFLAG:奴隷:自慰行動保存,2)
+			自慰行為映像 +=  "菊花"
+			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ａ感觉)
+		ELSEIF 自慰部位１ != 3 && GETBIT(CFLAG:奴隷:自慰行動保存,3)
+			自慰行為映像 +=  "胸"
+			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｂ感觉)
+		ENDIF
+		自慰行為映像 +=  "同时玩弄"
+		IF RAND(100) < 50
+			CALL 确认乳头颜色(奴隷)
+			CALL 确认乳头大小(奴隷)
+		ENDIF
+		IF RAND(100) < 50
+			CALL 确认小穴颜色(奴隷)
+			CALL 确认小穴松弛度(奴隷)
+		ENDIF
+		IF RAND(100) < 50
+			CALL 确认肛门颜色(奴隷)
+			CALL 确认肛门松弛度(奴隷)
+		ENDIF
+	ENDIF
+	PRINTL
+
+ENDIF
+
+名前 = %"誰か"%
+戻り値 = 0
+IF TALENT:奴隷:恋慕
+	戻り値 = 1
+	SIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		戻り値 = -1
+	SIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) && RAND:2 == 0
+		戻り値 = -1
+	SIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い) && RAND:3 == 0
+		戻り値 = -1
+	SIF TALENT:奴隷:亲爱
+		戻り値 = 1
+ELSEIF TALENT:奴隷:NTR
+	戻り値 = -1
+	SIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) && RAND:2 == 0
+		戻り値 = 1
+	SIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) && RAND:3 == 0
+		戻り値 = 1
+ENDIF
+IF 1 == 戻り値
+	名前 = %CALLNAME:MASTER%
+ELSEIF -1 == 戻り値
+	名前 = %NTR_NAME(0)%
+ENDIF
+IF PALAM:奴隷:欲情 >= PALAMLV:5
+	自慰行為映像 += "一次又一次呼唤着" + 名前 + "的名字，"
+	自慰行為音声 += "一次又一次呼唤着" + 名前 + "的名字，"
+ELSE
+	自慰行為映像 += "一边偶尔呼唤" + 名前 + "的名字，"
+	自慰行為音声 += "一边偶尔呼唤" + 名前 + "的名字，"
+ENDIF
+自慰行為映像 +=  "感到快要高潮了，"
+IF 自慰感覚 >= 4
+	自慰行為映像 += "发出无法抑制的淫靡的声音。"
+	自慰行為音声 += "可以听到无法抑制的淫靡的声音。"
+ELSEIF 自慰感覚 >= 2
+	自慰行為映像 += "发出小小的喘息声。"
+	自慰行為音声 += "可以听到小小的喘息声。"
+ELSE
+	自慰行為映像 += "忍耐着只发出了含糊不清的声响。"
+	自慰行為音声 += "可以听到忍耐着的含糊不清的声响。"
+ENDIF
+IF isSoundOnly
+	PRINTFORML %自慰行為音声%
+	PRINTFORML 好像没有注意到这边。
+ELSE
+	PRINTFORML %自慰行為映像%
+	PRINTFORML 看来是沉迷于自慰而没有注意到这边。
+ENDIF
+RETURN 戻り値
+
+;住人同士の行為を覗けるかチェック
+@LOOK_INHABITANT(targetArea, TGT_CHR)
+#DIM targetArea	; 覗いた先の場所
+#DIM TGT_CHR	; チェック対象の人物
+#DIM PTN_CHR	; チェック対象の人物の相手
+
+IF CFLAG:TGT_CHR:住人同士イベント内容%10 && ((targetArea == CFLAG:TGT_CHR:現在位置) || (GETBIT(FLAG:住人同士イベント設定,2)))
+	PTN_CHR = CFLAG:TGT_CHR:住人同士イベント相手
+	;PRINTFORML %CALLNAME:TGT_CHR%と%CALLNAME:PTN_CHR% {CFLAG:TGT_CHR:住人同士イベント内容} {CFLAG:TGT_CHR:住人同士イベントシチュエーション}
+	SELECTCASE CFLAG:TGT_CHR:住人同士イベント内容/10
+		CASE 300
+			PRINTFORML %CALLNAME:TGT_CHR%和%CALLNAME:PTN_CHR%在说话
+		CASE 301
+			PRINTFORML %CALLNAME:TGT_CHR%和%CALLNAME:PTN_CHR%正在喝茶
+		CASE 302
+			PRINTFORML %CALLNAME:TGT_CHR%和%CALLNAME:PTN_CHR%享受着肌肤接触
+		CASE 310
+			PRINTFORML %CALLNAME:TGT_CHR%在摸%CALLNAME:PTN_CHR%的屁股
+		CASE 311
+			PRINTFORML %CALLNAME:TGT_CHR%在紧紧拥抱着%CALLNAME:PTN_CHR%
+		CASE 312
+			PRINTFORML %CALLNAME:TGT_CHR%在和%CALLNAME:PTN_CHR%接吻
+		CASE 313
+			PRINTFORML %CALLNAME:TGT_CHR%正抚摸%CALLNAME:PTN_CHR%的胸部
+		CASE 314, 315, 316
+			PRINTFORML %CALLNAME:TGT_CHR%在摩擦着%CALLNAME:PTN_CHR%的下半身
+		CASE 350, 351
+			IF HAS_PENIS(TGT_CHR)
+				IF TA:PTN_CHR:TGT_CHR:TA_好感度 < CFLAG:PTN_CHR:体を許す好感度
+					PRINTFORML %CALLNAME:TGT_CHR%正在把阴茎插进%CALLNAME:PTN_CHR%的秘所侵犯着
+					SIF GETBIT(STAIN:PTN_CHR:膣内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%似乎没有抗拒的被推到了
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%的阴茎插入了%CALLNAME:PTN_CHR%的秘所，正在做爱
+					SIF GETBIT(STAIN:PTN_CHR:膣内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%接受了%CALLNAME:TGT_CHR%，正在摇晃着腰
+				ENDIF
+			ELSEIF HAS_PENIS(PTN_CHR)
+				IF TA:PTN_CHR:TGT_CHR:TA_好感度 < CFLAG:PTN_CHR:体を許す好感度
+					PRINTFORML %CALLNAME:TGT_CHR%的秘所完全含住了%CALLNAME:PTN_CHR%的阴茎，正在被侵犯着
+					SIF GETBIT(STAIN:TGT_CHR:膣内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%似乎没有抗拒的被推到了
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%的秘所完全含住了%CALLNAME:PTN_CHR%的阴茎，正在做爱
+					SIF GETBIT(STAIN:TGT_CHR:膣内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%接受了%CALLNAME:TGT_CHR%，正在摇晃着腰
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:TGT_CHR%和%CALLNAME:PTN_CHR%互相摩擦着彼此的秘所
+				SIF TA:PTN_CHR:TGT_CHR:TA_好感度 < CFLAG:PTN_CHR:体を許す好感度
+					PRINTFORML %CALLNAME:PTN_CHR%看起来像是在抵抗
+			ENDIF
+		CASE 352, 353
+			IF HAS_PENIS(TGT_CHR)
+				IF TA:PTN_CHR:TGT_CHR:TA_好感度 < CFLAG:PTN_CHR:体を許す好感度
+					PRINTFORML %CALLNAME:TGT_CHR%的阴茎插入了%CALLNAME:PTN_CHR%的肛门，正在侵犯着
+					SIF GETBIT(STAIN:PTN_CHR:腸内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%似乎没有抗拒的被推到了
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%的阴茎插入了%CALLNAME:PTN_CHR%的肛门，正在用肛门做爱
+					SIF GETBIT(STAIN:PTN_CHR:腸内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%接受了%CALLNAME:TGT_CHR%，正在摇晃着腰
+				ENDIF
+			ELSEIF HAS_PENIS(PTN_CHR)
+				IF TA:PTN_CHR:TGT_CHR:TA_好感度 < CFLAG:PTN_CHR:体を許す好感度
+					PRINTFORML %CALLNAME:TGT_CHR%的肛门完全含住了%CALLNAME:PTN_CHR%的阴茎，正被侵犯着
+					SIF GETBIT(STAIN:TGT_CHR:腸内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%似乎没有抗拒的被推到了
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%的肛门完全含住了%CALLNAME:PTN_CHR%的阴茎，正在用肛门做爱
+					SIF GETBIT(STAIN:TGT_CHR:腸内,2)
+						PRINTFORML %CALLNAME:TGT_CHR%每次抬起腰时，两人结合的地方就有精液被带出来
+					PRINTFORML %CALLNAME:PTN_CHR%接受了%CALLNAME:TGT_CHR%，正在摇晃着腰
+				ENDIF
+			ENDIF
+		CASE 354, 355
+			IF CFLAG:TGT_CHR:住人同士イベントシチュエーション == 1
+				IF HAS_PENIS(TGT_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%保持阴茎插入%CALLNAME:PTN_CHR%的秘所，陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORML 精液从二人的结合部溢出，洒落而下
+				ELSEIF HAS_PENIS(PTN_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%保持阴茎被%CALLNAME:PTN_CHR%的秘所完全含住，陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORML 精液从二人的结合部溢出，洒落而下
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%抱着%CALLNAME:PTN_CHR%的身体陶醉在余韵中
+				ENDIF
+			ELSEIF CFLAG:TGT_CHR:住人同士イベントシチュエーション == 2
+				IF HAS_PENIS(TGT_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%用%CALLNAME:PTN_CHR%的身体擦拭阴茎，同时陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORML 精液从%CALLNAME:PTN_CHR%的秘所溢出，洒落而下
+				ELSEIF HAS_PENIS(PTN_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%用自己的身体摩擦着%CALLNAME:PTN_CHR%的阴茎，同时陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORML 精液从%CALLNAME:(TGT_CHR)%的秘所中溢出，洒落下来
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%抱着%CALLNAME:PTN_CHR%的身体陶醉在余韵中
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:TGT_CHR%抱着%CALLNAME:PTN_CHR%的身体陶醉在余韵中
+			ENDIF
+		CASE 356, 357
+			IF CFLAG:TGT_CHR:住人同士イベントシチュエーション == 1
+				IF HAS_PENIS(TGT_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%保持阴茎插入%CALLNAME:PTN_CHR%的肛门，陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORML 精液从二人的结合部溢出，洒落而下
+				ELSEIF HAS_PENIS(PTN_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%保持阴茎被%CALLNAME:PTN_CHR%的肛门完全含住，陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORML 精液从二人的结合部溢出，洒落而下
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%抱着%CALLNAME:PTN_CHR%的身体陶醉在余韵中
+				ENDIF
+			ELSEIF CFLAG:TGT_CHR:住人同士イベントシチュエーション == 2
+				IF HAS_PENIS(TGT_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%用%CALLNAME:PTN_CHR%的身体擦拭阴茎，同时陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORM 精液从%CALLNAME:PTN_CHR%的肛门中溢出，洒落下来
+				ELSEIF HAS_PENIS(PTN_CHR)
+					PRINTFORML %CALLNAME:TGT_CHR%用自己的身体摩擦着%CALLNAME:PTN_CHR%的阴茎，同时陶醉在余韵和%CALLNAME:PTN_CHR%的身体中
+					PRINTFORML 精液从%CALLNAME:(TGT_CHR)%的肛门中溢出，洒落下来
+				ELSE
+					PRINTFORML %CALLNAME:TGT_CHR%抱着%CALLNAME:PTN_CHR%的身体陶醉在余韵中
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:TGT_CHR%抱着%CALLNAME:PTN_CHR%的身体陶醉在余韵中
+			ENDIF
+	ENDSELECT
+ENDIF
+
+@确认乳头颜色(ARG)
+PRINTL
+FOR LOCAL , 0 , CHARANUM
+	CALL 肌肤等颜色改变(LOCAL)
+NEXT
+IF CFLAG:ARG:已知的乳头颜色 != CFLAG:ARG:乳头颜色
+	PRINTFORM %CALLNAME:ARG%的乳头，
+	IF CFLAG:ARG:乳头颜色 >= 0 && CFLAG:ARG:乳头颜色 <= 2
+		PRINTFORM 现在是
+	ELSEIF CFLAG:ARG:乳头颜色 >= 3 && CFLAG:ARG:乳头颜色 <= 5
+		PRINTFORM 已经变成
+	ELSEIF CFLAG:ARG:乳头颜色 >= 6
+		PRINTFORM 没想到已经变成
+	ENDIF
+	CALL 秘部颜色SET(CFLAG:ARG:乳头颜色)
+	PRINTFORM ■
+	RESETCOLOR
+	IF CFLAG:ARG:乳头颜色 >= 0 && CFLAG:ARG:乳头颜色 <= 2
+		PRINTFORMW %秘部颜色(CFLAG:ARG:乳头颜色)%的…
+	ELSEIF CFLAG:ARG:乳头颜色 >= 3 && CFLAG:ARG:乳头颜色 <= 5
+		PRINTFORMW %秘部颜色(CFLAG:ARG:乳头颜色)%的了…
+	ELSEIF CFLAG:ARG:乳头颜色 >= 6
+		PRINTFORMW %秘部颜色(CFLAG:ARG:乳头颜色)%色的了…
+		PRINTFORMW 玩弄乳头的次数已经多到数不清了吧……
+	ENDIF
+	CFLAG:ARG:已知的乳头颜色 = CFLAG:ARG:乳头颜色
+ENDIF
+@确认小穴颜色(ARG)
+PRINTL
+FOR LOCAL , 0 , CHARANUM
+	CALL 肌肤等颜色改变(LOCAL)
+NEXT
+IF CFLAG:ARG:已知的小穴颜色 != CFLAG:ARG:小穴颜色
+	PRINTFORM %CALLNAME:ARG%的小穴，
+	IF CFLAG:ARG:小穴颜色 >= 0 && CFLAG:ARG:小穴颜色 <= 2
+		PRINTFORM 现在是
+	ELSEIF CFLAG:ARG:小穴颜色 >= 3 && CFLAG:ARG:小穴颜色 <= 5
+		PRINTFORM 已经变成
+	ELSEIF CFLAG:ARG:小穴颜色 >= 6
+		PRINTFORM 没想到已经变成
+	ENDIF
+	CALL 秘部颜色SET(CFLAG:ARG:小穴颜色)
+	PRINTFORM ■
+	RESETCOLOR
+	IF CFLAG:ARG:小穴颜色 >= 0 && CFLAG:ARG:小穴颜色 <= 2
+		PRINTFORMW %秘部颜色(CFLAG:ARG:小穴颜色)%的…
+		PRINTFORMW 没怎么使用过的漂亮颜色呢……
+	ELSEIF CFLAG:ARG:小穴颜色 >= 3 && CFLAG:ARG:小穴颜色 <= 5
+		PRINTFORMW %秘部颜色(CFLAG:ARG:小穴颜色)%的了…
+		PRINTFORMW 经验丰富的感觉……
+	ELSEIF CFLAG:ARG:小穴颜色 >= 6
+		PRINTFORMW %秘部颜色(CFLAG:ARG:小穴颜色)%色的了…
+		PRINTFORMW 都是黑木耳了，性行为已经多到数不清了吧……
+	ENDIF
+	CFLAG:ARG:已知的小穴颜色 = CFLAG:ARG:小穴颜色
+ENDIF
+@确认肛门颜色(ARG)
+PRINTL
+FOR LOCAL , 0 , CHARANUM
+	CALL 肌肤等颜色改变(LOCAL)
+NEXT
+IF CFLAG:ARG:已知的肛门颜色 != CFLAG:ARG:肛门颜色
+	PRINTFORM %CALLNAME:ARG%的后穴，
+	IF CFLAG:ARG:肛门颜色 >= 0 && CFLAG:ARG:肛门颜色 <= 2
+		PRINTFORM 现在是
+	ELSEIF CFLAG:ARG:肛门颜色 >= 3 && CFLAG:ARG:肛门颜色 <= 5
+		PRINTFORM 已经变成
+	ELSEIF CFLAG:ARG:肛门颜色 >= 6
+		PRINTFORM 没想到已经变成
+	ENDIF
+	CALL 秘部颜色SET(CFLAG:ARG:肛门颜色)
+	PRINTFORM ■
+	RESETCOLOR
+	PRINTFORML %秘部颜色(CFLAG:ARG:肛门颜色)%的…
+	IF CFLAG:ARG:肛门颜色 >= 0 && CFLAG:ARG:肛门颜色 <= 2
+		PRINTFORMW %秘部颜色(CFLAG:ARG:肛门颜色)%的…
+		PRINTFORMW 没怎么使用过的漂亮颜色呢……
+	ELSEIF CFLAG:ARG:肛门颜色 >= 3 && CFLAG:ARG:肛门颜色 <= 5
+		PRINTFORMW %秘部颜色(CFLAG:ARG:肛门颜色)%的了…
+		PRINTFORMW 是不是因为对这个后穴的性行为呢……
+	ELSEIF CFLAG:ARG:肛门颜色 >= 6
+		PRINTFORMW %秘部颜色(CFLAG:ARG:肛门颜色)%色的了…
+		PRINTFORMW 肛门的使用次数已经数不清了吧…变得像性器一样……
+	ENDIF
+	CFLAG:ARG:已知的肛门颜色 = CFLAG:ARG:肛门颜色
+ENDIF
+@确认肌肤颜色(ARG)
+PRINTL
+FOR LOCAL , 0 , CHARANUM
+	CALL 肌肤等颜色改变(LOCAL)
+NEXT
+IF CFLAG:ARG:已知的肌肤颜色 != CFLAG:ARG:肌色
+	PRINTFORM %CALLNAME:ARG%的肌肤
+	IF CFLAG:ARG:已知的肌肤颜色 == -1
+		PRINT 是
+	ELSE
+		PRINT 不知是什么时候变成
+	ENDIF
+	CALL 肌色SET(CFLAG:ARG:肌色)
+	PRINTFORM ■
+	RESETCOLOR
+	IF CFLAG:ARG:肌色 == 3
+		PRINTFORMW %肌色(CFLAG:ARG:肌色)%的…
+		PRINTFORMW 这就是晒过头吧，莫名的有种淫荡的感觉…
+	ELSEIF CFLAG:ARG:肌色 == 2
+		PRINTFORMW %肌色(CFLAG:ARG:肌色)%色的…
+		PRINTFORMW 晒过头了吧…
+	ELSEIF CFLAG:ARG:肌色 == 1
+		PRINTFORMW 很%肌色(CFLAG:ARG:肌色)%的颜色…
+		PRINTFORMW %CALLNAME:PLAYER%发出还行的声音…
+	ELSEIF CFLAG:ARG:肌色 == 0
+		PRINTFORMW %肌色(CFLAG:ARG:肌色)%如雪的…
+		PRINTFORMW 很少见的漂亮颜色啊…
+	ENDIF
+	CFLAG:ARG:已知的肌肤颜色 = CFLAG:ARG:肌色
+ENDIF

@@ -1,0 +1,103 @@
+﻿@SOURCE_ABLUP(ARG)
+IF ABL:ARG:战斗技能 < 20
+	IF EXP:ARG:战斗经验 > EXPLV:(ABL:ARG:战斗技能 + 3) || (EXP:ARG:战斗经验 > 5 && ABL:ARG:战斗技能 == 0)
+		ABL:ARG:战斗技能 ++
+		PRINTFORMW %CALLNAME:ARG%の战斗技能がLV{ABL:ARG:战斗技能}になりました
+	ENDIF
+ENDIF
+IF ABL:ARG:话术技能 < 10
+	IF EXP:ARG:会话经验 > EXPLV:(ABL:ARG:话术技能 + 3)
+		ABL:ARG:话术技能 ++
+		PRINTFORMW %CALLNAME:ARG%の话术技能がLV{ABL:ARG:话术技能}になりました
+	ENDIF
+ENDIF
+
+IF ABL:ARG:清扫技能 < 10 && ARG == 0
+	IF EXP:ARG:清扫经验 > EXPLV:(ABL:ARG:清扫技能 + 3)
+		ABL:ARG:清扫技能 ++
+		PRINTFORMW %CALLNAME:ARG%の清扫技能がLV{ABL:ARG:清扫技能}になりました
+	ENDIF
+ENDIF
+IF ABL:ARG:教养 < 10 && ARG == 0
+	IF EXP:ARG:学习经验 > EXPLV:(ABL:ARG:教养 + 3) || (EXP:ARG:学习经验 > 5 && ABL:ARG:教养 == 0)
+		ABL:ARG:教养 ++
+		PRINTFORMW %CALLNAME:ARG%の教养がLV{ABL:ARG:教养}になりました
+		SIF ABL:ARG:教养 == 1
+			PRINTW 媚药を使えるようになりました
+	ENDIF
+ENDIF
+IF ABL:ARG:料理技能 < 10 && ARG == 0
+	IF EXP:ARG:料理经验 > EXPLV:(ABL:ARG:料理技能 + 3) || (EXP:ARG:料理经验 > 5 && ABL:ARG:料理技能== 0)
+		ABL:ARG:料理技能 ++
+		PRINTFORMW %CALLNAME:ARG%の料理技能がLV{ABL:ARG:料理技能}になりました
+	ENDIF
+ENDIF
+IF ABL:ARG:指 < 10
+	LOCAL = EXP:ARG:手淫经验
+	LOCAL:1 = 10 + ABL:ARG:技巧 / 2 + TALENT:ARG:手指灵巧 * 2 + TALENT:ARG:习得速度
+	IF LOCAL * LOCAL:1 / 10 > EXPLV:(ABL:ARG:指 + 1) / 2 && EXP_UP(24,ARG)
+		ABL:ARG:指 ++
+		PRINTFORMW %CALLNAME:ARG%の指が器用になった
+		IF ABL:ARG:指 >= 5 && TALENT:ARG:手指灵巧 == 0
+			PRINTFORMW %CALLNAME:ARG%获得了[手指灵巧]
+			TALENT:ARG:手指灵巧 = 1
+		ENDIF
+	ENDIF
+ENDIF
+IF ABL:ARG:舌 < 10
+	LOCAL = EXP:ARG:口淫经验
+	LOCAL:1 = 10 + ABL:ARG:技巧 / 2 + TALENT:ARG:舌头灵巧 * 2 + TALENT:ARG:习得速度
+	IF  LOCAL * LOCAL:1 / 10 > EXPLV:(ABL:ARG:舌 + 1) && EXP_UP(25,ARG)
+		ABL:ARG:舌 ++
+		PRINTFORMW %CALLNAME:ARG%の舌が器用になった
+		IF ABL:ARG:舌 >= 5 && TALENT:ARG:舌头灵巧 == 0
+			PRINTFORMW %CALLNAME:ARG%获得了[舌头灵巧]
+			TALENT:ARG:舌头灵巧 = 1
+		ENDIF
+	ENDIF
+ENDIF
+IF ABL:ARG:胸 < 6
+	LOCAL = EXP:ARG:乳交经验 * 2 +  EXP:ARG:Ｂ经验 / 5
+	LOCAL:1 = 10 + ABL:ARG:技巧 / 2 + TALENT:ARG:胸部尺寸 + TALENT:ARG:习得速度
+	IF LOCAL * LOCAL:1 / 10 > EXPLV:(ABL:ARG:胸 + 1) && EXP:ARG:乳交经验 >  EXPLV:(ABL:ARG:胸 + 1); && EXP_UP(26,ARG)
+		ABL:ARG:胸 ++
+		PRINTFORMW %CALLNAME:ARG%使用胸部的性技提升了
+		IF ABL:ARG:胸 >= 5 && TALENT:ARG:淫乳 == 0
+			PRINTFORMW %CALLNAME:ARG%获得了[淫乳]
+			TALENT:ARG:淫乳 = 1
+		ENDIF
+	ENDIF
+ENDIF
+IF ABL:ARG:腰 < 10
+	LOCAL = MAX(EXP:ARG:Ｖ性交经验,EXP:ARG:浮気Ｖ性交经验) +  MAX(EXP:ARG:Ａ性交经验,EXP:ARG:浮気Ａ性交经验)
+	LOCAL:1 = 10 + ABL:ARG:技巧 / 2 + TALENT:ARG:习得速度
+	IF LOCAL * LOCAL:1 / 10 > EXPLV:(ABL:ARG:腰 + 1)
+		ABL:ARG:腰 ++
+		PRINTFORMW %CALLNAME:ARG%的腰技变得更高明了
+	ENDIF
+ENDIF
+IF ABL:ARG:膣 < 6
+	;広げすぎるとガバガバになっちゃいますよ
+	LOCAL = MAX(EXP:ARG:Ｖ性交经验,EXP:ARG:浮気Ｖ性交经验)  * 2 +  MAX(EXP:ARG:Ｖ经验,EXP:ARG:浮気Ｖ经验) / 5 + (MAX(EXP:ARG:Ｖ扩张经验,EXP:ARG:浮気Ｖ扩张经验) <= 10 ? MAX(EXP:ARG:Ｖ扩张经验,EXP:ARG:浮気Ｖ扩张经验) * 5 # 100 - MAX(EXP:ARG:Ｖ扩张经验,EXP:ARG:浮気Ｖ扩张经验))
+	LOCAL:1 = 10 + ABL:ARG:技巧 / 2 + TALENT:ARG:习得速度
+	IF LOCAL * LOCAL:1 / 10 > EXPLV:(ABL:ARG:膣 + 1) && MAX(EXP:ARG:Ｖ性交经验,EXP:ARG:浮気Ｖ性交经验) >  EXPLV:(ABL:ARG:膣 + 1); && EXP_UP(20,ARG)
+		ABL:ARG:膣 ++
+		PRINTFORMW %CALLNAME:ARG%的性交技术提高了
+		IF ABL:ARG:膣 >= 5 && TALENT:ARG:淫壶 == 0
+			PRINTFORMW %CALLNAME:ARG%获得了[淫壶]
+			TALENT:ARG:淫壶 = 1
+		ENDIF
+	ENDIF
+ENDIF
+IF ABL:ARG:菊花 < 6
+	LOCAL = MAX(EXP:ARG:Ａ性交经验,EXP:ARG:浮気Ａ性交经验)  * 2 +  MAX(EXP:ARG:Ａ经验,EXP:ARG:浮気Ａ经验) / 5 + (MAX(EXP:ARG:Ａ扩张经验,EXP:ARG:浮気Ａ扩张经验) <= 10 ? MAX(EXP:ARG:Ａ扩张经验,EXP:ARG:浮気Ａ扩张经验) * 5 # 100 - MAX(EXP:ARG:Ａ扩张经验,EXP:ARG:浮気Ａ扩张经验))
+	LOCAL:1 = 10 + ABL:ARG:技巧 / 2 + TALENT:ARG:习得速度
+	IF LOCAL * LOCAL:1 / 10 > EXPLV:(ABL:ARG:菊花 + 1) && MAX(EXP:ARG:Ａ性交经验,EXP:ARG:浮気Ａ性交经验) > EXPLV:(ABL:ARG:菊花 + 1); && EXP_UP(21,ARG)
+		ABL:ARG:菊花 ++
+		PRINTFORMW %CALLNAME:ARG%的肛交技术提升了
+		IF ABL:ARG:菊花 >= 5 && TALENT:ARG:淫肛 == 0
+			PRINTFORMW %CALLNAME:ARG%获得了[淫肛]
+			TALENT:ARG:淫肛 = 1
+		ENDIF
+	ENDIF
+ENDIF

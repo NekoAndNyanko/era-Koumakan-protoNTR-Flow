@@ -1,0 +1,118 @@
+﻿@COM310
+;抚摸臀部
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
+SIF RESULT
+	RETURN 0
+
+LOCAL = RAND:110
+LOCAL:1 = 90 + GET_SUCCESS_RATE() / 5
+SIF LOCAL:1 > 109
+	LOCAL:1 = 109
+IF LOCAL <= 9
+	;大成功
+	TFLAG:193 = 1
+ELSEIF LOCAL >= LOCAL:1
+	;失敗
+	TFLAG:193 = -1
+ELSE
+	;残りは成功
+	TFLAG:193 = 0
+ENDIF
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+TCVAR:TARGET:116 = PLAYER
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;先制発生時は失敗しない
+SIF TFLAG:COMABLE管理 == 3
+	TFLAG:193 = MAX(TFLAG:193,0)
+DOWNBASE:气力 += 50
+DOWNBASE:MASTER:气力 += 50
+
+;固定で獲得するソース
+SOURCE:欢乐 = 100
+SOURCE:情爱 = 100
+SOURCE:露出 = 100
+SOURCE:反感 = 200
+
+;ABL:亲密をみる
+IF ABL:亲密 <= 3
+	SOURCE:欢乐 += 100 + (ABL:亲密 * 40)
+	SOURCE:情爱 += 200 + (ABL:亲密 * 30)
+ELSEIF ABL:亲密 <= 5
+	SOURCE:欢乐 += 400 + (ABL:亲密 * 50)
+	SOURCE:情爱 += 400 + (ABL:亲密 * 30)
+ELSEIF ABL:亲密 <= 8
+	SOURCE:欢乐 += 700 + (ABL:亲密 * 60)
+	SOURCE:情爱 += 600 + (ABL:亲密 * 40)
+ELSEIF ABL:亲密 <= 11
+	SOURCE:欢乐 += 1200 + (ABL:亲密 * 80)
+	SOURCE:情爱 += 800 + (ABL:亲密 * 40)
+ELSE
+	SOURCE:欢乐 += 2000 + (ABL:亲密 * 50)
+	SOURCE:情爱 += 1800 + (ABL:亲密 * 20)
+ENDIF
+
+;好感度をみる
+IF CFLAG:好感度 <= 500
+	SOURCE:欢乐 += CFLAG:2
+ELSEIF CFLAG:好感度 <= 5000
+	SOURCE:欢乐 += 500 + (CFLAG:好感度 - 500) / 3
+ELSE
+	SOURCE:欢乐 += 2000 + (CFLAG:好感度 - 5000) / 5
+ENDIF
+SIF SOURCE:欢乐 < 0
+	SOURCE:欢乐 = 0
+
+LOCAL = 0
+;亲密が低いと好感度低下
+IF ABL:亲密 == 0
+	LOCAL -= 3
+ELSEIF ABL:亲密 == 1
+	LOCAL -= 2
+ELSEIF ABL:亲密 == 2
+	LOCAL -= 1
+ENDIF
+;好感度が低いと好感度低下
+IF CFLAG:好感度 <= 50
+	LOCAL -= 3
+ELSEIF CFLAG:好感度 <= 100
+	LOCAL -= 2
+ELSEIF CFLAG:好感度 <= 250
+	LOCAL -= 1
+ENDIF
+
+SOURCE:欲情 = 100 + 200 * ABL:欲望
+SOURCE:被动 = 100 + 200 * ABL:顺从
+
+;好感度変化
+TFLAG:97 += LOCAL
+
+IF TFLAG:193 == -1
+	TIMES SOURCE:欢乐 , 0.10
+	TIMES SOURCE:情爱 , 0.50
+	TIMES SOURCE:被动 , 0.50
+	TIMES SOURCE:欲情 , 0.50
+	TIMES SOURCE:反感 , 1.50
+ELSEIF TFLAG:193 == 0
+	TIMES SOURCE:欢乐 , 1.00
+	TIMES SOURCE:情爱 , 1.00
+	TIMES SOURCE:被动 , 1.00
+	TIMES SOURCE:欲情 , 1.00
+ELSE
+	TIMES SOURCE:欢乐 , 2.00
+	TIMES SOURCE:情爱 , 2.00
+	TIMES SOURCE:被动 , 2.00
+	TIMES SOURCE:欲情 , 2.00
+	TIMES SOURCE:反感 , 0.75
+ENDIF
+TIME += 10
+
+RETURN 1
+

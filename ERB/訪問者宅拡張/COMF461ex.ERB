@@ -1,0 +1,312 @@
+﻿;-------------------------------------------------------------------------------
+;(訪問者宅にて)逃跑(拡張版)
+; RETURN 0:コマンドの実行に失敗, 1:コマンドの実行に成功
+; MASTER/TARGET/PLAYER/ASSIに影響されず呼び出したいので、中身は関数に切り出す
+@COM461
+CALL COMMAND461(MASTER)
+RETURN RESULT:0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)逃跑(拡張版)
+; @return 0:コマンドの実行に失敗,1:コマンドの実行に成功
+@COMMAND461(奴隷)
+#DIM 奴隷
+#DIMS コマンド,100
+#DIM コマンド数 = 0
+;未設定の場合初期位置にリセット
+IF CFLAG:奴隷:現在位置詳細 == 0
+	CFLAG:奴隷:現在位置詳細 = 25
+ENDIF
+IF FLAG:訪問者の現在位置 != 位置_訪問者宅 && RAND:20 == 0
+	CALL COMMAND461_01(奴隷)
+	RETURN 1
+ENDIF
+コマンド数 = 0
+CALL COM461_MAP(奴隷)
+$COM461_INPUT_LOOP
+INPUT
+TRYCCALLFORM COM461_%TOSTR(RESULT:0,"00")%
+CATCH
+	CLEARLINE 1
+	GOTO COM461_INPUT_LOOP
+ENDCATCH
+RETURN RESULT:0
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;訪問者の帰宅
+;@return 1:xxx,0:xxx
+@COMMAND461_01(奴隷)
+#DIM 奴隷
+#DIM 体位
+#DIM 前後
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+FLAG:訪問者の現在位置 = 位置_訪問者宅
+SELECTCASE CFLAG:奴隷:現在位置詳細
+	CASE 24,25,26,27
+		PRINTFORMW %"似乎、"+NTR_NAME(0)+"已经回来了……"%
+	CASEELSE
+		SELECTCASE TALENT:MASTER:NTR
+			CASE 1
+				PRINTFORMW %"似乎、"+NTR_NAME(0)+"已经回来了！"%
+				PRINTFORML 
+				IF CFLAG:うふふ == 3
+					PRINTFORMW %"沉浸在自慰中的"+CALLNAME:奴隷+"没有注意到，淫乱羞耻的姿态被看得一清二楚……！"%
+					PRINTFORMW %NTR_NAME(0)+"带着轻蔑的笑容，注视着"+CALLNAME:奴隷%
+					PRINTFORM %"在这样的视线下、"%
+					IF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 5
+						PRINTFORMW %NTR_NAME(0)+"真是淫乱的奴隶……已经等不及我回来了么？"%
+					ELSE
+						PRINTFORMW %"违反了约定、意味着你将要接受惩罚。"%
+					ENDIF
+					PRINTFORML 
+					PRINTFORM %NTR_NAME(0)+"无视了"+CALLNAME:奴隷+"慌乱的辩解，走了过去、"%
+					IF RAND:2 == 0
+						PRINTFORMW %"『要对不能好好等待的奴隶给予惩罚』 话音刚落，"+CALLNAME:奴隷+"被推倒了。"%
+						;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+						SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ｖ感觉, 0 )
+						;「普通」の場合１回の行為時間を短く取り回数は減らす。(11～20分×2～4回)
+						回数 = 2 + RAND:3
+						累計時間 = 0
+						FOR LOCAL:0,0,回数
+							行為時間 = 11 + RAND:10
+							CALL NTR_Play_V_0(奴隷,人物_訪問者,1,行為時間)
+							CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+							CALL ORGASM_ADD(奴隷,人物_訪問者)
+							累計時間 += 行為時間
+							TIME += 行為時間
+						NEXT
+						PRINTDATAL
+							DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次性器"%
+						ENDDATA
+						CFLAG:うふふ = 0
+					ELSE
+						PRINTFORMW %"『继续』命令传了过来。"%
+						IF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 5
+							PRINTFORMW %CALLNAME:奴隷+"‘是！’地一声，带着没有被"+NTR_NAME(0)+"直接爱抚的焦躁感和可能被做些什么的期待喘息着、双颊潮红地再一次开始了自慰……。"%
+						ELSE
+							PRINTFORMW %"没有办法违逆那个命令、更不可能从"+NTR_NAME(0)+"这里逃得出去"+CALLNAME:奴隷+"无可奈何地再次开始了自慰……。"%
+						ENDIF
+					ENDIF
+				ELSE
+					SELECTCASE CFLAG:奴隷:現在位置詳細
+						CASE 1
+						CASEELSE
+							PRINTFORMW %"感觉到"+NTR_NAME(0)+"要回来的样子"+CALLNAME:奴隷+"双眼中染上了粉红的情欲，急忙赶到玄关迎接。"%
+							;お出迎えで玄関に移动
+							CFLAG:奴隷:現在位置詳細 = 1
+					ENDSELECT
+					PRINTFORM %CALLNAME:奴隷+"向"+NTR_NAME(0)+"表示回家的欢迎"%
+					IF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 5
+						PRINTFORML %"一边说着自己的期待一边交换着回家的吻、同时急不可耐地爱抚"+NTR_NAME(0)+"胯下的巨兽。"%
+					ELSEIF CFLAG:MASTER:WC_訪問者受け入れ具合 == 4
+						PRINTFORML %"吻了过去。"%
+					ELSE
+						PRINTFORML %"恭敬地说了一句「欢迎回来」。"% 
+					ENDIF
+					;三分の一の確率で玄姦に
+					SELECTCASE RAND:3
+						CASE 1
+							PRINTFORML 
+							PRINTFORMW  %NTR_NAME(0)+"对"+CALLNAME:奴隷+"的乖巧欢迎感到兴奋，把"+CALLNAME:奴隷+"抱在怀中，用技巧娴熟的手爱抚起来！"%
+							PRINTFORML 
+							IF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 5
+								PRINTFORMW %CALLNAME:奴隷+"就好像在等待"+NTR_NAME(0)+"的宠幸一样、带着淫靡的笑容，双眸恍惚地沉浸在"+NTR_NAME(0)+"猥亵的爱抚中。"%
+							ELSEIF CFLAG:MASTER:WC_訪問者受け入れ具合 == 4
+								PRINTFORMW %CALLNAME:奴隷+"嘴里说着抗拒的话，淫乱的肉体却沉沦在"+NTR_NAME(0)+"热情的爱抚中。"%
+							ELSE
+								PRINTFORMW %CALLNAME:奴隷+"用柔弱的语气说着拒绝的话，瞳孔却一阵恍惚。"%
+							ENDIF
+							PRINTFORMW %"对这样的态度感到兴奋的"+NTR_NAME(0)+"就这么不脱衣服直接"%
+							;体位の決定
+							SELECTCASE RAND:3
+								CASE 1
+									体位 = 1	;;正常位
+									PRINTFORMW %"正面压了上来，打开了"+CALLNAME:奴隷+"双腿，将肉棒顶了上去……"%
+								CASE 2
+									体位 = 2	;;背面立位
+									PRINTFORMW %"将"+CALLNAME:奴隷+"压在大门上，肉棒从后面顶了上去……"%
+								CASEELSE
+									体位 = 3	;;后背位
+									PRINTFORMW %"将"+CALLNAME:奴隷+"手被高高的搭在了壁炉上，诱人的臀部往后方翘起一个弧线。"%
+							ENDSELECT
+							;前後の決定
+							PRINTFORMW %"就这样"+NTR_NAME(0)+"一边用手揉捏着"+CALLNAME:奴隷+"的乳房、一边将手伸向了"+CALLNAME:奴隷+"的股间准备解开贞操带"%
+							PRINTFORMW %"解开后，怒挺的肉棒蓄势待发"%
+							;处女、もしくは男だと強制でAに
+							IF TALENT:MASTER:处女 || !HAS_VAGINA(MASTER)
+								前後 = 1	;;後ろに
+							ELSE
+								SELECTCASE RAND:3
+									CASE 1
+										前後 = 1	;;後ろに
+									CASEELSE
+										前後 = 2	;;前に
+								ENDSELECT
+							ENDIF
+							SELECTCASE 前後
+								CASE 1
+									SELECTCASE 体位
+										CASE 1	;;正常位
+											PRINTFORM %"将"+CALLNAME:奴隷+"移动到腰部稍高的地方"%
+									ENDSELECT
+									PRINTFORMW %"瞄准了蠢动着的肛穴"%
+								CASEELSE
+									SELECTCASE 体位
+										CASE 1
+										CASEELSE	;;正常位以外で追加
+											PRINTFORM %"从背后"%
+									ENDSELECT
+									PRINTFORMW %"瞄准了淫液汩汩的小穴"%
+							ENDSELECT
+							PRINTFORML 
+							PRINTFORM %"看到这一切的"+CALLNAME:奴隷%
+							IF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 5
+								PRINTFORM %"迫不及待地自己"%
+								SELECTCASE 前後
+									CASE 1
+										PRINTFORM %"把已经变成性器的肛门打开"%
+									CASEELSE
+										PRINTFORM %"把嘴唇献给了"+NTR_NAME(0)%
+								ENDSELECT
+								PRINTFORMW %"充满情欲地注视着"+NTR_NAME(0)+"说着一些下流的话。"%
+							ELSEIF CFLAG:MASTER:WC_訪問者受け入れ具合 == 4
+								PRINTFORMW %"光是应付被爱抚带来的强烈快感就已经精疲力尽了、只能用迷乱的眼神注视这侵犯自己的肉棒"%
+							ELSE
+								PRINTFORMW %"尽管怀着必死的抵抗心，但身体已经被肉棒征服了，言语变得苍白无力。"%
+							ENDIF
+							PRINTFORM %NTR_NAME(0)+"看到"+CALLNAME:奴隷+"在肉棒下沦陷后不堪的样子，脸上露出了淡淡的笑容、"%
+							SELECTCASE 体位
+								CASE 1	;;正常位
+									PRINTFORMW %"从上方责备似的将肉棒大力插入了淫穴。"%
+								CASE 2	;;背面立位
+									PRINTFORMW %"从后面捉住"+CALLNAME:奴隷+"的腰将肉棒捅了进去。"%
+								CASEELSE
+									PRINTFORMW %"手捉着臀部，把肉棒插入了小穴里。"%
+							ENDSELECT
+							PRINTFORMW %"突然的袭击带来了强烈的快感，让"+CALLNAME:奴隷+"身体拼命地后仰、很快就沉浸在"+NTR_NAME(0)+"大肉棒的激烈抽插中。"%
+							PRINTFORML 
+							PRINTFORM %"好不容易才渐渐适应了被肉棒蹂躏的快感后，"+CALLNAME:奴隷%
+							IF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 5
+								PRINTFORMW %"贪图着更高的快乐"+CALLNAME:奴隷+"自行淫荡地狂野地摇摆腰部，发出一声声浪荡的娇吟"%
+							ELSEIF CFLAG:MASTER:WC_訪問者受け入れ具合 == 4
+								PRINTFORMW %"尽管还有着抵抗心、但身体已经彻底沦陷，积极地配合着摇摆腰部，发出阵阵喘息。"%
+							ELSE
+								PRINTFORMW %"紧闭着眼睛、拼命忍耐身体深处涌现的甘甜的快感，祈祷着尽快结束。"%
+							ENDIF
+							PRINTFORML
+							SELECTCASE 体位
+								CASE 1
+									;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+									SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ａ感觉, 0 )
+									;「普通」の場合１回の行為時間を短く取り回数は減らす。(11～20分×2～4回)
+									回数 = 2 + RAND:3
+									累計時間 = 0
+									FOR LOCAL:0,0,回数
+										行為時間 = 11 + RAND:10
+										CALL NTR_Play_A_0(奴隷,人物_訪問者,1,行為時間)
+										CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+										CALL ORGASM_ADD(奴隷,人物_訪問者)
+										累計時間 += 行為時間
+										TIME += 行為時間
+									NEXT
+									PRINTDATAL
+										DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次肛穴"%
+									ENDDATA
+								CASEELSE
+									;経験少ない場合の苦痛刻印防止。润滑剂を使う感じ？
+									SOURCE:奴隷:液体 = 5000 * MAX( 5-ABL:奴隷:Ｖ感觉, 0 )
+									;「普通」の場合１回の行為時間を短く取り回数は減らす。(11～20分×2～4回)
+									回数 = 2 + RAND:3
+									累計時間 = 0
+									FOR LOCAL:0,0,回数
+										行為時間 = 11 + RAND:10
+										CALL NTR_Play_V_0(奴隷,人物_訪問者,1,行為時間)
+										CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+										CALL ORGASM_ADD(奴隷,人物_訪問者)
+										累計時間 += 行為時間
+										TIME += 行為時間
+									NEXT
+									PRINTDATAL
+										DATAFORM %CALLNAME:奴隷+"在"+TOSTR(累計時間)+"分钟内，被持续侵犯了"+TOSTR(回数)+"次小穴"%
+									ENDDATA
+							ENDSELECT
+						CASEELSE
+					ENDSELECT
+				ENDIF
+			CASEELSE
+				PRINTFORMW %"在牢房外、被恰好回来的"+NTR_NAME(0)+"发现了！"%
+				PRINTFORMW %CALLNAME:奴隷+"被重新关进了牢里、并作为惩罚激烈地侵犯了……"%
+				;場所は牢屋に
+				CFLAG:奴隷:現在位置詳細 = 25
+				;鍵は全部かける
+				FLAG:訪問者宅の施錠状態 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
+				CFLAG:奴隷:NTR訪問者宅監禁状況 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
+				CALL COM46x_V_3(奴隷)
+		ENDSELECT
+ENDSELECT
+RETURN 1
+
+
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@COM461_MAP(奴隷)
+#DIM 奴隷
+#DIMS 地図,2,9
+#DIM 階層
+#DIM 行数
+#DIMS HTMLデータ
+#DIMS 自分位置色
+#DIMS 無効位置色
+;地上部分データ
+地図:01:00 = %"┏━┳┓─┏━━┓"%
+地図:01:01 = %"┃02┃　01　　03┃"%
+地図:01:02 = %"┣　┛　　　　　┃"%
+地図:01:03 = %"┃04│　　　　　┃"%
+地図:01:04 = %"┣　┓　05　　06┃"%
+地図:01:05 = %"┃　┃　　　　　┃"%
+地図:01:06 = %"┃07┃　┏　━━┫"%
+地図:01:07 = %"┃　┃08┃　09　┃"%
+地図:01:08 = %"┗━┻━┻━━━┛"%
+;地下部分データ
+地図:00:00 = %"　　　　┏━━━┓"%
+地図:00:01 = %"　　　　┃　　　┃"%
+地図:00:02 = %"┏━┳━┫　23　┃"%
+地図:00:03 = %"┃21：22：　　　┃"%
+地図:00:04 = %"┗━╋‥┻━┳━┛"%
+地図:00:05 = %"　　┃24　　┃　　"%
+地図:00:06 = %"　　┃　25　┃　　"%
+地図:00:07 = %"　　┃26　27┃　　"%
+地図:00:08 = %"　　┗━━━┛　　"%
+;地図描画
+;FIXME:手抜き。ちゃんとColorSettings.erhの値をそのうち変換すること。
+自分位置色 = %"#00FF00"%
+FOR 階層,VARSIZE("地図",0)-1,-1,-1
+	HTMLデータ '= ""
+	FOR 行数,0,VARSIZE("地図",1)
+		FOR LOCAL:0,0,100
+			TRYCCALLFORM %"COM461_"+TOSTR(LOCAL:0,"00")+"_ENABLE"%, 奴隷
+				IF RESULT:0 && STRCOUNT(地図:階層:行数,TOSTR(LOCAL:0,"00")) > 0
+					IF CFLAG:奴隷:現在位置詳細 == LOCAL:0
+						地図:階層:行数 = %REPLACE(地図:階層:行数,TOSTR(LOCAL:0,"00"),"<button value='"+TOSTR(LOCAL:0,"00")+"'><font color='"+自分位置色+"'>"+TOSTR(LOCAL:0,"00")+"</font></button>")%
+						地図:階層:行数 = %地図:階層:行数+"  "+"<button value='"+TOSTR(LOCAL:0,"00")+"'><font color='"+自分位置色+"'>"+TOSTR(LOCAL:0,"00")+":"+RESULTS:0+"</font></button>"%
+					ELSE
+						地図:階層:行数 = %REPLACE(地図:階層:行数,TOSTR(LOCAL:0,"00"),"<button value='"+TOSTR(LOCAL:0,"00")+"'>"+TOSTR(LOCAL:0,"00")+"</button>")%
+						地図:階層:行数 = %地図:階層:行数+"  "+"<button value='"+TOSTR(LOCAL:0,"00")+"'>"+TOSTR(LOCAL:0,"00")+":"+RESULTS:0+"</button>"%
+					ENDIF
+				ELSE
+					地図:階層:行数 = %REPLACE(地図:階層:行数,TOSTR(LOCAL:0,"00"),"  ")%
+				ENDIF
+			CATCH
+			ENDCATCH
+		NEXT
+		HTMLデータ '= HTMLデータ+地図:階層:行数+"<br>"
+	NEXT
+	HTMLデータ '= "<font face='MS Gothic'>"+HTMLデータ+"</font>"
+	HTML_PRINT HTMLデータ
+NEXT
+RETURN 0

@@ -1,0 +1,54 @@
+;-------------------------------------------------------------------------------
+;菊花性交
+@NTR_A_SEX(奴隷,密室度,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 密室度
+#DIM 調教者
+#DIM 体位
+TCVAR:奴隷:行為者 = 調教者
+TCVAR:行為者 = 調教者
+CALL 締り具合変動, 奴隷, 3, 1
+IF FLAG:訪問者との行為の終了時刻 == 0
+	FLAG:访问者行为计时点 = DATETIME()
+	CALL NTR_ADD_SURRENDER(奴隷, 10)
+	;CFLAG:奴隷:屈服度 += (FLAG:訪問者との行為の終了時刻 - DATETIME()) / 10
+ENDIF
+SIF EXP:奴隷:NTR陷落经验 
+	CALL NTR_ADD_SURRENDER(奴隷, 2)
+;体位の決定(目立たない場所か私室かで体位に違いを)
+体位 = 0
+SELECTCASE FLAG:訪問者との行為
+	CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面座位
+		体位 = FLAG:訪問者との行為 - NTR_行为_Ａ正常位
+	CASE IS > NTR_行为_Ａ背面座位
+		体位 = FLAG:訪問者との行為 - NTR_行为_Ａ背面座位
+	CASEELSE
+		SIF 密室度 == 2
+			体位 = 5 + RAND:2
+		SIF 密室度 >= 3
+			体位 = RAND:5
+ENDSELECT
+体位 = MIN(体位, 6)
+CALLFORM NTR_A_SEX_{体位}(奴隷)
+;汚れ等共通する処理
+CALL STAIN_MOVE_BY_PENIS(部位_Ａ, 奴隷, 人物_訪問者)
+CALL STAIN_MOVE_BY_PENIS(部位_腸内, 奴隷, 人物_訪問者)
+CFLAG:奴隷:NTR訪問者と最後にセックスした日時 = DATETIME()
+CALL LOST_VIRGIN_A(奴隷, 調教者)
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;菊花性交終了（絶頂）
+;@return 常に0
+@NTR_A_SEX_FINISH(奴隷)
+#DIM 奴隷
+CALL NTR_A_SEX_FINISH_MSG_KOJO(奴隷)
+CALL EJACULATION_A(奴隷, 人物_訪問者)
+CALL NTR_EXP_ADD_A_SEX_EX(奴隷,1)
+SIF TALENT:奴隷:亲爱
+	EXP:奴隷:被强奸经验 ++
+;A感覚が高いと绝顶经验加算（強絶頂扱い）
+CALL NTR_A_EXP_PLUS(奴隷)
+SIF RAND:3 == 0
+	CALL NTR_PUNISHMENT_10(奴隷, 1)
+RETURN 0

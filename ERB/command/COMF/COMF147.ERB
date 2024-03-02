@@ -1,0 +1,172 @@
+﻿;-------------------------------------------------
+;扩张气球
+;ハードな調教コマンド、レベル4
+;-------------------------------------------------
+@COM147
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
+SIF RESULT
+	RETURN 0
+
+;着脱の処理
+TEQUIP:扩张气球 = !TEQUIP:扩张气球
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 150
+DOWNBASE:气力 += 200
+
+SOURCE:快Ａ = 200
+SOURCE:苦痛 = 800
+SOURCE:露出 = 300
+SOURCE:屈从 = 400
+SOURCE:逸脱 = 700
+SOURCE:反感 = 700
+
+CALL 締り具合変動, TARGET, 5, 1
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 700
+
+;Aへの苦痛は先に処理しておく
+;EXP:Ａ经验をみる
+IF EXP:Ａ经验 < EXPLV:1
+	TIMES SOURCE:苦痛 , 3.00
+	TIMES SOURCE:反感 , 3.00
+ELSEIF EXP:Ａ经验 < EXPLV:2
+	TIMES SOURCE:苦痛 , 1.20
+	TIMES SOURCE:反感 , 2.00
+ELSEIF EXP:Ａ经验 < EXPLV:3
+	TIMES SOURCE:苦痛 , 0.80
+	TIMES SOURCE:反感 , 1.50
+ELSEIF EXP:Ａ经验 < EXPLV:4
+	TIMES SOURCE:苦痛 , 0.60
+	TIMES SOURCE:反感 , 1.20
+ELSEIF EXP:Ａ经验 < EXPLV:5
+	TIMES SOURCE:苦痛 , 0.40
+ELSEIF EXP:Ａ经验 >= EXPLV:5
+	TIMES SOURCE:苦痛 , 0.20
+ENDIF
+
+;PALAM:润滑をみる
+IF PALAM:润滑 < PALAMLV:1
+	TIMES SOURCE:苦痛 , 1.20
+	TIMES SOURCE:反感 , 2.00
+ELSEIF PALAM:润滑 < PALAMLV:2
+	TIMES SOURCE:苦痛 , 1.00
+	TIMES SOURCE:反感 , 1.50
+ELSEIF PALAM:润滑 < PALAMLV:3
+	TIMES SOURCE:苦痛 , 0.60
+ELSEIF PALAM:润滑 < PALAMLV:4
+	TIMES SOURCE:苦痛 , 0.30
+ELSEIF PALAM:润滑 >= PALAMLV:4
+	TIMES SOURCE:苦痛 , 0.20
+ENDIF
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+STAIN:腸内 |= STAIN:Ａ
+STAIN:Ａ |= STAIN:腸内
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:Ａ经验 += 4
+
+IF !EXP:Ｖ扩张经验 && !EXP:Ａ扩张经验 && !GETBIT(CFLAG:3,5)
+	EXP:异常经验 += 1
+	SETBIT CFLAG:异常经验,5
+ENDIF
+
+EXP:Ａ扩张经验 += 1
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+ENDIF
+CALL 改变肛门色素(TARGET,1)
+CALL 确认小穴颜色(TARGET)
+CALL 确认小穴松弛度(TARGET)
+CALL 确认肛门颜色(TARGET)
+CALL 确认肛门松弛度(TARGET)
+RETURN 1
+;-------------------------------------------------
+;装着継続の処理
+;-------------------------------------------------
+@EQUIP_COM147(ARG)
+#DIM 苦痛増分
+#DIM 反感増分
+;扩张气球
+
+PRINTL ＜扩张气球插入中＞
+
+DOWNBASE:ARG:体力 += 75
+DOWNBASE:ARG:气力 += 100
+
+SOURCE:ARG:快Ａ += 100
+SOURCE:ARG:露出 += 150
+SOURCE:ARG:屈从 += 200
+SOURCE:ARG:逸脱 += 350
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:ARG:自己爱 < 0 || TALENT:ARG:抵抗
+	SOURCE:ARG:抑郁 += 350
+
+;Aへの苦痛は先に処理しておく
+;EXP:Ａ经验をみる
+苦痛増分 = 400
+反感増分 = 350
+IF EXP:ARG:Ａ经验 < EXPLV:1
+	TIMES 苦痛増分 , 3.00
+	TIMES 反感増分 , 3.00
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:2
+	TIMES 苦痛増分 , 1.20
+	TIMES 反感増分 , 2.00
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:3
+	TIMES 苦痛増分 , 0.80
+	TIMES 反感増分 , 1.50
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:4
+	TIMES 苦痛増分 , 0.60
+	TIMES 反感増分 , 1.20
+ELSEIF EXP:ARG:Ａ经验 < EXPLV:5
+	TIMES 苦痛増分 , 0.40
+ELSEIF EXP:ARG:Ａ经验 >= EXPLV:5
+	TIMES 苦痛増分 , 0.20
+ENDIF
+
+;PALAM:润滑をみる
+IF PALAM:ARG:润滑 < PALAMLV:1
+	TIMES 苦痛増分 , 1.20
+	TIMES 反感増分 , 2.00
+ELSEIF PALAM:ARG:润滑 < PALAMLV:2
+	TIMES 苦痛増分 , 1.00
+	TIMES 反感増分 , 1.50
+ELSEIF PALAM:ARG:润滑 < PALAMLV:3
+	TIMES 苦痛増分 , 0.60
+ELSEIF PALAM:ARG:润滑 < PALAMLV:4
+	TIMES 苦痛増分 , 0.30
+ELSEIF PALAM:ARG:润滑 >= PALAMLV:4
+	TIMES 苦痛増分 , 0.20
+ENDIF
+SOURCE:ARG:苦痛 += 苦痛増分
+SOURCE:ARG:反感 += 反感増分
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:ARG:Ａ经验 += 1
+EXP:ARG:Ａ扩张经验 += 1
+

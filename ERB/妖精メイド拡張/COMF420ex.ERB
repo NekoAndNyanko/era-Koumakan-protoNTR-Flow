@@ -1,0 +1,65 @@
+﻿;-------------------------------------------------------------------------------
+;与女仆妖精对话(拡張版) - 実行可否判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM_ABLE420
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(420)
+	RETURN RESULT
+;詰所
+SIF CFLAG:MASTER:現在位置 != 位置_妖精女仆办公室
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------
+;与女仆妖精对话(拡張版)
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM420
+#DIMS 指令,100
+#DIM 指令值 = 0
+IF 与妖精女仆初次见面 == 0
+	PRINTFORMW 妖精女仆「啊！初次见面，我们是馆里的妖精女仆，如果有什么问题和需要的地方都可以来找我们。」
+	PRINTFORMW 妖精女仆「嗯…还有与%CALLNAME:MASTER%一样的陌生人来了，是叫%NTR_NAME(0)%来着，很友好的人呢，如果%CALLNAME:MASTER%有什么与%NTR_NAME(0)%相关的事情，也可以来找我们，我们都会帮忙的。」
+	PRINTFORMW 很热情的妖精呢，应该也对%NTR_NAME(0)%说了一样的话把。
+	与妖精女仆初次见面 = 1
+ENDIF
+指令值 = 0
+FOR LOCAL:0,0,100
+	TRYCCALLFORM %"COM420_"+TOSTR(LOCAL:0,"00")+"_ENABLE"%
+		IF RESULT:0
+			指令:指令值 = %RESULTS:0%
+			指令值++
+		ENDIF
+	CATCH
+	ENDCATCH
+NEXT
+;直接番号叩かれたら呼べるけど、まあ妥協。
+IF (指令值 > 0)
+	PRINTDATAL
+		DATAFORM %"妖精女仆「有什么事吗？」"%
+		DATAFORM %"妖精女仆「今天也要加油吧！」"%
+		DATAFORM %"妖精女仆「偷懒的话女仆长会生气的吧？」"%
+	ENDDATA
+	FOR LOCAL,0,指令值
+		PRINTFORML %指令:LOCAL%
+	NEXT
+	PRINTFORML %"[ 0]-果然还是算了"%
+	$COM420_INPUT_LOOP
+	INPUT
+	TRYCCALLFORM COM420_%TOSTR(RESULT:0,"00")%
+		RETURN RESULT:0
+	CATCH
+		CLEARLINE 1
+		GOTO COM420_INPUT_LOOP
+	ENDCATCH
+ELSE
+	CALL COM420_01
+	RETURN RESULT:0
+ENDIF
+RETURN 0

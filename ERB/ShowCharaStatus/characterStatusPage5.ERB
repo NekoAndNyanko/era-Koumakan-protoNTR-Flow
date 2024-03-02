@@ -1,0 +1,43 @@
+;-------------------------------------------------
+;出産表
+;-------------------------------------------------
+;子の名前をステータスに表示します
+;使用変数一覧
+;LOCAL   父親
+;LOCAL:1 スペース
+;LOCAL:2 父親(名前用)
+@PRINT_PARENT_4(ARG)
+;一人もいないとスキップ
+SIF CFLAG:ARG:子供の人数 == 0
+	RETURN 0
+
+VARSET LOCAL
+
+LOCALS = 　　　　　　　　　　　　　　
+STRLENS LOCALS
+LOCAL:1 = RESULT
+
+PRINTL 　父親　　　　　　　　　　　　産んだ人数
+PRINTL
+FOR LOCAL, 0, 300
+	SIF LOCAL == ARG
+		CONTINUE
+
+	IF LOCAL == CHARANUM
+		PRINTL
+		LOCAL = 298
+	ENDIF
+
+	IF LOCAL == 298
+		LOCAL:2 = 人物_訪問者
+	ELSEIF LOCAL == 299
+		LOCAL:2 = 1000
+	ELSE
+		LOCAL:2 = LOCAL
+	ENDIF
+
+	STRLENS N_T_R(LOCAL:2, 1)
+	LOCALS:1 = 
+	LOCALS:1 += SUBSTRING(LOCALS, 0, (LOCAL:1 - RESULT))
+	PRINTFORML 　\@ LOCAL:2 == 1000 ?不明#%N_T_R(LOCAL:2, 1)%\@%LOCALS:1%{親別出産数:ARG:LOCAL}
+NEXT

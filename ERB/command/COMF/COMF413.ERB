@@ -1,0 +1,491 @@
+﻿;-------------------------------------------------
+;料理を作る
+;-------------------------------------------------
+@COM413
+CALL COOKING_MENU
+SIF !RESULT
+	RETURN 0
+
+IF HAS_VAGINA(MASTER)
+	CALL NTR_MASTER_COOKING_SEX
+	IF !RESULT
+		FLAG:料理 = 0
+		RETURN 0
+	ENDIF
+ENDIF
+
+IF TARGET > 0 && !CFLAG:睡眠
+	IF TARGET && ABL:亲密 * 500 + ABL:顺从 * 500 + ABL:料理技能 * 1000 > CFLAG:館内地位 - CFLAG:MASTER:館内地位
+		TFLAG:193 = 1
+		EXP:料理经验 ++
+		EXP:侍奉快乐经验 ++
+	ELSE
+		TFLAG:193 = 0
+	ENDIF
+	;固定で獲得するソース
+	SOURCE:欢乐 = 200
+
+	;ABL:顺从をみる
+	IF ABL:顺从 <= 1
+		SOURCE:欢乐 += (ABL:顺从 * 60)
+	ELSEIF ABL:顺从 <= 3
+		SOURCE:欢乐 += 200 + (ABL:顺从 * 60)
+	ELSEIF ABL:顺从 <= 5
+		SOURCE:欢乐 += 500 + (ABL:顺从 * 60)
+	ELSEIF ABL:顺从 <= 8
+		SOURCE:欢乐 += 750 + (ABL:顺从 * 75)
+	ELSEIF ABL:顺从 <= 11
+		SOURCE:欢乐 += 1000 + (ABL:顺从 * 75)
+	ELSE
+		SOURCE:欢乐 += 2000 + (ABL:顺从 * 30)
+	ENDIF
+
+	;好感度をみる
+	IF CFLAG:好感度 <= 500
+		SOURCE:欢乐 += CFLAG:2
+	ELSEIF CFLAG:好感度 <= 5000
+		SOURCE:欢乐 += 500 + (CFLAG:好感度 - 500) / 3
+	ELSE
+		SOURCE:欢乐 += 2000 + (CFLAG:好感度 - 5000) / 5
+	ENDIF
+	SIF SOURCE:欢乐 < 0
+		SOURCE:欢乐 = 0
+ENDIF
+
+TCVAR:PLAYER:305 = DATETIME()
+RETURN 1
+
+@COOKING_MENU
+#DIM PAGE
+#DIMS MENUNAME
+
+PRINTL 要做什么？
+PRINTL
+DRAWLINE
+PRINTL
+PRINTL 移动場所選択
+PRINTL
+;おしながき
+LOCAL:1 = 0
+FOR LOCAL, 1+(PAGE*30), 31+(PAGE*30)
+	IF GETDISHNAME(LOCAL) != ""
+		PRINT 　　
+		PRINTBUTTON @"%"[" + GETDISHNAME(LOCAL) + "]", 20%", LOCAL
+		LOCAL:1 ++
+		SIF LOCAL:1 % 3 == 0
+			PRINTL
+	ENDIF
+NEXT
+PRINTL
+DRAWLINE
+;メニュージャンルの表示
+FOR LOCAL, 0, 3
+	PRINT 　
+	;現在のジャンルを橙色で表示
+	SIF PAGE == LOCAL
+		SETCOLOR 0XFF8000
+	SELECTCASE LOCAL
+		CASE 0
+			LOCALS = 軽食
+		CASE 1
+			LOCALS = 主食
+		CASE 2
+			LOCALS = 甜点
+	ENDSELECT
+	PRINT 　　
+	PRINTBUTTON @"[%LOCALS%]", -(LOCAL+1)
+	RESETCOLOR
+NEXT
+PRINTL
+DRAWLINE
+PRINTBUTTON "[还是放弃好了]", -100
+PRINTL
+PRINTL
+INPUT
+
+SELECTCASE RESULT
+	CASE -100
+		RETURN 0
+		;ページ変更
+	CASE -3 TO -1
+		PAGE = ABS(RESULT)-1
+
+	CASEELSE
+		IF GETDISHNAME(RESULT) != ""
+			IF GETDISHMENU(RESULT) == "主食" && ABL:MASTER:料理技能 < 2
+				PRINTFORMW 做主食需要2以上的料理技能
+				RESTART
+			ELSEIF GETDISHMENU(RESULT) == "甜点" && ABL:MASTER:料理技能 < 3
+				PRINTFORMW 做甜点需要3以上的料理技能
+				RESTART
+			ENDIF
+
+			PRINTFORMW 制作了%GETDISHNAME(RESULT)%
+			FLAG:料理 = RESULT
+			TFLAG:194 = PAGE + 1
+			IF TFLAG:194 == 1
+				DOWNBASE:MASTER:体力 = 25
+				DOWNBASE:MASTER:气力 = 100
+				EXP:MASTER:料理经验 += 2
+				TIME += 30
+			ELSEIF TFLAG:194 == 2
+				DOWNBASE:MASTER:体力 = 50
+				DOWNBASE:MASTER:气力 = 200
+				EXP:MASTER:料理经验 += 4
+				TIME += 60
+			ELSEIF TFLAG:194 == 3
+				DOWNBASE:MASTER:体力 = 100
+				DOWNBASE:MASTER:气力 = 100
+				EXP:MASTER:料理经验 += 6
+				TIME += 90
+			ENDIF
+			;傍に誰もいないなら混ぜ込み発生
+			SIF TARGET == MASTER
+				CALL MIX_MENU
+
+			RETURN 1
+		ENDIF
+ENDSELECT
+
+RESTART
+
+
+@MIX_MENU
+PRINTL 何か混ぜますか？
+PRINTL [0] - 不要
+PRINTL [1] - 是的
+$INPUT_LOOP
+INPUT
+IF RESULT == 1
+	CALL MIX_SELCT
+	RETURN 1
+ELSEIF RESULT == 0
+	RETURN 0
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+@MIX_SELCT
+PRINTL 要掺入什么吗？
+SIF HAS_PENIS(MASTER)
+	PRINTL [1] - 精液
+SIF HAS_PENIS(MASTER)
+	PRINTL [2] - 大量精液
+SIF HAS_VAGINA(MASTER)
+	PRINTL [3] - 愛液
+SIF TALENT:MASTER:泌乳体质
+	PRINTL [4] - 母乳
+SIF ITEM:41 != 0
+	PRINTL [5] - 媚药
+SIF ITEM:42 != 0
+	PRINTL [6] - 利尿剂
+SIF TALENT:MASTER:调和知识
+	PRINTL [7] - 睡眠薬
+PRINTL [100] - 还是放弃好了
+$INPUT_LOOP
+INPUT
+IF RESULT == 1 && HAS_PENIS(MASTER)
+	PRINTFORML %CALLNAME:PLAYER%拿出了阴茎对着%GETDISHNAME(FLAG:料理)%撸动
+	PRINTFORML %CALLNAME:PLAYER%射出的精液落在了%GETDISHNAME(FLAG:料理)%上…
+	DOWNBASE:MASTER:体力 += 100
+	DOWNBASE:MASTER:气力 += 150
+	;精力25%カット
+	TIMES BASE:MASTER:精力, 0.75
+	BASE:MASTER:勃起 = 300
+	EXP:MASTER:自慰经验 ++
+	EXP:MASTER:射精经验 ++
+	;隠し味取得
+	FLAG:料理 += 1000
+	RETURN 1
+ELSEIF RESULT == 2 && HAS_PENIS(MASTER)
+	PRINTFORML %CALLNAME:PLAYER%拿出阴茎对着%GETDISHNAME(FLAG:料理)%不停地撸动着
+	PRINTFORML %GETDISHNAME(FLAG:料理)%完全被%CALLNAME:PLAYER%的白浊精液盖住了，只要看一眼就知道掺了些什么
+	PRINTFORML 搅拌了一会儿，%GETDISHNAME(FLAG:料理)%变得只像是浸泡在精液中的配餐。
+	DOWNBASE:MASTER:体力 += 500
+	DOWNBASE:MASTER:气力 += 1500
+	;精力10%
+	TIMES BASE:MASTER:精力, 0.1
+	BASE:MASTER:勃起 = 300
+	EXP:MASTER:自慰经验 += 10
+	EXP:MASTER:射精经验 += 10
+	;隠し味取得
+	FLAG:料理 += 1500
+	RETURN 1
+ELSEIF RESULT == 3 && HAS_VAGINA(MASTER)
+	PRINTFORML %CALLNAME:PLAYER%一边自慰一边把%GETDISHNAME(FLAG:料理)%端到大腿下面 
+	PRINTFORML %GETDISHNAME(FLAG:料理)%被洒上了%CALLNAME:PLAYER%的小穴分泌的爱液…
+	DOWNBASE:MASTER:体力 += 40
+	DOWNBASE:MASTER:气力 += 80
+	EXP:MASTER:自慰经验 ++
+	FLAG:料理 += 2000
+	RETURN 1
+ELSEIF RESULT == 4 && TALENT:MASTER:泌乳体质
+	PRINTFORML %CALLNAME:PLAYER%把胸露了出来，然后挤压自己的胸部
+	PRINTFORML %GETDISHNAME(FLAG:料理)%沾上了许多%CALLNAME:PLAYER%的母乳…
+	DOWNBASE:MASTER:体力 += 40
+	DOWNBASE:MASTER:气力 += 80
+	EXP:MASTER:喷乳经验 ++
+	FLAG:料理 += 3000
+	RETURN 1
+ELSEIF RESULT == 5 && ITEM:媚药 != 0
+	PRINTFORML %CALLNAME:PLAYER%从怀里拿出了媚药，掺进了%GETDISHNAME(FLAG:料理)%里面…
+	ITEM:41 -= 1
+	FLAG:料理 += 4000
+	RETURN 1
+ELSEIF RESULT == 6 && ITEM:利尿剂 != 0
+	PRINTFORML %CALLNAME:PLAYER%从怀里拿出了利尿剂，掺进了%GETDISHNAME(FLAG:料理)%里面…
+	ITEM:42 -= 1
+	FLAG:料理 += 5000
+	RETURN 1
+ELSEIF RESULT == 7 && TALENT:MASTER:调和知识
+	PRINTFORML %CALLNAME:PLAYER%从怀里拿出了安眠药，掺进了%GETDISHNAME(FLAG:料理)%里面…
+	FLAG:料理 += 6000
+	RETURN 1
+ELSEIF RESULT == 100
+	RETURN 0
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+
+;混ぜ物の効果(COM414,COM415)
+@DISHMIX_RESULT, ARG
+
+;睡眠薬
+IF FLAG:料理 > 6000
+	SIF ARG != MASTER
+		CFLAG:ARG:睡眠深度 = -1
+	;利尿剂
+ELSEIF FLAG:料理 > 5000
+	TEQUIP:ARG:利尿剂 = 1
+	;媚药
+ELSEIF FLAG:料理 > 4000
+	CFLAG:ARG:性欲 += RAND(20, 31)
+	;母乳
+ELSEIF FLAG:料理 > 3000
+
+	;愛液
+ELSEIF FLAG:料理 > 2000
+
+	;大量精液
+ELSEIF FLAG:料理 > 1500
+
+	;精液
+ELSEIF FLAG:料理 > 1000
+	EXP:ARG:精饮经验 ++
+ENDIF
+
+
+;混ぜ物の地の文(EVENT_MESSAGE_COM)
+@DISHMIX_RESULT_KOJO
+#DIM 好感度变化
+;睡眠薬
+IF FLAG:料理 > 6000
+
+	;利尿剂
+ELSEIF FLAG:料理 > 5000
+
+	;媚药
+ELSEIF FLAG:料理 > 4000
+
+	;母乳
+ELSEIF FLAG:料理 > 3000
+
+	;愛液
+ELSEIF FLAG:料理 > 2000
+
+	;大量精液
+ELSEIF FLAG:料理 > 1500
+	IF !TALENT:TARGET:恋慕 && !TALENT:TARGET:淫乱 && !TALENT:TARGET:公众便所
+		IF TALENT:TARGET:无知
+			IF EXP:TARGET:精饮经验 < 100
+				PRINTFORMW %CALLNAME:TARGET%看着这白浊精液包裹的食物，似乎考虑了很久才准备下口
+				PRINTFORMW 「这个……黏糊糊的……还有股奇怪的味道……」
+				PRINTFORMW 把精液和食物含在嘴里，咀嚼了几下，似乎难以下咽，但又不想吐出来的样子
+				PRINTFORMW %CALLNAME:TARGET%看着%CALLNAME:PLAYER%，看样子是快要吐出来了。
+				PRINTFORMW 看到%CALLNAME:PLAYER%期待的眼神，%CALLNAME:TARGET%还是把这一口强行咽下去了
+				IF RAND(2) == 0
+					PRINTFORMW 这些完全被精液改造了的食品，%CALLNAME:TARGET%根本不想再吃哪怕一口
+					PRINTFORMW %CALLNAME:PLAYER%便忽悠着%CALLNAME:TARGET%，让%CALLNAME:TARGET%总能鼓起勇气吃下一口
+					PRINTFORMW %CALLNAME:TARGET%终于是忍着呕吐感吃完了。
+					EXP:TARGET:精饮经验 += 10
+					BASE:PLAYER:勃起 += 100
+				ELSE
+					PRINTFORMW 「快点拿走！」
+					PRINTFORMW %CALLNAME:TARGET%吼了一声，好像很生气了，还是快溜吧。
+					BASE:TARGET:怒意 += 500
+					CFLAG:TARGET:怒意 = 1
+					;好感度减少
+					TFLAG:97 -= RAND(20,51)
+					EXP:TARGET:精饮经验 ++
+				ENDIF
+			ELSEIF EXP:TARGET:精饮经验 < 300
+				PRINTFORMW 「又是这个吗？没办法，已经答应了呢……」
+				PRINTFORMW %CALLNAME:TARGET%将与精液充分混合的食物放进嘴里品尝着，不像原先那么急躁地要吞下去了
+				PRINTFORMW 「这个味道奇怪的东西到底是什么啊？」
+				PRINTFORMW 咽下去后，%CALLNAME:TARGET%发出了疑问，但是看%CALLNAME:PLAYER%没有回答也就罢了，又塞下一口精液食物
+				PRINTFORMW 似乎不那么抗拒这种大部分都是精液的食物了，看着%CALLNAME:TARGET%大口吃着自己的精液，感到莫名的兴奋。
+				EXP:TARGET:精饮经验 += 10
+				BASE:PLAYER:勃起 += 200
+			ELSE
+				PRINTFORMW 「嗯~~又是那个吗？」
+				PRINTFORMW %CALLNAME:TARGET%好像是完全克服了精液的味道呢，甚至开始欣赏这种味道了
+				PRINTFORMW 「这个美妙的液体你到底是从哪里弄来的啊？」
+				PRINTFORMW %CALLNAME:TARGET%将精液含在嘴里细细的品尝起来，然后吃下了一些被浸泡地沦为配餐的食物
+				PRINTFORMW 一点不剩地把所有的食物都吃完了，腥臭的精液仿佛成为了至高美味，如果没有看着%CALLNAME:TARGET%的话，可能要把盘子舔干净了吧。
+				PRINTFORMW 「哪个……还有吗？」
+				EXP:TARGET:精饮经验 += 10
+				BASE:PLAYER:勃起 += 200
+			ENDIF
+		ELSE
+			IF EXP:TARGET:精饮经验 < 300
+				PRINTFORMW %CALLNAME:TARGET%看了一眼食物，不知道是害羞还是愤怒，泛红的面容变得有些可怕
+				PRINTFORMW 「你怎么敢拿那种脏东西给我吃！！！」
+				PRINTFORMW 被骂了……
+				BASE:TARGET:怒意 += 2000
+				CFLAG:TARGET:怒意 = 1
+				;好感度减少
+				IF CFLAG:TARGET:好感度 >= 100
+					TFLAG:97 -= ( CFLAG:TARGET:好感度 - CFLAG:TARGET:好感度 / 10 )
+				ELSE
+					TFLAG:97 -= 100
+				ENDIF
+			ELSE
+				PRINTFORMW %CALLNAME:TARGET%看了一眼食物，不知道是害羞还是愤怒，泛红的面容显得更加可爱了
+				PRINTFORMW 「放……放在这吧……」
+				PRINTFORMW 然后%CALLNAME:TARGET%自顾自得吃了起来
+				PRINTFORMW 就算知道这是从排泄器官中射出来的种子汁，也能把它当成美味的食物，没救了呢。
+				CFLAG:TARGET:性欲 += RAND(10, 21)
+				EXP:TARGET:精饮经验 += 10
+				BASE:PLAYER:勃起 += 200
+			ENDIF
+		ENDIF
+	ELSEIF TALENT:TARGET:恋慕
+		IF TALENT:TARGET:无知
+			IF EXP:TARGET:精饮经验 < 100
+				PRINTFORMW %CALLNAME:TARGET%看着这白浊精液包裹的食物，似乎考虑了很久才准备下口
+				PRINTFORMW 「这个……黏糊糊的……还有股奇怪的味道……」
+				PRINTFORMW 把精液和食物含在嘴里，咀嚼了几下，似乎难以下咽，但又不想吐出来的样子
+				PRINTFORMW %CALLNAME:TARGET%看着%CALLNAME:PLAYER%，看样子是快要吐出来了。
+				PRINTFORMW 看到%CALLNAME:PLAYER%期待的眼神，%CALLNAME:TARGET%还是把这一口强行咽下去了
+				PRINTFORMW 这些完全被精液改造了的食品，%CALLNAME:TARGET%根本不想再吃哪怕一口
+				PRINTFORMW 但这是最爱的%CALLNAME:PLAYER%做的食物，一定要全部吃完！
+				PRINTFORMW %CALLNAME:TARGET%终于是忍着呕吐感吃完了。
+				PRINTFORMW 「很…好吃哦~~……」
+				PRINTFORMW 明明觉得很难吃，却要说好吃，恋人的特权呢。
+				EXP:TARGET:精饮经验 += 10
+				BASE:PLAYER:勃起 += 200
+			ELSEIF EXP:TARGET:精饮经验 < 300
+				PRINTFORMW 「又是这个吗？好吧…谁让是%CALLNAME:PLAYER%做的食物呢~~」
+				PRINTFORMW %CALLNAME:TARGET%将与精液充分混合的食物放进嘴里品尝着，不像原先那么急躁地要吞下去了
+				PRINTFORMW 「这个味道奇怪的东西到底是什么啊？」
+				PRINTFORMW 咽下去后，%CALLNAME:TARGET%发出了疑问，但是看%CALLNAME:PLAYER%没有回答也就罢了，又塞下一口精液食物
+				PRINTFORMW 似乎不那么抗拒这种大部分都是精液的食物了，看着%CALLNAME:TARGET%大口吃着自己的精液，感到莫名的兴奋。
+				PRINTFORMW 「来~张嘴~~」
+				PRINTFORMW 被喂食了……
+				EXP:TARGET:精饮经验 += 10
+				EXP:PLAYER:精饮经验 ++
+				BASE:PLAYER:勃起 += 100
+			ELSE
+				PRINTFORMW 「%CALLNAME:PLAYER%又准备了那个吗！~~」
+				PRINTFORMW %CALLNAME:TARGET%好像是完全克服了精液的味道呢，甚至开始欣赏这种味道了
+				PRINTFORMW 「这个美妙的液体你到底是从哪里弄来的啊？」
+				PRINTFORMW %CALLNAME:TARGET%将精液含在嘴里细细的品尝起来，然后吃下了一些被浸泡地沦为配餐的食物
+				PRINTFORMW 一点不剩地把所有的食物都吃完了，腥臭的精液仿佛成为了至高美味，如果没有看着%CALLNAME:TARGET%的话，可能要把盘子舔干净了吧。
+				PRINTFORMW 「再弄点来吃啦！别的佐料就不要放了。」
+				PRINTFORMW 总不能现榨吧，只好敷衍一下了。
+				EXP:TARGET:精饮经验 += 10
+				BASE:PLAYER:勃起 += 200
+			ENDIF
+		ELSE
+			IF EXP:TARGET:精饮经验 < 300
+				PRINTFORMW %CALLNAME:TARGET%看了一眼食物，脸刷的就红了
+				PRINTFORMW 「用不着放那么多吧……」
+				PRINTFORMW %CALLNAME:TARGET%安安静静的，吃完了和大量精液交织在一起的食物。
+				PRINTFORMW 「也不是，太差哦……」
+				EXP:TARGET:精饮经验 += 10
+				BASE:PLAYER:勃起 += 200
+			ELSE
+				PRINTFORMW %CALLNAME:TARGET%看了一眼食物，可爱的脸泛起一点红潮
+				PRINTFORMW 「%CALLNAME:PLAYER%的精液是吗？不管是%CALLNAME:PLAYER%的还是别人的，只要是%CALLNAME:PLAYER%给的，我一定会吃干净的！~~」
+				PRINTFORMW 然后%CALLNAME:TARGET%自顾自得吃了起来
+				PRINTFORMW 就算知道这是从排泄器官中射出来的种子汁，也能把它当成美味的食物，没救了呢，不过，吃别人的…也行吗……
+				CFLAG:TARGET:性欲 += RAND(10, 21)
+				EXP:TARGET:精饮经验 += 10
+				BASE:PLAYER:勃起 += 200
+			ENDIF
+		ENDIF
+	ELSEIF TALENT:TARGET:淫乱 || TALENT:TARGET:公众便所
+		PRINTFORMW %CALLNAME:TARGET%的眼睛……发光的星星眼！
+		PRINTFORMW 「精液？？……呀~~~谢谢款待啦~~~」
+		PRINTFORMW 看着%CALLNAME:TARGET%挑逗性的笑容，有点无所适从。
+		CFLAG:TARGET:性欲 += RAND(10, 21)
+		EXP:TARGET:精饮经验 += 10
+		BASE:PLAYER:勃起 += 200
+	ENDIF
+	;精液
+ELSEIF FLAG:料理 > 1000
+	IF !TALENT:TARGET:恋慕 && !TALENT:TARGET:淫乱 && !TALENT:TARGET:公众便所
+		PRINTFORMW 可以看出%CALLNAME:TARGET%的表情有点不自然，恐怕是尝到里面精液的味道了
+		PRINTFORMW 「放了别的什么东西吗？」
+		PRINTFORMW 果然被察觉了，但是只要随便搪塞一下就好了
+		IF RAND(2) == 0
+			PRINTFORMW 看来%CALLNAME:TARGET%不太好意思拒绝，还是把这些吃完了。
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%生气了，把食物扔在了一边。
+			BASE:TARGET:怒意 += 500
+			CFLAG:TARGET:怒意 = 1
+			;好感度减少
+			TFLAG:97 -= RAND(8,21)
+		ENDIF
+	ELSEIF TALENT:TARGET:恋慕
+		PRINTFORMW 可以看出%CALLNAME:TARGET%的表情有点不自然，恐怕是尝到里面精液的味道了
+		PRINTFORMW 但是还是笑着吃完了。
+	ELSEIF TALENT:TARGET:淫乱 || TALENT:TARGET:公众便所
+		PRINTFORMW 可以看出%CALLNAME:TARGET%的表情有点不自然，恐怕是尝到里面精液的味道了
+		PRINTFORMW 「里面……放了精液吗？」
+		PRINTFORMW 看着%CALLNAME:TARGET%挑逗性的笑容，有点无所适从。
+		CFLAG:TARGET:性欲 += RAND(5, 11)
+		BASE:PLAYER:勃起 += 200
+	ENDIF
+ENDIF
+
+;COM414,415の成功率
+@DISH_COM_SUCCESS_RATE
+
+;成功率
+IF GETDISHMENU(FLAG:料理 % 1000) == "軽食"
+	;MIN50 MAX100
+	LOCAL = 50 + (ABL:MASTER:料理技能 * 10)
+ELSEIF GETDISHMENU(FLAG:料理 % 1000) == "主食"
+	;MIN64 MAX100
+	LOCAL = 40 + (ABL:MASTER:料理技能 * 12)
+ELSEIF GETDISHMENU(FLAG:料理 % 1000) == "甜点"
+	;MIN65 MAX100
+	LOCAL = 25 + (ABL:MASTER:料理技能 * 15)
+ENDIF
+;保存状態による成功値減少
+IF TCVAR:MASTER:306 == 2
+	TIMES LOCAL, 0.35
+ELSEIF TCVAR:MASTER:306 == 1
+	TIMES LOCAL, 0.75
+ENDIF
+
+;成否判定
+IF RAND:100 < LOCAL
+	;话术技能により大成功発生 MIN0 MAX30
+	IF RAND:100 < (ABL:MASTER:话术技能 * 3)
+		EXP:MASTER:会话经验 ++
+		RETURN 1
+	ELSEIF LOCAL >= LOCAL:1
+		RETURN 0
+	ENDIF
+ELSE
+	;失敗
+	RETURN -1
+ENDIF
+
+
+
+
+

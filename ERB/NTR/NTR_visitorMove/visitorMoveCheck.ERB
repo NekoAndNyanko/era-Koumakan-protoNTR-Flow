@@ -1,0 +1,140 @@
+;-------------------------------------------------------------------------------
+;訪問者移动可否判定
+;戻り値…1:移动する 0:移动しない
+@CHK_VISITOR_MOVE
+#DIM RET_MOVE
+#DIM LOOP_CHR
+#DIM 睡眠同室	; 睡眠中の住人と同室 0:睡眠中の住人と同室ではない
+#DIM 滞在フラグ	; 1:滞在 他:移动
+#DIM 同室人数 ; 是否和角色独处
+#DIM 同室清醒非NTR人数
+
+#DIM 存在讨厌的对象
+#DIM 存在喜欢的对象
+#DIM MOVE_PROB_DENO
+
+#DIM MAX_STAY_TIME
+[SKIPSTART]
+;;肉便器系追加処理
+;;人里プレイが開始したら、人里周辺へ移动。人里周辺に居るなら、移动しない。１時間経過してるとあなたの元へ
+IF TALENT:MASTER:肉便器 && CFLAG:MASTER:WC_人里プレイ開始 > 0
+	SELECTCASE FLAG:訪問者の現在位置
+		CASE 位置_人間の里,位置_人間の里周辺
+			SIF TIME_PROGRESS(CFLAG:MASTER:WC_人里プレイ開始) >= 90 && CFLAG:MASTER:WC_人里プレイ開始 != 0
+				RETURN 1
+			RETURN 0
+		CASEELSE
+			RETURN 1
+	ENDSELECT
+ENDIF
+;;
+[SKIPEND]
+;訪問者宅などの場合移动しない
+SIF FLAG:訪問者の現在位置 == 0 || FLAG:訪問者の現在位置 == 位置_訪問者宅 || FLAG:訪問者の現在位置 == 901
+	RETURN 0
+;包含访问者、主角、住人3P中
+SIF FLAG:1840 > 0 && FLAG:1840 < 9
+	RETURN 0
+;訪問者行動中であれば移动しない
+SIF FLAG:訪問者との行為の終了時刻 != 0
+	RETURN 0
+睡眠同室 = 0
+滞在フラグ = 0
+同室人数 = 0
+同室清醒非NTR人数 = 0
+存在讨厌的对象 = 0
+存在喜欢的对象 = 0
+FOR LOOP_CHR,0,CHARANUM
+	IF FLAG:訪問者の現在位置 == CFLAG:LOOP_CHR:現在位置
+		同室人数 += 1
+
+		;嫌いなキャラが登録済み、居た場合
+		SIF IS_VISITOR_HATE_CHAR(LOOP_CHR)
+			存在讨厌的对象 = 1
+		SIF IS_VISITOR_FAVORITE_CHAR(LOOP_CHR)
+			存在喜欢的对象 = 1
+
+		SIF CFLAG:LOOP_CHR:睡眠
+			睡眠同室 += 1
+		SIF !CFLAG:LOOP_CHR:睡眠 && !TALENT:LOOP_CHR:NTR
+			同室清醒非NTR人数 += 1
+
+		;可骚扰对象基于屈服度决定是否移动
+		IF IS_VISITOR_HARASS_TARGET(LOOP_CHR, 1)
+			IF !IS_VISITOR_FAVORITE_CHAR(LOOP_CHR) && !IS_VISITOR_HATE_CHAR(LOOP_CHR)
+				;屈服度依存
+				SELECTCASE CFLAG:LOOP_CHR:屈服度
+					CASE IS < 50
+						SIF RAND:5 == 0
+							滞在フラグ += 1
+					CASE IS < 300
+						SIF RAND:4 == 0
+							滞在フラグ += 1
+					CASE IS < 1000
+						SIF RAND:3 == 0
+							滞在フラグ += 1
+					CASE IS < 5000
+						SIF RAND:2 == 0
+							滞在フラグ += 1
+					CASEELSE
+						滞在フラグ += 1
+				ENDSELECT
+			ENDIF
+		ENDIF
+	ENDIF
+NEXT
+
+IF FLAG:訪問者のお気に入り != 999
+	IF 存在喜欢的对象
+		滞在フラグ += 2
+	ELSE
+		滞在フラグ -= RAND:4
+	ENDIF
+ELSE
+	SIF 同室人数 > 0
+		滞在フラグ += 1
+ENDIF
+IF 存在讨厌的对象
+	滞在フラグ -= 1 + RAND:3
+ENDIF
+
+SIF 同室人数 == 0
+	滞在フラグ -= RAND:5
+
+	;RET_MOVE…1:移动する 0:移动しない
+RET_MOVE = 1
+IF 滞在フラグ > 0
+	RET_MOVE = 0
+ELSE
+	RET_MOVE = 1
+ENDIF
+;現在位置を強制的に開錠
+;FLAG:(300 + FLAG:訪問者の現在位置) = 0
+
+IF !存在喜欢的对象
+	MAX_STAY_TIME = 30
+	FLAG:VISITOR_STAY_WITH_FAVORITE_MAX_TIME = -1
+ELSE
+	IF FLAG:VISITOR_STAY_WITH_FAVORITE_MAX_TIME < 0
+		FLAG:VISITOR_STAY_WITH_FAVORITE_MAX_TIME = 45 + RAND:30
+	ENDIF
+	MAX_STAY_TIME = FLAG:VISITOR_STAY_WITH_FAVORITE_MAX_TIME
+ENDIF
+
+;Move Prob：This_Cmd_Time/(Max_Stay_Time-Before_This_Cmd_Stay_Time+10)
+MOVE_PROB_DENO = MAX_STAY_TIME - FLAG:訪問者滞在時間カウンタ + TIME_PROGRESS(TFLAG:300) + 10 + 1
+;存在喜欢的对象时更容易呆满时间
+SIF 存在喜欢的对象
+	MOVE_PROB_DENO += 45
+
+;最大滞在時間とのチェック。30分以上経過で移动
+IF FLAG:訪問者滞在時間カウンタ >= MAX_STAY_TIME
+	RET_MOVE = 1
+ELSEIF RAND:MOVE_PROB_DENO > TIME_PROGRESS(TFLAG:300)
+	RET_MOVE = 0
+ENDIF
+
+;睡眠中の住人と同室であれば睡姦する可能性
+SIF 睡眠同室 && 同室清醒非NTR人数 == 0
+	RET_MOVE = 0
+RETURN RET_MOVE

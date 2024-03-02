@@ -1,0 +1,151 @@
+﻿@COM312
+;接吻
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_右頬)
+IF RESULT
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:PLAYER:116 = TARGET
+TCVAR:TARGET:116 = PLAYER
+
+LOCAL = RAND:110
+LOCAL:1 = 90 + GET_SUCCESS_RATE() / 5
+SIF LOCAL:1 > 109
+	LOCAL:1 = 109
+IF LOCAL <= 9
+	;10％で大成功
+	TFLAG:193 = 1
+ELSEIF LOCAL >= LOCAL:1
+	;10～1％で失敗
+	TFLAG:193 = -1
+ELSE
+	;残りは成功
+	TFLAG:193 = 0
+ENDIF
+;先制発生時は失敗しない
+SIF TFLAG:COMABLE管理 == 3
+	TFLAG:193 = MAX(TFLAG:193,0)
+
+;恋慕つき住人の口が主人以外の精液で汚れていると失敗(NTR)
+;IF CFLAG:射精者 != 0 && STAIN:口 >= 1 && TALENT:恋慕
+IF CHK_COM312_STAIN(TARGET, MASTER)
+	TFLAG:193 = -2
+	RETURN 1
+ENDIF
+
+DOWNBASE:气力 += 80
+DOWNBASE:MASTER:气力 += 50
+
+;固定で獲得するソース
+SOURCE:欢乐 = 180
+SOURCE:情爱 = 200
+SOURCE:露出 = 80
+SOURCE:反感 = 300
+
+;ABL:亲密をみる
+IF ABL:亲密 <= 1
+	SOURCE:情爱 += (ABL:亲密 * 30)
+ELSEIF ABL:亲密 <= 3
+	SOURCE:欢乐 += 120 + (ABL:亲密 * 40)
+	SOURCE:情爱 += 150 + (ABL:亲密 * 30)
+	SOURCE:欲情 += 65 + (ABL:亲密 * 20)
+ELSEIF ABL:亲密 <= 5
+	SOURCE:欢乐 += 250 + (ABL:亲密 * 50)
+	SOURCE:情爱 += 280 + (ABL:亲密 * 30)
+	SOURCE:欲情 += 130 + (ABL:亲密 * 26)
+	SOURCE:露出 += 80 + (ABL:亲密 * 15)
+ELSEIF ABL:亲密 <= 8
+	SOURCE:欢乐 += 330 + (ABL:亲密 * 60)
+	SOURCE:情爱 += 380 + (ABL:亲密 * 40)
+	SOURCE:欲情 += 170 + (ABL:亲密 * 30)
+	SOURCE:露出 += 110 + (ABL:亲密 * 18)
+ELSEIF ABL:亲密 <= 11
+	SOURCE:欢乐 += 420 + (ABL:亲密 * 80)
+	SOURCE:情爱 += 480 + (ABL:亲密 * 40)
+	SOURCE:欲情 += 230 + (ABL:亲密 * 35)
+	SOURCE:露出 += 160 + (ABL:亲密 * 20)
+ELSE
+	SOURCE:欢乐 += 680 + (ABL:亲密 * 55)
+	SOURCE:情爱 += 760 + (ABL:亲密 * 23)
+	SOURCE:欲情 += 350 + (ABL:亲密 * 27)
+	SOURCE:露出 += 260 + (ABL:亲密 * 17)
+ENDIF
+
+;好感度をみる
+IF CFLAG:好感度 <= 500
+	SOURCE:情爱 += CFLAG:2
+ELSEIF CFLAG:好感度 <= 5000
+	SOURCE:情爱 += 400 + (CFLAG:好感度 - 500) / 4
+ELSE
+	SOURCE:情爱 += 1200 + (CFLAG:好感度 - 5000) / 6
+ENDIF
+SIF SOURCE:情爱 < 0
+	SOURCE:情爱 = 0
+
+LOCAL = 0
+;好感度が低いと好感度低下
+IF CFLAG:好感度 <= 50
+	LOCAL -= 3
+ELSEIF CFLAG:好感度 <= 100
+	LOCAL -= 2
+ELSEIF CFLAG:好感度 <= 250
+	LOCAL -= 1
+ENDIF
+
+
+SOURCE:被动 = 150 + 300 * ABL:顺从
+SOURCE:征服 = 150 + 300 * ABL:抖Ｓ之气
+
+;好感度変化
+TFLAG:97 += LOCAL
+
+IF TFLAG:193 == -1
+	TIMES SOURCE:欢乐 , 0.10
+	TIMES SOURCE:情爱 , 0.50
+	TIMES SOURCE:征服 , 0.50
+	TIMES SOURCE:被动 , 0.50
+	TIMES SOURCE:露出 , 0.40
+ELSEIF TFLAG:193 == 0
+	TIMES SOURCE:欢乐 , 1.00
+	TIMES SOURCE:情爱 , 1.00
+	TIMES SOURCE:征服 , 1.00
+	TIMES SOURCE:被动 , 1.00
+	TIMES SOURCE:露出 , 0.90
+ELSE
+	TIMES SOURCE:欢乐 , 2.00
+	TIMES SOURCE:情爱 , 2.00
+	TIMES SOURCE:征服 , 2.00
+	TIMES SOURCE:被动 , 2.00
+	TIMES SOURCE:露出 , 1.80
+ENDIF
+TIME += 10
+
+EXP:接吻经验 += 1
+EXP:MASTER:接吻经验 += 1
+CALL LOST_VIRGIN_M(PLAYER, TARGET,0)
+CALL LOST_VIRGIN_M(TARGET, PLAYER,0)
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 2
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 2
+ENDIF
+
+RETURN 1
+
+;恋慕つき住人の口が主人以外の精液で汚れていると失敗
+;　要はあなた以外の相手との行為の発覚を恐れての隠蔽ということで
+;　戻り値 1:失敗 0:成功
+@CHK_COM312_STAIN(奴隷, 行為者)
+#FUNCTION
+#DIM 奴隷
+#DIM 行為者
+IF CFLAG:奴隷:射精者M != 行為者 && (STAIN:奴隷:口 & (汚れ_阴茎|汚れ_精液)) && TALENT:奴隷:恋慕
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF

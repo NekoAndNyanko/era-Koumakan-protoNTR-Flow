@@ -1,0 +1,128 @@
+﻿@SHOW_JUEL
+
+@SHOW_ABLUP_SELECT
+PRINTL □ 能力变化 -------
+FOR LOCAL:10,0,CHARANUM
+	FOR LOCAL:11,0,30
+		SELECTCASE LOCAL:11
+				;多くの要素が必要な能力から上げてゆく
+				;自慰中毒
+			CASE 0
+				LOCAL:12= 30
+				;精液中毒
+			CASE 1
+				LOCAL:12= 31
+				;百合中毒
+			CASE 2
+				LOCAL:12= 33
+				;搞基中毒
+			CASE 3
+				LOCAL:12= 34
+				;侍奉精神
+			CASE 4
+				LOCAL:12= 13
+				;百合之气
+			CASE 5
+				LOCAL:12= 17
+				;断背之气
+			CASE 6
+				LOCAL:12= 18
+				;抖Ｍ之气
+			CASE 7
+				LOCAL:12= 15
+				;抖Ｓ之气
+			CASE 8
+				LOCAL:12= 16
+				;露出癖
+			CASE 9
+				LOCAL:12= 14
+				;亲密
+			CASE 10
+				LOCAL:12= 9
+				;顺从
+			CASE 11
+				LOCAL:12= 10
+				;欲望
+			CASE 12
+				LOCAL:12= 11
+				;技巧
+			CASE 13
+				LOCAL:12= 12
+				;Ｃ感觉
+			CASE 14
+				LOCAL:12= 0
+				;Ｖ感觉
+			CASE 15
+				LOCAL:12= 1
+				;Ａ感觉
+			CASE 16
+				LOCAL:12= 2
+				;Ｂ感觉
+			CASE 17
+				LOCAL:12= 3
+			; 	;Ｍ感觉
+			; CASE 18
+			; 	LOCAL:12= 4
+			CASEELSE
+				CONTINUE
+		ENDSELECT
+		FOR LOCAL,0,4
+			LOCAL:3 = 0
+			LOCAL:4 = 0
+			SIF JUEL_DEMAND(LOCAL:12,LOCAL,0,LOCAL:10) == -2
+				BREAK
+			SIF JUEL_DEMAND(LOCAL:12,LOCAL,0,LOCAL:10) < 0
+				CONTINUE
+			;必要な宝珠を探す
+			FOR LOCAL:1,0,100
+				IF JUEL_DEMAND(LOCAL:12,LOCAL,LOCAL:1,LOCAL:10) > 0
+					IF JUEL:(LOCAL:10):(LOCAL:1) < JUEL_DEMAND(LOCAL:12,LOCAL,LOCAL:1,LOCAL:10)
+						LOCAL:3 ++
+						BREAK
+					ENDIF
+				ENDIF
+			NEXT
+			SIF LOCAL:3
+				CONTINUE
+			;必要な経験を探す
+			FOR LOCAL:1,0,100
+				IF EXP_DEMAND(LOCAL:12,LOCAL,LOCAL:1,LOCAL:10) > 0
+					IF  EXP:(LOCAL:10):(LOCAL:1) < EXP_DEMAND(LOCAL:12,LOCAL,LOCAL:1,LOCAL:10)
+						LOCAL:4 ++
+						BREAK
+					ENDIF
+				ENDIF
+			NEXT
+			SIF LOCAL:4
+				CONTINUE
+			FOR LOCAL:1,0,40
+				JUEL:(LOCAL:10):(LOCAL:1) -= JUEL_DEMAND(LOCAL:12,LOCAL,LOCAL:1,LOCAL:10)
+			NEXT
+			ABL:(LOCAL:10):(LOCAL:12) += 1
+			SIF !FLAG:真实模式 || LOCAL:10 == 0
+				PRINTFORML %ABLNAME:(LOCAL:12)%LVUP (%CALLNAME:(LOCAL:10)%)
+			BREAK
+		NEXT
+	NEXT
+NEXT
+PRINT [100] - 确认
+@USERABLUP
+IF RESULT == 100
+	CALL JUJUN_UP_CHECK
+	CALL YOKUBO_UP_CHECK
+	BEGIN TURNEND
+	RETURN 1
+ENDIF
+RETURN 0
+
+;ABLの上限
+@MAXABL(ARG)
+;恋慕はMAXLV99
+IF ABL:ARG >= 99
+	PRINTW 已经最大了
+	RETURN 1
+ELSEIF ABL:ARG >= 5 && !TALENT:恋慕
+	PRINTW 已经最大了
+	RETURN 1
+ENDIF
+RETURN 0

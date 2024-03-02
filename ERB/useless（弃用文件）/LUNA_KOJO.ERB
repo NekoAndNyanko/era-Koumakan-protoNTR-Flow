@@ -1,0 +1,162 @@
+﻿;-------------------------------------------------------------------------------
+;ぅな系汎用口上ファイル
+;  心で理解してください。
+;-------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------
+;オプション設定画面
+@LUNA_OPTION
+$INPUT_LOOP_LUNA_OPTION_TOP
+PRINTFORML 
+PRINTFORML %"各种选项的设定"%
+PRINTFORML %"[0]   - 全体开关…………………………"%%\@GETBIT(FLAG:ぅな設定,0)?ぅない。    #ぅなくない。\@%
+IF GETBIT(FLAG:ぅな設定,0)
+	;PRINTFORML %"[1]   - 口上の表示………………………"%%\@GETBIT(FLAG:ぅな設定,1)?するよ      #しないよ    \@%
+	PRINTFORML %"[2]   - 排泄…………………………"%%\@GETBIT(FLAG:ぅな設定,2)?するよ      #しないよ    \@%
+	;PRINTFORML %"[3]   - うんこ……………………………"%%\@GETBIT(FLAG:ぅな設定,3)?するよ      #しないよ    \@%
+	;PRINTFORML %"[9]   - 金髪の子…………………………"%%\@GETBIT(FLAG:ぅな設定,9)?かわいそう  #いらないよ  \@%
+ENDIF
+PRINTFORML %"[100] - 返回"%
+$INPUT_LOOP_LUNA_OPTION
+INPUT
+TRYCCALLFORM %"LUNA_OPTION_"+TOSTR(RESULT:0,"00")%
+	IF RESULT:0
+		;Trueなら設定したので確認を兼ねて選択肢を再表示
+		GOTO INPUT_LOOP_LUNA_OPTION_TOP
+	ENDIF
+CATCH
+	;選択された選択肢(関数)がなかったら選択肢を再表示
+	GOTO INPUT_LOOP_LUNA_OPTION_TOP
+ENDCATCH
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;オプション：ぅな使う
+;@return 1
+@LUNA_OPTION_00
+PRINTFORML %"全体开关"%
+PRINTFORML %"[1] 开",15,LEFT%%"[0] 关",15,LEFT%
+$INPUT_LOOP_LUNA_OPTION_00
+INPUT
+SELECTCASE RESULT:0
+	CASE 1
+		SETBIT FLAG:ぅな設定,0
+		PRINTFORML %"ぅない事ができるようになりました。"%
+	CASE 0
+		FLAG:ぅな設定 = 0
+		PRINTFORML %"ぅない事ができなくなりました。"%
+	CASEELSE
+		GOTO INPUT_LOOP_LUNA_OPTION_00
+ENDSELECT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;オプション：口上使う
+;@return 1
+@LUNA_OPTION_01
+PRINTFORML %"ぅな口上は表示させますか？"%
+PRINTFORML %"[1] させます",15,LEFT%%"[0] させません",15,LEFT%
+$INPUT_LOOP_LUNA_OPTION_01
+INPUT
+SELECTCASE RESULT:0
+	CASE 1
+		SETBIT FLAG:ぅな設定,1
+		PRINTFORML %"ぅな口上が表示されます。"%
+	CASE 0
+		CLEARBIT FLAG:ぅな設定,1
+		PRINTFORML %"ぅな口上は表示されません。"%
+	CASEELSE
+		GOTO INPUT_LOOP_LUNA_OPTION_01
+ENDSELECT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;オプション：おしっこする
+;@return 1
+@LUNA_OPTION_02
+PRINTFORML %"大家都会尿尿吗？"%
+PRINTFORML %"[1] 会",15,LEFT%%"[0] 不会",15,LEFT%
+$INPUT_LOOP_LUNA_OPTION_02
+INPUT
+SELECTCASE RESULT:0
+	CASE 1
+		SETBIT FLAG:ぅな設定,2
+		PRINTFORMW %"每个人都会尿尿。"%
+	CASE 0
+		CLEARBIT FLAG:ぅな設定,2
+		PRINTFORMW %"幻想少女怎么会尿尿呢？"%
+	CASEELSE
+		GOTO INPUT_LOOP_LUNA_OPTION_02
+ENDSELECT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;オプション：うんこする
+;@return 1
+@LUNA_OPTION_03
+PRINTFORML %"大家都会大便吗？"%
+PRINTFORML %"[1] 会",15,LEFT%%"[0] 不会",15,LEFT%
+$INPUT_LOOP_LUNA_OPTION_03
+INPUT
+SELECTCASE RESULT:0
+	CASE 1
+		SETBIT FLAG:ぅな設定,3
+		PRINTFORMW %"每个人都会大便。"%
+	CASE 0
+		CLEARBIT FLAG:ぅな設定,3
+		PRINTFORMW %"美少女怎么会拉屎？"%
+	CASEELSE
+		GOTO INPUT_LOOP_LUNA_OPTION_03
+ENDSELECT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;オプション：魔理沙ちゃんを使う
+;@return 1
+@LUNA_OPTION_09
+PRINTFORML %"魔理沙ちゃんを酷い目に遭わせますか？"%
+PRINTFORML %"[1] 遭わせます",15,LEFT%%"[0] 遭わせません",15,LEFT%
+$INPUT_LOOP_LUNA_OPTION_09
+INPUT
+SELECTCASE RESULT:0
+	CASE 1
+		SETBIT FLAG:ぅな設定,9
+		PRINTFORML %"抖Ｓ之气のあるキャラが魔理沙ちゃんを可愛がるようになりました。"%
+	CASE 0
+		CLEARBIT FLAG:ぅな設定,9
+		PRINTFORML %"みんなが魔理沙ちゃんに飽きました。"%
+	CASEELSE
+		GOTO INPUT_LOOP_LUNA_OPTION_09
+ENDSELECT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;オプション：返回
+@LUNA_OPTION_100
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;口上呼び出し用の汎用関数
+;@param ARGS:0 イベント番号（数値）
+;@param ARG:0  被害者キャラ番号（数値）
+;@param ARG:1  加害者キャラ番号（数値）
+;@param ARG:2  引数１
+;@param ARG:3  引数２
+;@return 1:呼び出し成功,0:呼び出し失敗
+@LUNA_KOJO(ARGS:0,ARG:0,ARG:1,ARG:2,ARG:3)
+DEBUGPRINTL LUNA KOJO
+RESULT:0=0
+TRYCALLLIST
+	FUNC %"LUNA_KOJO_CHARA"+TOSTR(ARG:0)+"_EVENT_"+ARGS:0+"("+TOSTR(ARG:0)+","+TOSTR(ARG:1)+","+TOSTR(ARG:2)+","+TOSTR(ARG:3)+")"%
+	FUNC %"LUNA_KOJO_EVENT_"+ARGS:0%,ARG:0,ARG:1,ARG:2,ARG:3
+ENDFUNC
+RETURN RESULT:0
+
+;-------------------------------------------------------------------------------
+;トイレを使う際の口上
+;@param ARG:0 被害者キャラ番号（数値）
+;@param ARG:1 加害者キャラ番号（数値）
+;@param ARG:2 尿量
+;@param ARG:3 便量
+;@return 1:xxx,0:xxx
+@LUNA_KOJO_EVENT_REST_UseRestRoom_Pee(ARG:0,ARG:1,ARG:2,ARG:3)
+RETURN 1

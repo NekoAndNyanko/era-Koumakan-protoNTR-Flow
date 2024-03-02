@@ -1,0 +1,1281 @@
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@Ｖ位置(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 0
+		RETURNF "普通"
+	CASE 1
+		RETURNF "上付き"
+	CASE 2
+		RETURNF "下付き"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@Ｖオプション(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1
+		RETURNF "卵巢发达"
+	CASE 2
+		RETURNF "膣内收缩自由"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@GETＶオプション(ARG, ARG:1)
+#FUNCTION
+;対象の特定Ｖオプションの有無
+SIF (CFLAG:ARG:Ｖオプション１ == ARG:1 || CFLAG:ARG:Ｖオプション２ == ARG:1)
+	RETURNF 1
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;Ｐ関連の表示と処理
+@Ｐ大きさ(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 2
+		RETURNF "巨根"
+	CASE 1
+		RETURNF "大根"
+	CASE 0
+		RETURNF "普通"
+	CASE -1
+		RETURNF "较小"
+	CASE -2
+		RETURNF "短小"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@Ｐオプション(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1
+		RETURNF "真性包茎"
+	CASE 2
+		RETURNF "假性包茎"
+	CASE 5
+		RETURNF "像触手一样灵活扭动"
+	CASE 6
+		RETURNF "全部长满粗疹"
+	CASE 7
+		RETURNF "大龟头"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;--------------------------------------------------------
+@髪の長さ(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE IS >= 900
+		RETURNF "走路时与地面摩擦的程度"
+	CASE 800 TO 899
+		RETURNF "站立时接触到地面的程度"
+	CASE 700 TO 799
+		RETURNF "膝盖被遮住的程度"
+	CASE 600 TO 699
+		RETURNF "臀部被遮住的程度"
+	CASE 500 TO 599
+		RETURNF "背部被遮住的程度"
+	CASE 400 TO 499
+		RETURNF "胸部被遮住的程度"
+	CASE 300 TO 399
+		RETURNF "肩部被遮住的程度"
+	CASE 200 TO 299
+		RETURNF "后颈被遮住的程度"
+	CASE 100 TO 199
+		RETURNF "能看到后颈的程度"
+	CASE 0 TO 99
+		RETURNF "能看到头皮的程度"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@髪オプション(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1
+		RETURNF "马尾辫"
+	CASE 2
+		RETURNF "侧马尾"
+	CASE 3
+		RETURNF "双马尾"
+	CASE 4
+		RETURNF "辫子"
+	CASE 5
+		RETURNF "团子头"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@目つき(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1
+		RETURNF "タレ目"
+	CASE 2
+		RETURNF "ツリ目"
+	CASE 3
+		RETURNF "三白眼"
+	CASE 4
+		RETURNF "ジト目"
+	CASE 5
+		RETURNF "細目"
+	CASEELSE
+		RETURNF "普通"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@瞳オプション(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1
+		RETURNF "异色瞳"
+	CASE 2
+		RETURNF "小黑眼珠"
+	CASE 3
+		RETURNF "猫眼"
+	CASE 4
+		RETURNF "目光无神"
+	CASE 5
+		RETURNF "独眼"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@肌色(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 0
+		;0XF0F8FF(アリスブルー)
+		RETURNF "白皙"
+	CASE 1
+		;0XFFFDB4
+		RETURNF "普通"
+	CASE 2
+		;0XD4A168
+		RETURNF "小麦"
+	CASE 3
+		;0X6B3E08
+		RETURNF "褐色"
+	CASE 10
+		;0X006AB6
+		RETURNF "青"
+	CASE 11
+		;0XA757A8
+		RETURNF "紫"
+	CASE 13
+		;0XBE0032
+		RETURNF "赤"
+	CASE 14
+		;0X00B66E
+		RETURNF "緑"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------
+;関数名:GET_TALENTNAME
+;概　要:素質名取得関数
+;引　数:ARG:0…TALENT登録番号
+;　　　:ARG:1…TALENTの中身
+;戻り値:素質名
+;備　考:文中関数
+;素質の名前を返す。
+;-------------------------------------------------
+@GET_TALENTNAME(ARG,ARG:1)
+#FUNCTIONS
+SELECTCASE ARG
+		;处女
+	CASE 0
+		SIF ARG:1
+			RETURNF "处女"
+		;童贞
+	CASE 1
+		SIF !ARG:1
+			RETURNF "童贞"
+		;性别
+	CASE 2
+		IF ARG:1 == 3
+			RETURNF "扶她"
+		ELSEIF ARG:1 == 2
+			RETURNF "男人"
+		ELSE
+			RETURNF "女人"
+		ENDIF
+	CASE 3
+		SIF ARG:1
+			RETURNF "ＮＴＲ"
+		;淫乱
+	CASE 6
+		IF ARG:1 == 1
+			RETURNF "淫乱"
+		ELSEIF ARG:1 == 2
+			RETURNF "娼女"
+		ENDIF
+		;胆量
+	CASE 10
+		IF ARG:1 == -1
+			RETURNF "胆怯"
+		ELSEIF ARG:1 == 1
+			RETURNF "坚强"
+		ENDIF
+		;态度
+	CASE 11
+		IF ARG:1 == -1
+			RETURNF "坦率"
+		ELSEIF ARG:1 == 1
+			RETURNF "叛逆"
+		ENDIF
+		;応答
+	CASE 12
+		IF ARG:1 == -1
+			RETURNF "老实"
+		ELSEIF ARG:1 == 1
+			RETURNF "傲慢"
+		ENDIF
+		;自尊心
+	CASE 13
+		IF ARG:1 == -1
+			RETURNF "自尊心低"
+		ELSEIF ARG:1 == 1
+			RETURNF "自尊心高"
+		ENDIF
+		;性的兴趣
+	CASE 23
+		IF ARG:1 == -1
+			RETURNF "保守的"
+		ELSEIF ARG:1 == 1
+			RETURNF "好奇心"
+		ENDIF
+		;开朗／阴郁,
+	CASE 24
+		IF ARG:1 == -1
+			RETURNF "阴郁"
+		ELSEIF ARG:1 == 1
+			RETURNF "开朗"
+		ENDIF
+		;贞操重视
+	CASE 30
+		IF ARG:1 == -1
+			RETURNF "不在乎贞操"
+		ELSEIF ARG:1 == 1
+			RETURNF "贞操重视"
+		ENDIF
+		;自己爱
+	CASE 31
+		IF ARG:1 == -1
+			RETURNF "圧抑"
+		ELSEIF ARG:1 == 1
+			RETURNF "解放"
+		ENDIF
+		;羞耻心
+	CASE 33
+		IF ARG:1 == -1
+			RETURNF "不知羞耻"
+		ELSEIF ARG:1 == 1
+			RETURNF "害羞"
+		ENDIF
+		;痛覚
+	CASE 40
+		IF ARG:1 == -1
+			RETURNF "不怕痛"
+		ELSEIF ARG:1 == 1
+			RETURNF "怕痛"
+		ENDIF
+		;弄湿难易
+	CASE 41
+		IF ARG:1 == -1
+			RETURNF "不易湿"
+		ELSEIF ARG:1 == 1
+			RETURNF "容易湿"
+		ENDIF
+		;习得速度
+	CASE 50
+		IF ARG:1 == -1
+			RETURNF "学习慢"
+		ELSEIF ARG:1 == 1
+			RETURNF "学习快"
+		ENDIF
+		;汚臭耐性
+	CASE 61
+		IF ARG:1 == -2
+			RETURNF "洁癖症"
+		ELSEIF ARG:1 == -1
+			RETURNF "汚臭敏感"
+		ELSEIF ARG:1 == 1
+			RETURNF "汚臭钝感"
+		ELSEIF ARG:1 == 2
+			RETURNF "汚臭无视"
+		ENDIF
+		;快感応答
+	CASE 70
+		IF ARG:1 == -1
+			RETURNF "否定快感"
+		ELSEIF ARG:1 == 1
+			RETURNF "接受快感"
+		ENDIF
+		;性别嗜好
+	CASE 81
+		IF ARG:1 == -1
+			RETURNF "两面通吃"
+		ELSEIF ARG:1 == 3
+			RETURNF "不信任人类"
+		ELSEIF ARG:1 == 1
+			RETURNF "讨厌男人"
+		ELSEIF ARG:1 == 2
+			RETURNF "讨厌女人"
+		ENDIF
+		;体型
+	CASE 100
+		IF ARG:1 == -3
+			RETURNF "小人"
+		ELSEIF ARG:1 == -2
+			RETURNF "幼児体型"
+		ELSEIF ARG:1 == -1
+			RETURNF "矮小体型"
+		ELSEIF ARG:1 == 1
+			RETURNF "长身"
+		ELSEIF ARG:1 == 2
+			RETURNF "巨躯"
+		ELSEIF ARG:1 == 3
+			RETURNF "巨人"
+		ENDIF
+		;Ｃ感度
+	CASE 101
+		IF ARG:1 == -2
+			RETURNF "Ｃ不感"
+		ELSEIF ARG:1 == -1
+			RETURNF "Ｃ钝感"
+		ELSEIF ARG:1 == 1
+			RETURNF "Ｃ敏感"
+		ELSEIF ARG:1 == 2
+			RETURNF "Ｃ过敏"
+		ENDIF
+		;Ｖ感度
+	CASE 102
+		IF ARG:1 == -2
+			RETURNF "Ｖ不感"
+		ELSEIF ARG:1 == -1
+			RETURNF "Ｖ钝感"
+		ELSEIF ARG:1 == 1
+			RETURNF "Ｖ敏感"
+		ELSEIF ARG:1 == 2
+			RETURNF "Ｖ过敏"
+		ENDIF
+		;Ａ感度
+	CASE 103
+		IF ARG:1 == -2
+			RETURNF "Ａ不感"
+		ELSEIF ARG:1 == -1
+			RETURNF "Ａ钝感"
+		ELSEIF ARG:1 == 1
+			RETURNF "Ａ敏感"
+		ELSEIF ARG:1 == 2
+			RETURNF "Ａ过敏"
+		ENDIF
+		;Ｂ感度
+	CASE 104
+		IF ARG:1 == -2
+			RETURNF "Ｂ不感"
+		ELSEIF ARG:1 == -1
+			RETURNF "Ｂ钝感"
+		ELSEIF ARG:1 == 1
+			RETURNF "Ｂ敏感"
+		ELSEIF ARG:1 == 2
+			RETURNF "Ｂ过敏"
+		ENDIF
+		;胸围
+	CASE 105
+		IF ARG:1 == -2
+			RETURNF "絶壁"
+		ELSEIF ARG:1 == -1
+			RETURNF "贫乳"
+			;ELSEIF ARG:1 == 0
+			;RETURNF "普乳"
+		ELSEIF ARG:1 == 1
+			RETURNF "巨乳"
+		ELSEIF ARG:1 == 2
+			RETURNF "爆乳"
+		ENDIF
+		;Ｍ感度
+	CASE 106
+		IF ARG:1 == -2
+			RETURNF "Ｍ不感"
+		ELSEIF ARG:1 == -1
+			RETURNF "Ｍ钝感"
+		ELSEIF ARG:1 == 1
+			RETURNF "Ｍ敏感"
+		ELSEIF ARG:1 == 2
+			RETURNF "Ｍ过敏"
+		ENDIF
+		;阴茎尺寸
+	CASE 107
+		IF ARG:1 == -2
+			RETURNF "幼小阴茎"
+		ELSEIF ARG:1 == -1
+			RETURNF "短小阴茎"
+		ELSEIF ARG:1 == 1
+			RETURNF "健硕阴茎"
+		ELSEIF ARG:1 == 2
+			RETURNF "巨大阴茎"
+		ELSEIF ARG:1 == 3
+			RETURNF "超巨型阴茎"
+		ELSEIF ARG:1 == 4
+			RETURNF "膣填充形阴茎"
+		ENDIF
+		;阴道深度
+	CASE 108
+		IF ARG:1 == 1
+			RETURNF "小穴穹隆后移"
+		ELSEIF ARG:1 == 2
+			RETURNF "小穴时常拉伸"
+		ELSEIF ARG:1 == 3
+			RETURNF "小穴收缩自如"
+		ENDIF
+		;回复速度
+	CASE 130
+		IF ARG:1 == -1
+			RETURNF "回复慢"
+		ELSEIF ARG:1 == 1
+			RETURNF "回复快"
+		ENDIF
+		;人类
+	CASE 290
+		IF ARG:1 == 1
+			RETURNF "人类"
+		ELSEIF ARG:1 == 2
+			RETURNF "仙人"
+		ELSEIF ARG:1 == 3
+			RETURNF "天人"
+		ELSEIF ARG:1 == 4
+			RETURNF "月人"
+		ELSEIF ARG:1 == 5
+			RETURNF "魔界人"
+		ELSEIF ARG:1 == 6
+			RETURNF "外界人"
+		ENDIF
+		;妖怪
+	CASE 291
+		IF ARG:1 == 1
+			RETURNF "妖怪"
+		ELSEIF ARG:1 == 2
+			RETURNF "鬼"
+		ELSEIF ARG:1 == 3
+			RETURNF "吸血鬼"
+		ELSEIF ARG:1 == 4
+			RETURNF "河童"
+		ELSEIF ARG:1 == 5
+			RETURNF "天狗"
+		ELSEIF ARG:1 == 6
+			RETURNF "妖獣"
+		ELSEIF ARG:1 == 7
+			RETURNF "妖鸟"
+		ELSEIF ARG:1 == 8
+			RETURNF "妖虫"
+		ELSEIF ARG:1 == 9
+			RETURNF "悪魔"
+		ELSEIF ARG:1 == 10
+			RETURNF "小人"
+		ELSEIF ARG:1 == 11
+			RETURNF "座敷童子"
+		ELSEIF ARG:1 == 12
+			RETURNF "山童"
+		ENDIF
+		;妖精
+	CASE 292
+		SIF ARG:1 == 1
+			RETURNF "妖精"
+		;神霊
+	CASE 293
+		IF ARG:1 == 1
+			RETURNF "神霊"
+		ELSEIF ARG:1 == 2
+			RETURNF "死神"
+		ELSEIF ARG:1 == 3
+			RETURNF "阎魔"
+		ENDIF
+		;幽霊
+	CASE 294
+		IF ARG:1 == 1
+			RETURNF "幽霊"
+		ELSEIF ARG:1 == 2
+			RETURNF "騒霊"
+		ELSEIF ARG:1 == 3
+			RETURNF "亡霊"
+		ELSEIF ARG:1 == 4
+			RETURNF "悪霊"
+		ENDIF
+		;付丧神
+	CASE 295
+		SIF ARG:1 == 1
+			RETURNF "付丧神"
+		;人形
+	CASE 296
+		IF ARG:1 == 1
+			RETURNF "人形"
+		ELSEIF ARG:1 == 2
+			RETURNF "机械"
+		ELSEIF ARG:1 == 3
+			RETURNF "魔像"
+		ELSEIF ARG:1 == 4
+			RETURNF "埴轮"
+		ELSEIF ARG:1 == 5
+			RETURNF "僵尸"
+		ELSEIF ARG:1 == 99
+			RETURNF "人形の乙女"
+		ENDIF
+		;追加种族
+	CASE 297
+		IF ARG:1 == 1
+			RETURNF "巫女"
+		ELSEIF ARG:1 == 2
+			RETURNF "魔法使"
+		ELSEIF ARG:1 == 3
+			RETURNF "女仆"
+		ELSEIF ARG:1 == 4
+			RETURNF "蓬莱人"
+		ENDIF
+	CASEELSE
+		SIF ARG:1
+			RETURNF @"%TALENTNAME:ARG%"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@秘部颜色(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 0
+		;
+		RETURNF "粉嫩"
+	CASE 1
+		;
+		RETURNF "嫩红"
+	CASE 2
+		;
+		RETURNF "红润"
+	CASE 3
+		;
+		RETURNF "褐红"
+	CASE 4
+		;
+		RETURNF "亮褐"
+	CASE 5
+		;
+		RETURNF "褐色"
+	CASE 6
+		;
+		RETURNF "暗褐"
+	CASE 7
+		;
+		RETURNF "黑褐"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@肌肤等颜色改变(ARG)
+SIF BASE:ARG:日晒度 > 1000
+	BASE:ARG:日晒度 = 1000
+SIF BASE:ARG:日晒度 < 0
+	BASE:ARG:日晒度 = 0
+SIF BASE:ARG:日晒度 <= 1000
+	CFLAG:ARG:肌色 = 3
+SIF BASE:ARG:日晒度 < 700
+	CFLAG:ARG:肌色 = 2
+SIF BASE:ARG:日晒度 < 300
+	CFLAG:ARG:肌色 = 1
+SIF BASE:ARG:日晒度 < 100
+	CFLAG:ARG:肌色 = 0
+SIF BASE:ARG:乳头色素 > 1000
+	BASE:ARG:乳头色素 = 1000
+SIF BASE:ARG:乳头色素 < 0
+	BASE:ARG:乳头色素 = 0
+SIF BASE:ARG:乳头色素 <= 1000
+	CFLAG:ARG:乳头颜色 = 7
+SIF BASE:ARG:乳头色素 < 800
+	CFLAG:ARG:乳头颜色 = 6
+SIF BASE:ARG:乳头色素 < 650
+	CFLAG:ARG:乳头颜色 = 5
+SIF BASE:ARG:乳头色素 < 500
+	CFLAG:ARG:乳头颜色 = 4
+SIF BASE:ARG:乳头色素 < 400
+	CFLAG:ARG:乳头颜色 = 3
+SIF BASE:ARG:乳头色素 < 300
+	CFLAG:ARG:乳头颜色 = 2
+SIF BASE:ARG:乳头色素 < 200
+	CFLAG:ARG:乳头颜色 = 1
+SIF BASE:ARG:乳头色素 < 100
+	CFLAG:ARG:乳头颜色 = 0
+SIF BASE:ARG:小穴色素 > 1000
+	BASE:ARG:小穴色素 = 1000
+SIF BASE:ARG:小穴色素 < 0
+	BASE:ARG:小穴色素 = 0
+SIF BASE:ARG:小穴色素 <= 1000
+	CFLAG:ARG:小穴颜色 = 7
+SIF BASE:ARG:小穴色素 < 800
+	CFLAG:ARG:小穴颜色 = 6
+SIF BASE:ARG:小穴色素 < 650
+	CFLAG:ARG:小穴颜色 = 5
+SIF BASE:ARG:小穴色素 < 500
+	CFLAG:ARG:小穴颜色 = 4
+SIF BASE:ARG:小穴色素 < 400
+	CFLAG:ARG:小穴颜色 = 3
+SIF BASE:ARG:小穴色素 < 300
+	CFLAG:ARG:小穴颜色 = 2
+SIF BASE:ARG:小穴色素 < 200
+	CFLAG:ARG:小穴颜色 = 1
+SIF BASE:ARG:小穴色素 < 100
+	CFLAG:ARG:小穴颜色 = 0
+SIF BASE:ARG:肛门色素 > 1000
+	BASE:ARG:肛门色素 = 1000
+SIF BASE:ARG:肛门色素 < 0
+	BASE:ARG:肛门色素 = 0
+SIF BASE:ARG:肛门色素 <= 1000
+	CFLAG:ARG:肛门颜色 = 7
+SIF BASE:ARG:肛门色素 < 800
+	CFLAG:ARG:肛门颜色 = 6
+SIF BASE:ARG:肛门色素 < 650
+	CFLAG:ARG:肛门颜色 = 5
+SIF BASE:ARG:肛门色素 < 500
+	CFLAG:ARG:肛门颜色 = 4
+SIF BASE:ARG:肛门色素 < 400
+	CFLAG:ARG:肛门颜色 = 3
+SIF BASE:ARG:肛门色素 < 300
+	CFLAG:ARG:肛门颜色 = 2
+SIF BASE:ARG:肛门色素 < 200
+	CFLAG:ARG:肛门颜色 = 1
+SIF BASE:ARG:肛门色素 < 100
+	CFLAG:ARG:肛门颜色 = 0
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@肌色SET(ARG)
+SELECTCASE ARG
+	CASE 0
+		SETCOLOR 0XF0F8FF
+	CASE 1
+		SETCOLOR 0XFFFDB4
+	CASE 2
+		SETCOLOR 0XD4A168
+	CASE 3
+		SETCOLOR 0X6f3a26
+	CASE 10
+		SETCOLOR 0X006AB6
+	CASE 11
+		SETCOLOR 0XA757A8
+	CASE 13
+		SETCOLOR 0XBE0032
+	CASE 14
+		SETCOLOR 0X00B66E
+	CASEELSE
+		RESETCOLOR
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@秘部颜色SET(ARG)
+SELECTCASE ARG
+	CASE 0
+		SETCOLOR 0Xff7d92
+	CASE 1
+		SETCOLOR 0Xff5a5a
+	CASE 2
+		SETCOLOR 0Xff4444
+	CASE 3
+		SETCOLOR 0Xb15141
+	CASE 4
+		SETCOLOR 0X90492d
+	CASE 5
+		SETCOLOR 0X6f3a26
+	CASE 6
+		SETCOLOR 0X4e2d24
+	CASE 7
+		SETCOLOR 0X332723
+	CASEELSE
+		RESETCOLOR
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@体オプション(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+		;歯系（どれか１種）1~9
+	CASE 1
+		RETURNF "八重歯"
+	CASE 2
+		RETURNF "牙"
+	CASE 3
+		RETURNF "全ての歯が尖っている"
+		;翼系（どれか１種）10~29
+	CASE 10
+		RETURNF "妖精の翼"
+	CASE 11
+		RETURNF "氷の翼"
+	CASE 12
+		RETURNF "蕾米莉亚の翼"
+	CASE 13
+		RETURNF "芙兰朵露の翼"
+	CASE 14
+		RETURNF "悪魔の翼"
+	CASE 15
+		RETURNF "羽毛の翼"
+		;耳系（どれか１種）30~49
+	CASE 30
+		RETURNF "尖った耳"
+	CASE 31
+		RETURNF "羽耳"
+	CASE 32
+		RETURNF "ぴんと立っているふさふさの獣耳"
+	CASE 33
+		RETURNF "ぴんと立っている毛の短い獣耳"
+	CASE 34
+		RETURNF "垂れているふさふさの獣耳"
+	CASE 35
+		RETURNF "垂れている毛の短い獣耳"
+	CASE 36
+		RETURNF "丸くてふさふさしている獣耳"
+	CASE 37
+		RETURNF "丸くて毛の短い獣耳"
+	CASE 38
+		RETURNF "ぴんと立っている兎耳"
+	CASE 39
+		RETURNF "垂れている兎耳"
+	CASE 40
+		RETURNF "鰭耳"
+		;角、触覚系（どれか１種）50~54
+	CASE 50
+		RETURNF "頭に悪魔の羽が生えている"
+	CASE 51
+		RETURNF "頭に角が1本生えている"
+	CASE 52
+		RETURNF "頭に角が2本生えている"
+	CASE 53
+		RETURNF "頭に触角が生えている"
+		;尻尾系（どれか１種）55~59
+	CASE 55
+		RETURNF "毛の長い尻尾"
+	CASE 56
+		RETURNF "毛の短い尻尾"
+	CASE 57
+		RETURNF "毛の無い尻尾"
+	CASE 58
+		RETURNF "悪魔の尻尾"
+		;その他
+	CASE 90
+		;どちらかというと目のオプション？
+		RETURNF "目の下に隈がある"
+	CASE 91
+		;これもどちらかというと(ry
+		RETURNF "二重瞼"
+	CASE 92
+		RETURNF "尖った爪"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@色汎用(ARG)
+#FUNCTIONS
+;朱　赤　桃　赤紫　紫　青紫　青　水　青緑　深緑　緑　黄緑　黄
+;橙　茶　焦茶　赤茶　白　灰　黒
+SELECTCASE ARG
+	CASE 0
+		;0XBE0032
+		RETURNF "赤"
+	CASE 1
+		;0XE5001E
+		RETURNF "深紅"
+	CASE 2
+		;0XEF454A
+		RETURNF "朱"
+	CASE 3
+		;0XAD3140
+		RETURNF "臙脂"
+	CASE 4
+		;0XD53E62
+		RETURNF "薔薇"
+	CASE 5
+		;0XE38089
+		RETURNF "桃"
+	CASE 6
+		;0XF8DADE
+		RETURNF "桜"
+	CASE 7
+		;0XDA508F
+		RETURNF "赤紫"
+	CASE 8
+		;0XC94093
+		RETURNF "牡丹"
+	CASE 9
+		;0X422C41
+		RETURNF "紫紺"
+	CASE 10
+		;0XA757A8
+		RETURNF "紫"
+	CASE 11
+		;0X7445AA
+		RETURNF "青紫"
+	CASE 12
+		;0XA294C8
+		RETURNF "藤"
+	CASE 13
+		;0X353573
+		RETURNF "紺藍"
+	CASE 14
+		;0X292934
+		RETURNF "鉄紺"
+	CASE 15
+		;0X384D98
+		RETURNF "群青"
+	CASE 16
+		;0X343D55
+		RETURNF "紺"
+	CASE 17
+		;0X00519A
+		RETURNF "瑠璃"
+	CASE 18
+		;0X006AB6
+		RETURNF "青"
+	CASE 19
+		;0X2B4B65
+		RETURNF "藍"
+	CASE 20
+		;0X9DCCE0
+		RETURNF "水"
+	CASE 21
+		;0X00859B
+		RETURNF "浅葱"
+	CASE 22
+		;0X008E94
+		RETURNF "青緑"
+	CASE 23
+		;0X6AA89D
+		RETURNF "青竹"
+	CASE 24
+		;0X00A37E
+		RETURNF "若竹"
+	CASE 25
+		;0X00533E
+		RETURNF "萌葱"
+	CASE 26
+		;0X007B50
+		RETURNF "常盤"
+	CASE 27
+		;0X005638
+		RETURNF "深緑"
+	CASE 28
+		;0X00B66E
+		RETURNF "緑"
+	CASE 29
+		;0X3C6754
+		RETURNF "千歳緑"
+	CASE 30
+		;0X4D8169
+		RETURNF "緑青"
+	CASE 31
+		;0XBADBC7
+		RETURNF "白緑"
+	CASE 32
+		;0X687E52
+		RETURNF "松葉"
+	CASE 33
+		;0XA9C087
+		RETURNF "若葉"
+	CASE 34
+		;0X737C3E
+		RETURNF "草"
+	CASE 35
+		;0X97A61E
+		RETURNF "萌黄"
+	CASE 36
+		;0XAAB300
+		RETURNF "若草"
+	CASE 37
+		;0XBBC000
+		RETURNF "黄緑"
+	CASE 38
+		;0X7C7A37
+		RETURNF "苔"
+	CASE 39
+		;0X706C3E
+		RETURNF "鶯"
+	CASE 40
+		;0XC0BA7F
+		RETURNF "抹茶"
+	CASE 41
+		;0XE3C700
+		RETURNF "黄"
+	CASE 42
+		;0XEAD56B
+		RETURNF "刈安"
+	CASE 43
+		;0X716B4A
+		RETURNF "海松"
+	CASE 44
+		;0XFFBB00
+		RETURNF "向日葵"
+	CASE 45
+		;0XF8A900
+		RETURNF "山吹"
+	CASE 46
+		;0XC8A65D
+		RETURNF "芥子"
+	CASE 47
+		;0XB47700
+		RETURNF "金茶"
+	CASE 48
+		;0XB8883B
+		RETURNF "黄土"
+	CASE 49
+		;0XDED28F
+		RETURNF "象牙"
+	CASE 50
+		;0XEB8400
+		RETURNF "蜜柑"
+	CASE 51
+		;0X6B3E08
+		RETURNF "褐"
+	CASE 52
+		;0X9F6C31
+		RETURNF "土"
+	CASE 53
+		;0XAA7A40
+		RETURNF "琥珀"
+	CASE 54
+		;0X847461
+		RETURNF "朽葉"
+	CASE 55
+		;0X5D5245
+		RETURNF "煤竹"
+	CASE 56
+		;0XD4A168
+		RETURNF "小麦"
+	CASE 57
+		;0XEF810F
+		RETURNF "橙"
+	CASE 58
+		;0XD89F6D
+		RETURNF "杏"
+	CASE 59
+		;0XFAA55C
+		RETURNF "柑子"
+	CASE 60
+		;0XB1632A
+		RETURNF "黄茶"
+	CASE 61
+		;0X6D4C33
+		RETURNF "茶"
+	CASE 62
+		;0XF1BB93
+		RETURNF "肌"
+	CASE 63
+		;0XB0764F
+		RETURNF "駱駝"
+	CASE 64
+		;0X816551
+		RETURNF "灰茶"
+	CASE 65
+		;0X564539
+		RETURNF "焦茶"
+	CASE 66
+		;0XD86011
+		RETURNF "黄赤"
+	CASE 67
+		;0X998D86
+		RETURNF "茶鼠"
+	CASE 68
+		;0X704B38
+		RETURNF "栗"
+	CASE 69
+		;0X3E312B
+		RETURNF "黒茶"
+	CASE 70
+		;0X865C4B
+		RETURNF "桧皮"
+	CASE 71
+		;0XB64826
+		RETURNF "樺"
+	CASE 72
+		;0XDB5C35
+		RETURNF "柿"
+	CASE 73
+		;0XEB6940
+		RETURNF "黄丹"
+	CASE 74
+		;0XB5725C
+		RETURNF "肉桂"
+	CASE 75
+		;0X624035
+		RETURNF "錆"
+	CASE 76
+		;0XE65226
+		RETURNF "赤橙"
+	CASE 77
+		;0XAD4E39
+		RETURNF "赤茶"
+	CASE 78
+		;0XEA4E31
+		RETURNF "金赤"
+	CASE 79
+		;0X905D54
+		RETURNF "小豆"
+	CASE 80
+		;0X863E33
+		RETURNF "弁柄"
+	CASE 81
+		;0X7A453D
+		RETURNF "鳶"
+	CASE 82
+		;0XD1483E
+		RETURNF "鉛丹"
+	CASE 83
+		;0X9E413F
+		RETURNF "紅樺"
+	CASE 84
+		;0XEF4644
+		RETURNF "紅緋"
+	CASE 85
+		;0XF0F0F0
+		RETURNF "白"
+	CASE 86
+		;0X767676
+		RETURNF "灰"
+	CASE 87
+		;0X343434
+		RETURNF "墨"
+	CASE 88
+		;0X2A2A2A
+		RETURNF "黒"
+	CASE 89
+		;0X2A2A2A
+		RETURNF "金"
+	CASE 90
+		;0X2A2A2A
+		RETURNF "銀"
+	CASEELSE
+		RETURNF "ーーー"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@汎用色SET(ARG)
+SELECTCASE ARG
+	CASE 0
+		SETCOLOR 0XBE0032
+	CASE 1
+		SETCOLOR 0XE5001E
+	CASE 2
+		SETCOLOR 0XEF454A
+	CASE 3
+		SETCOLOR 0XAD3140
+	CASE 4
+		SETCOLOR 0XD53E62
+	CASE 5
+		SETCOLOR 0XE38089
+	CASE 6
+		SETCOLOR 0XF8DADE
+	CASE 7
+		SETCOLOR 0XDA508F
+	CASE 8
+		SETCOLOR 0XC94093
+	CASE 9
+		SETCOLOR 0X422C41
+	CASE 10
+		SETCOLOR 0XA757A8
+	CASE 11
+		SETCOLOR 0X7445AA
+	CASE 12
+		SETCOLOR 0XA294C8
+	CASE 13
+		SETCOLOR 0X353573
+	CASE 14
+		SETCOLOR 0X292934
+	CASE 15
+		SETCOLOR 0X384D98
+	CASE 16
+		SETCOLOR 0X343D55
+	CASE 17
+		SETCOLOR 0X00519A
+	CASE 18
+		SETCOLOR 0X006AB6
+	CASE 19
+		SETCOLOR 0X2B4B65
+	CASE 20
+		SETCOLOR 0X9DCCE0
+	CASE 21
+		SETCOLOR 0X00859B
+	CASE 22
+		SETCOLOR 0X008E94
+	CASE 23
+		SETCOLOR 0X6AA89D
+	CASE 24
+		SETCOLOR 0X00A37E
+	CASE 25
+		SETCOLOR 0X00533E
+	CASE 26
+		SETCOLOR 0X007B50
+	CASE 27
+		SETCOLOR 0X005638
+	CASE 28
+		SETCOLOR 0X00B66E
+	CASE 29
+		SETCOLOR 0X3C6754
+	CASE 30
+		SETCOLOR 0X4D8169
+	CASE 31
+		SETCOLOR 0XBADBC7
+	CASE 32
+		SETCOLOR 0X687E52
+	CASE 33
+		SETCOLOR 0XA9C087
+	CASE 34
+		SETCOLOR 0X737C3E
+	CASE 35
+		SETCOLOR 0X97A61E
+	CASE 36
+		SETCOLOR 0XAAB300
+	CASE 37
+		SETCOLOR 0XBBC000
+	CASE 38
+		SETCOLOR 0X7C7A37
+	CASE 39
+		SETCOLOR 0X706C3E
+	CASE 40
+		SETCOLOR 0XC0BA7F
+	CASE 41
+		SETCOLOR 0XE3C700
+	CASE 42
+		SETCOLOR 0XEAD56B
+	CASE 43
+		SETCOLOR 0X716B4A
+	CASE 44
+		SETCOLOR 0XFFBB00
+	CASE 45
+		SETCOLOR 0XF8A900
+	CASE 46
+		SETCOLOR 0XC8A65D
+	CASE 47
+		SETCOLOR 0XB47700
+	CASE 48
+		SETCOLOR 0XB8883B
+	CASE 49
+		SETCOLOR 0XDED28F
+	CASE 50
+		SETCOLOR 0XEB8400
+	CASE 51
+		SETCOLOR 0X6B3E08
+	CASE 52
+		SETCOLOR 0X9F6C31
+	CASE 53
+		SETCOLOR 0XAA7A40
+	CASE 54
+		SETCOLOR 0X847461
+	CASE 55
+		SETCOLOR 0X5D5245
+	CASE 56
+		SETCOLOR 0XD4A168
+	CASE 57
+		SETCOLOR 0XEF810F
+	CASE 58
+		SETCOLOR 0XD89F6D
+	CASE 59
+		SETCOLOR 0XFAA55C
+	CASE 60
+		SETCOLOR 0XB1632A
+	CASE 61
+		SETCOLOR 0X6D4C33
+	CASE 62
+		SETCOLOR 0XF1BB93
+	CASE 63
+		SETCOLOR 0XB0764F
+	CASE 64
+		SETCOLOR 0X816551
+	CASE 65
+		SETCOLOR 0X564539
+	CASE 66
+		SETCOLOR 0XD86011
+	CASE 67
+		SETCOLOR 0X998D86
+	CASE 68
+		SETCOLOR 0X704B38
+	CASE 69
+		SETCOLOR 0X3E312B
+	CASE 70
+		SETCOLOR 0X865C4B
+	CASE 71
+		SETCOLOR 0XB64826
+	CASE 72
+		SETCOLOR 0XDB5C35
+	CASE 73
+		SETCOLOR 0XEB6940
+	CASE 74
+		SETCOLOR 0XB5725C
+	CASE 75
+		SETCOLOR 0X624035
+	CASE 76
+		SETCOLOR 0XE65226
+	CASE 77
+		SETCOLOR 0XAD4E39
+	CASE 78
+		SETCOLOR 0XEA4E31
+	CASE 79
+		SETCOLOR 0X905D54
+	CASE 80
+		SETCOLOR 0X863E33
+	CASE 81
+		SETCOLOR 0X7A453D
+	CASE 82
+		SETCOLOR 0XD1483E
+	CASE 83
+		SETCOLOR 0X9E413F
+	CASE 84
+		SETCOLOR 0XEF4644
+	CASE 85
+		SETCOLOR 0XF0F0F0
+	CASE 86
+		SETCOLOR 0X767676
+	CASE 87
+		SETCOLOR 0X343434
+	CASE 88
+		SETCOLOR 0X2A2A2A
+	CASE 89
+		SETCOLOR 0XFFFF00
+	CASEELSE
+		RESETCOLOR
+ENDSELECT

@@ -1,0 +1,127 @@
+﻿;-------------------------------------------------
+;诱惑访问者
+;-------------------------------------------------
+@COM463
+#DIM LOOP_CHR
+#DIM MSG表示フラグ
+IF CFLAG:MASTER:現在位置 == 位置_訪問者宅
+ELSE
+	PRINTFORMW 发现了%NTR_NAME(0)%的身影，%CALLNAME:MASTER%向%NTR_NAME(0)%打招呼
+ENDIF
+; ここから他の住人が居る場合の処理
+MSG表示フラグ = 0
+FOR LOOP_CHR,1,CHARANUM
+	IF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置 && CFLAG:LOOP_CHR:睡眠 == 0
+		PRINT 不来房间里吗？
+		; 訪問者には懐いて(?)なく、主人公が好きな状態だと無理矢理言わされてると勘違いして主人公を救出
+		IF CFLAG:LOOP_CHR:屈服度 <= 400 && (TALENT:LOOP_CHR:恋慕 || TALENT:LOOP_CHR:亲爱)
+			PRINTFORMW 试图邀请时，%CALLNAME:LOOP_CHR%立即阻止了，拉着%CALLNAME:MASTER%的手逃离了这个地方。
+			TRYCALLLIST
+				FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_0(LOOP_CHR)
+				FUNC KOJO_MESSAGE_COM_KU_463_0(LOOP_CHR)
+			ENDFUNC
+			CFLAG:MASTER:現在位置 = 位置_玩家房间
+			CFLAG:LOOP_CHR:現在位置 = 位置_玩家房间
+			RETURN 0
+			; 訪問者に懐いて(?)なく、主人公ともあまり親しくない場合は逃跑
+		ELSEIF CFLAG:LOOP_CHR:屈服度 <= 400
+			PRINTFORMW 引诱%NTR_NAME(0)%的同时，向%CALLNAME:LOOP_CHR%提出三个人一起做快乐的事。
+			TRYCALLLIST
+				FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_1(LOOP_CHR)
+				FUNC KOJO_MESSAGE_COM_KU_463_1(LOOP_CHR)
+			ENDFUNC
+			PRINTFORMW 但是、%CALLNAME:LOOP_CHR%听了之后，头也不回地走了。
+			PRINTFORMW %CALLNAME:MASTER%询问两个人可以吗……%NTR_NAME(0)%给出了肯定的答复，二人一起向房间走去
+			MSG表示フラグ = 1
+			BREAK
+			; 訪問者に懐いて(?)いて、主人公も好きな場合は自ら乗り気に. 断ると嫉妬とかありかもしれない
+		ELSEIF TALENT:LOOP_CHR:恋慕 || TALENT:LOOP_CHR:亲爱
+			PRINTFORMW 引诱%NTR_NAME(0)%的同时，%CALLNAME:LOOP_CHR%自己提出想要加入，三个人一起做快乐的事。
+			TRYCALLLIST
+				FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_2(LOOP_CHR)
+				FUNC KOJO_MESSAGE_COM_KU_463_2(LOOP_CHR)
+			ENDFUNC
+			PRINTL [0] 同意三人一起  [1] 两个人就已经很好了
+			$INPUT_LOOP_COMF463_00
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 看了看%NTR_NAME(0)%，%NTR_NAME(0)%表示同意，于是三个人一起走进了房间。
+				TRYCALLLIST
+					FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_3(LOOP_CHR)
+					FUNC KOJO_MESSAGE_COM_KU_463_3(LOOP_CHR)
+				ENDFUNC
+				CFLAG:MASTER:現在位置 = 位置_玩家房间
+				CFLAG:LOOP_CHR:現在位置 = 位置_玩家房间
+				FLAG:訪問者の現在位置 = 位置_玩家房间
+				CALL NTR_MASTER_3P_SEX(LOOP_CHR)
+				RETURN 1
+			ELSEIF RESULT == 1
+				PRINTFORMW 拒绝了%CALLNAME:LOOP_CHR%的提案，只想要两个人快活……%CALLNAME:LOOP_CHR%感到很遗憾，但还是表示理解。
+				TRYCALLLIST
+					FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_4(LOOP_CHR)
+					FUNC KOJO_MESSAGE_COM_KU_463_4(LOOP_CHR)
+				ENDFUNC
+				;TALENT:LOOP_CHR:嫉妬 = 1
+				MSG表示フラグ = 1
+				BREAK
+			ELSE
+				GOTO INPUT_LOOP_COMF463_00
+			ENDIF
+			; 訪問者に懐いて(?)いて、主人公とはあまり親しくない場合はむしろ訪問者を取る方向で
+		ELSE
+			PRINTFORMW 引诱%NTR_NAME(0)%的时候，被%CALLNAME:LOOP_CHR%打断了和%NTR_NAME(0)%的交流
+			TRYCALLLIST
+				FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_5(LOOP_CHR)
+				FUNC KOJO_MESSAGE_COM_KU_463_5(LOOP_CHR)
+			ENDFUNC
+			PRINTFORMW 失去了时机……
+			RETURN 0
+		ENDIF
+	ENDIF
+NEXT
+IF MSG表示フラグ == 0
+	IF CFLAG:MASTER:現在位置 == 位置_訪問者宅
+		PRINTFORMW %CALLNAME:MASTER%不动声色地引诱了%NTR_NAME(0)%，%NTR_NAME(0)%把%CALLNAME:MASTER%抱了起来，带进了房间里。
+	ELSE
+		PRINTFORMW 发出邀请后，%NTR_NAME(0)%欣然同意，两人一起走进了无人打扰的房间。
+	ENDIF
+	PRINTFORML 
+ENDIF
+IF CFLAG:MASTER:現在位置 == 位置_訪問者宅
+	CFLAG:MASTER:現在位置 = 位置_訪問者宅
+	CFLAG:MASTER:現在位置詳細 = 9
+ELSE
+	CFLAG:MASTER:現在位置 = 位置_玩家房间
+	FLAG:訪問者の現在位置 = 位置_玩家房间
+ENDIF
+PRINTFORM 进到房间里后，%NTR_NAME(0)%将%CALLNAME:MASTER%的
+SIF DRESS_LEVEL(MASTER) & (1p4)
+	PRINT 衣服迅速脱了下来
+SIF DRESS_LEVEL(MASTER) & (1p2)
+	PRINT 内衣解开
+PRINTW 一边亲吻着脖子和嘴唇，一边推倒在床上
+PRINTFORM 然后、打开了%CALLNAME:MASTER%的双腿，将肉棒顶在了完全暴露的%MSG_SLIT(MASTER)%上面
+IF TALENT:MASTER:处女
+	PRINTW 微微尝试用前端打开小穴口后，猛地插入，将处女膜撕裂了
+ELSE
+	PRINTW 然后贯穿了小穴，两人合为一体
+ENDIF
+CALL CLOTHES_Preset_NUDE(MASTER)
+LOCAL = RAND:20 + 10
+TIME += LOCAL
+PRINTFORMW 　　　　　　・
+PRINTFORMW 　　　　　　・
+PRINTFORMW 　　　　　　・
+IF TALENT:MASTER:处女
+	PRINTFORML %CALLNAME:MASTER%的处女献给了%NTR_NAME(0)%
+	PRINTFORML ＜%CALLNAME:MASTER%处女丧失＞
+ENDIF
+PRINTFORML 在{LOCAL}分钟里，品尝了%CALLNAME:MASTER%膣内的味道后，%NTR_NAME(0)%向子宫里注入了精液
+PRINTFORMW 溢出的精液\@ TALENT:MASTER:处女 ? 破瓜の血 # \@向着\@ BEDROOM(FLAG:訪問者の現在位置) ? シーツ # 地面 \@缓缓滴落、
+CALL NTR_MASTER_SEX_STATUS(0)
+IF TALENT:MASTER:处女
+	FLAG:1840 = 3
+ELSE
+	FLAG:1840 = 4
+ENDIF
+

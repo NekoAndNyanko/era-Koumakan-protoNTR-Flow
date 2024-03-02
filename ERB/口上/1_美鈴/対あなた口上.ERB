@@ -1,0 +1,917 @@
+﻿;------------------------------------------------- 
+;非NTR美鈴口上
+;非NTRといってもprotoNTR向けなので、NTR関連のフラグも意識して実装。
+;恋慕状態とNTR状態のギャップを書けたらいいなというのが個人的な希望。
+;
+;美鈴は自制心、难以越过的界线持ちなので
+;浮気はあまり積極的ではないという方向で。
+;-------------------------------------------------
+;※※※※※※他者による修正、加筆、改変についての但し書き※※※※※※
+;前提としてオリジナル作者以外が手を入れる場合は、オリジナル作者の許可を求めること
+;オリジナル作者とコンタクトが取れない場合には以下の但し書きに従ってUPできるかどうか判断してください。
+
+;◎修正（誤字、脱字、条件分岐等ERB構文のバグ修正、本体のバージョンアップ、ダウン対応など）
+;（　許可　）※どちらかを選択してください
+;
+;◎加筆（未記入箇所、ランダム分岐、条件分岐等の増補）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎改変（オリジナル作者によって書かれた部分に対しての上書き、消去を含む）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎製作中などの理由で時限を設ける
+;（　年　月　日）まで上記の一切を認めない
+;
+;記　　寝の人
+;追記　
+;基本的に作者の意思を確認出来ない場合、加筆改変は可能ということにします
+
+;==================================================
+;300ex - 浮気について話す 
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_01(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+PRINTFORML 「那么・・%CALLNAME:MASTER%您想怎么做？」
+RETURN 0
+
+;==================================================
+;300ex - 浮気について話す - 許せない
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_01_01(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;寝取られ寸前ならもう手遅れ
+	PRINTFORML 「・・哈哈，现在才说这些话呢。但是对不起，已经晚了。太晚了」
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;寝取られそうなぐらいなら、しぶしぶ頭を下げる
+	PRINTFORML 「・・是啊。那个很普通吧。对不起。」
+ELSE
+	;それ以外なら泣いて謝る
+	PRINTFORML 「对・・・对不起・因・因为我很软弱」
+ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気について話す - 許せる
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_01_02(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;寝取られ寸前
+	PRINTFORML 「您能这么说我感觉很轻松。非常感谢」
+	PRINTFORML 「但是怎么样呢？不是被出軌的一方，而是出軌的一方吗？」
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;寝取られそうなら、別れ話と思い少し不安を感じる
+	PRINTFORML 「您能这么说我感觉很轻松。这个我應該高兴吗？」
+	PRINTFORML 「难....难道%CALLNAME:MASTER%、你讨厌我了吗？」
+ELSE
+	;それ以外なら自分のしたことを悔いる
+	PRINTFORML 「如果我再坚强一点的话……真的对不起」
+ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気について話す - 寝取られたい
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_01_03(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;寝取られ寸前なら
+	PRINTFORML 「呀哈哈，您这么说我就很轻松了」
+	PRINTFORML 「但是，是出轨是真心的,明不明白？」
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;寝取られそうなら
+	PRINTFORML 「呀哈哈，您这么说我就很轻松了」
+	PRINTFORML 「但是，那不是恶趣味吗？」
+ELSE
+	;それ以外なら
+	PRINTFORML 「・真的吗？你真的这么说吗？」
+	PRINTFORML 「・・你是真心的吗・・・哈・・那样的话・・・然后呢・・・嗯~」
+ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_02(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+;最後にセックスした日時で分岐。その中でさらに好感度、屈服度で分岐
+IF TALENT:奴隷:妊娠
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		PRINTFORML 「呀哈哈，因為现在是这样的身体，所以在孩子出生之前就要你照顧了」
+		PRINTFORML 「啊ー啊，小穴好癢呀，好想再被那个人抱啊」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTFORML 「呀哈哈，因為现在是这样的身体，所以在孩子出生之前就要你照顧了」
+	ELSE
+		PRINTFORML 「呀哈哈，因為现在是这样的身体，所以在孩子出生之前就要你照顧了」
+	ENDIF
+ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) == (DATETIME()/(24*60))
+	;同じ日にセックスしてたら
+	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「呀哈哈，刚刚和那个人做了呢」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「啊哈哈，刚刚和那个人做了呢」
+			ELSE
+				PRINTFORML 「・・刚才・・刚刚和那个人做爱了・・・」
+			ENDIF
+		CASE IS > (DATETIME() - 1*04*60) ;４時間以内
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「啊哈哈，刚刚和那个人做了呢」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「啊哈哈，刚刚和那个人做了呢」
+			ELSE
+				PRINTFORML 「・・刚才・・刚刚和那个人做爱了・・・」
+			ENDIF
+		CASEELSE
+			PRINTFORML %"今日もセックスしたのだと答えた。"%
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「啊哈哈，今天也和那个人抱了哦」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「啊哈哈，今天也和那个人抱了哦」
+			ELSE
+				PRINTFORML 「・・今天也和那个人做爱了・・・」
+			ENDIF
+	ENDSELECT
+ELSE
+	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「呀哈哈，刚刚和那个人做了呢」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「啊哈哈，刚刚被那个人抱着呢」
+			ELSE
+				PRINTFORML 「・・刚才・・刚刚和那个人做爱了・・・」
+			ENDIF
+		CASE IS > (DATETIME() - 1*08*60) ;８時間以内
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「啊哈哈，刚刚和那个人做了呢」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「啊哈哈，刚刚和那个人做了呢」
+			ELSE
+				PRINTFORML 「・・刚才・・刚刚和那个人做爱了・・・」
+			ENDIF
+		CASE IS > (DATETIME() - 1*24*60) ;１日以内
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「啊哈哈，昨天那个人也抱了我」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「啊哈哈，昨天也被那个人抱了」
+			ELSE
+				PRINTFORML 「・・昨天也和那个人做爱了」
+			ENDIF
+		CASE IS > (DATETIME() - 3*24*60) ;２日以内
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「昨天没有被那个人抱着呢」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「昨天没有被那个人抱住呢」
+			ELSE
+				PRINTFORML 「昨天没有和他做爱」
+			ENDIF
+		CASEELSE
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「最近都沒有和那个人做愛呢」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「最近都沒有和那个人做愛呢」
+			ELSE
+				PRINTFORML 「・・和那个人没怎么做爱」
+			ENDIF
+	ENDSELECT
+ENDIF
+;膣が訪問者の精液で汚れている場合の分岐
+;美鈴は開放的ではないので省略
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について - やっぱりやだ
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_02_01(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+
+IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+	PRINTFORML 「对不起…我也是…要是能戒掉的话」
+ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認
+	PRINTFORML 「ええっ、事到如今了啊？」
+	PRINTFORML 「嗯～嗯・・%CALLNAME:MASTER%那样说我很高兴，但是我也已经停不下来了。」
+	PRINTFORML 「所以不打算停止出軌和卖淫」
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 「首先，说可以和他做爱的是%CALLNAME:MASTER%吧？」
+	ENDIF
+	;快乐刻印浮気快乐刻印で分岐。その中でさらに好感度、屈服度で分岐
+ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+	;快楽を覚えてしまっている場合０にはならない
+	TALENT:奴隷:浮気公認 = 浮気_浮気公認
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		PRINTFORML 「ええっ、事到如今了啊？」
+		PRINTFORML 「・・但是呢・・和%CALLNAME:調教者%的行为已经不能满足了」
+		PRINTFORML 「%CALLNAME:調教者%如果再努力一点就好了。」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTFORML 「ええっ、事到如今了啊？」
+		PRINTFORML 「・・但是呢・・和%CALLNAME:調教者%的行为已经不能满足了」
+	ELSE
+		PRINTFORML 「・・事到如今了啊？」
+		PRINTFORML 「・・但是呢・・和%CALLNAME:調教者%的行为已经不能满足了」
+		PRINTFORML 「・・明明从一开始就不这样做就好了・・・」
+	ENDIF
+ELSE
+	;快楽を覚えていない場合０になる
+	TALENT:奴隷:浮気公認 = 浮気_非公認
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		PRINTFORML 「ええっ、事到如今了啊？」
+		PRINTFORML 「但是好像是認真的呢。我知道了」
+		PRINTFORML 「但是如果被强行逼迫的话可能不会拒绝哦？」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTFORML 「ええっ、事到如今了啊？」
+		PRINTFORML 「但是好像是真心的。我明白了。ええ，我不去邀请他吧。」
+		PRINTFORML 「但是如果被强行逼迫的话可能不会拒绝哦？」
+	ELSE
+		PRINTFORML 「虽然觉得事到如今了，但果然是这样。应该是那样吧」
+		PRINTFORML 「但是如果被强行逼迫的话可能不会拒绝哦，所以那个时候请来救我」
+	ENDIF
+ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について - いまのままでいい
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_02_02(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+
+IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+	PRINTFORML 「・・真的・・不错呢・・・」
+	;快乐刻印浮気快乐刻印で分岐。その中でさらに好感度、屈服度で分岐
+ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+	IF TALENT:奴隷:浮気公認 < MARK:奴隷:浮気快乐刻印
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「呀哈哈，有点遗憾啊・・因为%MSG_LOVER(奴隷)%公认出轨也快乐，明明想做更刺激的事」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「呀哈哈，有点遗憾啊・・明明想做更刺激的事」
+		ELSE
+			PRINTFORML 「有点遗憾……不，没什么」
+		ENDIF
+	ELSE
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「真的可以吗？了ー解了哦」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「真的可以吗？了ー解了哦」
+		ELSE
+			PRINTFORML 「真的可以吗？」
+		ENDIF
+	ENDIF
+ELSE
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		PRINTFORML 「本当にいいんですね？ 後悔しませんか？」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTFORML 「真的可以吗・・？」
+	ELSE
+		PRINTFORML 「真的可以吗？」
+	ENDIF
+ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について - もっと寝取られたい
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_10_02_03(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+	PRINTFORML 「呵，認真・・・的嗎・・・？」
+ENDIF
+;浮気公認Lvで分岐。その中でさらに好感度、屈服度で分岐できればよし
+SELECTCASE TALENT:奴隷:浮気公認
+	CASE 1 ;最低１からスタートなので発生しないはず
+		PRINTFORML 「我知道了」
+	CASE 2
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「啊哈哈，那就别客气了…%CALLNAME:調教者%的面前邀请%NTR_NAME(4)%哦」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「啊哈哈、那样的话・・%CALLNAME:調教者%的面前邀请%NTR_NAME(4)%哦」
+		ELSE
+			PRINTFORML 「・・那样的话・・%CALLNAME:調教者%的面前试着邀请%NTR_NAME(4)%哦」
+		ENDIF
+	CASE 3
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「啊哈哈……那么，就让你看看我被那个人抱着的地方……不要打扰我喲？」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「啊哈哈……那么，就让你看看我被那个人抱着的地方吧」
+		ELSE
+			PRINTFORML 「既然说到这个地步，就让你看看我被那个人抱着的地方吧」
+		ENDIF
+	CASE 4
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「啊哈哈，那么，我下次去他家留宿哦」
+			PRINTFORML 「当然，为了两个人独处到早上」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「啊哈哈，那么，我下次去他家留宿哦」
+		ELSE
+			PRINTFORML 「那么，这次去那个人家住一宿·····一整晚····真的好吗？」
+		ENDIF
+	CASEELSE ;５以上
+		PRINTFORML 「这样的话，我今后会以他的妻子身份生活下去。」
+ENDSELECT
+RETURN 0
+
+;==================================================
+;300ex - 売春について - 売春人数
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_13_01(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+
+PRINTFORM 「是至今为止做過的客人数量吗？ 
+SELECTCASE EXP:奴隷:浮気人数-1
+	CASE IS <= 5
+		PRINTFORML 片手で数えられるくらいですね」
+	CASE IS <= 10
+		PRINTFORML 両手で数えられるくらいですね」
+	CASE IS <= 20
+		PRINTFORML 嗯～……两手都数不清呢」
+	CASEELSE
+		PRINTFORML 嗯～・・已经不记得了」
+ENDSELECT
+IF TALENT:奴隷:恋慕 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認 && !TALENT:奴隷:亲爱 
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「想和更多的客人做愛呢」
+		IF TALENT:奴隷:人妻
+			PRINTFORML 「高兴吗？明明自己的妻子和其他男人做爱？」
+		ELSE
+			PRINTFORML 「高兴吗？自己的恋人和其他男人做爱？」
+		ENDIF
+		PRINTFORML 「・・一定～会有更开心的事情哦」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		PRINTFORML 「如果是%CALLNAME:調教者%所希望的，应该就會被更多的客人抱着吧？」
+	ELSE
+		PRINTFORML 「ふふっ、如果是%CALLNAME:調教者%所希望的話、我會和更多客人做喔」
+		IF TALENT:奴隷:人妻
+			PRINTFORML 「高兴吗？明明自己的妻子和其他男人做爱？」
+		ELSE
+			PRINTFORML 「高兴吗？自己的恋人和其他男人做爱？」
+		ENDIF
+	ENDIF
+ELSEIF TALENT:奴隷:淫乱
+	PRINTFORML 「想被更多的客人抱着」
+	PRINTFORML 「小穴癢得得无法平静下来」
+ENDIF
+RETURN 0
+
+
+;==================================================
+;300ex - 売春について - 鍵の有無、恋慕
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_13_02(奴隷, 調教者)
+#DIM 奴隷
+#DIM 調教者
+#DIMS 関係
+
+;恋慕、鍵の有無で分岐
+IF TALENT:奴隷:恋慕
+	IF TALENT:奴隷:人妻
+		関係 = %"夫婦"%
+	ELSE
+		関係 = %"恋人"%
+	ENDIF
+	IF FLAG:贞操帯鍵購入フラグ == 奴隷
+		PRINTFORML 「啊，那是我贞操带的钥匙吧？因为的%関係%所以想独占？呵呵，好开心啊」
+	ELSE
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「对不起，就算是%関係%的关系、也不能让没有这个贞操带钥匙的人抱呢。」
+			PRINTFORML 「只要有钥匙，谁都可以和我做爱呢，真遗憾啊」
+			PRINTFORML %CALLNAME:奴隷%一边显出贞操带一边用艳丽的声音对%CALLNAME:MASTER%轻声细语。
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「对不起，就算是%関係%的关系、也不能让没有这个贞操带钥匙的人抱呢」
+			PRINTFORML %CALLNAME:奴隷%一边显示贞操带%CALLNAME:MASTER%一边轻声说了。
+		ELSE
+			PRINTFORML 「对不起，就算是%関係%的关系、也不能让没有这个贞操带钥匙的人抱呢」
+			PRINTFORML %CALLNAME:奴隷%痛苦地对着%CALLNAME:MASTER%轻声细语。
+		ENDIF
+	ENDIF
+ELSE
+	IF FLAG:贞操帯鍵購入フラグ == 奴隷
+		PRINTFORML 「啊，那是我贞操带的钥匙吧？你想抱我吗？好的，我陪您去吧」
+	ELSE
+		PRINTFORML 「对不起，就算是%関係%的关系、也不能让没有这个贞操带钥匙的人抱呢」
+	ENDIF
+ENDIF
+RETURN 0
+
+;==================================================
+;会话拡張：结婚戒指について
+;　前提：恋慕かつ人妻
+;==================================================
+@KOJO_MESSAGE_COM_K1_300_14_01(奴隷, 調教者)
+#DIM 調教者
+#DIM 奴隷
+IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
+	;亲爱持ちでも项圈が優先
+	PRINTDATAL
+		DATALIST
+			DATAFORM 「ごめんなさい・・指輪は今は外しています。今の私はお金で誰にでも身体を開く『公众便所』・・」
+			DATAFORM 「こんな汚れきった身体で、%CALLNAME:MASTER%が贈ってくれた指輪を身に着けるなんてできません・・」
+			DATAFORM 「いつか解放されたら、胸を張ってあの指輪を身に着けます。絶対に」
+		ENDLIST
+	ENDDATA
+	PRINTFORML %"自分は『公众便所』だから、指輪は外して项圈をするよう命じられていると言われてしまった。"%
+ELSEIF TALENT:奴隷:公众便所
+	;项圈が優先
+	PRINTDATAL
+		DATALIST
+			DATAFORM 「ええ、指輪はもう着けていません。お客様が邪魔だとおっしゃいますから」
+			DATAFORM 「それよりも、今の私にはこの项圈の方が似合うと思いませんか？」
+		ENDLIST
+		DATALIST
+			DATAFORM 「ごめんなさい、あの指輪はもう着けていません。だって、私は『公众便所』なんですから」
+			DATAFORM 「だから指輪ではなくて、この项圈を身に着けているんです♪」
+		ENDLIST
+	ENDDATA
+	PRINTFORML %"『お客様』に不評だから、指輪は外して项圈をする事にしたのだと言われてしまった。"%
+ELSEIF TALENT:奴隷:NTR
+	;チョーカーが優先
+	PRINTFORML %"もう"+CALLNAME:MASTER+"のものではないのだから指輪をする必要は無いと言い切られた。"%
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	;装着率３割
+	IF TALENT:奴隷:浮気公認
+		PRINTDATAL
+			DATAFORM 「ええ、指輪は着けないようにしているんです」
+			DATAFORM 「指輪ですか？最近は着けてない方が多いですね」
+			DATAFORM 「指輪なら外してきました」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 「だって、そのほうがあの人がお喜びになられますから」
+			DATAFORM 「デートに誘われたとき、结婚戒指なんて着けていたら無粋じゃないですか？」
+			DATAFORM 「浮気して欲しいと言ったのは%CALLNAME:MASTER%ですよね？」
+		ENDDATA
+		PRINTFORML 最近は指輪を外しているのだと言われてしまった。
+	ELSE
+		PRINTFORML %"指に合わない感じがして、最近はあまり指輪をしないのだと言い返された。"%
+	ENDIF
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+	;装着率５割
+	IF TALENT:奴隷:浮気公認
+		PRINTDATAL
+			DATAFORM 「ごめんなさい、今日は着けていないんです」
+			DATAFORM 「たまたまですよ」
+			DATAFORM 「指輪なら部屋ですね」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 「こう、拳を握ったときの感覚が違うんですよ」
+			DATAFORM 「もっとこう、武器になるような指輪の方がいいですかねぇ？」
+			DATAFORM 「でも、浮気して欲しいと言ったのは%CALLNAME:MASTER%ですよね？」
+		ENDDATA
+		PRINTFORML 今日は敢えて指輪を外しているのだと言われてしまった。
+	ELSE
+		PRINTFORML %"拳を握った時の感覚が違うので外している事が多いのだと言い訳された。"%
+	ENDIF
+	;ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+ELSE
+	;装着率９割
+	IF TALENT:奴隷:浮気公認
+		PRINTDATAL
+			DATAFORM 「あっはっは、ごめんなさい、忘れてました」
+			DATAFORM 「いけないいけない、うっかりしてました」
+			DATAFORM 「あ～、たぶん部屋です」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 「たまたまですよ、たまたま」
+			DATAFORM 「今朝寝坊して慌てていたから、つい」
+			DATAFORM 「明日はわすれず着けますから」
+		ENDDATA
+		PRINTFORML 今日はたまたま指輪を外していたのだと謝られた。
+	ELSE
+		PRINTFORML %"拳を握った時の感覚が違うので外している事が多いのだと言い訳された。"%
+	ENDIF
+ENDIF
+
+RETURN 1
+
+;==================================================
+;カウンター：乳搾り手コキ
+;==================================================
+;たしかふたなりの時はこないはず（弱気
+@KOJO_MESSAGE_COUNTER_K1_29_0
+PRINTFORML 「那个，请面向后面，手贴着墙壁」
+RETURN 1
+
+@KOJO_MESSAGE_COUNTER_K1_29_1
+#DIM 奴隷
+奴隷 = 人物_美铃
+IF CFLAG:PLAYER:跳蛋A挿入 != 0
+	;あなたが菊花に跳蛋挿入時分岐
+	PRINTFORML %CALLNAME:奴隷%一邊向%CALLNAME:PLAYER%的菊穴插入了振動棒,一邊微笑了。
+	IF CFLAG:PLAYER:跳蛋挿入者 == 奴隷
+		PRINTFORML 「啊……按您吩咐的做了吧」
+	ELSE
+		PRINTFORML 「啊……我不知道这是谁说的，刚刚好。」
+	ENDIF
+	PRINTL
+ELSEIF EQUIP:PLAYER:下半身下着１ == 0 && EQUIP:PLAYER:下半身下着２ == 0
+	;あなたがノーパンの時分岐
+	PRINTFORML %CALLNAME:奴隷%注意到%CALLNAME:PLAYER%内衣没穿的时候微笑了。
+	PRINTFORML 「啊……哈哈，刚刚好。」
+	PRINTL
+ENDIF
+RETURN 1
+
+@KOJO_MESSAGE_COUNTER_K1_29_2
+IF CFLAG:PLAYER:跳蛋A挿入 != 0
+	PRINTFORML 「好快啊…这个振動棒很有效吧？」
+ELSE
+	PRINTFORML 「好早啊・・我觉得还是稍微忍耐一下比较好哦？」
+ENDIF
+RETURN 1
+
+@KOJO_MESSAGE_COUNTER_K1_29_3
+SELECTCASE BASE:PLAYER:精力
+	CASE IS == 0
+		;全部搾り取った
+		PRINTFORML 「已经结束了吗？嘛，這蛋蛋看起來好像很疼呢,明天见。」
+	CASE IS < MAXBASE:PLAYER:精力 /2
+		;大半搾り取った
+		PRINTFORML 「出来很多了。但是好像还有时间呢？」
+	CASEELSE
+		;少し搾り取った
+		PRINTFORML 「出来很多啊。但是看起来还很健康，继续吧？」
+ENDSELECT
+RETURN 1
+
+;==================================================
+;312,接吻
+;==================================================
+@KOJO_MESSAGE_COM_K1_312
+IF TFLAG:193 == 0
+	CALL TRAIN_MESSAGE
+ENDIF
+CALL KOJO_MESSAGE_COM_K1_312_1
+RETURN RESULT
+@KOJO_MESSAGE_COM_K1_312_1
+;唇の汚れで拒否された時
+IF TFLAG:193 == -2
+	IF TALENT:TARGET:浮気公認
+		PRINTFORML 「・・最好别做了・・・想品尝别人射出来的东西，是恶趣味吧？」
+		PRINTFORML 因为嘴唇脏了而被拒绝了接吻
+		PRINTFORML 「呀…是了…可以给我一杯茶吗？」
+		PRINTFORML %CALLNAME:TARGET%为了清洁嘴唇，想要喝茶。
+
+
+	ELSE
+		PRINTFORML 「不、不行啊！！」
+		PRINTFORML 不明白原因地在嘴唇碰触之前被拒绝了。
+		PRINTFORML 「呀…是了…可以给我一杯茶吗？」
+		PRINTFORML %CALLNAME:TARGET%好像想喝茶。
+	ENDIF
+	;失敗時
+ELSEIF TFLAG:193 == -1
+	PRINTDATAL
+		DATAFORM 「什、为什么突然？」
+		DATAFORM 「呀！！」
+		DATAFORM 「晚一点！」
+	ENDDATA
+	PRINTFORML 被拒绝了，在嘴唇碰触之前被阻止。
+	;成功時
+ELSE
+	IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ)
+		;唇が精液で汚れていたとき
+		IF CFLAG:射精者M != 0 && STAIN:口 & 汚れ_精液
+			PRINTFORML 和%CALLNAME:TARGET%的吻%CALLNAME:MASTER%对她唾液的味道感到違和感。
+			PRINTFORML 「・・呼呼・・很刺激的味道呢・・・」
+		ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取り返し中)
+			PRINTFORML 「・・对那个人保密哦・・・恩・・・」
+			;好意度低いと冷たい
+		ELSE
+			PRINTFORML 「・・不行・・・恩・・・」
+		ENDIF
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「嗯・・啾・・」
+			DATAFORM 「嗯啾・・啾・・」
+			DATAFORM 「嗯……恩……啾啵……」
+		ENDDATA
+		PRINTFORML （・・果然・・不够・・・）
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られそう)
+		IF ABL:欲望 >= 5
+			PRINTDATAL
+				DATAFORM 「嗯哼……啾……啾……」
+				DATAFORM 「啾・・啾・・啾啵・・」
+				DATAFORM 「嗯・・れる・・れろっ・・」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「嗯・・啾啵・・」
+				DATAFORM 「嗯啾・・啾・・」
+				DATAFORM 「嗯……恩……啾啵……」
+			ENDDATA
+		ENDIF
+		PRINTFORML （・・不能比较・・・不能比较・・・但是・・）
+	ELSEIF ABL:欲望 >= 5
+		;互いに激しく
+		PRINTDATAL
+			DATAFORM 「嗯哼……啾……啾……」
+			DATAFORM 「啾・・啾・・啾啵・・」
+			DATAFORM 「嗯・・れる・・れろっ・・」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 互相吞噬着嘴唇和舌头，品尝着那味道。
+			DATAFORM 像吸吮着柔软的舌头一样品味，吞下纯净的露水。
+			DATAFORM %CALLNAME:TARGET%把唾液从舌头输进嘴里的时候，白色的咽喉发出了咕噜咕噜的声音。
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 「呵呵…就这些吗？」
+			DATAFORM 「嗯……再给我一点也没关系吧？」
+			DATAFORM 「呵呵・・太棒了・・・」
+		ENDDATA
+	ELSEIF ABL:亲密 >= 5
+		;親しく求め合うように
+		PRINTDATAL
+			DATAFORM 「嗯・・啾・・」
+			DATAFORM 「嗯啾・・啾・・」
+			DATAFORM 「嗯……恩……啾啵……」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 互相靠近嘴唇，享受着柔软的味道。
+			DATAFORM 以相互依偎的姿势交换了嘴唇。
+			DATAFORM 放开了嘴唇、似乎在期待着继续的%CALLNAME:TARGET%染红脸颊。
+		ENDDATA
+	ELSE
+		;不意打ちで
+		PRINTFORML 「んっ・・！？」
+		PRINTDATAL
+			DATAFORM 被突然袭击，嘴唇被夺走的%CALLNAME:TARGET%睁圆了眼睛。
+			DATAFORM 嘴唇被重叠，%CALLNAME:TARGET%一瞬间身体变硬了。
+			DATAFORM 放开了嘴唇、%CALLNAME:TARGET%一口气平静下来。
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 「··被拿了一勝呢。疏忽大意了」
+			DATAFORM 「・・對我没关系，但是请不要对大小姐做失礼的事情」
+			DATAFORM 「・・下次我会避开给你看」
+		ENDDATA
+	ENDIF
+ENDIF
+RETURN 1
+
+;==================================================
+;押し倒し中に贞操帯の期限切れになった時の口上(公众便所専用)
+;==================================================
+@NTR_MESSAGE_COM_K1_350_0_3(奴隷)
+#DIM 奴隷
+;公众便所
+IF TALENT:奴隷:公众便所
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:人妻
+			PRINTFORML 「啊哈哈，很遗憾，时间到了。但是隔了好久了,能像夫妇一样地高兴」
+		ELSE
+			PRINTFORML 「啊哈哈，很遗憾，时间到了。但是隔了好久了,能像恋人一样高兴」
+		ENDIF
+		PRINTFORML 「如果可以的话，请再邀请我吧？」
+	ELSE
+		PRINTFORML 「啊哈哈，很遗憾，时间到了。您玩得开心吗？」
+		PRINTFORML 「如果可以的话，请再买吧？」
+	ENDIF
+ELSE
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 「・・算了，算了。就算没有钥匙，%CALLNAME:MASTER%和我%CALLNAME:奴隷%都是一樣相愛的」
+	ELSE
+		PRINTFORML 「已经，钥匙之类是不需要的···是那样哟？」
+	ENDIF
+ENDIF
+RETURN 0
+
+
+;==================================================
+;463,诱惑访问者→あなたを連れて逃走
+;==================================================
+@KOJO_MESSAGE_COM_K1_463_0(奴隷)
+#DIM 奴隷
+PRINTDATAL
+	DATAFORM 「在这里、%CALLNAME:MASTER%！」
+	DATAFORM 「会逃跑的！！」
+	DATAFORM 「不要做那种事！」
+ENDDATA
+RETURN 0
+
+;==================================================
+;463,诱惑访问者→一人で逃走
+;==================================================
+@KOJO_MESSAGE_COM_K1_463_1(奴隷)
+#DIM 奴隷
+PRINTDATAL
+	DATAFORM 「哦，我拒绝っ」
+	DATAFORM 「啊、%CALLNAME:人物_咲夜%叫來吧」
+	DATAFORM 「來吧，侵入者！！」
+ENDDATA
+RETURN 0
+
+;==================================================
+;463,诱惑访问者→3P持ちかけ
+;==================================================
+@KOJO_MESSAGE_COM_K1_463_2(奴隷)
+#DIM 奴隷
+PRINTDATAL
+	DATAFORM 「那个话，我也可以混在一起吗？」
+	DATAFORM 「既然这样，三个人一起享受吧？」
+	DATAFORM 「那场勝負，我來了！」
+ENDDATA
+RETURN 0
+
+;==================================================
+;463,诱惑访问者→3P持ちかけ→承諾時
+;==================================================
+@KOJO_MESSAGE_COM_K1_463_3(奴隷)
+#DIM 奴隷
+IF HAS_PENIS(奴隷)
+	IF HAS_PENIS(MASTER)
+		PRINTDATAL
+			DATAFORM 「您要插两根还是哪一个？」
+			DATAFORM 「无论次数还是浓度，都不会输的！」
+			DATAFORM 「很期待呢」
+		ENDDATA
+	ELSE
+		PRINTDATAL
+			DATAFORM 「两个人一起疼爱吧」
+			DATAFORM 「前后同时给您做」
+			DATAFORM 「来，快点來吧」
+		ENDDATA
+	ENDIF
+ELSE
+	IF HAS_PENIS(MASTER)
+		PRINTDATAL
+			DATAFORM 「竟然两邊都能尝到，太奢侈了」
+			DATAFORM 「两个人的前后开始…呼呼、呼呼」
+			DATAFORM 「轮流来？还是两个人一起？」
+		ENDDATA
+	ELSE
+		PRINTDATAL
+			DATAFORM 「交替着享受吧」
+			DATAFORM 「总觉得，心跳不斷呢」
+			DATAFORM 「呵呵呵，我不会输的。」
+		ENDDATA
+	ENDIF
+ENDIF
+RETURN 0
+
+;==================================================
+;463,诱惑访问者→3P持ちかけ→拒否時
+;==================================================
+@KOJO_MESSAGE_COM_K1_463_4(奴隷)
+#DIM 奴隷
+PRINTDATAL
+	DATAFORM 「・・这样啊。那么回头见」
+	DATAFORM 「・・这样啊」
+	DATAFORM 「ええ～っ」
+ENDDATA
+RETURN 0
+
+;==================================================
+;463,诱惑访问者→あなたを牽制
+;==================================================
+@KOJO_MESSAGE_COM_K1_463_5(奴隷)
+#DIM 奴隷
+PRINTDATAL
+	DATAFORM 「请听哟，是在这前头··」
+	DATAFORM 「哎呀，来了，哈哈」
+	DATAFORM 「打扰一下，可以吗？」
+ENDDATA
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、[亲爱][公众便所]
+;-------------------------------------------
+@KOJO_MESSAGE_K1_SeeYou_900_0(奴隷,同伴)
+#DIM 奴隷
+#DIM 同伴
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、[公众便所]
+;-------------------------------------------
+@KOJO_MESSAGE_K1_SeeYou_900_1(奴隷,同伴)
+#DIM 奴隷
+#DIM 同伴
+
+PRINTFORML 「啊、%CALLNAME:MASTER%・・我・・就住在%NTR_NAME(4)%的家裹」
+
+; 今回が初めて
+IF EXP:奴隷:卖春经验 == 0
+	IF 同伴
+		PRINTFORML 「是的、我要住下。今天是我的卖春出道日呢」
+	ELSE
+		PRINTFORML 「是的，我要住下。今天是我的卖春出道日呢，有傳言」
+	ENDIF
+ELSE
+	IF 同伴
+		PRINTFORML 「是的，我要住下。听说是客人指名喔」
+	ELSE
+		PRINTFORML 「是的，我要住下。听说是客人指名喔、有傳言」
+	ENDIF
+ENDIF
+
+IF TALENT:奴隷:恋慕
+	PRINTDATAL
+		DATAFORM 「对不起…%MSG_LOVER(奴隷)%不顾%CALLNAME:MASTER%和其他人做爱」
+		DATAFORM 「是的。%MSG_LOVER(奴隷)%不顾%CALLNAME:MASTER%为了和别人做爱而出门」
+		DATAFORM 「现在%MSG_LOVER(奴隷)%的身体不是的%CALLNAME:MASTER%而是客人的」
+	ENDDATA
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 「不只是那个，我的第一次也・・」
+	ENDIF
+ENDIF
+PRINTFORML 「那么，我走了」
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_寝取られ
+;-------------------------------------------
+@KOJO_MESSAGE_K1_SeeYou_900_2(奴隷,同伴)
+#DIM 奴隷
+#DIM 同伴
+CALL KOJO_MESSAGE_K1_SeeYou_900_3
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_寝取られ寸前
+;-------------------------------------------
+@KOJO_MESSAGE_K1_SeeYou_900_3(奴隷,同伴)
+#DIM 奴隷
+#DIM 同伴
+
+PRINTFORML 「啊、%CALLNAME:MASTER%・・我・・就住在%NTR_NAME(4)%的家裹」
+PRINTFORML 「嗯，当然，直到早上都要和%NTR_NAME(4)%做爱哟♪」
+PRINTFORML 「要说为什么，那是因为一想到身体就熱到像燒起來一樣了♪」
+
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_寝取られそう
+;-------------------------------------------
+@KOJO_MESSAGE_K1_SeeYou_900_4(奴隷,同伴)
+#DIM 奴隷
+#DIM 同伴
+
+PRINTFORML 「啊、%CALLNAME:MASTER%・・我・・就住在%NTR_NAME(4)%的家裹」
+PRINTFORML 「嗯，当然，直到早上都要和%NTR_NAME(4)%做爱哟♪」
+PRINTFORML 「要说为什么，那是因为一想到身体就熱到像燒起來一樣了♪没办法了呢♪」
+
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_主人より高い
+;-------------------------------------------
+@KOJO_MESSAGE_K1_SeeYou_900_5(奴隷,同伴)
+#DIM 奴隷
+#DIM 同伴
+
+PRINTFORML 「是这边吗。%CALLNAME:MASTER%、我、会住在%NTR_NAME(4)%的地方」
+PRINTFORML 「是啊，住下來、直到早上都要被%NTR_NAME(4)%抱」
+
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認
+;-------------------------------------------
+@KOJO_MESSAGE_K1_SeeYou_900_9(奴隷,同伴)
+#DIM 奴隷
+#DIM 同伴
+
+PRINTFORML 「是这边吗。%CALLNAME:MASTER%、我、会住在%NTR_NAME(4)%的地方」
+
+RETURN 0
+
+;==================================================
+;汎用処理
+;==================================================
+;-------------------------------------------
+;美鈴が他の人を呼ぶときの例外処理関数
+;-------------------------------------------
+@CALLNAME_K1(奴隷, 対象)
+#FUNCTIONS
+#DIM 奴隷
+#DIM 対象
+#DIMS 呼称
+
+呼称 = %CALLNAME:対象%さん
+IF CALLNAME:奴隷 == "美鈴"
+	IF CALLNAME:対象 == "蕾米莉亚"
+		呼称 = 蕾米莉亚お嬢様
+	ELSEIF CALLNAME:対象 == "フラン" || CALLNAME:対象 == "芙兰朵露"
+		呼称 = 芙兰朵露お嬢様
+	ELSEIF CALLNAME:対象 == "パチュリー"
+		呼称 = パチュリー様
+	ELSE
+	ENDIF
+ELSE
+	; 名称変更時はデフォルトのまま
+ENDIF
+RETURNF 呼称

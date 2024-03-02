@@ -1,0 +1,275 @@
+﻿;-------------------------------------------------------------------------------
+;Ｖ初体験を記録する
+;すでに初体験が記録されている場合は無視される
+@memorial_v_append(キャラ番号,相手番号,内容)
+#DIM キャラ番号
+#DIM 相手番号
+#DIMS 内容
+
+SIF !INRANGE(キャラ番号,0,CHARANUM)
+	RETURN 0
+;行為者が行為者の唇を奪うことの回避。
+IF キャラ番号 == 相手番号
+	RETURN 0
+ENDIF
+
+;文字列生成は memorial_create()内で処理
+;TEQUIP:キャラ番号:Ｖ性爱 / Ａ性爱
+;TCVAR:キャラ番号:行為者
+;この２つが違った場合の記録方法に少し悩む
+;IF (TEQUIP:キャラ番号:Ｖ性爱 >= 0) && (TEQUIP:キャラ番号:Ｖ性爱 != TCVAR:キャラ番号:行為者)
+;	SELECTCASE TEQUIP:キャラ番号:Ｖ性爱
+;		CASE IS < CHARANUM
+;			相手 = %CALLNAME:(TEQUIP:キャラ番号:Ｖ性爱)+"に"%
+;		CASE IS == 人物_訪問者
+;			相手 = %NTR_NAME(0)+"に"%
+;		CASE IS == 人物_客, 人物_村人, 人物_催眠者
+;			相手 = %NTR_NAME(TALENT:キャラ番号:恋慕+1)+"に"%
+;		CASEELSE
+;			相手 = %NTR_NAME(0)+"に"%
+;	ENDSELECT
+;ELSE
+;	相手 = %""%
+;ENDIF
+IF CSTR:キャラ番号:V处女丧失记录 == ""
+	CSTR:キャラ番号:V处女丧失记录 = %memorial_create(キャラ番号,相手番号,内容)%
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;Ａ初体験を記録する
+;すでに初体験が記録されている場合は無視される
+@memorial_a_append(キャラ番号,相手番号,内容)
+#DIM キャラ番号
+#DIM 相手番号
+#DIMS 内容
+
+SIF !INRANGE(キャラ番号,0,CHARANUM)
+	RETURN 0
+;行為者が行為者の唇を奪うことの回避。
+IF キャラ番号 == 相手番号
+	RETURN 0
+ENDIF
+
+;文字列生成は memorial_create()内で処理
+;TEQUIP:キャラ番号:Ｖ性爱 / Ａ性爱
+;TCVAR:キャラ番号:行為者
+;この２つが違った場合の記録方法に少し悩む
+;IF (TEQUIP:キャラ番号:Ａ性爱 >= 0) && (TEQUIP:キャラ番号:Ａ性爱 != TCVAR:キャラ番号:行為者)
+;	SELECTCASE TEQUIP:キャラ番号:Ａ性爱
+;		CASE IS < CHARANUM
+;			相手 = %CALLNAME:(TEQUIP:キャラ番号:Ａ性爱)+"に"%
+;		CASE IS == 人物_訪問者
+;			相手 = %NTR_NAME(0)+"に"%
+;		CASE IS == 人物_客, 人物_村人, 人物_催眠者
+;			相手 = %NTR_NAME(TALENT:キャラ番号:恋慕+1)+"に"%
+;		CASEELSE
+;			相手 = %NTR_NAME(0)+"に"%
+;	ENDSELECT
+;ELSE
+;	相手 = %""%
+;ENDIF
+IF CSTR:キャラ番号:A处女丧失记录 == ""
+	CSTR:キャラ番号:A处女丧失记录 = %memorial_create(キャラ番号,相手番号,内容)%
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;Ｍ初体験を記録する
+;すでに初体験が記録されている場合は無視される
+@memorial_m_append(キャラ番号,相手番号,内容)
+#DIM キャラ番号
+#DIM 相手番号
+#DIMS 内容
+
+SIF !INRANGE(キャラ番号,0,CHARANUM)
+	RETURN 0
+;行為者が行為者の唇を奪うことの回避。
+IF キャラ番号 == 相手番号
+	RETURN 0
+ENDIF
+
+;文字列生成は memorial_create()内で処理
+;行為者が行為者の唇を奪うことの回避。
+;IF キャラ番号 == TCVAR:キャラ番号:行為者 
+;	IF 相手 == ""
+;		相手 = %CALLNAME:TARGET+"に"%
+;	ENDIF
+;ENDIF
+;IF 内容 == ""
+;	SELECTCASE TCVAR:キャラ番号:行為者
+;		CASE IS == 0
+;			IF TALENT:キャラ番号:恋慕
+;				内容 = %"献给了"%
+;			;ELSEIF GETBIT(CFLAG:キャラ番号:既成事実,0)
+;			ELSEIF TALENT:キャラ番号:恋人
+;				内容 = %"交给了"%
+;			ELSE
+;				内容 = %"奪われた"%
+;			ENDIF
+;		CASE IS == 人物_訪問者
+;			IF TALENT:キャラ番号:NTR
+;				内容 = %"献给了"%
+;			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_接吻程度)
+;				内容 = %"交给了"%
+;			ELSEIF TALENT:キャラ番号:浮気公認
+;				内容 = %"奪ってもらった"%
+;			ELSE
+;				内容 = %"奪われた"%
+;			ENDIF
+;		CASEELSE
+;			内容 = %"奪われた"%
+;	ENDSELECT
+;ENDIF
+IF CSTR:キャラ番号:初吻丧失记录 == ""
+	CSTR:キャラ番号:初吻丧失记录 = %memorial_create(キャラ番号,相手番号,内容)%
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;キス未経験チェック
+;　戻り値　1:キス未経験　0:接吻经验済み
+@is_virgin_m(キャラ番号)
+#FUNCTION
+#DIM キャラ番号
+;IF CSTR:キャラ番号:M处女丧失记录 == ""
+;接吻经验も判定に含める
+;口淫经验も判定に含めるべきか？
+IF CSTR:キャラ番号:初吻丧失记录 == "" && EXP:キャラ番号:接吻经验 == 0
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;初体験の文字列を作成する
+;　相手番号が-1の時、振动棒相手などの特殊ケース
+@memorial_create(キャラ番号,相手番号,内容)
+#FUNCTIONS
+#DIM キャラ番号
+#DIM 相手番号
+#DIMS 内容
+#DIMS 日時
+#DIMS 場所
+#DIMS 相手
+#DIM 能动
+;能动=1 主动 能动=0 被动
+相手 = ""
+能动 = 1
+SIF !INRANGE(キャラ番号,0,CHARANUM)
+	RETURNF 
+
+;悩むところだけど、具体的な日付が明らかじゃない方が個人的に好み
+;日時 = %暦法月+"月"+暦法日+"日"%
+日時 = 第{年份记录}年 %日付_月(暦法月)%{暦法日}日 %天候(天候値)%%" "%
+
+場所 = %"在"+GETPLACENAME(CFLAG:キャラ番号:現在位置)+"，"%
+
+;行為者が行為者の初めてを奪うことの回避。
+IF キャラ番号 == 相手番号
+	RETURNF 
+ENDIF
+
+SELECTCASE 相手番号
+	CASE IS == -1
+		;自分で振动棒で破った場合
+		相手 = %"自らの手で"%
+	CASE IS < CHARANUM
+		相手 = %CALLNAME:相手番号%
+	CASE IS == 人物_訪問者
+		相手 = %NTR_NAME(0)%
+	CASE IS == 人物_客, 人物_村人, 人物_催眠者
+		相手 = %"不知名的男人"%
+	CASEELSE
+		相手 = %NTR_NAME(0)%
+ENDSELECT
+
+IF 内容 == ""
+	SELECTCASE TCVAR:キャラ番号:行為者
+		CASE IS == 0
+			; 行為者があなた
+			IF TALENT:キャラ番号:恋慕
+				内容 = %"献给了"%
+				; ELSEIF GETBIT(CFLAG:キャラ番号:既成事実,0)
+			ELSEIF TALENT:キャラ番号:恋人
+				内容 = %"交给了"%
+			ELSE
+				内容 = %"夺走了"%
+			ENDIF
+		CASE IS == 人物_訪問者
+			IF TALENT:キャラ番号:NTR || (キャラ番号 == 人物_あなた && (FLAG:1840 >= 11 && FLAG:1840 <= 15))
+				内容 = %"满怀爱意地献给了"%
+			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_寝取られ寸前) || (キャラ番号 == 人物_あなた && FLAG:1840 == 10)
+				内容 = %"满怀爱意地悄悄献给了"%
+			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_寝取られそう)
+				内容 = %"献给了"%
+			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_主人より高い)
+				内容 = %"交给了"%
+			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_うふふする程度) 
+				内容 = %"半推半就地交给了"%
+			ELSEIF TALENT:キャラ番号:浮気公認
+				内容 = %"夺走了"%
+			ELSE
+				内容 = %"夺走了"%
+				能动 = 0
+			ENDIF
+		CASE IS == 人物_客
+			内容 = %"买走了"%
+		CASEELSE
+			; 行為者が住人
+			; 住人からの行動なので「奪われた」は無い。
+			IF キャラ番号 ==  TCVAR:キャラ番号:行為者
+				;奪った側
+				IF 相手番号 == 0
+					;相手があなた
+					IF TALENT:相手番号:恋慕
+						内容 = %"献给了"%
+					ELSE
+						内容 = %"交给了"%
+					ENDIF
+				ELSEIF 相手番号 == 人物_訪問者
+					IF TALENT:相手番号:NTR
+						内容 = %"献给了"%
+					ELSEIF NTR_CHK_FAVORABLY(相手番号, FAV_寝取られ寸前) 
+						内容 = %"献给了"%
+					ELSE
+						内容 = %"交给了"%
+					ENDIF
+				ELSE
+					; 住人同士
+					内容 = %"交给了"%
+				ENDIF
+			ELSE
+				;奪われた側（たぶんここは死に分岐）
+				IF 相手番号 == 0
+					;相手があなた
+					IF TALENT:キャラ番号:恋慕
+						内容 = %"献给了"%
+						; ELSEIF GETBIT(CFLAG:キャラ番号:既成事実,0)
+					ELSEIF TALENT:キャラ番号:恋人
+						内容 = %"交给了"%
+					ELSE
+						内容 = %"交给了"%
+					ENDIF
+				ELSEIF 相手番号 == 人物_訪問者
+					IF TALENT:キャラ番号:NTR
+						内容 = %"献给了"%
+					ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_寝取られ寸前)
+						内容 = %"献给了"%
+					ELSEIF TALENT:キャラ番号:浮気公認
+						内容 = %"奪ってもらった"%
+					ELSE
+						内容 = %"交给了"%
+					ENDIF
+				ELSE
+					; 住人同士
+					内容 = %"交给了"%
+				ENDIF
+			ENDIF
+	ENDSELECT
+ENDIF
+IF 能动
+	RETURNF 日時+場所+内容+相手
+ELSE
+	RETURNF 日時+場所+"被"+相手+内容
+ENDIF

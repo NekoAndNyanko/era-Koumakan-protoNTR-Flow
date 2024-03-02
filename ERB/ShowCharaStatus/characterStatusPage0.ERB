@@ -1,0 +1,655 @@
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@PRINT_STATE_CLOTH(ARG)
+#DIMS 表示内容
+{
+	#DIMS CONST 表示部位, 19 = 
+		"", 
+		"配件", 
+		"帽子", 
+		"鞋子", 
+		"袜子",
+		"下半身下着１",
+		"下半身下着２", 
+		"下半身上着１", 
+		"下半身上着２",
+		"裙子", 
+		"上半身下着１", 
+		"上半身下着２", 
+		"上半身上着１", 
+		"上半身上着２", 
+		"赛车服", 
+		"连衣裙", 
+		"着物", 
+		"紧身衣", 
+		"手"
+}
+{
+	#DIMS CONST 装备前缀, 19 = 
+		"", 
+		"　装备:饰品　　", 
+		"　装备:帽子　　", 
+		"　装备:鞋子　　", 
+		"　装备:袜子　　",
+		"　装备:内衣(下)", 
+		"　装备:内衣(下)", 
+		"　装备:外衣(下)", 
+		"　装备:外衣(下)",
+		"　装备:裙子　　", 
+		"　装备:内衣(上)", 
+		"　装备:内衣(上)", 
+		"　装备:外衣(上)", 
+		"　装备:外衣(上)", 
+		"　装备:赛车服　", 
+		"　装备:连衣裙　", 
+		"　装备:和服　　", 
+		"　装备:紧身衣　", 
+		"　装备:手套　　"
+}
+PRINTL
+PRINTL □ 服装 □---------------------------------------------------------------------
+IF !EQUIP:ARG:衣服着用
+	PRINTL 　＜全裸＞
+	RETURN 0
+ENDIF
+FOR LOCAL, 1, 19
+	;使用CLOTH_DISPLAY_ORDER调整显示顺序
+	;特殊处理
+	;内裤和胸罩的类型1都是一些创可贴之类的东西，只穿那种东西不能叫穿了正经的内衣，所以是类型2决定是不是真空。
+	IF 表示部位:CLOTH_DISPLAY_ORDER(LOCAL) == "下半身下着２"
+		IF !EQUIP:ARG:下半身下着２
+			;裤子类
+			IF EQUIP:ARG:下半身上着１ || EQUIP:ARG:下半身上着２ || EQUIP:ARG:赛车服 || EQUIP:ARG:紧身衣
+				表示内容 '= "没穿"
+				;裙装类
+			ELSEIF EQUIP:ARG:裙子 || EQUIP:ARG:连衣裙 || EQUIP:ARG:着物
+				表示内容 '= "真空"
+			ENDIF
+		ELSE
+			表示内容 '= CLOTHNAME(CLOTH_DISPLAY_ORDER(LOCAL),EQUIP:ARG:CLOTH_DISPLAY_ORDER(LOCAL))
+		ENDIF
+		;如果不可见重置为问号
+		SIF GETBIT(FLAG:雑多設定,1)
+			表示内容 '= "？？？？？"
+	ELSEIF 表示部位:CLOTH_DISPLAY_ORDER(LOCAL) == "上半身下着２"
+		IF !EQUIP:ARG:上半身下着２
+			IF EQUIP:ARG:上半身上着１ || EQUIP:ARG:上半身上着２ || EQUIP:ARG:赛车服 || EQUIP:ARG:紧身衣
+				表示内容 '= "没穿"
+			ELSEIF EQUIP:ARG:连衣裙 || EQUIP:ARG:着物
+				表示内容 '= "真空"
+			ENDIF
+		ELSE
+			表示内容 '= CLOTHNAME(CLOTH_DISPLAY_ORDER(LOCAL),EQUIP:ARG:CLOTH_DISPLAY_ORDER(LOCAL))
+		ENDIF
+		SIF GETBIT(FLAG:雑多設定,1)
+			表示内容 '= "？？？？？"
+		;一般情况下输出
+	ELSE
+		表示内容 '= CLOTHNAME(CLOTH_DISPLAY_ORDER(LOCAL),EQUIP:ARG:CLOTH_DISPLAY_ORDER(LOCAL))
+	ENDIF
+	SIF EQUIP:ARG:CLOTH_DISPLAY_ORDER(LOCAL)
+		PRINTFORML %装备前缀:CLOTH_DISPLAY_ORDER(LOCAL)%[%表示内容%]
+NEXT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@PRINT_STATE_TALENT(ARG)
+#DIM TALENT计数, 6
+#DIM TALENT编号, 6, 100
+#DIMS 族群
+VARSET TALENT计数
+VARSET TALENT编号
+;TALENT计数数组中存放了每一类分别有几个素质，而TALENT编号数组则存放了每一类的第几个素质具体的编号
+;TALENT计数:A -> 第A组的素质总数	TANTLE编号:A:B -> 第A组第B个素质的编号（TANTLE.csv中的编号）
+PRINTL □ 素質 □---------------------------------------------------------------------
+FOR LOCAL, 0, 300
+	SIF !STRLENS(GET_TALENTNAME(LOCAL, TALENT:ARG:LOCAL))
+		CONTINUE
+	LOCALS = {LOCAL}/
+	IF GROUPMATCH(LOCAL,90,91,263,264,265,266,289,290,291,292,293,294,295,296,297)
+		;族群
+		TALENT编号:0:(TALENT计数:0) = LOCAL
+		TALENT计数:0 ++
+	ELSEIF GROUPMATCH(LOCAL,0,1,3,6,15,16,27,60,70,72,73,74,75,76,82,83,108,153,156,160,161,162)
+		;性
+		TALENT编号:1:(TALENT计数:1) = LOCAL
+		TALENT计数:1 ++
+	ELSEIF GROUPMATCH(LOCAL,2,40,41,54,56,57,71,100,101,102,103,104,105,106,107,109,110,111,130,131,132,133,134,138,143,146,149,152,157,158)
+		;身体
+		TALENT编号:2:(TALENT计数:2) = LOCAL
+		TALENT计数:2 ++
+	ELSEIF GROUPMATCH(LOCAL,3,4,5,6,7,9,10,11,12,13,14,20,21,22,23,24,25,26,30,31,32,33,80,81,84,85,86,94,95,143,148,150,151,155,190)
+		;精神
+		TALENT编号:3:(TALENT计数:3) = LOCAL
+		TALENT计数:3 ++
+	ELSEIF GROUPMATCH(LOCAL,50,51,52,53,55,61,62,135,136,141,144)
+		;技术
+		TALENT编号:4:(TALENT计数:4) = LOCAL
+		TALENT计数:4 ++
+	ELSE
+		;其他
+		TALENT编号:5:(TALENT计数:5) = LOCAL
+		TALENT计数:5 ++
+	ENDIF
+NEXT
+FOR LOCAL:2, 0, 6
+	PRINT 　
+	SELECTCASE LOCAL:2
+		CASE 0
+			PRINT 　 族群 　：
+		CASE 1
+			PRINT 　性的特征：
+		CASE 2
+			PRINT 身体的特征：
+		CASE 3
+			PRINT 精神的特征：
+		CASE 4
+			PRINT 技术的特征：
+		CASE 5
+			PRINT 　 其他 　：
+	ENDSELECT
+	LOCALS = ""
+	FOR LOCAL:1, 0, TALENT计数:(LOCAL:2)
+		;LOCAL：这一轮将输出的素质的编号
+		;LOCAL:1：当前组的第几个素质
+		;LOCAL:2：当前组
+		LOCAL = TALENT编号:(LOCAL:2):(LOCAL:1)
+		;特殊顺序控制-----------------------------------
+		;性特征组第一个输出NTR
+		IF LOCAL:2 == 1 && LOCAL:1 == 0 && TALENT:ARG:NTR
+			SETCOLOR 色設定_状態_ＮＴＲ
+			PRINTFORM [%GET_TALENTNAME(3,TALENT:ARG:3)%]
+			RESETCOLOR
+			FONTREGULAR
+		ENDIF
+		SIF LOCAL:2 == 1 && LOCAL == 3
+			CONTINUE
+		;身体组第一个输出性别
+		IF LOCAL:2 == 2 && LOCAL:1 == 0
+			PRINTFORM [%GET_TALENTNAME(2,TALENT:ARG:2)%]
+		ENDIF
+		SIF LOCAL:2 == 2 && LOCAL == 2
+			CONTINUE
+		;NTR为2时精神组输出NTR
+		IF LOCAL:2 == 3 && LOCAL:1 == 0 && TALENT:ARG:NTR == 2
+			SETCOLOR 色設定_状態_ＮＴＲ
+			FONTBOLD
+			PRINTFORM [%GET_TALENTNAME(3,TALENT:ARG:3)%]
+			RESETCOLOR
+			FONTREGULAR
+		ENDIF
+		SIF LOCAL:2 == 3 && LOCAL == 3
+			CONTINUE
+		;特殊顺序控制结束-------------------------------
+		;特殊处理---------------------------------------
+		;无V不输出：处女、阴道深度、子宫感度、浮気的蜜壶
+		SIF !HAS_VAGINA(ARG) && GROUPMATCH(LOCAL,0,107,111,161) 
+			CONTINUE
+		;无P不输出：童贞、P尺寸
+		SIF !HAS_PENIS(ARG) && GROUPMATCH(LOCAL,1,106)
+			CONTINUE
+		;男絶壁
+		IF LOCAL == 105 && TALENT:ARG:性別 == 2
+			SIF TALENT:ARG:105 == -2
+				CONTINUE
+			SIF TALENT:ARG:105 == 0
+				PRINTFORM [普乳]
+		ENDIF
+		;特殊处理结束-----------------------------------
+		LOCALS += GET_TALENTNAME(LOCAL, TALENT:ARG:LOCAL)
+		IF STRLENS(LOCALS) > 60
+			LOCALS = " "
+			PRINTL
+			PRINT 　　　　　　　
+		ENDIF
+		;特殊颜色改变
+		IF GROUPMATCH(LOCAL,0,5,6,73,74,75,76,108)
+			SETCOLOR 255, 120, 200
+			FONTBOLD
+			; IF GROUPMATCH(LOCAL,0,5)
+			; 	SETCOLOR 色設定_状態_恋慕
+			; 	FONTBOLD
+		ELSEIF GROUPMATCH(LOCAL,3)
+			SETCOLOR 色設定_状態_ＮＴＲ
+			; FONTBOLD
+		ELSEIF GROUPMATCH(LOCAL,4)
+			SETCOLOR 颜色_状态_恋人
+			FONTBOLD
+		ENDIF
+		PRINTFORM [%GET_TALENTNAME(LOCAL,TALENT:ARG:LOCAL)%]
+		RESETCOLOR
+		FONTREGULAR
+		;族群组结束后尝试输出族群（“CSTR:简介”内记载的）
+		IF LOCAL:2 == 0
+			族群 += @"%GET_TALENTNAME(LOCAL,TALENT:ARG:LOCAL)%"
+		ELSE
+			族群 = 
+		ENDIF
+	NEXT
+	SIF LOCAL:2 == 0
+		CALL PRINT_SPECIES(ARG, 族群)
+	SIF LOCALS != " "
+		PRINTL 
+NEXT
+
+@PRINT_SPECIES(ARG, 族群)
+#DIM TMP_RESULT
+#DIMS STR_LIST, 10
+#DIMS 族群
+
+;todo 写后代的族群继承
+IF ARG <= 13
+	VARSET STR_LIST
+	TMP_RESULT:0 = RESULT
+	LOCALS =  %CSVCSTR(ARG,50)%
+	SPLIT LOCALS, "●", STR_LIST
+	FOR LOCAL, 0, RESULT
+		IF STRFIND(STR_LIST:LOCAL, "種族：") > -1
+			LOCALS:1 = %REPLACE(STR_LIST:LOCAL, "種族：", "")%
+			LOCALS:1 = %REPLACE(LOCALS:1, "　", "")%
+			SIF STRFIND(族群, LOCALS:1) < 0
+				PRINTFORM 〈%LOCALS:1%〉
+			BREAK
+		ENDIF
+	NEXT
+	RESULT = TMP_RESULT:0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@PRINT_STATE_ABL(ARG)
+{
+	#DIMS CONST 显示名称 , 42 = 
+		"快乐",	"Ｖ感觉",	"顺从",			"膣技",		"精液中毒",		"断背之气",
+		"屈服",	"Ｃ感觉",	"亲密",			"指技",		"自慰中毒",		"百合之气",
+		"苦痛",	"Ａ感觉",	"教养",			"Ａ技",		"精饮中毒",		"百合中毒",
+		"反発",	"Ｂ感觉",	"侍奉精神",		"胸技",		"清扫技能",		"搞基中毒",
+		"留空",	"Ｍ感觉",	"露出癖",		"舌技",		"话术技能",		"膣射中毒",
+		"留空",	"欲望",		"抖Ｍ之气",		"腰技",		"战斗技能",		"肛射中毒",
+		"留空",	"技巧",		"抖Ｓ之气",		"",			"料理技能",		"",
+}
+
+PRINTL
+PRINTL □ 能力 □---------------------------------------------------------------------
+
+FOR LOCAL, 0, 42
+	CALL PRINT_ABILITY(ARG, 显示名称:LOCAL, LOCAL)
+	SIF LOCAL % 6 == 5
+		PRINTFORML 
+NEXT
+
+
+@PRINT_ABILITY(ARG, 显示名称, 数列位置)
+#DIMS 显示名称
+#DIM  数列位置
+{
+	#DIM CONST 显示ID , 42 = 
+		1,  0,  9, 54, 30, 17,
+		2,  1, 10, 51, 31, 18,
+		0,  2, 43, 55, 32, 33,
+		3,  3, 13, 52, 40, 34,
+		0,  4, 14, 51, 41, 35,
+		0, 11, 15, 53, 42, 36,
+		0, 12, 16,  0, 44,  0,
+}
+PRINTFORM 　
+SELECTCASE 显示名称
+	CASE ""
+		$SHOW_BLANK
+		PRINTFORM 　　　　　　　　
+	CASE "留空"
+		PRINTFORM 　　　　　　
+	CASE "苦痛", "快乐", "屈服", "反発"
+		IF ARG == MASTER
+			PRINTFORM %"　" * 6%
+		ELSEIF GROUPMATCH(显示名称, "反発")
+			PRINTFORM %显示名称, 4%：
+			CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置), 3, "×", 0xFF0000)
+		ELSE
+			PRINTFORM %显示名称, 4%：
+			; CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置), 3, "★", 0xFFFF00)
+			IF 显示名称 == "快乐"
+				IF MARK:ARG:浮気快乐刻印 >= MARK:ARG:快乐刻印
+					IF MARK:ARG:浮気快乐刻印 > 3
+						;CALL COLOR_STAMP(3, 3, "❤", 0xFF69B4)
+						SETCOLOR 0xFF69B4
+						PRINTFORM ❤＊\@MARK:ARG:浮気快乐刻印 > 9 ? %""% # %" "%\@{MARK:ARG:浮気快乐刻印}
+						RESETCOLOR
+					ELSE
+						CALL COLOR_STAMP(MARK:ARG:浮気快乐刻印, 3, "❤", 0xFF69B4)
+					ENDIF
+				ELSE
+					IF CFLAG:ARG:快乐刻印主人 == 人物_訪問者
+						CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置), 3, "❤", 0xFF69B4)
+					ELSE
+						PRINTFORM %"　" * (3 - MAX(MARK:ARG:(显示ID:数列位置), MARK:ARG:浮気快乐刻印))%
+						CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置) - MARK:ARG:浮気快乐刻印, MARK:ARG:(显示ID:数列位置) - MARK:ARG:浮気快乐刻印, "❤", 0xFFFF00)
+						CALL COLOR_STAMP(MARK:ARG:浮気快乐刻印, MARK:ARG:浮気快乐刻印, "❤", 0xFF69B4)
+					ENDIF
+				ENDIF
+			ELSEIF 显示名称 == "屈服"
+				IF MARK:ARG:浮気屈服刻印 >= MARK:ARG:屈服刻印
+					IF MARK:ARG:浮気屈服刻印 >= 3
+						;CALL COLOR_STAMP(3, 3, "❤", 0xFF69B4)
+						SETCOLOR 0xFF69B4
+						PRINTFORM ❤＊\@MARK:ARG:浮気快乐刻印 > 9 ? %""% # %" "%\@{MARK:ARG:浮気快乐刻印}
+						RESETCOLOR
+					ELSE
+						CALL COLOR_STAMP(MARK:ARG:浮気屈服刻印, 3, "❤", 0xFF69B4)
+					ENDIF
+				ELSE
+					IF CFLAG:ARG:屈服刻印主人 == 人物_訪問者
+						CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置), 3, "❤", 0xFF69B4)
+					ELSE
+						PRINTFORM %"　" * (3 - MAX(MARK:ARG:(显示ID:数列位置), MARK:ARG:浮気屈服刻印))%
+						CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置) - MARK:ARG:浮気屈服刻印, MARK:ARG:(显示ID:数列位置) - MARK:ARG:浮気屈服刻印, "❤", 0xFFFF00)
+						CALL COLOR_STAMP(MARK:ARG:浮気屈服刻印, MARK:ARG:浮気屈服刻印, "❤", 0xFF69B4)
+					ENDIF
+				ENDIF
+			ELSEIF 显示名称 == "苦痛"
+				IF CFLAG:ARG:屈服刻印主人 == 人物_訪問者
+					CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置), 3, "★", 0xFF69B4)
+				ELSE
+					CALL COLOR_STAMP(MARK:ARG:(显示ID:数列位置), 3, "★", 0xFFFF00)
+				ENDIF
+			ENDIF
+		ENDIF
+		;6级满级的技能
+	CASE "指技", "膣技", "Ａ技", "胸技", "舌技", "腰技", "清扫技能", "话术技能", "战斗技能", "教养", "料理技能"
+		SIF GROUPMATCH(显示名称, "膣技") && !HAS_VAGINA(ARG)
+			GOTO SHOW_BLANK
+		PRINTFORM %显示名称, 8%：
+		CALL COLORFULL_RANK(ABL_MAIN_RANK(ABL:ARG:(显示ID:数列位置)), 7)
+		PRINTFORM  {ABL:ARG:(显示ID:数列位置), 3}
+		;9级满级的技能（默认）
+	CASEELSE
+		SIF GROUPMATCH(显示名称, "百合之气", "百合中毒") && HAS_PENIS(ARG) && !HAS_VAGINA(ARG)
+			GOTO SHOW_BLANK
+		SIF GROUPMATCH(显示名称, "断背之气", "搞基中毒") && !HAS_PENIS(ARG) && HAS_VAGINA(ARG)
+			GOTO SHOW_BLANK
+		SIF GROUPMATCH(显示名称, "膣射中毒", "Ｖ感觉") && !HAS_VAGINA(ARG)
+			GOTO SHOW_BLANK
+		SIF GROUPMATCH(显示名称, "Ｃ感觉") && !HAS_VAGINA(ARG)
+			显示名称 '= "Ｐ感觉"
+		PRINTFORM %显示名称, 8%：
+		CALL COLORFULL_RANK(ABL_SUB_RANK(ABL:ARG:(显示ID:数列位置)), 10)
+		PRINTFORM  {ABL:ARG:(显示ID:数列位置), 3}
+ENDSELECT
+
+;调整PRINT_STATE_CLOTH中衣服类型的显示顺序
+@CLOTH_DISPLAY_ORDER(EQUIP_ID)
+#FUNCTION
+#DIM EQUIP_ID
+SELECTCASE EQUIP_ID
+	CASE 1
+		;帽子
+		RETURNF 2
+	CASE 2
+		;饰品
+		RETURNF 1
+	CASE 3
+		;连衣裙
+		RETURNF 15
+	CASE 4
+		;和服
+		RETURNF 16
+	CASE 5
+		;紧身衣
+		RETURNF 17
+	CASE 6
+		;赛车服
+		RETURNF 14
+	CASE 7
+		;上衣2
+		RETURNF 13
+	CASE 8
+		;上衣1
+		RETURNF 12
+	CASE 9
+		;胸罩1
+		RETURNF 10
+	CASE 10
+		;胸罩2
+		RETURNF 11
+	CASE 11
+		;手套
+		RETURNF 18
+	CASE 12
+		;裙子
+		RETURNF 9
+	CASE 13
+		;下衣1
+		RETURNF 7
+	CASE 14
+		;下衣2
+		RETURNF 8
+	CASE 15
+		;内裤1
+		RETURNF 5
+	CASE 16
+		;内裤2
+		RETURNF 6
+	CASE 17
+		;袜子
+		RETURNF 4
+	CASE 18
+		;鞋子
+		RETURNF 3
+ENDSELECT
+
+@ABL_MAIN_RANK(ABL_VAL)
+#FUNCTION
+#DIM ABL_VAL
+SELECTCASE ABL_VAL
+	CASE IS >= 6
+		RETURNF 0
+	CASE IS >= 5
+		RETURNF 1
+	CASE IS >= 4
+		RETURNF 2
+	CASE IS >= 3
+		RETURNF 3
+	CASE IS >= 2
+		RETURNF 4
+	CASE IS >= 1
+		RETURNF 5
+	CASEELSE
+		RETURNF 6
+ENDSELECT
+
+@ABL_SUB_RANK(ABL_VAL)
+#FUNCTION
+#DIM ABL_VAL
+SELECTCASE ABL_VAL
+	CASE IS >= 20
+		RETURNF 0
+	CASE IS >= 10
+		RETURNF 1
+	CASE IS >= 9
+		RETURNF 2
+	CASE IS >= 7
+		RETURNF 3
+	CASE IS >= 5
+		RETURNF 4
+	CASE IS >= 4
+		RETURNF 5
+	CASE IS >= 3
+		RETURNF 6
+	CASE IS >= 2
+		RETURNF 7
+	CASE IS >= 1
+		RETURNF 8
+	CASEELSE
+		RETURNF 9
+ENDSELECT
+
+;原显示方案
+[SKIPSTART]
+@PRINT_STATE_CLOTH(ARG)
+IF !EQUIP:ARG:衣服着用
+	PRINTL 全裸
+	RETURN 0
+ENDIF
+FOR LOCAL,1,20
+	;下半身下着１
+	IF ARG != MASTER && LOCAL == 5 && GETBIT(FLAG:雑多設定,1) && Unknown下着(ARG, LOCAL)
+		PRINTFORML [%"？？？？？"%]
+		LOCAL:1 ++
+		;下半身下着２
+	ELSEIF  ARG != MASTER && LOCAL == 6 && GETBIT(FLAG:雑多設定,1) && Unknown下着(ARG, LOCAL)
+		;无论是否有穿着，在未能确定的情况下什么都不显示（装着の有無に限らず確認が取れていない場合何も表示されないようにする）
+		LOCAL:1 ++
+	ELSEIF EQUIP:ARG:LOCAL
+		IF GETBIT(FLAG:匂いフェチ,1) 
+			PRINTFORML [%IRUINAME_SMELL(EQUIP:ARG:LOCAL)%%CLOTHNAME(LOCAL,EQUIP:ARG:LOCAL)%]
+		ELSE
+			PRINTFORML [%CLOTHNAME(LOCAL,EQUIP:ARG:LOCAL)%]
+		ENDIF
+		LOCAL:1 ++
+	ENDIF
+NEXT
+SIF !LOCAL:1
+	PRINTL 全裸
+
+@PRINT_STATE_TALENT(ARG)
+LOCAL:1 = 0
+LOCALS = ""
+;TALENT:200(无名氏)は表示させない
+;性别
+LOCALS += GET_TALENTNAME(2,TALENT:ARG:2)
+PRINTFORM [%GET_TALENTNAME(2,TALENT:ARG:2)%]
+;处女
+IF TALENT:ARG:处女 && HAS_VAGINA(ARG)
+	SETCOLOR 色設定_状態_恋慕
+	FONTBOLD
+	LOCALS += GET_TALENTNAME(0,TALENT:ARG:0)
+	PRINTFORM [%GET_TALENTNAME(0,TALENT:ARG:0)%]
+	RESETCOLOR
+	FONTREGULAR
+ENDIF
+;童贞
+IF TALENT:ARG:童贞 && HAS_PENIS(ARG)
+	LOCALS += GET_TALENTNAME(1,TALENT:ARG:1)
+	PRINTFORM [%GET_TALENTNAME(1,TALENT:ARG:1)%]
+ENDIF
+FOR LOCAL,3,200
+	IF STRLENS(GET_TALENTNAME(LOCAL,TALENT:ARG:LOCAL))
+		LOCALS += GET_TALENTNAME(LOCAL,TALENT:ARG:LOCAL)
+		IF GROUPMATCH(LOCAL,0,5)
+			SETCOLOR 色設定_状態_恋慕
+			FONTBOLD
+		ELSEIF GROUPMATCH(LOCAL,3)
+			SETCOLOR 色設定_状態_ＮＴＲ
+			; FONTBOLD
+		ELSEIF GROUPMATCH(LOCAL,4)
+			SETCOLOR 颜色_状态_恋人
+			FONTBOLD
+		ENDIF
+		PRINTFORM [%GET_TALENTNAME(LOCAL,TALENT:ARG:LOCAL)%]
+		RESETCOLOR
+		FONTREGULAR
+		IF STRLENS(LOCALS) > 50
+			LOCALS = ""
+			PRINTL
+		ENDIF
+	ENDIF
+NEXT
+
+@PRINT_STATE_ABL(ARG)
+PRINTL
+PRINTL □ 能力 □---------------------------------------------------------------------
+LOCAL:1 = 0
+FOR LOCAL,0,50
+	SIF !STRLENS(ABLNAME:LOCAL)
+		CONTINUE
+	SIF LOCAL > 50 && ARG != MASTER
+		CONTINUE
+	;同性愛関係
+	IF !(HAS_VAGINA(ARG)) && (LOCAL == 17 || LOCAL == 32)
+		CONTINUE
+	ELSEIF HAS_VAGINA(ARG) && (LOCAL == 18 || LOCAL == 33)
+		CONTINUE
+	ENDIF		
+	PRINTFORM %ABLNAME:LOCAL,12%:{ABL:ARG:LOCAL,5,LEFT} 
+	LOCAL:1 ++
+	SIF LOCAL:1 % 4 == 0
+		PRINTL 
+NEXT
+PRINTL
+PRINTL □ 性技 □---------------------------------------------------------------------
+LOCAL:1 = 0
+FOR LOCAL,50,60
+	SIF !STRLENS(ABLNAME:LOCAL)
+		CONTINUE
+	SIF !(HAS_VAGINA(ARG)) && (LOCAL == 52 || LOCAL == 54)
+		CONTINUE
+	PRINTFORM %ABLNAME:LOCAL,12%:{ABL:ARG:LOCAL,5,LEFT} 
+	LOCAL:1 ++
+	SIF LOCAL:1 % 4 == 0
+		PRINTL 
+NEXT
+
+@PRINT_STATE_MARK(奴隷)
+#DIM  奴隷
+#DIM  刻印番号
+#DIM  刻印番号最大値
+#DIM  セパレータ
+#DIM  改行
+#DIM  単行文字数
+#DIMS 合計文字列
+#DIMS 単行文字列
+
+PRINTL
+PRINTL □ 刻印 □---------------------------------------------------------------------
+IF 刻印番号最大値 == 0
+	刻印番号最大値 = VARSIZE("MARK")
+	FOR 刻印番号, 刻印番号最大値-1,-1,-1
+		IF MARKNAME:刻印番号 == ""
+			刻印番号最大値 = 刻印番号
+			BREAK
+		ENDIF
+	NEXT
+ENDIF
+
+セパレータ = 0
+単行文字数 = 0
+合計文字列 = %""%
+IF FLAG:真实模式 && 奴隷 != 0
+	FOR 刻印番号,6,12
+		IF MARK:奴隷:刻印番号 && (MARKNAME:刻印番号 != "")
+			単行文字列 = %"  "*セパレータ+GET_MARK_LEVEL_OWNERNAME(奴隷,刻印番号)%
+			IF (STRLENS(単行文字列)+単行文字数) > STRLENS(DRAWLINESTR)
+				セパレータ = 0
+				合計文字列 = %合計文字列+"<br>"+単行文字列%
+				単行文字数 = STRLENS(単行文字列)
+			ELSE
+				セパレータ = 1
+				合計文字列 = %合計文字列+単行文字列%
+				単行文字数 += STRLENS(単行文字列)
+			ENDIF
+		ENDIF
+	NEXT
+ELSE
+	FOR 刻印番号,0,5
+		IF MARK:奴隷:刻印番号 && (MARKNAME:刻印番号 != "")
+			単行文字列 = %"  "*セパレータ+GET_MARK_LEVEL_OWNERNAME(奴隷,刻印番号)%
+			IF (STRLENS(単行文字列)+単行文字数) > STRLENS(DRAWLINESTR)
+				セパレータ = 0
+				合計文字列 = %合計文字列+"<br>"+単行文字列%
+				単行文字数 = STRLENS(単行文字列)
+			ELSE
+				セパレータ = 1
+				合計文字列 = %合計文字列+単行文字列%
+				単行文字数 += STRLENS(単行文字列)
+			ENDIF
+		ENDIF
+	NEXT
+ENDIF
+
+HTML_PRINT 合計文字列
+
+RETURN 0
+[SKIPEND]

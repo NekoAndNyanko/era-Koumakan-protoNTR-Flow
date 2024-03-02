@@ -1,0 +1,48 @@
+﻿;-------------------------------------------------
+;休息
+;-------------------------------------------------
+@COM403
+IF REST_IsRestRoom(CFLAG:MASTER:現在位置)
+	;トイレ。10分前後。
+	CALL REST_UseRestRoom(MASTER)
+	TIME += (5 + RAND:10)
+ELSEIF TIME_PROGRESS(CFLAG:MASTER:起床時間) >= 要睡眠経過時間 && !CFLAG:MASTER:睡眠
+	;本格的に眠るのは私室だけ
+	IF  CFLAG:MASTER:現在位置 != CFLAG:MASTER:311
+		PRINTFORMW 很想休息的%CALLNAME:MASTER%开始打瞌睡了。
+		PRINTFORMW 回去房间会比较好吧……
+		BASE:MASTER:体力 = MIN(BASE:MASTER:体力 + MAXBASE:MASTER:体力 / 100 , MAXBASE:MASTER:体力)
+		BASE:MASTER:气力 = MIN(BASE:MASTER:气力 + MAXBASE:MASTER:气力 / 30 , MAXBASE:MASTER:气力)
+		;回復早いがあれば回復量にボーナス
+		IF TALENT:MASTER:恢复速度 != 0
+			BASE:MASTER:体力 = MIN(BASE:MASTER:体力 + MAXBASE:MASTER:体力 / 200 , MAXBASE:MASTER:体力)
+			BASE:MASTER:气力 = MIN(BASE:MASTER:气力 + MAXBASE:MASTER:气力 / 60 , MAXBASE:MASTER:气力)
+		ENDIF
+		;時間経過量が増えてさらに非効率な回復手段に
+		TIME += (20 + RAND:30)
+	ELSE
+		PRINTFORMW 很想休息的%CALLNAME:MASTER%就这样睡着了。
+		CFLAG:MASTER:睡眠 = 1
+		CFLAG:MASTER:睡觉時間 = DATETIME()
+		BEGIN AFTERTRAIN
+	ENDIF
+ELSE
+	;私室と大浴場以外なら10分休息
+	IF CFLAG:MASTER:現在位置 != CFLAG:MASTER:311 && CFLAG:MASTER:現在位置 != 位置_大浴場
+		;10分休息処理
+		BASE:MASTER:体力 = MIN(BASE:MASTER:体力 + MAXBASE:MASTER:体力 / 100 , MAXBASE:MASTER:体力)
+		BASE:MASTER:气力 = MIN(BASE:MASTER:气力 + MAXBASE:MASTER:气力 / 30 , MAXBASE:MASTER:气力)
+		;回復早いがあれば回復量にボーナス
+		IF TALENT:MASTER:恢复速度 != 0
+			BASE:MASTER:体力 = MIN(BASE:MASTER:体力 + MAXBASE:MASTER:体力 / 200 , MAXBASE:MASTER:体力)
+			BASE:MASTER:气力 = MIN(BASE:MASTER:气力 + MAXBASE:MASTER:气力 / 60 , MAXBASE:MASTER:气力)
+		ENDIF
+		TIME += 10
+	ELSE
+		;私室と大浴場なら本来の休息
+		BASE:MASTER:体力 = MIN(BASE:MASTER:体力 + MAXBASE:MASTER:体力 / 10 , MAXBASE:MASTER:体力)
+		BASE:MASTER:气力 = MIN(BASE:MASTER:气力 + MAXBASE:MASTER:气力 / 3 , MAXBASE:MASTER:气力)
+		TIME += 60 - 20 * TALENT:MASTER:恢复速度
+	ENDIF
+ENDIF
+RETURN 1

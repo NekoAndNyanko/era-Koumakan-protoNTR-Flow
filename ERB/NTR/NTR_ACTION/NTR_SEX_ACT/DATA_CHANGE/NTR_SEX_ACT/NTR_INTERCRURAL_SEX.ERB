@@ -1,0 +1,95 @@
+;-------------------------------------------------------------------------------
+;素股
+@NTR_THUG(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+TCVAR:奴隷:行為者 = 調教者
+IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	PRINTFORM 在【%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%】，%CALLNAME:奴隷%把%NTR_NAME(0)%灼热的肉棒夹在了两腿之间、
+	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
+		PRINTFORM 一边用溢满爱慕的双眼，陶醉地注视着%NTR_NAME(0)%
+	ELSEIF TALENT:奴隷:淫乱
+		PRINTFORM 一边在嘴边勾起一丝淫媚的微笑，挑逗着%NTR_NAME(0)%
+	ELSEIF TALENT:奴隷:羞耻心 < 0
+		PRINTFORM 一边大胆地自己摇动着腰部
+	ELSEIF TALENT:奴隷:缺乏感情
+		PRINTFORM 一脸木然
+	ELSE
+		PRINT 双颊泛起了红晕
+	ENDIF
+	IF FLAG:訪問者との行為の終了時刻 == 0
+		PRINTFORMW 把肉棒贴在%MSG_SLIT(奴隷)%上擦拭
+		SIF FLAG:口上颜色
+			CALL KOJO_COLOR(奴隷)
+		TRYCALLLIST
+			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_7_0(奴隷)
+			FUNC NTR_KOJO_K_7_0(奴隷)
+		ENDFUNC
+		RESETCOLOR
+	ELSE
+		PRINTFORMW 把肉棒贴在%MSG_SLIT(奴隷)%上摩擦
+		SIF FLAG:口上颜色
+			CALL KOJO_COLOR(奴隷)
+		TRYCALLLIST
+			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_7_1(奴隷)
+			FUNC NTR_KOJO_K_7_1(奴隷)
+		ENDFUNC
+		RESETCOLOR
+	ENDIF
+ENDIF
+IF FLAG:訪問者との行為の終了時刻 == 0
+	FLAG:访问者行为计时点 = DATETIME()
+	CALL NTR_ADD_SURRENDER(奴隷, 4)
+	SIF EXP:奴隷:NTR陷落经验 
+		CALL NTR_ADD_SURRENDER(奴隷, 2)
+	BASE:奴隷:体力 -= 40
+	BASE:奴隷:气力 -= 130
+	SOURCE:奴隷:快Ｃ = 150
+	SOURCE:奴隷:情爱 = 80
+	SOURCE:奴隷:性行动 = 250
+	SOURCE:奴隷:达成 = 50
+	SOURCE:奴隷:屈从 = 500
+	SOURCE:奴隷:逸脱 = 120
+	IF TALENT:奴隷:NTR
+		SOURCE:奴隷:反感 = 60
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:反感 = 100
+	ELSE
+		SOURCE:奴隷:反感 = 120
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 300
+	CALL 改变小穴色素(奴隷,1)
+	CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 奴隷, 人物_訪問者)
+	FLAG:訪問者との行為の終了時刻 = DATETIME() + 20  
+	CALL NTR_EXP_ADD_C_EX(奴隷,1)
+	FLAG:訪問者との行為 = NTR_行为_素股
+	CFLAG:奴隷:訪問者行為 = NTR_行为_素股
+	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;素股終了（絶頂）
+;@return 常に0
+@NTR_THUG_FINISH(奴隷)
+#DIM 奴隷
+IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%】%NTR_NAME(0)%的肉棒在%CALLNAME:奴隷%两腿间以惊人的气势喷射出了大量精液
+	SIF FLAG:口上颜色
+		CALL KOJO_COLOR(奴隷)
+	TRYCALLLIST
+		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_7_2(奴隷)
+		FUNC NTR_KOJO_K_7_2(奴隷)
+	ENDFUNC
+	RESETCOLOR
+ENDIF
+CALL NTR_SEMEN_STAIN(奴隷)
+CALL NTR_EXP_ADD_SEMEN(奴隷,1)
+TRYCALL 精力取得, 人物_訪問者
+;素股で口は汚れなくていいと思う
+;TRYCALL NTR_SAMEN_EXP_PLUS(奴隷, 1)
+;SETBIT STAIN:奴隷:口,2
+;CLEARBIT FLAG:訪問者との汚れ判定に使用,2
+CFLAG:奴隷:射精者V = 人物_訪問者
+RETURN 0

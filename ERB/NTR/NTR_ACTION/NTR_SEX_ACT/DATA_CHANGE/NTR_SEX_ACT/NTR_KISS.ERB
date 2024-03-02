@@ -1,0 +1,57 @@
+;-------------------------------------------------------------------------------
+;キス
+@NTR_KISS(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+#DIM 行為上限値
+TCVAR:奴隷:行為者 = 調教者
+TCVAR:行為者 = 調教者
+;主人同席（見せつけ）
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_01(奴隷, 2)
+IF FLAG:訪問者との行為の終了時刻 == 0
+	FLAG:访问者行为计时点 = DATETIME()
+	CALL NTR_ADD_SURRENDER(奴隷, 2)
+	SIF EXP:奴隷:NTR陷落经验 
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+	SIF TALENT:奴隷:浮気的蜜唇
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+	BASE:奴隷:气力 -= 80
+	IF TALENT:奴隷:浮気的蜜唇
+		SOURCE:奴隷:情爱 = 100
+		SOURCE:奴隷:性行动 = 10
+		SOURCE:奴隷:逸脱 = 10
+	ELSE
+		SOURCE:奴隷:情爱 = 50
+		SOURCE:奴隷:性行动 = 10
+		SOURCE:奴隷:逸脱 = 10
+	ENDIF
+	IF TALENT:奴隷:NTR || TALENT:奴隷:浮気的蜜唇
+		SOURCE:奴隷:屈从 = 20
+		SOURCE:奴隷:反感 = 0
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:屈从 = 15
+		SOURCE:奴隷:反感 = 5
+	ELSE
+		SOURCE:奴隷:屈从 = 10
+		SOURCE:奴隷:反感 = 10
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 10
+	CALL NTR_EXP_ADD_KISS(奴隷,1)
+	FLAG:訪問者との行為の終了時刻 = DATETIME() + 10
+	CALL NTR_EXP_ADD_M_EX(奴隷,1)
+	FLAG:訪問者との行為 = NTR_行为_キス
+	CFLAG:奴隷:訪問者行為 = NTR_行为_キス
+	CALL LOST_VIRGIN_M(奴隷, 人物_訪問者)
+	CFLAG:奴隷:和访问者已接吻 = 1
+	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;キス終了（絶頂）
+;@return 常に0
+@NTR_KISS_FINISH(奴隷)
+#DIM 奴隷
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_2(奴隷, 2)
+RETURN 0

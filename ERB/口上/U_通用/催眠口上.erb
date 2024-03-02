@@ -1,0 +1,760 @@
+﻿;-------------------------------------------------------------------------------
+;接吻
+@催眠_KOJO_接吻(住人)
+#DIM 住人
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 催眠者的舌頭與%CALLNAME:住人%的舌頭在口腔中交纏在一起，雙方激烈的親吻，發出「嗚嗚～嗯嗯～」的聲音
+	PRINTFORML %CALLNAME:住人%吞飲著催眠者的唾液，好像飲下了烈性春藥一樣，面頰泛起紅暈，雙腿夾緊輕輕摩擦起來
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%與催眠者激烈地深吻，兩人的嘴唇緊緊貼合在一起，一直持續到呼吸困難為止
+	PRINTFORML 兩人的嘴唇分開時，一道唾液在兩人之間拉成了亮晶晶的絲線	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:住人%與催眠者的嘴唇貼合，催眠者不失時機地把舌頭探進了%CALLNAME:住人%嘴裡，猥褻地活動著
+	PRINTFORML %CALLNAME:住人%的舌頭不由自主地活動起來，迎合著催眠者的侵犯
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度) || 催眠_CHK_FAVORABLY(住人,FAV_接吻程度)
+	PRINTFORML %CALLNAME:住人%不情願地與催眠者的嘴唇貼合，催眠者不失時機地把舌頭探進了%CALLNAME:住人%嘴裡，猥褻地活動著
+	PRINTFORML %CALLNAME:住人%想要阻止催眠者的行動，但身體背叛了自己的意志難以動彈
+ELSE
+	PRINTFORML %CALLNAME:住人%臉上露出厭惡的表情，用嘴唇輕觸催眠者的嘴唇，像被燙傷一樣連忙移開頭
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;接吻
+@催眠_KOJO_接吻_F(住人)
+#DIM 住人
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 漫長的深吻結束後，%CALLNAME:住人%的眼神迷離，閃爍著情慾的光芒
+	PRINTFORML 當催眠者的嘴唇分開時，%CALLNAME:住人%戀戀不捨地探出舌頭繼續索求，從鼻端發出了欲求不滿的呻吟聲
+	PRINTFORML 「嗯嗯～求求你～催眠者大人」
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 。
+	PRINTFORML 。
+	PRINTFORML 。
+	PRINTFORML %CALLNAME:住人%與催眠者一次又一次地深吻，直到%CALLNAME:住人%軟綿綿地貼靠在催眠者胸前難以動彈	
+ELSE
+	PRINTFORML %CALLNAME:住人%臉上露出厭惡的表情，用嘴唇輕觸催眠者的嘴唇，像被燙傷一樣連忙移開頭
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;泡茶
+@催眠_KOJO_泡茶(住人)
+#DIM 住人
+PRINTFORML %CALLNAME:住人%舉起茶杯遞到嘴邊    
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 熟悉的氣味刺激著%CALLNAME:住人%的鼻腔，長久以來形成的條件反射令%CALLNAME:住人%感到一陣戰栗，身體立刻火熱起來
+	PRINTFORML %CALLNAME:住人%雙手捧住茶杯，大口吞嚥下去
+	PRINTFORML 放下空空的杯子，%CALLNAME:住人%探出舌頭，把沾在唇邊的白濁舔淨，充滿期待地望著催眠者的下體，渴求著更多的精液
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%大口將杯中的濁液喝乾，臉上立刻浮現出可疑的紅暈，雙眼變得水汪汪的，動作也變得搖搖晃晃
+	PRINTFORML 像喝醉酒一樣， %CALLNAME:住人%吐出灼熱的吐息，身子朝催眠者靠了過去
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:住人%小口小口將杯中的濁液喝乾，就像普通地喝茶一樣
+	PRINTFORML 催眠者露出不懷好意的微笑
+	PRINTFORML 「已經習慣這個味道了啊，哈」	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度) || 催眠_CHK_FAVORABLY(住人,FAV_接吻程度)
+	PRINTFORML %CALLNAME:住人%忍受著濃郁的臭氣將杯中的濁液飲下，隱約覺得有什麼不對勁
+	IF TALENT:住人:污臭耐性 < 0
+		PRINTFORML 臭氣彷彿粘著在喉嚨一樣，引得%CALLNAME:住人%本能地一陣乾嘔，但什麼都沒能吐出來 
+	ENDIF		
+ELSE
+	PRINTFORML %CALLNAME:住人%学习喝了一口，便因為精液的臭氣皺起了眉
+	PRINTFORML 「噁心的味道……」
+	IF TALENT:住人:污臭耐性 < 0
+		PRINTFORML 臭氣彷彿粘著在喉嚨一樣，引得%CALLNAME:住人%本能地一陣乾嘔，但什麼都沒能吐出來 
+	ENDIF		
+ENDIF
+RETURN 0	
+;-------------------------------------------------------------------------------
+;爱抚
+@催眠_KOJO_爱抚(住人)
+#DIM 住人
+PRINTFORML 催眠者的手指在%CALLNAME:住人%的身體上遊走，一開始沒有刻意在敏感部位過多停留
+PRINTFORML 輕柔好似羽毛拂過的動作更加激起了%CALLNAME:住人%的情慾
+PRINTFORML 清楚時機已至的催眠者開始專注地玩弄%CALLNAME:住人%乳頭和花瓣，氾濫的愛液打濕了催眠者的手指
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%快樂地迎合著催眠者的動作，仰起頭向催眠者獻上嘴唇
+	PRINTFORML 催眠者對%CALLNAME:住人%的順從感到滿意，賜予了%CALLNAME:住人%接連不斷的高潮
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%的身體像提線木偶一樣活動起來，雙手交握在腦後，雙腿M字大開
+	PRINTFORML 催眠者一手蹂躪著%CALLNAME:住人%的胸部，一手在%CALLNAME:住人%的下體活動
+	PRINTFORML 一旦察覺到%CALLNAME:住人%的身體出現高潮的跡象，催眠者便立刻放緩手上的動作
+	PRINTFORML 緩慢積累的快感煎熬著%CALLNAME:住人%的理智
+	PRINTFORML 。	
+	PRINTFORML 。
+	PRINTFORML 。		
+	PRINTFORML 「求求你……」
+	PRINTFORML 。	
+	PRINTFORML 。	
+	PRINTFORML 。	
+	PRINTFORML 「求求你……催眠者大人，請賜予我高潮……」
+	PRINTFORML 滿意於%CALLNAME:住人%的屈服，催眠者低頭吻住%CALLNAME:住人%的嘴唇，同時粗暴地玩弄起%CALLNAME:住人%的陰蒂
+	PRINTFORML 激烈的動作令%CALLNAME:住人%的快感決堤，%CALLNAME:住人%攀上了前所未有的強烈絕頂	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:住人%的身體違背本人意志一動不動，催眠者滿意地上下爱抚
+	PRINTFORML 被催眠者手指滑過的肌膚都變得極度敏感， %CALLNAME:住人%對身體的變化感到不安，卻無法開口說話	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度)
+	PRINTFORML %CALLNAME:住人%蜷縮著身子躲閃伸向敏感帶的手指，這是%CALLNAME:住人%能做出的最大反抗了
+	PRINTFORML 催眠者察覺到%CALLNAME:住人%的反抗，冷笑著剝開%CALLNAME:住人%陰蒂的包皮，毫不留情地責弄
+	PRINTFORML %CALLNAME:住人%被連續不斷的快感沒頂，尖叫著抵達絕頂	
+ELSE
+	PRINTFORML %CALLNAME:住人%感覺到羞恥和惱怒，想要按住催眠者的手
+	PRINTFORML 在這個想法升起的瞬間， %CALLNAME:住人%突然全身無力，像人偶一樣任由催眠者擺佈	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交
+@催眠_KOJO_口交(住人)
+#DIM 住人
+PRINTFORML %CALLNAME:住人%張開嘴，吃力地將催眠者的肉棒吞了進去
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 彷彿在品嚐至高的美味一樣，%CALLNAME:住人%用舌頭舔遍催眠者的肉棒
+	PRINTFORML 「嗯……呼……好吃……」
+	PRINTFORML %CALLNAME:住人%一邊發出含混不清的聲音，一邊進一步舔了下去，舌頭在催眠者的玉袋上撥弄了兩下，順勢舔向催眠者的肛門	
+	PRINTFORML 催眠者「嘶」地倒抽一口冷氣，發出舒爽的呻吟聲
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%用力地吮吸著催眠者的肉棒，發出淫猥的嘖嘖聲
+	PRINTFORML 肉棒在%CALLNAME:住人%口中進一步膨大，%CALLNAME:住人%露出喜悅的表情
+	PRINTFORML %CALLNAME:住人%努力撐開嘴巴，一點一點將肉棒整根吞了進去	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:住人%機械地上下活動頭部，小口小口套弄催眠者的肉棒
+	PRINTFORML 催眠者露出了不耐煩的表情，突然打了個響指
+	PRINTFORML %CALLNAME:住人%的動作猛地激烈起來，肉棒不停戳中喉頭，令%CALLNAME:住人%陣陣作嘔
+	PRINTFORML 但不管怎麼努力，%CALLNAME:住人%都無法控制住自己瘋狂口交的動作  	
+ELSE
+	PRINTFORML %CALLNAME:住人%的嘴唇觸碰到催眠者的肉棒，臉上露出噁心的表情，卻無法把頭轉開
+	PRINTFORML 催眠者冷笑著用肉棒抽打%CALLNAME:住人%的臉頰，猛地將肉棒塞進%CALLNAME:住人%的喉嚨深處 
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交
+@催眠_KOJO_口交_F(住人)
+#DIM 住人
+PRINTFORML 催眠者的肉棒在%CALLNAME:住人%嘴裡膨大到了極限
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%察覺到即將到來的高潮，張大嘴湊近催眠者的龜頭，用舌尖輕輕撥弄馬眼
+	PRINTFORML 催眠者低聲呻吟，噴出了一股股濃精
+	PRINTFORML 精液猛地灌進%CALLNAME:住人%嘴裡，過多的射出量甚至從%CALLNAME:住人%的鼻孔裡嗆了出來
+	PRINTFORML %CALLNAME:住人%連忙用雙手捧住滴落的部分，低頭細細舔舐
+	PRINTFORML 在處理完溢出的精液後，%CALLNAME:住人%張嘴讓催眠者確認口腔裡的白濁
+	PRINTFORML 催眠者滿意地點點頭，%CALLNAME:住人%才一臉幸福地將精液吞落下去	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 催眠者的肉棒在%CALLNAME:住人%的喉嚨深處進一步膨脹
+	PRINTFORML 本就粗長的肉竿往深處一探，粗暴地擠開%CALLNAME:住人%的食道
+	PRINTFORML 緊窄的觸感讓催眠者無法再忍耐，濃稠的精液一股又一股射出，注入了%CALLNAME:住人%體內
+	PRINTFORML 催眠者將半萎的肉棒從%CALLNAME:住人%口中抽出，%CALLNAME:住人%輕輕吻著肉棒的肉菇，把殘餘的精液吸乾淨	
+ELSE
+	PRINTFORML 催眠者的肉棒在%CALLNAME:住人%口中盛大地發射
+	PRINTFORML %CALLNAME:住人%不由自主地大口吞嚥，將精液嚥得幹乾淨淨
+	PRINTFORML 催眠者抽出肉棒之後，%CALLNAME:住人%用力乾嘔，然而除了唾液吐不出任何東西
+	PRINTFORML 精液濃稠腥臭的觸感粘在喉嚨處，繚繞不去	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;六九式
+@催眠_KOJO_六九式(住人)
+#DIM 住人
+PRINTFORML 「不要偷懶，在你高潮之前讓我射出來」
+PRINTFORML 催眠者重重拍打著%CALLNAME:住人%的屁股，用不容置疑的聲音命令著	
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 彷彿在品嚐至高的美味一樣，%CALLNAME:住人%用舌頭舔遍催眠者的肉棒
+	PRINTFORML 「嗯……呼……好吃……」
+	PRINTFORML %CALLNAME:住人%一邊發出含混不清的聲音，一邊進一步舔了下去，舌頭在催眠者的玉袋上撥弄了兩下，順勢舔向催眠者的肛門	
+	PRINTFORML 催眠者「嘶」地倒抽一口冷氣，發出舒爽的呻吟聲
+	PRINTFORML 為了不太快射出來，催眠者剝開了%CALLNAME:住人%的包皮，用舌尖一個勁地玩弄敏感的陰蒂
+	PRINTFORML %CALLNAME:住人%因為突然襲擊挺直了腰背，不由地放開催眠者的肉棒，發出快樂的尖叫聲	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%用力地吮吸著催眠者的肉棒，發出淫猥的嘖嘖聲
+	PRINTFORML 催眠者分開%CALLNAME:住人%的陰唇，愛液氾濫而出，淋了催眠者一臉
+	PRINTFORML 「就這麼喜歡肉棒嗎，你這個淫亂的母豬！」	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:住人%懷著對懲罰的恐懼，活動頭部套弄催眠者的肉棒
+	PRINTFORML 催眠者也一口含住了%CALLNAME:住人%的陰戶，舌頭擠開緊閉的陰唇，上下掃動著
+	PRINTFORML %CALLNAME:住人%被快感催促，加快了套弄的動作
+ELSE
+	PRINTFORML %CALLNAME:住人%不情願地低頭吞進了催眠者的肉棒
+	PRINTFORML 催眠者舉手分開%CALLNAME:住人%的大陰唇，舌頭在敏感帶周圍打轉，用緩慢得令人焦急的動作催促著%CALLNAME:住人%
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;六九式
+@催眠_KOJO_六九式_F(住人)
+#DIM 住人
+PRINTFORML 催眠者感到自己的忍耐即將到達極限
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 催眠者和%CALLNAME:住人%幾乎同時沖向了絕頂
+	PRINTFORML 催眠者發出一聲呻吟，猛烈地射出了精液
+	PRINTFORML 在催眠者享受高潮餘韻的時候，%CALLNAME:住人%將半軟的肉棒吞進嘴裡，用力吮吸著
+	PRINTFORML 直到把肉棒腔道內最後一滴精液吮了出來，%CALLNAME:住人%才滿意地吐出肉棒
+	PRINTFORML 催眠者輕輕拍打%CALLNAME:住人%的屁股以作讚賞
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 僅僅舔舐催眠者的肉棒就讓%CALLNAME:住人%陷入了發情狀態，陰唇在催眠者面前微微開闔，愛液拉出閃光的銀絲滴下
+	PRINTFORML 催眠者用手指按住%CALLNAME:住人%勃起的陰蒂劃著圓圈，%CALLNAME:住人%一陣顫抖，抵達了高潮
+	PRINTFORML %CALLNAME:住人%身體因為高潮無力地癱軟下來，催眠者挺立的肉棒在%CALLNAME:住人%的臉上射出了精液
+	PRINTFORML 白濁的液體蓋滿了%CALLNAME:住人%的面孔，散發出濃烈的精臭味	
+ELSE
+	PRINTFORML %CALLNAME:住人%也感到口中肉棒的膨脹
+	PRINTFORML 催眠者嘴角露出不懷好意的扭曲，「你的陰蒂現在變得極度敏感」
+	PRINTFORML 隨著催眠者的命令，%CALLNAME:住人%的身體猛地一顫
+	PRINTFORML 催眠者沒有留給%CALLNAME:住人%做好準備的時間，張口輕輕咬在%CALLNAME:住人%完全勃起的陰蒂上
+	PRINTFORML 倒错的痛覺轉化成極度的快感，%CALLNAME:住人%尖叫著抵達了絕頂，愛液噴湧而出淋了催眠者一臉
+	PRINTFORML 催眠者也不再忍耐，向%CALLNAME:住人%口中發射了精液
+ENDIF
+PRINTFORML 「你沒有服從命令就擅自高潮了，看來還需要更多的調教啊，哼哼哼哼」	
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A正常位
+@催眠_KOJO_A1(住人)
+#DIM 住人
+PRINTFORML 接受肛交命令的%CALLNAME:住人%感到肛門一陣收縮，腸內傳來陣陣瘙癢，不禁發出了猥褻的呻吟聲
+PRINTFORML 「嗚～啊♪」
+PRINTFORML 催眠者將%CALLNAME:住人%雙腳分開，露出顫抖著的棕色菊花
+PRINTFORML 粗長的肉棒擠開努力抗拒侵入的括約肌，深深抵入了%CALLNAME:住人%體內
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%的排泄器官已經完美地轉化為適合催眠者的淫具
+	PRINTFORML 僅僅是插入，%CALLNAME:住人%便一陣激烈地顫抖，腸道僅僅箍束住催眠者的肉棒，像不讓肉棒逃跑一樣
+	PRINTFORML 前方的花瓣也分泌出大量愛液，一路流淌到兩人的交合部位
+	PRINTFORML 催眠者在緊窄的狹道內粗暴地進出，隨著催眠者的動作，%CALLNAME:住人%發出一陣陣淫亂的哀鳴
+	PRINTFORML 「屁股～屁股要壞掉了♪」
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 排泄器官被當作小穴使用讓%CALLNAME:住人%感到陣陣倒错的快感
+	PRINTFORML 催眠者沒有放過%CALLNAME:住人%細微的反應，溫柔地挺送著腰
+	PRINTFORML 不知不覺間%CALLNAME:住人%已經用雙腿環住了催眠者的腰部，像是在催促他更加激烈地動作
+ELSE
+	PRINTFORML %CALLNAME:住人%被撐開的腸道傳來陣陣撕裂般的痛苦
+	PRINTFORML 「要裂開了！屁股要裂開兩半了！」
+	PRINTFORML 催眠者露出不懷好意的笑容，「不喜歡這裡嗎？那麼……」
+	PRINTFORML 「就讓我幹你的小穴好不好？」
+	PRINTFORML %CALLNAME:住人%的表情瞬間僵硬起來
+	PRINTFORML 「不要！求求你……請使用%CALLNAME:住人%的屁股吧…………嗚嗚…………」
+	PRINTFORML 催眠者滿意地發出嘲笑聲，快速挺腰抽插起來	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A后背位
+@催眠_KOJO_A2(住人)
+#DIM 住人
+PRINTFORML 接受肛交命令的%CALLNAME:住人%像牝犬一樣趴伏在地，高高抬起屁股
+PRINTFORML 催眠者將%CALLNAME:住人%的臀瓣分開，露出顫抖著的棕色菊花 
+PRINTFORML 粗長的肉棒擠開努力抗拒侵入的括約肌，深深抵入了%CALLNAME:住人%體內
+PRINTFORML 「嗚～啊♪」
+PRINTFORML %CALLNAME:住人%發出了難以分辨是痛苦還是快樂的呻吟聲
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%的排泄器官已經完美地轉化為適合催眠者的淫具
+	PRINTFORML 僅僅是插入，%CALLNAME:住人%便一陣激烈地顫抖，腸道僅僅箍束住催眠者的肉棒，像不讓肉棒逃跑一樣
+	PRINTFORML 催眠者雙手卡住%CALLNAME:住人%的腰部，瘋狂地抽送肉棒，撞擊%CALLNAME:住人%富有彈性的臀部，發出一連串的啪啪啪聲
+	PRINTFORML 像是诱惑催眠者一樣，%CALLNAME:住人%發出一陣陣淫亂的哀鳴
+	PRINTFORML 「屁股～屁股燒起來了♪」
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 排泄器官被當作小穴使用讓%CALLNAME:住人%感到陣陣倒错的快感
+	PRINTFORML 催眠者沒有放過%CALLNAME:住人%細微的反應，溫柔地挺送著腰
+	PRINTFORML 在%CALLNAME:住人%逐漸習慣溫柔動作的瞬間，催眠者猛地劇烈活動腰部，把肉棒向最深處刺入
+	PRINTFORML 突如其來的襲擊令%CALLNAME:住人%慘叫出聲，眼角迸出淚花	
+ELSE
+	PRINTFORML %CALLNAME:住人%被撐開的腸道傳來陣陣撕裂般的痛苦
+	PRINTFORML 「要裂開了！屁股要裂開兩半了！」
+	PRINTFORML 催眠者露出不懷好意的笑容，「不喜歡這裡嗎？那麼……」
+	PRINTFORML 「就讓我幹你的小穴好不好？」
+	PRINTFORML %CALLNAME:住人%的表情瞬間僵硬起來
+	PRINTFORML 「不要！求求你……請使用%CALLNAME:住人%的屁股吧…………嗚嗚…………」
+	PRINTFORML 催眠者滿意地發出嘲笑聲，快速挺腰抽插起來	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A骑乘位
+@催眠_KOJO_A3(住人)
+#DIM 住人
+PRINTFORML %CALLNAME:住人%騎跨在催眠者身上，用菊門抵住像旗桿一樣聳立的肉棒，緩緩坐下身子，一點一點將肉棒吞進體內
+PRINTFORML 過於粗長的陽具想要把%CALLNAME:住人%的身體撕裂開一樣
+PRINTFORML 催眠者對%CALLNAME:住人%緩慢的動作感到不悅，雙手抓住%CALLNAME:住人%的細腰，用力往下一拉 
+PRINTFORML 肉棒噗地刺入%CALLNAME:住人%體內，直至沒根，劇痛令%CALLNAME:住人%慘叫出聲
+PRINTFORML 「啊！！痛……………………」
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 雙手扶住催眠者的胸口，%CALLNAME:住人%像騎馬一樣開始活動身體
+	PRINTFORML 催眠者不時一挺腰，把肉棒送進%CALLNAME:住人%身體更深處
+	PRINTFORML %CALLNAME:住人%的排泄器官已經完美地轉化為適合催眠者的淫具，插入時的痛苦迅速轉化成堆高的快感
+	PRINTFORML %CALLNAME:住人%發出一連串的淫聲，上下活動的動作越來越快
+	PRINTFORML 「好厲害～屁股～屁股被幹的飛起來了♪」
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 自己挺腰追求快感%CALLNAME:住人%感到害羞，但從肛門傳來的滿脹感漸漸變成令人難耐的瘙癢
+	PRINTFORML %CALLNAME:住人%悄悄地加快了活動的動作，以期讓自己舒服一點
+	PRINTFORML 然而不干不脆的動作讓慾火越發猛烈地燃燒起來
+	PRINTFORML 不知不覺間%CALLNAME:住人%已經在瘋狂地扭腰，想讓肉棒捅到更深的地方
+ELSE
+	PRINTFORML %CALLNAME:住人%被撐開的腸道傳來陣陣撕裂般的痛苦
+	PRINTFORML 「要裂開了！屁股要裂開兩半了！」
+	PRINTFORML 催眠者露出不懷好意的笑容，「不打算自己動嗎……」
+	PRINTFORML 「那麼就讓我來幹你的小穴吧？」
+	PRINTFORML %CALLNAME:住人%的表情瞬間僵硬起來
+	PRINTFORML 「不要！求求你……我不會偷懶…………」
+	PRINTFORML 催眠者滿意地發出嘲笑聲，%CALLNAME:住人%噙著淚花開始上下活動腰部	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A対面座位
+@催眠_KOJO_A4(住人)
+#DIM 住人
+PRINTFORML 催眠者將%CALLNAME:住人%面對面抱住，肉棒猛地捅進%CALLNAME:住人%的菊穴
+PRINTFORML %CALLNAME:住人%因為異物的侵入而痛叫出聲
+PRINTFORML 催眠者抓住機會把舌頭伸進%CALLNAME:住人%的嘴裡，胡亂攪動著 
+PRINTFORML %CALLNAME:住人%的叫聲變成了一連串含糊不清的嗚嗚聲
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%的排泄器官已經完美地轉化為適合催眠者的淫具
+	PRINTFORML 僅僅是插入，%CALLNAME:住人%便一陣激烈地顫抖，腸道僅僅箍束住催眠者的肉棒，像不讓肉棒逃跑一樣
+	PRINTFORML 前方的花瓣也分泌出大量愛液，把兩人相貼的部位弄得濕淋淋的
+	PRINTFORML 催眠者小幅度地挺著腰，溫柔的動作刺激著%CALLNAME:住人%的慾望
+	PRINTFORML 「嗚嗚嗚…………嗯……♪」	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 排泄器官被當作小穴使用讓%CALLNAME:住人%感到陣陣倒错的快感
+	PRINTFORML 催眠者沒有放過%CALLNAME:住人%細微的反應，溫柔地挺送著腰
+	PRINTFORML 不知不覺間%CALLNAME:住人%已經用雙腿環住了催眠者的腰部，同時激烈地回吻著催眠者
+ELSE
+	PRINTFORML %CALLNAME:住人%被撐開的腸道傳來陣陣撕裂般的痛苦，卻苦於無法開口說話
+	PRINTFORML 「嗚嗚嗚…………唔唔唔…………！」
+	PRINTFORML %CALLNAME:住人%的表情瞬間僵硬起來，瘋狂地開始搖頭，抬起腰用把菊花獻了出來
+	PRINTFORML 催眠者滿意地發出嘲笑聲，重新把肉棒刺進%CALLNAME:住人%的菊穴
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A背面座位
+@催眠_KOJO_A5(住人)
+#DIM 住人
+PRINTFORML 催眠者從後面抱住%CALLNAME:住人%，一隻手玩弄%CALLNAME:住人%已經勃起的乳頭，另一隻手撫摸著%CALLNAME:住人%的小穴
+PRINTFORML 在%CALLNAME:住人%因為快感而迷離的瞬間，催眠者猛地將肉棒刺進%CALLNAME:住人%的肛門
+PRINTFORML 粗長的肉棒擠開努力抗拒侵入的括約肌，深深抵入了%CALLNAME:住人%體內
+PRINTFORML 「嗚～啊♪」
+PRINTFORML %CALLNAME:住人%發出了難以分辨是痛苦還是快樂的呻吟聲
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%的排泄器官已經完美地轉化為適合催眠者的淫具
+	PRINTFORML 僅僅是插入，%CALLNAME:住人%便一陣激烈地顫抖，腸道僅僅箍束住催眠者的肉棒，像不讓肉棒逃跑一樣
+	PRINTFORML 在催眠者手指的玩弄下，小穴和乳頭傳來的快感與肛門的快感混雜在一起，再也分不清楚
+	PRINTFORML %CALLNAME:住人%感覺全身變得像小穴那麼敏感，不由地發出一連串的呻吟聲
+	PRINTFORML 「嗚嗚嗚…………嗯……♪」	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 排泄器官被當作小穴使用讓%CALLNAME:住人%感到陣陣倒错的快感，乳頭和小穴的快感也混雜在一起
+	PRINTFORML 催眠者沒有放過%CALLNAME:住人%細微的反應，不懷好意地嘲笑道
+	PRINTFORML 「是哪邊比較舒服，下流的小穴還是下賤的菊穴？」 	
+	PRINTFORML %CALLNAME:住人%腦內一片空白，發出意義不明的呻吟聲
+	PRINTFORML 「舒服………舒服…………要去了♪」 	 	
+ELSE
+	PRINTFORML %CALLNAME:住人%被撐開的腸道傳來陣陣撕裂般的痛苦
+	PRINTFORML 「要裂開了！屁股要裂開兩半了！」
+	PRINTFORML 催眠者露出不懷好意的笑容，手指分開花瓣，探進%CALLNAME:住人%的陰道
+	PRINTFORML 「那麼就來幹這邊吧……如何？」
+	PRINTFORML %CALLNAME:住人%的表情瞬間僵硬起來
+	PRINTFORML 「不要！求求你……請使用%CALLNAME:住人%的屁股吧…………嗚嗚…………」
+	PRINTFORML 催眠者滿意地發出嘲笑聲，抽出手指讓%CALLNAME:住人%舔乾淨	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交A
+@催眠_KOJO_A_F(住人)
+#DIM 住人
+PRINTFORML 催眠者不知疲倦地抽插著%CALLNAME:住人%的菊穴，%CALLNAME:住人%已經不知用肛門高潮了多少次
+PRINTFORML 強烈的快感削減了%CALLNAME:住人%的體力，也模糊了%CALLNAME:住人%的神智
+PRINTFORML %CALLNAME:住人%的身體本能地迎合著催眠者的動作，徹底化作了探求快感的雌獸
+PRINTFORML 同時，催眠者的忍耐也達到了極限
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 催眠者強烈地發射出來，滾燙的精液注滿了%CALLNAME:住人%的腸腔
+	PRINTFORML 「啊～啊～裡面……熱熱的東西射進來了……♪」	
+	PRINTFORML 在精液的刺激下%CALLNAME:住人%有一次衝上了絕頂
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 催眠者強烈地發射出來，滾燙的精液注滿了%CALLNAME:住人%的腸腔
+	PRINTFORML %CALLNAME:住人%的腸道在精液的刺激下本能收縮，像要把肉棒徹底榨乾一樣緊緊鎖住
+	PRINTFORML 催眠者用力拔出肉棒，發出啵的一聲
+	PRINTFORML 肉菇從%CALLNAME:住人%體內拔出的時候翻動著無法合攏的肛門，令%CALLNAME:住人%再度衝上絕頂
+ELSE
+	PRINTFORML 催眠者強烈地發射出來，滾燙的精液注滿了%CALLNAME:住人%的腸腔
+	PRINTFORML 「不要…………裡面…………不要…………」
+	PRINTFORML %CALLNAME:住人%無力的抗議無法阻止催眠者的動作
+	PRINTFORML 漫長的射精結束後，催眠者拔出了肉棒，滿溢的精液從無法收緊的肛門中倒流而出
+	PRINTFORML 催眠者冷冷地嘲笑，「你已經是出色的肛交母豬了」	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;素股
+@催眠_KOJO_素股(住人)
+#DIM 住人
+PRINTFORML %CALLNAME:住人%溫柔地夾住催眠者的陽具，大膽地活動腰部，用花瓣摩擦肉棒
+PRINTFORML 堅硬又火熱的觸感令%CALLNAME:住人%臉頰發燒
+PRINTFORML 「好硬…………好厲害…………」
+PRINTFORML 洪水般氾濫的愛液打濕了催眠者的肉棒，%CALLNAME:住人%前後摩擦的動作更流暢了
+PRINTFORML 。
+PRINTFORML 。
+PRINTFORML 。
+PRINTFORML 催眠者的忍耐迅速到達了極限，盛大地噴射出精液
+PRINTFORML 白濁的液體沾染了%CALLNAME:住人%的身體，濃濃的精臭瀰漫開來
+PRINTFORML %CALLNAME:住人%用手指把精液在自己身上塗開，臉上露出陶醉的表情
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交正常位
+@催眠_KOJO_V1(住人)
+#DIM 住人
+PRINTFORML 催眠者命令%CALLNAME:住人%屈起雙腿放在胸前，用兩手環住大腿，把陰戶毫無遮擋地展示在自己面前
+IF TALENT:住人:处女
+	PRINTFORML 催眠者的肉棒在%CALLNAME:住人%的陰唇上摩擦，猛地刺入腔道，觸碰到一道脆弱的薄膜
+	PRINTFORML 緊窄的腔道被巨物開墾，%CALLNAME:住人%因為疼痛臉孔扭曲起來
+	IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+		PRINTFORML %CALLNAME:住人%臉上露出虔誠的表情，為能夠把自己的純潔獻給肉棒的主人而欣慰
+	ELSE
+		PRINTFORML 「求求你……不要……」	
+		PRINTFORML %CALLNAME:住人%徒勞地哀求著，飽含羞愧與痛苦的淚珠從眼角滑落
+	ENDIF
+	PRINTFORML 催眠者猛地挺腰，肉棒兇猛地貫通了%CALLNAME:住人%純潔的證明
+	PRINTFORML 把身體撕裂成兩半的疼痛使得%CALLNAME:住人%反弓脊背，發出一聲哀鳴
+	PRINTFORML 殷紅的血絲順著兩人的交合處流了出來  
+ENDIF	
+PRINTFORML 催眠者的肉棒擠開%CALLNAME:住人%陰道的媚肉，飛快地進出著
+PRINTFORML %CALLNAME:住人%陰道內敏感的位置不住地被肉菇磨蹭，激起一波又一波快感
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+	PRINTFORML %CALLNAME:住人%被拋向快感的巔峰，環住大腿的雙手不知何時放開了，拼命抓撓這床單
+	PRINTFORML 橫流的愛液被肉棒攪打成乳白色的泡沫，沾滿交合的部位
+	PRINTFORML 「啊～嗯～好厲害♪」
+	PRINTFORML %CALLNAME:住人%不知羞恥地發出一陣陣悅樂的叫聲
+ELSE
+	PRINTFORML %CALLNAME:住人%幾乎被快感淹沒，反而激起了巨大的羞恥和恐懼
+	PRINTFORML 「不要不要不要…………救救我！！」 	
+	PRINTFORML %CALLNAME:住人%的身體扭動著，想要從快感中逃離
+	PRINTFORML 然而掙扎的動作除了帶給催眠者更大快感以外沒有任何效果
+	PRINTFORML 催眠者沉默著加快了腰部的動作，像打樁機一樣瘋狂地出入	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交后背位
+@催眠_KOJO_V2(住人)
+#DIM 住人
+PRINTFORML 催眠者命令%CALLNAME:住人%像牝犬一樣四肢著地，高高翹起屁股，讓陰戶毫無遮擋地暴露出來
+IF TALENT:住人:处女
+	PRINTFORML 催眠者的肉棒在%CALLNAME:住人%的陰唇上摩擦，猛地刺入腔道，觸碰到一道脆弱的薄膜
+	PRINTFORML 緊窄的腔道被巨物開墾，%CALLNAME:住人%因為疼痛臉孔扭曲起來
+	IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+		PRINTFORML %CALLNAME:住人%臉上露出虔誠的表情，為能夠把自己的純潔獻給肉棒的主人而欣慰
+	ELSE
+		PRINTFORML 「求求你……不要……」	
+		PRINTFORML %CALLNAME:住人%徒勞地哀求著，飽含羞愧與痛苦的淚珠從眼角滑落
+	ENDIF
+	PRINTFORML 催眠者猛地挺腰，肉棒兇猛地貫通了%CALLNAME:住人%純潔的證明
+	PRINTFORML 把身體撕裂成兩半的疼痛使得%CALLNAME:住人%反弓脊背，發出一聲哀鳴
+	PRINTFORML 殷紅的血絲順著兩人的交合處流了出來  
+ENDIF	
+PRINTFORML 催眠者的肉棒從後面刺入%CALLNAME:住人%的陰道，飛快地進出著
+PRINTFORML %CALLNAME:住人%陰道深處難以觸及的位置不住地被龜頭頂到，激起一波又一波快感
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+	PRINTFORML %CALLNAME:住人%的腰被幹的發軟，身子無力地爬在床上
+	PRINTFORML 橫流的愛液被肉棒攪打成乳白色的泡沫，沾滿交合的部位
+	PRINTFORML 「啊～嗯～好深♪」
+	PRINTFORML %CALLNAME:住人%像交尾中的牝犬一樣搖起了屁股
+ELSE
+	PRINTFORML 後入的姿勢激起了%CALLNAME:住人%強烈的羞耻心
+	PRINTFORML 像要從催眠者的肉棒前逃走一樣，四肢並用往前爬去	
+	PRINTFORML 「對不起，饒了我……」 	
+	PRINTFORML 催眠者毫無慈悲地用手抓住%CALLNAME:住人%的腰部，將%CALLNAME:住人%拉了回來
+	PRINTFORML 徒勞的掙扎讓肉棒在體內激烈地摩擦，帶來激烈的快感
+	PRINTFORML 催眠者冷笑著加快了腰部的動作，發出一連串的啪啪啪聲	
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交骑乘位
+@催眠_KOJO_V3(住人)
+#DIM 住人
+PRINTFORML 催眠者命令%CALLNAME:住人%騎跨在自己身上，用陰戶抵住像旗桿一樣聳立的肉棒
+PRINTFORML %CALLNAME:住人%緩緩坐下身子，一點一點將肉棒吞進體內
+PRINTFORML 催眠者對%CALLNAME:住人%緩慢的動作感到不悅，雙手抓住%CALLNAME:住人%的細腰，用力往下一拉 
+PRINTFORML 肉棒噗地刺入%CALLNAME:住人%體內，直至沒根，劇痛令%CALLNAME:住人%慘叫出聲
+PRINTFORML 「啊！！痛……………………」
+IF TALENT:住人:处女
+	PRINTFORML 催眠者的肉棒兇猛地貫通了%CALLNAME:住人%純潔的證明
+	PRINTFORML 把身體撕裂成兩半的疼痛使得%CALLNAME:住人%反弓脊背，發出一聲哀鳴
+	PRINTFORML 殷紅的血絲順著兩人的交合處流了出來  	
+	IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+		PRINTFORML %CALLNAME:住人%臉上露出虔誠的表情，為能夠把自己的純潔獻給肉棒的主人而欣慰
+	ELSE
+		PRINTFORML 「求求你……不要……」	
+		PRINTFORML %CALLNAME:住人%徒勞地哀求著，飽含羞愧與痛苦的淚珠從眼角滑落
+	ENDIF
+ENDIF		
+PRINTFORML 催眠者從下方挺腰，不住地用肉棒刺激%CALLNAME:住人%的腔內
+PRINTFORML %CALLNAME:住人%好像被懸在了半空中，胸口一陣一陣發緊，在快感中顛簸
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+	PRINTFORML 雙手扶住催眠者的胸口，%CALLNAME:住人%像騎馬一樣開始活動身體
+	PRINTFORML 催眠者配合著%CALLNAME:住人%的動作挺腰，把肉棒送進%CALLNAME:住人%身體更深處
+	PRINTFORML %CALLNAME:住人%沉迷在獲取快感的動作中，發出一連串的淫聲，上下的動作越來越快
+	PRINTFORML 「好厲害～裡面……要飛起來了♪」
+ELSE
+	PRINTFORML %CALLNAME:住人%感覺像被撕裂成了兩半，雙手撐著催眠者的胸口不住喘息
+	PRINTFORML 「要裂開了！要被撕成兩半了！饒了我……饒了我……」	
+	PRINTFORML 催眠者猛地一挺腰，發出嚴厲的叱罵聲
+	PRINTFORML 「母狗不要偷懶，趕快給我動起來！」	
+	PRINTFORML %CALLNAME:住人%發出了一聲混雜著快感和恐懼的尖叫，不情願地上下活動起來 
+ENDIF
+RETURN 0		
+
+;-------------------------------------------------------------------------------
+;性交対面座位
+@催眠_KOJO_V4(住人)
+#DIM 住人
+PRINTFORML 催眠者把%CALLNAME:住人%面對面抱在懷裡，一挺腰把肉棒頂住%CALLNAME:住人%的陰戶
+IF TALENT:住人:处女
+	PRINTFORML 催眠者的肉棒在%CALLNAME:住人%的陰唇上摩擦，猛地刺入腔道，觸碰到一道脆弱的薄膜
+	PRINTFORML 緊窄的腔道被巨物開墾，%CALLNAME:住人%因為疼痛臉孔扭曲起來
+	IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+		PRINTFORML %CALLNAME:住人%臉上露出虔誠的表情，為能夠把自己的純潔獻給肉棒的主人而欣慰
+	ELSE
+		PRINTFORML 「求求你……不要……」	
+		PRINTFORML %CALLNAME:住人%徒勞地哀求著，飽含羞愧與痛苦的淚珠從眼角滑落
+	ENDIF
+	PRINTFORML 催眠者猛地挺腰，肉棒兇猛地貫通了%CALLNAME:住人%純潔的證明
+	PRINTFORML 把身體撕裂成兩半的疼痛使得%CALLNAME:住人%反弓脊背，發出一聲哀鳴
+	PRINTFORML 殷紅的血絲順著兩人的交合處流了出來  
+ENDIF	
+PRINTFORML 催眠者一邊用肉棒挑弄%CALLNAME:住人%的陰道，一邊吻住%CALLNAME:住人%的嘴唇
+PRINTFORML %CALLNAME:住人%沉迷在上下夾攻的快感中，發出一陣嬌媚的鼻音
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+	PRINTFORML %CALLNAME:住人%的身體軟軟伏在催眠者胸前，不自覺地挺腰聳動屁股，配合著催眠者的動作
+	PRINTFORML 氾濫的愛液打濕了催眠者的腰腹部，被摩擦出一片白沫
+	PRINTFORML 「啊～嗯～進到最裡面了♪」
+	PRINTFORML %CALLNAME:住人%扭動腰部畫著圓圈，拼命追求著快感
+ELSE
+	PRINTFORML %CALLNAME:住人%的口腔被催眠者的舌頭侵入，求饒聲變成了一串含糊不清的嗚嗚聲
+	PRINTFORML 催眠者時快時慢地改變挺腰的節奏，讓快感在%CALLNAME:住人%體內慢慢積累
+	PRINTFORML 不知不覺間%CALLNAME:住人%已經用雙腿環住了催眠者的腰部
+	PRINTFORML 催眠者抓住時機猛力挺腰，把肉棒深深地刺入%CALLNAME:住人%體內，撞擊著%CALLNAME:住人%的子宮口
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交背面座位
+@催眠_KOJO_V5(住人)
+#DIM 住人
+PRINTFORML 催眠者從後面把%CALLNAME:住人%抱在懷裡，雙手玩弄著%CALLNAME:住人%的乳房，同時用肉棒抵住%CALLNAME:住人%的陰戶
+IF TALENT:住人:处女
+	PRINTFORML 催眠者的肉棒在%CALLNAME:住人%的陰唇上摩擦，猛地刺入腔道，觸碰到一道脆弱的薄膜
+	PRINTFORML 緊窄的腔道被巨物開墾，%CALLNAME:住人%因為疼痛臉孔扭曲起來
+	IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+		PRINTFORML %CALLNAME:住人%臉上露出虔誠的表情，為能夠把自己的純潔獻給肉棒的主人而欣慰
+	ELSE
+		PRINTFORML 「求求你……不要……」	
+		PRINTFORML %CALLNAME:住人%徒勞地哀求著，飽含羞愧與痛苦的淚珠從眼角滑落
+	ENDIF
+	PRINTFORML 催眠者猛地挺腰，肉棒兇猛地貫通了%CALLNAME:住人%純潔的證明
+	PRINTFORML 把身體撕裂成兩半的疼痛使得%CALLNAME:住人%反弓脊背，發出一聲哀鳴
+	PRINTFORML 殷紅的血絲順著兩人的交合處流了出來  
+ENDIF	
+PRINTFORML 催眠者一邊用肉棒挑弄%CALLNAME:住人%的陰道，一邊捏住%CALLNAME:住人%已經勃起的乳頭，向前拉長
+PRINTFORML 「啊痛！！」
+PRINTFORML %CALLNAME:住人%發出一聲慘叫，同時也感到一陣倒错的快感
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+	PRINTFORML 催眠者從後面用力挺腰，%CALLNAME:住人%開始沉迷在上下夾攻的快感中
+	PRINTFORML 氾濫的愛液打濕了兩人的交合處，被摩擦出一片白沫
+	PRINTFORML 「啊～嗯～進到最裡面了♪」
+	PRINTFORML %CALLNAME:住人%扭動腰部畫著圓圈，拼命追求著快感
+ELSE
+	PRINTFORML 催眠者時快時慢地改變挺腰的節奏，讓快感在%CALLNAME:住人%體內慢慢積累
+	PRINTFORML %CALLNAME:住人%的慘叫聲逐漸變得淫亂起來
+	PRINTFORML 「啊～嗯～好大……裡面好脹♪」
+	PRINTFORML 催眠者抓住時機猛力挺腰，把肉棒深深地刺入%CALLNAME:住人%體內，撞擊著%CALLNAME:住人%的子宮口
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交終了
+@催眠_KOJO_V_F(住人)
+#DIM 住人
+PRINTFORML 催眠者不知疲倦地抽插著%CALLNAME:住人%的小穴，%CALLNAME:住人%一次又一次衝上絕頂
+PRINTFORML 強烈的快感削減了%CALLNAME:住人%的體力，也模糊了%CALLNAME:住人%的神智
+PRINTFORML %CALLNAME:住人%的身體本能地迎合著催眠者的動作，徹底化作了探求快感的雌獸
+PRINTFORML 同時，催眠者的忍耐也達到了極限
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+	PRINTFORML 催眠者強烈地發射出來，滾燙的精液注滿了%CALLNAME:住人%的腔內
+	PRINTFORML 「啊～啊～裡面……熱熱的東西射進來了……♪」	
+	PRINTFORML 在精液的刺激下%CALLNAME:住人%的子宮沉了下來
+	PRINTFORML %CALLNAME:住人%的子宮口張開噙住催眠者的肉棒，像要把肉棒徹底榨乾一樣緊緊鎖住不放	
+ELSE
+	PRINTFORML 「準備好懷孕吧，母豬！」	
+	PRINTFORML 「不要…………裡面…………不要…………」
+	PRINTFORML %CALLNAME:住人%無力的抗議無法阻止催眠者的動作
+	PRINTFORML 催眠者強烈地發射出來，滾燙的精液注滿了%CALLNAME:住人%的腔內
+ENDIF
+PRINTFORML 漫長的射精結束後，催眠者拔出了肉棒，滿溢的精液從無法收緊的小穴中倒流而出
+IF TALENT:住人:处女
+	PRINTFORML 殷紅的處女血混雜在精液中，把白濁染成了粉紅色
+ENDIF	
+PRINTFORML 淫亂的狼藉滴答滴答落在地上，積成了一片水窪
+RETURN 0
+;-------------------------------------------------------------------------------
+;逆強姦
+@催眠_KOJO_逆強姦
+;-------------------------------------------------------------------------------
+;性技對決
+@催眠_KOJO_性技對決
+;-------------------------------------------------------------------------------
+;爱抚村人
+;村人爱抚開始
+@催眠_KOJO_爱抚村人(住人)
+#DIM 住人
+PRINTFORML 村人的手在粗暴地玩弄著%CALLNAME:住人%的乳頭和花瓣，然後被更多手指擠開，粗糙的手爬滿了%CALLNAME:住人%全身每一寸肌膚
+PRINTFORML 村人們把手指塞進%CALLNAME:住人%的嘴裡玩弄著舌頭，口水無助地流淌出來，沾濕了胸口
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%快樂地迎合著村人的動作，挺起乳房，打開雙腿方便村人更加深入
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%的身體不由自主地活動起來，擺出適合村人進一步侵犯的姿勢
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:住人%的身體違背本人意志一動不動，甚至連將身上男人推開都做不到
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度)
+	PRINTFORML %CALLNAME:住人%蜷縮著身子躲閃伸向敏感帶的手指，這是%CALLNAME:住人%能做出的最大反抗了
+ELSE
+	PRINTFORML %CALLNAME:住人%激烈地掙扎，撥開了纏在身上的手
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;村人爱抚結束
+@催眠_KOJO_爱抚村人_F(住人)
+#DIM 住人
+PRINTFORML 一個強壯的村人把%CALLNAME:住人%抱了起來，用給小孩把尿的姿勢大大地張開雙腿，將已經氾濫的秘部暴露在眾人面前
+PRINTFORML 被情慾氣氛感染的村人動作越發粗暴起來，男人狠狠拉長%CALLNAME:住人%的乳頭，張開%CALLNAME:住人%的陰唇，拉出%CALLNAME:住人%的舌頭
+PRINTFORML 激烈的動作在%CALLNAME:住人%的乳房和臀丘上留下紅色的手印，%CALLNAME:住人%發出無助的嗚咽聲
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%每一寸皮膚都化作了敏感帶，強烈的刺激使%CALLNAME:住人%一時失神，口水和淚水弄髒了端麗的臉龐
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%在一陣悅樂的呻吟中迎來了高潮，這一瞬間%CALLNAME:住人%徹底失去了抵抗腦內指令的意志
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML %CALLNAME:住人%在一陣呻吟中迎來了高潮，這一瞬間%CALLNAME:住人%失去了抵抗腦內指令的意志	
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度)
+	PRINTFORML %CALLNAME:住人%在驚恐中迎來了高潮，與意志違背的生理反應讓%CALLNAME:住人%既害怕又體驗到倒错的快感	
+ELSE
+	PRINTFORML %CALLNAME:住人%在激烈掙扎中迎來了高潮，與意志違背的生理反應讓%CALLNAME:住人%充滿恐懼
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;手淫村人
+@催眠_KOJO_手淫村人(住人)
+#DIM 住人
+PRINTFORML 村人被%CALLNAME:住人%手指寒涼的觸感魅惑，拼命地挺腰
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%巧妙地玩弄著村人的龜頭和肉袋，臉上浮現出飢渴的表情，為即將噴湧的獎賞而欣悅
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%巧妙地玩弄著村人的龜頭和肉袋，熱情地榨取著男人的汁液
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML  %CALLNAME:住人%機械地玩弄著村人的肉棒，彷彿不知道自己在做什麼
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度)
+	PRINTFORML %CALLNAME:住人%一臉厭惡捋動著村人的肉棒，手指卻像被鎖住一樣無法拿開
+ELSE
+	PRINTFORML %CALLNAME:住人%一臉厭惡地觸碰村人的肉棒，旋即把手拿開了
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;手淫村人
+@催眠_KOJO_手淫村人_F(住人)
+#DIM 住人
+PRINTFORML 哪怕多一點也好，村人渴求著%CALLNAME:住人%的身體
+PRINTFORML 村人撩起%CALLNAME:住人%的頭髮纏在自己的肉棒上，又或挺起腰去摩擦%CALLNAME:住人%的腋窩、腳掌和臀丘
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%感覺到獎勵即將到來，越發激烈地為村人手淫
+	PRINTFORML 單是嗅到從馬眼中分泌出的前列腺液的味道，%CALLNAME:住人%就幾乎達到了絕頂
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%感覺到村人即將高潮，默契地加快了手淫的節奏
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML  %CALLNAME:住人%機械地玩弄著村人越來越膨大的肉棒
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_体を触らせる程度)
+	PRINTFORML %CALLNAME:住人%一臉厭惡捋動著村人的肉棒，想要躲開即將噴出的東西，卻連轉開臉都無法做到
+ELSE
+	PRINTFORML %CALLNAME:住人%想要從村人的肉棒前逃開，卻無法動彈
+ENDIF
+PRINTFORML 村人們的陰莖膨脹到了極限，猛烈地噴出白濁的液體，覆蓋了%CALLNAME:住人%的全身
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交村人
+@催眠_KOJO_口交村人(住人)
+#DIM 住人
+PRINTFORML %CALLNAME:住人%輪流舔舐著面前的肉棒
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 彷彿在品嚐至高的美味一樣，%CALLNAME:住人%用舌頭舔遍村人聳立的竿部，舌尖挑逗著龜頭傘部
+	PRINTFORML %CALLNAME:住人%時而將肉棒整根吞下，時而專注地玩弄龜頭，時而又將玉袋含進嘴裡
+	PRINTFORML 村人的肉棒完全被唾液打濕，變得亮晶晶的
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%用力地吮吸著村人的肉棒，發出淫猥的嘖嘖聲
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML  %CALLNAME:住人%機械地上下活動頭部，像飛機杯一樣套弄著村人的肉棒
+ELSE
+	PRINTFORML %CALLNAME:住人%的嘴唇觸碰到村人的肉棒，臉上露出噁心的表情，卻無法把頭轉開
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;口交村人終了
+@催眠_KOJO_口交村人_F(住人)
+#DIM 住人
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML 好像聽到了衝鋒的號角一樣，%CALLNAME:住人%同時將兩根肉棒拉到面前，舌尖靈巧地左右游移挑逗著龜頭的敏感部位
+	PRINTFORML 被玩弄的村人露出了極樂的表情
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%將村人的肉棒深深含入，要將內容的白濁榨乾一樣拼命吮吸著
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML  %CALLNAME:住人%加快了活動頭部的速度，飛快套弄著村人的肉棒
+ELSE
+	PRINTFORML %CALLNAME:住人%感受到村人肉棒發射前的搏動，拼命想要挪開面部
+ENDIF
+PRINTFORML 忍耐到極限的村人盛大地噴射出精液
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%仰起頭張開嘴祈求著村人將精液射入
+	PRINTFORML 白濁覆蓋了%CALLNAME:住人%的面孔
+	PRINTFORML %CALLNAME:住人%用舌頭將粘在臉上的精液舔進嘴裡，還意猶未盡地俯下身子，像雌犬一樣舔舐落在地上的精液		
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%張開嘴向村人展示含在嘴裡的精液，然後貪婪地吞了進去
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度2) || 催眠_CHK_FAVORABLY(住人, FAV_うふふする程度) || 催眠_CHK_FAVORABLY(住人, FAV_侍奉する程度)
+	PRINTFORML  %CALLNAME:住人%不由自主地張開喉嚨，將精液吞了進去
+	PRINTFORML  %CALLNAME:住人%拼命地想將精液吐出來，但毫無用處
+ELSE
+	PRINTFORML %CALLNAME:住人%的面孔被精液覆蓋
+ENDIF
+RETURN 0
+;-------------------------------------------------------------------------------
+;性交村人
+@催眠_KOJO_性交村人(住人)
+#DIM 住人
+IF TALENT:住人:处女
+	PRINTFORML 村人的肉棒在%CALLNAME:住人%的陰唇上摩擦，猛地刺入腔道，觸碰到一道脆弱的薄膜
+	PRINTFORML 像是戲弄%CALLNAME:住人%一樣，村人托住%CALLNAME:住人%的腋下，讓%CALLNAME:住人%靠自己的體重緩緩墜下
+	IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕) || 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) 
+		PRINTFORML %CALLNAME:住人%臉上露出虔誠的表情，為把自己的純潔獻給肉棒的主人而欣慰
+	ELSE
+		PRINTFORML %CALLNAME:住人%的面孔因為疼痛而皺了起來，羞愧與痛苦的淚珠從眼角滑落
+	ENDIF
+	PRINTFORML 村人猛地挺腰，肉棒兇猛地貫通了%CALLNAME:住人%純潔的證明
+	PRINTFORML 把身體撕裂成兩半的疼痛使得%CALLNAME:住人%反弓脊背，發出一聲哀鳴   
+ENDIF	
+PRINTFORML 村人的肉棒從前後同時刺入%CALLNAME:住人%身體的深處。
+PRINTFORML 村人對視一笑，露出了惡作劇的表情，兩人默契地同時退出肉棒，又猛地刺得更深
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%被拋向快感的巔峰，雙腿緊緊攀住面前村人的腰部，脖頸向後甩去，仰頭發出喜悅的淫聲
+	PRINTFORML 「啊～嗯～好厲害♪」
+	PRINTFORML 橫流的愛液被肉棒攪打成乳白色的泡沫，沾滿交合的部位
+	PRINTFORML %CALLNAME:住人%前後的腔肉一陣陣痙攣，像要把侵入體內的肉棒夾住一樣
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML %CALLNAME:住人%享受著被前後夾擊的快感，意識逐漸被染成白色
+	PRINTFORML %CALLNAME:住人%的雙眼逐漸失去光芒，跟著腦內不知從何而來的命令，%CALLNAME:住人%複述出淫亂的話語
+	PRINTFORML 「我是下流淫亂的母豬，請主人把精液注滿我的劣等小穴吧」 	
+ELSE
+	PRINTFORML %CALLNAME:住人%試圖掙扎，逃避著村人肉棒帶來的巨大快感
+	PRINTFORML 但%CALLNAME:住人%的身體只是扭動了幾下，反而帶給村人更大的快感	
+ENDIF
+;-------------------------------------------------------------------------------
+;性交村人終了
+@催眠_KOJO_性交村人_F(住人)
+#DIM 住人
+PRINTFORML 村人不知疲倦地挺送肉棒，撞擊著%CALLNAME:住人%腔內最深的地方
+PRINTFORML 雌性本能促使%CALLNAME:住人%的子宮沉下，子宮口微微張開，噙住村人深入體內的龜頭
+PRINTFORML 察覺到%CALLNAME:住人%的身體已經做好受孕的準備，村人露出了殘酷的笑容	
+IF 催眠_CHK_FAVORABLY(住人, FAV_催眠完毕)
+	PRINTFORML %CALLNAME:住人%忍耐著高潮，一波又一波的快感把絕頂推向更強的程度
+	PRINTFORML 在確定自己無法忍耐的瞬間，%CALLNAME:住人%雙腿鎖死村人的腰部，身子想要與男人融為一體般緊緊貼合
+	PRINTFORML %CALLNAME:住人%前後的腔肉響應著主人的意志，強而有力地收縮著，使出全力把體內的肉棒榨乾
+ELSEIF 催眠_CHK_FAVORABLY(住人, FAV_催眠寸前) || 催眠_CHK_FAVORABLY(住人, FAV_主人より高い)
+	PRINTFORML 意識已經飛走的%CALLNAME:住人%本能地扭腰響應男人的進攻
+	PRINTFORML 像雌獸一樣緊緊糾纏住村人的身體不放
+ELSE
+	PRINTFORML %CALLNAME:住人%察覺到自己即將被快感沒頂，陷入了恐慌之中
+	PRINTFORML 「不要，不要，不要不要不要！！！」
+	PRINTFORML 但%CALLNAME:住人%的身體卻無視主人的意志，把村人緊緊抱住
+ENDIF
+PRINTFORML 前後兩人一起把肉棒向%CALLNAME:住人%身體深處刺入，猛烈地釋放出大量精液
+PRINTFORML 「啊～好燙！」
+PRINTFORML 因為高潮而失神的%CALLNAME:住人%喃喃吐出妖艷的囈語
+PRINTFORML 村人拔出肉棒，發出了啵的一聲
+	PRINTFORML 過多的精液從%CALLNAME:住人%前後兩穴溢出，滴滴答答在地上形成了一灘白色水窪

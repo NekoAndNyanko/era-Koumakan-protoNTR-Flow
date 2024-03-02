@@ -1,0 +1,175 @@
+﻿;-------------------------------------------------------------------------------
+;コマンド:連れ出す
+;@return 1:成功,0:失敗
+@COM351
+
+#DIM 対象人数
+#DIM 同行可能人数
+#DIM 別離可能人数
+#DIM 対象
+#DIM LOOP_CHR
+#DIM BK_SELCOM
+
+;連れ出せる対象が何人いるか探す
+FOR LOOP_CHR,1,CHARANUM
+	IF (FLAG:非公开NTR模式 && TALENT:(TARGET:LOOP_CHR):恋人) || CFLAG:(TARGET:LOOP_CHR):亲密程度
+		対象人数 ++
+		IF CFLAG:(TARGET:LOOP_CHR):同行
+			RESULT = LOOP_CHR+500
+		ELSE
+			RESULT = LOOP_CHR
+		ENDIF
+	ENDIF
+NEXT
+
+;複数人連れ出し対象がいる場合は選択させる
+IF 対象人数 > 1
+	PRINTL 要邀请谁？
+	;連れ出せる対象を探す
+	同行可能人数 = 0
+	FOR LOOP_CHR,1,CHARANUM
+		IF ((FLAG:非公开NTR模式 && TALENT:(TARGET:LOOP_CHR):恋人) || CFLAG:(TARGET:LOOP_CHR):亲密程度) && !CFLAG:(TARGET:LOOP_CHR):同行
+			PRINTFORML %"["+TOSTR(LOOP_CHR)+"] - "+CALLNAME:(TARGET:LOOP_CHR)%
+			同行可能人数 += 1
+		ENDIF
+	NEXT
+	;離れる対象を探す
+	別離可能人数 = 0
+	FOR LOOP_CHR,1,CHARANUM
+		IF CFLAG:(TARGET:LOOP_CHR):同行
+			PRINTFORML %"["+TOSTR(500+LOOP_CHR)+"] - 与"+CALLNAME:(TARGET:LOOP_CHR)+"分开"%
+			別離可能人数 += 1
+		ENDIF
+	NEXT
+
+	;まとめて同行
+	IF 同行可能人数 >= 2
+		PRINTFORML [997] %"一并带走"%
+	ENDIF
+	;全部离开
+	IF 別離可能人数 >= 2
+		PRINTFORML [998] %"全部离开"%
+	ENDIF
+	PRINTFORML [999] %"放弃"%
+
+	$INPUT_LOOP
+	INPUT
+	IF RESULT <= 0
+		GOTO INPUT_LOOP
+	ELSEIF  RESULT >= 997 && RESULT <= 999
+		;
+	ELSEIF RESULT < CHARANUM
+		IF !TARGET:RESULT
+			GOTO INPUT_LOOP
+		ELSEIF !FLAG:非公开NTR模式 && CFLAG:(TARGET:RESULT):亲密程度 < 1
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+ENDIF
+
+IF RESULT == 999
+	RETURN 0
+ELSEIF RESULT == 997
+	;まとめて同行
+	CALL COM351_Bring_ALL
+	対象 = -1
+ELSEIF RESULT == 998
+	;まとめて同行解除
+	CALL COM351_Leave_ALL
+	対象 = -1
+ELSEIF RESULT > 500
+	;同行解除
+	対象 = TARGET:(RESULT-500)
+	CALL COM351_Leave(対象)
+ELSE
+	;同行させる
+	対象 = TARGET:RESULT
+	CALL COM351_Bring(対象)
+ENDIF
+
+;同一コマンド連続実行を回避させないための処理
+BK_SELCOM = SELECTCOM
+SELECTCOM = 351
+
+;SOURCEまでを回さないのでここで口上を表示させる
+IF TEQUIP:口球 && SELECTCOM != 106 && FLAG:情景テキスト設定 > 0
+	;口球のコマンドって106だよね……？
+	SELECTCOM = BK_SELCOM
+	RETURN 1
+ELSE
+	RESULT = 0
+	RESULTS =
+	;口上の存在判定 and RESULTSに文字列代入
+	TRYCALLFORM KOJO_K{対象}
+	IF !RESULT && FLAG:情景テキスト設定 > 0
+		SELECTCOM = BK_SELCOM
+		RETURN 1
+	ENDIF
+	RESULT = 0
+	SIF FLAG:口上颜色
+		CALL KOJO_COLOR(対象)
+	TRYCALLLIST
+		FUNC NTR_KOJO%RESULTS%_MESSAGE_COM_K{対象}_351
+		FUNC KOJO%RESULTS%_MESSAGE_COM_K{対象}_351
+	ENDFUNC
+	RESETCOLOR
+ENDIF
+
+SELECTCOM = BK_SELCOM
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;同行させる
+;@return 1:連れ出し成功,0:連れ出し失敗
+@COM351_Bring(対象)
+#DIM 対象
+IF CFLAG:対象:幽閉
+	PRINTFORMW %CALLNAME:対象+"在禁闭中没办法带出来"%
+	RETURN 0
+ENDIF
+PRINTFORMW %CALLNAME:対象+"带出来了"%
+CFLAG:対象:同行 = 120
+TIME += 1
+
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;離れる
+;@return 1:離別成功,0:離別失敗
+@COM351_Leave(対象)
+#DIM 対象
+IF !CFLAG:対象:同行
+	PRINTFORMW %CALLNAME:対象+"不在同行中……？"%
+	RETURN 0
+ENDIF
+PRINTFORMW %"离开了"+CALLNAME:対象%
+CFLAG:対象:同行 = 0
+TIME += 1
+
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;同行させる
+;@return 1:連れ出し成功,0:連れ出し失敗
+@COM351_Bring_ALL
+FOR LOCAL,1,CHARANUM
+	IF CFLAG:(TARGET:LOCAL):亲密程度 && !CFLAG:(TARGET:LOCAL):同行
+		CALL COM351_Bring(TARGET:LOCAL)
+	ENDIF
+NEXT
+
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;全部离开
+;@param ARG:0 キャラクター番号
+;@return 1:離別成功,0:離別失敗
+@COM351_Leave_ALL
+FOR LOCAL,1,CHARANUM
+	IF CFLAG:(TARGET:LOCAL):同行
+		CALL COM351_Leave(TARGET:LOCAL)
+	ENDIF
+NEXT
+
+RETURN 1
+

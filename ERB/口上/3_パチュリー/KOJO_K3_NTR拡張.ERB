@@ -1,0 +1,250 @@
+﻿;-------------------------------------------------
+;パチュリー口上NTR対応ラッパ口上
+;
+;NTRに対応していないパチュリー口上に、NTR独自の分岐を追加するためのラッパ口上。
+;たとえばコマンド311の時に KOJO_MESSAGE_COM_K3_311 が実行される場合、
+;NTR_KOJO_MESSAGE_COM_K3_311があればそちらが優先される。
+;さらにNTR_KOJO_MESSAGE_COM_K3_311 の中で、NTR固有の分岐がすべて条件が
+;叶わなかったとき、通常の(非NTR対応の) KOJO_MESSAGE_COM_K3_311 を実行できる。
+;-------------------------------------------------
+;※※※※※※他者による修正、加筆、改変についての但し書き※※※※※※
+;前提としてオリジナル作者以外が手を入れる場合は、オリジナル作者の許可を求めること
+;オリジナル作者とコンタクトが取れない場合には以下の但し書きに従ってUPできるかどうか判断してください。
+
+;◎修正（誤字、脱字、条件分岐等ERB構文のバグ修正、本体のバージョンアップ、ダウン対応など）
+;（　許可　）※どちらかを選択してください
+;
+;◎加筆（未記入箇所、ランダム分岐、条件分岐等の増補）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎改変（オリジナル作者によって書かれた部分に対しての上書き、消去を含む）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎製作中などの理由で時限を設ける
+;（　年　月　日）まで上記の一切を認めない
+;
+;記　　寝の人
+;追記　
+;基本的に作者の意思を確認出来ない場合、加筆改変は可能ということにします
+
+;==================================================
+;311,抱住
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K3_311
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K3_311_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K3_311_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K3_311_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_帕秋莉
+RET_VAL = 0
+
+IF TALENT:奴隷:公众便所
+
+	IF TALENT:奴隷:恋慕
+		PRINTFORML 「ええ・・そうね。抱き合うだけなら、鍵なんて要らないわ・・」
+	ELSE
+		PRINTFORML 「・・やめておきなさい」
+	ENDIF
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+
+	PRINTDATAL
+		DATAFORM 「・・仕方ないわね・・少しだけよ？」
+		DATAFORM 「・・ええ、あの人には内緒で・・」
+		DATAFORM 「・・ふふ、二人だけの秘密・・」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
+
+	PRINTDATAL
+		DATAFORM 「・・いけないわ」
+		DATAFORM 「・・やめてちょうだい」
+		DATAFORM 「・・だ・・だめよ・・」
+	ENDDATA
+
+ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+	PRINTFORML 「・・・」
+	PRINTFORML 抱き寄せられた%CALLNAME:奴隷%は%CALLNAME:MASTER%からわずかに顔を背け何かに怯えたような表情を浮かべていた。
+
+ELSE
+	; それ以外の場合、非NTR口上を実行する
+	RET_VAL = 1
+ENDIF 
+RETURN RET_VAL
+
+;==================================================
+;312,接吻
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K3_312
+IF TFLAG:193 == 0
+	CALL TRAIN_MESSAGE
+ENDIF
+CALL NTR_KOJO_MESSAGE_COM_K3_312_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K3_312_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K3_312_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_帕秋莉
+RET_VAL = 0
+
+;唇の汚れで拒否された時
+IF TFLAG:193 == -2
+	IF TALENT:奴隷:浮気公認
+		PRINTDATAL
+			DATAFORM 「・・やめておいた方がいいわ。精液風味のキスをお望みかしら？」
+			DATAFORM 「%CALLNAME:MASTER%が悪趣味だとは知っているけど、他人の精液を味わいたくはないでしょう？」
+			DATAFORM 「・・やめておきなさい。苦いだけよ？」
+		ENDDATA
+		PRINTFORML 唇が精液で汚れていることを理由にキスを拒まれてしまった。
+		PRINTDATAL
+			DATAFORM 「・・そうね・・お茶をもらえないかしら」
+			DATAFORM 「どうしてもキスをしたいなら、お茶を頂戴」
+			DATAFORM 「そうね。お茶を一杯いただこうかしら」
+		ENDDATA
+		PRINTFORML %CALLNAME:TARGET%は唇を清めるためにお茶を欲しがっているようだ。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「だ、だめよっ」
+			DATAFORM 「い、いけないわっ」
+			DATAFORM 「や、やめてっ」
+		ENDDATA
+		PRINTFORML 理由はわからないが唇が触れる前に拒絶されてしまった。
+		PRINTDATAL
+			DATAFORM 「ねえ、お茶をもらえないかしら？」
+			DATAFORM 「そうだわ、お茶を頂戴」
+			DATAFORM 「そうね。お茶を一杯いただこうかしら」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%はお茶を欲しがっているようだ。
+	ENDIF
+	;失敗時
+ELSEIF TFLAG:193 == -1
+	PRINTDATAL
+		DATAFORM 「や、やめなさいっ」
+		DATAFORM 「いきなり何をっ！？」
+		DATAFORM 「そこまでよ！」
+	ENDDATA
+	PRINTFORML 拒絶されてしまった。
+	;成功時
+ELSE
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+		;唇が精液で汚れていたとき
+		IF CFLAG:射精者M != 0 && STAIN:口 & 汚れ_精液
+			PRINTFORML %CALLNAME:奴隷%とくちづけした%CALLNAME:MASTER%は彼女の唾液の味に違和感を覚え唇を離した。
+			PRINTFORML 「・・ふふ・・淫らな味のキス・・慣れるとこれがいいものなのよ」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中)
+			PRINTFORML 「・・あの人には内緒よ・・いいわね・・」
+			;好意度低いと冷たい
+		ELSE
+			PRINTFORML 「・・だ、だめよ・・んっ・・」
+		ENDIF
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		IF ABL:欲望 >= 5
+			PRINTDATAL
+				DATAFORM 「んっ・・ちゅっ・・ちゅぱ・・」
+				DATAFORM 「ちゅっ・・ぢゅ・・」
+				DATAFORM 「ん・・んんっ・・ちゅ・・」
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 互いの唇と舌を貪り合い、その味を堪能した。
+				DATAFORM 柔らかなその舌を啜るように味わい、清らかな露を飲み下した。
+				DATAFORM %CALLNAME:TARGET%の口の中に送り込んだ舌から唾液を流し込むと、白い咽がこくりと鳴った。
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 「はぁ・・これでおわりじゃ、ないのよね・・？」
+				DATAFORM 「ふ・・いいわ・・もっと飲ませて・・」
+				DATAFORM 「ふふ・・まだ足りないわ・・」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「んっ・・ちゅっ・・ちゅぱ・・」
+				DATAFORM 「ちゅっ・・ぢゅ・・」
+				DATAFORM 「ん・・んんっ・・ちゅ・・」
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 互いに唇を寄せ合い、柔らかなその味を堪能した。
+				DATAFORM 互いに寄り添うような姿勢で唇を交わした。
+				DATAFORM 唇を離すと、%CALLNAME:TARGET%は頬を染め続きを期待しているかのようであった。
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 「・・おしまい？」
+				DATAFORM 「・・まだ研究の余地があると思わない・・？」
+				DATAFORM 「・・うれしい・・」
+			ENDDATA
+		ENDIF
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+			PRINTFORML （・・足りない・・ぜんぜん足りないのよ・・）
+		ELSE
+			PRINTFORML （・・どうしても、比較してしまうものね・・）
+		ENDIF
+	ELSE
+		RET_VAL = 1
+	ENDIF
+ENDIF
+RETURN RET_VAL
+
+;==================================================
+;352,告白
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K3_352
+CALL TRAIN_MESSAGE
+; NTR対応口上実行
+CALL NTR_KOJO_MESSAGE_COM_K3_352_1
+IF 1 == RESULT
+	; 戻り値が1であれば、非NTR対応口上を実行
+	TRYCALL KOJO_MESSAGE_COM_K3_352_1
+ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K3_352_1
+#DIM 奴隷
+#DIM RET_VAL
+
+奴隷 = 人物_帕秋莉
+RET_VAL = 0
+;告白成功
+IF TFLAG:193
+	RET_VAL = 1
+	;告白失敗
+ELSE
+	;公众便所
+	IF TALENT:奴隷:公众便所
+		PRINTFORML 「・・やめておきなさい・・こんな汚れた女に、想いを寄せる必要なんてないわ」
+		IF IS_DOUTEI(MASTER)
+			PRINTFORML 「そんなに童贞を捨てたいのかしら？」
+		ELSE
+			PRINTFORML 「そんなに私を抱きたいのかしら？」
+		ENDIF
+		PRINTFORML 「それなら、あの人にお金を渡して鍵を買ってちょうだい」
+		PRINTFORML 「あなたの目的は、それで达成できるわ」
+		;寝取られ
+	ELSEIF TALENT:奴隷:NTR
+		IF 400 < CFLAG:奴隷:好感度
+			PRINTFORML 「・・だめよ・・だめなのよ・・」
+		ELSEIF 300 < CFLAG:奴隷:好感度
+			PRINTFORML 「やめて・・横恋慕なんて・・辛いだけ・・だから・・」
+		ELSE
+			PRINTFORML 「やめておきなさい。横恋慕なんて、辛いだけよ」
+		ENDIF
+		;その他
+	ELSE
+		RET_VAL = 1
+	ENDIF
+
+ENDIF
+RETURN RET_VAL

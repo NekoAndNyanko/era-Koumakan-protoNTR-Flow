@@ -1,0 +1,259 @@
+﻿;-------------------------------------------
+;調教後のテキスト
+;-------------------------------------------
+@PALAM_MESSAGE_C
+;处女喪失
+FOR LOCAL,0,CHARANUM
+	SIF TCVAR:LOCAL:破瓜
+		PRINTFORML 从%CALLNAME:LOCAL%的小穴中，滑落了丝丝曾经身为处女的证明……
+NEXT
+IF SELECTCOM == 352
+	IF  TFLAG:193 > 0
+		PRINTFORML %CALLNAME:TARGET%红着脸，接受了%CALLNAME:MASTER%的告白……
+	ELSE
+	ENDIF
+ENDIF
+;什麽也不做
+IF SELECTCOM == 21
+	SIF PALAM:欲情 >= PALAMLV:3
+		PRINTFORM %CALLNAME:TARGET%微微喘息着、
+	SIF PALAM:欲情 >= PALAMLV:5
+		PRINT 用溢满情欲的眼睛凝视着这边
+	SIF PALAM:欲情 >= PALAMLV:3 && TEQUIP:媚药
+		PRINT 紧紧抱住自己颤抖的身体
+	SIF PALAM:欲情 >= PALAMLV:4
+		PRINT 不停地摩擦着大腿内侧
+	SIF PALAM:欲情 >= PALAMLV:3
+		PRINTL 
+ENDIF
+;フェラで射精後
+IF TFLAG:8 && NOWEX:PLAYER:射精
+	LOCAL = MASTER_POSE(4,1,1)
+	PRINT 然后，
+	IF SELECTCOM == 511
+		PRINTFORML %CALLNAME:TARGET%交替地舔舐了%CALLNAME:MASTER%和%CALLNAME:ASSI%两人坚挺的肉棒，品尝美味般吃下了上面残留的精液……
+	ELSE
+		IF TFLAG:8 == 3
+			PRINTFORM %CALLNAME:LOCAL%和%CALLNAME:TARGET%一起
+		ELSEIF TFLAG:8 == 2
+			PRINTFORM %CALLNAME:LOCAL%
+		ELSEIF TFLAG:8 == 1
+			PRINTFORM %CALLNAME:TARGET%
+		ENDIF
+		SIF NOWEX:PLAYER:射精
+			PRINT 要榨干般吮吸着射出来的肉棒、
+		PRINTL 将肉棒上面残留的精液舔舐干净……
+	ENDIF
+	SIF TFLAG:8 == 3 && NOWEX:MASTER:射精
+		PRINTL 两人互相这么热情地将对方的肉棒舔舐干净后，觉得还不够，嘴唇重合在一起，索取着对方嘴里的精液……
+ENDIF
+
+;-------------------------------------------
+;パラメータ変化時テキスト　作成中
+;-------------------------------------------
+@PALAM_MESSAGE_D
+
+;-------------------------------------------------------------------------------
+;欲情がLV2になったとき　などなど
+;-------------------------------------------
+;刻印取得時のテキスト
+;-------------------------------------------
+@MARK_MESSAGE(奴隷)
+#DIM 奴隷
+TFLAG:刻印取得時顺从変化済みフラグ = 0
+IF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置) || IS_NTR_SHOW_ALL()
+	CALL MARK_MESSAGE_A(奴隷)
+	CALL MARK_MESSAGE_P(奴隷)
+	CALL MARK_MESSAGE_S(奴隷)
+	CALL MARK_MESSAGE_R(奴隷)
+ENDIF
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@MARK_MESSAGE_A(奴隷)
+#DIM 奴隷
+;苦痛刻印
+SELECTCASE TCVAR:奴隷:苦痛刻印取得
+	CASE 1
+		PRINTFORML 强烈的痛苦让%CALLNAME:奴隷%的脸都扭曲了……
+	CASE 2
+		PRINTFORML 巨大的痛苦让%CALLNAME:奴隷%持久嘶哑的悲鸣……
+	CASE 3
+		PRINTFORML 无法忍受的痛苦让%CALLNAME:奴隷%直接哭了出来，泪水布满了脸庞……
+	CASEELSE
+		RETURN 0
+ENDSELECT
+IF CFLAG:奴隷:苦痛刻印主人 != MASTER
+	SETCOLOR 色設定_状態_ＮＴＲ
+ENDIF
+PRINTFORML %"在"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:苦痛刻印主人)+"的责备下，"+CALLNAME:奴隷+"获得了苦痛刻印LV"+TOSTR(MARK:奴隷:苦痛刻印)+"！"%
+RESETCOLOR
+IF TCVAR:奴隷:苦痛刻印取得 == 1
+	PRINTFORML %CALLNAME:奴隷%获得了苦痛刻印LV1
+ELSEIF TCVAR:奴隷:苦痛刻印取得 == 2
+	PRINTFORML %CALLNAME:奴隷%获得了苦痛刻印LV2
+	IF TFLAG:25 == 1 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级提升到Lv1
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ENDIF
+ELSEIF TCVAR:奴隷:苦痛刻印取得 == 3
+	PRINTFORML %CALLNAME:奴隷%获得了苦痛刻印LV3
+	IF TFLAG:25 == 1 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级提升到Lv1
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ENDIF
+	IF TALENT:PLAYER:施虐狂
+		PRINTFORML 【%CALLNAME:PLAYER%が施虐狂】
+		PRINTL 异常经验＋２
+	ELSEIF TALENT:PLAYER:擅长用针 && SELECTCOM == 104
+		PRINTFORML 【%CALLNAME:PLAYER%が擅长用针】
+		PRINTL 异常经验＋２
+	ELSE
+		PRINTL 异常经验＋１
+	ENDIF
+ENDIF
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@MARK_MESSAGE_P(奴隷)
+#DIM 奴隷
+;快乐刻印
+SELECTCASE TCVAR:奴隷:快乐刻印取得
+	CASE 1
+		PRINTFORML %CALLNAME:奴隷%在快感的余韵下露出了恍惚的表情……
+	CASE 2
+		PRINTFORML 激烈的快感让%CALLNAME:奴隷%全身颤抖……
+	CASE 3
+		PRINTFORML 从未品尝过的强烈快感让%CALLNAME:奴隷%全身发烫、情欲冲垮了理智……
+	CASEELSE
+		RETURN 0
+ENDSELECT
+IF CFLAG:奴隷:快乐刻印主人 != MASTER
+	SETCOLOR 色設定_状態_ＮＴＲ
+ENDIF
+PRINTFORML %"被"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:快乐刻印主人)+"充分疼爱后，"+CALLNAME:奴隷+"获得了快乐刻印LV"+TOSTR(MARK:奴隷:快乐刻印)+"！"%
+RESETCOLOR
+IF TCVAR:奴隷:快乐刻印取得 == 3
+	IF TFLAG:25 == 1 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级提升到Lv1
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@MARK_MESSAGE_S(奴隷)
+#DIM 奴隷
+;屈服刻印
+SELECTCASE TCVAR:奴隷:屈服刻印取得
+	CASE 11
+		PRINTFORML %CALLNAME:奴隷+"不由自主地发出了可爱的娇吟，红着脸将视线从"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"的脸上移开了……"%
+	CASE 12
+		PRINTFORML %CALLNAME:奴隷+"一边在快感中颤抖着、一边用充满情欲的双眼看向"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"……"%
+	CASE 13
+		PRINTFORML %CALLNAME:奴隷+"沉溺在快感中的同时、饥渴地恳求着"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"进一步的疼爱……"%
+	CASE 21
+		PRINTFORML %CALLNAME:奴隷+"一看到"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"，就赤红了脸颊，发出痴迷的尖叫……"%
+	CASE 22
+		PRINTFORML %CALLNAME:奴隷+"蜷缩着身体、用屈服的目光乖巧地注意着"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"的一举一动……"%
+	CASE 23
+		PRINTFORML %CALLNAME:奴隷+"一边喘息着，一边恳求"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"进一步的责备……"%
+	CASE 31
+		PRINTFORML %CALLNAME:奴隷+"露出恍惚的表情，用献媚般的视线看向"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"……"%
+	CASE 32
+		PRINTFORML %CALLNAME:奴隷+"满脑子都在想着、怎么才能让"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"更加高兴……"%
+	CASE 33
+		PRINTFORML %CALLNAME:奴隷+"带着陶醉的表情，痴迷地注视着"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"……"%
+	CASEELSE
+		RETURN 0
+ENDSELECT
+IF CFLAG:奴隷:屈服刻印主人 != MASTER
+	SETCOLOR 色設定_状態_ＮＴＲ
+ENDIF
+PRINTFORML %"在"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:屈服刻印主人)+"的调教下，"+CALLNAME:奴隷+"获得了屈服刻印LV"+TOSTR(MARK:奴隷:屈服刻印)+"！"%
+RESETCOLOR
+IF TCVAR:奴隷:屈服刻印取得 == 2
+	IF TFLAG:25 == 1 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级提升到Lv1
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ENDIF
+ELSEIF TCVAR:奴隷:屈服刻印取得 == 3
+	IF TFLAG:25 == 1 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级提升到Lv2
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@MARK_MESSAGE_R(奴隷)
+#DIM 奴隷
+;反発刻印
+SELECTCASE TCVAR:奴隷:反発刻印取得
+	CASE 1
+		PRINTFORML %CALLNAME:奴隷+"用锐利的目光盯着"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:反発刻印主人)+"……"%
+	CASE 2
+		PRINTFORML %CALLNAME:奴隷+"的脸上露出了愤怒的表情……"%
+	CASE 3
+		PRINTFORML %CALLNAME:奴隷+"的脸因愤怒而扭曲了，并从口中吐出憎恨的话……"%
+	CASEELSE
+		RETURN 0
+ENDSELECT
+IF CFLAG:奴隷:反発刻印主人 != MASTER
+	SETCOLOR 色設定_状態_ＮＴＲ
+ENDIF
+PRINTFORML %"在"+GET_DESCRIPTIVE_NAME(CFLAG:奴隷:反発刻印主人)+"的冒犯下，"+CALLNAME:奴隷+"获得了反発刻印LV"+TOSTR(MARK:奴隷:反発刻印)+"！"%
+RESETCOLOR
+IF TCVAR:奴隷:反発刻印取得 == 3
+	IF TFLAG:25 == 1
+		PRINTL 并且、顺从等级下降到Lv0
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ELSEIF TFLAG:25 == 2 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级下降到Lv1
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ENDIF
+ELSEIF TCVAR:奴隷:反発刻印取得 == 3
+	IF TFLAG:25 == 1 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级下降到Lv0
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ELSEIF TFLAG:25 == 2 && TFLAG:刻印取得時顺从変化済みフラグ == 0
+		PRINTL 并且、顺从等级下降到Lv2
+		TFLAG:刻印取得時顺从変化済みフラグ = 1
+	ENDIF
+	PRINTL 异常经验＋１
+ENDIF
+
+;-------------------------------------------
+;イベント口上テキスト
+;-------------------------------------------
+@EVENT_MESSAGE
+
+;-------------------------------------------------
+;関数名:OPPAI_DESCRIPTION
+;概　要:言葉でなく心で理解しろ
+;引　数:ARG…キャラ登録番号
+;戻り値:夢
+;備　考:文中関数
+;使用例:%OPPAI_DESCRIPTION(TARGET)%
+;-------------------------------------------------
+@OPPAI_DESCRIPTION(ARG)
+#FUNCTIONS
+;爆乳
+IF TALENT:ARG:胸部尺寸 == 2
+	RETURNF "一只手根本抓不住的爆乳"
+	;巨乳
+ELSEIF TALENT:ARG:胸部尺寸 == 1
+	RETURNF "一把下去会从指间溢出的巨乳"
+	;絶壁
+ELSEIF TALENT:ARG:胸部尺寸 == -2
+	RETURNF "只能感受到微微膨胀的胸部"
+	;貧乳
+ELSEIF TALENT:ARG:胸部尺寸 == -1
+	RETURNF "小巧可爱的胸部"
+	;並乳
+ELSE
+	RETURNF "匀称的乳房"
+ENDIF

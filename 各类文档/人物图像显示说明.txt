@@ -1,0 +1,77 @@
+这是从eratw中移植的人物图像显示插件
+
+
+
+除resources文件夹之外，本组件在游戏中修改了以下内容：
+
+FLAG.csv
+	1018,AA表示
+	
+	1041,画像表示設定,;ON/OFF
+	1042,画像表示,;ON/OFF 兼表示人数
+	1043,画像表示位置,;PRINT_TARGET_IMAGEの描画align値 0=center 1=left
+	1044,图像_动画,;画像图像_动画設定 兼繰り返し回数 0～5
+	1045,图像_图像框显示,;画像に枠をつけるか ON/OFF
+	1046,图像_射精图像类型,;0～2　0.断面+効果音　1.断面のみ　2.効果音のみ
+	1047,图像_立绘类型,;0で立ち絵 1で顔絵
+	1048,图像_插图显示,;挿絵のみ(正常位アニメ)の表示設定　AAの替え(受精のほう)には効かないやつ
+	
+	9050,褐色琪露诺
+SOURCE.ERB
+	@SOURCE_CHECK
+		新增DIM：
+			体位记录：记录体位用以输出相应图像，读取 TEQUIP:体位 内的数值
+			Ｖ性爱记录：记录是否是插入阴道的做爱，读取 TEQUIP:Ｖ性爱 内的数值
+		图像插入位置：
+			位于原文件注释“調教口上”“奴隷の絶頂時の口上”“調教者の射精時の口上”三处
+			是tw内做爱时的动画
+			搜索PRINT_IMAGE_ANIMATION即可找到所有改动位置
+妊娠処理変更パッチ.ERB
+	@受精チェック(母親候補, 総精子量, 精子種類)
+		已注释“图像插入”，搜索即可
+	@誰の子(母親候補, 総精子量, 当たり番号, 精子種類)
+		已注释“图像插入”，搜索即可
+	为tw内受精卵受精动画
+PRINT_STATE.ERB
+	@PRINT_STATE(奴隷, 宝珠表示, inSHOP)
+		PRINTL [33] 图像显示
+		IF FLAG:AA表示 && FLAG:画像表示
+			CALL PRINT_STATE_IMAGE(奴隷)
+		ENDIF
+		PRINTL
+		搜索如上内容即可，用于在角色信息界面显示图片
+USERCOM.ERB
+	@USERCOM
+		ELSEIF RESULT == 816
+			FLAG:AA表示 = !FLAG:AA表示
+		ELSEIF RESULT == 817
+			FLAG:图像_插图显示 = !FLAG:图像_插图显示
+		ELSEIF RESULT == 818
+			FLAG:图像_动画--
+		SIF FLAG:图像_动画 < 0
+			FLAG:图像_动画 = 5
+		ELSEIF RESULT == 819
+			FLAG:图像_动画++
+		SIF FLAG:图像_动画 >= 6
+			FLAG:图像_动画 = 0
+			;リソース表示関連
+		ELSEIF RESULT == 3100
+			;表示設定の切り替え
+			FLAG:画像表示設定 = !FLAG:画像表示設定
+		ELSEIF RESULT == 3101
+			;画像表示人数 -
+			FLAG:画像表示 = MAX(FLAG:画像表示-1,1)
+		ELSEIF RESULT == 3102
+			;画像表示人数 +
+			FLAG:画像表示 = MIN(FLAG:画像表示+1,10)
+		ELSEIF RESULT == 3103
+			;表示位置切り替え
+			FLAG:画像表示位置 = !FLAG:画像表示位置
+		ELSEIF RESULT == 3104
+			;枠表示 ON/OFF
+			FLAG:图像_图像框显示 = !FLAG:图像_图像框显示
+		ELSEIF RESULT == 3105
+			FLAG:图像_立绘类型 = !FLAG:图像_立绘类型
+		添加如上内容，用于调整画面大小
+
+此后亦有其它修改，但总而言之，只要搜索\ERB\图像扩展\IMAGE.ERB中的函数，就可以找到所有有修改（调用函数）的地方

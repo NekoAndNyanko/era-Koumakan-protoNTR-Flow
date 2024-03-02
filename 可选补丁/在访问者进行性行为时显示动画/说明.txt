@@ -1,0 +1,30 @@
+发布者：[下陷的深渊]329419445
+补丁作用：在访问者插入、中出角色时可以显示（eraTw的同款）动画
+使用方法：放入\ERB\NTR\NTR_ACTION\NTR_SEX_ACT\DATA_CHANGE\NTR_SEX_ACT\NTR_SEX覆盖同名文件
+触发条件：当所有角色获得NTR素质时
+不合并理由：
+	1.动画播放一次的时间太长，影响游戏体验
+	2.eraTw的动画画的阴茎属于普通尺寸，既无法体现玩家角色的“小”也无法体现访问者的“大”
+		PS：题外话
+		        就统计学和人类学来讲，全世界的男人阴茎尺寸实际上差不多。
+		        并且生理学上讲只有一定区间内的尺寸才能够舒适地性交，超过或小于则都无法进行正常的性交。
+		        虽然阴道有一定延展性，但超出舒适范围的延展会造成极大的负担，不要把游戏内容当做现实哦。
+
+
+以下是发布原贴内容：
+
+因为这是红N 玩家一般不会自己上的。。。
+但是好在这是个era 可以给我们自己发挥的空间
+在这个基础上加了一点点小东西
+~~https://pan.baidu.com/s/1SkAfikrvel2hnwRGukl5Zw?pwd=xgp6~~
+算了 附件不太会用
+放在 era紅魔館protoNTR0.038.4.2\ERB\NTR\NTR_ACTION\NTR_SEX_ACT\DATA_CHANGE\NTR_SEX_ACT\NTR_SEX 这里
+其次 没加密
+如果被爆了 就算了吧 也不是什么重要的事情
+只是把动画加在了“馆长”使用的时候
+相信你们如果想加的话 都是可以做到的 对吧 各位大佬
+关键字是 CALL PRINT_IMAGE_ANIMATION_正常位("动画名称")和 PRINT_IMAGE_ANIMATION_後背位("动画名称")
+
+
+有人说是错的 我重新分享一次
+链接: https://pan.baidu.com/s/1oH-ZxmBgkeAPoUE7iAhQEw?pwd=iwwb 提取码: iwwb 复制这段内容后打开百度网盘手机App，操作更方便哦

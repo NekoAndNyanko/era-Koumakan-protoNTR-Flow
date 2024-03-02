@@ -1,0 +1,171 @@
+﻿;-------------------------------------------------
+;野外PLAY
+;特殊なコマンド
+;-------------------------------------------------
+@COM184
+
+;着脱の処理　終了時はソース、経験の加算は行わない
+TEQUIP:野外PLAY = !TEQUIP:野外PLAY
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 0
+DOWNBASE:气力 += 150
+
+SOURCE:恐怖 = 800
+SOURCE:露出 = 1300
+SOURCE:逸脱 = 300
+SOURCE:反感 = 600
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 600
+
+;苦痛を伴わない抖Ｍ之气及び受虐狂の処理は先にしておく
+;抖Ｍ之气を見る
+SELECTCASE ABL:抖Ｍ之气
+	CASE 0
+		TIMES SOURCE:露出 , 0.80
+		SOURCE:液体 += 0
+		SOURCE:欲情 += 0
+	CASE 1
+		TIMES SOURCE:露出 , 1.00
+		SOURCE:液体 += 20
+		SOURCE:欲情 += 30
+	CASE 2
+		TIMES SOURCE:露出 , 1.20
+		SOURCE:液体 += 40
+		SOURCE:欲情 += 70
+	CASE 3
+		TIMES SOURCE:露出 , 1.40
+		SOURCE:液体 += 70
+		SOURCE:欲情 += 120
+	CASE 4
+		TIMES SOURCE:露出 , 1.50
+		SOURCE:液体 += 110
+		SOURCE:欲情 += 180
+	CASE 5
+		TIMES SOURCE:露出 , 1.70
+		SOURCE:液体 += 150
+		SOURCE:欲情 += 250
+	CASE 6
+		TIMES SOURCE:露出 , 1.90
+		SOURCE:液体 += 200
+		SOURCE:欲情 += 300
+	CASE 7
+		TIMES SOURCE:露出 , 2.10
+		SOURCE:液体 += 250
+		SOURCE:欲情 += 350
+	CASE 8
+		TIMES SOURCE:露出 , 2.30
+		SOURCE:液体 += 300
+		SOURCE:欲情 += 400
+	CASE 9
+		TIMES SOURCE:露出 , 2.50
+		SOURCE:液体 += 350
+		SOURCE:欲情 += 450
+	CASEELSE
+		TIMES SOURCE:露出 , 3.00
+		SOURCE:液体 += 500
+		SOURCE:欲情 += 500
+ENDSELECT
+RETURN 1
+
+
+;-------------------------------------------------
+;装着継続の処理
+;-------------------------------------------------
+@EQUIP_COM184(ARG)
+;野外PLAY
+IF TEQUIP:ARG:野外PLAY == 1
+	DOWNBASE:ARG:体力 += 20
+	DOWNBASE:ARG:气力 += 50
+ELSE
+	DOWNBASE:ARG:体力 += 50
+	DOWNBASE:ARG:气力 += 100
+ENDIF
+
+IF ARG > 0
+	IF TEQUIP:ARG:野外PLAY == 1
+		SOURCE:ARG:恐怖 += 200
+		SOURCE:ARG:逸脱 += 500
+		SOURCE:ARG:反感 += 500
+	ELSE
+		SOURCE:ARG:恐怖 += 500
+		SOURCE:ARG:逸脱 += 1000
+		SOURCE:ARG:反感 += 1000
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:ARG:自己爱 < 0 || TALENT:ARG:抵抗
+	SOURCE:ARG:抑郁 += 700
+
+;苦痛を伴わない抖Ｍ之气及び受虐狂の処理は先にしておく
+;抖Ｍ之气を見る
+LOCAL = 2000
+SELECTCASE ABL:ARG:抖Ｍ之气
+	CASE 0
+		TIMES LOCAL , 0.80
+		SOURCE:ARG:液体 += 0
+		SOURCE:ARG:欲情 += 0
+	CASE 1
+		TIMES LOCAL , 1.00
+		SOURCE:ARG:液体 += 20
+		SOURCE:ARG:欲情 += 30
+	CASE 2
+		TIMES LOCAL , 1.20
+		SOURCE:ARG:液体 += 40
+		SOURCE:ARG:欲情 += 70
+	CASE 3
+		TIMES LOCAL , 1.40
+		SOURCE:ARG:液体 += 70
+		SOURCE:ARG:欲情 += 120
+	CASE 4
+		TIMES LOCAL , 1.50
+		SOURCE:ARG:液体 += 110
+		SOURCE:ARG:欲情 += 180
+	CASE 5
+		TIMES LOCAL , 1.70
+		SOURCE:ARG:液体 += 150
+		SOURCE:ARG:欲情 += 250
+	CASE 6
+		TIMES LOCAL , 1.90
+		SOURCE:ARG:液体 += 200
+		SOURCE:ARG:欲情 += 300
+	CASE 7
+		TIMES LOCAL , 2.10
+		SOURCE:ARG:液体 += 250
+		SOURCE:ARG:欲情 += 350
+	CASE 8
+		TIMES LOCAL , 2.30
+		SOURCE:ARG:液体 += 300
+		SOURCE:ARG:欲情 += 400
+	CASE 9
+		TIMES LOCAL , 2.50
+		SOURCE:ARG:液体 += 350
+		SOURCE:ARG:欲情 += 450
+	CASEELSE
+		TIMES LOCAL , 3.00
+		SOURCE:ARG:液体 += 500
+		SOURCE:ARG:欲情 += 500
+ENDSELECT
+SIF TEQUIP:ARG:野外PLAY == 1
+	LOCAL /= 2
+
+SOURCE:ARG:露出 += LOCAL
+
+RETURN 1

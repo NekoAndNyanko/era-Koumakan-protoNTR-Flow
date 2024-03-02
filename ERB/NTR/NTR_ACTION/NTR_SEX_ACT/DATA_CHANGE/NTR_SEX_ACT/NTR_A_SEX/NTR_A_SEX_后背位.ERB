@@ -1,0 +1,44 @@
+;-------------------------------------------------------------------------------
+;肛交后背位
+@NTR_A_SEX_1(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+TEQUIP:奴隷:Ａ性爱 = 調教者
+;性交時メッセージ・口上の前に設定
+FLAG:訪問者との行為 = NTR_行为_Ａ后背位
+CFLAG:奴隷:訪問者行為 = NTR_行为_Ａ后背位
+CALL NTR_A_SEX_MSG_KOJO(奴隷)
+IF FLAG:訪問者との行為の終了時刻 == 0
+	BASE:奴隷:体力 -= 80
+	BASE:奴隷:气力 -= 120
+	IF TALENT:奴隷:浮気的菊花
+		SOURCE:奴隷:快Ａ = 600
+		SOURCE:奴隷:情爱 = 200
+		SOURCE:奴隷:苦痛 = 400
+	ELSE
+		SOURCE:奴隷:快Ａ = 400
+		SOURCE:奴隷:情爱 = 100
+		SOURCE:奴隷:苦痛 = 900
+	ENDIF
+	SOURCE:奴隷:露出 = 80
+	SOURCE:奴隷:逸脱 = 200
+	IF TALENT:奴隷:NTR || TALENT:奴隷:浮気的菊花
+		SOURCE:奴隷:反感 = 250
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:反感 = 370
+	ELSE
+		SOURCE:奴隷:反感 = 500
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 500
+	CALL NTR_EXP_ADD_A_SEX(奴隷,1) 
+	CALL 改变肛门色素(奴隷,1)
+	SIF TALENT:奴隷:亲爱
+		EXP:奴隷:被强奸经验 += 1
+	CALL NTR_GET_WEAKNESS_2(奴隷)
+	FLAG:訪問者との行為の終了時刻 = DATETIME() + (RAND:30 + 30)
+	FLAG:訪問者との行為 = NTR_行为_Ａ后背位
+	CFLAG:奴隷:訪問者行為 = NTR_行为_Ａ后背位
+	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
+ENDIF
+RETURN 0

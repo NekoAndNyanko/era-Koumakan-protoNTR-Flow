@@ -1,0 +1,330 @@
+;-------------------------------------------------------------------------------
+;体のなにがし
+@PRINT_STATE_BODY(ARG)
+PRINTL □ 身体 □-----------------------------------------------------------------------
+PRINTL 《   髪   》--------------------------------
+PRINTFORM %"颜色",12%：
+CALL 汎用色SET(CFLAG:ARG:髪色)
+PRINTFORM ■　
+RESETCOLOR
+PRINTFORML %色汎用(CFLAG:ARG:髪色)%
+PRINTFORML %"头发长度",12%：%髪の長さ(CFLAG:ARG:髪の長さ)%
+PRINTFORML %"特徴",12%：\@ (CFLAG:ARG:髪の長さ < 200 || BATHROOM(CFLAG:ARG:現在位置) || CFLAG:ARG:寝間着着用) ?ーーー#%髪オプション(CFLAG:ARG:髪オプション１)%\@
+IF CFLAG:ARG:髪オプション２
+	PRINTFORML %"",12%：\@ (CFLAG:ARG:髪の長さ < 200 || BATHROOM(CFLAG:ARG:現在位置) || CFLAG:ARG:寝間着着用) ?ーーー#%髪オプション(CFLAG:ARG:髪オプション２)%\@
+ELSE
+	PRINTL
+ENDIF
+PRINTL 《   眼睛   》--------------------------------
+PRINTFORML %"眼睛形状",12%：%目つき(CFLAG:ARG:目つき)%
+IF (CFLAG:ARG:瞳オプション２ == 1 || CFLAG:ARG:瞳オプション１ == 1)
+	PRINTFORM %"颜色(右)",12%：
+	CALL 汎用色SET(CFLAG:ARG:目色右)
+	PRINTFORM ■　
+	RESETCOLOR
+	PRINTFORML %色汎用(CFLAG:ARG:目色右)%
+	PRINTFORM %"颜色(左)",12%：
+	CALL 汎用色SET(CFLAG:ARG:目色左)
+	PRINTFORM ■　
+	RESETCOLOR
+	PRINTFORML %色汎用(CFLAG:ARG:目色左)%
+ELSE
+	PRINTFORM %"颜色",12%：
+	CALL 汎用色SET(CFLAG:ARG:目色右)
+	PRINTFORM ■　
+	RESETCOLOR
+	PRINTFORML %色汎用(CFLAG:ARG:目色右)%
+ENDIF
+PRINTFORML %"特徴",12%：%瞳オプション(CFLAG:ARG:瞳オプション１)%
+IF CFLAG:ARG:瞳オプション２
+	PRINTFORML %"",12%：%瞳オプション(CFLAG:ARG:瞳オプション２)%
+ELSE
+	PRINTL
+ENDIF
+PRINTL 《   肌肤   》--------------------------------
+;不在真实模式下
+PRINTFORM %"肌肤颜色",12%：
+IF !FLAG:真实模式 || ARG == PLAYER
+	CALL 肌色SET(CFLAG:ARG:肌色)
+	PRINTFORM ■　
+	RESETCOLOR
+	PRINTFORML %肌色(CFLAG:ARG:肌色)%
+ELSE
+	IF CFLAG:ARG:已知的肌肤颜色 == -1
+		PRINTL 不明
+	ELSE
+		CALL 肌色SET(CFLAG:ARG:已知的肌肤颜色)
+		PRINTFORM ■　
+		RESETCOLOR
+		PRINTFORML %肌色(CFLAG:ARG:已知的肌肤颜色)%
+	ENDIF
+ENDIF
+PRINTFORM %"乳头颜色",12%：
+;不在真实模式下
+IF !FLAG:真实模式 || ARG == PLAYER
+	CALL 秘部颜色SET(CFLAG:ARG:乳头颜色)
+	PRINTFORM ■　
+	RESETCOLOR
+	PRINTFORML %秘部颜色(CFLAG:ARG:乳头颜色)%
+	;真实模式下
+ELSE
+	IF CFLAG:ARG:已知的乳头颜色 == -1
+		PRINTL 不明
+	ELSE
+		CALL 秘部颜色SET(CFLAG:ARG:已知的乳头颜色)
+		PRINTFORM ■　
+		RESETCOLOR
+		PRINTFORML %秘部颜色(CFLAG:ARG:已知的乳头颜色)%
+	ENDIF
+ENDIF
+[IF_DEBUG]
+SETCOLOR 0xFFFF00
+PRINTFORML 乳头色素：{BASE:ARG:乳头色素}
+RESETCOLOR
+[ENDIF]
+IF !FLAG:真实模式 || ARG == PLAYER
+	PRINTFORML %"乳头大小",12%：%乳头大小名称(BASE:ARG:乳头大小)%
+ELSE
+	IF CFLAG:ARG:已知的乳头大小 == -1
+		PRINTFORML %"乳头大小",12%：不明
+	ELSE
+		PRINTFORML %"乳头大小",12%：%乳头大小名称(CFLAG:ARG:已知的乳头大小)%
+	ENDIF
+ENDIF
+[IF_DEBUG]
+SETCOLOR 0xFFFF00
+PRINTFORML 乳头大小：{BASE:ARG:乳头大小}
+RESETCOLOR
+[ENDIF]
+PRINTL
+IF HAS_PENIS(ARG)
+	PRINTL 《 男性器 》--------------------------------
+	PRINTFORML %"尺寸",12%：%Ｐ大きさ(CFLAG:ARG:Ｐ大きさ)%
+	PRINTFORML %"特徴",12%：%Ｐオプション(CFLAG:ARG:Ｐオプション１)%
+	IF CFLAG:ARG:Ｐオプション２
+		PRINTFORML 　　　　　　- %Ｐオプション(CFLAG:ARG:Ｐオプション２)%
+	ELSE
+		PRINTL
+	ENDIF
+ENDIF
+IF HAS_VAGINA(ARG)
+	PRINTL 《 小穴 》--------------------------------
+	PRINTFORM %"颜色",12%：
+	;不在真实模式下
+	IF !FLAG:真实模式 || ARG == PLAYER
+		CALL 秘部颜色SET(CFLAG:ARG:小穴颜色)
+		PRINTFORM ■　
+		RESETCOLOR
+		PRINTFORML %秘部颜色(CFLAG:ARG:小穴颜色)%
+		;真实模式下
+	ELSE
+		IF CFLAG:ARG:已知的小穴颜色 == -1
+			PRINTL 不明
+		ELSE
+			CALL 秘部颜色SET(CFLAG:ARG:已知的小穴颜色)
+			PRINTFORM ■　
+			RESETCOLOR
+			PRINTFORML %秘部颜色(CFLAG:ARG:已知的小穴颜色)%
+		ENDIF
+	ENDIF
+	[IF_DEBUG]
+	SETCOLOR 0xFFFF00
+	PRINTFORML 小穴色素：{BASE:ARG:小穴色素}
+	RESETCOLOR
+	[ENDIF]
+	IF !FLAG:真实模式 || ARG == PLAYER
+		PRINTFORML %"松紧度",12%：%締り具合名称(BASE:ARG:Ｖ松弛度)%
+	ELSE
+		IF CFLAG:ARG:已知的Ｖ松弛度 == -1
+			PRINTFORML %"松紧度",12%：不明
+		ELSE
+			PRINTFORML %"松紧度",12%：%締り具合名称(CFLAG:ARG:已知的Ｖ松弛度)%
+		ENDIF
+	ENDIF
+	[IF_DEBUG]
+	SETCOLOR 0xFFFF00
+	PRINTFORML Ｖ松弛度：{BASE:ARG:Ｖ松弛度}
+	RESETCOLOR
+	[ENDIF]
+	PRINTFORML %"位置",12%：%Ｖ位置(CFLAG:ARG:Ｖ位置)%
+	PRINTFORML %"特徴",12%：%Ｖオプション(CFLAG:ARG:Ｖオプション１)%
+	IF CFLAG:ARG:Ｖオプション２
+		PRINTFORML %"",12%：%Ｖオプション(CFLAG:ARG:Ｖオプション２)%
+	ELSE
+		PRINTL
+	ENDIF
+ENDIF
+PRINTL 《 肛门 》--------------------------------
+PRINTFORM %"颜色",12%：
+;不在真实模式下
+IF !FLAG:真实模式 || ARG == PLAYER
+	CALL 秘部颜色SET(CFLAG:ARG:肛门颜色)
+	PRINTFORM ■　
+	RESETCOLOR
+	PRINTFORML %秘部颜色(CFLAG:ARG:肛门颜色)%
+	;真实模式下
+ELSE
+	IF CFLAG:ARG:已知的肛门颜色 == -1
+		PRINTL 不明
+	ELSE
+		CALL 秘部颜色SET(CFLAG:ARG:已知的肛门颜色)
+		PRINTFORM ■　
+		RESETCOLOR
+		PRINTFORML %秘部颜色(CFLAG:ARG:已知的肛门颜色)%
+	ENDIF
+ENDIF
+[IF_DEBUG]
+SETCOLOR 0xFFFF00
+PRINTFORML 肛门色素：{BASE:ARG:肛门色素}
+RESETCOLOR
+[ENDIF]
+IF !FLAG:真实模式 || ARG == PLAYER
+	PRINTFORML %"松紧度",12%：%締り具合名称(BASE:ARG:Ａ松弛度)%
+ELSE
+	IF CFLAG:ARG:已知的Ａ松弛度 == -1
+		PRINTFORML %"松紧度",12%：不明
+	ELSE
+		PRINTFORML %"松紧度",12%：%締り具合名称(CFLAG:ARG:已知的Ａ松弛度)%
+	ENDIF
+ENDIF
+[IF_DEBUG]
+SETCOLOR 0xFFFF00
+PRINTFORML Ａ松弛度：{BASE:ARG:Ａ松弛度}
+RESETCOLOR
+[ENDIF]
+PRINTL
+PRINTL 《 他特徴 》--------------------------------
+IF CFLAG:ARG:体オプション１
+	PRINTFORML %"",4%  %体オプション(CFLAG:ARG:体オプション１)%
+ELSE
+	PRINTL
+ENDIF
+IF CFLAG:ARG:体オプション２
+	PRINTFORML %"",4%  %体オプション(CFLAG:ARG:体オプション２)%
+ELSE
+	PRINTL
+ENDIF
+IF CFLAG:ARG:体オプション３
+	PRINTFORML %"",4%  %体オプション(CFLAG:ARG:体オプション３)%
+ELSE
+	PRINTL
+ENDIF
+IF CFLAG:ARG:体オプション４
+	PRINTFORML %"",4%  %体オプション(CFLAG:ARG:体オプション４)%
+ELSE
+	PRINTL
+ENDIF
+
+;-------------------------------------------------------------------------------
+;乳头大小名称
+@乳头大小名称(ARG)
+#FUNCTIONS
+;ARG 締り具合
+IF ARG >= 700
+	RETURNF "硕大的乳头像瓶盖一样，乳晕如同一个小乳房一样"
+ELSEIF ARG >= 450
+	RETURNF "乳头大的像旋钮一样，乳晕十分突出"
+ELSEIF ARG >= 250
+	RETURNF "乳头较大，乳晕较为突出"
+ELSEIF ARG >= 100
+	RETURNF "大小合适的乳头，乳晕微微突起的可爱样子"
+ELSE
+	RETURNF "小小的乳头，乳晕平平的"
+ENDIF
+
+;-------------------------------------------------------------------------------
+;Ｖ関連の表示と処理
+@締り具合名称(ARG)
+#FUNCTIONS
+;ARG 締り具合
+IF ARG >= 700
+	RETURNF "已经合不拢了"
+ELSEIF ARG >= 450
+	RETURNF "松松垮垮了"
+ELSEIF ARG >= 250
+	RETURNF "很宽松了"
+ELSEIF ARG >= 100
+	RETURNF "松紧合适"
+ELSE
+	RETURNF "非常紧致"
+ENDIF
+
+;-------------------------------------------------------------------------------
+;淫纹の表示（あれば）
+@PRINT_STATE_PROTECTION(ARG)
+PRINTL □ 其它 □-----------------------------------------------------------------------
+VARSET LOCALS
+IF CFLAG:ARG:淫纹 == 0
+	RETURN 0
+ENDIF
+IF GETBIT(CFLAG:ARG:淫纹, 淫纹_恥丘)
+	IF LOCALS:0 != ""
+		LOCALS:0 = %LOCALS:0 + "、"%
+	ENDIF
+	LOCALS:0 = %LOCALS:0 + "恥丘"%
+ENDIF
+IF GETBIT(CFLAG:ARG:淫纹, 淫纹_太股)
+	IF LOCALS:0 != ""
+		LOCALS:0 = %LOCALS:0 + "、"%
+	ENDIF
+	LOCALS:0 = %LOCALS:0 + "太腿"%
+ENDIF
+IF GETBIT(CFLAG:ARG:淫纹, 淫纹_左尻)
+	IF LOCALS:0 != ""
+		LOCALS:0 = %LOCALS:0 + "、"%
+	ENDIF
+	LOCALS:0 = %LOCALS:0 + "左尻"%
+ENDIF
+IF GETBIT(CFLAG:ARG:淫纹, 淫纹_胸元)
+	IF LOCALS:0 != ""
+		LOCALS:0 = %LOCALS:0 + "、"%
+	ENDIF
+	LOCALS:0 = %LOCALS:0 + "胸元"%
+ENDIF
+IF GETBIT(CFLAG:ARG:淫纹, 淫纹_右頬)
+	IF LOCALS:0 != ""
+		LOCALS:0 = %LOCALS:0 + "、"%
+	ENDIF
+	LOCALS:0 = %LOCALS:0 + "右頬"%
+ENDIF
+;子宮内が他人の精子で満たされているかどうかチェック
+CALL COM417_GetFillingRateByPublicSperm(ARG)
+SELECTCASE RESULT:1 * RESULT:0
+	CASE IS >= 200
+		PRINTFORML %"鲜艳的粉红色の淫纹("+LOCALS:0+")"%
+	CASE 100 TO 199
+		PRINTFORML %"粉红色的淫纹("+LOCALS:0+")"%
+	CASE 50 TO 99
+		PRINTFORML %"赤色的淫纹("+LOCALS:0+")"%
+	CASE 1 TO 49
+		PRINTFORML %"赤紫色的淫纹("+LOCALS:0+")"%
+	CASEELSE
+		PRINTFORML %"紫色的淫纹("+LOCALS:0+")"%
+ENDSELECT
+RETURN 0
+
+;-------------------------------------------------
+;キャラ同士の相性表示処理
+;-------------------------------------------------
+@PRINT_RELATION(ARG)
+PRINTL
+PRINTL □ 相性 □---------------------------------------------------------------------
+TRYCALL 現在位置_開始位置DEBUG, ARG
+PRINTFORML
+LOCAL = 0
+FOR LOCAL:1,0,CHARANUM
+	IF RELATION:ARG:(LOCAL:1) != 0 && RELATION:ARG:(LOCAL:1) != 100
+		PRINTFORM  %CALLNAME:(LOCAL:1)%（{RELATION:ARG:(LOCAL:1)}）
+		LOCAL += 1
+		IF (LOCAL%3) == 0
+			PRINTL 
+		ELSE
+			PRINT 　
+		ENDIF
+	ENDIF
+NEXT
+IF LOCAL == 0
+	PRINTL 　　特になし
+ELSEIF LOCAL%3 != 0
+	PRINTL 
+ENDIF

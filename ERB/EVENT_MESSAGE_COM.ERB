@@ -1,0 +1,4482 @@
+﻿;調教時テキスト
+@TRAIN_MESSAGE
+RESETCOLOR
+DRAWLINE
+RESULT = 1
+
+; SIF FLAG:口上颜色
+; 	CALL KOJO_COLOR(TARGET)
+; TRYCALLFORM KOJO_MESSAGE_COM_K{TARGET}_{SELECTCOM}_1
+; RESETCOLOR
+
+;以下内容是原版没有写完的东西，用途不明，除了MESSAGE_SCOM以外完全没有任何内容可以触发
+IF TFLAG:50
+	TRYCCALLFORM MESSAGE_SCOM{TFLAG:50}
+		PRINTW
+	CATCH
+	ENDCATCH
+	;NTR前口上
+	SIF FLAG:口上颜色
+		CALL KOJO_COLOR(TARGET)
+	TRYCCALLFORM NTR_KOJO_K{TARGET}_SCOM{TFLAG:50}_0
+	CATCH
+		TRYCALLFORM NTR_KOJO_SCOM{TFLAG:50}
+	ENDCATCH
+ELSE
+	TRYCCALLFORM MESSAGE_COM{SELECTCOM}
+		PRINTW
+	CATCH
+	ENDCATCH
+	;NTR前口上
+	SIF FLAG:口上颜色
+		CALL KOJO_COLOR(TARGET)
+	TRYCCALLFORM NTR_KOJO_K{TARGET}_COM{SELECTCOM}_0
+	CATCH
+		TRYCALLFORM NTR_KOJO_COM{SELECTCOM}_0
+	ENDCATCH
+ENDIF
+RESETCOLOR
+;-------------------------------------------------
+;0,爱抚
+;-------------------------------------------------
+@MESSAGE_COM0
+;キスをする場合
+SIF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+	PRINTFORM %CALLNAME:TARGET%保持
+PRINTFORM %CALLNAME:TARGET%の
+;小柄体型
+SIF TALENT:体型 < 0
+	PRINT 未发育的
+PRINTL 身体细心爱抚了…
+IF IS_ORGASM_CVAB(TARGET)
+	IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+		PRINTFORML %CALLNAME:TARGET%的\@ TEQUIP:50 == PLAYER ? 阴道 # 肛门 \@は每次被%CALLNAME:PLAYER%触碰到身体都会微微收缩
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は每次被%CALLNAME:PLAYER%触碰到身体都会微微颤抖
+	ENDIF
+	IF EXP_UP(27,TARGET)
+		PRINTFORML 脸快乐得快融化了,向%CALLNAME:PLAYER%索求接吻…
+	ELSE
+		PRINTFORML 为得到的快乐而颤抖…
+	ENDIF
+ELSE
+	IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+		PRINTFORM %CALLNAME:TARGET%紧紧地含住阴茎
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%与%CALLNAME:PLAYER%紧紧贴着
+	ENDIF
+	IF EXP_UP(27,TARGET)
+		PRINTFORML %CALLNAME:PLAYER%寻求著那双唇…
+	ELSE
+		PRINTFORML 因被给予的快乐而身体颤抖着…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;1,舔阴
+;-------------------------------------------------
+@MESSAGE_COM1
+IF TCVAR:100 == PLAYER
+	SIF !ASSIPLAY && TALENT:恋慕
+		PRINTFORM 恋恋不舍的
+	PRINTFORM 被拔出肉棒的%CALLNAME:TARGET%、
+	IF TCVAR:102
+		PRINTFORM 满不在乎
+	ELSE
+		PRINTFORM 回味着刚才的侵犯.
+	ENDIF
+ELSEIF TEQUIP:0 & 2
+	IF TALENT:恋慕
+		PRINTFORM 主动拉开%SHOW_BOTTOM(TARGET,2)%做好准备的
+	ELSE
+		PRINTFORM %SHOW_BOTTOM(TARGET,2)%踌躇着移开了
+	ENDIF
+	PRINTFORM %CALLNAME:TARGET%の
+ELSEIF TEQUIP:0 & 1
+	IF TALENT:恋慕
+		PRINTFORM %SHOW_BOTTOM(TARGET,1)%主动卷起裙子准备好了
+	ELSE
+		PRINTFORM %SHOW_BOTTOM(TARGET,1)%卷起来露出来了
+	ENDIF
+	PRINTFORM %CALLNAME:TARGET%の
+ELSE
+	SIF TALENT:恋慕
+		PRINT 分开着脚准备好的
+	PRINTFORM %CALLNAME:TARGET%の
+ENDIF
+PRINTFORM 被仔细地舔舐蜜唇
+;ふたなり＋欲情のPLAMLV3以上
+IF GET_SEXNAME(TARGET) == "ふたなり" && PALAM:欲情 >= PALAMLV:3
+	PRINT 、被舌头舔着肿胀的阴茎
+	;ふたなり
+ELSEIF GET_SEXNAME(TARGET) == "ふたなり"
+	PRINT 、被用舌头舔着阴茎
+	;欲情のPALAMLV3以上
+ELSEIF PALAM:欲情 >= PALAMLV:3
+	PRINT 、被用舌头舔着小小的阴蒂
+ENDIF
+PRINTL た…
+;-------------------------------------------------
+;2,调教者口交
+;-------------------------------------------------
+@MESSAGE_COM2
+PRINTFORM %CALLNAME:TARGET%の
+;欲情のPALAMLV3以上
+SIF PALAM:欲情 >= PALAMLV:3
+	PRINT 坚硬勃起的
+PRINTL 阴茎口に咥えて舐めまわした…
+;-------------------------------------------------
+;3,指挿入れ
+;-------------------------------------------------
+@MESSAGE_COM3
+;下半身着衣
+SIF TEQUIP:0 & 2
+	PRINTFORM 将手伸入%SHOW_BOTTOM(TARGET,2)%其中
+PRINTFORM %CALLNAME:TARGET%の
+;处女
+IF TALENT:处女 == 1
+	PRINT 还不知男人滋味
+	;润滑LV4以上
+ELSEIF PALAM:润滑 >= PALAMLV:4
+	PRINT 湿透了的
+ENDIF
+;小柄体型の有無で分岐
+IF TALENT:体型 < 0
+	PRINT 尚未发育完全的
+ELSE
+	PRINT 秘裂
+ENDIF
+;振动棒の有無で分岐
+IF TEQUIP:振动棒
+	PRINTFORML 之中,不断抽送着运行中的振动棒
+ELSE
+	PRINTFORML 慢慢的插入了%CALLNAME:PLAYER%的手指…
+	IF NOWEX:Ｃ绝顶
+		IF TALENT:处女 == 1
+			PRINTFORML TARGET依靠在PLAYER身上、下体紧紧的夹住了插入的手指…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%流着口水,主动摇动着腰贪图着带来的快乐…
+		ENDIF
+	ELSE
+		IF TALENT:处女 == 1
+			PRINTFORML %CALLNAME:TARGET%身体还不习惯这么强的刺激…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%因在阴道内蠕动的手指带来的快感发出了甜美的喘息…
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;4,舔舐肛门
+;-------------------------------------------------
+@MESSAGE_COM4
+PRINTFORM %CALLNAME:TARGET%の
+IF TCVAR:101 >= 0
+	PRINTFORM 被糊里糊涂地打开侵犯的
+	;Ａ经验10以下
+ELSEIF EXP:Ａ经验 <= 10
+	PRINT 紧紧地关闭着的
+ENDIF
+PRINT 仔细地舔后后庭放松了
+;Ａ经验100以上＋欲望のPALAMLV3以上
+SIF EXP:Ａ经验 >= 100 && PALAM:欲情 >= PALAMLV:3
+	PRINT 、把舌头伸了进去,不断搅动
+PRINTL た…
+;-------------------------------------------------
+;5,肛门爱抚
+;-------------------------------------------------
+@MESSAGE_COM5
+;肛门振动棒
+IF TEQUIP:肛门振动棒
+	PRINTFORML 前后抽动着微微颤抖的肛门振动棒…
+	;肛珠
+ELSEIF TEQUIP:肛珠
+	PRINTFORML 把珠子拉了出来再轻巧的放进去…
+	;灌肠器+肛塞
+ELSEIF TEQUIP:灌肠
+	PRINTFORML 用塞子重重的搅动了本就因排泄感而颤抖的后庭 …
+	;扩张气球
+ELSEIF TEQUIP:扩张气球
+	PRINTFORML 把肛门扩展到极限的气球前后抽动…
+	;肛门电极
+ELSEIF TEQUIP:肛门电极
+	PRINTFORML 用发出低鸣的电极咕噜咕噜地搅动着后庭…
+ELSEIF TEQUIP:50 == PLAYER
+	PRINTFORML %CALLNAME:TARGET%一边侵犯后庭一边做各种恶作剧…
+ELSE
+	PRINTFORM %CALLNAME:TARGET%的后庭
+	;Ａ经验100以上＋欲望のPALAMLV3以上
+	SIF PALAM:欲情 >= PALAMLV:3 && EXP:Ａ经验 >= EXPLV:3
+		PRINT 被手指深入搅动了直肠
+	PRINTL た…
+ENDIF
+
+
+;-------------------------------------------------
+;6,胸爱抚
+;-------------------------------------------------
+@MESSAGE_COM6
+IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+	PRINTFORM %CALLNAME:TARGET%保持%OPPAI_DESCRIPTION(TARGET)%
+ELSE
+	PRINTFORM %CALLNAME:TARGET%の%OPPAI_DESCRIPTION(TARGET)%
+ENDIF
+;欲望のPALAMLV3以上＋
+IF PALAM:欲情 >= PALAMLV:3 && !TEQUIP:乳头夹 && TEQUIP:搾乳机
+	PRINTL 前端的完全变硬的突起…
+	;小柄体型
+ELSEIF TALENT:体型 < 0
+	PRINTL 温柔的抚摸着…
+ELSE
+	PRINTL 肆意揉搓着…
+ENDIF
+;-------------------------------------------------
+;7,玩弄乳首
+;-------------------------------------------------
+@MESSAGE_COM7
+IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+	PRINTFORM %CALLNAME:TARGET%保持%OPPAI_DESCRIPTION(TARGET)%
+ELSE
+	PRINTFORM %CALLNAME:TARGET%の%OPPAI_DESCRIPTION(TARGET)%
+ENDIF
+;欲情のPALAMLV3以上
+IF PALAM:欲情 >= PALAMLV:3
+	PRINTL 前端的完全变硬的突起被玩弄着…
+ELSE
+	PRINTL 前端的、还柔软的突起被玩弄着 …
+ENDIF
+;-------------------------------------------------
+;8,掰开小穴
+;-------------------------------------------------
+@MESSAGE_COM8
+PRINTFORM %CALLNAME:PLAYER%に命令され、%CALLNAME:TARGET%は
+;露出癖
+IF ABL:露出癖 == 0
+	PRINTFORM 含着泪凝视着你,勉勉强强对自己
+	;小柄体型
+	IF TALENT:体型 < 0
+		PRINT 尚未发育完全的阴唇
+	ELSE
+		PRINT 阴唇
+	ENDIF
+	PRINTL  插入手指,向左右张开 
+	SIF TCVAR:102
+		PRINTFORML 从露出了的阴道口中,慢慢地流出了刚刚射入的精液…
+ELSEIF ABL:露出癖 == 1
+	PRINTFORML 尽管脸色通红,但还是害羞的地将性器官扩展得很清楚
+	SIF TCVAR:102
+		PRINTFORML 从露出了的阴道口中,慢慢地流出了刚刚射入的精液…
+ELSEIF ABL:露出癖 == 2
+	PRINTFORML 将手放在胯下,用食指和中指,%CALLNAME:PLAYER%将自己的秘处展现出来
+	IF TCVAR:102
+		PRINTFORML 从露出了的阴道口中,慢慢地流出了刚刚射入的精液…
+	ELSE
+		PRINTFORML 从大开的阴道口处窥视里面的,蜜穴就好像期待着肉棒一样,被爱液打湿了,淫乱地蠢动着
+	ENDIF
+ELSEIF ABL:露出癖 == 3
+	PRINTFORML  在兴奋的表情中,一只手扩张阴唇,另一只手开始玩弄阴蒂 
+	IF TCVAR:102
+		PRINTFORML 露出了的阴道口中、刚刚射入的精液、淫荡的流淌滴落着…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%的手刺激着阴核,从阴道口不断滴下爱液…
+	ENDIF
+ELSEIF ABL:露出癖 == 4
+	PRINTFORML  用双手的手指将阴唇,以及连阴道口也同时扩张了. 
+	IF TCVAR:102
+		PRINTFORML %CALLNAME:TARGET% 手将阴道口向左右扩张,刚才射入的精液不断流下 …
+	ELSE
+		PRINTFORML 阴道内被视奸的感觉、让%CALLNAME:TARGET%的脸红了起来
+	ENDIF
+ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱 == 0
+	PRINTFORML 为了让%CALLNAME:PLAYER%看清,用双手手指大大扩张阴唇
+	IF TCVAR:102
+		PRINTFORML  被大幅扩张了的阴道口,刚才射入的精液不断流下. …
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%用手将阴道口扩大到可以轻易看清内部的程度、阴道壁不停的蠢动着、爱液不停的往外溢出…
+	ENDIF
+	;露出癖LV5以上＋淫乱or娼婦
+ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱
+	PRINTFORML 为了让%CALLNAME:PLAYER%看清,用双手手指大大扩张阴唇
+	IF TCVAR:102
+		PRINTFORML 从蠕动的阴道内,刚才射进去的精液糊,不检点的流了出来了…
+	ELSE
+		PRINTFORML 看起来柔软的阴道内,充分地被爱液湿润了,好像在邀请这边的似的,不停抽动蠕动着…
+	ENDIF
+ENDIF
+;調教者が恥じらい＋调教经验200以下
+IF TALENT:PLAYER:羞耻心 > 0 && EXP:PLAYER:调教经验 < 200
+	PRINTFORML 自己发出命令,%CALLNAME:PLAYER%却因眼前的美景流露出了初哥的痴态,被%CALLNAME:TARGET%看到了
+	PRINTL 小小的罪恶感和羞耻心被煽动,让你的脸红了起来.
+ENDIF
+;-------------------------------------------------
+;9,自慰
+;-------------------------------------------------
+@MESSAGE_COM9
+;顺从LV3未満
+PRINTFORM %CALLNAME:TARGET%
+;录像摄影中
+SIF TEQUIP:录像摄影
+	PRINT 在摄像机前
+;露出癖LV3以上
+SIF ABL:露出癖 >= 3
+	PRINT 故意让你看见、
+;振动棒＋肛门振动棒
+IF TEQUIP:振动棒 && TEQUIP:肛门振动棒
+	PRINT 自己不断抽送着两个振动棒
+	;振动棒
+ELSEIF TEQUIP:振动棒
+	PRINT 自己不断抽送着阴道内的振动棒
+	;肛门振动棒
+ELSEIF TEQUIP:肛门振动棒
+	PRINT 自己不断抽送着肛门内的振动棒
+ELSEIF TEQUIP:50 >= 0 
+	PRINTFORM %CALLNAME:(TEQUIP:50)%在保持被插入的情况下
+ELSEIF TEQUIP:51 >= 0 
+	PRINTFORM %CALLNAME:(TEQUIP:51)%在保持后庭被插入的情况下
+ELSE
+	PRINT 一边用自己的手指玩弄着蜜处
+ENDIF
+IF TEQUIP:50 >= 0 || TEQUIP:51 >= 0
+	PRINTL 开始玩弄乳头和阴蒂…
+ELSE
+	PRINTL 品尝到了快感…
+ENDIF
+;振动棒＋肛门振动棒＋Ｖ感觉LV5以上＋Ａ感觉LV5以上＋Ｃ感觉LV5以上＋Ｂ感觉LV5以上＋欲情のPALAMLV4以上
+IF TEQUIP:振动棒 && TEQUIP:肛门振动棒 && ABL:Ｖ感觉 >= 5 && ABL:Ａ感觉 >= 5 && ABL:Ｃ感觉 >= 5 && ABL:Ｂ感觉 >= 5 && PALAM:欲情 >= PALAMLV:4
+	PRINTFORML %CALLNAME:TARGET%流着口水,颤抖着身体,一边抽送一边高声呻吟.
+	PRINTFORML  刚从高潮中回复,就又自己抽动了起来 …
+	;振动棒＋Ｖ感觉LV5以上＋Ｃ感觉LV5以上＋Ｂ感觉LV5以上＋欲情のPALAMLV4以上
+ELSEIF TEQUIP:振动棒 && ABL:Ｖ感觉 >= 5 && ABL:Ｃ感觉 >= 5 && ABL:Ｂ感觉 >= 5 && PALAM:欲情 >= PALAMLV:4
+	PRINTFORML %CALLNAME:TARGET%毫不介意爱液四下飞散,激烈地抽送着振动棒
+	PRINTFORML 看来已经没有余力去在意其他事情了…
+	;肛门振动棒＋Ａ感觉LV5以上＋Ｃ感觉LV5以上＋Ｂ感觉LV5以上＋欲情のPALAMLV4以上
+ELSEIF TEQUIP:肛门振动棒 && ABL:Ａ感觉 >= 5 && ABL:Ｃ感觉 >= 5 && ABL:Ｂ感觉 >= 5 && PALAM:欲情 >= PALAMLV:4
+	PRINTFORML %CALLNAME:TARGET%一边颤抖着身体,一边抽送着肛门震动棒
+	PRINTFORML 在激烈到肠道皱襞都带出来的剧烈活动下终于绝顶了…
+	;自慰中毒LV3以上＋Ｃ感觉LV5以上＋Ｂ感觉LV5以上＋欲情のPALAMLV4以上
+ELSEIF ABL:自慰中毒 >= 3 && ABL:Ｃ感觉 >= 5 && ABL:Ｂ感觉 >= 5 && PALAM:欲情 >= PALAMLV:4
+	PRINTFORML %CALLNAME:TARGET%一边娇声呻吟一边专心的爱抚自己的蜜处
+	PRINTFORML 好像不管别人怎么想阻止她也停不下来…
+ENDIF
+
+;-------------------------------------------------
+;10,吮吸乳首
+;-------------------------------------------------
+@MESSAGE_COM10
+
+IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+	IF !TEQUIP:4 && TEQUIP:1 & 1
+		TEQUIP:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%把%CALLNAME:TARGET%衣服推了上去、
+	ENDIF
+	PRINTFORM %CALLNAME:TARGET%保持%OPPAI_DESCRIPTION(TARGET)%
+ELSE
+	IF !TEQUIP:4 && TEQUIP:1 & 1
+		TEQUIP:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%衣服推了上去、
+	ENDIF
+	PRINTFORM %CALLNAME:TARGET%の%OPPAI_DESCRIPTION(TARGET)%
+ENDIF
+;欲情のPALAMLV3以上
+IF PALAM:欲情 >= PALAMLV:3
+	PRINTL 的已经变硬的乳头被吸允了…
+ELSE
+	PRINTL 的还柔软的乳头被吸允了…
+ENDIF
+;-------------------------------------------------
+;11,乳首侍奉
+;-------------------------------------------------
+@MESSAGE_COM11
+PRINTFORM %CALLNAME:TARGET%は
+IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+	IF !TEQUIP:PLAYER:4 && TEQUIP:PLAYER:1 & 1
+		TEQUIP:PLAYER:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%的衣服推了上去、
+	ENDIF
+	PRINTFORM %CALLNAME:PLAYER%一边保持%OPPAI_DESCRIPTION(PLAYER)%
+ELSE
+	IF !TEQUIP:PLAYER:4 && TEQUIP:PLAYER:1 & 1
+		TEQUIP:PLAYER:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%的衣服推了上去、
+	ENDIF
+	PRINTFORM %CALLNAME:PLAYER%の%OPPAI_DESCRIPTION(PLAYER)%
+ENDIF
+PRINTFORML 尖端的、
+;欲情のPALAMLV3以上
+IF PALAM:欲情 >= PALAMLV:3
+	PRINTL 的已经变硬的乳头吸允了…
+ELSE
+	PRINTL 的还柔软的乳头吸允了…
+ENDIF
+
+;-------------------------------------------------
+;20,接吻
+;-------------------------------------------------
+@MESSAGE_COM20
+IF TEQUIP:50 == PLAYER
+	IF NOWEX:PLAYER:射精
+		PRINTFORM %CALLNAME:PLAYER%は%CALLNAME:TARGET%拥抱着亲吻、
+		PRINTFORM  一边缠绕着舌头一边加快了腰的动作 …
+		RETURN 0
+	ELSE
+		PRINTFORM 插入后抱起%CALLNAME:TARGET% ,舔遍嘴里各个角落 
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%被舔遍嘴里各个角落
+ENDIF
+;顺从LV3以上＋百合经验1000以上＋調教者がオトコでない
+IF ABL:顺从 >= 3 && EXP:百合经验 >= 1000 && HAS_VAGINA(PLAYER)
+	PRINTFORML  然后,将舌头缠绕在一起交换了唾液 …
+	;顺从LV3以上
+ELSEIF ABL:顺从 >= 3
+	PRINTFORML 同时、%CALLNAME:TARGET% 也兴奋地和你缠绕着舌头 …
+ELSE
+	PRINTL した…
+ENDIF
+;-------------------------------------------------
+;21,什麽也不做
+;-------------------------------------------------
+@MESSAGE_COM21
+
+;-------------------------------------------------
+;40,跳蛋
+;-------------------------------------------------
+@MESSAGE_COM40
+IF TEQUIP:0 & 4
+	PRINTFORM %CALLNAME:TARGET%の
+	PRINTFORML 把跳蛋隔着%SHOW_BOTTOM(TARGET,3)%按在了阴蒂上…
+	RETURN 0
+ENDIF
+IF TEQUIP:0 & 2
+	IF TALENT:恋慕
+		PRINTFORM 主动移开了%SHOW_BOTTOM(TARGET,2)%准备好了
+	ELSE
+		PRINTFORM %SHOW_BOTTOM(TARGET,2)%踌躇着移开了
+	ENDIF
+ELSEIF TEQUIP:0 & 1
+	IF TALENT:恋慕
+		PRINTFORM 主动吧%SHOW_BOTTOM(TARGET,2)%卷起来准备好了
+	ELSE
+		PRINTFORM %SHOW_BOTTOM(TARGET,1)%卷起来露出来了
+	ENDIF
+ENDIF
+PRINTFORM %CALLNAME:TARGET%の
+;オトコ＋欲情のPALAMLV3以上
+IF GET_SEXNAME(TARGET) == "男" && (PALAM:欲情 >= PALAMLV:3)
+	PRINTL 将振动的跳蛋放到勃起的阴茎上…
+	;オトコ
+ELSEIF GET_SEXNAME(TARGET) == "男"
+	PRINTL  把振动的跳蛋压在自己的阴茎上 …
+	;ふたなり＋欲情のPALAMLV3以上
+ELSEIF GET_SEXNAME(TARGET) == "ふたなり" && PALAM:欲情 >= PALAMLV:3
+	PRINTL 把振动的跳蛋压在泥泞的阴唇上…
+	;ふたなり
+ELSEIF GET_SEXNAME(TARGET) == "ふたなり"
+	PRINTL 把振动的跳蛋压在阴唇上…
+	;欲情のPALAMLV3以上
+ELSEIF PALAM:欲情 >= PALAMLV:3
+	PRINTL 把振动的跳蛋压在肿胀的阴蒂上…
+ELSE
+	PRINTL 把振动的跳蛋压在阴蒂上…
+ENDIF
+;-------------------------------------------------
+;41,E按摩棒
+;-------------------------------------------------
+@MESSAGE_COM41
+PRINTFORML %CALLNAME:TARGET%的秘所被\@ TEQUIP:0 > 1 ? 隔着%SHOW_BOTTOM(TARGET)% # \@按上了振动的按摩棒
+PRINTFORM %CALLNAME:TARGET%は
+;Ｃ感觉LV3未満＋欲情のPALAMLV3未満
+IF ABL:Ｃ感觉 < 3 && PALAM:欲情 < PALAMLV:3
+	PRINT  好像很痒的样子 
+	;Ｃ感觉LV3未満＋欲情のPALAMLV3以上
+ELSEIF ABL:Ｃ感觉 < 3 && PALAM:欲情 >= PALAMLV:3
+	PRINT 、…好像已经说不出话了
+	;恋慕か亲爱＋Ｃ感觉LV4以上＋欲情のPALAMLV3未満
+ELSEIF TALENT:恋慕 && ABL:Ｃ感觉 >= 4 && PALAM:欲情 < PALAMLV:3
+	PRINT  像是等得不耐似的张开一双玉腿,已经接受了它. 
+	;恋慕か亲爱＋Ｃ感觉LV4以上＋欲情のPALAMLV3以上＋欲情のPALAMLV5未満
+ELSEIF TALENT:恋慕 && ABL:Ｃ感觉 >= 4 && PALAM:欲情 >= PALAMLV:3 && PALAM:欲情 < PALAMLV:5
+	PRINTFORM 快乐得流下了口水、低低的呼唤着%CALLNAME:PLAYER%的名字
+	;恋慕か亲爱＋Ｃ感觉LV4以上＋欲情のPALAMLV5以上
+ELSEIF TALENT:恋慕 && ABL:Ｃ感觉 >= 4 && PALAM:欲情 >= PALAMLV:5
+	PRINTFORM  神情恍惚的仿佛沉浸在%CALLNAME:PLAYER%给予的绝顶快感中
+	;Ｃ感觉LV3以上＋欲情のPALAMLV3未満
+ELSEIF ABL:Ｃ感觉 >= 3 && PALAM:欲情 < PALAMLV:3
+	PRINT 强烈的快感使她涨红了脸
+	;Ｃ感觉LV3以上＋欲情のPALAMLV3以上＋欲情のPALAMLV5未満
+ELSEIF ABL:Ｃ感觉 >= 3 && PALAM:欲情 >= PALAMLV:3 && PALAM:欲情 < PALAMLV:5
+	PRINT 已经喜欢上了这种快乐的感觉
+	;Ｃ感觉LV3以上＋欲情のPALAMLV5以上
+ELSEIF ABL:Ｃ感觉 >= 3 && PALAM:欲情 >= PALAMLV:5
+	PRINT  眼看就要达到了绝顶的样子 
+ENDIF
+PRINTL だ…
+;-------------------------------------------------
+;42,阴蒂夹
+;-------------------------------------------------
+@MESSAGE_COM42
+;解除時
+IF !TEQUIP:阴蒂夹
+	PRINTFORML %CALLNAME:TARGET%阴蒂夹取下了
+ELSE
+	PRINTFORML %CALLNAME:TARGET%阴蒂夹安上了
+ENDIF
+;-------------------------------------------------
+;43,飞机杯
+;-------------------------------------------------
+@MESSAGE_COM43
+;解除時
+IF !TEQUIP:飞机杯
+	PRINTFORML %CALLNAME:TARGET%飞机杯取下了
+ELSE
+	PRINTFORML %CALLNAME:TARGET%的阴茎插入飞机杯
+ENDIF
+;-------------------------------------------------
+;44,振动棒
+;-------------------------------------------------
+@MESSAGE_COM44
+;解除時
+IF !TEQUIP:振动棒
+	PRINTFORML %CALLNAME:TARGET%体内的震动棒被慢慢抽了出来
+	;Ｖ经验200以上＋恋慕か亲爱
+	IF EXP:Ｖ经验 > 200 && TALENT:恋慕
+		PRINTFORM %CALLNAME:TARGET%难以忍受阴道内的失落感,流下了眼泪和口水. 
+		;Ｖ经验150以上＋恋慕か亲爱
+	ELSEIF EXP:Ｖ经验 > 150 && TALENT:恋慕
+		PRINTFORM %CALLNAME:TARGET%在阴道积存的爱液被带了出来滴在地上,积成水洼 
+		;Ｖ经验120以上＋恋慕か亲爱
+	ELSEIF EXP:Ｖ经验 > 120 && TALENT:恋慕
+		PRINTFORM 振动棒被抽出时带出了%CALLNAME:TARGET%肉襞,爱液发出波波声,滴落下来
+		;Ｖ经验70以上＋恋慕か亲爱
+	ELSEIF EXP:Ｖ经验 > 70 && TALENT:恋慕
+		PRINTFORM %CALLNAME:TARGET%摩擦着一双玉腿看着%CALLNAME:PLAYER%
+		;Ｖ经验40以上
+	ELSEIF EXP:Ｖ经验 > 40 && TALENT:恋慕
+		PRINTFORM %CALLNAME:TARGET%呼出灼热的呼吸 
+		;Ｖ经验20以上
+	ELSEIF EXP:Ｖ经验 > 20
+		PRINTFORM %CALLNAME:TARGET% 松弛的阴道口 
+		;それ以外
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%松了一口气的表情
+	ENDIF
+	PRINTL ている…
+ELSEIF TCVAR:100 == PLAYER
+	PRINTFORML 一抽出刚刚还在侵犯%CALLNAME:TARGET%\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@的阴茎,马上把振动棒插入
+	IF EXP:Ｖ经验 > 100
+		IF TALENT:恋慕
+			PRINTFORML %CALLNAME:TARGET%马上投来了抗议一样的视线,不过,马上就被振动棒带来的快感溶化,\@ TALENT:体型 < 0 ? 可爱的 # 妖媚的 \@的呻吟开始响起…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%一瞬间浮现出了松了一口气的表情,不过,马上被振动棒带来的快感溶化\@ TALENT:体型 < 0 ? 可爱的 # 妖媚的 \@的呻吟开始响起…
+		ENDIF
+	ELSEIF TALENT:恋慕
+		PRINTFORML %CALLNAME:TARGET% 被振动棒带来的快感融化了\@ TALENT:体型 < 0 ? 可爱的 # 妖媚的 \@娇媚的声音开始响起,向%CALLNAME:MASTER%胯股之间投去着热的视线 …
+	ELSEIF EXP:Ｖ经验 > 20
+		PRINTFORML %CALLNAME:TARGET% 被振动棒带来的快感融化了\@ TALENT:体型 < 0 ? 可爱的 # 妖媚的 \@娇滴滴的声音开始响起…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET% 在陌生的振动刺激下扭动着身体 …
+	ENDIF
+ELSE
+	SIF ABL:Ｖ感觉 >= 4 && TALENT:淫乱
+		PRINT 抬起腰来撒娇
+	PRINTFORM %CALLNAME:TARGET%の
+	SIF TEQUIP:0 & 2
+		PRINTFORM %SHOW_BOTTOM(TARGET,2)%被拉开了、
+	;润滑LV5以上でさらに追加
+	SIF PALAM:润滑 >= PALAMLV:5
+		PRINT 爱液泛滥的
+	;润滑LV3以上でさらに追加
+	SIF PALAM:润滑 >= PALAMLV:3
+		PRINT 沾满了爱液的
+	;小柄体型
+	IF TALENT:体型 < 0
+		PRINT 尚未发育完全的
+	ELSE
+		PRINT 秘裂
+	ENDIF
+	PRINTL 先用前端小心触碰使渐渐适应振动…
+
+	PRINTFORM %CALLNAME:TARGET%は
+	;处女＋淫乱か娼婦
+	IF TALENT:处女 == 1 && TALENT:淫乱
+		PRINT  露出好像忘记了自己是处女的笑容 
+		;处女＋恋慕か亲爱
+	ELSEIF TALENT:处女 == 1 && TALENT:恋慕
+		PRINTFORM 用稍显寂寞的眼神看着%CALLNAME:PLAYER%
+		;处女＋淫乱
+	ELSEIF TALENT:处女 == 1 && TALENT:淫乱
+		PRINT  不顾身为处女,摇晃着腰恳求着 
+		;处女＋难以越过的界线
+	ELSEIF TALENT:处女 == 1 && TALENT:难以越过的界线
+		PRINT 带着放弃了什么的表情,眼里含着淡淡的泪水
+		;处女
+	ELSEIF TALENT:处女 == 1
+		PRINT  失去处女的恐怖让她害怕得颤抖, 
+
+		;Ｖ经验200以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 200 && TALENT:淫乱
+		PRINT 只是对再次插入的期待就晃动着腰要高潮了
+		;Ｖ经验150以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 150 && TALENT:淫乱
+		PRINTFORM 用快要融化你的眼神注视着%CALLNAME:PLAYER%、主动的摩擦着分开了阴唇
+		;Ｖ经验120以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 120 && TALENT:淫乱
+		PRINT 带着恍惚的表情,迫不及待地扭动着腰
+		;Ｖ经验70以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 70 && TALENT:淫乱
+		PRINTFORM 充满欲望的眼睛里像要流出水来,望着%CALLNAME:PLAYER%
+		;Ｖ经验40以上
+	ELSEIF EXP:Ｖ经验 > 40
+		PRINT 叹息着陶醉在振动摩擦的感觉中
+		;Ｖ经验20以上
+	ELSEIF EXP:Ｖ经验 > 20
+		PRINT  在振动棒摩擦的感觉中扭动身体 
+		;それ以外
+	ELSE
+		PRINT 震动棒紧贴着肉褶的触感
+	ENDIF
+	PRINTL ている…
+	PRINTFORM %CALLNAME:TARGET%的
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 湿透了的
+	PRINTFORML  性器把振动插入 
+ENDIF
+;-------------------------------------------------
+;45,肛门振动棒
+;-------------------------------------------------
+@MESSAGE_COM45
+;解除時
+IF !TEQUIP:肛门振动棒
+	PRINTFORML %CALLNAME:TARGET% 从谷道抽出了肛门震动棒
+	PRINTFORM %CALLNAME:TARGET%は
+	;Ａ经验180以上＋淫乱か娼婦
+	IF EXP:Ａ经验 > 180 && TALENT:淫乱
+		PRINT  一边从蜜唇和口中流淌着淫水,一边继续张开两辦雪腻的股辦 
+		;Ａ经验140以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 140 && TALENT:淫乱
+		PRINT 用湿润的眼睛恳求般摇着雪臀
+		;Ａ经验100以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 100 && TALENT:淫乱
+		PRINT 感觉还不满足的翘起了雪臀
+		;Ａ经验70以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 70 && TALENT:淫乱
+		PRINT 有些恋恋不舍地摇动着臀部
+		;Ａ经验40以上
+	ELSEIF EXP:Ａ经验 > 40
+		PRINT  一边扭动屁股,一边露出松了一口气的表情. 
+		;Ａ经验20以上
+	ELSEIF EXP:Ａ经验 > 20
+		PRINT 强烈的排泄感染红了脸颊
+		;それ以外
+	ELSE
+		PRINT  用痛苦的表情忍受刺激 
+	ENDIF
+	PRINTFORML 正在…
+ELSE
+	PRINTFORM %CALLNAME:TARGET%の
+	SIF TEQUIP:0 & 2
+		PRINTFORM %SHOW_BOTTOM(TARGET,2)%被移开、
+	PRINTFORML 红红的后庭被打开了…
+	PRINTFORM %CALLNAME:TARGET%は
+	;Ａ经验180以上＋淫乱か娼婦
+	IF EXP:Ａ经验 > 180 && TALENT:淫乱
+		PRINT  以融化的表情,展开自己两片雪腻的股辦 
+		;Ａ经验140以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 140 && TALENT:淫乱
+		PRINT 焦急地等待插入一样地翘起了腰
+		;Ａ经验100以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 100 && TALENT:淫乱
+		PRINT  脸颊红红的,期待地摇动着股辦 
+		;Ａ经验70以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 70 && TALENT:淫乱
+		PRINT 被振动给予的刺激使身体颤抖
+		;Ａ经验40以上
+	ELSEIF EXP:Ａ经验 > 40
+		PRINT 期待和否定交织在一起的复杂表情
+		;Ａ经验20以上
+	ELSEIF EXP:Ａ经验 > 20
+		PRINT 遮住了羞的通红的脸颊
+		;それ以外
+	ELSE
+		PRINT 脸上满是被侵犯不净之穴的耻辱和屈辱感
+	ENDIF
+	PRINTL 正在…
+	PRINTFORM %CALLNAME:TARGET%の
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT  沾满了粘液 
+	PRINTFORML 把振动棒插入谷道
+ENDIF
+;-------------------------------------------------
+;46,肛珠
+;-------------------------------------------------
+@MESSAGE_COM46
+IF !TEQUIP:肛珠
+	PRINTFORML %CALLNAME:TARGET%从谷道把肛珠轻轻的拉了出来…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%让后庭一个接一个容纳了肛珠…
+ENDIF
+;-------------------------------------------------
+;47,乳头夹
+;-------------------------------------------------
+@MESSAGE_COM47
+IF !TEQUIP:乳头夹
+	PRINTFORML %CALLNAME:TARGET%乳头夹取下了
+ELSE
+	PRINTFORML %CALLNAME:TARGET%乳头夹安在了乳头上
+ENDIF
+;-------------------------------------------------
+;48,搾乳机
+;-------------------------------------------------
+@MESSAGE_COM48
+;解除時
+IF !TEQUIP:搾乳机
+	PRINTFORML %CALLNAME:TARGET%搾乳机取下了
+ELSE
+	PRINTFORML %CALLNAME:TARGET%搾乳机安上了
+ENDIF
+;-------------------------------------------------
+;60,正常位
+;-------------------------------------------------
+@MESSAGE_COM60
+;対面立位
+IF TFLAG:193
+	;抜かず
+	IF TCVAR:100 == PLAYER && TARGET == TFLAG:103
+		IF NOWEX:MASTER:射精
+			PRINTFORML %CALLNAME:TARGET%猛烈地耸动着腰、
+			PRINTFORML 射精的瞬间把阴茎插进阴道深处…
+		ELSEIF TCVAR:102
+			PRINTFORML %CALLNAME:TARGET%の将精液注入阴道内后、
+			PRINTFORML 阴茎没有软下前,又开始活动腰部了…
+		ELSEIF TEQUIP:体位２ == 1
+			;調教者についてる
+			IF HAS_PENIS(PLAYER)
+				PRINTFORML 一边品味着%CALLNAME:TARGET%の阴道内的触感,一边再次开始动腰…
+				;穿戴式阴茎を使用している場合
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%の不从阴道内拔出,再次开始耸动腰…
+			ENDIF
+		ELSE
+			IF TEQUIP:体位２ == 1
+				PRINTFORML %CALLNAME:TARGET%の不从阴道内拔出,再次开始动腰…
+				;背面立位から
+			ELSE
+				PRINTFORML 从%CALLNAME:TARGET%中拔出阴茎后,转了个方向
+				PRINTFORML 抬起一条玉腿后再次插入,再次开始耸动腰部…
+			ENDIF
+		ENDIF
+	ELSE
+		IF TALENT:处女 == 1
+			PRINTFORML 抬起%CALLNAME:TARGET%的一条玉腿,露出还不知男人滋味的\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@に
+			PRINTFORML 龟头一口气贯穿了进去…
+		ELSEIF MASTER_POSE(6,1,1) && MASTER_POSE(6,1,1) != TARGET
+			PRINTFORML 从%CALLNAME:(MASTER_POSE(6,1,1))%拔出阴茎的同时
+			PRINTFORML 插入到%CALLNAME:TARGET%…
+		ELSE
+			PRINTFORM 抬起%CALLNAME:TARGET%一条玉腿
+			SIF TEQUIP:0 & 2
+				PRINTFORM %SHOW_BOTTOM(TARGET,2)%拉开了、
+			SIF  PALAM:润滑 >= PALAMLV:3
+				PRINT 湿透了
+			IF TALENT:体型 < 0
+				PRINT 幼小的
+			ELSE
+				PRINT 秘裂に
+			ENDIF
+			PRINTL 用阴茎贯穿了…
+		ENDIF
+		IF TALENT:恋慕
+			IF TALENT:处女
+				PRINTFORML %CALLNAME:TARGET%忍受着痛苦,紧紧地抱住了%CALLNAME:PLAYER%…
+			ENDIF
+		ENDIF
+	ENDIF
+	;正常位
+ELSE
+	;抜かず
+	IF TCVAR:100 == PLAYER && TARGET == TFLAG:103
+		IF NOWEX:MASTER:射精
+			PRINTFORML 一边趴在着仰卧着的%CALLNAME:TARGET%身上一边摇着腰、
+			PRINTFORML 射精的瞬间将阴茎插入阴道深处…
+		ELSEIF TCVAR:102
+			PRINTFORML %CALLNAME:TARGET%阴道内的精液射入后、
+			PRINTFORML 阴茎没有软下前,又开始活动腰部了…
+		ELSEIF TEQUIP:体位２ == 1
+			;調教者についてる
+			IF HAS_PENIS(PLAYER)
+				PRINTFORML %CALLNAME:TARGET%の一边品味着阴道内的触感,一边再次开始动腰…
+				;穿戴式阴茎を使用している場合
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%の不从阴道内拔出,再次开始耸动腰…
+			ENDIF
+		ELSE
+			PRINTFORML 不从阴道内拔出,让%CALLNAME:TARGET%仰面躺下、再次开始耸动腰…
+		ENDIF
+	ELSE
+		IF TALENT:处女 == 1
+			PRINTFORML 仰躺着的%CALLNAME:TARGET%的脚张开,轻轻地插入龟头之后、
+			PRINTFORML 没有尝过男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@被贯穿了
+		ELSEIF MASTER_POSE(6,1,1) && MASTER_POSE(6,1,1) != TARGET
+			PRINTFORML 从%CALLNAME:(MASTER_POSE(6,1,1))%拔出阴茎的同时
+			PRINTFORML 插入%CALLNAME:TARGET%…
+		ELSE
+			PRINTFORM 仰面躺下%CALLNAME:TARGET%の
+			SIF TEQUIP:0 & 2
+				PRINTFORM %SHOW_BOTTOM(TARGET,2)%拉开了、
+			SIF  PALAM:润滑 >= PALAMLV:3
+				PRINT 湿透的
+			IF TALENT:体型 < 0
+				PRINT 幼小的
+			ELSE
+				PRINT 秘裂に
+			ENDIF
+			PRINTL 被贯穿了…
+		ENDIF
+		IF TALENT:恋慕
+			IF TALENT:处女
+				PRINTFORML %CALLNAME:TARGET%一边忍受痛苦,一边紧紧地抱住了%CALLNAME:PLAYER%…
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;61,后背位
+;-------------------------------------------------
+@MESSAGE_COM61
+;背面立位
+IF TFLAG:193
+	;抜かず
+	IF TCVAR:100 == PLAYER && TARGET == TFLAG:103
+		IF NOWEX:MASTER:射精
+			PRINTFORML %CALLNAME:PLAYER%抓住%CALLNAME:TARGET%的翘臀、
+			PRINTFORML 为了把精液注入阴道内,激烈地摇晃着腰…
+		ELSEIF TCVAR:102
+			PRINTFORML %CALLNAME:TARGET%的阴道内被精液注入后、
+			PRINTFORML 阴茎还没软下前,再次开始摇晃着腰…
+		ELSEIF TEQUIP:体位２ == 2
+			;調教者についてる
+			IF HAS_PENIS(PLAYER)
+				PRINTFORML 一边品味着%CALLNAME:TARGET%阴道内的触感,一边再次开始摇动腰部…
+				;穿戴式阴茎を使用している場合
+			ELSE
+				PRINTFORML %CALLNAME:TARGET% 不从阴道内拔出,再次开始摇动腰部 …
+			ENDIF
+		ELSE
+			IF TEQUIP:体位２ == 2
+				PRINTFORML 不从%CALLNAME:TARGET%的阴道内拔出阴茎再次开始摇动腰部
+				;対面立位から
+			ELSE
+				PRINTFORML 一从%CALLNAME:TARGET%体内拔出阴茎就让她扶墙站立
+				PRINTFORML  从后面插入,再开始摇动腰部…
+			ENDIF
+		ENDIF
+	ELSE
+		IF TALENT:处女 == 1
+			PRINTFORML 将手贴在墙壁上的%CALLNAME:TARGET%翘起臀部
+			PRINTFORML 还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@被阴茎贯穿…
+		ELSEIF MASTER_POSE(6,1,1) && MASTER_POSE(6,1,1) != TARGET
+			PRINTFORML 从%CALLNAME:(MASTER_POSE(6,1,1))%体内拔出阴茎的同时
+			PRINTFORML 插入到%CALLNAME:TARGET%…
+		ELSE
+			PRINTFORM 将手贴在墙壁上的%CALLNAME:TARGET%の
+			IF TEQUIP:0 & 2
+				PRINTFORM %SHOW_BOTTOM(TARGET,2)%拉开、
+			ELSEIF TEQUIP:0 & 1
+				PRINTFORM %SHOW_BOTTOM(TARGET,1)%卷起、
+			ENDIF
+			PRINTFORM 从后面
+			;润滑LV4以上
+			SIF PALAM:润滑 >= PALAMLV:4
+				PRINT 湿透了
+			;小柄体型
+			IF TALENT:体型 < 0
+				PRINT 尚未发育完全的
+			ELSE
+				PRINT 秘裂
+			ENDIF
+			PRINTFORML 插进最幽深处…
+		ENDIF
+	ENDIF
+ELSE
+	;抜かず
+	IF TCVAR:100 == PLAYER && TARGET == TFLAG:103
+		IF NOWEX:MASTER:射精
+			PRINTFORML %CALLNAME:PLAYER%抓住了四肢着地的%CALLNAME:TARGET%的腰、
+			PRINTFORML 为了把精液注入阴道内,激烈地摇晃着腰…
+		ELSEIF TCVAR:102
+			PRINTFORML %CALLNAME:TARGET%的阴道内被精液注入后、
+			PRINTFORML 阴茎还没软下前,再次开始摇晃着腰…
+		ELSEIF TEQUIP:体位２ == 2
+			;調教者についてる
+			IF HAS_PENIS(PLAYER)
+				PRINTFORML 一边品味着%CALLNAME:TARGET%阴道内的触感,一边再次开始摇动腰部…
+				;穿戴式阴茎を使用している場合
+			ELSE
+				PRINTFORML %CALLNAME:TARGET% 不从阴道内拔出,再次开始摇动腰部 …
+			ENDIF
+		ELSE
+			PRINTFORML 插入后使%CALLNAME:TARGET%四肢着地、再次开始摇动腰部…
+		ENDIF
+	ELSE
+		IF TALENT:处女 == 1
+			PRINTFORML 四肢着地的%CALLNAME:TARGET%翘起臀部
+			PRINTFORML 还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@被阴茎贯穿…
+		ELSEIF MASTER_POSE(6,1,1) && MASTER_POSE(6,1,1) != TARGET
+			PRINTFORML 从%CALLNAME:(MASTER_POSE(6,1,1))%身体中拔出的同时
+			PRINTFORML 插入了%CALLNAME:TARGET%…
+		ELSE
+			PRINTFORM 四肢着地的%CALLNAME:TARGET%の
+			IF TEQUIP:0 & 2
+				PRINTFORM %SHOW_BOTTOM(TARGET,2)%拉开了、
+			ELSEIF TEQUIP:0 & 1
+				PRINTFORM %SHOW_BOTTOM(TARGET,1)%卷起、
+			ENDIF
+			PRINTFORM 从后面
+			;润滑LV4以上
+			SIF PALAM:润滑 >= PALAMLV:4
+				PRINT 湿透了
+			;小柄体型
+			IF TALENT:体型 < 0
+				PRINT 尚未发育完全的
+			ELSE
+				PRINT 秘裂
+			ENDIF
+			PRINTFORML 插进最幽深处…
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;62,肛交正常位
+;-------------------------------------------------
+@MESSAGE_COM62
+IF TFLAG:193
+	IF TCVAR:101 == PLAYER && TARGET == TFLAG:103
+		IF NOWEX:MASTER:射精
+			PRINTFORML 将%CALLNAME:TARGET%压在墙上激烈的耸动着腰部、
+			PRINTFORML 射精的瞬间将阴茎插入谷道的深处…
+		ELSEIF TCVAR:104
+			PRINTFORML %CALLNAME:TARGET% 的肠内注入完精液后 、
+			PRINTFORML 阴茎还没软下前,再次开始摇晃着腰…
+		ELSEIF TEQUIP:体位２ == 2
+			;調教者についてる
+			IF HAS_PENIS(PLAYER)
+				PRINTFORML  一边品味%CALLNAME:TARGET%后庭的触觉,一边再次开始摇动腰部 …
+				;穿戴式阴茎を使用している場合
+			ELSE
+				PRINTFORML 不从%CALLNAME:TARGET%的谷道内拔出、再次开始摇动腰部…
+			ENDIF
+		ELSE
+			IF TEQUIP:体位２ == 2
+				PRINTFORML %CALLNAME:TARGET%阴茎不从肠内拔出再次开始摇动腰部…
+				;対面立位から
+			ELSE
+				PRINTFORML 一旦从%CALLNAME:TARGET%身体里拔出阴茎
+				PRINTFORML 立刻抬起一条玉腿,挿入后庭,再次开始摇动腰部…
+			ENDIF
+		ENDIF
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%の
+		SIF TEQUIP:0 & 2
+			PRINTFORM %SHOW_BOTTOM(TARGET,2)%的空隙间
+		;润滑LV4以上
+		SIF PALAM:润滑 >= PALAMLV:4
+			PRINT 沾满了粘液
+		;陥落済み
+		IF TALENT:恋慕
+			PRINTL 后庭插入了
+			PRINTFORML %CALLNAME:TARGET%一双玉腿缠在%CALLNAME:PLAYER%的腰上…
+		ELSE
+			PRINTL 后庭插入了…
+		ENDIF
+	ENDIF
+ELSE
+	IF TCVAR:101 == PLAYER && TARGET == TFLAG:103
+		IF NOWEX:MASTER:射精
+			PRINTFORML 趴在仰面躺下%CALLNAME:TARGET%的身上,耸动着腰部、
+			PRINTFORML 射精的瞬间将阴茎插入谷道的深处…
+		ELSEIF TCVAR:104
+			PRINTFORML %CALLNAME:TARGET% 的肠内注入完精液后 、
+			PRINTFORML 阴茎还没软下前,再次开始摇晃着腰…
+		ELSEIF TEQUIP:体位２ == 2
+			;調教者についてる
+			IF HAS_PENIS(PLAYER)
+				PRINTFORML  一边品味%CALLNAME:TARGET%后庭的触觉,一边再次开始摇动腰部 …
+				;穿戴式阴茎を使用している場合
+			ELSE
+				PRINTFORML 不从%CALLNAME:TARGET%的谷道内拔出、再次开始摇动腰部…
+			ENDIF
+		ELSE
+			PRINTFORML 不从仰面躺下的%CALLNAME:TARGET%谷道内拔出、再次开始摇动腰部…
+		ENDIF
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%の
+		SIF TEQUIP:0 & 2
+			PRINTFORM %SHOW_BOTTOM(TARGET,2)%的空隙间
+		;润滑LV4以上
+		SIF PALAM:润滑 >= PALAMLV:4
+			PRINT 沾满了粘液
+		;陥落済み
+		IF TALENT:恋慕
+			PRINTL 后庭插入了
+			PRINTFORML %CALLNAME:TARGET%一双玉腿缠在%CALLNAME:PLAYER%的腰上…
+		ELSE
+			PRINTL 后庭插入了…
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;63,肛交后背位
+;-------------------------------------------------
+@MESSAGE_COM63
+IF TFLAG:193
+	;連続
+	IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+		;調教者についてる
+		IF HAS_PENIS(PLAYER)
+			PRINTFORML 一边品味着%CALLNAME:TARGET%后庭内的触感、再次开始摇动腰部…
+			;穿戴式阴茎を使用している場合
+		ELSE
+			PRINTFORML 不从%CALLNAME:TARGET%的谷道内拔出、再次开始摇动腰部…
+		ENDIF
+		;抜かず
+	ELSEIF TCVAR:101 == PLAYER
+		IF TEQUIP:体位２ == 2
+			PRINTFORML 不从%CALLNAME:TARGET%的后庭内拔出再次开始摇动腰部…
+			;対面立位から
+		ELSE
+			PRINTFORML 一从%CALLNAME:TARGET%体内拔出,就让她扶墙站着
+			PRINTFORML  从后面插入,再开始摇动腰部…
+		ENDIF
+	ELSE
+		PRINTFORM 扶墙站着的%CALLNAME:TARGET%的
+		IF TEQUIP:0 & 2
+			PRINTFORM %SHOW_BOTTOM(TARGET,2)%拉开了、
+		ELSEIF TEQUIP:0 & 1
+			PRINTFORM %SHOW_BOTTOM(TARGET,1)%卷起、
+		ENDIF
+		PRINTFORM 从后面
+		;润滑LV4以上
+		SIF PALAM:润滑 >= PALAMLV:4
+			PRINT 沾满了粘液
+		PRINTFORML 突入了谷道最深处…
+	ENDIF	
+ELSE
+	;連続
+	IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+		;調教者についてる
+		IF HAS_PENIS(PLAYER)
+			PRINTFORML 一边品味着%CALLNAME:TARGET%后庭内的触感、再次开始摇动腰部…
+			;穿戴式阴茎を使用している場合
+		ELSE
+			PRINTFORML 不从%CALLNAME:TARGET%的谷道内拔出、再次开始摇动腰部…
+		ENDIF
+		;抜かず
+	ELSEIF TCVAR:101 == PLAYER
+		PRINTFORML 从后面插入四肢着地的%CALLNAME:TARGET%、再次开始摇动腰部…
+	ELSE
+		PRINTFORM 四肢着地的%CALLNAME:TARGET%の
+		IF TEQUIP:0 & 2
+			PRINTFORM %SHOW_BOTTOM(TARGET,2)%拉开了、
+		ELSEIF TEQUIP:0 & 1
+			PRINTFORM %SHOW_BOTTOM(TARGET,1)%卷起、
+		ENDIF
+		PRINTFORM 从后面
+		;润滑LV4以上
+		SIF PALAM:润滑 >= PALAMLV:4
+			PRINT 沾满了粘液
+		PRINTFORML 突入了谷道最深处…
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;64,逆强奸
+;-------------------------------------------------
+@MESSAGE_COM64
+;連続
+IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+	PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%的阴茎紧紧地夹住、执拗地摆动着腰…
+ELSE
+	PRINTFORM %CALLNAME:PLAYER%は%CALLNAME:TARGET%推倒了、
+	;対象が自分の子供
+	IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == 0
+		PRINT 我的儿子
+		CALL SON_OF_MY_SON(TARGET)
+		PRINTL 强行把阴茎塞进他出生的地方…
+	ELSE
+		PRINT 强行将阴茎
+		;調教者が处女
+		SIF TALENT:PLAYER:处女 == 1
+			PRINT 从未接受过男人的
+		PRINTL 阴道深处塞入了…
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;65,骑乘位
+;-------------------------------------------------
+@MESSAGE_COM65
+;抜かず
+IF TCVAR:100 == PLAYER && TARGET == TFLAG:103
+	IF NOWEX:MASTER:射精
+		PRINTFORML %CALLNAME:PLAYER%跨坐在%CALLNAME:TARGET%身上、
+		PRINTFORML 感受阴道内涌上来的似乎要把腰推起来的冲击…
+	ELSEIF TCVAR:102
+		PRINTFORML %CALLNAME:TARGET%的阴道内被精液注入后、
+		PRINTFORML 阴茎还没软下前,再次开始摇晃着腰…
+	ELSEIF TEQUIP:体位２ == 3
+		PRINTFORML %CALLNAME:TARGET%紧紧夹住插入体内的阴茎、再次开始摇动腰部…
+	ELSE
+		PRINTFORML 不从阴道内拔出抱着%CALLNAME:TARGET%,从下面不断冲击着对方腰臀…
+	ENDIF
+ELSE
+	IF TALENT:处女 == 1
+		PRINTFORM %CALLNAME:TARGET%跨在%CALLNAME:PLAYER%上面,慢慢地坐下
+		;处女＋小柄体型
+		IF TALENT:体型 < 0
+			PRINTL 、还不知男人滋味尚未发育完全的蜜裂把阴茎吞下去了…
+			;处女
+		ELSE
+			PRINTL 、还不知男人滋味秘裂把阴茎吞下去了…
+		ENDIF
+	ELSEIF MASTER_POSE(6,1,1) && MASTER_POSE(6,1,1) != TARGET
+		PRINTFORML %CALLNAME:TARGET%把%CALLNAME:(MASTER_POSE(6,1,1))%解放了的阴茎慢慢地放进自己的阴道内…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%跨在%CALLNAME:PLAYER%上面,慢慢地坐下…
+	ENDIF
+	;	;陥落済み
+	;	IF TALENT:恋慕
+	;		PRINTFORM %CALLNAME:TARGET%は
+	;		;小柄体型
+	;		SIF TALENT:体型 < 0
+	;			PRINT 用小小的身体拼命地
+	;		;巨乳
+	;		SIF TALENT:胸部尺寸 == 1
+	;			PRINT 饱满的乳房剧烈地摇动着,
+	;		;爆乳
+	;		SIF TALENT:胸部尺寸 == 2
+	;			PRINT 胸口被身体连带着跳跃起来
+	;		PRINTL 摇动着着自己的腰…
+	;	ENDIF
+ENDIF
+;-------------------------------------------------
+;66,肛交骑乘位
+;-------------------------------------------------
+@MESSAGE_COM66
+;連続
+IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+	PRINTFORML %CALLNAME:TARGET%紧紧的夹住了插入的东西,再度开始摇动腰部 …
+	;抜かず
+ELSEIF TCVAR:101 == PLAYER
+	PRINTFORML 不从%CALLNAME:TARGET%的谷道内拔出紧紧抱着她、从下方用腰力使劲冲刺…
+ELSE
+	PRINTFORM %CALLNAME:TARGET%跨在%CALLNAME:PLAYER%身体上方、
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 沾满了粘液
+	PRINTFORML 后庭慢慢地将%CALLNAME:PLAYER%的阴茎吞入了…
+ENDIF
+;陥落済み
+IF TALENT:恋慕
+	PRINTFORM %CALLNAME:TARGET%は
+	;小柄体型
+	SIF TALENT:体型 < 0
+		PRINT  用小小的身体拼命地 
+	;巨乳
+	SIF TALENT:胸部尺寸 == 1
+		PRINT 饱满的乳房跟着一起晃动,
+	;爆乳
+	SIF TALENT:胸部尺寸 == 2
+		PRINT 巨大的乳房被身体带着跳动起来
+	PRINTL 自己开始摇动腰部…
+ENDIF
+;-------------------------------------------------
+;67,対面座位
+;-------------------------------------------------
+@MESSAGE_COM67
+IF TCVAR:100 == PLAYER && TARGET == TFLAG:103
+	IF NOWEX:MASTER:射精
+		PRINTFORML %CALLNAME:PLAYER%把%CALLNAME:TARGET%紧紧拥抱着、
+		PRINTFORML 下体的冲击把对方腰都推高了…
+	ELSEIF TEQUIP:体位２ == 4
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%一边深吻着一边再次开始摇动腰…
+	ELSE
+		PRINTFORM 不从%CALLNAME:TARGET%体内拔出阴茎の紧紧地抱住她的身体、
+		PRINTFORML 一边深吻着一边再次开始摇动腰部…
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%的身体被抱起、
+	PRINTFORM 慢慢地放下
+	SIF TEQUIP:0 & 2
+		PRINTFORM 拉开了的%SHOW_BOTTOM(TARGET,2)%の隙間の
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 湿透了
+	;小柄体型
+	IF TALENT:体型 < 0
+		PRINT 尚未发育完全的
+	ELSE
+		PRINT 秘裂
+	ENDIF
+	PRINTFORM 插入、
+	;口球の有無
+	SIF TEQUIP:口球 == 0
+		PRINT 一边接吻
+	PRINTL 一边摇动着腰部…
+ENDIF
+;SIF TALENT:恋慕
+;	PRINTFORML %CALLNAME:TARGET%的一双粉臂,环搂着%CALLNAME:PLAYER%的脖子…
+
+;-------------------------------------------------
+;68,背面座位
+;-------------------------------------------------
+@MESSAGE_COM68
+IF TCVAR:100 == PLAYER && TARGET == TFLAG:103
+	IF NOWEX:MASTER:射精
+		PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%紧紧拥抱着、
+		PRINTFORML 下体的冲击把对方腰都推高了…
+	ELSEIF TEQUIP:体位２ == 5
+		PRINTFORML %CALLNAME:TARGET%被从背后抱住、 再次开始摇动%CALLNAME:TARGET%的身体 …
+	ELSE
+		PRINTFORML 不从%CALLNAME:TARGET%体内拔出阴茎 从背后抱住她,开始摇动身体 …
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%的身体被抱起、
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 湿透了
+	;小柄体型
+	IF TALENT:体型 < 0
+		PRINT 尚未发育完全的
+	ELSE
+		PRINT 秘裂
+	ENDIF
+	IF TEQUIP:0 & 2
+		PRINTFORML に%SHOW_BOTTOM(TARGET,2)%的空隙间慢慢插入了…
+	ELSE
+		PRINTFORML 用她等待已久的东西慢慢插入了…
+	ENDIF
+ENDIF
+;SIF TALENT:恋慕
+;	PRINTFORML %CALLNAME:TARGET%仰起背部,努力贴着%CALLNAME:PLAYER%…
+
+;-------------------------------------------------
+;69,肛交对面座位
+;-------------------------------------------------
+@MESSAGE_COM69
+;連続
+IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+	PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%一边深吻着一边再次开始摇动腰…
+	RETURN 0
+	;抜かず
+ELSEIF TCVAR:101 == PLAYER
+	PRINTFORM 从谷道内
+	;調教者についてる
+	IF HAS_PENIS(PLAYER)
+		PRINTFORM 阴茎
+	ELSE
+		PRINTFORM 假阴茎
+	ENDIF
+	PRINTFORM 不拔出去,紧紧地抱住%CALLNAME:TARGET%她的身体、
+ELSE
+	PRINTFORM %CALLNAME:TARGET%的身体被抱起
+	SIF TEQUIP:0 & 2
+		PRINTFORM %SHOW_BOTTOM(TARGET,2)%被强行拉开
+	PRINTFORM 慢慢地放下
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 沾满了粘液
+	PRINTFORM 插入后庭、
+ENDIF
+;口球の有無
+SIF TEQUIP:口球 == 0
+	PRINT 一边接吻
+PRINTL 一边摇动着腰部…
+;陥落済み
+SIF TALENT:恋慕
+	PRINTFORML %CALLNAME:TARGET%的一双粉臂,环搂着%CALLNAME:PLAYER%的脖子…
+
+;-------------------------------------------------
+;70,肛交背面座位
+;-------------------------------------------------
+@MESSAGE_COM70
+;連続
+IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+	PRINTFORML %CALLNAME:TARGET%被从背后抱住、 再次开始摇动%CALLNAME:TARGET%的身体 …
+	;抜かず
+ELSEIF TCVAR:101 == PLAYER
+	PRINTFORM 从谷道内
+	;調教者についてる
+	IF HAS_PENIS(PLAYER)
+		PRINTFORM 把阴茎
+	ELSE
+		PRINTFORM 把假阴茎
+	ENDIF
+	PRINTFORML 不拔出去%CALLNAME:TARGET% 从背后抱住她,开始摇动身体 …
+ELSE
+	PRINTFORML %CALLNAME:TARGET%的身体被抱起、
+	SIF TEQUIP:0 & 2
+		PRINTFORM 拉开了的%SHOW_BOTTOM(TARGET,2)%的空隙间
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 沾满了粘液
+	PRINTFORML アヌス用她等待已久的东西慢慢插入了…
+ENDIF
+;陥落済み
+SIF TALENT:恋慕
+	PRINTFORML %CALLNAME:TARGET%仰起背部,努力贴着%CALLNAME:PLAYER%…
+
+;-------------------------------------------------
+;71,二穴插入
+;-------------------------------------------------
+@MESSAGE_COM71
+VARSET LOCAL
+LOCAL:1 = MASTER_POSE(6,1,1)
+LOCAL:2 = MASTER_POSE(7,1,1)
+IF LOCAL:1
+	LOCAL = LOCAL:1
+ELSEIF LOCAL:2
+	LOCAL = LOCAL:2
+ENDIF
+;LOCAL 二穴插入侍奉人
+;連続
+IF PREVCOM == SELECTCOM
+	PRINTFORML %CALLNAME:LOCAL%被同时贯穿两个小穴,狂暴快感的冲击下,忘我的呻吟着… 
+	RETURN 0
+	;主人V挿入-TARGET A挿入
+ELSEIF LOCAL == LOCAL:1
+	PRINTFORML %CALLNAME:MASTER%一边保持%CALLNAME:LOCAL%的后庭张开、催促%CALLNAME:TARGET%快侵犯她的后庭…
+	;主人A挿入-助手V挿入
+ELSE
+	PRINTFORML %CALLNAME:MASTER%在插入%CALLNAME:LOCAL%后庭的情况下,将她抱起、分开其一双玉腿催促%CALLNAME:TARGET%快侵犯她的蜜穴…
+ENDIF
+
+;-------------------------------------------------
+;72,二穴插入侍奉
+;-------------------------------------------------
+@MESSAGE_COM72
+VARSET LOCAL
+LOCAL:1 = MASTER_POSE(1,6,1)
+LOCAL:2 = MASTER_POSE(1,7,1)
+IF LOCAL:1
+	LOCAL = LOCAL:1
+ELSEIF LOCAL:2
+	LOCAL = LOCAL:2
+ENDIF
+;LOCAL 先に挿す人
+;連続
+IF PREVCOM == SELECTCOM
+	PRINTFORML %CALLNAME:MASTER%被同时贯穿两个小穴,狂暴快感的冲击下,忘我的呻吟着… 
+	RETURN 0
+	;LOCALV挿入-TARGET A挿入
+ELSEIF LOCAL == LOCAL:1
+	PRINTFORM %CALLNAME:LOCAL%一边保持%CALLNAME:MASTER%の
+	SIF TEQUIP:PLAYER:0 & 2
+		PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉到一边
+	PRINTFORML 打开后庭、
+	PRINTFORML 催促%CALLNAME:TARGET%快侵犯他的后庭…
+
+	;LOCALA挿入-TARGET V挿入
+ELSE
+	PRINTFORML %CALLNAME:LOCAL%は后庭插入了状態で%CALLNAME:MASTER%被抱了起来、
+	PRINTFORM 双腿张开
+	SIF TEQUIP:PLAYER:0 & 2
+		PRINTFORM 、%SHOW_BOTTOM(PLAYER,2)%拉开了
+	PRINTFORML て催促%CALLNAME:TARGET%快侵犯他的蜜穴…
+ENDIF
+
+;-------------------------------------------------
+;80,手淫
+;-------------------------------------------------
+@MESSAGE_COM80
+VARSET LOCAL
+IF MASTER_POSE(6,1,1)
+	LOCAL = MASTER_POSE(6,1,1)
+ELSEIF MASTER_POSE(7,1,1)
+	LOCAL = MASTER_POSE(7,1,1)
+ENDIF
+IF NOWEX:MASTER:射精
+	IF LOCAL == TARGET
+		PRINTFORML 在射精之前从中\@ MASTER_POSE(6,1,1) ? 阴道 # 菊花 \@拔出阴茎让%CALLNAME:TARGET%握住…
+	ELSEIF LOCAL
+		PRINTFORML 在射精之前从中%CALLNAME:LOCAL%拔出阴茎让%CALLNAME:TARGET%握住…
+	ELSE
+		PRINTFORML 射精寸前把阴茎让%CALLNAME:TARGET%握住…
+	ENDIF
+	IF ABL:技巧 > 2
+		IF ABL:精液中毒 > 2
+			PRINTFORML %CALLNAME:TARGET%激烈地握弄着阴茎,在马口前张着嘴等待着精液的到来…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%不断用手探寻着阴茎的敏感带,%CALLNAME:PLAYER%感到快要忍不住了…
+		ENDIF
+	ELSE
+		PRINTFORML %CALLNAME:TARGET% 一边迷糊的看着马口,一边将阴茎前后套弄着. …
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%は
+	;恋慕か亲爱
+	SIF TALENT:恋慕
+		PRINT 露出爱慕的表情、
+	;淫乱か娼婦
+	SIF TALENT:淫乱
+		PRINT 主动的
+	PRINTFORML %CALLNAME:PLAYER%手指缠在阴茎上摩擦着…
+ENDIF
+;-------------------------------------------------
+;81,口交
+;-------------------------------------------------
+@MESSAGE_COM81
+VARSET LOCAL
+;お扫除用
+IF TCVAR:MASTER:112 == 1
+	LOCAL = MASTER_POSE(6,1,1)
+ELSEIF TCVAR:MASTER:112 == 2
+	LOCAL = MASTER_POSE(7,1,1)
+ENDIF
+IF MASTER_POSE(6,1,1)
+	LOCAL:1 = MASTER_POSE(6,1,1)
+ELSEIF MASTER_POSE(7,1,1)
+	LOCAL:1 = MASTER_POSE(7,1,1)
+ENDIF
+;お扫除
+IF LOCAL
+	PRINTFORML %CALLNAME:LOCAL%之中射精后拔出了阴茎、
+	PRINTFORML  让%CALLNAME:TARGET%舐去阴茎上黏着的精液 …
+	SIF TFLAG:8
+		PRINTFORML %CALLNAME:TARGET%把残留在尿道的精液全部清洁干净之后\@ ABL:精液中毒 > 2 ?恋恋不舍的 # \@嘴唇从阴茎上离开了…
+ELSEIF NOWEX:MASTER:射精 
+	IF LOCAL:1 == TARGET
+		PRINTFORML 在射精之前\@ MASTER_POSE(6,1,1) ? 阴道 # 菊花 \@从中拔出阴茎%CALLNAME:TARGET%吸允着…
+	ELSEIF LOCAL
+		PRINTFORML 在射精之前%CALLNAME:LOCAL%从中拔出阴茎%CALLNAME:TARGET%吸允着…
+	ELSE
+		PRINTFORML 射精寸前把阴茎%CALLNAME:TARGET%吸允着…
+	ENDIF
+	IF ABL:技巧 > 2
+		IF ABL:精液中毒 > 2
+			PRINTFORML %CALLNAME:TARGET%用嘴唇含住龟头后快速舔弄着以期 %CALLNAME:PLAYER%快点射精…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET% 舌头贴在阴茎敏感的部分 以期 %CALLNAME:PLAYER%快点射精…
+		ENDIF
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は一边注意%CALLNAME:PLAYER%的反应一边拼命地动着舌头…
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%は
+	;恋慕か亲爱
+	SIF TALENT:恋慕
+		PRINT 露出慈爱的表情、
+	;淫乱か娼婦
+	SIF TALENT:淫乱
+		PRINT 主动
+	PRINTFORML 舌头缠在%CALLNAME:PLAYER%的阴茎上舔弄着
+ENDIF
+;-------------------------------------------------
+;82,乳交
+;-------------------------------------------------
+@MESSAGE_COM82
+PRINTFORM %CALLNAME:TARGET%は
+;恋慕か亲爱
+SIF TALENT:恋慕
+	PRINT 爱慕的望着你、
+;貧乳
+IF TALENT:胸部尺寸 == -1
+	PRINT 小小的乳房努力夹住阴茎
+	;巨乳
+ELSEIF TALENT:胸部尺寸 == 1
+	PRINT 用丰满的胸膛包裹着阴茎
+	;爆乳
+ELSEIF TALENT:胸部尺寸 == 2
+	PRINT 用太过丰满的胸膛将阴茎包裹起来
+ELSE
+	PRINT 乳沟中夹着阴茎
+ENDIF
+PRINTL 摩擦着…
+;-------------------------------------------------
+;83,素股
+;-------------------------------------------------
+@MESSAGE_COM83
+PRINTFORM %CALLNAME:TARGET%把%CALLNAME:PLAYER%的阴茎用胯下摩擦着、
+;淫乱か娼婦＋欲情のPALAMLV5以上
+IF TALENT:淫乱 && PALAM:欲情 >= PALAMLV:5
+	PRINTFORM 一副沉醉在快乐中的表情,媚眼如丝的勾引着%CALLNAME:PLAYER%
+	;恋慕か亲爱＋欲情のPALAMLV5以上
+ELSEIF TALENT:恋慕 && PALAM:欲情 >= PALAMLV:5
+	PRINT 如水的眼眸中露出快要融化的神情
+	;欲情のPALAMLV4以上
+ELSEIF PALAM:欲情 >= PALAMLV:4
+	PRINT 嘴角边淫荡的流下了口水
+	;恋慕か亲爱
+ELSEIF TALENT:恋慕
+	PRINTFORM 如水的眼眸中露出陶醉的眼神,媚眼如丝的勾引着%CALLNAME:PLAYER%
+	;淫乱か娼婦
+ELSEIF TALENT:淫乱
+	PRINTFORM 一边用淫荡的眼神挑衅
+	;恥薄い
+ELSEIF TALENT:羞耻心 < 0
+	PRINTFORM 大胆地主动摇动起腰部
+	;缺乏感情
+ELSEIF TALENT:缺乏感情
+	PRINTFORM 一脸忧郁的神色
+ELSE
+	PRINT 一脸害羞的表情
+ENDIF
+;小柄体型
+IF TALENT:体型 < 0
+	PRINT 尚未发育完全的を
+ELSE
+	PRINT 陰唇を
+ENDIF
+PRINTL 在阴茎上摩擦…
+;-------------------------------------------------
+;84,泡澡
+;-------------------------------------------------
+@MESSAGE_COM84
+PRINTFORM %CALLNAME:TARGET% 用起泡的香皂,涂在自己身上 、
+;恋慕か亲爱
+SIF TALENT:恋慕
+	PRINT 出神的看着你
+;小柄体型
+IF TALENT:体型 < 0
+	PRINTFORM %CALLNAME:PLAYER%用心擦拭着小小的身体
+	;巨乳か爆乳＋小柄体型でない
+ELSEIF TALENT:胸部尺寸 > 0
+	PRINTFORM %CALLNAME:PLAYER%将丰满的胸部和光滑的肌肤仔细擦拭了
+ELSE
+	PRINTFORM %CALLNAME:PLAYER%将全身仔细擦拭了
+ENDIF
+PRINTL 并爱抚着…
+;-------------------------------------------------
+;85,足扱き
+;-------------------------------------------------
+@MESSAGE_COM85
+PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%用足底
+;施虐狂
+SIF TALENT:施虐狂
+	PRINT 感到疼痛的力度
+;恋慕か亲爱
+SIF TALENT:恋慕
+	PRINT 仔细的
+PRINTFORML 摩擦着…
+;-------------------------------------------------
+;86,足舐め強制
+;-------------------------------------------------
+@MESSAGE_COM86
+;野外PLAY中
+IF TEQUIP:野外PLAY
+	;昼
+	IF TIME == 0
+		PRINT 晴空之下、
+		;夜
+	ELSE
+		PRINT 在月光中、
+	ENDIF
+	;臆病、自尊心高い、恥じらいのいずれか
+	IF TALENT:胆量 < 0 || TALENT:自尊心 > 0 || TALENT:羞耻心 > 0
+		PRINTL 一边提心吊胆的担心这个痴态是不是会被谁看见
+	ELSE
+		PRINTL 被风抚摸着肌肤微微颤抖
+	ENDIF
+	;媚药有効
+ELSEIF TEQUIP:媚药
+	PRINT 视线已经迷乱了
+ENDIF
+PRINTFORML %CALLNAME:TARGET%用双手将%CALLNAME:PLAYER%的脚捧在手上舔着…
+
+;-------------------------------------------------
+;90,肛门爱抚侍奉
+;-------------------------------------------------
+@MESSAGE_COM90
+IF TEQUIP:0 > 1
+	PRINTFORM %CALLNAME:TARGET%对%CALLNAME:PLAYER%衣服被拉开的后庭
+ELSE
+	PRINTFORM %CALLNAME:TARGET%对%CALLNAME:PLAYER%后庭
+ENDIF
+
+IF ABL:PLAYER:Ａ感觉 <= 1
+	PRINT 用手腹抚摸着
+ELSEIF ABL:PLAYER:Ａ感觉 <= 3
+	PRINT 像要打开后庭似的
+ELSE
+	PRINT 像插进手指一样
+ENDIF
+
+PRINTFORML 爱抚起来…
+
+IF ABL:PLAYER:Ａ感觉 <= 1
+	PRINTFORML %CALLNAME:PLAYER%似乎还没有被接受这种感觉…
+ELSEIF ABL:PLAYER:Ａ感觉 <= 3
+	PRINTFORML %CALLNAME:PLAYER%因异物感挺直了背脊…
+ELSE
+	PRINTFORML %CALLNAME:PLAYER%一副若无其事的神情任人摆布…
+ENDIF
+
+;-------------------------------------------------
+;91,肛门舔舐侍奉
+;-------------------------------------------------
+@MESSAGE_COM91
+PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%的后庭亲吻着
+IF ABL:侍奉精神 >= 3
+	PRINTFORML 舔开皱折、甚至谷道内也被侵犯.%CALLNAME:PLAYER%不由得浑身颤抖…
+ELSE
+	PRINTFORML 敏感的粘膜被舔舐、%CALLNAME:PLAYER%身体在颤抖…
+ENDIF
+
+;-------------------------------------------------
+;92,Ａ正常位侍奉
+;-------------------------------------------------
+@MESSAGE_COM92
+;抜かずに
+IF TCVAR:PLAYER:101 == TARGET && TARGET == TFLAG:103
+	;対象が射精
+	IF NOWEX:TARGET:射精
+		PRINTFORML %CALLNAME:TARGET%趴在%CALLNAME:PLAYER%身上、不断侵犯肛门
+		PRINTFORM  不一会儿,那根肉柱颤抖起来. 、%CALLNAME:PLAYER%的谷道内被注入了精子
+		;調教者も射精.ぬふぅ
+		SIF NOWEX:PLAYER:射精
+			PRINTFORM 同時绝顶的%CALLNAME:PLAYER%の的阴茎大幅颤动、吐出了炽热的白浊
+		PRINTFORML …
+		;前ターンでＡ中出し
+	ELSEIF TCVAR:PLAYER:104
+		PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の不断侵犯肛门
+		PRINTFORML  每当肉柱插入被精液填满的谷道时,就会响起黏糊的淫秽的水声 …
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は不从仰面躺下的%CALLNAME:TARGET%谷道内拔出、再次开始摇动腰部…
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%を
+	IF ABL:抖Ｓ之气 >= 3
+		PRINTFORM 仰面粗暴地被推倒、
+	ELSE
+		PRINTFORM 仰面躺下、
+	ENDIF
+	SIF TEQUIP:PLAYER:0 & 2
+		PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+	IF EXP:PLAYER:Ａ经验 >= EXPLV:4
+		PRINTFORML 贯穿已经变软和融洽的肛门
+	ELSEIF EXP:PLAYER:Ａ经验 >= EXPLV:3
+		PRINTFORML 小心翼翼地穿入那紧闭的后庭
+	ELSE
+		PRINTFORML 强行贯穿了拒绝异物的后庭
+	ENDIF
+	;ちんちん
+	IF HAS_PENIS(TARGET)
+		PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+		;にせちん
+	ELSE
+		PRINTFORM 硅胶假阴茎
+	ENDIF
+	PRINTFORML 后庭被侵犯的感觉、让%CALLNAME:PLAYER%喘息不已…
+ENDIF
+
+;-------------------------------------------------
+;93,Ａ后背位侍奉
+;-------------------------------------------------
+@MESSAGE_COM93
+;抜かずに
+IF TCVAR:PLAYER:101 == TARGET && TARGET == TFLAG:103
+	;対象が射精
+	IF NOWEX:TARGET:射精
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%的臀部用腰部剧烈的撞击着
+		PRINTFORM  不一会儿,那根肉柱颤抖起来. 、%CALLNAME:PLAYER%的谷道内被注入了精子
+		;調教者も射精
+		SIF NOWEX:PLAYER:射精
+			PRINTFORM 同時绝顶的%CALLNAME:PLAYER%的阴茎吐出了炽热的白浊、把地板弄脏了
+		PRINTFORML …
+		;前ターンでＡ中出し
+	ELSEIF TCVAR:PLAYER:104
+		PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%不断侵犯肛门
+		PRINTFORM 精液和肠液使后庭愈加润滑
+		IF HAS_PENIS(TARGET)
+			PRINTFORM 阴茎
+		ELSE
+			PRINTFORM 假阴茎
+		ENDIF
+		PRINTFORML %CALLNAME:PLAYER%の的后庭不停的吞吐着
+		PRINTFORML 那煽情的景色%CALLNAME:TARGET%更加昂扬了…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は不从仰面躺下的%CALLNAME:TARGET%谷道内拔出、再次开始摇动腰部…
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%对%CALLNAME:PLAYER%
+	IF ABL:抖Ｓ之气 >= 3
+		PRINTFORM 下令趴下
+	ELSE
+		PRINTFORM  使其趴下 、
+	ENDIF
+	SIF TEQUIP:PLAYER:0 & 2
+		PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+	IF EXP:PLAYER:Ａ经验 >= EXPLV:4
+		PRINTFORML 贯穿已经变软和融洽的肛门
+	ELSEIF EXP:PLAYER:Ａ经验 >= EXPLV:3
+		PRINTFORML 小心翼翼地穿入那紧闭的后庭
+	ELSE
+		PRINTFORML 强行贯穿了拒绝异物的后庭
+	ENDIF
+	;ちんちん
+	IF HAS_PENIS(TARGET)
+		PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+		;にせちん
+	ELSE
+		PRINTFORM 硅胶假阴茎
+	ENDIF
+	PRINTFORML 后庭被侵犯的感觉、让%CALLNAME:PLAYER%喘息不已…
+ENDIF
+
+;-------------------------------------------------
+;94,Ａ骑乘位侍奉
+;-------------------------------------------------
+@MESSAGE_COM94
+;抜かずに
+IF TCVAR:PLAYER:101 == TARGET && TARGET == TFLAG:103
+	;対象が射精
+	IF NOWEX:TARGET:射精
+		PRINTFORM %CALLNAME:PLAYER%は
+		IF ABL:PLAYER:Ａ感觉 >= 3
+			PRINTFORML 淫乱地扭动腰、贪图着后庭传来的快乐
+		ELSE
+			PRINTFORML 拼命地摆动着腰、服务着%CALLNAME:TARGET%的男性性器
+		ENDIF
+		PRINTFORM 不久就绝顶的%CALLNAME:TARGET%阴茎一阵痉挛、%CALLNAME:PLAYER%的谷道内被注入了精子
+		;調教者も射精
+		SIF NOWEX:PLAYER:射精
+			PRINTFORM 同時に%CALLNAME:PLAYER%的龟头喷出了炽热的白浊、在空中飞舞
+		PRINTFORML …
+		;前ターンでＡ中出し
+	ELSEIF TCVAR:PLAYER:104
+		PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の不断侵犯肛门
+		PRINTFORM  溢出的精液和肠液浸湿了接合处,拉出了一条细细的污秽的白线. …
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は不从仰面躺下的%CALLNAME:TARGET%谷道内拔出、再次开始摇动腰部…
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%は
+	IF ABL:抖Ｓ之气 >= 3
+		PRINTFORM 跨在对方腰上%CALLNAME:PLAYER%服从命令、坐下
+	ELSE
+		PRINTFORM %CALLNAME:PLAYER%跨在对方腰上、坐下
+	ENDIF
+	SIF TEQUIP:PLAYER:0 & 2
+		PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+	IF EXP:PLAYER:Ａ经验 >= EXPLV:4
+		PRINTFORML 贯穿已经变软和融洽的肛门
+	ELSEIF EXP:PLAYER:Ａ经验 >= EXPLV:3
+		PRINTFORML 小心翼翼地穿入那紧闭的后庭
+	ELSE
+		PRINTFORML 强行贯穿了拒绝异物的后庭
+	ENDIF
+	;ちんちん
+	IF HAS_PENIS(TARGET)
+		PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+		;にせちん
+	ELSE
+		PRINTFORM 硅胶假阴茎
+	ENDIF
+	PRINTFORML 后庭被侵犯的感觉、让%CALLNAME:PLAYER%喘息不已…
+ENDIF
+
+;-------------------------------------------------
+;95,爱抚侍奉
+;-------------------------------------------------
+@MESSAGE_COM95
+SIF TEQUIP:50 == TARGET || TEQUIP:51 == TARGET
+	PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%保持
+PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%的
+;小柄体型
+SIF TALENT:PLAYER:体型 < 0
+	PRINT 未发育的
+
+IF TEQUIP:0 > 1
+	PRINTFORM 穿着衣服的身体
+ELSE
+	PRINTFORM 身体
+ENDIF
+
+PRINTFORML 仔细爱抚着…
+
+IF IS_ORGASM_CVAB(TARGET)
+	IF TEQUIP:50 == TARGET || TEQUIP:51 == TARGET
+		PRINTFORML %CALLNAME:PLAYER%の\@ TEQUIP:50 == TARGET ? 膣 # 后庭 \@は%CALLNAME:TARGET%每次被爱抚身体时都会微微收缩
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%每次被爱抚时身体都会微微颤抖
+	ENDIF
+	IF EXP_UP(27,PLAYER)
+		PRINTFORML 脸快乐得快融化了的%CALLNAME:TARGET%的唇在祈求着接吻…
+	ELSE
+		PRINTFORML 为感受到的快乐而颤抖…
+	ENDIF
+ELSE
+	IF TEQUIP:50 == TARGET || TEQUIP:51 == TARGET
+		PRINTFORM %CALLNAME:PLAYER%的阴茎被紧紧地含住
+	ELSE
+		PRINTFORM %CALLNAME:PLAYER%は%CALLNAME:TARGET%紧紧地依偎着
+	ENDIF
+	IF EXP_UP(27,PLAYER)
+		PRINTFORML %CALLNAME:TARGET%的唇在祈求着接吻…
+	ELSE
+		PRINTFORML 在快乐中颤抖着身体…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;96,舔阴侍奉
+;-------------------------------------------------
+@MESSAGE_COM96
+PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%的蜜穴被舔舐了…
+IF ABL:侍奉精神 >= 3
+	PRINTFORML 被细心地舔着敏感的粘膜、%CALLNAME:PLAYER%不由得浑身颤抖…
+ELSE
+	PRINTFORML 被舔着敏感的粘膜、%CALLNAME:PLAYER%身体在颤抖…
+ENDIF
+;-------------------------------------------------
+;97,正常位させる(されるに分岐あり)
+;-------------------------------------------------
+@MESSAGE_COM97
+;相手に主導権
+IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
+	;対面立位
+	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORML %CALLNAME:TARGET%将%CALLNAME:PLAYER%一只玉腿抬起、不断的侵犯蜜穴…
+				PRINTFORM  不一会儿,那根肉柱颤抖起来. 、%CALLNAME:PLAYER%の蜜穴内被精液深深的注入了…
+				;調教者も射精.ぬふぅ
+				SIF NOWEX:PLAYER:射精
+					PRINTFORM 同時绝顶的%CALLNAME:PLAYER%の的阴茎大幅颤动、吐出了炽热的白浊…
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の蜜穴不断的侵犯…
+				PRINTFORML  在被精液填满了的蜜穴内肉柱每次插入的搅动,都带起一片淫靡的水声. …
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%不从阴道内拔出阴茎%CALLNAME:PLAYER%の一条玉腿被抬起、再次开始摇动腰部…
+			ENDIF
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%把%CALLNAME:PLAYER%を
+			IF ABL:抖Ｓ之气 >= 3 || TALENT:施虐狂
+				PRINTFORML 逼入墙角强行插入、
+			ELSE
+				PRINTFORML 逼入墙角、
+			ENDIF
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF TALENT:PLAYER:处女 == 1
+				PRINTFORM %CALLNAME:PLAYER%の还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@に
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORM %CALLNAME:PLAYER%の已经开始变软融化的蜜处
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORM %CALLNAME:PLAYER%の初步被开发的蜜穴
+			ELSE
+				PRINTFORM %CALLNAME:PLAYER%の还拒绝异物的蜜穴里强行
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL  让阴茎侵入后,开始摇动腰部
+				ELSE
+					PRINTFORML  让灼热的阴茎侵入后,开始摇动腰部
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 让硅胶假阴茎侵入后、开始摇动腰部…
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+				;にせちん
+			ELSE
+				PRINTFORM 硅胶假阴茎
+			ENDIF
+			PRINTFORML 蜜穴内被侵犯的快感、让%CALLNAME:PLAYER%喘息不已…
+		ENDIF
+		;正常位
+	ELSE
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORML %CALLNAME:TARGET%趴在%CALLNAME:PLAYER%身上、对其蜜穴不断的侵犯…
+				PRINTFORM  不一会儿,那根肉柱颤抖起来 、%CALLNAME:PLAYER%の蜜穴内被精液深深的注入了…
+				;調教者も射精.ぬふぅ
+				SIF NOWEX:PLAYER:射精
+					PRINTFORM 同時绝顶的%CALLNAME:PLAYER%の的阴茎大幅颤动、吐出了炽热的白浊…
+				PRINTFORML …
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%蜜穴不断的侵犯…
+				PRINTFORML  在被精液填满了的蜜穴内肉柱每次插入的搅动,都带起一片淫靡的水声. …
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%不从阴道内拔出阴茎,让%CALLNAME:PLAYER%仰面躺下、再次开始摇动腰部…
+			ENDIF
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%被%CALLNAME:PLAYER%を
+			IF ABL:抖Ｓ之气 >= 3 || TALENT:施虐狂
+				PRINTFORML 仰面粗暴地被推倒、
+			ELSE
+				PRINTFORML 仰面躺下、
+			ENDIF
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF TALENT:PLAYER:处女 == 1
+				PRINTFORM %CALLNAME:PLAYER%の还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@に
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORM %CALLNAME:PLAYER%の已经开始变软融化的蜜处
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORM %CALLNAME:PLAYER%の初步被开发的蜜穴
+			ELSE
+				PRINTFORM %CALLNAME:PLAYER%の还拒绝异物的蜜穴里强行
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL  让阴茎侵入后,开始摇动腰部
+				ELSE
+					PRINTFORML  让灼热的阴茎侵入后,开始摇动腰部
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 让硅胶假阴茎侵入后、开始摇动腰部…
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+				;にせちん
+			ELSE
+				PRINTFORM 硅胶假阴茎
+			ENDIF
+			PRINTFORML 在蜜穴内侵犯的感觉、让%CALLNAME:PLAYER%喘息不已…
+		ENDIF
+	ENDIF
+ELSE
+	;対面立位
+	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+		;抜かず
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORM %CALLNAME:TARGET%因强烈的快感激烈地耸动腰部、%CALLNAME:PLAYER%の阴道里射了出来
+				;調教者も射精.ぬふぅ
+				IF NOWEX:PLAYER:射精
+					PRINTL
+					PRINTFORM %CALLNAME:PLAYER%被%CALLNAME:TARGET%の持续的强烈冲击送上了高潮
+				ENDIF
+				PRINTFORML …
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の蜜穴不断侵犯
+				PRINTFORML  在被精液填满了的蜜穴内肉柱每次插入的搅动,都带起一片淫靡的水声. …
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%把%CALLNAME:PLAYER%の一条玉腿抬起、有节奏地持续耸动着腰…
+			ENDIF
+		ELSE
+
+			PRINTFORM %CALLNAME:PLAYER%は
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
+			SIF TALENT:PLAYER:处女 == 1
+				PRINTFORM 还不知男人滋味
+			PRINTFORML 主动打开蜜裂诱惑着%CALLNAME:TARGET%
+
+			PRINTFORM %CALLNAME:TARGET%手搭在%CALLNAME:PLAYER%の身上、
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORML 把龟头贴在已经变得柔软和湿润的阴道口上
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORML 把龟头贴在微微张开的阴道口上
+			ELSE
+				PRINTFORML 把龟头贴在尚拒绝异物的阴道口上
+			ENDIF
+
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					PRINT 两个
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL 阴茎侵犯他出生的地方、开始摇动腰部…
+				ELSE
+					PRINTFORML 灼热的阴茎,%CALLNAME:PLAYER%的子宫内侵入了、开始摇动腰部…
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 無機質假阴茎,%CALLNAME:PLAYER%的子宫内侵入了、开始摇动腰部…
+			ENDIF
+
+		ENDIF
+		;正常位
+	ELSE
+		;抜かず
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORM %CALLNAME:TARGET%因强烈的快感激烈地耸动腰部、在%CALLNAME:PLAYER%の阴道里射了出来
+				;調教者も射精.ぬふぅ
+				IF NOWEX:PLAYER:射精
+					PRINTL
+					PRINTFORM %CALLNAME:PLAYER%被%CALLNAME:TARGET%の持续的强烈冲击送上了高潮
+				ENDIF
+				PRINTFORML …
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の蜜穴不断侵犯
+				PRINTFORML  在被精液填满了的蜜穴内肉柱每次插入的搅动,都带起一片淫靡的水声. …
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%身体紧紧贴在一起,兴奋的继续激烈地耸动腰部…
+			ENDIF
+		ELSE
+			PRINTFORM %CALLNAME:PLAYER%は
+			IF BEDROOM(CFLAG:PLAYER:現在位置) && CFLAG:PLAYER:現在位置 != 18
+				PRINT 坐在床上
+			ELSE
+				PRINT 坐在地上
+			ENDIF
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了
+			PRINT 张开了一双玉腿、
+			SIF TALENT:PLAYER:处女 == 1
+				PRINTFORM 还不知男人滋味
+			PRINTFORML 主动打开蜜裂诱惑着%CALLNAME:TARGET%
+
+			PRINTFORM %CALLNAME:TARGET%把%CALLNAME:PLAYER%の身体推倒了、
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORML 把龟头贴在已经变得柔软和湿润的阴道口上
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORML 把龟头贴在微微张开的阴道口上
+			ELSE
+				PRINTFORML 把龟头贴在尚拒绝异物的阴道口上
+			ENDIF
+
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					PRINT 两个
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL 阴茎侵犯他出生的地方、开始摇动腰部…
+				ELSE
+					PRINTFORML 灼热的阴茎侵入了%CALLNAME:PLAYER%体内、开始摇动腰部…
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 硅胶假阴茎侵入了%CALLNAME:PLAYER%体内、开始摇动腰部…
+			ENDIF
+
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;98,后背位させる
+;-------------------------------------------------
+@MESSAGE_COM98
+;相手に主導権
+IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
+	;背面立位
+	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+		;抜かずに
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%に腰を激しく打ちつけつづけて快楽を貪っている…
+				PRINTFORM  不一会儿,那根肉柱颤抖起来. 、%CALLNAME:PLAYER%の蜜穴内被精液深深的注入了…
+				;調教者も射精
+				SIF NOWEX:PLAYER:射精
+					PRINTFORM 同時绝顶的%CALLNAME:PLAYER%的阴茎吐出了炽热的白浊、弄脏了地面…
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の对其蜜穴不断的侵犯…
+				IF TALENT:TARGET:2 & 2
+					PRINTFORM 精液和爱液搀混在一起发出反光的阴茎
+				ELSE
+					PRINTFORM 精液和爱液搀混在一起发出反光的假阴茎
+				ENDIF
+				PRINTFORML %CALLNAME:PLAYER%の被蜜穴不断吞吐着
+				PRINTFORML 那煽情的景色%CALLNAME:TARGET%更加昂扬了…
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%不从阴道内拔出阴茎%CALLNAME:PLAYER%仰面躺下、再次开始摇动腰部…
+			ENDIF
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%に
+			SIF ABL:抖Ｓ之气 >= 3 || TALENT:施虐狂
+				PRINTFORM 強引に
+			IF CFLAG:PLAYER:現在位置 == 19
+				PRINTL 手扶着树提起翘臀、
+			ELSE
+				PRINTL 手扶着墙提起翘臀、
+			ENDIF
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF TALENT:PLAYER:处女 == 1
+				PRINTFORM %CALLNAME:PLAYER%の还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@に
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORM %CALLNAME:PLAYER%の已经开始变软融化的蜜处
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORM %CALLNAME:PLAYER%の初步被开发的蜜穴
+			ELSE
+				PRINTFORM %CALLNAME:PLAYER%の还拒绝异物的蜜穴里强行
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL 阴茎挿入、开始摇动腰部…
+				ELSE
+					PRINTFORML 灼热的阴茎挿入、开始摇动腰部…
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 硅胶假阴茎挿入、开始摇动腰部…
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+				;にせちん
+			ELSE
+				PRINTFORM 硅胶假阴茎
+			ENDIF
+			PRINTFORML 在在蜜穴内侵犯的感觉、让%CALLNAME:PLAYER%喘息不已…
+		ENDIF
+		;后背位
+	ELSE
+		;抜かずに
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%に腰を激しく打ちつけつづけて快楽を貪っている…
+				PRINTFORM  不一会儿,那根肉柱颤抖起来. 、%CALLNAME:PLAYER%の蜜穴内被精液深深的注入了…
+				;調教者も射精
+				SIF NOWEX:PLAYER:射精
+					PRINTFORML 同時绝顶的%CALLNAME:PLAYER%的阴茎吐出了炽热的白浊、把地板弄脏了…
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の对其蜜穴不断的侵犯…
+				IF TALENT:TARGET:2 & 2
+					PRINTFORM 精液和爱液搀混在一起发出反光的阴茎
+				ELSE
+					PRINTFORM 精液和爱液搀混在一起发出反光的假阴茎
+				ENDIF
+				PRINTFORML %CALLNAME:PLAYER%の被蜜穴不断吞吐着
+				PRINTFORML 那煽情的景色%CALLNAME:TARGET%更加昂扬了…
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%不从阴道内拔出阴茎%CALLNAME:PLAYER%仰面躺下、再次开始摇动腰部…
+			ENDIF
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%
+			IF ABL:抖Ｓ之气 >= 3 || TALENT:施虐狂
+				PRINTFORML 下令趴下おしりを高くあげさせ
+			ELSE
+				PRINTFORML  使其趴下 、おしりを高くあげさせ
+			ENDIF
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF TALENT:PLAYER:处女 == 1
+				PRINTFORM %CALLNAME:PLAYER%の还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@に
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORM %CALLNAME:PLAYER%の已经开始变软融化的蜜处
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORM %CALLNAME:PLAYER%の初步被开发的蜜穴
+			ELSE
+				PRINTFORM %CALLNAME:PLAYER%の还拒绝异物的蜜穴里强行
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL 阴茎挿入し、开始摇动腰部…
+				ELSE
+					PRINTFORML 灼热的阴茎挿入し、开始摇动腰部…
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 硅胶假阴茎挿入し、开始摇动腰部…
+			ENDIF
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+				;にせちん
+			ELSE
+				PRINTFORM 硅胶假阴茎
+			ENDIF
+			PRINTFORML 在蜜穴内侵犯的感觉、让%CALLNAME:PLAYER%喘息不已…
+		ENDIF
+	ENDIF
+ELSE
+	;背面立位
+	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+		;抜かず
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORM %CALLNAME:TARGET%因强烈的快感激烈地耸动腰部、%CALLNAME:PLAYER%の阴道里射了出来
+				;調教者も射精.ぬふぅ
+				IF NOWEX:PLAYER:射精
+					PRINTL
+					PRINTFORM %CALLNAME:PLAYER%も%CALLNAME:TARGET%の持续的强烈冲击送上了高潮
+				ENDIF
+				PRINTFORML …
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の蜜穴不断侵犯
+				PRINTFORML  在被精液填满了的蜜穴内肉柱每次插入的搅动,都带起一片淫靡的水声. …
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%抓住%CALLNAME:PLAYER%的腰、腰不停的耸动着…
+			ENDIF
+		ELSE
+
+			PRINTFORM %CALLNAME:PLAYER%は
+
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
+			PRINT 弯下腰
+			IF CFLAG:PLAYER:現在位置 == 19
+				PRINT 手扶着树
+			ELSE
+				PRINT 手扶着墙
+			ENDIF
+			PRINTFORM 朝着%CALLNAME:TARGET%翘起粉臀
+			SIF TALENT:PLAYER:处女 == 1
+				PRINTFORM 还不知男人滋味
+			PRINTFORML 主动打开蜜裂诱惑着%CALLNAME:TARGET%
+
+			PRINTFORM %CALLNAME:TARGET%把手放在%CALLNAME:PLAYER%的腰上、
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORML 把龟头贴在已经变得柔软和湿润的阴道口上
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORML 把龟头贴在微微张开的阴道口上
+			ELSE
+				PRINTFORML 把龟头贴在尚拒绝异物的阴道口上
+			ENDIF
+
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					PRINT 两个
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL 阴茎侵犯他出生的地方、开始摇动腰部…
+				ELSE
+					PRINTFORML 灼热的阴茎侵入了%CALLNAME:PLAYER%体内、开始摇动腰部…
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 硅胶假阴茎侵入了%CALLNAME:PLAYER%体内、开始摇动腰部…
+			ENDIF
+
+		ENDIF
+		;后背位
+	ELSE
+		;抜かず
+		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+			;対象が射精
+			IF NOWEX:TARGET:射精
+				PRINTFORM %CALLNAME:TARGET%因强烈的快感激烈地耸动腰部、%CALLNAME:PLAYER%の阴道里射了出来
+				;調教者も射精.ぬふぅ
+				IF NOWEX:PLAYER:射精
+					PRINTL
+					PRINTFORM %CALLNAME:PLAYER%も%CALLNAME:TARGET%の持续的强烈冲击送上了高潮
+				ENDIF
+				PRINTFORML …
+				;前ターンで中出し
+			ELSEIF TCVAR:PLAYER:102
+				PRINTFORML %CALLNAME:TARGET%继续对抓住%CALLNAME:PLAYER%的腰不断侵犯
+				PRINTFORML  在被精液填满了的蜜穴内肉柱每次插入的搅动,都带起一片淫靡的水声. …
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%抓住%CALLNAME:PLAYER%的腰,持续强烈冲击着…
+			ENDIF
+		ELSE
+			PRINTFORM %CALLNAME:PLAYER%は
+
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
+			IF BEDROOM(CFLAG:PLAYER:現在位置) && CFLAG:PLAYER:現在位置 != 18
+				PRINT 四肢向下趴在床上
+			ELSE
+				PRINT 四肢着地趴在地上
+			ENDIF
+			SIF TALENT:PLAYER:处女 == 1
+				PRINTFORM まだ还不知男人滋味
+			PRINTFORML 主动打开蜜裂诱惑着%CALLNAME:TARGET%
+
+			PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%の腰を掴み、
+			SIF TEQUIP:PLAYER:0 & 2
+				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+			IF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+				PRINTFORML 把龟头贴在已经变得柔软和湿润的阴道口上
+			ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+				PRINTFORML 把龟头贴在微微张开的阴道口上
+			ELSE
+				PRINTFORML 把龟头贴在尚拒绝异物的阴道口上
+			ENDIF
+
+			;ちんちん
+			IF HAS_PENIS(TARGET)
+				;対象が自分の子供
+				IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+					PRINT 两个
+					CALL SON_OF_MY_SON(TARGET)
+					PRINTL 阴茎侵犯他出生的地方、开始摇动腰部…
+				ELSE
+					PRINTFORML 灼热的阴茎侵入了%CALLNAME:PLAYER%体内、开始摇动腰部…
+				ENDIF
+				;にせちん
+			ELSE
+				PRINTFORML 硅胶假阴茎侵入了%CALLNAME:PLAYER%体内、开始摇动腰部…
+			ENDIF
+
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;99,骑乘位侍奉
+;-------------------------------------------------
+@MESSAGE_COM99
+;相手に主導権
+IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
+	IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+		;対象が射精
+		IF NOWEX:TARGET:射精
+			PRINTFORM %CALLNAME:PLAYER%は
+			IF ABL:PLAYER:Ｖ感觉 >= 3
+				PRINTFORML 淫乱地扭动腰、贪婪的感受着从蜜穴里传来的快乐…
+			ELSE
+				PRINTFORML 拼命地摆动着腰、服务着%CALLNAME:TARGET%的男性性器…
+			ENDIF
+			PRINTFORM 不久就绝顶的%CALLNAME:TARGET%阴茎一阵痉挛、%CALLNAME:PLAYER%の蜜穴内被精液深深的注入了
+			;調教者も射精
+			SIF NOWEX:PLAYER:射精
+				PRINTFORM 同時に%CALLNAME:PLAYER%的龟头喷出了炽热的白浊
+			PRINTFORML …
+			;前ターンで中出し
+		ELSEIF TCVAR:PLAYER:102
+			PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%继续犯着蜜处…
+			PRINTFORM  溢出的精液和爱液沾湿了接合部,拉出了一条污秽的白线. …
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%不从阴道内拔出阴茎,让%CALLNAME:PLAYER%跨坐在身上、再次开始摇动腰部…
+		ENDIF
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%は
+		IF ABL:抖Ｓ之气 >= 3
+			PRINTFORML 跨在对方腰上%CALLNAME:PLAYER%服从命令、
+		ELSE
+			PRINTFORML %CALLNAME:PLAYER%跨在对方腰上、
+		ENDIF
+		SIF TEQUIP:PLAYER:0 & 2
+			PRINTFORM %SHOW_BOTTOM(PLAYER,2)%的空隙间
+		IF TALENT:PLAYER:处女 == 1
+			PRINTFORM %CALLNAME:PLAYER%の还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@に
+		ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+			PRINTFORM %CALLNAME:PLAYER%の已经开始变软融化的蜜处
+		ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+			PRINTFORM %CALLNAME:PLAYER%の初步被开发的蜜穴
+		ELSE
+			PRINTFORM %CALLNAME:PLAYER%の还拒绝异物的蜜穴里强行
+		ENDIF
+		;ちんちん
+		IF HAS_PENIS(TARGET)
+			;対象が自分の子供
+			IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+				CALL SON_OF_MY_SON(TARGET)
+				PRINTL 阴茎挿入、腰部开始向上冲击…
+			ELSE
+				PRINTFORML 灼热的阴茎挿入、腰部开始向上冲击…
+			ENDIF
+			;にせちん
+		ELSE
+			PRINTFORML 硅胶假阴茎挿入、腰部开始向上冲击…
+		ENDIF
+		;ちんちん
+		IF HAS_PENIS(TARGET)
+			PRINTFORM 灼热的%CALLNAME:TARGET%的阴茎
+			;にせちん
+		ELSE
+			PRINTFORM 硅胶假阴茎
+		ENDIF
+		PRINTFORML 体内插入物带来的快感、让%CALLNAME:PLAYER%喘息不已…
+	ENDIF
+	;あなたに主導権
+ELSE
+	;抜かず
+	IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+		;対象が射精
+		IF NOWEX:TARGET:射精
+			PRINTFORM %CALLNAME:TARGET%因强烈的快感激烈地耸动腰部、%CALLNAME:PLAYER%の阴道里射了出来
+			;調教者も射精.ぬふぅ
+			IF NOWEX:PLAYER:射精
+				PRINTL
+				PRINTFORM %CALLNAME:PLAYER%も%CALLNAME:TARGET%の持续的强烈冲击送上了高潮
+			ENDIF
+			PRINTFORML …
+			;前ターンで中出し
+		ELSEIF TCVAR:PLAYER:102
+			PRINTFORML %CALLNAME:TARGET%继续对%CALLNAME:PLAYER%の蜜穴不断侵犯
+			PRINTFORML  在被精液填满了的蜜穴内肉柱每次插入的搅动,都带起一片淫靡的水声. …
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%跨坐在%CALLNAME:PLAYER%身上,抓着她的腰,腰部开始向上冲击…
+		ENDIF
+	ELSE
+		PRINTFORM %CALLNAME:PLAYER%将
+		IF BEDROOM(CFLAG:PLAYER:現在位置) && CFLAG:PLAYER:現在位置 != 18
+			PRINTFORML %CALLNAME:TARGET%横放在床上跨坐了上去、
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%横放在地上跨坐了上去、
+		ENDIF
+		SIF TEQUIP:PLAYER:0 & 2
+			PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了
+		SIF TALENT:PLAYER:处女 == 1
+			PRINTFORM 还不知男人滋味
+		IF EXP:PLAYER:Ｖ经验 >= EXPLV:4
+			PRINTFORML 把龟头贴在已经变得柔软和湿润的阴道口上
+		ELSEIF EXP:PLAYER:Ｖ经验 >= EXPLV:3
+			PRINTFORML 把龟头贴在微微张开的阴道口上
+		ELSE
+			PRINTFORML 把龟头贴在阴道口上
+		ENDIF
+		PRINTFORML  主动坐下,把阴茎吞入阴道里去了 …
+
+		PRINTFORM %CALLNAME:TARGET%一边跨坐着一边主动摇动起了腰部,不肯服输的%CALLNAME:PLAYER%也主动摇动起了腰部、
+
+		;ちんちん
+		IF HAS_PENIS(TARGET)
+			;対象が自分の子供
+			IF NO:TARGET >= 148 && CFLAG:TARGET:母親 == PLAYER
+				PRINT 两个
+				CALL SON_OF_MY_SON(TARGET)
+				PRINTL 阴茎开始插入自己出生的地方…
+			ELSE
+				PRINTFORML 灼热的阴茎突入了%CALLNAME:PLAYER%体内…
+			ENDIF
+			;にせちん
+		ELSE
+			PRINTFORML 硅胶假阴茎突入了%CALLNAME:PLAYER%体内…
+		ENDIF
+
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;100,打屁股
+;-------------------------------------------------
+@MESSAGE_COM100
+IF TEQUIP:50 == PLAYER
+	PRINTFORM %CALLNAME:TARGET%一边激烈地侵犯
+ELSEIF TEQUIP:51 == PLAYER
+	PRINTFORM %CALLNAME:TARGET%の后庭一边激烈地侵犯
+ELSEIF TEQUIP:0 & 1
+	PRINTFORM %CALLNAME:TARGET%の%SHOW_BOTTOM(TARGET,1)%被拉开
+ELSE
+	PRINTFORM %CALLNAME:TARGET%の
+ENDIF
+PRINTFORML 用手掌狠狠地打在那挺翘的股辦上
+PRINTFORM 之后还不停的打了几次、
+;オトコ＋抖Ｍ之气LV2以上
+IF GET_SEXNAME(TARGET) == "男" && (ABL:抖Ｍ之气 >= 2)
+	PRINTFORML %CALLNAME:TARGET%の胯股之间的变硬了…
+	;抖Ｍ之气LV2以上
+ELSEIF ABL:抖Ｍ之气 >= 2 && TEQUIP:50 == -1
+	PRINTFORML %CALLNAME:TARGET%の胯股之间被自己的流出的爱液湿润了…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%の屁股肿得通红…
+ENDIF
+;-------------------------------------------------
+;101,鞭
+;-------------------------------------------------
+@MESSAGE_COM101
+PRINTFORML 扬起鞭子狠狠地一挥、%CALLNAME:TARGET%の 肌肤上留下几道鲜红的伤痕 …
+;-------------------------------------------------
+;102,蜡烛
+;-------------------------------------------------
+@MESSAGE_COM102
+PRINTFORM %CALLNAME:PLAYER%把点燃蜡烛中融化的蜡油往
+;绳などで緊縛中
+SIF TEQUIP:绳
+	PRINT 被束缚得动弹不得
+PRINTFORM %CALLNAME:TARGET%の
+;調教者が施虐狂
+IF TALENT:PLAYER:施虐狂
+	PRINT 最为敏感的部分
+ELSE
+	;(eraElona用素質[アルビノ]の代わり)、痛みに弱いを見る
+	IF TALENT:痛觉 > 1
+		PRINT 如雪般肌肤
+	ELSE
+		PRINT 身体上に
+	ENDIF
+ENDIF
+PRINTL 滴下来
+;-------------------------------------------------
+;103,针
+;-------------------------------------------------
+@MESSAGE_COM103
+PRINTFORM %CALLNAME:TARGET%的乳头和栗阴蒂
+;調教者が擅长用针か施虐狂
+IF TALENT:PLAYER:擅长用针 || TALENT:PLAYER:施虐狂
+	PRINTL 毫不留情地用针扎了下去…
+ELSE
+	PRINTL 用针扎了下去…
+ENDIF
+;-------------------------------------------------
+;104,眼罩
+;-------------------------------------------------
+@MESSAGE_COM104
+;解除時
+IF !TEQUIP:眼罩
+	PRINTFORML 给%CALLNAME:TARGET%摘了眼罩
+ELSE
+	PRINTFORML 给%CALLNAME:TARGET%带上了眼罩
+ENDIF
+;-------------------------------------------------
+;105,绳
+;-------------------------------------------------
+@MESSAGE_COM105
+;解除時
+IF !TEQUIP:绳
+	PRINTFORML 给%CALLNAME:TARGET%解除了绳索
+ELSE
+	PRINTFORML 给%CALLNAME:TARGET%用绳子帮上了
+ENDIF
+;-------------------------------------------------
+;106,口球
+;-------------------------------------------------
+@MESSAGE_COM106
+;解除時
+IF !TEQUIP:口球
+	PRINTFORML 给%CALLNAME:TARGET%解下了口球
+ELSE
+	PRINTFORML 给%CALLNAME:TARGET%绑上了口球
+ENDIF
+;-------------------------------------------------
+;120,强制舔阴
+;-------------------------------------------------
+@MESSAGE_COM120
+PRINTFORML %CALLNAME:TARGET%把%CALLNAME:PLAYER%的阴唇舔了一边…
+;-------------------------------------------------
+;121,貝あわせ
+;-------------------------------------------------
+@MESSAGE_COM121
+PRINTFORML %CALLNAME:PLAYER%和%CALLNAME:TARGET%互相摩擦着性器…
+;-------------------------------------------------
+;122,助手を犯させる
+;-------------------------------------------------
+@MESSAGE_COM122
+PRINTFORML %CALLNAME:TARGET%把%CALLNAME:PLAYER%抱了起来…
+;-------------------------------------------------
+;123,调教者足交
+;-------------------------------------------------
+@MESSAGE_COM123
+PRINTFORM %CALLNAME:PLAYER%は%CALLNAME:TARGET%把阴茎
+;調教者が施虐狂
+SIF TALENT:PLAYER:施虐狂
+	PRINT 践踏了
+PRINTL 用足底按揉了…
+
+;-------------------------------------------------
+;126,乳房相互摩擦
+;-------------------------------------------------
+@MESSAGE_COM126
+PRINTFORML %CALLNAME:PLAYER%と%CALLNAME:TARGET%は互相揉搓胸部…
+;-------------------------------------------------
+;140,强迫口交
+;-------------------------------------------------
+@MESSAGE_COM140
+PRINTFORML %CALLNAME:PLAYER%粗暴地刺进了%CALLNAME:TARGET%的喉咙…
+;-------------------------------------------------
+;141,拳交
+;-------------------------------------------------
+@MESSAGE_COM141
+PRINTFORML %CALLNAME:TARGET%的蜜壶被%CALLNAME:PLAYER%拳头搅动了
+;Ｖ感觉
+IF ABL:Ｖ感觉 >= 0
+	PRINTFORML %CALLNAME:TARGET%の这个蜜穴被大大的扩张了
+ELSEIF ABL:Ｖ感觉 == 3
+	PRINTFORML %CALLNAME:TARGET%の蜜穴一直张着怎么也和不拢
+ELSEIF ABL:Ｖ感觉 == 4
+	PRINTFORML %CALLNAME:TARGET%の性器内的肉壁暴露了出来,在完全张开的阴道口中,能看到子宫口.
+ELSEIF ABL:Ｖ感觉 == 5
+	PRINTFORML %CALLNAME:TARGET%は、主动用指尖阔开自己的阴道口,快乐得神情恍惚 
+ENDIF
+;-------------------------------------------------
+;142,肛门拳交
+;-------------------------------------------------
+@MESSAGE_COM142
+PRINTFORML %CALLNAME:TARGET%的后庭被%CALLNAME:PLAYER%拳头搅动了
+;Ａ感觉
+IF ABL:Ａ感觉 >= 0
+	PRINTFORML %CALLNAME:TARGET%肛門被大大的扩张了
+ELSEIF ABL:Ａ感觉 == 3
+	PRINTFORML %CALLNAME:TARGET%肛門一直张着怎么也和不拢
+ELSEIF ABL:Ａ感觉 == 4
+	PRINTFORML %CALLNAME:TARGET%肛門内的肉壁暴露了出来、一直能看到谷道深处
+ELSEIF ABL:Ａ感觉 >= 5
+	PRINTFORML %CALLNAME:TARGET%は、主动用指尖扩开自己的后庭,快乐得神情恍惚
+ENDIF
+;-------------------------------------------------
+;143,两穴拳交
+;-------------------------------------------------
+@MESSAGE_COM143
+PRINTFORML %CALLNAME:TARGET%的蜜穴和后庭被%CALLNAME:PLAYER%拳头搅动了
+;Ｖ感觉かＡ感觉がLV4以下
+IF ABL:Ｖ感觉 <= 4 || ABL:Ａ感觉 <= 4
+	PRINTFORML %CALLNAME:TARGET%的一双玉腿大张、从扩张的蜜穴和后庭口不停的有粘液垂落…
+	;Ｖ感觉かＡ感觉がLV5以上
+ELSEIF ABL:Ｖ感觉 >= 5 && ABL:Ａ感觉 >= 5
+	PRINTFORML %CALLNAME:TARGET%は、用双手的手指不停抚慰着扩展到完全的蜜穴和后庭
+ENDIF
+;-------------------------------------------------
+;144,放尿
+;-------------------------------------------------
+@MESSAGE_COM144
+;野外PLAY中
+IF TEQUIP:野外PLAY
+	PRINTFORML %CALLNAME:TARGET%在羞耻和屈辱感中流着泪、在草丛中小便…
+	;羞耻PLAY中
+ELSEIF TEQUIP:羞耻PLAY
+	PRINTFORML %CALLNAME:TARGET%为了不让镜子中映出的自己羞耻姿势,蹲下开始小便…
+	;小柄体型
+ELSEIF TALENT:体型 < 0
+	PRINTFORML %CALLNAME:TARGET%被%CALLNAME:PLAYER%像年幼的孩子一样,被双脚抱起了开始小便…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%因为羞耻感染红了脸颊、蹲在那里开始小便…
+ENDIF
+;-------------------------------------------------
+;145,舔肛侍奉強制
+;-------------------------------------------------
+@MESSAGE_COM145
+PRINTFORML %CALLNAME:PLAYER%让%CALLNAME:TARGET%舔了后庭…
+;-------------------------------------------------
+;146,灌肠器+肛塞
+;-------------------------------------------------
+@MESSAGE_COM146
+;解除時
+IF !TEQUIP:灌肠
+	PRINTFORML %CALLNAME:TARGET% 肛栓被拔出,从后庭流下了肠内的污物 
+	;抖Ｍ之气
+	IF ABL:抖Ｍ之气 == 0
+		PRINTFORML %CALLNAME:TARGET%は脸上现出苦闷和耻辱的神情
+	ELSEIF ABL:抖Ｍ之气 == 1
+		PRINTFORML %CALLNAME:TARGET% 脸上冒着细汗,还在忍受下腹残留的排泄感. 
+	ELSEIF ABL:抖Ｍ之气 == 2
+		PRINTFORML %CALLNAME:TARGET%虽然很害羞,但还是因为轻松感而露出了松了一口气的表情. 
+	ELSEIF ABL:抖Ｍ之气 == 3
+		PRINTFORML %CALLNAME:TARGET% 因穿过肛门的排泄物的感觉,时不时地发出妖媚的喘息声
+	ELSEIF ABL:抖Ｍ之气 == 4
+		PRINTFORML %CALLNAME:TARGET% 浮现出出神的表情,享受着排泄的快感. 
+	ELSEIF ABL:抖Ｍ之气 >= 5
+		PRINTFORML %CALLNAME:TARGET%尽情体味着排泄感和羞耻感
+		PRINTFORML %CALLNAME:TARGET%の表情上慢慢浮现了快感、从肛门排出污物的同时,从蜜穴也滴滴答答地滴落了爱液
+	ENDIF
+ELSE
+	PRINTFORML %CALLNAME:TARGET%の 在后庭灌入灌肠液,塞上塞子 
+	;抖Ｍ之气
+	IF ABL:抖Ｍ之气 == 0
+		PRINTFORML %CALLNAME:TARGET%脸上现出苦闷和耻辱的神情
+	ELSEIF ABL:抖Ｍ之气 == 1
+		PRINTFORML %CALLNAME:TARGET% 脸上冒着汗,忍受着排泄感. 
+	ELSEIF ABL:抖Ｍ之气 == 2
+		PRINTFORML %CALLNAME:TARGET%一边露出痛苦的表情,一边脸红潮湿,扭扭捏捏地摇着屁股. 
+	ELSEIF ABL:抖Ｍ之气 == 3
+		PRINTFORML %CALLNAME:TARGET%は、 虽然被排泄感所折磨,但偶尔也会浮现出快乐恍惚的神情. 
+	ELSEIF ABL:抖Ｍ之气 == 4
+		PRINTFORML %CALLNAME:TARGET%は、 浮现出陶醉的表情,享受着排泄感和腹痛. 
+	ELSEIF ABL:抖Ｍ之气 >= 5
+		PRINTFORML %CALLNAME:TARGET%は、充分品味着排泄感带来的快乐
+		PRINTFORML %CALLNAME:TARGET%の表情上慢慢浮现了快感、从嘴里和蜜穴也滴滴答答地滴落了淫荡的液体
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;147,扩张气球
+;-------------------------------------------------
+@MESSAGE_COM147
+;解除時
+IF !TEQUIP:扩张气球
+	PRINTFORML 从%CALLNAME:TARGET%扩张的后庭中抽出了气球…
+	;Ａ感觉
+	IF ABL:Ａ感觉 == 0
+		PRINTFORML %CALLNAME:TARGET%的肛门慢慢地闭上了
+	ELSEIF ABL:Ａ感觉 == 1
+		PRINTFORML %CALLNAME:TARGET%的肛门一碰就轻轻地关上了
+	ELSEIF ABL:Ａ感觉 == 2
+		PRINTFORML %CALLNAME:TARGET%的肛门露出一条缝隙
+	ELSEIF ABL:Ａ感觉 == 3
+		PRINTFORML %CALLNAME:TARGET%的肛门扩张得怎么也收不来了
+	ELSEIF ABL:Ａ感觉 == 4
+		PRINTFORML %CALLNAME:TARGET%的肛门可以看到肠子
+	ELSEIF ABL:Ａ感觉 >= 5
+		PRINTFORML %CALLNAME:TARGET%は、 主动用手指扩张自己的肛门,神情恍惚着 
+	ENDIF
+ELSE
+	PRINTFORML %CALLNAME:TARGET%の 后院插入气球,并充入空气 …
+ENDIF
+;-------------------------------------------------
+;148,肛门电极
+;-------------------------------------------------
+@MESSAGE_COM148
+;解除時
+IF !TEQUIP:肛门电极
+	PRINTFORML %CALLNAME:TARGET%の后庭电机拔出了…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%の后庭被安上了电机…
+ENDIF
+;-------------------------------------------------
+;149,膣镜
+;-------------------------------------------------
+@MESSAGE_COM149
+
+IF !TEQUIP:膣镜
+	PRINTFORML %CALLNAME:TARGET%从蜜穴里慢慢地抽出了阴道镜 
+	PRINTFORML  阴道镜尖端脱离蜜穴后,液体拉出一条丝线垂到地面上. 
+	PRINTFORML  阴道口慢慢的闭上了,不久就恢复了原来的形状 .
+ELSE
+	PRINTFORML %CALLNAME:TARGET%在命令下羞涩的张开一双玉腿
+	PRINT 取出阴道镜、
+	IF PALAM:润滑 >= PALAMLV:3
+		PRINT 湿润的
+	ELSE
+		IF CFLAG:現在位置 == 5
+			PRINTL 如果不够湿润也可以充分涂抹食用油代替乳液
+		ELSE
+			PRINTL 在器具上充分涂上润滑剂
+		ENDIF
+	ENDIF
+	PRINTL 阴道,慢慢地向内插入阴道镜
+	PRINTL  握住把手打开阴道镜的前端,缠上螺丝固定阴道镜 
+ENDIF
+;-------------------------------------------------
+;160,膣内观察
+;-------------------------------------------------
+@MESSAGE_COM160
+
+PRINTFORML 已打开的%CALLNAME:TARGET%阴道内将光线照射进去以窥视里面
+PRINTFORML 最里面半球状的子宫阴道部因润滑液而闪耀着反光
+PRINTFORML 在那里的中心能看到通向子宫的小嘴巴.
+PRINTFORML 
+
+IF TALENT:MASTER:施虐狂
+	IF CFLAG:現在位置 == 4
+		PRINTFORML %CALLNAME:PLAYER%从书架上拿来性知识的书
+		PRINTFORML 比较阴道内与书的内容是否相同,%CALLNAME:TARGET%羞耻心愈发强烈
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%将里面看到的情况向%CALLNAME:TARGET%详细地说了,继续煽动她羞耻心
+	ENDIF
+	IF TALENT:羞耻心 == 1
+		PRINTFORML %CALLNAME:TARGET%脸涨得通红低下了头.
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%害羞地转过身去.
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%阴道内
+	IF TALENT:羞耻心 == 1
+		PRINTL 被看见的羞耻感让她满脸通红.
+	ELSE
+		PRINTL 被观察时感到很羞耻,脸上泛出红晕 .
+	ENDIF
+ENDIF
+
+
+
+
+;-------------------------------------------------
+;180,润滑剂,
+;-------------------------------------------------
+@MESSAGE_COM180
+PRINTFORML %CALLNAME:TARGET%擦了两层润滑液…
+;-------------------------------------------------
+;181,媚药,
+;-------------------------------------------------
+@MESSAGE_COM181
+PRINTFORM %CALLNAME:TARGET%に
+;調教者の技巧LV3以上
+SIF ABL:PLAYER:技巧 >= 3
+	PRINT 嘴对嘴地
+;顺从LV2以下
+SIF ABL:顺从 <= 2
+	PRINT 强迫
+PRINTFORML 服下了媚药
+PRINTFORML %CALLNAME:TARGET%气息慌乱皮肤潮红…
+;-------------------------------------------------
+;182,利尿剂,
+;-------------------------------------------------
+@MESSAGE_COM182
+PRINTFORM %CALLNAME:TARGET%に
+;調教者の技巧LV3以上
+SIF ABL:PLAYER:技巧 >= 3
+	PRINT 口嘴对嘴地
+;顺从LV2以下
+SIF ABL:顺从 <= 2
+	PRINT 强迫
+PRINTFORML 服下了利尿剂
+PRINTFORML %CALLNAME:TARGET%气息慌乱、含着泪忍受着尿意…
+;-------------------------------------------------
+;183,摄像机,
+;-------------------------------------------------
+@MESSAGE_COM183
+;解除時
+IF !TEQUIP:录像摄影
+	PRINTFORML %CALLNAME:TARGET%的拍摄停止了…
+ELSE
+	PRINTFORML 用摄像机开始拍摄%CALLNAME:TARGET%…
+ENDIF
+;-------------------------------------------------
+;184,野外PLAY,
+;-------------------------------------------------
+@MESSAGE_COM184
+;解除時
+IF !TEQUIP:野外PLAY
+	PRINTFORML 回到了房间…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%戴上项圈被带了出去…
+ENDIF
+;-------------------------------------------------
+;185,助手を犯す,
+;-------------------------------------------------
+@MESSAGE_COM185
+;前回の調教が助手を犯すであり、抜かないフラグがある場合
+IF TFLAG:60 && PREVCOM == 56
+	PRINTFORML %CALLNAME:TARGET%一边向你展示、一边不断侵犯%CALLNAME:ASSI%…
+ELSE
+	PRINTFORM %CALLNAME:TARGET%一边向你展示、%CALLNAME:ASSI%的
+	IF EXP:ASSI:Ｖ经验 == 0
+		PRINT 处女膜
+	ELSE
+		PRINT 阴道
+	ENDIF
+	PRINTL 一边贯穿了它…
+ENDIF
+;-------------------------------------------------
+;186,羞耻PLAY,
+;-------------------------------------------------
+@MESSAGE_COM186
+;解除時
+IF !TEQUIP:羞耻PLAY
+	PRINTFORML %CALLNAME:TARGET%被带离镜子前…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%被带到镜子前…
+ENDIF
+;-------------------------------------------------
+;187,浴场PLAY,
+;-------------------------------------------------
+@MESSAGE_COM187
+;解除時
+IF !TEQUIP:浴场PLAY
+	PRINTFORML 回到了房间…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%被带去了浴室…
+ENDIF
+;-------------------------------------------------
+;188,淋浴,
+;-------------------------------------------------
+@MESSAGE_COM188
+IF !TEQUIP:淋浴
+	PRINTFORML %CALLNAME:TARGET%停止了沐浴…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%开始了沐浴…
+ENDIF
+;-------------------------------------------------
+;189,新妻PLAY,
+;-------------------------------------------------
+@MESSAGE_COM189
+IF !TEQUIP:新妻PLAY
+	PRINTFORML %CALLNAME:TARGET%脱下围裙…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%穿上围裙
+ENDIF
+;-------------------------------------------------
+;200,上半身上着脱衣
+;-------------------------------------------------
+@MESSAGE_COM200
+IF EQUIP:上半身上着１
+	LOCALS = %CLOTHNAME(12,EQUIP:上半身上着１)%
+ELSEIF EQUIP:上半身上着２
+	LOCALS = %CLOTHNAME(13,EQUIP:上半身上着２)%
+ELSEIF EQUIP:赛车服
+	LOCALS = %CLOTHNAME(14,EQUIP:赛车服)%
+ELSEIF EQUIP:连衣裙
+	LOCALS = %CLOTHNAME(15,EQUIP:连衣裙)%
+ELSEIF EQUIP:着物
+	LOCALS = %CLOTHNAME(16,EQUIP:着物)%
+ELSEIF EQUIP:紧身衣
+	LOCALS = %CLOTHNAME(17,EQUIP:紧身衣)%
+ENDIF
+IF CFLAG:うふふ == 3
+	PRINTFORML %LOCALS%被脱掉了…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%de%LOCALS%被脱掉了…
+	;女性かつ下着を着けていない
+	IF HAS_VAGINA(TARGET) && EQUIP:上半身下着１ == 0 && EQUIP:上半身下着２ == 0
+		PRINTFORM 胸部内衣没穿、%CALLNAME:TARGET%的
+		;欲情のレベルが3以上且つＢ绝顶を迎えているまたは快Ｂのレベルが3以上で変化
+		SIF PALAM:欲情 >= PALAMLV:3 && (EX:Ｂ绝顶 || PALAM:快Ｂ >= PALAMLV:3)
+			PRINT 乳头已经隆起了…
+		;胸の大きさより変化
+		SELECTCASE TALENT:胸部尺寸
+			CASE -2
+				PRINT 平坦
+			CASE -1
+				PRINT 小小的
+			CASE 0
+				PRINT 柔软的
+			CASE 1
+				PRINT 饱满的
+			CASE 2
+				PRINT 丰满的
+		ENDSELECT
+		PRINTL 胸部露出来了…
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;201,下半身上着脱衣
+;-------------------------------------------------
+@MESSAGE_COM201
+IF EQUIP:下半身上着１
+	LOCALS = %CLOTHNAME(7,EQUIP:下半身上着１)%
+ELSEIF EQUIP:下半身上着２
+	LOCALS = %CLOTHNAME(8,EQUIP:下半身上着２)%
+ELSEIF EQUIP:裙子
+	LOCALS = %CLOTHNAME(9,EQUIP:裙子)%
+ENDIF
+IF CFLAG:うふふ == 3
+	PRINTFORML %LOCALS%被脱掉了…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%の%LOCALS%被脱掉了\@ EQUIP:下半身下着１ == 0 && EQUIP:下半身下着２ == 0 ? #…\@
+	;下着を着けていない
+	IF EQUIP:下半身下着１ == 0 && EQUIP:下半身下着２ == 0
+		PRINTFORM 下面没有穿内衣、%CALLNAME:TARGET%の
+		;男性・ふたなり
+		IF HAS_PENIS(TARGET)
+			IF BASE:勃起 >= 1000
+				PRINT 耸立
+			ELSEIF BASE:勃起 >= 500
+				PRINT 正在充血
+			ELSE
+				PRINT 软软的
+			ENDIF
+			PRINTL 阴茎露出了…
+			;女性
+		ELSE
+			;润滑により変化
+			IF PALAM:润滑 >= PALAMLV:5
+				PRINT 湿透了
+			ELSEIF PALAM:润滑 >= PALAMLV:3
+				PRINT 湿漉漉的
+			ENDIF
+			PRINTL 蜜裂露出来了…
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;202,上半身下着脱衣
+;-------------------------------------------------
+@MESSAGE_COM202
+IF CFLAG:うふふ == 3
+	PRINTFORM \@ EQUIP:上半身下着１ == 2 ?胸围#乳罩\@取下、
+ELSE
+	PRINTFORML %CALLNAME:TARGET%的\@ EQUIP:上半身下着１ == 2 ?胸围#胸罩\@脱了下来
+	PRINTFORM %CALLNAME:TARGET%的
+ENDIF
+
+;欲情のレベルが3以上且つＢ绝顶を迎えているまたは快Ｂのレベルが3以上で変化
+SIF PALAM:欲情 >= PALAMLV:3 && (EX:Ｂ绝顶 || PALAM:快Ｂ >= PALAMLV:3)
+	PRINT 乳头隆起了…
+;女性だけ
+IF HAS_VAGINA(TARGET)
+	;胸の大きさより変化
+	SELECTCASE TALENT:胸部尺寸
+		CASE -2
+			PRINT 平得没必要穿内衣的
+		CASE -1
+			PRINT 小小膨胀
+		CASE 0
+			PRINT 柔软的
+		CASE 1
+			PRINT 饱满的
+		CASE 2
+			PRINT 要从内衣里挤出来似的
+	ENDSELECT
+ENDIF
+
+IF CFLAG:うふふ == 3
+	PRINTL 胸部露出了…
+ELSE
+	PRINTL 胸部露出少许…
+ENDIF
+
+;-------------------------------------------------
+;203,下半身下着脱衣
+;-------------------------------------------------
+@MESSAGE_COM203
+
+IF CFLAG:うふふ == 3
+	IF GETBIT(FLAG:匂いフェチ,1) 
+		PRINTFORM %IRUINAME_SMELL(EQUIP:下半身下着２)%%PANTSNAME(EQUIP:下半身下着２)%脱下了
+	ELSE
+		PRINTFORM %PANTSNAME(EQUIP:下半身下着２)%脱下了
+	ENDIF
+	;女性
+	IF HAS_VAGINA(TARGET)
+		;润滑により変化
+		PRINTFORML \@ PALAM:润滑 >= PALAMLV:3 ?被爱液打湿的#\@蜜处露了出来…
+		;男性
+		PRINTFORML \@ BASE:勃起 >= 1000 ?耸立的#\@阴茎露了出来…
+	ENDIF
+ELSE
+	IF 0 != EQUIP:下半身下着１ && 0 ==EQUIP:下半身下着２ 
+		IF GETBIT(FLAG:匂いフェチ,1) 
+			PRINTFORM %CALLNAME:TARGET%の%IRUINAME_SMELL(EQUIP:下半身下着１)%%PANTSNAME(EQUIP:下半身下着１)%脱了下来、
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%の%PANTSNAME(EQUIP:下半身下着１)%脱了下来、
+		ENDIF
+	ELSE
+		IF GETBIT(FLAG:匂いフェチ,1) 
+			PRINTFORM %CALLNAME:TARGET%の%IRUINAME_SMELL(EQUIP:下半身下着２)%%PANTSNAME(EQUIP:下半身下着２)%脱了下来、
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%の%PANTSNAME(EQUIP:下半身下着２)%脱了下来、
+		ENDIF
+	ENDIF
+	PRINTFORM %CALLNAME:TARGET%の
+	;男性・ふたなり
+	IF HAS_PENIS(TARGET)
+		IF BASE:勃起 >= 1000
+			PRINT 耸立的
+		ELSEIF BASE:勃起 >= 500
+			PRINT 正在充血的
+		ELSE
+			PRINT 软软的
+		ENDIF
+		PRINTL 阴茎露出来了…
+		;女性
+	ELSE
+		;润滑により変化
+		SELECTCASE 締り具合名称(BASE:TARGET:Ｖ松弛度)
+			CASE "已经合不拢了"
+				IF PALAM:润滑 >= PALAMLV:5
+					PRINTFORML %"蜜壶口开得很大,能看到子宫口,爱液多得快要满出来了 …"%
+				ELSEIF PALAM:润滑 >= PALAMLV:3
+					PRINTFORML %"蜜壶口开得很大,能看到子宫口、能看见爱液的反光…"%
+				ELSE
+					PRINTFORML %"蜜壶口开得很大,能看到子宫口、摆出了淫乱的姿态…"%
+				ENDIF
+			CASE "松松垮垮了"
+				IF PALAM:润滑 >= PALAMLV:5
+					PRINTFORML %"蜜壶口已经关不住了、爱液多得快要满出来了…"%
+				ELSEIF PALAM:润滑 >= PALAMLV:3
+					PRINTFORML %"蜜壶口已经关不住了、能看见爱液的反光…"%
+				ELSE
+					PRINTFORML %"蜜壶口已经关不住了,能看到里面的美景…"%
+				ENDIF
+			CASEELSE
+				IF PALAM:润滑 >= PALAMLV:5
+					PRINTFORML %"湿透了秘裂滴下了神秘露水…"%
+				ELSEIF PALAM:润滑 >= PALAMLV:3
+					PRINTFORML %"蜜裂与内衣之间的爱液拉出了丝线…"%
+				ELSE
+					PRINTFORML %"蜜裂露出来了…"%
+				ENDIF
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;1,六九式
+;-------------------------------------------------
+@MESSAGE_SCOM1
+IF SELECTCOM == 3
+	PRINTFORM %CALLNAME:TARGET%互相舔舐彼此的性器
+	IF TEQUIP:振动棒
+		IF TALENT:体型 < 0
+			PRINT 尚未发育完全的
+		ELSE
+			PRINT 秘裂
+		ENDIF
+		PRINTFORML 中振动棒小幅前后抽拔了
+	ELSE
+		PRINTFORML 把手指插入了阴道口…
+	ENDIF
+ELSEIF SELECTCOM == 5
+	PRINTFORM %CALLNAME:TARGET%互相舔舐彼此的性器
+	;肛门振动棒
+	IF TEQUIP:肛门振动棒
+		PRINTFORML 小幅抽送微微振动的肛门振动棒…
+		;肛珠
+	ELSEIF TEQUIP:肛珠
+		PRINTFORML 让后庭一个接一个容纳了肛珠…
+		;灌肠器+肛塞
+	ELSEIF TEQUIP:灌肠
+		PRINTFORML 用塞子重重的搅动了本就因排泄感而颤抖的后庭…
+		;扩张气球
+	ELSEIF TEQUIP:扩张气球
+		PRINTFORML 把肛门扩展到极限的气球前后抽动…
+		;肛门电极
+	ELSEIF TEQUIP:肛门电极
+		PRINTFORML 用发出低鸣的电极咕噜咕噜地搅动着后庭…
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%の菊花を弄っ
+		;Ａ经验100以上＋欲望のPALAMLV3以上
+		SIF PALAM:欲情 >= PALAMLV:3 && EXP:Ａ经验 >= EXPLV:3
+			PRINT て、用指尖搅动着直肠
+		PRINTL た…
+	ENDIF
+ELSE
+	PRINTFORM %CALLNAME:TARGET%と
+	;助手が調教中
+	SIF ASSIPLAY
+		PRINTFORM %CALLNAME:ASSI%は
+	PRINTL 互相舔舐对方的性器
+ENDIF
+;-------------------------------------------------
+;2,岩清水
+;-------------------------------------------------
+@MESSAGE_SCOM2
+PRINTFORML %CALLNAME:PLAYER%让%CALLNAME:TARGET% 把阴唇横贴在脸上,故意发出声音吸吮着阴唇. …
+;-------------------------------------------------
+;3,G点刺激
+;-------------------------------------------------
+@MESSAGE_SCOM3
+;前回がＧスポット刺激
+IF PREVCOM == 503
+	;Ｖ经验が120より多い
+	IF EXP:Ｖ经验 > 120
+		PRINTFORML %CALLNAME:TARGET%流着口水,自己摇动着腰贪图着带来的快乐…
+		;Ｖ经验が80より多い
+	ELSEIF EXP:Ｖ经验 > 80
+		PRINTFORML %CALLNAME:TARGET%因在体内搅动带来的感觉呼出灼热而又苦闷的叹息…
+		;Ｖ经验が50より多い
+	ELSEIF EXP:Ｖ经验 > 50
+		PRINTFORML %CALLNAME:TARGET%因手指蠕动的触感而陶醉…
+		;Ｖ经验が30より多い
+	ELSEIF EXP:Ｖ经验 > 30
+		PRINTFORML %CALLNAME:TARGET%似乎很享受手指带来的感觉…
+		;Ｖ经验が0より多い
+	ELSEIF EXP:Ｖ经验 > 0
+		PRINTFORML %CALLNAME:TARGET%在手指的触感中屏气忍耐着…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%对阴道内的异物感害怕…
+	ENDIF
+	;振动棒挿入中＋欲情のPALAMLV3以上＋Ｖ感觉LV3以上
+ELSEIF TEQUIP:振动棒 && PALAM:欲情 >= PALAMLV:3 && ABL:Ｖ感觉 >= 3
+	PRINTFORML %CALLNAME:TARGET%の阴道缠绕着被蜜汁淋湿的振动棒…
+	;振动棒挿入中＋欲情のPALAMLV3未満＋Ｖ感觉LV3以上
+ELSEIF TEQUIP:振动棒 && PALAM:欲情 < PALAMLV:3 && ABL:Ｖ感觉 >= 3
+	PRINTFORML %CALLNAME:TARGET%因过强的刺激而说不出话来…
+	;振动棒挿入中＋欲情のPALAMLV3以上＋Ｖ感觉LV3未満
+ELSEIF TEQUIP:振动棒 && PALAM:欲情 >= PALAMLV:3 && ABL:Ｖ感觉 < 3
+	PRINTFORML %CALLNAME:TARGET%脸颊染红时不时的发出呻吟…
+	;振动棒挿入中＋欲情のPALAMLV3未満＋Ｖ感觉LV3未満
+ELSEIF TEQUIP:振动棒 && PALAM:欲情 < PALAMLV:3 && ABL:Ｖ感觉 < 3
+	PRINTFORML %CALLNAME:TARGET%表情有点儿痛苦
+	;振动棒挿入中
+ELSEIF TEQUIP:振动棒
+	PRINTFORML %CALLNAME:PLAYER% 巧妙地操纵振动棒,刺激着敏感点… 
+ELSE
+	PRINTFORML %CALLNAME:PLAYER%在%CALLNAME:TARGET% 的阴道中用弯曲的手指,刺激敏感的阴道壁 …
+ENDIF
+;-------------------------------------------------
+;4,乱れ牡丹
+;-------------------------------------------------
+@MESSAGE_SCOM4
+;連続
+IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
+	PRINTFORML 虽然%CALLNAME:TARGET%的交合部和胸被用手捂住、但依旧故意挺动着腰给她看似的…
+	;抜かず
+ELSEIF TCVAR:100 == PLAYER
+	PRINTFORM %CALLNAME:TARGET%的身体从背后插入,双手抱起一双玉腿,大大的张开着 …
+ELSE
+	PRINTFORM %CALLNAME:TARGET%的身体被抱起、慢慢地
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 湿透了
+	;小柄体型
+	IF TALENT:体型 < 0
+		PRINT 尚未发育完全的
+	ELSE
+		PRINT 秘裂
+	ENDIF
+	PRINTFORML 被插入了、一双玉腿被大大的分开…
+ENDIF
+;露出癖
+IF ABL:露出癖 >= 5
+	PRINTFORML %CALLNAME:TARGET% 一边用迷惑的眼睛看着镜子里映出的自己的痴态,一边发出欢喜的声音 …
+ELSEIF ABL:露出癖 >= 4
+	PRINTFORML %CALLNAME:TARGET% 一脸羞耻和快乐地神色,并沉溺在镜中的痴态 …
+ELSEIF ABL:露出癖 >= 2
+	PRINTFORML %CALLNAME:TARGET% 满脸羞耻的神色,但还是时不时发出妖媚的声音… 
+ELSEIF ABL:露出癖 >= 1
+	PRINTFORML %CALLNAME:TARGET% 用手捂着脸颊,羞耻得浑身发抖 …
+ENDIF
+;-------------------------------------------------
+;5,手淫口交
+;-------------------------------------------------
+@MESSAGE_SCOM5
+
+IF TFLAG:194 == 0
+	PRINTFORML %CALLNAME:TARGET%把%CALLNAME:PLAYER%的肉棒握住了,并用嘴小口吸允着、
+	PRINTL 就那样把茎的部分套弄起来了…
+	SIF ABL:技巧 > 3
+		PRINTL 一边用空着的手温柔地揉着阴囊…
+ELSE
+	PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%的肉棒握住了,并用嘴小口吸允着
+	PRINTL   一边套弄着茎的部分,一边用舌头舔着龟头 …
+	SIF ABL:技巧 > 3
+		PRINTL 一边用空着的手温柔地揉着阴囊…
+ENDIF
+
+;-------------------------------------------------
+;6,挿入Ｇスポ責め
+;-------------------------------------------------
+@MESSAGE_SCOM6
+PRINTFORML 弯下腰来、将%CALLNAME:TARGET%的阴道G点使劲的冲击了…
+;-------------------------------------------------
+;7,插入子宫口
+;-------------------------------------------------
+@MESSAGE_SCOM7
+PRINTFORML 抱住腰、深深的把%CALLNAME:TARGET%的子宮敏感处冲击了…
+
+;-------------------------------------------------
+;8,６９乳交
+;-------------------------------------------------
+@MESSAGE_SCOM8
+PRINTFORM %CALLNAME:TARGET%は
+;貧乳
+IF TALENT:胸部尺寸 < 0
+	PRINTL 薄い胸で阴茎
+	;巨乳
+ELSEIF TALENT:胸部尺寸 == 1
+	PRINTL 用丰满的胸膛包裹着阴茎
+	;爆乳
+ELSEIF TALENT:胸部尺寸 == 2
+	PRINTL 用太过丰满的胸膛将阴茎包裹起来
+ELSE
+	PRINTL 乳沟中夹着阴茎
+ENDIF
+PRINTFORML 因被%CALLNAME:PLAYER%的舌头玩弄带来的快感拼命摩擦着…
+;-------------------------------------------------
+;9,双人口交
+;-------------------------------------------------
+@MESSAGE_SCOM9
+LOCAL = MASTER_POSE(4,1,1)
+PRINTFORM %CALLNAME:TARGET%と%CALLNAME:LOCAL%は
+;奴隷と助手が恋慕か亲爱
+SIF TALENT:恋慕 && TALENT:LOCAL:恋慕
+	PRINTFORM 出神的仰望着%CALLNAME:PLAYER%、
+PRINTFORML %CALLNAME:PLAYER%的阴茎上两个人的舌头不断舔弄着…
+;-------------------------------------------------
+;10,双人素股
+;-------------------------------------------------
+@MESSAGE_SCOM10
+LOCAL = MASTER_POSE(2,1,1)
+PRINTFORML %CALLNAME:TARGET%と%CALLNAME:LOCAL%用性器官夹住阴茎、两个人一齐摩擦起来…
+
+;-------------------------------------------------
+;11,双人乳交
+;-------------------------------------------------
+@MESSAGE_SCOM11
+LOCAL = MASTER_POSE(5,1,1)
+PRINTFORM %CALLNAME:TARGET%と%CALLNAME:LOCAL%は
+;奴隷と助手が恋慕か亲爱
+SIF TALENT:恋慕 && TALENT:LOCAL:恋慕
+	PRINTFORM 出神的仰望着%CALLNAME:PLAYER%、
+PRINT 互いの
+;奴隷と助手が巨乳か爆乳
+IF TALENT:胸部尺寸 > 0 && TALENT:LOCAL:胸部尺寸 > 0
+	PRINT 丰满的
+	;奴隷と助手が貧乳か絶壁
+ELSEIF TALENT:胸部尺寸 < 0 && TALENT:LOCAL:胸部尺寸 < 0
+	PRINT 平坦的
+ENDIF
+PRINTFORML 把胸部重叠起来一起摩擦着%CALLNAME:PLAYER%の阴茎…
+
+;-------------------------------------------------
+;12,乳夹口交
+;-------------------------------------------------
+@MESSAGE_SCOM12
+PRINTFORM %CALLNAME:TARGET%は
+;恋慕か亲爱
+SIF TALENT:恋慕
+	PRINT 一副出神地表情、
+;貧乳
+IF TALENT:胸部尺寸 == -1
+	PRINTL  不仅仅是平平的胸口,舌头也使用猛烈的刺激着阴茎全身. …
+	;巨乳
+ELSEIF TALENT:胸部尺寸 == 1
+	PRINTL  阴茎被丰满的胸包围着,对露出的龟头舔着 …
+	;爆乳
+ELSEIF TALENT:胸部尺寸 == 2
+	PRINTL  太丰满的胸部整个包裹了阴茎,时不时地伸出舌头,努力地舔舐阴茎. …
+ELSE
+	PRINTL 胸把阴茎夹住,并对露出的部分舔弄着…
+ENDIF
+
+;-------------------------------------------------
+;13,交互插入
+;-------------------------------------------------
+@MESSAGE_SCOM13
+LOCAL = MASTER_POSE(6,1,1)
+
+;現在2人以上の处女を同ターンで奪うことは出来ないため、处女関連はここ一つにまとめる
+IF TALENT:处女
+	PRINTFORML 在%CALLNAME:LOCAL%的蜜穴内插入的同时把%CALLNAME:TARGET%抱住了、还不知男人滋味\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@也一起贯穿了…
+	;連続
+ELSEIF TFLAG:50 == TFLAG:151 && TARGET == TFLAG:152
+	PRINTFORM %CALLNAME:TARGET%と%CALLNAME:LOCAL%
+	;正常位＋后背位
+	IF ((TEQUIP:体位 == 1 && TEQUIP:LOCAL:体位２ == 2) || (TEQUIP:体位 == 2 && TEQUIP:LOCAL:体位２ == 1))
+		PRINT 的身体贴紧、
+		;正常位＋正常位
+	ELSEIF TEQUIP:体位 == 1 && TEQUIP:LOCAL:体位２ == 1
+		PRINT 仰面并排躺下、
+	ELSE
+		PRINT 把屁股朝向这边、
+	ENDIF
+	SIF HAS_PENIS(MASTER)
+		PRINT 一边品味着两人阴道内触觉的差异
+	PRINTL 一边轮流插入
+ELSE
+	IF RAND:2 == 0
+		PRINTFORM 在%CALLNAME:LOCAL%的蜜穴内插入的同时把%CALLNAME:TARGET%抱住了、
+		IF RAND:2 == 0
+			PRINT 那个
+			SIF PALAM:润滑 >= PALAMLV:4
+				PRINT 湿透了
+			PRINTFORM \@ ( TALENT:体型 < 0 && TALENT:LOCAL:体型 < 0 ) ? 尚未发育完全的 # 秘裂 \@も
+		ELSE
+			IF TEQUIP:体位 == 2 && (TEQUIP:LOCAL:体位２ == 1 || TEQUIP:LOCAL:体位２ == 4)
+				PRINT 被上下叠放在了一起
+			ELSE
+				PRINT 并排
+			ENDIF
+			PRINT 两个
+			SIF PALAM:润滑 >= PALAMLV:4 && PALAM:LOCAL:润滑 >= PALAMLV:4
+				PRINT 湿透了
+			PRINTFORM \@ ( TALENT:体型 < 0 && TALENT:LOCAL:体型 < 0 ) ? 尚未发育完全的 # 秘裂 \@を
+		ENDIF
+	ELSE
+		IF TEQUIP:体位 == 2 && (TEQUIP:LOCAL:体位２ == 1 || TEQUIP:LOCAL:体位２ == 4)
+			IF RAND:2 == 0
+				PRINTFORM %CALLNAME:TARGET%と%CALLNAME:LOCAL%互相拥抱在了一起、两个\@ ( TALENT:体型 < 0 && TALENT:LOCAL:体型 < 0 ) ? 尚未发育完全的 # 秘裂 \@を
+			ELSE
+				PRINTFORM %CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@と%CALLNAME:LOCAL%の\@ TALENT:LOCAL:体型 < 0 ? 尚未发育完全的 # 秘裂 \@相互紧贴、
+			ENDIF
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 尚未发育完全的 # 秘裂 \@と%CALLNAME:LOCAL%の\@ TALENT:LOCAL:体型 < 0 ? 尚未发育完全的 # 秘裂 \@并排着、
+		ENDIF
+	ENDIF
+	PRINTL 被轮流插入…
+ENDIF
+
+IF TALENT:恋慕 && TALENT:LOCAL:恋慕
+	WAIT
+	PRINTFORML %CALLNAME:TARGET%和%CALLNAME:LOCAL%一边互相插入着、一边也接受%CALLNAME:MASTER%的阴茎插入…
+ELSEIF EXP:百合经验 >= 1000 && EXP:LOCAL:百合经验 >= 1000
+	WAIT
+	PRINTFORML %CALLNAME:TARGET%と%CALLNAME:LOCAL%一边相互深吻着、一边接受%CALLNAME:MASTER%的阴茎插入…
+ENDIF
+
+;前回の共同参加者の保存
+TFLAG:152 = LOCAL
+
+;-------------------------------------------------
+;14,母乳飲み
+;-------------------------------------------------
+@MESSAGE_SCOM14
+
+IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+	IF !TEQUIP:4 && TEQUIP:1 & 1
+		TEQUIP:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%的衣服被拉开了、
+	ENDIF
+	PRINTFORM %CALLNAME:TARGET%保持%OPPAI_DESCRIPTION(TARGET)%
+ELSE
+	IF !TEQUIP:4 && TEQUIP:1 & 1
+		TEQUIP:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%的衣服被拉开了、
+	ENDIF
+	PRINTFORM %CALLNAME:TARGET%の%OPPAI_DESCRIPTION(TARGET)%
+ENDIF
+;欲情のPALAMLV3以上
+IF PALAM:欲情 >= PALAMLV:3
+	PRINTL 前端的、完全变硬的突起、 一边轻咬着刺激,一边吸允着,母乳很快就分泌出来了 …
+ELSE
+	PRINTL 前端的、柔软的突起、一边轻咬着刺激,一边吸允着,母乳很快就分泌出来了…
+ENDIF
+
+;-------------------------------------------------
+;15,授乳
+;-------------------------------------------------
+@MESSAGE_SCOM15
+PRINTFORM %CALLNAME:TARGET%は
+IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+	IF !TEQUIP:PLAYER:4 && TEQUIP:PLAYER:1 & 1
+		TEQUIP:PLAYER:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%的衣服被拉开了、
+	ENDIF
+	PRINTFORM %CALLNAME:PLAYER%一边叼着%OPPAI_DESCRIPTION(PLAYER)%
+ELSE
+	IF !TEQUIP:PLAYER:4 && TEQUIP:PLAYER:1 & 1
+		TEQUIP:PLAYER:4 = 1
+		PRINTFORML %CALLNAME:PLAYER%的衣服被拉开了、
+	ENDIF
+	PRINTFORM %CALLNAME:PLAYER%的%OPPAI_DESCRIPTION(PLAYER)%
+ENDIF
+PRINTFORML 尖端的、
+;欲情のPALAMLV3以上
+IF PALAM:欲情 >= PALAMLV:3
+	PRINTL 完全变硬的突起、一边轻咬着刺激一边吸允,母乳很快就分泌出来了…
+ELSE
+	PRINTL 柔软的突起、一边轻咬着刺激一边吸允,母乳很快就分泌出来了…
+ENDIF
+;-------------------------------------------------
+;16,授乳手コキ
+;-------------------------------------------------
+@MESSAGE_SCOM16
+PRINTFORM %CALLNAME:TARGET%的
+;欲情のPALAMLV3以上
+SIF TALENT:TARGET:149 == 1
+	PRINT 母乳の出る
+IF PALAM:欲情 >= PALAMLV:3
+	PRINT 完全变硬的突起吸允起来、
+ELSE
+	PRINT 柔软的突起吸允起来、
+ENDIF
+PRINTFORML %CALLNAME:PLAYER%亲手为他手淫…
+;-------------------------------------------------
+;300,会话
+;-------------------------------------------------
+;会话
+@MESSAGE_COM300
+PRINTFORMD %CALLNAME:PLAYER%与%CALLNAME:TARGET%
+IF TALENT:恋慕
+	PRINTDATAD
+		DATAFORM 十指相扣
+		DATAFORM 依偎着
+		DATAFORM 有点害羞
+		DATAFORM \@ TIME >= 360 && TIME <= 1080 ? 在白天的阳光中 # 夜晚的寂静中 \@
+		DATAFORM 嬉戏
+		DATAFORM 互相微笑
+	ENDDATA
+ELSE
+	PRINTDATAD
+		DATAFORM 俗气
+		DATAFORM 漫无边际
+		DATAFORM 无聊
+		DATAFORM 羞耻
+		DATAFORM 尴尬
+	ENDDATA
+ENDIF
+PRINTFORMDL 地聊天
+IF TFLAG:193 == 1
+	PRINTFORMDL 度过了快乐的时光…
+ELSEIF TFLAG:193 == -1
+	PRINTFORMDL 谈话中断后气氛尴尬…
+ENDIF
+;-------------------------------------------------
+;301,泡一杯茶
+;-------------------------------------------------
+@MESSAGE_COM301
+PRINTFORML %CALLNAME:PLAYER%泡了茶…递给%CALLNAME:TARGET%\@ GET_TARGETNUM() > 1 ? 们 # \@
+IF TFLAG:193 == 1
+	PRINTFORML %CALLNAME:TARGET%と%CALLNAME:PLAYER%一边喝茶一边度过了快乐的时光…
+ELSEIF TFLAG:193 == -1
+	PRINTFORML …好像不合%CALLNAME:TARGET%的口味
+ENDIF
+
+;-------------------------------------------------
+;302,身体接触
+;-------------------------------------------------
+@MESSAGE_COM302
+IF BATHROOM(CFLAG:MASTER:現在位置)
+	PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%的背上抚摸
+ELSE
+	PRINTFORML %CALLNAME:PLAYER%谋求与%CALLNAME:TARGET%的亲密接触
+ENDIF
+IF TFLAG:193 == 1
+	PRINTFORML %CALLNAME:TARGET%总觉得很高兴…
+ELSEIF TFLAG:193 == -1
+	PRINTFORML  …好像有点过分亲昵了… 
+ENDIF
+
+;-------------------------------------------------
+;310,抚摸臀部
+;-------------------------------------------------
+@MESSAGE_COM310
+IF CFLAG:うふふ == 2
+	PRINTFORM %CALLNAME:PLAYER%将
+	;颜面骑乘
+	IF TCVAR:20 == 70
+		IF TEQUIP:0 > 1
+			PRINTFORM 跨在脸上的%CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 小小的 # \@雪臀肆意揉搓着…
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%的雪臀一边慢慢揉搓一边用舌头侍奉着\@ TALENT:体型 < 0 ? 对方 # 女性器 \@…
+		ENDIF
+	ELSEIF TCVAR:20 == 71
+		PRINTFORM 将跨在脸上的%CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 小小的 # \@雪臀肆意揉搓着…
+	ELSEIF TCVAR:20 == 72
+		IF TEQUIP:0 > 1
+			PRINTFORM 将跨在脸上的%CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 小小的 # \@雪臀肆意揉搓着…
+		ELSE
+			PRINTFORM %CALLNAME:TARGET%的雪臀放松了、舌尖侵入了后庭…
+		ENDIF
+		;裙子の中を見せる
+	ELSEIF TCVAR:20 == 35
+		PRINTFORM 把%CALLNAME:TARGET%的雪臀翘向这边抚摸了…
+		;素股
+	ELSEIF TCVAR:20 == 52
+		PRINTFORM 骑在腰上的%CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 小小的 # \@雪臀肆意揉搓着…
+	ELSEIF TEQUIP:六九式
+		PRINTFORM 将跨在脸上的%CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 小小的 # \@雪臀肆意揉搓着…
+	ELSE
+		PRINTFORM %CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 小小的 # \@雪臀肆意揉搓着…
+	ENDIF
+ELSE
+	PRINTFORML %CALLNAME:PLAYER%从背后向%CALLNAME:TARGET%の\@ TALENT:体型 < 0 ? 小小的 # \@雪臀伸出了手
+	IF ABL:亲密 > 5
+		PRINTFORML %CALLNAME:TARGET%脸上浮现出害羞的表情任%CALLNAME:PLAYER%摆布…
+	ELSEIF ABL:亲密 > 2
+		PRINTFORML %CALLNAME:TARGET%脸红了撒开了%CALLNAME:PLAYER%的手…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%露出不快感的表情 目不转睛地盯着%CALLNAME:PLAYER%… 
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;311,抱住
+;-------------------------------------------------
+@MESSAGE_COM311
+IF CFLAG:うふふ == 2
+	;爱抚
+	IF TCVAR:20 == 50
+		IF HAS_PENIS(PLAYER)
+			PRINTFORM %CALLNAME:PLAYER%一边用肉棒摩擦着对方的身体,一边紧紧的抱住%CALLNAME:TARGET%…
+		ELSE
+			PRINTFORM %CALLNAME:PLAYER%用身体摩擦着对方的身体,一边紧紧的抱住%CALLNAME:TARGET%…
+		ENDIF
+	ELSEIF TCVAR:20 == 32
+		PRINTFORM %CALLNAME:PLAYER%把脸埋在%CALLNAME:TARGET%の\@ TALENT:TARGET:胸部尺寸 > 0 ? 丰满的胸 # 胸 \@口吸入甜蜜的香气…
+		;キス
+	ELSEIF TCVAR:20 == 60
+		PRINTFORM %CALLNAME:PLAYER%と%CALLNAME:TARGET% 两人紧贴着身体,互相深吻着 …
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%紧紧地抱住了%CALLNAME:TARGET%…
+		PRINTFORM %CALLNAME:TARGET%は
+		IF ABL:亲密 >= 8
+			PRINTL  高兴地抱了回来… 
+		ELSEIF ABL:亲密 >= 4
+			PRINTL 虽然有点害羞、但好像没有不满…
+		ELSE
+			PRINTL  满脸羞涩… 
+		ENDIF
+	ENDIF
+ELSE
+	PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%紧紧地抱住
+	PRINTFORM %CALLNAME:TARGET%は
+	IF ABL:亲密 >= 8
+		PRINTL 高兴地抱了回来…
+	ELSEIF ABL:亲密 >= 4
+		PRINTL 虽然有点害羞、但好像没有不满…
+	ELSE
+		PRINTL 满脸羞涩…
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;312,接吻
+;-------------------------------------------------
+@MESSAGE_COM312
+;NTR汚れによる失敗以外
+IF TFLAG:193 != -2
+	IF CFLAG:うふふ == 2
+		;爱抚
+		IF TCVAR:20 == 50
+			IF HAS_PENIS(PLAYER)
+				PRINTFORM %CALLNAME:PLAYER%一边用肉棒摩擦对方一面抱住%CALLNAME:TARGET%并接吻…
+			ELSE
+				PRINTFORM %CALLNAME:PLAYER%一边用身体摩擦对方一面抱住%CALLNAME:TARGET%并接吻…
+			ENDIF
+			;キス
+		ELSEIF TCVAR:20 == 60
+			PRINTFORM %CALLNAME:PLAYER%主动将舌头入%CALLNAME:TARGET%口内,舌头互相缠绕着…
+		ELSE
+			PRINTFORML %CALLNAME:PLAYER%被%CALLNAME:TARGET%主动用唇堵住了嘴…
+			IF ABL:欲望 >= 5
+				PRINTFORML %CALLNAME:TARGET%和%CALLNAME:PLAYER%的嘴唇张开,将舌头缠绕在一起…
+			ELSEIF ABL:亲密 >= 5
+				PRINTFORML %CALLNAME:TARGET%脸颊染红了…
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%似乎对突然发生的事情感到惊讶
+			ENDIF
+		ENDIF
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%被%CALLNAME:TARGET%主动用唇堵住了嘴…
+		IF ABL:欲望 >= 5
+			PRINTFORML %CALLNAME:TARGET%和%CALLNAME:PLAYER%的嘴唇张开,将舌头缠绕在一起…
+		ELSEIF ABL:亲密 >= 5
+			PRINTFORML %CALLNAME:TARGET%脸颊染红了…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%似乎对突然发生的事情感到惊讶…
+		ENDIF
+	ENDIF
+	;NTR汚れによる失敗
+ELSE
+	PRINTFORML 想和%CALLNAME:TARGET%接吻却被拒绝了.
+	PRINTFORML %CALLNAME:TARGET%看起来很惊慌、说只有亲吻是不行的…
+ENDIF
+;-------------------------------------------------
+;313,胸爱抚
+;-------------------------------------------------
+@MESSAGE_COM313
+IF TEQUIP:1 & 1 && !TEQUIP:4
+	TEQUIP:4 = 1
+	PRINTFORM %CALLNAME:PLAYER%让%CALLNAME:TARGET%脱下衣服、
+	IF TEQUIP:1 & 2
+		PRINTFORM 隔着%CALLNAME:TARGET%的胸衣
+	ELSE
+		PRINT 暴露出的胸部
+	ENDIF
+ELSEIF TEQUIP:1 & 2
+	PRINTFORM %CALLNAME:PLAYER%将隔着衣服的%CALLNAME:TARGET%的胸
+ELSE
+	PRINTFORM %CALLNAME:PLAYER%将%CALLNAME:TARGET%的胸
+ENDIF
+
+IF ABL:Ｂ感觉 <= 1
+	PRINT 像抚摸般
+ELSEIF ABL:Ｂ感觉 <= 3
+	PRINT 温柔地
+ELSE
+	PRINT 实实在在地
+ENDIF
+
+PRINTFORML 揉搓了…
+
+IF ABL:Ｂ感觉 <= 1
+	PRINTFORML %CALLNAME:TARGET%感觉很痒…
+ELSEIF ABL:Ｂ感觉 <= 4
+	PRINTFORML %CALLNAME:TARGET% 开始因爱抚而吐出灼热的呼吸… 
+ELSE
+	PRINTFORML %CALLNAME:TARGET%的脸上流露出凌乱的表情…
+ENDIF
+;-------------------------------------------------
+;314,肛门爱抚
+;-------------------------------------------------
+@MESSAGE_COM314
+IF CFLAG:うふふ == 2
+	;颜面骑乘菊花
+	IF TCVAR:20 == 72
+		IF TEQUIP:0 > 1
+			PRINTFORML %CALLNAME:PLAYER%将跨在脸上的%CALLNAME:TARGET%的后庭隔着衣服用舌头刺激了…
+		ELSE
+			PRINTFORML %CALLNAME:PLAYER%将跨在脸上的%CALLNAME:TARGET%的后庭用舌头侍奉了…
+		ENDIF
+		;六九式体勢
+	ELSEIF TEQUIP:六九式
+		IF TEQUIP:0 > 1
+			PRINTFORM %CALLNAME:PLAYER%将脸埋在%CALLNAME:TARGET%的屁股里 
+			SIF TFLAG:61 < 2
+				PRINTFORM て打开后庭
+			PRINTFORML 后庭隔着衣服用舌头刺激了 …
+		ELSE
+			PRINTFORM %CALLNAME:PLAYER%
+			SIF TFLAG:61 < 2
+				PRINTFORM て打开后庭
+			PRINTFORML 对眼前%CALLNAME:TARGET%狭窄的后庭用舌头刺激了…
+		ENDIF
+	ELSE
+		IF TEQUIP:0 > 1
+			PRINTFORM %CALLNAME:PLAYER%把%CALLNAME:TARGET%衣服被拉开的后庭
+		ELSE
+			PRINTFORM %CALLNAME:PLAYER%把%CALLNAME:TARGET%的后庭
+		ENDIF
+
+		IF ABL:Ａ感觉 <= 1
+			PRINT 用指腹抚摸着
+		ELSEIF ABL:Ａ感觉 <= 3
+			PRINT 像要打开后庭似的
+		ELSE
+			PRINT 像要把手指整个插进去一样
+		ENDIF
+
+		PRINTFORML 爱抚…
+	ENDIF
+	IF ABL:Ａ感觉 <= 1
+		PRINTFORML %CALLNAME:TARGET%似乎还没有被接受这种感觉…
+	ELSEIF ABL:Ａ感觉 <= 3
+		PRINTFORML %CALLNAME:TARGET%因异物感挺直了背脊…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%一副若无其事的神情任人摆布…
+	ENDIF
+ELSE
+	IF TEQUIP:0 > 1
+		PRINTFORM %CALLNAME:PLAYER%は%CALLNAME:TARGET%衣服被拉开的后庭
+	ELSE
+		PRINTFORM %CALLNAME:PLAYER%は%CALLNAME:TARGET%的后庭
+	ENDIF
+
+	IF ABL:Ａ感觉 <= 1
+		PRINT 用手腹抚摸着
+	ELSEIF ABL:Ａ感觉 <= 3
+		PRINT 像要打开后庭似的
+	ELSE
+		PRINT 像插进手指一样
+	ENDIF
+
+	PRINTFORML 爱抚した…
+
+	IF ABL:Ａ感觉 <= 1
+		PRINTFORML %CALLNAME:TARGET%似乎还没有被接受这种感觉…
+	ELSEIF ABL:Ａ感觉 <= 3
+		PRINTFORML %CALLNAME:TARGET%因异物感挺直了背脊…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%一副若无其事的神情任人摆布…
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;315,阴蒂爱抚
+;-------------------------------------------------
+@MESSAGE_COM315
+PRINTFORM %CALLNAME:PLAYER%对%CALLNAME:TARGET%的蜜处
+
+IF TEQUIP:0 > 1
+	IF PALAM:润滑 > PALAMLV:3
+		PRINT 隔着湿透的衣服
+	ELSEIF PALAM:润滑 > PALAMLV:1
+		PRINT 隔着略微潮湿的衣服
+	ELSE
+		PRINT 隔着衣服
+	ENDIF
+ENDIF
+
+IF ABL:Ｃ感觉 <= 1
+	PRINT 轻轻地抚摸着
+ELSEIF ABL:Ｃ感觉 <= 3
+	PRINT 轻轻地撵动
+ELSE
+	PRINT 慢慢地揉搓
+ENDIF
+
+PRINTFORML …
+
+IF ABL:Ｃ感觉 <= 1
+	PRINTFORML %CALLNAME:TARGET%感觉很痒…
+ELSEIF ABL:Ｃ感觉 <= 4
+	PRINTFORML %CALLNAME:TARGET% 开始因爱抚而吐出灼热的呼吸… 
+ELSE
+	PRINTFORML %CALLNAME:TARGET%的脸上流露出凌乱的表情…
+ENDIF
+
+;-------------------------------------------------
+;316,手指插入
+;-------------------------------------------------
+@MESSAGE_COM316
+PRINTFORM %CALLNAME:PLAYER%向%CALLNAME:TARGET%的蜜处伸出手去
+
+IF TEQUIP:0 > 1
+	IF PALAM:润滑 > PALAMLV:3
+		PRINT 湿透了
+	ELSEIF PALAM:润滑 > PALAMLV:1
+		PRINT 潮湿的
+	ENDIF
+	PRINTL 下着的空隙间
+ELSE
+	PRINT 赤裸的性器
+ENDIF
+PRINTFORML  慢慢地插入手指… 
+
+IF TALENT:处女 == 1
+	PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER% 好像要拒绝手指似的,一双玉腿紧闭着… 
+ELSEIF ABL:Ｖ感觉 < 1
+	PRINTFORML %CALLNAME:TARGET% 对异物的刺激还不是很适应… 
+ELSEIF ABL:Ｖ感觉 <= 4
+	PRINTFORML %CALLNAME:TARGET% 开始因爱抚而吐出灼热的呼吸… 
+ELSE
+	PRINTFORML %CALLNAME:TARGET%流出了口水,主动挺起腰贪图着更多的快乐 …
+ENDIF
+;-------------------------------------------------
+;350,推到
+;-------------------------------------------------
+@MESSAGE_COM350
+IF GET_TARGETNUM() > 1 && GET_TARGETWAKEUP() > 1
+	IF GET_TARGETSLEEP()
+		CALL GET_TSLEEP_NAME
+		PRINTFORML %CALLNAME:PLAYER%确认了%CALLNAME:RESULT%\@RESULT:1 > 1 ?们# \@们睡着之后,把%CALLNAME:TARGET%们抱了过来…
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%一确认周围没有人,就抱住%CALLNAME:TARGET%们…
+	ENDIF
+ELSE
+	IF GET_TARGETSLEEP()
+		CALL GET_TSLEEP_NAME
+		PRINTFORML %CALLNAME:PLAYER%确认了%CALLNAME:RESULT%\@RESULT:1 > 1 ?们# \@们睡着之后,把%CALLNAME:TARGET%抱了过来…
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%一确认周围没有人,就抱住%CALLNAME:TARGET%…
+	ENDIF
+ENDIF
+SIF FIRSTTIME(TOSTR(350),1)
+	PRINTFORML %CALLNAME:TARGET%用似乎已经下定决心的眼神看着%CALLNAME:PLAYER%…
+
+;-------------------------------------------------
+;352,告白
+;-------------------------------------------------
+@MESSAGE_COM352
+IF TFLAG:193
+	PRINTFORML %CALLNAME:PLAYER%下定决心,向%CALLNAME:TARGET%表白了相思之情…
+ELSE
+	;寝取られ
+	IF TALENT:NTR
+		PRINTFORML %CALLNAME:PLAYER%向%CALLNAME:TARGET%告白,但被付之一笑(NTR).
+		;两个他
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER%想向%CALLNAME:TARGET%告白,但却说不出话来…
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;355,任其摆布(訪問者用)
+;-------------------------------------------------
+@MESSAGE_COM355
+PRINTFORML %CALLNAME:PLAYER%任由%NTR_NAME(0)%摆布…
+;-------------------------------------------------
+;360,任其摆布
+;-------------------------------------------------
+@MESSAGE_COM360
+PRINTFORML %CALLNAME:PLAYER%任由%CALLNAME:TARGET%摆布…
+;-------------------------------------------------
+;403休息
+;-------------------------------------------------
+@MESSAGE_COM403
+#DIM LOOP_CHR
+IF BATHROOM(CFLAG:MASTER:現在位置)
+	PRINTFORML %CALLNAME:PLAYER%在浴场很舒适
+ELSEIF REST_IsRestroom(CFLAG:MASTER:現在位置)
+	PRINTFORML %CALLNAME:PLAYER%今天事办完了
+ELSE
+	PRINTFORML %CALLNAME:PLAYER%喘了一口气
+ENDIF
+
+;現時点では女/ふたなりあなたのみ対象とする
+;;肉便器では発生させないでおく
+IF HAS_VAGINA(MASTER) && TALENT:MASTER:公众便所 && !TALENT:MASTER:肉便器
+	FOR LOOP_CHR,1,人物_魔理沙+1
+		IF MASTER != LOOP_CHR && CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置 && RAND:10 <= CFLAG:MASTER:屈服度 
+			IF !CFLAG:LOOP_CHR:睡眠 
+				CALL SexHara休息中(LOOP_CHR)
+			ENDIF
+		ENDIF
+	NEXT
+ENDIF
+
+;-------------------------------------------------
+;410,扫除
+;-------------------------------------------------
+@MESSAGE_COM410
+;訪問者と住人１人同席、かつ主人が空気
+IF FLAG:訪問者の現在位置 == CFLAG:MASTER:現在位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	LOCALS = %CALLNAME:MASTER%
+ELSE
+	IF TFLAG:193 && !CFLAG:睡眠
+		LOCALS = %CALLNAME:MASTER%と%CALLNAME:TARGET%
+	ELSE
+		LOCALS = %CALLNAME:MASTER%
+	ENDIF
+ENDIF
+SELECTCASE TFLAG:194
+	CASE 0
+		PRINTFORML %LOCALS%用抹布擦掉了周围的污垢
+	CASE 1
+		PRINTFORML %LOCALS%拿着扫帚和簸箕扫了一下四周
+	CASE 2
+		PRINTFORML %LOCALS%把垃圾整齐丢在纸篓里
+		PRINTFORML 四周还乱七八糟
+	CASE 3
+		PRINTFORML %LOCALS%压倒性的垃圾就在眼前,即使讨厌也得继续工作
+ENDSELECT
+;訪問者と住人１人同席、かつ主人が空気
+IF FLAG:訪問者の現在位置 == CFLAG:MASTER:現在位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN
+ENDIF
+IF STRLENS(TSTR:2)
+	WAIT
+	PRINTFORML 遗落的%TSTR:2%掉下来了
+	PRINT [0] - 拿走 [1] - 放下
+	INPUT
+	IF !RESULT
+		PRINTFORML 把%TSTR:2%悄咪咪的收了起来
+		CFLAG:MASTER:収集品死守戦フラグ ++
+		CSTR:MASTER:収集品 += TSTR:3
+	ELSE
+		TSTR:3 =
+		PRINTFORML 把扔进了洗衣篮%TSTR:2%
+	ENDIF
+ENDIF
+SIF !TFLAG:193 && TARGET > 0 && !CFLAG:睡眠
+	PRINTFORML %CALLNAME:TARGET%钦佩的注视着%CALLNAME:MASTER%的工作
+
+;SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && TALENT:MASTER:2 == 1 && RAND:100 >= 50
+;ふたなりも対象に含める（男以外であればセクハラされる）
+;;肉便器の時は発生させない
+SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && TALENT:MASTER:2 != 2 && RAND:100 <= CFLAG:MASTER:屈服度 && !TALENT:MASTER:肉便器
+	TRYCALL SOJI_SexHara
+;逆パンチラ
+TRYCALL REV_PANCHIRA
+
+;-------------------------------------------------
+;411,战斗训练
+;-------------------------------------------------
+@MESSAGE_COM411
+PRINTFORM %CALLNAME:MASTER%は
+IF TARGET > 0
+	PRINTFORM 一边听取%CALLNAME:TARGET%的建议
+ENDIF
+PRINTL 一边进行弾幕の訓練
+;-------------------------------------------------
+;414,吃饭
+;-------------------------------------------------
+@MESSAGE_COM414
+PRINTFORM %CALLNAME:PLAYER%は
+IF GET_TARGETNUM()
+	PRINTFORML 约%CALLNAME:TARGET%\@ GET_TARGETNUM() > 1 ? 们 # \@吃饭
+ELSE
+	PRINTFORML  一个人寂寞地吃了饭… 
+ENDIF
+IF TFLAG:193 == 1
+	PRINTFORML \@ GET_TARGETNUM() ? %CALLNAME:TARGET%と # \@%CALLNAME:PLAYER%は%GETDISHNAME(FLAG:料理)% 边吃东西边度过了愉快的时光… 
+ELSEIF TFLAG:193 == -1
+	PRINTFORML …\@ GET_TARGETNUM() ? 好像不合%CALLNAME:TARGET%的口味 # …不是很好吃 \@
+ENDIF
+
+SIF FLAG:料理 > 1000
+	CALL DISHMIX_RESULT_KOJO
+
+;-------------------------------------------------
+;招待食物
+;-------------------------------------------------
+@MESSAGE_COM415
+PRINTFORML %CALLNAME:PLAYER%给%CALLNAME:TARGET%\@ GET_TARGETNUM() > 1 ? 们 # \@做了%GETDISHNAME(FLAG:料理)%料理
+IF TFLAG:193 == 1
+	PRINTFORML %CALLNAME:TARGET%は%GETDISHNAME(FLAG:料理)%吃饱了看上去很满足…
+ELSEIF TFLAG:193 == -1
+	PRINTFORML … 好像不合%CALLNAME:TARGET%的口味
+ENDIF
+SIF FLAG:料理 > 1000
+	CALL DISHMIX_RESULT_KOJO
+
+;-------------------------------------------------
+;420,与女仆妖精对话
+;-------------------------------------------------
+@MESSAGE_COM420
+PRINTFORML 妖精女仆「如上所述.\@ TFLAG:195 != 0 && TFLAG:195 != 14 ?  那么,欢迎光临  #  还有其他问题吗？ \@」
+
+;-------------------------------------------------
+;600,爱抚
+;-------------------------------------------------
+@MESSAGE_COM600
+PRINTFORM %CALLNAME:PLAYER%主动的
+;小柄体型
+SIF TALENT:体型 < 0
+	PRINT 未发育的
+PRINTL 身体细心爱抚了…
+IF IS_ORGASM_CVAB(TARGET)
+	IF TEQUIP:50 == PLAYER || TEQUIP:51 == PLAYER
+		PRINTFORML %CALLNAME:PLAYER%の\@ TEQUIP:50 == PLAYER ? 蜜穴 # 后庭 \@每次碰到自己的身体都会微微收缩
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER% 每次碰到自己身体都会战栗地颤抖 
+	ENDIF
+	PRINTFORML 为感受到的快乐而颤抖…
+ENDIF
+
+;-------------------------------------------------
+;602,自我口交
+;-------------------------------------------------
+@MESSAGE_COM602
+PRINTFORM %CALLNAME:TARGET%主动的
+;欲情のPALAMLV3以上
+SIF PALAM:欲情 >= PALAMLV:3
+	PRINT 坚硬勃起的
+PRINTL 阴茎含在口里舔了
+
+;-------------------------------------------------
+;603,指挿入れ
+;-------------------------------------------------
+@MESSAGE_COM603
+;下半身着衣
+SIF TEQUIP:0 & 2
+	PRINTFORM 将手伸入%SHOW_BOTTOM(TARGET,2)%其中
+PRINTFORM %CALLNAME:PLAYER%主动的
+;处女
+IF TALENT:处女 == 1
+	PRINT 还不知男人滋味
+	;润滑LV4以上
+ELSEIF PALAM:润滑 >= PALAMLV:4
+	PRINT 湿透了
+ENDIF
+;小柄体型の有無で分岐
+IF TALENT:体型 < 0
+	PRINT 尚未发育完全的
+ELSE
+	PRINT 秘裂
+ENDIF
+;振动棒の有無で分岐
+IF TEQUIP:振动棒
+	PRINTFORML 之中,不断抽送着运行中的振动棒
+ELSE
+	PRINTFORML  将手指慢慢地插入… 
+	IF NOWEX:Ｃ绝顶
+		IF TALENT:处女 == 1
+			PRINTFORML %CALLNAME:PLAYER%的蜜穴、下体紧紧的夹住了插入的手指…
+		ELSE
+			PRINTFORML %CALLNAME:PLAYER%流出了口水、腰部振动着以图得到更多的快乐…
+		ENDIF
+	ELSE
+		IF TALENT:处女 == 1
+			PRINTFORML %CALLNAME:PLAYER%的身体还不习惯这么强的刺激…
+		ELSE
+			PRINTFORML %CALLNAME:PLAYER%对在阴道内蠕动的手指带来的快感,不禁高声发出提高了甜美的呻吟…
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;605,肛门爱抚
+;-------------------------------------------------
+@MESSAGE_COM605
+PRINTFORM %CALLNAME:PLAYER%は
+;肛门振动棒
+IF TEQUIP:肛门振动棒
+	PRINTFORML 小幅抽送微微振动的肛门振动棒…
+	;肛珠
+ELSEIF TEQUIP:肛珠
+	PRINTFORML 把珠子拉了出来再轻巧的放进去…
+	;灌肠器+肛塞
+ELSEIF TEQUIP:灌肠
+	PRINTFORML 用塞子重重的搅动了本就因排泄感而颤抖的后庭 …
+ELSEIF TEQUIP:扩张气球
+	PRINTFORML 把将肛门扩展到极限的气球前后抽动…
+	;肛门电极
+ELSEIF TEQUIP:肛门电极
+	PRINTFORML 用发出低鸣的电极咕噜咕噜地搅动着后庭…
+ELSE
+	PRINTFORM 主动玩弄自己的肛门
+	;Ａ经验100以上＋欲望のPALAMLV3以上
+	SIF PALAM:欲情 >= PALAMLV:3 && EXP:Ａ经验 >= EXPLV:3
+		PRINT て、将用指尖伸入直肠搅拌
+	PRINTL た…
+ENDIF
+
+
+;-------------------------------------------------
+;606,胸爱抚
+;-------------------------------------------------
+@MESSAGE_COM606
+PRINTFORM %CALLNAME:PLAYER%的%OPPAI_DESCRIPTION(PLAYER)%
+;欲望のPALAMLV3以上＋
+IF PALAM:欲情 >= PALAMLV:3 && !TEQUIP:乳头夹 && TEQUIP:搾乳机
+	PRINTL 前端的完全变硬的突起…
+	;小柄体型
+ELSEIF TALENT:体型 < 0
+	PRINTL 温柔的抚摸着…
+ELSE
+	PRINTL 肆意揉搓着…
+ENDIF
+
+;-------------------------------------------------
+;607,玩弄乳首
+;-------------------------------------------------
+@MESSAGE_COM607
+PRINTFORM %CALLNAME:PLAYER%的%OPPAI_DESCRIPTION(PLAYER)%
+;欲情のPALAMLV3以上
+IF PALAM:欲情 >= PALAMLV:3
+	PRINTL 前端的完全变硬的突起…
+ELSE
+	PRINTL 前端的、还柔软的突起 …
+ENDIF
+
+;-------------------------------------------------
+;608,掰开小穴
+;-------------------------------------------------
+@MESSAGE_COM608
+PRINTFORM %CALLNAME:PLAYER%对
+;露出癖
+IF ABL:露出癖 == 0
+	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM %NTR_NAME(0)%的视线感到害羞的同时、主动的
+	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM 魔理沙的视线感到害羞的同时、主动的
+	ELSE
+		PRINTFORM 一边感到羞耻一边确认周围没人发现
+	ENDIF
+	;小柄体型
+	IF TALENT:体型 < 0
+		PRINT 尚未发育完全的に
+	ELSE
+		PRINT 蜜壶
+	ENDIF
+	PRINTL  把手指插进去,向左右张开 
+	SIF TCVAR:102
+		PRINTFORML 从露出了的阴道口中,慢慢地流出了刚刚射入的精液…
+ELSEIF ABL:露出癖 == 1
+	PRINTFORML 主动像要仔细观察一样地把性器扩展开了
+	SIF TCVAR:102
+		PRINTFORML 从露出了的阴道口中,慢慢地流出了刚刚射入的精液…
+ELSEIF ABL:露出癖 == 2
+	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM %NTR_NAME(0)%的视线意识到了
+	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM 意识到魔理沙的视线
+	ELSE
+	ENDIF
+	PRINTFORML 把手放在下腹部、用食指和中指、主动分开了自己的蜜处
+	IF TCVAR:102
+		PRINTFORML 从露出了的阴道口中,慢慢地流出了刚刚射入的精液…
+	ELSE
+		PRINTFORML 从大开的阴道口处窥视里面的,蜜穴就好像期待着肉棒一样,被爱液打湿了,淫乱地蠢动着
+	ENDIF
+ELSEIF ABL:露出癖 == 3
+	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM 对被%NTR_NAME(0)%目击的事感到兴奋
+	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM 对被魔理沙目击的事感到兴奋
+	ELSE
+		PRINTFORM 一边想象着被目击的事
+	ENDIF
+	PRINTFORML  一只手分开阴唇,一只玩弄阴蒂. 
+	IF TCVAR:102
+		PRINTFORML 从露出了的阴道口中、刚刚射入的精液、淫乱地流着…
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER% 的手每次刺激阴核,都会从阴道口滴下爱液… 
+	ENDIF
+ELSEIF ABL:露出癖 == 4
+	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM 对被%NTR_NAME(0)%目击的事感到兴奋
+	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORM 对被魔理沙目击的事感到兴奋
+	ELSE
+	ENDIF
+	PRINTFORML  用双手的手指将阴唇连着阴道口也同时扩张开了. 
+	IF TCVAR:102
+		PRINTFORML %CALLNAME:PLAYER% 手将阴道口向左右扩张,刚才射入的精液不断流下. …
+	ELSE
+		PRINTFORML 对暴露阴道内感到快感、%CALLNAME:PLAYER%脸颊上染上了淡淡的红晕
+	ENDIF
+ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱 == 0
+	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORML 双手的手指放在阴唇上、为了让%NTR_NAME(0)%看见将阴道口大大的扩张了
+	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORML 双手的手指放在阴唇上、为了让魔理沙看见将阴道口大大的扩张了
+	ELSE
+		PRINTFORML 双手的手指放在阴唇上、像在向谁展示一样将阴道口大大的扩张了
+	ENDIF
+	IF TCVAR:102
+		PRINTFORML  被大幅扩张了的阴道口,刚才射入的精液流下来 …
+	ELSE
+		PRINTFORML %CALLNAME:PLAYER% 手伸到阴道内后,阴道壁快速蠕动着地动着,爱液不停地溢出… 
+	ENDIF
+	;露出癖LV5以上＋淫乱or娼婦
+ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱
+	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORML 双手的手指放在阴唇上、为了让%NTR_NAME(0)%看见将阴道口大大的扩张了
+	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
+		PRINTFORML 双手的手指放在阴唇上、为了让魔理沙看见将阴道口大大的扩张了
+	ELSE
+		PRINTFORML 双手的手指放在阴唇上、像在向谁展示一样将阴道口大大的扩张了
+	ENDIF
+	IF TCVAR:102
+		PRINTFORML  从蠕动的阴道内,刚才射入的精液,淫荡的漏了出来了… 
+	ELSE
+		PRINTFORML  看起来柔软的阴道内,充分地被爱液湿润了,象诱惑谁一样地,蠕动着… 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;609,手淫
+;-------------------------------------------------
+@MESSAGE_COM609
+PRINTFORM %CALLNAME:PLAYER%主动的手握
+;欲情のPALAMLV3以上
+SIF PALAM:欲情 >= PALAMLV:3
+	PRINT 坚硬勃起的
+PRINTL  阴茎,上下套弄… 
+
+;-------------------------------------------------
+;640,跳蛋
+;-------------------------------------------------
+@MESSAGE_COM640
+IF TEQUIP:0 & 4
+	PRINTFORM %CALLNAME:PLAYER%主动的
+	PRINTFORML 将下半身%SHOW_BOTTOM(PLAYER,3)%拉到一边,把跳蛋压了上去…
+	RETURN 0
+ENDIF
+IF TEQUIP:0 & 2
+	PRINTFORM %SHOW_BOTTOM(PLAYER,2)%踌躇着移开了
+ELSEIF TEQUIP:0 & 1
+	PRINTFORM %SHOW_BOTTOM(PLAYER,1)%卷起来露出来了
+ENDIF
+PRINTFORM %CALLNAME:PLAYER%主动的
+;オトコ＋欲情のPALAMLV3以上
+IF GET_SEXNAME(TARGET) == "男" && (PALAM:欲情 >= PALAMLV:3)
+	PRINTL 将颤抖的转子放到勃起的阴茎上…
+	;オトコ
+ELSEIF GET_SEXNAME(TARGET) == "男"
+	PRINTL 把振动的跳蛋压在自己的阴茎上…
+	;ふたなり＋欲情のPALAMLV3以上
+ELSEIF GET_SEXNAME(TARGET) == "ふたなり" && PALAM:欲情 >= PALAMLV:3
+	PRINTL 把振动的跳蛋压在泥泞的阴唇上…
+	;ふたなり
+ELSEIF GET_SEXNAME(TARGET) == "ふたなり"
+	PRINTL 把振动的跳蛋压在阴唇上…
+	;欲情のPALAMLV3以上
+ELSEIF PALAM:欲情 >= PALAMLV:3
+	PRINTL 把振动的跳蛋压在肿胀的阴蒂上…
+ELSE
+	PRINTL 把振动的跳蛋压在阴蒂上…
+ENDIF
+
+;-------------------------------------------------
+;641,E按摩棒
+;-------------------------------------------------
+@MESSAGE_COM641
+PRINTFORML %CALLNAME:PLAYER%主动的将秘所に\@ TEQUIP:0 > 1 ? 隔着%SHOW_BOTTOM(PLAYER)% # \@按上了振动的按摩棒
+PRINTFORM %CALLNAME:PLAYER%は
+;Ｃ感觉LV3未満＋欲情のPALAMLV3未満
+IF ABL:Ｃ感觉 < 3 && PALAM:欲情 < PALAMLV:3
+	PRINT 好像很痒的样子
+	;Ｃ感觉LV3未満＋欲情のPALAMLV3以上
+ELSEIF ABL:Ｃ感觉 < 3 && PALAM:欲情 >= PALAMLV:3
+	PRINT 、…好像已经说不出话了
+	;Ｃ感觉LV3以上＋欲情のPALAMLV3未満
+ELSEIF ABL:Ｃ感觉 >= 3 && PALAM:欲情 < PALAMLV:3
+	PRINT 强烈的快感使她涨红了脸
+	;Ｃ感觉LV3以上＋欲情のPALAMLV3以上＋欲情のPALAMLV5未満
+ELSEIF ABL:Ｃ感觉 >= 3 && PALAM:欲情 >= PALAMLV:3 && PALAM:欲情 < PALAMLV:5
+	PRINT 已经喜欢上了这种快乐的感觉
+	;Ｃ感觉LV3以上＋欲情のPALAMLV5以上
+ELSEIF ABL:Ｃ感觉 >= 3 && PALAM:欲情 >= PALAMLV:5
+	PRINT 眼看就要达到了绝顶的样子
+ENDIF
+PRINTL た…
+
+;-------------------------------------------------
+;642,阴蒂夹
+;-------------------------------------------------
+@MESSAGE_COM642
+;解除時
+IF !TEQUIP:阴蒂夹
+	PRINTFORML 摘下了阴蒂夹
+ELSE
+	PRINTFORML 安上了阴蒂夹
+ENDIF
+
+;-------------------------------------------------
+;643,飞机杯
+;-------------------------------------------------
+@MESSAGE_COM643
+;解除時
+IF !TEQUIP:飞机杯
+	PRINTFORML 飞机杯取下了
+ELSE
+	PRINTFORML 阴茎插入飞机杯
+ENDIF
+
+;-------------------------------------------------
+;644,振动棒
+;-------------------------------------------------
+@MESSAGE_COM644
+;解除時
+IF !TEQUIP:振动棒
+	PRINTFORML 主动把体内的震动棒慢慢抽了出来
+	;Ｖ经验20以上
+	IF EXP:Ｖ经验 > 20
+		PRINTFORM %CALLNAME:PLAYER%松弛的阴道口
+		;それ以外
+	ELSE
+		PRINTFORM %CALLNAME:PLAYER%刚刚被强烈刺激的身体松了一口气
+	ENDIF
+	PRINTL た…
+ELSE
+	PRINTFORM %CALLNAME:PLAYER%は
+	SIF ABL:Ｖ感觉 >= 4 && TALENT:淫乱
+		PRINT 撒娇似的抬起腰来
+	SIF TEQUIP:0 & 2
+		PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
+	;润滑LV5以上でさらに追加
+	SIF PALAM:润滑 >= PALAMLV:5
+		PRINT 充分湿润
+	;润滑LV3以上でさらに追加
+	SIF PALAM:润滑 >= PALAMLV:3
+		PRINT 被爱液沾湿的
+	;小柄体型
+	IF TALENT:体型 < 0
+		PRINT 尚未发育完全的に
+	ELSE
+		PRINT 秘裂に
+	ENDIF
+	PRINTL 先用前端小心触碰使渐渐适应振动…
+
+	PRINTFORM %CALLNAME:PLAYER%は
+	;处女＋淫乱か娼婦
+	IF TALENT:处女 == 1 && TALENT:淫乱
+		PRINT 兴奋得快要忘记自己是处女了
+		;处女＋淫乱
+	ELSEIF TALENT:处女 == 1 && TALENT:淫乱
+		PRINT 不顾身为处女,摇晃着腰恳求着
+		;处女＋难以越过的界线
+	ELSEIF TALENT:处女 == 1 && TALENT:难以越过的界线
+		PRINT 带着放弃了什么的表情,眼里含着淡淡的泪水
+		;处女
+	ELSEIF TALENT:处女 == 1
+		PRINT  虽然自己主动的,但还对失去的恐惧害怕的颤抖. 
+
+		;Ｖ经验200以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 200 && TALENT:淫乱
+		PRINT 只是对插入的期待就晃动着腰要高潮了
+		;Ｖ经验150以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 150 && TALENT:淫乱
+		PRINTFORM 用快要融化眼神注视着震动棒、主动摩擦着分开了阴唇
+		;Ｖ经验120以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 120 && TALENT:淫乱
+		PRINT 带着恍惚的表情,迫不及待地扭动着腰
+		;Ｖ经验70以上＋淫乱か娼婦
+	ELSEIF EXP:Ｖ经验 > 70 && TALENT:淫乱
+		PRINTFORM 充满欲望的眼睛里像要流出水来,凝视着虚空
+		;Ｖ经验40以上
+	ELSEIF EXP:Ｖ经验 > 40
+		PRINT 叹息着陶醉在振动摩擦的感觉中
+		;Ｖ经验20以上
+	ELSEIF EXP:Ｖ经验 > 20
+		PRINT 在振动摩擦的感觉中爱液滲了出来
+		;それ以外
+	ELSE
+		PRINT 感受着震动棒紧贴着肉褶的触感
+	ENDIF
+	PRINTL た…
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 湿透了的
+	PRINTFORML 性器主动把振动纳入
+ENDIF
+
+;-------------------------------------------------
+;645,肛门振动棒
+;-------------------------------------------------
+@MESSAGE_COM645
+;解除時
+IF !TEQUIP:肛门振动棒
+	PRINTFORML 从谷道抽出了肛门震动棒
+	PRINTFORM %CALLNAME:PLAYER%
+	;Ａ经验180以上＋淫乱か娼婦
+	IF EXP:Ａ经验 > 180 && TALENT:淫乱
+		PRINT 一边从蜜唇和口中流淌着淫水,一边继续张开屁股
+		;Ａ经验140以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 140 && TALENT:淫乱
+		PRINT 用湿润的眼睛恳求般摇着屁股
+		;Ａ经验100以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 100 && TALENT:淫乱
+		PRINT 感觉还不满足的翘起了屁股
+		;Ａ经验70以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 70 && TALENT:淫乱
+		PRINT 有些恋恋不舍地摇动臀部
+		;Ａ经验40以上
+	ELSEIF EXP:Ａ经验 > 40
+		PRINT 一边扭动屁股,一边露出松了一口气的表情
+		;Ａ经验20以上
+	ELSEIF EXP:Ａ经验 > 20
+		PRINT 强烈的排泄感染红了脸颊
+		;それ以外
+	ELSE
+		PRINT 用痛苦的表情忍受刺激
+	ENDIF
+	PRINTFORML た…
+ELSE
+	PRINTFORM %CALLNAME:PLAYER%は
+	SIF TEQUIP:0 & 2
+		PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
+	PRINTFORML 后庭に肛门振动棒をあてがった…
+	PRINTFORM %CALLNAME:PLAYER%は
+	;Ａ经验180以上＋淫乱か娼婦
+	IF EXP:Ａ经验 > 180 && TALENT:淫乱
+		PRINT 以融化的表情,展开自己两片屁股 
+		;Ａ经验140以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 140 && TALENT:淫乱
+		PRINT 焦急地等待插入一样地翘起了腰
+		;Ａ经验100以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 100 && TALENT:淫乱
+		PRINT 脸颊红红的,期待地摇动着屁股
+		;Ａ经验70以上＋淫乱か娼婦
+	ELSEIF EXP:Ａ经验 > 70 && TALENT:淫乱
+		PRINT 给与的振动刺激让身体颤抖
+		;Ａ经验40以上
+	ELSEIF EXP:Ａ经验 > 40
+		PRINT 期待和否定交织在一起的复杂表情
+		;Ａ经验20以上
+	ELSEIF EXP:Ａ经验 > 20
+		PRINT 遮住了羞的通红的脸颊
+		;それ以外
+	ELSE
+		PRINT 脸上满是被侵犯不净之穴的耻辱情不自禁地扭曲了表情
+	ENDIF
+	PRINTL た…
+	PRINTFORM %CALLNAME:PLAYER%の
+	;润滑LV4以上
+	SIF PALAM:润滑 >= PALAMLV:4
+		PRINT 沾满了粘液
+	PRINTFORML 把振动棒插入谷道
+ENDIF
+
+;-------------------------------------------------
+;646,肛珠
+;-------------------------------------------------
+@MESSAGE_COM646
+IF !TEQUIP:肛珠
+	PRINTFORML 从后庭把肛珠拉了出去…
+ELSE
+	PRINTFORML 主动让后庭一个接一个容纳了肛珠…
+ENDIF
+
+;-------------------------------------------------
+;647,乳头夹
+;-------------------------------------------------
+@MESSAGE_COM647
+IF !TEQUIP:乳头夹
+	PRINTFORML 乳头夹取下了
+ELSE
+	PRINTFORML 乳头夹装上了
+ENDIF
+
+;-------------------------------------------------
+;648,搾乳机
+;-------------------------------------------------
+@MESSAGE_COM648
+;解除時
+IF !TEQUIP:搾乳机
+	PRINTFORML 搾乳机取下
+ELSE
+	PRINTFORML 搾乳机装上
+ENDIF
+
+;-------------------------------------------------
+;対象が自分の子供の場合の共通メッセージ
+;-------------------------------------------------
+@SON_OF_MY_SON(息子)
+#DIM 息子
+IF CFLAG:息子:成長度 >= 成長度_成人
+	PRINT 坚强地成长
+ELSEIF CFLAG:息子:成長度 >= 成長度_成長期
+	PRINT 还很小的
+ELSE
+	PRINT 未成熟的
+ENDIF
+RETURN
+
+;-------------------------------------------------
+;汎用
+;-------------------------------------------------
+;-------------------------------------------------
+;CVABいずれかの絶頂有無チェック
+;-------------------------------------------------
+@IS_ORGASM_CVAB(奴隷)
+#FUNCTION
+#DIM 奴隷
+IF NOWEX:奴隷:Ｃ绝顶 || NOWEX:奴隷:Ａ绝顶 || NOWEX:奴隷:Ａ绝顶 || NOWEX:奴隷:Ｂ绝顶
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF

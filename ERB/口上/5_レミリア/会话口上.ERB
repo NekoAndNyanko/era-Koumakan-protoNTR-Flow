@@ -1,0 +1,693 @@
+﻿;-------------------------------------------------
+
+
+;==================================================
+;300,会话 调查角色信息口上
+;失败的对话
+;==================================================
+@KOJO_K5_COM300_20_1_0
+PRINTFORMW 失败
+PRINTFORMW 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_2_0
+PRINTFORMW 失败
+PRINTFORMW 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_3_0
+PRINTFORMW 失败
+PRINTFORMW 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_4_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_5_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_6_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_7_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_8_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_9_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_10_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_11_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_12_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_13_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_14_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_15_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+
+@KOJO_K5_COM300_20_16_0
+PRINTFORMW 失败
+PRINTFORML 失败
+RETURN 0
+;==================================================
+;300,会话 调查角色信息口上
+;成功的对话
+;==================================================
+;关于爱抚 百合 
+@KOJO_K5_COM300_20_1_1
+IF TALENT:无知
+	PRINTFORMW 「诶？会很舒服吗？」
+	IF EXP:百合经验
+		PRINTFORMW %CALLNAME:TARGET%红着脸
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+			PRINTFORMW 「妖精们抱着吗……我跟其他女孩子也试过呢……」
+			EXP:已知的百合经验 = 1
+		ENDIF
+	ELSEIF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
+		PRINTFORMW %CALLNAME:TARGET%抱了上来……
+		PRINTFORMW 「是很舒服呢~~…」
+	ELSE
+		PRINTFORMW %CALLNAME:TARGET%好像完全不知道是什么意思的样子……
+	ENDIF
+ELSE
+	IF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
+		IF EXP:百合经验
+			PRINTFORMW %CALLNAME:TARGET%红着脸
+			PRINTFORMW 「嗯~~有时候跟女孩子做一做也不错。」
+			EXP:已知的百合经验 = 1
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%抱了上来……
+			PRINTFORMW 「要不要我喊一声只是舒服而已呢~~…」
+		ENDIF
+	ELSEIF TALENT:淫乱 || TALENT:公众便所
+		PRINTFORMW 「哦~~到处都能听到妖精的色情故事呢，要听听我的色情故事吗？」
+		PRINTFORMW 完全不害羞嘛……
+		EXP:已知的百合经验 = EXP:百合经验 ? 1 # 0
+		EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+		EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+		IF EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验
+			PRINTFORMW 「让%NTR_NAME(0)%摸摸的话更加不错呢~~~」
+			PRINTFORMW %NTR_NAME(0)%什么的……
+			EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验 ? 1 # 0
+			EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验 ? 1 # 0
+		ENDIF
+	ELSE
+		PRINTFORMW 「妖精的色情故事啊……这些家伙真的是很会玩呢……」
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:百合经验 || EXP:Ｃ经验 || EXP:Ｂ经验)
+			PRINTFORMW 「记得我也玩过呢……」
+			PRINTFORMW %CALLNAME:TARGET%稍微说了一点自己的事
+			EXP:已知的百合经验 = EXP:百合经验 ? 1 # 0
+			EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+			EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
+				PRINTFORMW 「和%NTR_NAME(0)%一起玩的话……」
+				PRINTFORMW 跟别的男人吗……
+				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验 ? 1 # 0
+				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验 ? 1 # 0
+			ENDIF
+		ELSE
+			PRINTFORMW 完全没有得到%CALLNAME:TARGET%的信息……
+		ENDIF
+	ENDIF
+ENDIF
+PRINTL ----------
+PRINTL 要追问下去吗？
+PRINTL [0] - 追问
+PRINTL [1] - 算了吧
+INPUT
+IF RESULT == 0
+	IF TALENT:淫乱 || TALENT:公众便所
+		PRINTFORMW 「想知道知道更多的细节是吗？竖起耳朵给我听好了~~！」
+		PRINTFORMW 只不过是提了一下，但%CALLNAME:TARGET%似乎很热衷于讲这些事呢……
+		EXP:已知的百合经验 = EXP:百合经验
+		EXP:已知的Ｃ经验 = EXP:Ｃ经验
+		EXP:已知的Ｂ经验 = EXP:Ｂ经验
+		IF EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验
+			PRINTFORMW 「重点可是跟%NTR_NAME(0)%在一起的时候呢！听清楚了~~！」
+			PRINTFORMW %NTR_NAME(0)%……
+			EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+			EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+		ENDIF
+	ELSE
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:百合经验 || EXP:Ｃ经验 || EXP:Ｂ经验)
+			PRINTFORMW 「啊……真头疼呢……就那么想知道吗？……」
+			PRINTFORMW %CALLNAME:TARGET%在再三的追问下详细地说了自己的经验，空气变得微妙……
+			SIF EXP:已知的百合经验 < 1
+				EXP:已知的百合经验 = EXP:百合经验 ? 1 # 0
+			SIF EXP:已知的Ｃ经验 < 1
+				EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+			SIF EXP:已知的Ｂ经验 < 1
+				EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+			IF ABL:PLAYER:话术技能>=5
+				EXP:已知的百合经验 = EXP:百合经验
+				EXP:已知的Ｃ经验 = EXP:Ｃ经验
+				EXP:已知的Ｂ经验 = EXP:Ｂ经验
+			ELSEIF ABL:PLAYER:话术技能>=3
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的百合经验 = EXP:百合经验
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的Ｃ经验 = EXP:Ｃ经验
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的Ｂ经验 = EXP:Ｂ经验
+			ENDIF
+			;如果是爱人，是不会自己说出来的
+			IF !TALENT:恋慕 && !TALENT:亲爱 && !TALENT:人妻 && !TALENT:恋人 && RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
+				PRINTFORMW 「与%NTR_NAME(0)%的话……嘿嘿……」
+				PRINTFORMW %CALLNAME:TARGET%想着%NTR_NAME(0)%……啊……更加微妙了……
+				SIF EXP:已知的浮気Ｃ经验 < 1
+					EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验 ? 1 # 0
+				SIF EXP:已知的浮気Ｂ经验 < 1
+					EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验 ? 1 # 0
+				IF ABL:PLAYER:话术技能>=5
+					EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+					EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+				ELSEIF ABL:PLAYER:话术技能>=3
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+				ENDIF
+				;不愿意说的时候，访问者在旁边
+			ELSEIF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
+				IF TALENT:恋慕 || TALENT:亲爱 || TALENT:恋人
+					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%可是被我抚摸得很快乐呢~~』
+				ELSEIF TALENT:人妻
+					PRINTFORMW 『在谈这个啊……你的妻子倒是很喜欢让我抚摸的呢~~』
+				ENDIF
+				PRINTFORMW ！！%NTR_NAME(0)%……
+				PRINTFORMW 什么！…！…这家伙……可恶……
+				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+			ENDIF
+			;拒绝回答
+		ELSEIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+			PRINTDATAW
+				DATAFORM 「没有啦……」
+				DATAFORM 「啊……你到底在说什么啊……」
+			ENDDATA
+			PRINTFORMW  %CALLNAME:TARGET%显得很不耐烦，再问下去可能就要生气了……
+			;不愿意说的时候，访问者在旁边
+			IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
+				IF TALENT:恋慕 || TALENT:亲爱 || TALENT:恋人
+					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%可是被我抚摸得很快乐呢~~』
+				ELSEIF TALENT:人妻
+					PRINTFORMW 『在谈这个啊……你的妻子倒是很喜欢让我抚摸的呢~~』
+				ENDIF
+				PRINTFORMW ！！%NTR_NAME(0)%……
+				PRINTFORMW 什么！…！…这家伙……可恶……
+				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+			ENDIF
+			;拒绝回答还发脾气
+		ELSE
+			PRINTFORMW 「嗯—！—！分清身份！不需要问的就不要问！」
+			PRINTFORMW 总之是成功激怒了……
+			BASE:怒意 += 500
+			CFLAG:怒意 = 1
+		ENDIF
+	ENDIF
+ENDIF
+PRINTW ·
+PRINTW ··
+PRINTL ···
+RETURN 0
+;关于CBM接吻手淫口淫
+@KOJO_K5_COM300_20_2_1
+IF TALENT:无知
+	PRINTFORMW 「妖精找男人玩啊……」
+	IF EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:经验人数 || EXP:手淫经验 || EXP:口淫经验
+		PRINTFORMW %CALLNAME:TARGET%红着脸
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+			PRINTFORMW 「男人的话，我也做过呢……」
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:接吻经验
+				PRINTFORMW 「亲吻在一起的话……」
+				EXP:已知的接吻经验 = EXP:接吻经验 ? 1 # 0
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 &&  EXP:Ｍ经验
+					PRINTFORMW 「难以形容的感觉~~……」
+					EXP:已知的Ｍ经验 = EXP:Ｍ经验 ? 1 # 0
+				ENDIF
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:Ｂ经验
+				PRINTFORMW 「胸部的话…很安心的感觉……」
+				EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:Ｃ经验
+				PRINTFORMW 「被摸那个地方的时候都不知道该做些什么呢……」
+				EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:手淫经验
+				PRINTFORMW 「握在手上的那个…一跳一跳的…」
+				EXP:已知的手淫经验 = EXP:手淫经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:口淫经验
+				PRINTFORMW 「单纯想舔一舔那个的话…就被要求含着呢……」
+				EXP:已知的手淫经验 = EXP:口淫经验 ? 1 # 0
+			ENDIF
+			EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
+		ELSEIF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
+			PRINTFORMW %CALLNAME:TARGET%抱了上来……
+			PRINTFORMW 「要像妖精一样行动吗~~…」
+		ENDIF
+	ELSE
+		PRINTFORMW %CALLNAME:TARGET%好像完全不知道是什么意思的样子……
+	ENDIF
+ELSE
+	IF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:经验人数 || EXP:手淫经验 || EXP:口淫经验)
+			PRINTFORMW %CALLNAME:TARGET%红着脸
+			PRINTFORMW 「跟男人做那些事的体验也是很不错的呢~~……」
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:接吻经验
+				PRINTFORMW 「诶？接吻吗…接吻的时候…」
+				EXP:已知的接吻经验 = EXP:接吻经验 ? 1 # 0
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 &&  EXP:Ｍ经验
+					PRINTFORMW 「而且很舒服的呢~~……」
+					EXP:已知的Ｍ经验 = EXP:Ｍ经验 ? 1 # 0
+				ENDIF
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:Ｂ经验
+				PRINTFORMW 「被揉胸的话~~只要不太用力也很让人轻松……」
+				EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:Ｃ经验
+				PRINTFORMW 「嗯……这个嘛，那个地方摸起来感觉还是可以的……」
+				EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:手淫经验
+				PRINTFORMW 「小鸡鸡比想象的要大呢…握在手上……」
+				EXP:已知的手淫经验 = EXP:手淫经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:口淫经验
+				PRINTFORMW 「太大的话…含在嘴里还是有点幸苦的……」
+				EXP:已知的手淫经验 = EXP:口淫经验 ? 1 # 0
+			ENDIF
+			EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%抱了上来……
+			PRINTFORMW 「要我找男人吗~~…」
+		ENDIF
+	ELSEIF TALENT:淫乱 || TALENT:公众便所
+		PRINTFORMW 「哦~~到处都能听到妖精的色情故事呢，要听听我的色情故事吗？」
+		PRINTFORMW 完全不害羞嘛……
+		EXP:已知的接吻经验 = EXP:接吻经验 ? 1 # 0
+		EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+		EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+		EXP:已知的Ｍ经验 = EXP:Ｍ经验 ? 1 # 0
+		EXP:已知的手淫经验 = EXP:手淫经验 ? 1 # 0
+		EXP:已知的口淫经验 = EXP:口淫经验 ? 1 # 0
+		EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
+		IF EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验
+			PRINTFORMW 「跟%NTR_NAME(0)%做的话更加不错呢~~~」
+			PRINTFORMW 跟%NTR_NAME(0)%做了吗……
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気接吻经验
+				PRINTFORMW 「%NTR_NAME(0)%嘴唇的味道~~~」
+				EXP:已知的浮気接吻经验 = EXP:浮気接吻经验 ? 1 # 0
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 &&  EXP:浮気Ｍ经验
+					PRINTFORMW 「舌头都会麻痹~~……」
+					EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验 ? 1 # 0
+				ENDIF
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気Ｂ经验
+				PRINTFORMW 「%NTR_NAME(0)%玩弄乳头的手法……」
+				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気Ｃ经验
+				PRINTFORMW 「%NTR_NAME(0)%摸小穴的话…嗯~~~…」
+				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気手淫经验
+				PRINTFORMW 「%NTR_NAME(0)%的肉棒超大的哦！一只手都握不下……」
+				EXP:已知的浮気手淫经验 = EXP:浮気手淫经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気口淫经验
+				PRINTFORMW 「但是太大的话…含在嘴里还是有点幸苦的…但也是回味无穷啊~~~……」
+				EXP:已知的浮気手淫经验 = EXP:浮気口淫经验 ? 1 # 0
+			ENDIF
+		ENDIF
+	ELSE
+		PRINTFORMW 「妖精的色情故事啊……找男人呀……」
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:经验人数 || EXP:手淫经验 || EXP:口淫经验)
+			PRINTFORMW 「记得我也做过的呢……」
+			PRINTFORMW %CALLNAME:TARGET%稍微说了一点自己的事
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:接吻经验
+				PRINTFORMW 「接吻的话…」
+				EXP:已知的接吻经验 = EXP:接吻经验 ? 1 # 0
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 &&  EXP:Ｍ经验
+					PRINTFORMW 「会很享受呢~~……」
+					EXP:已知的Ｍ经验 = EXP:Ｍ经验 ? 1 # 0
+				ENDIF
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:Ｂ经验
+				PRINTFORMW 「揉胸也是让人享受的事情呢……」
+				EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:Ｃ经验
+				PRINTFORMW 「按摩下面那里……」
+				EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:手淫经验
+				PRINTFORMW 「小鸡鸡比想象的要大呢…握在手上…一跳一跳…」
+				EXP:已知的手淫经验 = EXP:手淫经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:口淫经验
+				PRINTFORMW 「太大的话…含在嘴里还是有点幸苦的……」
+				EXP:已知的手淫经验 = EXP:口淫经验 ? 1 # 0
+			ENDIF
+			EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
+				PRINTFORMW 「跟%NTR_NAME(0)%做的话更加不错呢~~~」
+				PRINTFORMW 跟%NTR_NAME(0)%做了吗……
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気接吻经验
+					PRINTFORMW 「%NTR_NAME(0)%嘴唇的味道~~~」
+					EXP:已知的浮気接吻经验 = EXP:浮気接吻经验 ? 1 # 0
+					IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 &&  EXP:浮気Ｍ经验
+						PRINTFORMW 「舌头都会麻痹~~……」
+						EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验 ? 1 # 0
+					ENDIF
+				ENDIF
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気Ｂ经验
+					PRINTFORMW 「%NTR_NAME(0)%玩弄乳头的手法……」
+					EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验 ? 1 # 0
+				ENDIF
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気Ｃ经验
+					PRINTFORMW 「%NTR_NAME(0)%摸小穴的话…嗯~~~…」
+					EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验 ? 1 # 0
+				ENDIF
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気手淫经验
+					PRINTFORMW 「%NTR_NAME(0)%的肉棒超大的哦！一只手都握不下……」
+					EXP:已知的浮気手淫经验 = EXP:浮気手淫经验 ? 1 # 0
+				ENDIF
+				IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:浮気口淫经验
+					PRINTFORMW 「但是太大的话…含在嘴里还是有点幸苦的…但也是回味无穷啊~~~……」
+					EXP:已知的浮気手淫经验 = EXP:浮気口淫经验 ? 1 # 0
+				ENDIF
+			ENDIF
+		ELSE
+			PRINTFORMW 完全没有得到%CALLNAME:TARGET%的信息……
+		ENDIF
+	ENDIF
+ENDIF
+PRINTL ----------
+PRINTL 要追问下去吗？
+PRINTL [0] - 追问
+PRINTL [1] - 算了吧
+INPUT
+IF RESULT == 0
+	IF TALENT:淫乱 || TALENT:公众便所
+		PRINTFORMW 「想知道知道更多的细节是吗？竖起耳朵给我听好了~~！」
+		PRINTFORMW 只不过是提了一下，但%CALLNAME:TARGET%似乎很热衷于讲这些事呢……
+		EXP:已知的接吻经验 = EXP:接吻经验
+		EXP:已知的Ｃ经验 = EXP:Ｃ经验
+		EXP:已知的Ｂ经验 = EXP:Ｂ经验
+		EXP:已知的Ｍ经验 = EXP:Ｍ经验
+		EXP:已知的手淫经验 = EXP:手淫经验
+		EXP:已知的口淫经验 = EXP:口淫经验
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:经验人数 > 1
+			PRINTFORMW 「至今已经跟{EXP:经验人数}个人做过了呢~~」
+			EXP:已知的经验人数 = EXP:经验人数
+		ENDIF
+		IF EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验
+			PRINTFORMW 「重点可是跟%NTR_NAME(0)%在一起的时候呢！听清楚了~~！」
+			PRINTFORMW %NTR_NAME(0)%……
+			EXP:已知的浮気接吻经验 = EXP:浮気接吻经验
+			EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+			EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+			EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验
+			EXP:已知的浮気手淫经验 = EXP:浮気手淫经验
+			EXP:已知的浮気口淫经验 = EXP:浮気口淫经验
+		ENDIF
+	ELSE
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:手淫经验 || EXP:口淫经验)
+			PRINTFORMW 「啊……真头疼呢……就那么想知道吗？……」
+			PRINTFORMW %CALLNAME:TARGET%在再三的追问下详细地说了自己的经验，空气变得微妙……
+			IF ABL:PLAYER:话术技能>=5
+				EXP:已知的Ｃ经验 = EXP:Ｃ经验
+				EXP:已知的Ｂ经验 = EXP:Ｂ经验
+				EXP:已知的Ｍ经验 = EXP:Ｍ经验
+				EXP:已知的接吻经验 = EXP:接吻经验
+				EXP:已知的手淫经验 = EXP:手淫经验
+				EXP:已知的口淫经验 = EXP:口淫经验
+			ELSEIF ABL:PLAYER:话术技能>=3
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的Ｃ经验 = EXP:Ｃ经验
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的Ｂ经验 = EXP:Ｂ经验
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的Ｍ经验 = EXP:Ｍ经验
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的接吻经验 = EXP:接吻经验
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的手淫经验 = EXP:手淫经验
+				SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+					EXP:已知的口淫经验 = EXP:口淫经验
+			ELSE
+				SIF EXP:已知的Ｃ经验 < 1
+					EXP:已知的Ｃ经验 = EXP:Ｃ经验 ? 1 # 0
+				SIF EXP:已知的Ｂ经验 < 1
+					EXP:已知的Ｂ经验 = EXP:Ｂ经验 ? 1 # 0
+				SIF EXP:已知的Ｍ经验 < 1
+					EXP:已知的Ｍ经验 = EXP:Ｍ经验 ? 1 # 0
+				SIF EXP:已知的接吻经验 < 1
+					EXP:已知的接吻经验 = EXP:接吻经验 ? 1 # 0
+				SIF EXP:已知的手淫经验 < 1
+					EXP:已知的手淫经验 = EXP:手淫经验 ? 1 # 0
+				SIF EXP:已知的口淫经验 < 1
+					EXP:已知的口淫经验 = EXP:口淫经验 ? 1 # 0
+			ENDIF
+			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+				IF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
+					IF EXP:经验人数 >= EXP:已知的经验人数
+						PRINTFORMW 「至今跟多少人做过？……当然还是那个数啊…真是的……」
+						PRINTFORMW {EXP:已知的经验人数}个吗……
+					ENDIF
+				ELSEIF EXP:经验人数
+					PRINTFORMW 「至今跟多少人做过？…嗯……{EXP:经验人数}个人来着……」
+				ENDIF
+			ENDIF
+			;如果是爱人，是不会自己说出来的
+			IF !TALENT:恋慕 && !TALENT:亲爱 && !TALENT:人妻 && !TALENT:恋人 && RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
+				PRINTFORMW 「跟%NTR_NAME(0)%的做的话……哼哼……」
+				PRINTFORMW %CALLNAME:TARGET%想着跟%NTR_NAME(0)%做这些事……
+				PRINTFORMW 「接吻也好…爱抚也好…肉棒也好…全都……」
+				SIF EXP:已知的浮気Ｃ经验 < 1
+					EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验 ? 1 # 0
+				SIF EXP:已知的浮気Ｂ经验 < 1
+					EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验 ? 1 # 0
+				SIF EXP:已知的浮気Ｍ经验 < 1
+					EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验 ? 1 # 0
+				SIF EXP:已知的浮気接吻经验 < 1
+					EXP:已知的浮気接吻经验 = EXP:浮気接吻经验 ? 1 # 0
+				SIF EXP:已知的浮気手淫经验 < 1
+					EXP:已知的浮気手淫经验 = EXP:浮気手淫经验 ? 1 # 0
+				SIF EXP:已知的浮気口淫经验 < 1
+					EXP:已知的浮気口淫经验 = EXP:浮気口淫经验 ? 1 # 0
+				IF ABL:PLAYER:话术技能>=5
+					EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+					EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+					EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验
+					EXP:已知的浮気接吻经验 = EXP:浮気接吻经验
+					EXP:已知的浮気手淫经验 = EXP:浮気手淫经验
+					EXP:已知的浮気口淫经验 = EXP:浮気口淫经验
+				ELSEIF ABL:PLAYER:话术技能>=3
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気接吻经验 = EXP:浮気接吻经验
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気手淫经验 = EXP:浮気手淫经验
+					SIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+						EXP:已知的浮気口淫经验 = EXP:浮気口淫经验
+				ENDIF
+				PRINTFORMW %CALLNAME:TARGET%全都说了一遍……
+				;不愿意说的时候，访问者在旁边
+			ELSEIF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
+				IF TALENT:恋慕 || TALENT:亲爱 || !TALENT:恋人
+					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%倒是很喜欢做这些呢~~』
+				ELSEIF TALENT:人妻
+					PRINTFORMW 『在谈这个啊……你的妻子倒是很喜欢让我跟她做这些事呢~~』
+				ENDIF
+				PRINTFORMW ！！%NTR_NAME(0)%……
+				SIF EXP:浮気接吻经验
+					PRINTFORMW 『%CALLNAME:TARGET%的嘴唇真的很不错啊~~~』
+				SIF EXP:浮気Ｍ经验
+					PRINTFORMW 『接吻都会有快感的家伙呢~~』
+				SIF EXP:浮気Ｂ经验
+					PRINTFORMW 『柔软的胸部……』
+				SIF EXP:浮気Ｃ经验
+					PRINTFORMW 『摸摸小穴就会叫出声呢~~~…』
+				SIF EXP:浮気手淫经验
+					PRINTFORMW 『完全就握不下我的肉棒呢……』
+				SIF EXP:浮気口淫经验
+					PRINTFORMW 『只有含着我的肉棒的样子才最可爱呢~~~……』
+				PRINTFORMW …可恶……
+				IF EXP:经验人数 > 2
+					PRINTFORMW 『顺便一提啊~~%CALLNAME:TARGET%现在的经验人数至少有{EXP:经验人数}人呐~~~』
+					EXP:已知的经验人数 = EXP:经验人数
+				ENDIF
+				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+				EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验
+				EXP:已知的浮気接吻经验 = EXP:浮気接吻经验
+				EXP:已知的浮気手淫经验 = EXP:浮気手淫经验
+				EXP:已知的浮気口淫经验 = EXP:浮気口淫经验
+			ENDIF
+			;拒绝回答
+		ELSEIF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
+			PRINTDATAW
+				DATAFORM 「没有啦……」
+				DATAFORM 「啊……我不想说了啦……」
+			ENDDATA
+			PRINTFORMW  %CALLNAME:TARGET%显得很不耐烦，再问下去可能就要生气了……
+			;不愿意说的时候，访问者在旁边
+			IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
+				IF TALENT:恋慕 || TALENT:亲爱 || !TALENT:恋人
+					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%倒是很喜欢做这些呢~~』
+				ELSEIF TALENT:人妻
+					PRINTFORMW 『在谈这个啊……你的妻子倒是很喜欢让我跟她做这些事呢~~』
+				ENDIF
+				PRINTFORMW ！！%NTR_NAME(0)%……
+				SIF EXP:浮気接吻经验
+					PRINTFORMW 『%CALLNAME:TARGET%的嘴唇真的很不错啊~~~』
+				SIF EXP:浮気Ｍ经验
+					PRINTFORMW 『接吻都会有快感的家伙呢~~』
+				SIF EXP:浮気Ｂ经验
+					PRINTFORMW 『柔软的胸部……』
+				SIF EXP:浮気Ｃ经验
+					PRINTFORMW 『摸摸小穴就会叫出声呢~~~…』
+				SIF EXP:浮気手淫经验
+					PRINTFORMW 『完全就握不下我的肉棒呢……』
+				SIF EXP:浮気口淫经验
+					PRINTFORMW 『只有含着我的肉棒的样子才最可爱呢~~~……』
+				PRINTFORMW …可恶……
+				IF EXP:经验人数 > 2
+					PRINTFORMW 『顺便一提啊~~%CALLNAME:TARGET%现在的经验人数至少有{EXP:经验人数}人呐~~~』
+					EXP:已知的经验人数 = EXP:经验人数
+				ENDIF
+				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
+				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
+				EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验
+				EXP:已知的浮気接吻经验 = EXP:浮気接吻经验
+				EXP:已知的浮気手淫经验 = EXP:浮気手淫经验
+				EXP:已知的浮気口淫经验 = EXP:浮気口淫经验
+			ENDIF
+			;拒绝回答还发脾气
+		ELSE
+			PRINTFORMW 「无礼的家伙！」
+			PRINTFORMW 总之是成功激怒了……
+			BASE:怒意 += 500
+			CFLAG:怒意 = 1
+		ENDIF
+	ENDIF
+ENDIF
+PRINTW ·
+PRINTW ··
+PRINTL ···
+RETURN 0
+
+@KOJO_K5_COM300_20_3_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_4_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_5_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_6_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_7_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_8_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_9_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_10_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_11_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_12_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_13_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_14_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_15_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0
+
+@KOJO_K5_COM300_20_16_1
+PRINTFORMW 成功
+PRINTFORML 成功
+RETURN 0

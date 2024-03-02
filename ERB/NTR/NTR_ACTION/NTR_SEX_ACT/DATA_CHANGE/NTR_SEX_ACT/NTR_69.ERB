@@ -1,0 +1,100 @@
+;-------------------------------------------------------------------------------
+;六九式
+@NTR_69(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+TCVAR:奴隷:行為者 = 調教者
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_01(奴隷, 6)
+IF FLAG:訪問者との行為の終了時刻 == 0
+	FLAG:访问者行为计时点 = DATETIME()
+	CALL NTR_ADD_SURRENDER(奴隷, 3)
+	SIF EXP:奴隷:NTR陷落经验 
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+	BASE:奴隷:体力 -= 20
+	BASE:奴隷:气力 -= 160
+	SOURCE:奴隷:快Ｃ = 100 + 10 * (ABL:奴隷:Ｃ感觉) + 25 * TALENT:奴隷:Ｃ感度 + 50 * TALENT:奴隷:淫核
+	SOURCE:奴隷:情爱 = 100
+	SOURCE:奴隷:性行动 = 450
+	SOURCE:奴隷:达成 = 200
+	SOURCE:奴隷:液体 = 80
+	SOURCE:奴隷:露出 = 100
+	SOURCE:奴隷:屈从 = 800
+	SOURCE:奴隷:逸脱 = 600
+	IF TALENT:奴隷:NTR
+		SOURCE:奴隷:反感 = 200
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:反感 = 400
+	ELSE
+		SOURCE:奴隷:反感 = 600
+	ENDIF
+	IF !TALENT:处女
+		SOURCE:奴隷:快Ｖ += 120 + 10 * (ABL:奴隷:Ｖ感觉) + 30 * TALENT:奴隷:Ｖ感度 + 60 * TALENT:奴隷:淫壶 + 120 * TALENT:奴隷:浮気的蜜壶
+		SOURCE:奴隷:苦痛 += 15
+		SOURCE:奴隷:露出 += 10
+		SOURCE:奴隷:逸脱 += 20
+		SOURCE:奴隷:反感 += 20
+	ELSE
+		;69で破瓜してしまうのを避けるためコメントアウト
+		;SOURCE:奴隷:快Ｖ += 60
+		SOURCE:奴隷:苦痛 += 10
+		SOURCE:奴隷:露出 += 30
+		SOURCE:奴隷:逸脱 += 30
+		SOURCE:奴隷:反感 += 30
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 800
+	CALL NTR_EXP_ADD_M_SEX(奴隷,1)
+	CALL NTR_EXP_ADD_C(奴隷,1)
+	EXP:奴隷:浮気嗜虐快乐经验 += 1
+	CALL 改变小穴色素(奴隷,1)
+	CALL STAIN_MOVE_BY_PENIS(部位_口, 奴隷, 人物_訪問者)
+	CALL LOST_VIRGIN_M(奴隷, 人物_訪問者,1)
+	IF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_精液)
+		CALL NTR_EXP_ADD_DRINK_SEMEN(奴隷,1)
+		SIF ABL:精饮中毒 < 2
+			;无知去除
+			CALL 无知去除(奴隷)
+		CFLAG:奴隷:射精者M = 調教者
+	ENDIF
+	FLAG:訪問者との行為の終了時刻 = DATETIME() + 10
+	CALL NTR_EXP_ADD_C_EX(奴隷,1)
+	CALL NTR_EXP_ADD_M_EX(奴隷,1)
+	FLAG:訪問者との行為 = NTR_行为_六九式
+	CFLAG:奴隷:訪問者行為 = NTR_行为_六九式
+	;处女菊花厨時の特殊処理。菊花も責められる。
+	;IF IS_NTR_KEEP_VIRGIN()
+	CALL NTR_EXP_ADD_A(奴隷,1)
+	CALL 改变肛门色素(奴隷,1)
+	IF TALENT:奴隷:浮気的菊花
+		SOURCE:奴隷:快Ａ = 200 + 10 * (ABL:奴隷:Ａ感觉) + 50 * TALENT:奴隷:Ａ感度 + 100 * TALENT:奴隷:淫肛
+		SOURCE:奴隷:情爱 += 100
+		SOURCE:奴隷:苦痛 += 100
+	ELSE
+		SOURCE:奴隷:快Ａ = 100 + 10 * (ABL:奴隷:Ａ感觉) + 25 * TALENT:奴隷:Ａ感度 + 50 * TALENT:奴隷:淫肛
+		SOURCE:奴隷:情爱 += 50
+		SOURCE:奴隷:苦痛 += 200
+		SOURCE:奴隷:逸脱 += 50
+	ENDIF
+	IF TALENT:奴隷:NTR || TALENT:奴隷:浮気的菊花
+		SOURCE:奴隷:反感 += 50
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:反感 += 100
+	ELSE
+		SOURCE:奴隷:反感 += 200
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 100
+	;ENDIF
+	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;六九式終了（絶頂）
+;@return 常に0
+@NTR_69_FINISH(奴隷)
+#DIM 奴隷
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_2(奴隷, 6)
+CALL EJACULATION_M(奴隷, 人物_訪問者)
+CALL NTR_EXP_ADD_M_SEX(奴隷,1)
+RETURN 0

@@ -1,0 +1,234 @@
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：全裸
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_NUDE(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+#DIM WK_RATE
+
+EQUIP:着用者:衣服着用       = 0
+EQUIP:着用者:配件     = 0
+EQUIP:着用者:帽子           = 0
+EQUIP:着用者:鞋子             = 0
+EQUIP:着用者:袜子           = 0
+EQUIP:着用者:下半身上着１   = 0
+EQUIP:着用者:下半身上着２   = 0
+EQUIP:着用者:裙子       = 0
+EQUIP:着用者:上半身上着１   = 0
+EQUIP:着用者:上半身上着２   = 0
+EQUIP:着用者:赛车服 = 0
+EQUIP:着用者:连衣裙     = 0
+EQUIP:着用者:着物           = 0
+EQUIP:着用者:紧身衣     = 0
+EQUIP:着用者:手     = 0
+IF 下着変更
+	IF !TALENT:着用者:公众便所 && !CFLAG:PLAYER:WC_あなたに贞操帯を着けた人 && FLAG:屏蔽部分貞操帶
+		;公众便所は下着を自由に脱ぐ事はできない
+		EQUIP:着用者:下半身下着１ = 0
+		EQUIP:着用者:下半身下着２ = 0
+	ENDIF
+	EQUIP:着用者:上半身下着１ = 0
+	EQUIP:着用者:上半身下着２ = 0
+ENDIF
+CFLAG:着用者:寝間着着用 = 0
+CFLAG:着用者:ぱんつ確認 = 0
+;配件装着
+CALL CLOTHES_ACCESSORY(着用者)
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;配件装着
+@CLOTHES_ACCESSORY(着用者)
+#DIM 着用者
+#DIM WK_RATE
+
+IF TALENT:着用者:人妻
+	;人妻であれば指輪装着
+	;ただし寝取られつつあると外すことも…
+	IF NTR_CHK_FAVORABLY(着用者, FAV_寝取られ寸前)
+		WK_RATE = 3		; 寝取られ寸前だと３割
+	ELSEIF NTR_CHK_FAVORABLY(着用者, FAV_寝取られそう)
+		WK_RATE = 5		; 寝取られそうだと５割
+	ELSEIF NTR_CHK_FAVORABLY(着用者, FAV_主人より高い)
+		WK_RATE = 9		; 主人より高いと９割
+	ELSE
+		WK_RATE = 10	; そうでなければ常に装着
+	ENDIF
+	SIF TALENT:着用者:浮気公認
+		WK_RATE --
+	SIF TALENT:着用者:亲爱
+		WK_RATE = 10	; 亲爱であれば常に装着
+	SIF WK_RATE >= RAND:10
+		EQUIP:着用者:配件     = 衣装_配件_结婚戒指
+ENDIF
+
+IF TALENT:着用者:公众便所
+	;公众便所であれば项圈装着
+	WK_RATE = 10
+	;寝取り返し寸前、寝取り返し中だと外すことも
+	IF NTR_CHK_FAVORABLY(着用者, FAV_寝取り返し寸前)
+		WK_RATE = 7
+	ELSEIF NTR_CHK_FAVORABLY(着用者, FAV_寝取り返し寸前)
+		WK_RATE = 8
+	ENDIF
+	SIF WK_RATE >= RAND:10
+		EQUIP:着用者:配件     = 衣装_配件_项圈
+ELSEIF TALENT:着用者:NTR
+	;NTRであればチョーカー装着
+	WK_RATE = 10
+	;寝取り返し寸前、寝取り返し中だと外すことも
+	IF NTR_CHK_FAVORABLY(着用者, FAV_寝取り返し寸前)
+		WK_RATE = 7
+	ELSEIF NTR_CHK_FAVORABLY(着用者, FAV_寝取り返し寸前)
+		WK_RATE = 8
+	ENDIF
+	SIF WK_RATE >= RAND:10
+		EQUIP:着用者:配件     = 衣装_配件_チョーカー
+ENDIF
+RETURN
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：男装
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_jentle(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+IF HAS_VAGINA(着用者)
+	;女の子なら下着は女の子用を
+	CALL CLOTHES_Change_Knickers(着用者,下着変更)
+	;女の子ならサラシをつける
+	IF 下着変更
+		EQUIP:着用者:上半身下着２ = 5
+	ENDIF
+ELSE
+	;男の子ならトランクス
+	IF 下着変更
+		EQUIP:着用者:下半身下着２ = 101
+	ENDIF
+ENDIF
+EQUIP:着用者:下半身上着１ = 1
+EQUIP:着用者:上半身上着１ = 4
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：女装
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_FEMALE(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+IF 下着変更
+	;女装の場合は女の子でも男の子でも女の子用を
+	CALL CLOTHES_Change_Knickers(着用者,下着変更)
+ENDIF
+EQUIP:着用者:裙子 = 2
+IF 下着変更
+	IF HAS_VAGINA(着用者)
+		EQUIP:着用者:上半身下着２ = 1
+	ELSE
+		;男の娘はブラジャーを付けない
+		EQUIP:着用者:上半身下着２ = 0
+	ENDIF
+ENDIF
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：紳士
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_MALE(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+IF HAS_VAGINA(着用者)
+	;女の子なら下着は女の子用を
+	CALL CLOTHES_Change_Knickers(着用者,下着変更)
+	;女の子ならサラシをつける
+	IF 下着変更
+		EQUIP:着用者:上半身下着２ = 5
+	ENDIF
+ELSE
+	;男の子ならトランクス
+	IF 下着変更
+		EQUIP:着用者:下半身下着２ = 101
+	ENDIF
+ENDIF
+EQUIP:着用者:下半身上着１ = 1
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：メイド
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_MAID(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用 = 1
+EQUIP:着用者:帽子 = 2
+EQUIP:着用者:鞋子 = 1
+EQUIP:着用者:袜子 = 1
+CALL CLOTHES_Change_Knickers(着用者,下着変更)
+EQUIP:着用者:裙子 = 1
+IF HAS_VAGINA(着用者)
+	IF 下着変更
+		EQUIP:着用者:上半身下着２ = 1
+	ENDIF
+ELSE
+	;男の娘はブラジャーを付けない
+ENDIF
+EQUIP:着用者:上半身上着２ = 1
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;服装セットに换衣服：私服セット
+;@return 1:着替え成功,0:着替え失敗
+@CLOTHES_Preset_CUSTOM(着用者,下着変更=1)
+#DIM 着用者
+#DIM 下着変更
+CALL CLOTHES_Preset_NUDE(着用者,下着変更)
+EQUIP:着用者:衣服着用       = CFLAG:着用者:私服_衣服着用
+EQUIP:着用者:配件     = CFLAG:着用者:私服_配件
+EQUIP:着用者:帽子           = CFLAG:着用者:私服_帽子
+EQUIP:着用者:鞋子             = CFLAG:着用者:私服_鞋子
+EQUIP:着用者:袜子           = CFLAG:着用者:私服_袜子
+EQUIP:着用者:下半身上着１   = CFLAG:着用者:私服_下半身上着１
+EQUIP:着用者:下半身上着２   = CFLAG:着用者:私服_下半身上着２
+EQUIP:着用者:裙子       = CFLAG:着用者:私服_裙子
+EQUIP:着用者:上半身上着１   = CFLAG:着用者:私服_上半身上着１
+EQUIP:着用者:上半身上着２   = CFLAG:着用者:私服_上半身上着２
+EQUIP:着用者:赛车服 = CFLAG:着用者:私服_赛车服
+EQUIP:着用者:连衣裙     = CFLAG:着用者:私服_连衣裙
+EQUIP:着用者:着物           = CFLAG:着用者:私服_着物
+EQUIP:着用者:紧身衣     = CFLAG:着用者:私服_紧身衣
+EQUIP:着用者:手             = CFLAG:着用者:私服_手
+IF 下着変更
+	IF 0 < CFLAG:着用者:私服_下半身下着２ && CFLAG:着用者:私服_下半身下着２ < 100
+		;変える前が女性物なら、今日のぱんつを選ぶ
+		CALL CLOTHES_Change_Knickers(着用者,下着変更)
+	ELSE
+		EQUIP:着用者:下半身下着２ = CFLAG:着用者:私服_下半身下着２	
+	ENDIF
+	IF (!TALENT:着用者:公众便所 && !CFLAG:PLAYER:WC_あなたに贞操帯を着けた人) || FLAG:屏蔽部分貞操帶
+		;公众便所は下着を自由に変更することはできない
+		EQUIP:着用者:下半身下着１ = CFLAG:着用者:私服_下半身下着１
+	ENDIF
+	EQUIP:着用者:上半身下着１ = CFLAG:着用者:私服_上半身下着１
+	EQUIP:着用者:上半身下着２ = CFLAG:着用者:私服_上半身下着２
+ENDIF
+EQUIP:着用者:衣服着用 = CLOTHES_IsDressed(着用者)
+CFLAG:着用者:寝間着着用 = 0
+RETURN 1

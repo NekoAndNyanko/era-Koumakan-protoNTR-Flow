@@ -1,0 +1,762 @@
+;-------------------------------------------------
+;関数名:SHOW_TOP
+;概　要:上半身服装名取得関数
+;戻り値:服装名(文字列)
+;引数:0 参照するキャラ番号
+;引数:1はだけ可、2はだけ不可(省略した場合は最も露出を妨げているもの)
+;備　考:文中関数
+;TEQUIP:0に対応して一番上に着ている衣装の種類を返す
+;-------------------------------------------------
+@SHOW_TOP(ARG,ARG:1)
+#FUNCTIONS
+LOCAL = 0
+IF TEQUIP:ARG:1 & 2
+	LOCAL = 2
+ELSEIF TEQUIP:ARG:1 & 1
+	LOCAL = 1
+ENDIF
+LOCAL = ARG:1 ? ARG:1 # LOCAL
+IF LOCAL == 2
+	IF EQUIP:ARG:赛车服 || EQUIP:ARG:连衣裙 || EQUIP:ARG:紧身衣
+		RETURNF "服"
+	ELSEIF EQUIP:ARG:连衣裙 == 2
+		RETURNF "旗袍"
+	ELSEIF EQUIP:ARG:连衣裙 == 5
+		RETURNF "裸体围裙"
+	ELSEIF EQUIP:ARG:连衣裙 == 6
+		RETURNF "ポンチョ"
+	ELSEIF EQUIP:ARG:连衣裙 == 7
+		RETURNF "僧侶服"
+	ELSEIF EQUIP:ARG:连衣裙 == 8
+		RETURNF "魔女的连衣裙"
+	ELSEIF EQUIP:ARG:紧身衣 == 3
+		RETURNF "忍者装束"
+	ELSEIF EQUIP:ARG:紧身衣 == 4
+		RETURNF "スリングショット"
+	ELSEIF EQUIP:ARG:紧身衣 == 5
+		RETURNF "触手服" 
+	ELSEIF EQUIP:ARG:紧身衣 == 6
+		RETURNF "竞赛泳衣" 
+	ELSEIF EQUIP:ARG:紧身衣 == 7
+		RETURNF "赛车女模服" 
+	ELSEIF EQUIP:ARG:紧身衣 == 8
+		RETURNF "リンコス" 
+	ELSEIF EQUIP:ARG:上半身上着１ == 1
+		RETURNF "外衣"
+	ELSEIF EQUIP:ARG:上半身下着１ == 1
+		RETURNF "内衣"
+	ELSEIF EQUIP:ARG:上半身下着１ == 2
+		RETURNF "乳贴"
+	ENDIF
+ELSEIF LOCAL == 1
+	IF EQUIP:ARG:着物
+		RETURNF "和服"
+	ELSEIF EQUIP:ARG:上半身上着２
+		RETURNF "女衬衫"
+	ELSEIF EQUIP:ARG:上半身下着２
+		RETURNF "内衣"
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;関数名:SHOW_BOTTOM
+;概　要:下半身服装名取得関数
+;戻り値:服装名(文字列)
+;引数:0 参照するキャラ番号
+;引数:1裙子、2ずらし可、3ずらし不可、4下半身上着ずらし不可の種別(省略した場合は最も露出を妨げているもの)
+;備　考:文中関数
+;TEQUIP:0に対応して一番上に着ている衣装の種類を返す
+;-------------------------------------------------
+@SHOW_BOTTOM(ARG,ARG:1)
+#FUNCTIONS
+LOCAL = 0
+IF TEQUIP:ARG:0 & 8
+	LOCAL = 4
+ELSEIF TEQUIP:ARG:0 & 4
+	LOCAL = 3
+ELSEIF TEQUIP:ARG:0 & 2
+	LOCAL = 2
+ELSEIF TEQUIP:ARG:0 & 1
+	LOCAL = 1
+ENDIF
+LOCAL = ARG:1 ? ARG:1 # LOCAL
+SELECTCASE LOCAL
+	CASE 4
+		IF EQUIP:ARG:下半身上着１
+			RETURNF "衣服"
+		ELSEIF EQUIP:ARG:赛车服
+			RETURNF "衣服"
+		ENDIF
+	CASE 3
+		IF EQUIP:ARG:赛车服
+			RETURNF "衣服"
+		ELSEIF EQUIP:ARG:下半身上着１
+			RETURNF "衣服"
+		ELSEIF EQUIP:ARG:下半身下着１
+			RETURNF "内衣"
+		ENDIF
+	CASE 2
+		IF EQUIP:ARG:紧身衣
+			RETURNF "衣服"
+		ELSEIF EQUIP:ARG:下半身上着２
+			RETURNF "衣服"
+		ELSEIF EQUIP:ARG:下半身下着２
+			RETURNF "内衣"
+		ENDIF
+	CASE 1
+		IF EQUIP:ARG:裙子 == 1
+			RETURNF "裙子"
+		ELSEIF EQUIP:ARG:裙子 == 2
+			RETURNF "长裙"
+		ELSEIF EQUIP:ARG:连衣裙
+			RETURNF "裙子"
+		ELSEIF EQUIP:ARG:着物
+			RETURNF "和服的下摆"
+		ENDIF
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;現在着用の衣服名称取得
+;@return 服の名称
+@CLOTHNAME(服種類,服番号)
+#FUNCTIONS
+#DIM 服種類
+#DIM 服番号
+
+IF (CFLAG:MASTER:服装_上半身上着２ == 6 && CFLAG:MASTER:服装_裙子 == 5 && CFLAG:MASTER:服装_袜子 == 5 && CFLAG:MASTER:服装_鞋子 == 2) && 服種類 == 13
+	RETURNF "巫女装束"
+ELSEIF (CFLAG:MASTER:服装_上半身上着２ == 6 && CFLAG:MASTER:服装_裙子 == 5 && CFLAG:MASTER:服装_袜子 == 5 && CFLAG:MASTER:服装_鞋子 == 2) && (服種類 == 9 || 服種類 == 4 || 服種類 == 3)
+	RETURNF ""
+ENDIF
+SELECTCASE 服種類
+		;配件
+	CASE 1
+		IF 服番号 == 衣装_配件_结婚戒指
+			RETURNF "结婚戒指"
+		ELSEIF 服番号 == 衣装_配件_チョーカー
+			RETURNF "颈环"
+		ELSEIF 服番号 == 衣装_配件_项圈
+			RETURNF "项圈"
+		ENDIF
+		;帽子
+	CASE 2
+		IF 服番号 == 1
+			RETURNF "帽子"
+		ELSEIF 服番号 == 2
+			RETURNF "头饰"
+		ELSEIF 服番号 == 3
+			RETURNF "丝带"
+		ELSEIF 服番号 == 4
+			RETURNF "猫耳"
+		ELSEIF 服番号 == 5
+			RETURNF "兔耳"
+		ELSEIF 服番号 == 6
+			RETURNF "犬耳"
+		ELSEIF 服番号 == 7
+			RETURNF "牛耳"
+		ELSEIF 服番号 == 8
+			RETURNF "頭巾"
+		ELSEIF 服番号 == 9
+			RETURNF "女仆头饰"
+
+		ENDIF
+		;鞋子
+	CASE 3
+		IF 服番号 == 1
+			RETURNF "小圆鞋"
+		ELSEIF 服番号 == 2
+			RETURNF "草鞋"
+		ELSEIF 服番号 == 3
+			RETURNF "长筒鞋子"
+		ELSEIF 服番号 == 4
+			RETURNF "拖鞋"
+		ELSEIF 服番号 == 5
+			RETURNF "高跟鞋"
+		ENDIF
+		;袜子
+	CASE 4
+		IF 服番号 == 1
+			RETURNF "短袜"
+		ELSEIF 服番号 == 2
+			RETURNF "高筒袜"
+		ELSEIF 服番号 == 3
+			RETURNF "过膝袜"
+		ELSEIF 服番号 == 4
+			RETURNF "白丝袜"
+		ELSEIF 服番号 == 5
+			RETURNF "足袋"
+		ELSEIF 服番号 == 6
+			RETURNF "吊带丝袜"
+		ELSEIF 服番号 == 7
+			RETURNF "长筒半透白丝袜"
+		ENDIF
+		;下半身下着１
+	CASE 5
+		IF 服番号 == 1 || 服番号 == 42
+			RETURNF "贞操帯"
+		ELSEIF 服番号 == 2
+			RETURNF "创口贴"
+		ELSEIF 服番号 == 100
+			RETURNF "贞操帯"
+		ENDIF
+		;下半身下着２
+	CASE 6
+		IF 服番号 == 101
+			RETURNF "短裤"
+		ELSEIF 服番号 == 102
+			RETURNF "三角裤"
+		ELSEIF 服番号 == 103
+			RETURNF "平角裤"
+		ELSEIF 服番号 == 104
+			RETURNF "比基尼内裤"
+		ELSEIF 服番号 == 105
+			RETURNF "比基尼内裤(微型)"
+		ELSEIF 服番号 == 106
+			RETURNF "牛比基尼内裤"
+		ELSE
+			RETURNF PANTSNAME(服番号)
+		ENDIF
+		;下半身上着１
+	CASE 7
+		IF 服番号 == 1
+			RETURNF "裤子"
+		ELSEIF 服番号 == 2
+			RETURNF "紧身裤"
+		ELSEIF 服番号 == 3
+			RETURNF "袴"
+		ENDIF
+		;下半身上着２
+	CASE 8
+		IF 服番号 == 1
+			RETURNF "半裤"
+		ELSEIF 服番号 == 2
+			RETURNF "灯笼裤"
+		ELSEIF 服番号 == 3
+			RETURNF "热裤"
+		ELSEIF 服番号 == 4
+			RETURNF "束缚内裤"
+		ENDIF
+		;裙子
+	CASE 9
+		IF 服番号 == 1
+			RETURNF "超短裙"
+		ELSEIF 服番号 == 2
+			RETURNF "裙子"
+		ELSEIF 服番号 == 3
+			RETURNF "长裙"
+		ELSEIF 服番号 == 4
+			RETURNF "紧身裙"
+		ELSEIF 服番号 == 5
+			RETURNF "裳"
+		ELSEIF 服番号 == 6
+			RETURNF "女仆长裙"
+		ENDIF
+		;上半身下着１
+	CASE 10
+		IF 服番号 == 2
+			RETURNF "乳贴"
+		ENDIF
+		;上半身下着２
+	CASE 11
+		IF 服番号 == 1
+			RETURNF "胸罩"
+		ELSEIF 服番号 == 2
+			RETURNF "运动胸罩"
+		ELSEIF 服番号 == 3
+			RETURNF "胸贴"
+		ELSEIF 服番号 == 4
+			RETURNF "露点文胸"
+		ELSEIF 服番号 == 5
+			RETURNF "裹胸布"
+		ELSEIF 服番号 == 6
+			RETURNF "比基尼"
+		ELSEIF 服番号 == 7
+			RETURNF "迷你比基尼"
+		ELSEIF 服番号 == 8
+			RETURNF "汗衫"
+		ELSEIF 服番号 == 9
+			RETURNF "牛比基尼"
+		ELSEIF 服番号 == 10
+			RETURNF "蕾丝边胸罩"
+		ENDIF
+		;上半身上着１
+	CASE 12
+		IF 服番号 == 1
+			RETURNF "外衣"
+		ELSEIF 服番号 == 2
+			RETURNF "铠甲"
+		ELSEIF 服番号 == 3
+			RETURNF "军服"
+		ELSEIF 服番号 == 4
+			RETURNF "绅士服"
+		ENDIF
+		;上半身上着２
+	CASE 13
+		IF 服番号 == 1
+			RETURNF "女衬衫"
+		ELSEIF 服番号 == 2
+			RETURNF "水手服"
+		ELSEIF 服番号 == 3
+			RETURNF "西装外套"
+		ELSEIF 服番号 == 4
+			RETURNF "衬衫"
+		ELSEIF 服番号 == 5
+			RETURNF "学生服"
+		ELSEIF 服番号 == 6
+			RETURNF "丧服"
+		ELSEIF 服番号 == 7
+			RETURNF "睡衣"
+		ELSEIF 服番号 == 8
+			RETURNF "T恤"
+		ELSEIF 服番号 == 9
+			RETURNF "吊带衫"
+		ELSEIF 服番号 == 10
+			RETURNF "巫女服"
+		ELSEIF 服番号 == 11
+			RETURNF "纵毛衣"
+		ELSEIF 服番号 == 12
+			RETURNF "拉拉队服"
+		ELSEIF 服番号 == 13
+			RETURNF "大衣"
+		ELSEIF 服番号 == 14
+			RETURNF "绳缚装"
+		ELSEIF 服番号 == 15
+			RETURNF "护士服"
+		ELSEIF 服番号 == 16
+			RETURNF "女警"
+		ELSEIF 服番号 == 17
+			RETURNF "魔法少女服"
+		ELSEIF 服番号 == 18
+			RETURNF "博丽巫女服"
+		ELSEIF 服番号 == 19
+			RETURNF "圣诞女郎"
+		ELSEIF 服番号 == 20
+			RETURNF "露背毛衣"
+		ELSEIF 服番号 == 21
+			RETURNF "幼儿园校服"
+		ELSEIF 服番号 == 22
+			RETURNF "披肩"
+		ELSEIF 服番号 == 23
+			RETURNF "女仆装上衣"
+
+		ENDIF
+		;赛车服
+	CASE 14
+		IF 服番号 == 1
+			RETURNF "赛车服"
+		ENDIF
+		;连衣裙
+	CASE 15
+		IF 服番号 == 1
+			RETURNF "连衣裙"
+		ELSEIF 服番号 == 2
+			RETURNF "旗袍"
+		ELSEIF 服番号 == 3
+			RETURNF "睡袍"
+		ELSEIF 服番号 == 4
+			RETURNF "玩偶"
+		ELSEIF 服番号 == 5
+			RETURNF "裸体围裙"
+		ELSEIF 服番号 == 6
+			RETURNF "斗篷"
+		ELSEIF 服番号 == 7
+			RETURNF "修道服"
+		ELSEIF 服番号 == 8
+			RETURNF "魔女的连衣裙"
+		ENDIF
+		;着物
+	CASE 16
+		IF 服番号 == 1
+			RETURNF "和服"
+		ELSEIF 服番号 == 2
+			RETURNF "浴衣"
+		ENDIF
+		;紧身衣
+	CASE 17
+		IF 服番号 == 1
+			RETURNF "学校泳衣"
+		ELSEIF 服番号 == 2
+			RETURNF "紧身衣"
+		ELSEIF 服番号 == 3
+			RETURNF "忍者装束"
+		ELSEIF 服番号 == 4
+			RETURNF "Ｙ型紧身衣"
+		ELSEIF 服番号 == 5
+			RETURNF "触手服"
+		ELSEIF 服番号 == 6
+			RETURNF "竞赛泳衣"
+		ELSEIF 服番号 == 7
+			RETURNF "赛车女模"
+		ELSEIF 服番号 == 8
+			RETURNF "リンコス"
+		ENDIF
+		;手
+	CASE 18
+		IF 服番号 == 1
+			RETURNF "军用手套"
+		ELSEIF 服番号 == 2
+			RETURNF "橡胶手套"
+		ELSEIF 服番号 == 3
+			RETURNF "白手套"
+		ELSEIF 服番号 == 4
+			RETURNF "皮手套"
+		ELSEIF 服番号 == 5
+			RETURNF "指贯手套"
+		ELSEIF 服番号 == 6
+			RETURNF "歌剧手套"
+		ELSEIF 服番号 == 7
+			RETURNF "忍者篭手"
+		ELSEIF 服番号 == 8
+			RETURNF "连指手套"
+		ENDIF
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;ぱんつの名前
+;@return ぱんつの名前
+@PANTSNAME(ぱんつ)
+#FUNCTIONS
+#DIM DYNAMIC ぱんつ
+SELECTCASE ぱんつ
+	CASE 2
+		RETURNF "创口贴"
+	CASE 3
+		RETURNF "胖次（白）"
+	CASE 4
+		RETURNF "胖次（粉红）"
+	CASE 5
+		RETURNF "胖次（薄紫）"
+	CASE 6
+		RETURNF "小熊胖次"
+	CASE 7
+		RETURNF "小猫胖次"
+	CASE 8
+		RETURNF "水滴花纹胖次（青白）"
+	CASE 9
+		RETURNF "水滴花纹胖次（紫白）"
+	CASE 10
+		RETURNF "条纹胖次（青白）"
+	CASE 11
+		RETURNF "条纹胖次（赤白）"
+	CASE 12
+		RETURNF "条纹胖次（紫白）"
+	CASE 13
+		RETURNF "条纹胖次（緑白）"
+	CASE 14
+		RETURNF "条纹胖次（黄白）"
+	CASE 15
+		RETURNF "条纹胖次（紫黒）"
+	CASE 16
+		RETURNF "皱边胖次（白）"
+	CASE 17
+		RETURNF "皱边胖次（粉红）"
+	CASE 18
+		RETURNF "皱边胖次（薄紫）"
+	CASE 19
+		RETURNF "低腰泳衣短裤（白）"
+	CASE 20
+		RETURNF "低腰泳衣短裤（粉红）"
+	CASE 21
+		RETURNF "低腰泳衣短裤（青）"
+	CASE 22
+		RETURNF "低腰胖次"
+	CASE 23
+		RETURNF "高开叉胖次"
+	CASE 24
+		RETURNF "蕾丝胖次(白)"
+	CASE 25
+		RETURNF "蕾丝胖次(黒)"
+	CASE 26
+		RETURNF "蕾丝胖次(粉红)"
+	CASE 27
+		RETURNF "紧身裤（黒）"
+	CASE 28
+		RETURNF "紧身裤（灰）"
+	CASE 29
+		RETURNF "透视胖次（白）"
+	CASE 30
+		RETURNF "透视胖次（粉红）"
+	CASE 31
+		RETURNF "T字裤（白）"
+	CASE 32
+		RETURNF "T字裤（青）"
+	CASE 33
+		RETURNF "T字裤（黒）"
+	CASE 34
+		RETURNF "系带胖次（白）"
+	CASE 35
+		RETURNF "系带胖次（黒）"
+	CASE 36
+		RETURNF "系带胖次（赤）"
+	CASE 37
+		RETURNF "系带胖次（青白しま）"
+	CASE 38
+		RETURNF "系带胖次（赤白しま）"
+	CASE 39
+		RETURNF "系带胖次（紫）"
+	CASE 40
+		RETURNF "皮革胖次（赤）"
+	CASE 41
+		RETURNF "皮革胖次（黒）"
+	CASE 42
+		RETURNF "开放蕾丝T字裤（白）"
+	CASE 43
+		RETURNF "开放蕾丝T字裤（黒）"
+	CASE 44
+		RETURNF "开放蕾丝T字裤（赤）"
+	CASE 45
+		RETURNF "白色半透明胖次"
+	CASE 46
+		RETURNF "黑色半透明胖次"
+	CASE 47
+		RETURNF "红色半透明胖次"
+	CASE 48
+		RETURNF "白色开档蕾丝胖次"
+	CASE 49
+		RETURNF "黑色开档蕾丝胖次"
+	CASE 50
+		RETURNF "红色开档蕾丝胖次"
+	CASE 100
+		RETURNF "贞操帯"
+	CASE 101
+		RETURNF "短裤"
+	CASE 102
+		RETURNF "三角裤"
+	CASE 103
+		RETURNF "平角裤"
+	CASE 104
+		RETURNF "比基尼"
+	CASE 105
+		RETURNF "微型比基尼"
+	CASE 106
+		RETURNF "牛比基尼"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;ぱんつの形容詞
+;@return ぱんつの形容詞
+@PANTS_DESCRIPTION(ぱんつ)
+#FUNCTIONS
+#DIM DYNAMIC ぱんつ
+SELECTCASE ぱんつ
+	CASE 2
+		RETURNF "只把重要部位遮住的极限尺寸的"
+	CASE 3
+		RETURNF "幼儿用的"
+	CASE 4
+		RETURNF "幼儿用的"
+	CASE 5
+		RETURNF "幼儿用的"
+	CASE 6
+		RETURNF "图案印刷得很可爱的"
+	CASE 7
+		RETURNF "图案印刷得很可爱的"
+	CASE 8
+		RETURNF "可爱图案的"
+	CASE 9
+		RETURNF "可爱图案的"
+	CASE 10
+		RETURNF "强调臀部线条的"
+	CASE 11
+		RETURNF "强调臀部线条的"
+	CASE 12
+		RETURNF "强调臀部线条的"
+	CASE 13
+		RETURNF "强调臀部线条的"
+	CASE 14
+		RETURNF "强调臀部线条的"
+	CASE 15
+		RETURNF "强调臀部线条的"
+	CASE 16
+		RETURNF "有可爱的褶边的"
+	CASE 17
+		RETURNF "有可爱的褶边的"
+	CASE 18
+		RETURNF "有着漂亮褶边的"
+	CASE 19
+		RETURNF "简单设计的"
+	CASE 20
+		RETURNF "简单设计的"
+	CASE 21
+		RETURNF "简单设计的"
+	CASE 22
+		RETURNF "能看到臀部的裂缝的"
+	CASE 23
+		RETURNF "きわどく切り上がった"
+	CASE 24
+		RETURNF "稍微透明的"
+	CASE 25
+		RETURNF "成熟魅力的"
+	CASE 26
+		RETURNF "可憐与魅惑并持的"
+	CASE 27
+		RETURNF "勒紧大腿的"
+	CASE 28
+		RETURNF "手感很好的布料做的"
+	CASE 29
+		RETURNF "有着无法遮住秘所的透明度的"
+	CASE 30
+		RETURNF "煽动桃色妄想的"
+	CASE 31
+		RETURNF "大胆露出臀部的"
+	CASE 32
+		RETURNF "大胆露出臀部的"
+	CASE 33
+		RETURNF "大胆露出臀部的"
+	CASE 34
+		RETURNF "結びを解きたくなる"
+	CASE 35
+		RETURNF "淫靡的诱惑似的"
+	CASE 36
+		RETURNF "結びを解きたくなる"
+	CASE 37
+		RETURNF "結びを解きたくなる"
+	CASE 38
+		RETURNF "結びを解きたくなる"
+	CASE 39
+		RETURNF "不可思议得色气的"
+	CASE 40
+		RETURNF "塑料材质般反光的"
+	CASE 41
+		RETURNF "塑料材质般反光的"
+	CASE 42
+		RETURNF "把暴露的秘所装饰起来的"
+	CASE 43
+		RETURNF "把暴露的秘所装饰起来的"
+	CASE 44
+		RETURNF "把暴露的秘所装饰起来的"
+	CASE 45
+		RETURNF "有口袋的"
+	CASE 46
+		RETURNF "有口袋的"
+	CASE 47
+		RETURNF "有口袋的"
+	CASE 48
+		RETURNF "口袋的"
+	CASE 49
+		RETURNF "口袋的"
+	CASE 50
+		RETURNF "口袋的"
+	CASE 100
+		RETURNF "有一个需要他人管理的钥匙的"
+	CASE 104
+		RETURNF "暴露的"
+	CASE 105
+		RETURNF "非常暴露的"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;寝間着の名前
+;@return 寝間着の名前
+@寝間着名称(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 0
+		RETURNF "全裸"
+	CASE 1
+		RETURNF "平时的衣服(鞋子、配饰都没有)"
+	CASE 2
+		RETURNF "只有内衣内裤(贫乳以下没有胸罩)"
+	CASE 3
+		RETURNF "内衣内裤・裤子"
+	CASE 4
+		RETURNF "Ｙ领衬衫・内裤"
+	CASE 5
+		RETURNF "睡衣・内裤"
+	CASE 6
+		RETURNF "体恤・内裤"
+	CASE 7
+		RETURNF "吊带衫・内裤"
+	CASE 8
+		RETURNF "睡袍・内裤"
+	CASE 9
+		RETURNF "玩偶・内裤"
+	CASE 10
+		RETURNF "浴衣・内裤"
+	CASE 11
+		RETURNF "情趣内衣(露点、丝袜)"
+ENDSELECT
+RETURNF "不明"
+
+@口塞类型名称(ARG)
+#FUNCTIONS
+SELECTCASE CFLAG:ARG:口塞
+	CASE 1
+		RETURNF "口球"
+	CASE 2
+		RETURNF "环形口塞"
+	CASE 3
+		RETURNF "罩型口塞"
+	CASE 4
+		RETURNF "阳具口塞"
+	CASE 5
+		RETURNF "深喉阳具口塞"
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;衣類の臭い
+;@return 衣類の臭い
+@IRUINAME_SMELL(くさい)
+#FUNCTIONS
+#DIM DYNAMIC くさい
+IF DAY:2 == 1
+	RETURNF "芳しい（一日着用済み）"
+ELSEIF DAY:2 == 11
+	RETURNF "芳しい（一日着用済み）"
+ELSEIF DAY:2 == 21
+	RETURNF "芳しい（一日着用済み）"
+ELSEIF DAY:2 == 2
+	RETURNF "汗臭い（二日着用済み）"
+ELSEIF DAY:2 == 12
+	RETURNF "汗臭い（二日着用済み）"
+ELSEIF DAY:2 == 22
+	RETURNF "汗臭い（二日着用済み）"
+ELSEIF DAY:2 == 3
+	RETURNF "染み付き（三日着用済み）"
+ELSEIF DAY:2 == 13
+	RETURNF "染み付き（三日着用済み）"
+ELSEIF DAY:2 == 23
+	RETURNF "染み付き（三日着用済み）"
+ELSEIF DAY:2 == 4
+	RETURNF "女臭い（四日着用済み）"
+ELSEIF DAY:2 == 14
+	RETURNF "女臭い（四日着用済み）"
+ELSEIF DAY:2 == 24
+	RETURNF "女臭い（四日着用済み）"
+ELSEIF DAY:2 == 5
+	RETURNF "雌臭い（五日着用済み）"
+ELSEIF DAY:2 == 15
+	RETURNF "雌臭い（五日着用済み）"
+ELSEIF DAY:2 == 25
+	RETURNF "雌臭い（五日着用済み）"
+ELSEIF DAY:2 == 6
+	RETURNF "垢の固着した（六日着用済み）"
+ELSEIF DAY:2 == 16
+	RETURNF "垢の固着した（六日着用済み）"
+ELSEIF DAY:2 == 26
+	RETURNF "垢の固着した（六日着用済み）"
+ELSEIF DAY:2 == 7
+	RETURNF "分泌液と垢付き（七日着用済み）"
+ELSEIF DAY:2 == 17
+	RETURNF "分泌液と垢付き（七日着用済み）"
+ELSEIF DAY:2 == 27
+	RETURNF "分泌液と垢付き（七日着用済み）"
+ELSEIF DAY:2 == 8
+	RETURNF "異臭のするカスが零れ落ちる（八日着用済み）"
+ELSEIF DAY:2 == 18
+	RETURNF "異臭のするカスが零れ落ちる（八日着用済み）"
+ELSEIF DAY:2 == 28
+	RETURNF "異臭のするカスが零れ落ちる（八日着用済み）"
+ELSEIF DAY:2 == 9
+	RETURNF "激臭漂う（使用済み九日目済み）"
+ELSEIF DAY:2 == 19
+	RETURNF "激臭漂う（使用済み九日目済み）"
+ELSEIF DAY:2 == 29
+	RETURNF "激臭漂う（使用済み九日目済み）"
+ELSEIF DAY:2 == 10
+	RETURNF "体液と垢が糸を引く（十日着用済み）"
+ELSEIF DAY:2 == 20
+	RETURNF "体液と垢が糸を引く（十日着用済み）"
+ELSEIF DAY:2 == 30
+	RETURNF "体液と垢が糸を引く（十日着用済み）"
+ENDIF

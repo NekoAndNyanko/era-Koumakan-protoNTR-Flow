@@ -1,0 +1,154 @@
+﻿;-------------------------------------------------
+;振动棒
+;道具使用コマンド、レベル2
+;-------------------------------------------------
+@COM44
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_太股)
+SIF RESULT
+	RETURN 0
+
+;着脱の処理
+TEQUIP:振动棒 = !TEQUIP:振动棒
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 30
+DOWNBASE:气力 += 100
+
+SOURCE:快Ｖ = 250
+SOURCE:苦痛 = 50
+SOURCE:露出 = 20
+SOURCE:逸脱 = 40
+SOURCE:反感 = 40
+CALL 締り具合変動, TARGET, 2, 0
+
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 40
+
+;处女だった場合は、苦痛のソースと反発のソースを追加する
+IF TALENT:处女 == 1
+	SOURCE:苦痛 += 2000
+	SOURCE:反感 += 3000
+ENDIF
+
+;再生处女だった場合は、苦痛のソースと反発のソースを追加する
+IF TALENT:处女 == 2
+	SOURCE:苦痛 += 500
+	SOURCE:反感 += 1000
+ENDIF
+
+;Vへの苦痛は先に処理しておく
+CALL PAIN_CHECK_V(TARGET)
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;射精に関係なく行われる処理はここから
+;膣内に破瓜の血の汚れを付加
+SIF TALENT:处女
+	STAIN:膣内 |= 汚れ_破瓜の血
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;挿入時はＶ经验+
+EXP:Ｖ经验 ++
+
+;异常经验
+IF TALENT:处女 == 1 && !GETBIT(CFLAG:3,3)
+	EXP:异常经验 ++
+	SETBIT CFLAG:异常经验,3
+ENDIF
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+ENDIF
+
+EXP:PLAYER:道具使用经验 ++
+CALL 改变小穴色素(TARGET,1)
+CALL 确认小穴颜色(TARGET)
+CALL 确认小穴松弛度(TARGET)
+CALL 确认肛门颜色(TARGET)
+CALL 确认肛门松弛度(TARGET)
+CALL LOST_VIRGIN(TARGET, PLAYER)
+RETURN 1
+
+;-------------------------------------------------
+;装着継続の処理
+;-------------------------------------------------
+@EQUIP_COM44(ARG)
+;振动棒挿入中
+PRINTL ＜振动棒插入中＞
+
+DOWNBASE:ARG:体力 += 10
+DOWNBASE:ARG:气力 += 50
+
+SOURCE:ARG:快Ｖ += 125
+SOURCE:ARG:露出 += 10
+SOURCE:ARG:逸脱 += 20
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:ARG:自己爱 < 0 || TALENT:ARG:抵抗
+	SOURCE:ARG:抑郁 += 20
+
+;Vへの苦痛は先に処理しておく
+;EXP:Ｖ经验をみる（处女はありえない）
+LOCAL = 25
+LOCAL:1 = 20
+IF EXP:ARG:Ｖ经验 < EXPLV:2
+	TIMES LOCAL , 0.80
+	TIMES LOCAL:1 , 1.20
+ELSEIF EXP:ARG:Ｖ经验 < EXPLV:3
+	TIMES LOCAL , 0.40
+ELSEIF EXP:ARG:Ｖ经验 < EXPLV:4
+	TIMES LOCAL , 0.10
+ELSEIF EXP:ARG:Ｖ经验 < EXPLV:5
+	TIMES LOCAL , 0.00
+ELSEIF EXP:ARG:Ｖ经验 >= EXPLV:5
+	TIMES LOCAL , 0.00
+ENDIF
+
+;PALAM:润滑をみる
+IF PALAM:ARG:润滑 < PALAMLV:1
+	TIMES LOCAL , 1.20
+	TIMES LOCAL:1 , 1.50
+ELSEIF PALAM:ARG:润滑 < PALAMLV:2
+	TIMES LOCAL , 0.70
+	TIMES LOCAL:1 , 1.20
+ELSEIF PALAM:ARG:润滑 < PALAMLV:3
+	TIMES LOCAL , 0.40
+ELSEIF PALAM:ARG:润滑 < PALAMLV:4
+	TIMES LOCAL , 0.10
+ELSEIF PALAM:ARG:润滑 >= PALAMLV:4
+	TIMES LOCAL , 0.10
+ENDIF
+SOURCE:ARG:苦痛 += LOCAL
+SOURCE:ARG:反感 += LOCAL:1
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;自慰実行時は経験＋１
+SIF EXP_UP(22,TARGET)
+	EXP:ARG:Ｖ经验 += 1
+
+RETURN 1
+

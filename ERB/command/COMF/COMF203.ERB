@@ -1,0 +1,114 @@
+﻿;-------------------------------------------------
+;パンツ脱衣
+;-------------------------------------------------
+@COM203
+;口上出力のため実際の脱衣処理はEVENTCOMENDで
+
+
+RETURN 1
+
+
+@CAN_COM203(ARG)
+SKIPDISP ARG
+PRINTL 下半身脱衣
+;-------------------------------------------------
+;実行判定処理
+;-------------------------------------------------
+TFLAG:実行値 = 0
+TFLAG:実行値表示用フラグ = 0
+;すべての命令に共通の要素を考慮
+;(顺从が高いと命令に従いやすいなど)
+CALL COM_ORDER
+;ABL:露出癖
+IF ABL:露出癖
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:露出癖 * 10
+	PRINT 露出癖
+	PRINTV 'LV,ABL:露出癖,'(,ABL:露出癖 * 10,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+IF MARK:快乐刻印
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += MARK:快乐刻印 * 1
+	PRINT 快乐刻印
+	PRINTV 'LV,MARK:快乐刻印,'(,MARK:快乐刻印 * 1,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;PALAM:欲情
+IF GETPALAMLV(PALAM:欲情,10)
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += GETPALAMLV(PALAM:欲情,10) * 5
+	PRINT 欲情
+	PRINTV 'LV,GETPALAMLV(PALAM:欲情,10),'(,GETPALAMLV(PALAM:欲情,10) * 5,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;恥じらい
+IF TALENT:羞耻心 > 0
+	PRINT  - 
+	TFLAG:実行値 -= 1
+	PRINT 恥じらい
+	PRINTV '(,1,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;男嫌い（恋慕、亲爱で無効）
+IF TALENT:性別嗜好 & 1 && !(HAS_VAGINA(PLAYER)) && (!TALENT:恋慕 || PLAYER != MASTER)
+	PRINT  - 
+	TFLAG:実行値 -= 5
+	PRINT 男嫌い
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+;恋慕
+IF TALENT:恋慕 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 5
+	PRINT 恋慕
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+;亲爱
+IF TALENT:恋慕 > 1 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 5
+	PRINT 亲爱
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+;鍵を持っていると実行可能
+IF FLAG:贞操帯鍵購入フラグ == TARGET
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 100
+	PRINT 贞操帯の鍵
+	PRINTV '(,100,')
+	TFLAG:実行値表示用フラグ = 100
+ENDIF	
+
+;合計を表示(14以上で実行)
+PRINT  = 
+PRINTV TFLAG:実行値
+
+LOCAL = 40
+SIF TFLAG:実行値 < LOCAL
+	PRINT  < 
+SIF TFLAG:実行値 == LOCAL
+	PRINT  = 
+SIF TFLAG:実行値 > LOCAL
+	PRINT  > 
+PRINT 実行値
+PRINTV LOCAL
+
+WAIT
+SKIPDISP 0
+;実行できない
+SIF TFLAG:実行値 < LOCAL
+	RETURN 0
+
+CFLAG:TARGET:ぱんつ確認 = 1
+
+RETURN 1

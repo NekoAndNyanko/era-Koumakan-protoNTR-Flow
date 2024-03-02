@@ -1,0 +1,82 @@
+﻿;阴蒂爱抚
+@COM315
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_恥丘)
+SIF RESULT
+	RETURN 0
+
+TRYCALL NTR_UNLOCK_CHASTITY_BELT(TARGET)
+IF !RESULT
+	DRAWLINE
+	PRINTFORML %CALLNAME:MASTER%试图伸出手去爱抚阴蒂
+	PRINTFORML 但是被%CALLNAME:TARGET%身上的贞操带阻止了。
+	CFLAG:TARGET:ぱんつ確認 = 1
+
+	IF CFLAG:TARGET:好感度 > 0
+		PRINTFORML %CALLNAME:TARGET%似乎对无法触碰到身体而感到不满
+		;欲情していると反感が伸びる
+		PALAM:TARGET:反感 += MIN( PALAM:TARGET:欲情/MAX(CFLAG:TARGET:好感度,1),300)
+		;欲情していると好感度も下がる
+		CFLAG:TARGET:好感度 = MAX( CFLAG:TARGET:好感度 - MIN(PALAM:TARGET:欲情 ,30),0)
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%很无聊地看着%CALLNAME:MASTER%……
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、气力
+DOWNBASE:体力 += 5
+DOWNBASE:气力 += 50
+
+SOURCE:欢乐 = 100
+SOURCE:情爱 = 150
+SOURCE:欲情 = 150
+SOURCE:露出 = 100
+SOURCE:反感 = 370
+SOURCE:快Ｃ = 100
+SOURCE:被动 = 145 + 270 * ABL:顺从
+
+;手を突っ込めない衣装
+IF TEQUIP:0 & 16
+	TIMES SOURCE:快Ｃ , 0.80
+	TIMES SOURCE:欲情 , 0.80
+	TIMES SOURCE:露出 , 0.80
+	;裙子以外の何かを履いてる
+ELSEIF TEQUIP > 1
+	TIMES SOURCE:快Ｃ , 0.90
+	TIMES SOURCE:欲情 , 0.90
+	TIMES SOURCE:露出 , 0.90
+ENDIF
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑郁ソース追加
+SIF TALENT:自己爱 < 0 || TALENT:抵抗
+	SOURCE:抑郁 += 20
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;奴隷のＶ⇔調教者の口の汚れが移动
+STAIN:Ｖ |= STAIN:PLAYER:手
+STAIN:PLAYER:手 |= STAIN:Ｖ
+
+TIME += 10
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+ENDIF
+CALL 改变小穴色素(TARGET,1)
+CALL 触觉确认小穴松弛度(TARGET)
+RETURN 1

@@ -1,0 +1,58 @@
+;-------------------------------------------------------------------------------
+;口交
+@NTR_FELLATIO(奴隷,調教者=人物_訪問者)
+#DIM 奴隷
+#DIM 調教者
+TCVAR:奴隷:行為者 = 調教者
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_01(奴隷, 5)
+IF FLAG:訪問者との行為の終了時刻 == 0
+	FLAG:访问者行为计时点 = DATETIME()
+	CALL NTR_ADD_SURRENDER(奴隷, 3)
+	SIF EXP:奴隷:NTR陷落经验 
+		CALL NTR_ADD_SURRENDER(奴隷, 1)
+	BASE:奴隷:体力 -= 10
+	BASE:奴隷:气力 -= 100
+	SOURCE:奴隷:情爱 = 100
+	SOURCE:奴隷:性行动 = 300
+	SOURCE:奴隷:达成 = 150
+	SOURCE:奴隷:屈从 = 700
+	SOURCE:奴隷:肮脏 = 200
+	IF TALENT:奴隷:NTR
+		SOURCE:奴隷:反感 = 50
+	ELSEIF CFLAG:奴隷:屈服度 > 1000
+		SOURCE:奴隷:反感 = 100
+	ELSE
+		SOURCE:奴隷:反感 = 200
+	ENDIF
+	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+		SOURCE:奴隷:抑郁 += 400
+	CALL NTR_EXP_ADD_M_SEX(奴隷,1)
+	SIF TALENT:奴隷:猫舌
+		EXP:奴隷:浮気嗜虐快乐经验 ++
+	CALL STAIN_MOVE_BY_PENIS(部位_口, 奴隷, 人物_訪問者)
+	CALL LOST_VIRGIN_M(奴隷, 人物_訪問者,1)
+	IF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_精液)
+		CALL NTR_EXP_ADD_DRINK_SEMEN(奴隷,1)
+		CFLAG:奴隷:射精者M = 調教者
+		SIF ABL:精饮中毒 < 2
+			;无知去除
+			CALL 无知去除(奴隷)
+	ENDIF
+	FLAG:訪問者との行為の終了時刻 = DATETIME() + 10
+	CALL NTR_EXP_ADD_M_EX(奴隷,1)
+	FLAG:訪問者との行為 = NTR_行为_口交
+	CFLAG:奴隷:訪問者行為 = NTR_行为_口交
+	CALL LOST_VIRGIN_M(奴隷, 人物_訪問者)
+	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;口交終了（絶頂）
+;@return 常に0
+@NTR_FELLATIO_FINISH(奴隷)
+#DIM 奴隷
+CALL NTR_KISS_PET_FELLA_MSG_KOJO_2(奴隷, 5)
+CALL EJACULATION_M(奴隷, 人物_訪問者)
+CALL NTR_EXP_ADD_M_SEX(奴隷,1)
+RETURN 0

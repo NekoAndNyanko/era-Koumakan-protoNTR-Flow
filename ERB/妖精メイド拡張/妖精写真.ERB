@@ -1,0 +1,146 @@
+﻿@查看从妖精女仆那取得的收藏
+DRAWLINE
+PRINTL [0] - 写真
+PRINTL [1] - 录像
+PRINTL --------------------
+PRINTL [-1] - 返回
+INPUT
+SELECTCASE RESULT
+	CASE -1
+		RETURN
+	CASE 0
+		CALL 查看从妖精女仆那取得的收藏_写真
+		RESTART
+	CASE 1
+
+		RESTART
+ENDSELECT
+
+@查看从妖精女仆那取得的收藏_写真
+#DIM 写真分割起始位置 = 0
+#DIM 当前逗号索引值 = 0
+#DIMS 当前写真内容 = ""
+#DIM 展示的人物 = 5
+#DIM 每页展示数量 = 8
+#DIM 当前展示数量 = 0
+#DIM 页数 = 1
+#DIM 总页数
+#DIM 写真数量 = 0
+写真分割起始位置 = 0
+当前逗号索引值 = 0
+当前写真内容 '= ""
+写真数量 = STRCOUNT(CSTR:展示的人物:吃避孕药的写真,",")
+总页数 = 写真数量 / 每页展示数量 + (写真数量 % 每页展示数量 > 0)
+IF CSTR:展示的人物:吃避孕药的写真 == ""
+	PRINTW 一张写真都没有……
+ELSE
+	PRINTFORML 根据购买的日期把写真列出来了,%CALLNAME:展示的人物%的写真一共有 {写真数量} 张
+	PRINTL --------------------
+	当前展示数量 = 0
+	WHILE STRFINDU(CSTR:展示的人物:吃避孕药的写真,",",写真分割起始位置) >= 0
+		SIF 当前展示数量 >= 页数 * 每页展示数量
+			BREAK
+		;能查找到结果
+		当前逗号索引值 = STRFINDU(CSTR:展示的人物:吃避孕药的写真,",",写真分割起始位置)
+		当前写真内容 '= SUBSTRINGU(CSTR:展示的人物:吃避孕药的写真,写真分割起始位置,当前逗号索引值 - 写真分割起始位置)
+		写真分割起始位置 = 当前逗号索引值 + 1
+		IF 当前展示数量 >= 页数 * 每页展示数量 - 每页展示数量
+			PRINTSL "「"+当前写真内容+"」"
+			PRINTL -----
+		ENDIF
+		当前展示数量++
+	WEND
+ENDIF
+PRINTL --------------------
+FOR LOCAL,1,CHARANUM
+	PRINTFORMC [{LOCAL}]%CALLNAME:LOCAL%
+NEXT
+PRINTL
+PRINTL ----------
+$重新翻页
+IF 页数 == 1
+	PRINT -------------
+ELSE
+	PRINTBUTTON "[-2] - 上一页",-2
+ENDIF
+IF 页数 == 总页数
+	PRINTL     -------------
+ELSE
+	PRINT     
+	PRINTBUTTON "[-3] - 下一页",-3
+	PRINTL
+ENDIF
+PRINTL [-1] - 返回
+INPUT
+IF RESULT == -1
+	RETURN
+ELSEIF RESULT == -2
+	IF 页数 == 1
+		CLEARLINE 3
+		GOTO 重新翻页
+	ENDIF
+	页数--
+	RESTART
+ELSEIF RESULT == -3
+	IF 页数 == 总页数
+		CLEARLINE 3
+		GOTO 重新翻页
+	ENDIF
+	页数++
+	RESTART
+ELSEIF RESULT > 0
+	展示的人物 = RESULT
+	RESTART
+ENDIF
+
+
+@妖精写真_吃避孕药(ARG)
+#DIMS DYNAMIC 拍摄时间 = ""
+#DIMS DYNAMIC 拍摄地点 = ""
+#DIMS DYNAMIC 写真内容 = ""
+#DIMS DYNAMIC 吃药方式 = ""
+#DIMS DYNAMIC 腹部状态 = ""
+#DIMS DYNAMIC 外表 = ""
+拍摄时间 = %日付_月(暦法月)%{暦法日}日，第{DAY}日，%天候(天候値)%の日，在
+拍摄地点 = %GETPLACENAME(CFLAG:ARG:現在位置)%，
+腹部状态 = 小腹%腹部精液膨胀状态(ARG)%，
+IF CFLAG:ARG:淫纹身体改造 == 1
+	外表 = 全身%COM417_GetProstituteMarkColor(ARG)%的淫纹\@获取子宫精液填充率(ARG)>=100?散发着淫靡的光芒#散发着淫靡感\@，白发褐肌的
+ELSEIF GETBIT(CFLAG:ARG:淫纹,淫纹_右頬)
+	外表 =脸上%COM417_GetProstituteMarkColor(ARG)%的淫纹\@获取子宫精液填充率(ARG)>=100?散发着淫靡的光芒#散发着淫靡感\@，
+ENDIF
+
+IF TALENT:ARG:公众便所
+	吃药方式 = 嘴唇叼着避孕药，拿着装满精液的杯子准备喝下去的瞬间
+ELSEIF TALENT:ARG:NTR || NTR_CHK_FAVORABLY(ARG,FAV_寝取られ寸前)
+	吃药方式 = 被%NTR_NAME(0)%捏着下巴，张开的嘴里满是精液，避孕药正浸泡在精液中，准备吞下去的瞬间
+ELSEIF TALENT:ARG:亲爱
+	吃药方式 = 一脸无奈地让%NTR_NAME(0)%拿着药塞入嘴中的瞬间
+ELSEIF TALENT:ARG:浮気公認 == 5
+	吃药方式 = 辛福地张开嘴等待%NTR_NAME(0)%将避孕药投入口中的瞬间
+ELSEIF TALENT:ARG:恋慕
+	吃药方式 = 红着脸拿着避孕药放入口中的瞬间
+ENDIF
+写真内容 += 拍摄时间
+写真内容 += 拍摄地点
+写真内容 += 腹部状态
+写真内容 += 外表
+写真内容 += CALLNAME:ARG
+写真内容 += 吃药方式
+写真内容 += ","
+CSTR:ARG:妖精持有的吃避孕药的写真 += 写真内容
+
+@腹部精液膨胀状态(ARG)
+#FUNCTIONS
+SELECTCASE 获取子宫精液填充率(ARG,0)
+	CASE IS >= 200
+		RETURNF "被精液撑的膨胀起来"
+	CASE 100 TO 199
+		RETURNF "被精液填满得微微隆起"
+	CASEELSE
+		RETURNF "显得很平坦"
+ENDSELECT
+
+
+
+

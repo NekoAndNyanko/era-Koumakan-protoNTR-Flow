@@ -1,0 +1,1084 @@
+﻿;-------------------------------------------------
+;NTR野外調教用汎用口上ファイル
+;注意：この口上が呼ばれるのは筒抜けコマンドを実行した場合に限ります
+;
+;基本の反応
+;　寝取られ　……… ノリノリでセックス。处女も捧げちゃう。
+;　寝取られ寸前　… 寝取られとほぼ同じ。恋慕時分岐が入るくらい。
+;　寝取られそう　… 寝取られ寸前＋α
+;　主人より高い　… さすがに一線を越えるのは逡巡するも犯される感じで。
+;　その他　………… 無理やりに犯される感じで
+;-------------------------------------------------
+
+;==================================================
+;野外調教
+;==================================================
+;野外調教開始(下着姿)
+@NTR_KOJO_K4_17_0(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_訪問者)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・%MSG_HEART()%」
+			DATAFORM 「啊啊・・这身打扮・・太羞耻了啊・・%MSG_HEART()%」
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、只穿着内衣走路就好像要故意凸显出身体一样。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・♪」
+			DATAFORM 「啊啊・・这身打扮・・太羞耻了啊・・♪」
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、只穿着内衣走路的身体毫无遮掩。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻啊・・」
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・」
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%虽然满脸害羞的样子、但身上只穿着衣服而且毫不遮掩地走着。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊啊呃・・好羞耻啊・・」
+			DATAFORM 「呃唔・・这身打扮・・太羞耻了啊・・」
+			DATAFORM 「唔哼哼・・居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、只穿着内衣走路的身体毫无遮掩。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻啊・・」
+			DATAFORM 「啊啊・・这身打扮・・太羞耻了啊・・」
+			DATAFORM 「・・居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、但身上只穿着衣服而且毫不遮掩地走着。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊啊・・这身打扮・・太过分了・・」
+			DATAFORM 「啊啊・・这身打扮・・万一被谁、看见的话・・」
+			DATAFORM 「・・居然让我做这种事，不可原谅・・啊啊・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%满脸害羞地用双手遮住下体和胸部走着。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「这身打扮・・万一被谁、看见了就没法找借口了・・」
+			DATAFORM 「这、这身打扮・・还这样走什么的・・」
+			DATAFORM 「居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、但身上只穿着衣服而且毫不遮掩地走着。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「这身打扮・・万一被谁、看见的话・・」
+			DATAFORM 「这、这身打扮・・让我这样走出去什么的・・」
+			DATAFORM 「居然让我做这种事，不可原谅、太恶趣味了」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%虽然满脸害羞的样子、但身上只穿着衣服而且毫不遮掩地走着。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「这身打扮・・太过分了・・」
+			DATAFORM 「这、这身打扮・・」
+			DATAFORM 「你、你给我记住・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%满脸通红地用双手遮住下体和胸部走着。
+	ENDIF
+ENDIF
+RETURN
+
+;野外調教開始(ミニスカノーパン)
+@NTR_KOJO_K4_17_1(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_訪問者)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・%MSG_HEART()%」
+			DATAFORM 「啊啊・・这身打扮・・太羞耻了啊・・%MSG_HEART()%」
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%故意摆动着裙摆、将完全暴露的下体露出来走着。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・♪」
+			DATAFORM 「啊啊・・这身打扮・・太羞耻了啊・・♪」
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%故意摆动着裙摆、将完全暴露的下体露出来走着。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻啊・・」
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・」
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%把超短裙的裙摆掀起来、将完全暴露的下体露出来走着。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊啊呃・・好羞耻啊・・」
+			DATAFORM 「呃唔・・这身打扮・・太羞耻了啊・・」
+			DATAFORM 「唔哼哼・・居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的超短裙若隐若现着、将完全暴露的下体露出来走着。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻啊・・」
+			DATAFORM 「啊啊・・这身打扮・・太羞耻了啊・・」
+			DATAFORM 「・・居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は故意不按住超短裙的下摆、将完全暴露的下体露出来走着。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊啊・・这身打扮・・太过分了・・」
+			DATAFORM 「啊啊・・这身打扮・・万一被谁、看见的话・・」
+			DATAFORM 「・・居然让我做这种事，不可原谅・・啊啊・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被要求允许压着超短裙的下摆、于是时刻留意着赤裸的下体走着。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「这身打扮・・万一被谁、看见了就没法找借口了・・」
+			DATAFORM 「这、这身打扮・・还这样走什么的・・」
+			DATAFORM 「居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的超短裙若隐若现着、于是时刻留意着赤裸的下体走着。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「这身打扮・・万一被谁、看见的话・・」
+			DATAFORM 「这、这身打扮・・让我这样走出去什么的・・」
+			DATAFORM 「居然让我做这种事，不可原谅、太恶趣味了」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%并不压着超短裙的裙摆、于是时刻留意着赤裸的下体走着。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「这身打扮・・太过分了・・」
+			DATAFORM 「这、这身打扮・・」
+			DATAFORM 「你、你给我记住・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%压着超短裙的裙摆、试图遮住裸露的下体走着。
+	ENDIF
+ENDIF
+RETURN
+
+
+;強制自慰
+@NTR_KOJO_K4_17_3(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_訪問者)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・不要看过来啊・・%MSG_HEART()%」
+			DATAFORM 「唔啊啊、都被看光了、不要看过来啊%MSG_HEART()%」
+			DATAFORM 「唔啊啊、快看、快来看啊%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令、一边将局部裸露的地方扩大并后仰着身体，一边以甜美的嗓音轻声呻吟着。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・不要看过来啊・・♪」
+			DATAFORM 「唔啊啊、都被看光了、不要看过来啊♪」
+			DATAFORM 「唔啊啊、快看、快来看啊♪」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令、一边将局部裸露的地方扩大并后仰着身体，一边以甜美的嗓音轻声呻吟着。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・不要看过来啊・・」
+			DATAFORM 「唔啊啊、都被看光了、不要看过来啊」
+			DATAFORM 「唔啊啊、快看、快来看啊」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被命令自慰、羞羞得满脸通红，以甜美的嗓音轻声呻吟着。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・不要看过来啊・・♪」
+			DATAFORM 「唔啊啊、都被看光了、不要看过来啊♪」
+			DATAFORM 「唔啊啊、不要看（見られるっ）、不要看过来啊♪」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令、一边将局部裸露的地方扩大并后仰着身体，一边以甜美的嗓音轻声呻吟着。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・被看光了わ・・」
+			DATAFORM 「唔啊啊、都被看光了、被看光了・・」
+			DATAFORM 「唔啊啊、不要看（見られるっ）、被看光了・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令、一边摸索着局部，一边以甜美的嗓音轻声呻吟着。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「・・啊啊・・万一被谁・・看见的话・・」
+			DATAFORM 「唔啊啊、被看光了・・」
+			DATAFORM 「唔啊啊、不要看（見られるっ）、被看光了・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被命令自慰、羞耻得满脸通红地摸索局部。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「・・啊啊・・万一被谁・・看见的话・・♪」
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・不要看过来啊・・♪」
+			DATAFORM 「唔啊啊、不要看（見られるっ）、被看光了・・♪」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令、摸索着局部。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「・・啊啊・・万一被谁・・看见的话・・」
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・不要看过来啊・・」
+			DATAFORM 「唔啊啊、不要看（見られるっ）、被看光了・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令、摸索着局部。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「・・啊啊・・だ、万一被谁・・看见的话・・」
+			DATAFORM 「唔啊啊・・万一被谁、看见的话・・唔啊啊」
+			DATAFORM 「居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%由于命令被迫自慰，不情愿的地摸索着局部。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;露出写真摄影
+@NTR_KOJO_K4_17_4(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_訪問者)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「是・・这、这样・・%MSG_HEART()%」
+			DATAFORM 「・・这…这样吗%MSG_HEART()%」
+			DATAFORM 「唔哼哼、帮你这样做吧？」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 「・・啊啊・・漂亮地、拍下来・・%MSG_HEART()%」
+			DATAFORM 「・・照片・・要拍什么样的・・%MSG_HEART()%」
+			DATAFORM 「・・加印什么的、还是别了吧？」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%一边抬起脸颊一边收起裙子的下摆、拍摄了裸露的局部。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「是・・这、这样・・？」
+			DATAFORM 「・・这…这样吗？」
+			DATAFORM 「唔哼哼、帮你这样做吧？」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%一边抬起脸颊一边收起裙子的下摆、拍摄了裸露的局部。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「是・・这、这样・・？」
+			DATAFORM 「・・这…这样吗？」
+			DATAFORM 「・・这・・这、这样的话・可以吗・・？」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令卷起裙子的下摆、拍摄了裸露的局部。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「是・・这、这样吗・・%MSG_HEART()%」
+			DATAFORM 「・・这…这样吗%MSG_HEART()%」
+			DATAFORM 「唔哼哼、帮你这样做吧？」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 「・・啊啊・・漂亮地、拍下来・・%MSG_HEART()%」
+			DATAFORM 「・・照片・・要拍什么样的・・%MSG_HEART()%」
+			DATAFORM 「・・加印什么的、还是别了吧？」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%一边抬起脸颊一边收起裙子的下摆、拍摄了裸露的局部。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「是・・这、这样吗・・？」
+			DATAFORM 「・・这…这样吗？」
+			DATAFORM 「唔哼哼、帮你这样做吧？」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%染着脸颊，卷起裙子的下摆、拍摄了裸露的局部。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「・・这…这，这样的事・・好羞耻・・」
+			DATAFORM 「・・啊啊・・好羞耻・・」
+			DATAFORM 「居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令卷起裙子的下摆、拍摄了裸露的局部。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「是・・这、这样吗・・%MSG_HEART()%」
+			DATAFORM 「・・这…这样吗%MSG_HEART()%」
+			DATAFORM 「唔哼哼、帮你这样做吧？」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令卷起裙子的下摆、拍摄了裸露的局部。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「是・・这、这样吗・・？」
+			DATAFORM 「・・这…这样吗？」
+			DATAFORM 「帮你这样做吧？」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%依照命令卷起裙子的下摆、拍摄了裸露的局部。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊呃・・唔啊啊・・万一被谁・・看见的话・・」
+			DATAFORM 「・・这…这、这样的屈辱・・好羞耻・・」
+			DATAFORM 「居然让我做这种事，不可原谅・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被迫收起裙子的下摆、拍摄了裸露的局部。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;==================================================
+;野外調教(放置プレイ)
+;==================================================
+;野外調教(放置プレイ：村人がまだいない：项圈散歩)
+@NTR_KOJO_K4_18_0_1(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_訪問者)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・%MSG_HEART()%」
+			DATAFORM 「啊啊・・简直、像狗一样・・%MSG_HEART()%」
+			DATAFORM 「被看光了・・不要看过来啊・・%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML 「
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、像狗一样四肢着地露着屁股爬着走。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊啊・・好羞耻・・不要看过来啊・・♪」
+			DATAFORM 「啊啊・・简直、像狗一样・・♪」
+			DATAFORM 「被看光了・・不要看过来啊・・♪」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、屁股摇摇晃晃地四肢着地爬着走。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・」
+			DATAFORM 「啊啊・・简直、像狗一样・・」
+			DATAFORM 「被看光了・・不要看过来啊・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为感到羞耻而泛起红晕、乖乖地趴在地上爬着走。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊啊・・这身打扮・・好羞耻・・♪」
+			DATAFORM 「啊啊・・简直、像狗一样・・♪」
+			DATAFORM 「被看光了・・不要看过来啊・・♪」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、屁股摇摇晃晃地四肢着地爬着走。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊啊・・这种样子・・好羞耻・・」
+			DATAFORM 「啊啊・・简直、像狗一样・・」
+			DATAFORM 「被看光了・・不要看过来啊・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、乖乖地趴在地上爬着走。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「啊啊・・这种样子・・」
+			DATAFORM 「・・简直、像狗一样・・」
+			DATAFORM 「被看光了・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%因为感到过于羞耻，不仅是脸，耳根都红透了、勉勉强强地爬着走。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「啊啊・・这身打扮・・」
+			DATAFORM 「啊啊・・简直、像狗一样・・」
+			DATAFORM 「啊啊・・被看光了・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%的脸上因为害羞而泛起红晕、乖乖地趴在地上爬着走。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「啊啊・・这种样子・・」
+			DATAFORM 「・・简直、像狗一样・・」
+			DATAFORM 「万一被谁、被看光了・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%因为感到羞耻而红透了脸、勉勉强强地爬着走。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「・・这种样子・・不要・・」
+			DATAFORM 「・・简直、像跟狗一样・・」
+			DATAFORM 「万一被谁、看见的话・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%因为感到过于羞耻，不仅是脸，耳根都红透了、脖子上被套着带链子的项圈，不情愿地被牵着到处走。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;野外調教(放置プレイ：村人がまだいない：放置開始)
+@NTR_KOJO_K4_18_0_2(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+#DIMS 場所
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_訪問者)
+場所 = %NTR_GETPLACENAME(CFLAG:奴隷:現在位置)%
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「はい・・皆様に、見ていただきますわ%MSG_HEART()%」
+			DATAFORM 「はい・・仰せの通りに%MSG_HEART()%」
+			DATAFORM 「はい・・仰せのままに%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】に下着姿で置き去りにされたが大人しく従った。
+		PRINTFORML 如果被某个路人看见的话、%CALLNAME:奴隷%的脸被羞耻和期待的颜色染红。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「はい・・皆様に、見ていただきますわ♪」
+			DATAFORM 「はい・・仰せの通りに♪」
+			DATAFORM 「はい・・仰せのままに♪」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】以只穿内裤/内衣的姿态留下并离去了。
+		PRINTFORML 如果被某个路人看见的话、%CALLNAME:奴隷%的脸上浮现出羞耻和期待的神情。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「・・皆に、見ていただきますわ」
+			DATAFORM 「・・仰せの通りに」
+			DATAFORM 「・・仰せのままに」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】以只穿内裤/内衣的姿态留下并离去了。
+		PRINTFORML 如果被某个路人看见的话、%CALLNAME:奴隷%的脸上浮现出羞耻和少许期待的颜色。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「・・はい・・み、皆様に、み、見ていただけと・・」
+			DATAFORM 「ど、何処に・・はい、お、仰せの通りに・・」
+			DATAFORM 「ひ、一人なんて・・は、はい、仰せのままに・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】に下着姿で置き去りにされ、不安そうだが大人しく従った。
+		PRINTFORML 如果被某个路人看见的话、%CALLNAME:奴隷%的脸上浮现出羞耻和期待的神情。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「那、那个・・你要去哪里・・！？」
+			DATAFORM 「ひ、一人にしないで・・」
+			DATAFORM 「誰かに・・み、見られたら・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】に下着姿で置き去りにされ、不安そうだが従うしかなかった。
+		PRINTFORML 如果被某个路人看见的话、%CALLNAME:奴隷%的脸上浮现出羞耻和少许期待的颜色。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「そ、そんなっ・・何処に行くつもりっ・・！？」
+			DATAFORM 「こ、こんな格好で・・」
+			DATAFORM 「だ、誰かに、見られたら・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】に下着姿で置き去りにされ、不安そうだが従わざるを得なかった。
+		PRINTFORML 如果被某个路人看见的话、这样想的%CALLNAME:奴隷%的脸颊染上了羞耻的颜色。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTDATAL
+			DATAFORM 「唔啊啊・・咿、不要丢下我一个人・・」
+			DATAFORM 「お、置いていかないでっ」
+			DATAFORM 「せ、せめて一緒にいて・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】以只穿内裤/内衣的姿态丢下了、不安地四下张望。
+		PRINTFORML 如果被某个路人看见的话、这样想的%CALLNAME:奴隷%的胸部染上了羞耻的颜色。
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		PRINTDATAL
+			DATAFORM 「那、那个・・你要去哪里・・！？」
+			DATAFORM 「お、置いていかないでっ」
+			DATAFORM 「せ、せめて一緒にいて・・！」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】以只穿内裤/内衣的姿态丢下了、不安地四下张望。
+		PRINTFORML 如果被某个路人看见的话、这样想的%CALLNAME:奴隷%的脸颊染上了羞耻的颜色。
+	ELSE
+		PRINTDATAL
+			DATAFORM 「う、嘘っ・・そんなっ・・何処に行くつもりっ・・！？」
+			DATAFORM 「こ、こんな格好で！？・・」
+			DATAFORM 「だ、誰かに、見られたら・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%被【%場所%】以只穿内裤/内衣的姿态丢下了、不安地四下张望。
+		PRINTFORML 如果被某个路人看见的话、这么一想就浑身冒冷汗。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;野外調教(放置プレイ：村人がいる：村人逃跑)
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_1_0(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「・・啊・・真是・・真是失礼」
+		PRINTFORML %CALLNAME:奴隷%盯着逃跑的村民的背影。
+	ELSE
+		PRINTFORML 「・・啊・・真是・・」
+		PRINTFORML %CALLNAME:奴隷%盯着逃跑的村民的背影。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「・・啊・・」
+		PRINTFORML %CALLNAME:奴隷%盯着逃跑的村民的背影。
+	ELSE
+		PRINTFORML 「・・哈啊」
+		PRINTFORML %CALLNAME:奴隷%松了一口气。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「・・哈啊」
+		PRINTFORML %CALLNAME:奴隷%松了一口气。
+	ELSE
+		PRINTFORML 「・・哈啊」
+		PRINTFORML %CALLNAME:奴隷%松了一口气。
+		PRINTFORML 可是由于被看见了脸而感到不安。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;野外調教(放置プレイ：村人がいる：帰宅)
+;ちょっと思いつかない。
+;@NTR_KOJO_K4_18_1_1(奴隷)
+
+;野外調教(放置プレイ：村人がいる：ニヤニヤ鑑賞)
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_1_2(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊・・不要・・这样看・・」
+		PRINTFORML %CALLNAME:奴隷%虽然满脸害羞的样子、但身体只穿着内裤/内衣暴露下伫立在村民的视线下。
+	ELSE
+		PRINTFORML 「啊啊・・不要・・这样看・・」
+		PRINTFORML %CALLNAME:奴隷%虽然满脸害羞的样子、但身体只穿着内裤/内衣暴露下伫立在村民的视线下。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不・・不要看啊・・」
+		PRINTFORML %CALLNAME:奴隷%的脸上因为感到羞耻而泛起红晕、想用双手遮住只穿了内裤/内衣的身体。
+	ELSE
+		PRINTFORML 「不、不要・・不用看过来・・」
+		PRINTFORML %CALLNAME:奴隷%的脸上因为感到羞耻而泛起红晕、用双手遮住只穿了内裤/内衣的身体。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要・・不用看过来・・」
+		PRINTFORML %CALLNAME:奴隷%的脸上因为感到羞耻而泛起红晕、用双手遮住只穿了内裤/内衣的身体。
+	ELSE
+		PRINTFORML 「不、不要、不要看过来啊！」
+		PRINTFORML %CALLNAME:奴隷%的耳朵和脸都变得通红了起来、两手捂住只穿内裤/内衣的身体蹲了下去。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;野外調教(放置プレイ：村人がいる：抱きつき)
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_1_3(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊・・这种样子、不要碰我・・」
+		PRINTFORML %CALLNAME:奴隷%虽然表现出了抵抗的神情，、但依旧任凭村民们摆布。
+	ELSE
+		PRINTFORML 「唔啊啊・・不要、那么用力啊・・」
+		PRINTFORML %CALLNAME:奴隷%虽然满脸害羞的样子、但依旧任凭村民们摆布。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要、不要这样・・」
+		PRINTFORML %CALLNAME:奴隷%软弱地抵抗着。
+	ELSE
+		PRINTFORML 「不、不要、不要这样！」
+		PRINTFORML %CALLNAME:奴隷%发出了悲鸣。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要、不要这样、谁来帮、谁来帮帮我！！」
+		PRINTFORML %CALLNAME:奴隷%发出了悲鸣、向应该就在附近的%NTR_NAME(0)%发出求救。
+	ELSE
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 「不、不要、不要这样、谁来帮、谁来帮%CALLNAME:MASTER%！」
+			PRINTFORML %CALLNAME:奴隷%发出了悲鸣、不断向不在场的%MSG_LOVER(奴隷)%求救。
+		ELSE
+			PRINTFORML 「不、不要、不要这样、誰か谁来帮ええっ！」
+			PRINTFORML %CALLNAME:奴隷%发出了悲鸣、向应该就在附近的%NTR_NAME(0)%发出求救。
+		ENDIF
+	ENDIF
+ENDIF
+
+RETURN 0
+
+
+;野外調教(放置プレイ：着衣村人セクハラ：爱抚）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_2_0(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊呃、不行、不可以啊♪」
+		PRINTFORML %CALLNAME:奴隷%丝毫没有反抗的样子，就这样被村民们爱抚着。
+	ELSE
+		PRINTFORML 「唔啊啊、不行、不可以啊・・」
+		PRINTFORML %CALLNAME:奴隷%在微弱的抵抗下，被村民们依旧爱抚着。
+	ENDIF
+	PRINTFORML 村民们隔着内裤/内衣把%CALLNAME:奴隷%的乳头揉捏起来、不断地爱抚着阴蒂。
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不行、不可以啊・・」
+		PRINTFORML %CALLNAME:奴隷%软弱地抵抗着。
+	ELSE
+		PRINTFORML 「不、不要、不要啊呃！」
+		PRINTFORML %CALLNAME:奴隷%发出了悲鸣。
+	ENDIF
+	PRINTFORML 但是村民们隔着内裤/内衣把%CALLNAME:奴隷%的乳头揉捏起来、不断地爱抚着阴蒂。
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要、不要这样、谁来帮、谁来帮帮我！！」
+		PRINTFORML %CALLNAME:奴隷%发出了悲鸣、向应该就在附近的%NTR_NAME(0)%发出求救。
+	ELSE
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 「不、不要、不要这样、谁来帮、谁来帮%CALLNAME:MASTER%！」
+			PRINTFORML %CALLNAME:奴隷%发出了悲鸣、不断向不在场的%MSG_LOVER(奴隷)%求救。
+		ELSE
+			PRINTFORML 「不、不要、不要这样、誰か谁来帮ええっ！」
+			PRINTFORML %CALLNAME:奴隷%发出了悲鸣、向应该就在附近的%NTR_NAME(0)%发出求救。
+		ENDIF
+	ENDIF
+	PRINTFORML 但是并没有任何的回应、村民们隔着内裤/内衣粗暴地在%CALLNAME:奴隷%的胸部和股间摸索着。
+ENDIF
+
+RETURN 0
+
+;野外調教(放置プレイ：着衣村人セクハラ：キス）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_2_1(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔・・嗯・・唔嗯%MSG_HEART()%」
+		PRINTFORML %CALLNAME:奴隷%与村民的嘴唇重叠、接受了伸过来的舌头。
+	ELSE
+		PRINTFORML 「唔・・嗯・・唔嗯・・」
+		PRINTFORML %CALLNAME:奴隷%与村民的嘴唇重叠、接受了伸过来的舌头。
+	ENDIF
+	IF TALENT:奴隷:公众便所 || TALENT:奴隷:淫乱 
+		PRINTFORML %CALLNAME:奴隷%积极地缠绕舌头、反过来把舌头伸到村民的嘴里，唾液都流出来了。
+	ELSE
+		PRINTFORML 毫无抵抗力地、村民把%CALLNAME:奴隷%口中的滋味充分享受之后、嘴对嘴地拉着唾液的丝。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔・・嗯・・唔嗯・・」
+		PRINTFORML %CALLNAME:奴隷%与村民的嘴唇重叠、接受了伸过来的舌头。
+	ELSE
+		PRINTFORML 「唔・・嗯・・唔嗯・・！」
+		PRINTFORML %CALLNAME:奴隷%与村民的嘴唇重叠、接受了伸过来的舌头。
+	ENDIF
+	IF TALENT:奴隷:公众便所 || TALENT:奴隷:淫乱 
+		PRINTFORML %CALLNAME:奴隷%微微发抖地舌吻着、顺嘴把流进来的唾液吞下去了。
+	ELSE
+		PRINTFORML 毫无抵抗力地、村民把%CALLNAME:奴隷%口中的滋味充分享受。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要、不要这样、唔唔呃！！」
+		PRINTFORML %CALLNAME:奴隷%被村民夺走了嘴唇、被强制舌吻着。
+	ELSE
+		PRINTFORML 「不、不要啊呃、不要这样、呃、唔唔呃！！」
+		PRINTFORML %CALLNAME:奴隷%被村民夺走了嘴唇、被强制舌吻着。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML （啊啊・・救救我・・%CALLNAME:MASTER%救救我・・！）
+		ELSE
+		ENDIF
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;野外調教(放置プレイ：着衣村人セクハラ：下着脱衣）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_2_2(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「・・是・・我知道了・・」
+		PRINTFORML 全裸了的%CALLNAME:奴隷%好像放弃了似的，裸身露在村民面前。
+	ELSE
+		PRINTFORML 「唔啊啊、不、不要看啊・・」
+		PRINTFORML %CALLNAME:奴隷%在村民们的要求下慢慢放下双手露出了裸体。
+	ENDIF
+	PRINTFORML 村民们隔着内裤/内衣把%CALLNAME:奴隷%的乳头揉捏起来、不断地爱抚着阴蒂。
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不、不要看啊・・！」
+		PRINTFORML %CALLNAME:奴隷%一边软弱地抵抗，一边被村民胁迫着、放下双手露出了裸体。
+	ELSE
+		PRINTFORML 「唔啊啊、不、不要看啊・・！」
+		PRINTFORML %CALLNAME:奴隷%一边软弱地抵抗，一边被村民胁迫着、毫无办法地放下双手露出了裸体。
+	ENDIF
+	PRINTFORML 但是村民们隔着内裤/内衣把%CALLNAME:奴隷%的乳头揉捏起来、不断地爱抚着阴蒂。
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要、不要走！！」
+		PRINTFORML %CALLNAME:奴隷%双手遮住的赤身裸体呼喊着。
+	ELSE
+		PRINTFORML 「不、不要、不要走！！ 求求你了！」
+		PRINTFORML %CALLNAME:奴隷%双手遮住的赤身裸体呼喊着。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+
+;野外調教(放置プレイ：着衣村人セクハラ：素股）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_2_3(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊呃、不行、不要啦♪」
+		PRINTFORML %CALLNAME:奴隷%被迫隔着内裤/内衣把村民的坚硬物品强加在内裤/内衣上、不抵抗地任凭摆布。
+	ELSE
+		PRINTFORML 「唔啊啊、不行、不要啦・・」
+		PRINTFORML %CALLNAME:奴隷%被迫隔着内裤/内衣把村民的坚硬物品强加在内裤/内衣上、不抵抗地任凭摆布。
+	ENDIF
+	PRINTFORML 村民们隔着内裤/内衣把%CALLNAME:奴隷%的乳头揉捏起来、不断地爱抚着阴蒂。
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不行、不要啦・・」
+		PRINTFORML %CALLNAME:奴隷%被迫隔着内裤/内衣把村民的坚硬物品强加在内裤/内衣上、不抵抗地任凭摆布。
+	ELSE
+		PRINTFORML 「不、不要・・这种样子・・啊啊・・」
+		PRINTFORML %CALLNAME:奴隷%被迫隔着内裤/内衣把村民的坚硬物品强加在内裤/内衣上但还是无法抵抗。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要・・这种样子・・唔啊啊・・」
+		PRINTFORML %CALLNAME:奴隷%被迫隔着内裤/内衣把村民的坚硬物品强加在内裤/内衣上、陷于恐怖之中。
+	ELSE
+		PRINTFORML 「不、不要・・这种样子・・！唔啊啊・・」
+		PRINTFORML %CALLNAME:奴隷%被迫隔着内裤/内衣把村民的坚硬物品强加在内裤/内衣上、陷于恐怖和羞耻之中。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+
+;野外調教(放置プレイ：着衣村人セクハラ：挣扎）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_2_4(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊呃、不行、不可以啊♪」
+		PRINTFORML %CALLNAME:奴隷%丝毫没有抵抗的样子，就这样被村民们紧紧抱住。
+	ELSE
+		PRINTFORML 「唔啊啊、不行、不可以啊・・」
+		PRINTFORML %CALLNAME:奴隷%柔弱地抵抗着，却依旧被村民们紧紧地拥抱着。
+	ENDIF
+	PRINTFORML 村民们隔着内裤/内衣把%CALLNAME:奴隷%的身体抱住、一脸事不关己地样子笑了笑。
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不行、不可以啊・・」
+		PRINTFORML %CALLNAME:奴隷%软弱地抵抗着、想逃离村民的手。
+	ELSE
+		PRINTFORML 「不、不要、不要啊呃！」
+		PRINTFORML %CALLNAME:奴隷%发出了悲鸣、想逃离村民的手。
+	ENDIF
+	PRINTFORML 但是村民们隔着内裤/内衣把%CALLNAME:奴隷%的身体抱住了、随意抚摸着柔软嫩滑的皮肤。
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要、不要这样、放开、放开我啊！」
+		PRINTFORML %CALLNAME:奴隷%发出了悲鸣、想逃离村民的手。
+	ELSE
+		PRINTFORML 「不、不要啊呃、不要这样、放开、放开我啊！」
+		PRINTFORML %CALLNAME:奴隷%发出了悲鸣、想逃离村民的手。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+
+;野外調教(放置プレイ：全裸村人セクハラ：吮吸乳首）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_3_0(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊..呃、咿、咿啊啊♪」
+		PRINTFORML %CALLNAME:奴隷%一边发出甜美的声音，一边扭动身体、但村民们还是为所欲为地玩弄着乳头。
+	ELSE
+		PRINTFORML 「唔啊啊..呃、咿、咿啊啊・・」
+		PRINTFORML %CALLNAME:奴隷%一边压低声音一边扭动身体、但村民们还是为所欲为地玩弄着乳头。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不行、不可以・・」
+		PRINTFORML %CALLNAME:奴隷%软弱地抵抗着、但村民们还是为所欲为地吮吸着乳头。
+	ELSE
+		PRINTFORML 「不、不要、不要啊・・！」
+		PRINTFORML %CALLNAME:奴隷%虽然发出了悲鸣、但村民们还是为所欲为地吮吸着乳头。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不要、不要这样、唔啊啊！」
+		PRINTFORML %CALLNAME:奴隷%虽然想逃脱而发出些许悲鸣、但村民们还是为所欲为地吮吸着乳头。
+	ELSE
+		PRINTFORML 「不、不要、不要这样、唔啊啊！不要唔啊啊！」
+		PRINTFORML %CALLNAME:奴隷%虽然想逃脱而发出些许悲鸣、但村民们还是为所欲为地吮吸着乳头。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+
+;野外調教(放置プレイ：全裸村人セクハラ：尻素股）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_3_1(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊呃、唔啊啊..呃、咿啊啊♪」
+		PRINTFORML %CALLNAME:奴隷%一边发出甜美的声音，一边扭动身体、随着村民的动作,屁股在前后颤抖着。
+	ELSE
+		PRINTFORML 「啊呃、唔啊啊..呃、咿啊啊・・」
+		PRINTFORML %CALLNAME:奴隷%一边压低声音一边扭动身体、随着村民的动作,屁股在前后颤抖着。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不行、不可以啊・・」
+		PRINTFORML %CALLNAME:奴隷%软弱地抵抗着、但依旧任凭村民们摆布。
+	ELSE
+		PRINTFORML 「不、不要、不要啊・・！」
+		PRINTFORML %CALLNAME:奴隷%虽然发出了悲鸣、但依旧任凭村民们摆布。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「咿、不要这样、不要唔啊啊！」
+		PRINTFORML 紧紧地抓住发出悲鸣的%CALLNAME:奴隷%的屁股、村民们强行把肉棒往上磨蹭着。
+	ELSE
+		PRINTFORML 「咿、不要这样、不要！不要唔啊啊！」
+		PRINTFORML 紧紧地抓住发出悲鸣的%CALLNAME:奴隷%的屁股、村民们强行把肉棒往上磨蹭着。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+
+;野外調教(放置プレイ：全裸村人セクハラ：膣爱抚）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_3_2(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊呃、唔啊啊..呃、咿啊啊・・那、那里・・♪」
+		PRINTFORML %CALLNAME:奴隷%发出甜美的声音、毫不抵抗地接受村民手指的玩弄。
+	ELSE
+		PRINTFORML 「啊呃、唔啊啊..呃、咿啊啊・・那、那里・・」
+		PRINTFORML %CALLNAME:奴隷%压低着声音呻吟、毫不抵抗地接受村民手指的玩弄。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不行、那里不可以啊・・」
+		PRINTFORML %CALLNAME:奴隷%软弱地扭动着身体、依旧摆脱不了村民们贪图抚摸小穴穴口的手。
+	ELSE
+		PRINTFORML 「不、不要、不要・・那里不行・・！」
+		PRINTFORML %CALLNAME:奴隷%扭动身体发出悲鸣、依旧摆脱不了村民们贪图抚摸小穴穴口的手。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不可以・・不可以啦！」
+		PRINTFORML 讨厌这样的%CALLNAME:奴隷%一边发出享受地悲鸣、村民们毫无顾虑地一点一点扣挠着小穴。
+	ELSE
+		PRINTFORML 「不、不可以・・不可以啦！ 啊啊啊呃！！」
+		PRINTFORML 讨厌这样的%CALLNAME:奴隷%一边发出享受地悲鸣、村民们毫无顾虑地一点一点扣挠着小穴。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+
+;野外調教(放置プレイ：全裸村人セクハラ：正常位）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+;  V経験加算、絶頂、膣内射精という扱い。
+@NTR_KOJO_K4_18_3_3(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「可以哦・・进来吧・・」
+		PRINTFORML %CALLNAME:奴隷%躺下用娇艳的的声音诱惑村民、接受地被压倒了。
+		PRINTFORML 「啊呃♪ 唔啊啊..呃、咿、咿咿呃！」
+		PRINTFORML 在村民射精的同时%CALLNAME:奴隷%也高潮了，并看见小穴喷溅出来温热的精液而浮现出荡漾的笑容。
+	ELSE
+		PRINTFORML 「・・好痛、不要・・」
+		PRINTFORML %CALLNAME:奴隷%一副死心了样子放弃抵抗并诱惑村民、接受地被压倒了。
+		PRINTFORML 「啊呃、啊啊呃、啊・・！」
+		PRINTFORML 在村民射精的同时%CALLNAME:奴隷%也高潮了，并看见小穴喷溅出来温热的精液变得一副陶醉的样子。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊啊、不行・・」
+		PRINTFORML %CALLNAME:奴隷%被村民压倒了、接着被凶猛的肉棒狠狠地插了进去。
+		PRINTFORML 「啊呃、唔啊啊、啊啊ーーーっ！！」
+		PRINTFORML %CALLNAME:奴隷%软弱地扭动着身体、被村民们猛烈的操到了高潮、并且在凌辱完小穴和阴道后狠狠地射在了里面。
+		PRINTFORML %CALLNAME:奴隷%像是屈服于阴道内注入的精液的热度般呆然不已。
+	ELSE
+		PRINTFORML 「啊啊、不要、不行・・」
+		PRINTFORML %CALLNAME:奴隷%被村民压倒了、接着被凶猛的肉棒狠狠地插了进去。
+		PRINTFORML 「不要、不要啊呃、啊啊ーーーっ！！」
+		PRINTFORML %CALLNAME:奴隷%软弱地扭动着身体、被村民们猛烈的操到了高潮、并且在凌辱完小穴和阴道后狠狠地射在了里面。
+		PRINTFORML %CALLNAME:奴隷%像是屈服于阴道内注入的精液的热度般呆然不已。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊啊、不要、不要唔啊啊・・」
+		PRINTFORML %CALLNAME:奴隷%被村民压倒了、接着被凶猛的肉棒狠狠地插了进去。
+		PRINTFORML 「不要、不要、谁来帮帮我、啊啊ーーーっ！！」
+		PRINTFORML %CALLNAME:奴隷%无论如何哭泣着都被村民们毫不留情地侵犯着、并在阴道深处射了大量温热的精液。
+	ELSE
+		PRINTFORML 「啊啊、不要、不要唔啊啊・・」
+		PRINTFORML %CALLNAME:奴隷%被村民压倒了、接着被凶猛的肉棒狠狠地插了进去。
+		PRINTFORML 「不要、不要、放过我吧、啊啊ーーーっ！！」
+		PRINTFORML %CALLNAME:奴隷%无论如何哭泣着都被村民们毫不留情地侵犯着、并在阴道深处射了大量温热的精液。
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;野外調教(放置プレイ：全裸村人セクハラ：全身爱抚）
+;　訪問者相手ではないので好感度・屈服度判定の基準やや変える
+@NTR_KOJO_K4_18_3_4(奴隷)
+#DIM 奴隷
+#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+許容度 = NTR_EXH_CALC_PERMISSIBLE(奴隷, 人物_村人)
+IF 許容度 >= 5
+	; 許容
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「啊・・啊啊呃・・咿、咿呃・・♪」
+		PRINTFORML %CALLNAME:奴隷%不抵抗地让村民们一边抚摸着身体一边发出甜美的声音。。
+	ELSE
+		PRINTFORML 「啊呃、啊啊呃、咿啊・・」
+		PRINTFORML %CALLNAME:奴隷%不抵抗地让村民们抚摸着身体。
+	ENDIF
+ELSEIF 許容度 >= 2
+	; 許容しつつあり
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「唔啊啊、不行、不可以啊・・」
+		PRINTFORML %CALLNAME:奴隷%软弱地扭动着身体、不能摆脱村民胡乱随意抚摸着全身的手。
+	ELSE
+		PRINTFORML 「不、不要、不要・・不行・・」
+		PRINTFORML %CALLNAME:奴隷%扭动身体发出悲鸣、不能摆脱村民胡乱随意抚摸着全身的手。
+	ENDIF
+ELSE
+	; 許容度低い
+	IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		PRINTFORML 「不、不可以・・不可以！ 不可以的啊！！」
+		PRINTFORML 讨厌这样的%CALLNAME:奴隷%一边发出享受地悲鸣、村民的手毫不客气地抚摩着她柔软的皮肤。
+	ELSE
+		PRINTFORML 「不、不可以・・不可以啦！ 不要啊啊啊呃！！」
+		PRINTFORML 讨厌这样的%CALLNAME:奴隷%一边发出享受地悲鸣、村民的手毫不客气地抚摩着她柔软的皮肤。
+	ENDIF
+ENDIF
+
+RETURN 0
+

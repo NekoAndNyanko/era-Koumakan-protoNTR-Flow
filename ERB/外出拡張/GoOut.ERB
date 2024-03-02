@@ -1,0 +1,25 @@
+﻿;-------------------------------------------------------------------------------
+;事前の予定に従い、紅魔館の外へおでかけさせる
+; return 1 でかけた
+; return 0 でかけなかった
+@GoOut_Ready(キャラ)
+#DIM キャラ
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;「あなた」に挨拶してから、紅魔館の外へおでかけさせる
+; return 1 でかけた
+; return 0 でかけなかった
+@GoOut_SeeYou(キャラ, 強制外出)
+#DIM キャラ
+#DIM 強制外出
+IF CFLAG:MASTER:現在位置 != CFLAG:キャラ:現在位置 || TALENT:キャラ:浮気公認 < 5 || TALENT:キャラ:访问者之妻 == 0 || CFLAG:キャラ:性欲 < 50
+	RETURN 0
+ENDIF
+RESULT:0 = 900
+TRYCCALLFORM GoOut_SeeYou_%TOSTR(RESULT:0,"000")%(キャラ, 強制外出)
+	RETURN RESULT:0
+CATCH
+	RETURN 0
+ENDCATCH
+RETURN 0

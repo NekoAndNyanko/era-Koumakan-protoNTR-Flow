@@ -1,0 +1,154 @@
+;新增的有关第一次的口上登记于此
+;为了兼容旧的口上系统，需要额外的函数确认口上存在
+;虽然原来的口上框架可以写第一次分歧，也能写小作文，但是全都单独写文字量太大，就算不单独写也要复制粘贴无数次，不如直接加一个新的覆盖掉它
+;反正没有使用此模块的旧角色口上依然可以正常跑
+;----------------------------------------------------
+;有关性爱的口上判断，如存在则令其返回1
+@NTR_KOJO_SEX_FIRSTTIME(对象,体位)
+#FUNCTION
+#DIM 对象
+#DIM 体位
+IF 对象 == 人物_美铃
+	RETURNF 0
+	;示例
+	; 	SELECTCASE 体位
+	; 		CASE 0
+	; 			;正常位
+	; 			RETURNF 1
+	; 		CASE 1
+	; 			;后背位
+	; 			RETURNF 1
+	; 		CASE 2
+	; 			;骑乘位
+	; 			RETURNF 1
+	; 		CASE 3
+	; 			;対面座位
+	; 			RETURNF 1
+	; 		CASE 4
+	; 			;背面座位
+	; 			RETURNF 1
+	; 		CASE 5
+	; 			;対面立位
+	; 			RETURNF 1
+	; 		CASE 6
+	; 			;背面立位
+	; 			RETURNF 1
+	; 		CASE 1000
+	; 			;有无泛用体位
+	; 			RETURNF 1
+	; 		CASEELSE
+	;			;意外情况固定为0
+	; 			RETURNF 0
+	; 	ENDSELECT
+ELSEIF 对象 == 人物_小恶魔
+	RETURNF 0
+ELSEIF 对象 == 人物_帕秋莉
+	RETURNF 0
+ELSEIF 对象 == 人物_咲夜
+	RETURNF 0
+ELSEIF 对象 == 人物_蕾米莉亚
+	RETURNF 0
+ELSEIF 对象 == 人物_芙兰朵露
+	RETURNF 0
+ELSEIF 对象 == 人物_艾丽娅
+	SELECTCASE 体位
+		CASE 0
+			RETURNF 1
+		CASE 1
+			RETURNF 1
+		CASE 2
+			RETURNF 1
+		CASE 3
+			RETURNF 1
+		CASE 4
+			RETURNF 1
+		CASE 5
+			RETURNF 1
+		CASE 6
+			RETURNF 1
+		CASE 1000
+			RETURNF 0
+		CASEELSE
+			RETURNF 0
+	ENDSELECT
+ELSEIF 对象 == 人物_琪露诺
+	RETURNF 0
+ELSEIF 对象 == 人物_大妖精
+	RETURNF 0
+ELSEIF 对象 == 人物_魔理沙
+	RETURNF 0
+ELSEIF 对象 == 人物_灵梦
+	RETURNF 0
+ELSEIF 对象 == 人物_露米娅
+	RETURNF 0
+ELSEIF 对象 == 人物_爱丽丝
+	RETURNF 0
+ELSE
+	RETURNF 0
+ENDIF
+
+@NTR_KOJO_SEX_A_FIRSTTIME(对象,体位)
+#FUNCTION
+#DIM 对象
+#DIM 体位
+RETURNF 0
+
+[SKIPSTART]
+;格式：NTR_KOJO_SEX_FIRSTTIME_K{角色}_{体位编号}_{阶段（开始、继续、结束）}(对象)
+;通用体位（如果懒得分别写，就写通用体位）
+@NTR_KOJO_SEX_FIRSTTIME_KU_U_0(对象)
+#DIM 对象
+@NTR_KOJO_SEX_FIRSTTIME_KU_U_1(对象)
+#DIM 对象
+@NTR_KOJO_SEX_FIRSTTIME_KU_U_2(对象)
+#DIM 对象
+;正常位
+@NTR_KOJO_SEX_FIRSTTIME_KU_0_0(对象)
+#DIM 对象
+@NTR_KOJO_SEX_FIRSTTIME_KU_0_1(对象)
+#DIM 对象
+@NTR_KOJO_SEX_FIRSTTIME_KU_0_2(对象)
+#DIM 对象
+
+;----------------------------------------------------------------
+如果只想写处女丧失，而其它的懒得写？
+那么将纯丧失的内容写入通用体位，然后其余所有体位形如以下复制粘贴即可
+这样可以确保处女丧失的部分独立输出，而不影响非处女的文本
+@NTR_KOJO_SEX_FIRSTTIME_K7_1_0(对象)
+#DIM 对象
+IF TALENT:对象:处女 							-->注意第一步使用TALENT判断
+	CALL NTR_KOJO_SEX_FIRSTTIME_K7_U_0(对象) 	-->处女直接转到通用体位
+ELSE
+	CALL NTR_KOJO_K7_8_1_0(对象) 				-->这是原版NTR口上的函数（方法）
+ENDIF
+@NTR_KOJO_SEX_FIRSTTIME_K7_1_1(对象)
+#DIM 对象
+IF CFLAG:对象:处女喪失中						 -->而第二步和第三步使用CFLAG判断
+	CALL NTR_KOJO_SEX_FIRSTTIME_K7_U_1(对象)
+ELSE
+	CALL NTR_KOJO_K7_8_1_1(对象)
+ENDIF
+@NTR_KOJO_SEX_FIRSTTIME_K7_1_2(对象)
+#DIM 对象
+IF CFLAG:对象:处女喪失中
+	CALL NTR_KOJO_SEX_FIRSTTIME_K7_U_2(对象)
+ELSE
+	CALL NTR_KOJO_K7_8_1_2(对象)
+ENDIF
+;----------------------------------------------------------------
+
+;A通用体位（如果懒得分别写，就写通用体位）
+@NTR_KOJO_SEX_A_FIRSTTIME_KU_U_0(对象)
+#DIM 对象
+@NTR_KOJO_SEX_A_FIRSTTIME_KU_U_1(对象)
+#DIM 对象
+@NTR_KOJO_SEX_A_FIRSTTIME_KU_U_2(对象)
+#DIM 对象
+;A正常位
+@NTR_KOJO_SEX_A_FIRSTTIME_KU_0_0(对象)
+#DIM 对象
+@NTR_KOJO_SEX_A_FIRSTTIME_KU_0_1(对象)
+#DIM 对象
+@NTR_KOJO_SEX_A_FIRSTTIME_KU_0_2(对象)
+#DIM 对象
+[SKIPEND]

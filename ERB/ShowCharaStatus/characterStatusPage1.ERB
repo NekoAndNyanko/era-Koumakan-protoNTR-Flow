@@ -1,0 +1,99 @@
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@PRINT_STATE_EXP(ARG)
+PRINTL □ 経験 □---------------------------------------------------------------------
+IF FLAG:真实模式 && ARG != 0
+	LOCAL:1 = 0
+	FOR LOCAL,150,300
+		;未経験を表示させない
+		SIF !EXP:ARG:LOCAL
+			CONTINUE
+		;同性愛関係
+		IF !(HAS_VAGINA(ARG)) && LOCAL == 201
+			CONTINUE
+		ELSEIF HAS_VAGINA(ARG) && LOCAL == 202
+			CONTINUE
+		ENDIF
+		IF EXP:ARG:LOCAL == 1
+			PRINTFORM %EXPNAME:(LOCAL-150),18%:有过经验
+		ELSE
+			PRINTFORM %EXPNAME:(LOCAL-150),18%:{MIN(EXP:ARG:LOCAL,99999),5,LEFT} 
+		ENDIF
+		LOCAL:1 += 1
+		SIF LOCAL:1 % 3 == 0
+			PRINTL 
+	NEXT
+ELSE
+	LOCAL:1 = 0
+	FOR LOCAL,0,150
+		;EXP.CSVに登録されていなければCONTINUE
+		;SIF !STRLENS(EXPNAME:LOCAL)
+		;	CONTINUE
+		SIF 80 <= LOCAL && LOCAL <= 130
+			CONTINUE
+		;未経験を表示させない
+		SIF !EXP:ARG:LOCAL
+			CONTINUE
+		;同性愛関係
+		IF !(HAS_VAGINA(ARG)) && LOCAL == 51
+			CONTINUE
+		ELSEIF HAS_VAGINA(ARG) && LOCAL == 52
+			CONTINUE
+		ENDIF
+		PRINTFORM %EXPNAME:LOCAL,18%:{MIN(EXP:ARG:LOCAL,99999),5,LEFT} 
+		LOCAL:1 += 1
+		SIF LOCAL:1 % 3 == 0
+			PRINTL 
+	NEXT
+ENDIF
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@PRINT_STATE_JUEL(ARG)
+PRINTL
+PRINTL □ 宝珠 □---------------------------------------------------------------------
+LOCAL:1 = 0
+FOR LOCAL,0,22
+	;PALAM.CSVに名称が登録されていないとCONTINUE
+	SIF !STRLENS(PALAMNAME:LOCAL)
+		CONTINUE
+	;1000,1000000,単位で区切る
+	LOCALS = {JUEL:ARG:LOCAL}
+	SIF JUEL:ARG:LOCAL > 1000000
+		LOCALS = {JUEL:ARG:LOCAL / 1000}k
+	SIF JUEL:ARG:LOCAL > 1000000000
+		LOCALS = {JUEL:ARG:LOCAL / 1000000}m
+	PRINTFORM %PALAMNAME:LOCAL,6%の珠:%LOCALS,7,LEFT%
+	LOCAL:1 += 1
+	;改行or表示位置あけ
+	SIF LOCAL:1 % 4 == 0
+		PRINTL 
+NEXT
+;否定の珠
+LOCALS = {JUEL:ARG:100}
+SIF JUEL:ARG:100 > 1000000
+	LOCALS = {JUEL:ARG:100 / 1000}k
+PRINTFORM %PALAMNAME:100,6%の珠:%LOCALS,7,LEFT%
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@PRINT_STATE_EX(ARG)
+SIF EX:ARG:0 + EX:ARG:1 + EX:ARG:2 + EX:ARG:3 + EX:ARG:10 + EX:ARG:11 == 0
+	RETURN 0
+LOCAL:1 = 0
+PRINTL
+PRINTL □ 絶頂回数 □-----------------------------------------------------------------
+FOR LOCAL,0,20
+	SIF !STRLENS(EXNAME:LOCAL)
+		CONTINUE
+	SIF !EX:LOCAL
+		CONTINUE
+	PRINTFORM %EXNAME:LOCAL,12%:{EX:ARG:LOCAL,5,LEFT}
+	LOCAL:1 ++
+	SIF LOCAL:1 % 4 == 0
+		PRINTL
+NEXT
+PRINT

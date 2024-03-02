@@ -1,0 +1,2351 @@
+﻿;-------------------------------------------------------------------------------
+;内容について
+;0=无, 300X=会话, 301X=お茶, 302X=身体接触, 310X=抚摸臀部, 311X=抱きつく
+;312X=接吻, 313X=胸爱抚, 314X=肛门爱抚, 315X=阴蒂爱抚, 316X=手指插入
+;350X=性交(裸), 351X=性交(着衣), 352X=菊花性交(裸), 353X=菊花性交(着衣)
+;354X=後戯(イチャイチャタイム)(裸・前), 355X=後戯(着衣・前), 356X=後戯(裸・後)
+;357X=後戯(着衣・後)
+;Xは0が受け, 1が攻め
+;
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベント実行判定
+;@return 1:xxx,0:xxx
+@INHABITANT_DO
+#DIM LOOP_CHR_0
+#DIM LOOP_CHR_1
+#DIM LOOP_CHR_2
+#DIM LOOP_CHR_3
+#DIM INTRUDER
+#DIM MAX_LOOP
+#DIM 同室人数
+#DIM 相手番号
+
+CALL INHABITANT_SETTINGS_FIRST
+SIF !GETBIT(FLAG:住人同士イベント設定,0)
+	RETURN 0
+;実行可否チェック
+;主人公, 訪問者, 実行相手以外の住人が居る時は発生しない
+SIF GETBIT(FLAG:住人同士イベント設定,2)
+	PRINTL
+MAX_LOOP = INHABITANT_LOOP_MAX()
+FOR LOOP_CHR_0,1,MAX_LOOP
+	SIF CFLAG:LOOP_CHR_0:住人同士イベント相手 < LOOP_CHR_0 && CFLAG:LOOP_CHR_0:住人同士イベント相手 != 0
+		CONTINUE
+	IF CFLAG:LOOP_CHR_0:睡眠
+		CALL INHABITANT_FRIENDSHIP_FINISH(LOOP_CHR_0,0,CFLAG:LOOP_CHR_0:住人同士イベントシチュエーション)
+		CONTINUE
+	ENDIF
+	同室人数 = 0
+	相手番号 = 0
+	FOR LOOP_CHR_1,0,MAX_LOOP
+		SIF LOOP_CHR_0 == LOOP_CHR_1
+			CONTINUE
+		SIF CFLAG:(LOOP_CHR_1):睡眠
+			CONTINUE
+		IF CFLAG:LOOP_CHR_0:現在位置 == CFLAG:LOOP_CHR_1:現在位置
+			SIF CFLAG:LOOP_CHR_0:住人同士イベント内容 != 0 && CFLAG:LOOP_CHR_0:住人同士イベント相手 != LOOP_CHR_1
+				INTRUDER = LOOP_CHR_1
+			相手番号 = LOOP_CHR_1
+			同室人数 += 1
+			;				PRINTFORMW {同室人数}, %CALLNAME:LOOP_CHR_1%, {TA:LOOP_CHR_0:LOOP_CHR_1:TA_好感度}
+			;				TA:LOOP_CHR_0:LOOP_CHR_1:TA_好感度 = 2000
+		ENDIF
+		;			PRINTFORMW {LOOP_CHR_0},{CFLAG:LOOP_CHR_0:住人同士イベント相手}, {LOOP_CHR_1},{CFLAG:LOOP_CHR_1:住人同士イベント相手}
+	NEXT
+	IF CFLAG:LOOP_CHR_0:現在位置 == FLAG:訪問者の現在位置
+		SIF CFLAG:LOOP_CHR_0:住人同士イベント内容 != 0
+			INTRUDER = 人物_訪問者
+		同室人数 += 1
+	ENDIF
+	;		PRINTFORMW {相手番号}
+	IF 同室人数 == 1
+		;			PRINTFORMW 住人イベント管理へ
+		SIF 相手番号 == 0 || 相手番号 > MAX_LOOP
+			CONTINUE
+		CALL INHABITANT_FRIENDSHIP(LOOP_CHR_0,相手番号)
+	ELSEIF CFLAG:LOOP_CHR_0:住人同士イベント内容 != 0
+		FOR LOOP_CHR_2,1,MAX_LOOP
+			FOR LOOP_CHR_3,0,CHARANUM
+				SIF LOOP_CHR_2 == LOOP_CHR_3
+					CONTINUE
+				SIF CFLAG:LOOP_CHR_2:現在位置 == CFLAG:LOOP_CHR_3:現在位置
+					CALL INHABITANT_FRIENDSHIP_END(LOOP_CHR_0,0,INTRUDER,CFLAG:LOOP_CHR_0:住人同士イベントシチュエーション)
+			NEXT
+		NEXT
+	ENDIF
+NEXT
+SIF GETBIT(FLAG:住人同士イベント設定,2)
+	PRINTFORMW 
+RETURN 0
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベント終了判定
+;@return 1:xxx,0:xxx
+;LOCAL:0	乱入したキャラの番号
+;LOCAL:1	受け側のキャラ番号 or 立場が下
+;LOCAL:2	攻め側のキャラ番号 or 立場が上
+@INHABITANT_FRIENDSHIP_END_MASTER_MOVE
+#DIM LOOP_CHR_0
+#DIM LOOP_CHR_1
+#DIM MAX_LOOP
+#DIM 攻め側
+#DIM 受け側
+
+MAX_LOOP = INHABITANT_LOOP_MAX()
+FOR LOOP_CHR_0,1,MAX_LOOP
+	FOR LOOP_CHR_1,0,CHARANUM
+		IF CFLAG:LOOP_CHR_0:住人同士イベント内容 % 10 == 0
+			受け側 = LOOP_CHR_0
+			攻め側 = CFLAG:LOOP_CHR_0:住人同士イベント相手
+		ELSE
+			受け側 = CFLAG:LOOP_CHR_0:住人同士イベント相手
+			攻め側 = LOOP_CHR_0
+		ENDIF
+		SIF LOOP_CHR_0 == LOOP_CHR_1
+			CONTINUE
+		SIF CFLAG:LOOP_CHR_0:現在位置 == CFLAG:MASTER:現在位置
+			CALL INHABITANT_FRIENDSHIP_END(LOOP_CHR_0,0,MASTER,CFLAG:LOOP_CHR_0:住人同士イベントシチュエーション)
+	NEXT
+NEXT
+
+;-------------------------------------------------------------------------------
+;住人同士イベント管理
+;@return 1:xxx,0:xxx
+@INHABITANT_FRIENDSHIP(キャラ番号,相手番号)
+#DIM キャラ番号		;処理するキャラ番号
+#DIM 相手番号		;処理するキャラの相手のキャラ番号
+#DIM 攻め側			;攻め側のキャラ番号 or 立場が上
+#DIM 受け側			;受け側のキャラ番号 or 立場が下
+IF CFLAG:キャラ番号:住人同士イベント相手 == 0 && CFLAG:キャラ番号:住人同士イベント内容 == 0
+	SIF !GETBIT(FLAG:住人同士イベント設定,3) && (!GETBIT(TALENT:キャラ番号:性別,0) || !GETBIT(TALENT:相手番号:性別,0))
+		RETURN 0
+	IF !RAND:5
+		CFLAG:キャラ番号:住人同士イベント相手 = 相手番号
+		CFLAG:相手番号:住人同士イベント相手 = キャラ番号
+		CALL INHABITANT_FRIENDSHIP_START(キャラ番号)
+	ENDIF
+ELSEIF (CFLAG:キャラ番号:住人同士イベント相手 != 0 && CFLAG:キャラ番号:住人同士イベント内容 == 0) || (CFLAG:キャラ番号:住人同士イベント相手 == 0 && CFLAG:キャラ番号:住人同士イベント内容 != 0)
+	CALL INHABITANT_FRIENDSHIP_FINISH(キャラ番号,0,0)
+ELSE
+	IF CFLAG:キャラ番号:住人同士イベント内容 % 10 == 0
+		受け側 = キャラ番号
+		攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+	ELSE
+		受け側 = CFLAG:キャラ番号:住人同士イベント相手
+		攻め側 = キャラ番号
+	ENDIF
+	IF CFLAG:攻め側:住人同士イベント終了時間 > DATETIME()
+		CALL INHABITANT_FRIENDSHIP_PROGRESS(攻め側,CFLAG:攻め側:住人同士イベントシチュエーション)
+	ELSE
+		CALL INHABITANT_FRIENDSHIP_END(攻め側,1,0,CFLAG:攻め側:住人同士イベントシチュエーション)
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;住人同士イベントスタート
+;@return 1:xxx,0:xxx
+;ARG	処理するキャラ番号
+;LOCAL:1	受け側のキャラ番号 or 立場が下
+;LOCAL:2	攻め側のキャラ番号 or 立場が上
+;LOCAL:3	実行内容決定用変数
+@INHABITANT_FRIENDSHIP_START(キャラ番号)
+#DIM キャラ番号		;処理するキャラ番号
+#DIM 攻め側			;攻め側のキャラ番号 or 立場が上
+#DIM 受け側			;受け側のキャラ番号 or 立場が下
+#DIM WK				;実行内容決定用変数
+
+受け側 = CFLAG:キャラ番号:住人同士イベント相手
+IF INHABITANT_FRIENDSHIP_POWER(キャラ番号) > INHABITANT_FRIENDSHIP_POWER(受け側)
+	受け側 = CFLAG:キャラ番号:住人同士イベント相手
+	攻め側 = キャラ番号
+ELSEIF INHABITANT_FRIENDSHIP_POWER(キャラ番号) < INHABITANT_FRIENDSHIP_POWER(受け側)
+	受け側 = キャラ番号
+	攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+ELSE
+	;暫定処理：立場が等しい場合はキャラ番号が小さい方を優先
+	IF CFLAG:キャラ番号:住人同士イベント立場 >= CFLAG:受け側:住人同士イベント立場
+		受け側 = CFLAG:キャラ番号:住人同士イベント相手
+		攻め側 = キャラ番号
+	ELSEIF CFLAG:キャラ番号:住人同士イベント立場 < CFLAG:受け側:住人同士イベント立場
+		受け側 = キャラ番号
+		攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+	ELSE
+		PRINTW CFLAG 立場に不正な値が使われています
+		RETURN 0
+	ENDIF
+ENDIF
+WK = MIN((TA:攻め側:受け側:TA_好感度) + 1,CFLAG:攻め側:行為の上限)
+SIF WK <= 0
+	WK = 1
+WK = RAND:(WK)
+IF WK < 50
+	IF RAND:2 && !(TIME_PROGRESS(TCVAR:攻め側:300) < 120)
+		CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_お茶,DATETIME() + RAND:5 + 10)
+		SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%にお茶の用意をしてもらった
+	ELSE
+		CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_会话,DATETIME() + RAND:5 + 10)
+		SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%に話しかけた
+	ENDIF
+ELSEIF WK < 200
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_身体接触,DATETIME() + RAND:10 + 10)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と身体接触を始めた
+ELSEIF WK < 300
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_お茶,DATETIME() + RAND:10 + 10)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%のお尻を撫で始めた
+ELSEIF WK < 500
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_抱きつく,DATETIME() + RAND:10 + 10)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%に抱きついた
+ELSEIF WK < 600
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_接吻,DATETIME() + RAND:10 + 10)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の唇を奪った
+ELSEIF WK < 700
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_胸爱抚,DATETIME() + RAND:10 + 10)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の%OPPAI_DESCRIPTION(受け側)%を撫で始めた
+ELSEIF WK < 800
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_肛门爱抚,DATETIME() + RAND:10 + 10)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の菊花に指を這わせた
+ELSEIF WK < 900
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_阴蒂爱抚,DATETIME() + RAND:10 + 10)
+	IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:キャラ番号:現在位置)
+		PRINTFORM %CALLNAME:攻め側%は%CALLNAME:受け側%の
+		IF HAS_PENIS(受け側)
+			PRINTL 阴茎を握った
+		ELSE
+			PRINTL 阴蒂を摘んだ
+		ENDIF
+	ENDIF
+ELSEIF WK < 1000
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_手指插入,DATETIME() + RAND:10 + 10)
+	IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:キャラ番号:現在位置)
+		PRINTFORM %CALLNAME:攻め側%は%CALLNAME:受け側%の
+		IF !HAS_VAGINA(受け側)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_阴蒂爱抚,-1)
+			PRINTL 阴茎を握った
+		ELSE
+			PRINTFORML %MSG_SLIT(受け側)%に指をいれた
+		ENDIF
+	ENDIF
+ELSE
+	CALL INHABITANT_EVENT_SET(攻め側,受け側,-1,DATETIME() + RAND:10 + 20)
+	WK = RAND:(ABL:受け側:Ｖ感觉 + ABL:受け側:Ａ感觉 + 1)
+	IF ABL:受け側:Ｖ感觉 <= WK
+		WK = 0
+	ELSE
+		WK = 1
+	ENDIF
+	;対象：ふ×ふ、ふ×♀、♂×ふ、♂×♀
+	IF HAS_PENIS(攻め側) && HAS_VAGINA(受け側) && WK == 0
+		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSE
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ENDIF
+		;暫定処理：攻め側がふたなりの場合は対象外
+		;対象：♀×ふ、♀×♂
+	ELSEIF HAS_VAGINA(攻め側) && HAS_PENIS(受け側) && WK == 0 && !HAS_PENIS(攻め側)
+		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSE
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ENDIF
+		;暫定処理：両者ついていない場合は阴部摩擦固定
+		;対象：♀×♀
+		;ELSEIF WK == 0
+	ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
+		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) && TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ELSE
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ENDIF
+		;暫定処理：攻め側が持っている場合は棹役固定
+		;対象：ふ×♀、ふ×ふ、ふ×♂、♂×ふ、♂×♀、♂×♂
+		;ELSEIF HAS_PENIS(攻め側) && WK == 1
+	ELSEIF HAS_PENIS(攻め側)
+		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) && TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSE
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ENDIF
+		;対象：♀×ふ、♀×♂
+	ELSEIF HAS_PENIS(受け側) && WK == 1
+		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%をベッドに押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSEIF RAND:2
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ELSE
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+				ENDIF
+			ENDIF
+		ENDIF
+		;暫定処理：両者ついていない場合は阴部摩擦固定
+		;対象：♀×♀
+	ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
+		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%服を破る勢いで脱がし、ベッドに押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ELSE
+			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+				ENDIF
+			ENDIF
+		ENDIF
+	ELSE
+		PRINTFORMW 住人イベントスタート分岐エラー 性別：{TALENT:攻め側:性別} {TALENT:受け側:性別}
+	ENDIF
+ENDIF
+IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{攻め側}_0(CFLAG:攻め側:住人同士イベント内容%10,攻め側,受け側,0)
+	TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{受け側}_0(CFLAG:受け側:住人同士イベント内容%10,受け側,攻め側,0)
+ENDIF
+CALL INHABITANT_FRIENDSHIP_SOURCE(攻め側,0,CFLAG:攻め側:住人同士イベントシチュエーション)
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;住人同士イベント過程処理
+;@return 1:xxx,0:xxx
+@INHABITANT_FRIENDSHIP_PROGRESS(キャラ番号,フラグ)
+#DIM キャラ番号		;処理するキャラ番号
+#DIM 攻め側			;攻め側のキャラ番号 or 立場が上
+#DIM 受け側			;受け側のキャラ番号 or 立場が下
+#DIM フラグ			;シチュエーション他
+
+IF CFLAG:キャラ番号:住人同士イベント内容 % 10 == 0
+	受け側 = キャラ番号
+	攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+ELSE
+	受け側 = CFLAG:キャラ番号:住人同士イベント相手
+	攻め側 = キャラ番号
+ENDIF
+
+IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	SELECTCASE CFLAG:攻め側:住人同士イベント内容/10
+		CASE 住人同士行为_会话
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%との会话を楽しんでいる
+		CASE 住人同士行为_お茶
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%とお茶を飲んでいる
+		CASE 住人同士行为_身体接触
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%との身体接触を楽しんでいる
+		CASE 住人同士行为_抚摸臀部
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%のお尻を撫でている
+		CASE 住人同士行为_抱きつく
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を抱きしめている
+		CASE 住人同士行为_接吻
+			PRINTFORM %CALLNAME:攻め側%は
+			IF RAND:2
+				PRINTFORML 啄むように%CALLNAME:受け側%の唇を吸っている
+			ELSE
+				PRINTFORML %CALLNAME:受け側%の口内に舌をいれ、%CALLNAME:受け側%の舌と絡ませている
+			ENDIF
+		CASE 住人同士行为_胸爱抚
+			PRINTFORM %CALLNAME:攻め側%は%CALLNAME:受け側%の%OPPAI_DESCRIPTION(受け側)%を
+			IF TALENT:受け側:胸部尺寸 > 0
+				PRINTL 揉んでいる
+			ELSE
+				PRINTL 撫でている
+			ENDIF
+		CASE 住人同士行为_肛门爱抚
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の菊花を指でなぞっている
+		CASE 住人同士行为_阴蒂爱抚
+			PRINTFORM %CALLNAME:攻め側%は%CALLNAME:受け側%の
+			IF HAS_PENIS(受け側)
+				PRINTL 阴茎を優しく扱いている
+			ELSE
+				PRINTL 阴蒂をいじっている
+			ENDIF
+		CASE 住人同士行为_手指插入
+			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内の締め付けを指で堪能している
+		CASE 住人同士行为_Ｖ性交Ｎ, 住人同士行为_Ｖ性交Ｃ
+			PRINTFORM %CALLNAME:攻め側%は
+			IF HAS_PENIS(攻め側)
+				IF RAND:3
+					PRINTFORML 阴茎で%CALLNAME:受け側%の弱点を探っている
+				ELSEIF RAND:2
+					PRINTFORML ひたすら%CALLNAME:受け側%に腰を打ち付けている
+				ELSE
+					PRINTFORML %CALLNAME:受け側%の子宮を突き上げている
+				ENDIF
+			ELSEIF HAS_PENIS(受け側)
+				IF RAND:2
+					PRINTFORML %CALLNAME:受け側%の阴茎をぐりぐり子宮に押し付けている
+				ELSE
+					PRINTFORML %CALLNAME:受け側%の上で腰を振っている
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:受け側%に腰を押し付けている
+			ENDIF
+		CASE 住人同士行为_Ａ性交Ｎ,住人同士行为_Ａ性交Ｃ
+			PRINTFORM %CALLNAME:攻め側%は
+			IF HAS_PENIS(攻め側)
+				IF RAND:2
+					PRINTFORML ひたすら%CALLNAME:受け側%に腰を打ち付けている
+				ELSE
+					PRINTFORML 阴茎をぐりぐりと%CALLNAME:受け側%の奥まで突き入れている
+				ENDIF
+			ELSEIF HAS_PENIS(受け側)
+				PRINTFORML %CALLNAME:受け側%の上で腰を振っている
+			ELSE
+				PRINTFORML %CALLNAME:受け側%に腰を押し付けている
+			ENDIF
+		CASE 住人同士行为_Ｖ後戯Ｎ, 住人同士行为_Ｖ後戯Ｃ
+			PRINTFORM %CALLNAME:攻め側%は
+			IF フラグ == 1
+				IF HAS_PENIS(攻め側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折%CALLNAME:受け側%の膣内に精液を擦りつけるように腰を揺らしている
+				ELSEIF HAS_PENIS(受け側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折自分の膣内に精液を擦りつけるように腰を揺らしている
+				ELSE
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折腰を揺らしている
+				ENDIF
+			ELSEIF フラグ == 2
+				IF HAS_PENIS(攻め側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折%CALLNAME:受け側%の体に阴茎を擦りつけている
+				ELSEIF HAS_PENIS(受け側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折%CALLNAME:受け側%の阴茎についたままの精液を自分の体に擦りつけている
+				ELSE
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折腰を揺らしている
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折腰を揺らしている
+			ENDIF
+		CASE 住人同士行为_Ａ後戯Ｎ, 住人同士行为_Ａ後戯Ｃ
+			PRINTFORM %CALLNAME:攻め側%は
+			IF フラグ == 1
+				IF HAS_PENIS(攻め側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折%CALLNAME:受け側%の菊花に精液を擦りつけるように腰を揺らしている
+				ELSEIF HAS_PENIS(受け側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折自分の菊花に精液を擦りつけるように腰を揺らしている
+				ELSE
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折腰を揺らしている
+				ENDIF
+			ELSEIF フラグ == 2
+				IF HAS_PENIS(攻め側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折%CALLNAME:受け側%の体に阴茎を擦りつけている
+				ELSEIF HAS_PENIS(受け側)
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折%CALLNAME:受け側%の阴茎についたままの精液を自分の体に擦りつけている
+				ELSE
+					PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折腰を揺らしている
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:受け側%の体を爱抚し、キスしながら時折腰を揺らしている
+			ENDIF
+	ENDSELECT
+	TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{攻め側}_0(CFLAG:攻め側:住人同士イベント内容%10,攻め側,受け側,1)
+	TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{受け側}_0(CFLAG:受け側:住人同士イベント内容%10,受け側,攻め側,1)
+ENDIF
+RETURN 0
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベント終了処理
+;@return 1:xxx,0:xxx
+@INHABITANT_FRIENDSHIP_END(キャラ番号,終わり方,乱入者,フラグ)
+#DIM キャラ番号		;処理するキャラ番号
+#DIM 終わり方		;終わり方(0=乱入による中断, 1=完了)
+#DIM 乱入者			;乱入者キャラ番号
+#DIM 攻め側			;攻め側のキャラ番号 or 立場が上
+#DIM 受け側			;受け側のキャラ番号 or 立場が下
+#DIM フラグ			;シチュエーション他
+#DIM WK
+#DIMS 乱入者名		;乱入者のキャラ名
+IF 乱入者 != 人物_訪問者
+	乱入者名 = %CALLNAME:乱入者%
+ELSE
+	乱入者名 = %NTR_NAME(0)%
+ENDIF
+IF CFLAG:キャラ番号:住人同士イベント内容 % 10 == 0
+	受け側 = キャラ番号
+	攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+ELSE
+	受け側 = CFLAG:キャラ番号:住人同士イベント相手
+	攻め側 = キャラ番号
+ENDIF
+
+IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	IF 終わり方 == 0
+		SELECTCASE CFLAG:キャラ番号:住人同士イベント内容/10
+			CASE 住人同士行为_会话
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は会话を中断したようだ
+			CASE 住人同士行为_お茶
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%はお茶を飲む手を止めた
+			CASE 住人同士行为_身体接触
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離したようだ
+			CASE 住人同士行为_抚摸臀部
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から手を離したようだ
+			CASE 住人同士行为_抱きつく
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離したようだ
+			CASE 住人同士行为_接吻
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から離れたようだ
+			CASE 住人同士行为_胸爱抚
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から手を離したようだ
+				PRINTFORML %CALLNAME:受け側%は少し焦りながら服の乱れを整えている
+			CASE 住人同士行为_肛门爱抚
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から手を離したようだ
+				PRINTFORML %CALLNAME:受け側%は少し焦りながら服の乱れを整えている
+			CASE 住人同士行为_阴蒂爱抚
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から手を離したようだ
+				PRINTFORML %CALLNAME:受け側%は少し焦りながら服の乱れを整えている
+			CASE 住人同士行为_手指插入
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から手を離したようだ
+				PRINTFORML %CALLNAME:受け側%は少し焦りながら服の乱れを整えている
+			CASE 住人同士行为_Ｖ性交Ｎ
+				;まだ周りを気にする余裕がある時間
+				IF CFLAG:キャラ番号:住人同士イベント終了時間 - 5 > DATETIME()
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+					;盛り上がってきてもうすぐ…という時間なのでぎりぎりまで気づかなかった
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 > DATETIME()
+					PRINTFORM %乱入者名%の足音に気づき、
+					IF HAS_PENIS(攻め側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%も太股辺りをやけに気にしながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしい
+						PRINTFORML 裸で何かをしていたようだが…
+					ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%もやけに下腹部を押さえながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしい
+						PRINTFORML 裸で何かをしていたようだが…
+					ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%も太股辺りをやけに気にしながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしい
+						PRINTFORML 裸で何かをしていたようだが…
+					ELSE
+						PRINTW 住人イベント分岐エラー(1)
+					ENDIF
+					;終了～余韻まで(というのは建前で"=="だと乱入が非常に難しいから少し時間的猶予を)で入ってくるまで気づかない
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 + 5 >= DATETIME()
+					PRINTFORM %乱入者名%が入ってきたのに気づき、
+					IF HAS_PENIS(攻め側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から精液と愛液に濡れた阴茎を引き抜き物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%も秘所から垂れる精液を気にしながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して秘所から垂れる精液を気にしながら物陰に少しでも身を隠して服を着ている
+						PRINTFORML %CALLNAME:受け側%も精液と愛液に濡れた阴茎を押さえながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%も秘所から垂れる愛液を気にしながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSE
+						PRINTW 住人イベント分岐エラー(2)
+					ENDIF
+					;終わってから十分な時間が経過
+				ELSE
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+				ENDIF
+			CASE 住人同士行为_Ｖ性交Ｃ
+				;着衣は裸よりも余裕がある
+				;まだ周りを気にする余裕がある時間
+				IF CFLAG:キャラ番号:住人同士イベント終了時間 - 5 > DATETIME()
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+					;盛り上がってきてもうすぐ…という時間
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 > DATETIME()
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+					;終了～余韻まで(というのは建前で"=="だと乱入が非常に難しいから少し時間的猶予を)で入ってくるまで気づかない
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 + 5 >= DATETIME()
+					PRINTFORM %乱入者名%が入ってきたのに気づき、
+					IF HAS_PENIS(攻め側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から精液と愛液に濡れた阴茎を引き抜き下着を履き直した
+						PRINTFORML %CALLNAME:受け側%も慌ててずらしていた下着を整え平静を装っている
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離してずらしていた下着を整えた
+						PRINTFORML %CALLNAME:受け側%も精液と愛液に濡れた阴茎を押さえながら下着を履きなおし平静を装っている
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して下着を履き直した
+						PRINTFORML %CALLNAME:受け側%も秘所から垂れる愛液を気にしながら下着を履き直して平静を装っている
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSE
+						PRINTW 住人イベント分岐エラー(3)
+					ENDIF
+					;終わってから十分な時間が経過
+				ELSE
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+				ENDIF
+			CASE 住人同士行为_Ａ性交Ｎ
+				;まだ周りを気にする余裕がある時間
+				IF CFLAG:キャラ番号:住人同士イベント終了時間 - 5 > DATETIME()
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+					;盛り上がってきてもうすぐ…という時間なのでぎりぎりまで気づかなかった
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 > DATETIME()
+					PRINTFORM %乱入者名%の足音に気づき、
+					IF HAS_PENIS(攻め側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%もお尻をやけに気にしながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしい
+						PRINTFORML 裸で何かをしていたようだが…
+					ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%もやけに下腹部を押さえながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしい
+						PRINTFORML 裸で何かをしていたようだが…
+					ELSE
+						PRINTW 住人イベント分岐エラー(4)
+					ENDIF
+					;終了～余韻まで(というのは建前で"=="だと乱入が非常に難しいから少し時間的猶予を)で入ってくるまで気づかない
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 + 5 >= DATETIME()
+					PRINTFORM %乱入者名%が入ってきたのに気づき、
+					IF HAS_PENIS(攻め側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から精液に濡れた阴茎を引き抜き物陰に少しでも身を隠しながら服を着ている
+						PRINTFORML %CALLNAME:受け側%も菊花から垂れる精液を気にしながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離して菊花から垂れる精液を気にしながら物陰に少しでも身を隠して服を着ている
+						PRINTFORML %CALLNAME:受け側%も精液に濡れた阴茎を押さえながら慌てて服を着ている
+						PRINTFORML 服を着終えた二人は平静を装いながら元の位置に戻った
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSE
+						PRINTW 住人イベント分岐エラー(5)
+					ENDIF
+					;終わってから十分な時間が経過
+				ELSE
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+				ENDIF
+			CASE 住人同士行为_Ａ性交Ｃ
+				;着衣は裸よりも余裕がある
+				;まだ周りを気にする余裕がある時間
+				IF CFLAG:キャラ番号:住人同士イベント終了時間 - 5 > DATETIME()
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+					;盛り上がってきてもうすぐ…という時間
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 > DATETIME()
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+					;終了～余韻まで(というのは建前で"=="だと乱入が非常に難しいから少し時間的猶予を)で入ってくるまで気づかない
+				ELSEIF CFLAG:キャラ番号:住人同士イベント終了時間 + 5 >= DATETIME()
+					PRINTFORM %乱入者名%が入ってきたのに気づき、
+					IF HAS_PENIS(攻め側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から精液に濡れた阴茎を引き抜き下着を履き直した
+						PRINTFORML %CALLNAME:受け側%も慌ててずらしていた下着を整え平静を装っている
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+						PRINTFORML %CALLNAME:攻め側%は慌てて%CALLNAME:受け側%から体を離してずらしていた下着を整えた
+						PRINTFORML %CALLNAME:受け側%も精液に濡れた阴茎を押さえながら下着を履きなおし平静を装っている
+						PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと誤魔化せていない部分は多いが…
+					ELSE
+						PRINTW 住人イベント分岐エラー(6)
+					ENDIF
+					;終わってから十分な時間が経過
+				ELSE
+					PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+					PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+				ENDIF
+			CASE 住人同士行为_Ｖ後戯Ｎ
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+				PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+			CASE 住人同士行为_Ｖ後戯Ｃ
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+				PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+			CASE 住人同士行为_Ａ後戯Ｎ
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+				PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+			CASE 住人同士行为_Ａ後戯Ｃ
+				PRINTFORML %乱入者名%の足音に気づき、%CALLNAME:攻め側%と%CALLNAME:受け側%は少し慌てながら服の乱れを整えた
+				PRINTFORML 髪の毛の乱れや汗、顔が赤かったりと何か様子がおかしいが…
+		ENDSELECT
+		TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{攻め側}_0(CFLAG:攻め側:住人同士イベント内容%10,攻め側,受け側,2)
+		TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{受け側}_0(CFLAG:受け側:住人同士イベント内容%10,受け側,攻め側,2)
+		;完了, MASTER含め乱入がないため筒抜け時か見える位置でしか表示されないはず
+	ELSEIF 終わり方 == 1
+		SELECTCASE CFLAG:キャラ番号:住人同士イベント内容/10
+			CASE 住人同士行为_会话
+				PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は会话を終えた
+			CASE 住人同士行为_お茶
+				PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%はお茶を飲み終えた
+			CASE 住人同士行为_身体接触
+				PRINTFORML %CALLNAME:受け側%は%CALLNAME:攻め側%との身体接触に満更でもないようだ
+			CASE 住人同士行为_抚摸臀部
+				PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%のお尻の感触を満喫した
+			CASE 住人同士行为_抱きつく
+				PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%との抱擁を堪能した
+			CASE 住人同士行为_接吻
+				PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の唇が糸を引きながら離れた
+			CASE 住人同士行为_胸爱抚
+				PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の胸の感触を満喫した
+			CASE 住人同士行为_肛门爱抚
+				PRINTFORML %CALLNAME:攻め側%は菊花を弄られて悶える%CALLNAME:受け側%の反応を満喫した
+			CASE 住人同士行为_阴蒂爱抚
+				PRINTFORML %CALLNAME:攻め側%は手を離し、指についた%CALLNAME:受け側%の愛液を舐めた
+			CASE 住人同士行为_手指插入
+				PRINTFORML %CALLNAME:攻め側%は手を離し、指についた%CALLNAME:受け側%の愛液を舐めた
+			CASE 住人同士行为_Ｖ性交Ｎ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、射精を終えても硬さを失わない阴茎で再び子宮を突き始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、精液と愛液で濡れた阴茎を引き抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、射精を終えると精液と愛液で濡れた阴茎を引き抜いた
+					ENDIF
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、射精を終えても硬さを失わない阴茎に再び腰を動かし始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、秘所から精液を溢れさせながら阴茎を抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、秘所から精液を溢れさせながら阴茎を抜いた
+					ENDIF
+				ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の秘所から愛液が溢れ、絶頂に達してもなお二人は腰を動かし続けた
+					ELSEIF フラグ == 1 || フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の秘所から愛液が溢れ、絶頂に達してから%CALLNAME:攻め側%は動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の秘所から愛液が溢れ、絶頂に達してから%CALLNAME:攻め側%は体を離した
+					ENDIF
+				ELSE
+					PRINTW 住人イベント分岐エラー(7)
+				ENDIF
+			CASE 住人同士行为_Ｖ性交Ｃ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、射精を終えても硬さを失わない阴茎で再び子宮を突き始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、精液と愛液で濡れた阴茎を引き抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の膣内に精液を注ぎ込み、射精を終えると精液と愛液で濡れた阴茎を引き抜いた
+					ENDIF
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、射精を終えても硬さを失わない阴茎に再び腰を動かし始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、秘所から精液を溢れさせながら阴茎を抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、秘所から精液を溢れさせながら阴茎を抜いた
+					ENDIF
+				ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の秘所から愛液が溢れ、絶頂に達してもなお二人は腰を動かし続けた
+					ELSEIF フラグ == 1 || フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の秘所から愛液が溢れ、絶頂に達してから%CALLNAME:攻め側%は動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の秘所から愛液が溢れ、絶頂に達してから%CALLNAME:攻め側%は体を離した
+					ENDIF
+				ELSE
+					PRINTW 住人イベント分岐エラー(8)
+				ENDIF
+			CASE 住人同士行为_Ａ性交Ｎ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、射精を終えても硬さを失わない阴茎で再び突き始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、精液で濡れた阴茎を引き抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、射精を終えると精液で濡れた阴茎を引き抜いた
+					ENDIF
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、射精を終えても硬さを失わない阴茎に再び腰を動かし始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、菊花から精液を溢れさせながら阴茎を抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、菊花から精液を溢れさせながら阴茎を抜いた
+					ENDIF
+				ELSE
+					PRINTW 住人イベント分岐エラー(9)
+				ENDIF
+			CASE 住人同士行为_Ａ性交Ｃ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、射精を終えても硬さを失わない阴茎で再び突き始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、精液で濡れた阴茎を引き抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の腸内に精液を注ぎ込み、射精を終えると精液で濡れた阴茎を引き抜いた
+					ENDIF
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 4 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、射精を終えても硬さを失わない阴茎に再び腰を動かし始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、一つになったまま動きを止めて%CALLNAME:受け側%を抱きしめた
+					ELSEIF フラグ == 2
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、菊花から精液を溢れさせながら阴茎を抜いて%CALLNAME:受け側%を抱きしめた
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎から注がれる精液を受け止め、菊花から精液を溢れさせながら阴茎を抜いた
+					ENDIF
+				ELSE
+					PRINTW 住人イベント分岐エラー(10)
+				ENDIF
+			CASE 住人同士行为_Ｖ後戯Ｎ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						IF RAND:2
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%に種付けするべく腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%に種付けするべく阴茎を突き入れた
+							ENDIF
+						ELSE
+							フラグ = 3
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は阴茎を引き抜き、%CALLNAME:受け側%の菊花に狙いを定め一気に突き入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の菊花に狙いを定め一気に突き入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						IF RAND:2
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%から搾り取るべく腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%の阴茎を受け入れた
+							ENDIF
+						ELSE
+							フラグ += 2
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を抜き、自ら菊花で一気に受け入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を自ら菊花で一気に受け入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ELSE
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%とお互いの秘所を擦りつけ始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ENDIF
+			CASE 住人同士行为_Ｖ後戯Ｃ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						IF RAND:2
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%に種付けするべく腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%に種付けするべく阴茎を突き入れた
+							ENDIF
+						ELSE
+							フラグ = 3
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は阴茎を引き抜き、%CALLNAME:受け側%の菊花に狙いを定め一気に突き入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の菊花に狙いを定め一気に突き入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						IF RAND:2
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%から搾り取るべく腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%の阴茎を受け入れた
+							ENDIF
+						ELSE
+							フラグ += 2
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を抜き、自ら菊花で一気に受け入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を自ら菊花で一気に受け入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ELSE
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%とお互いの秘所を擦りつけ始めた
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ENDIF
+			CASE 住人同士行为_Ａ後戯Ｎ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						;暫定処理：受けが男の場合はＡ固定
+						IF RAND:2 || !HAS_VAGINA(受け側)
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%の菊花に阴茎を突き入れた
+							ENDIF
+						ELSE
+							フラグ = 3
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は阴茎を引き抜き、%CALLNAME:受け側%の秘所に狙いを定め一気に突き入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の秘所に狙いを定め一気に突き入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						;暫定処理：受けが男の場合はＡ固定
+						IF RAND:2 || !HAS_VAGINA(受け側)
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%から搾り取るべく腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%の阴茎を受け入れた
+							ENDIF
+						ELSE
+							フラグ = 3
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を抜き、秘所で一気に受け入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を秘所で一気に受け入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ENDIF
+			CASE 住人同士行为_Ａ後戯Ｃ
+				IF HAS_PENIS(攻め側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						;暫定処理：受けが男の場合はＡ固定
+						IF RAND:2 || !HAS_VAGINA(受け側)
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%の菊花に阴茎を突き入れた
+							ENDIF
+						ELSE
+							フラグ = 3
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は阴茎を引き抜き、%CALLNAME:受け側%の秘所に狙いを定め一気に突き入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の秘所に狙いを定め一気に突き入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ELSEIF !HAS_PENIS(攻め側) && HAS_PENIS(受け側)
+					フラグ = RAND:(BASE:攻め側:满足 * 3 * 10 / MAXBASE:攻め側:满足 / 8 + 1)
+					IF フラグ == 0
+						;暫定処理：受けが男の場合はＡ固定
+						IF RAND:2 || !HAS_VAGINA(受け側)
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%から搾り取るべく腰を動かし始めた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は再び%CALLNAME:受け側%の阴茎を受け入れた
+							ENDIF
+						ELSE
+							フラグ = 3
+							IF CFLAG:攻め側:住人同士イベントシチュエーション <= 1
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を抜き、秘所で一気に受け入れた
+							ELSE
+								PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の阴茎を秘所で一気に受け入れた
+							ENDIF
+							CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,DATETIME() + RAND:10 + 20)
+						ENDIF
+					ELSEIF フラグ == 1
+						PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の体を爱抚し続けている
+					ELSE
+						PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は体を離し、身なりを整えた
+					ENDIF
+					CFLAG:攻め側:住人同士イベントシチュエーション = フラグ
+					CFLAG:受け側:住人同士イベントシチュエーション = フラグ
+				ENDIF
+		ENDSELECT
+		TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{攻め側}_0(CFLAG:攻め側:住人同士イベント内容%10,攻め側,受け側,3)
+		TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{受け側}_0(CFLAG:受け側:住人同士イベント内容%10,受け側,攻め側,3)
+	ENDIF
+ENDIF
+CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,終わり方,フラグ)
+RETURN 0
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベント完了処理
+;@return 1:xxx,0:xxx
+;LOCAL:5	追加時間
+@INHABITANT_FRIENDSHIP_FINISH(キャラ番号,終わり方,フラグ)
+#DIM キャラ番号		;処理するキャラ番号
+#DIM 終わり方		;終わり方(0=乱入による中断, 1=完了)
+#DIM 攻め側			;攻め側のキャラ番号 or 立場が上
+#DIM 受け側			;受け側のキャラ番号 or 立場が下
+#DIM フラグ			;シチュエーション他
+
+IF CFLAG:キャラ番号:住人同士イベント内容 % 10 == 0
+	受け側 = キャラ番号
+	攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+ELSE
+	受け側 = CFLAG:キャラ番号:住人同士イベント相手
+	攻め側 = キャラ番号
+ENDIF
+IF 終わり方 == 0
+	CFLAG:攻め側:住人同士イベント相手 = 0
+	CFLAG:攻め側:住人同士イベント内容 = 0
+	CFLAG:攻め側:住人同士イベント終了時間 = 0
+	CFLAG:攻め側:住人同士イベントシチュエーション = 0
+	CFLAG:受け側:住人同士イベント相手 = 0
+	CFLAG:受け側:住人同士イベント内容 = 0
+	CFLAG:受け側:住人同士イベント終了時間 = 0
+	CFLAG:受け側:住人同士イベントシチュエーション = 0
+ELSE
+	SELECTCASE CFLAG:キャラ番号:住人同士イベント内容/10
+		CASE 住人同士行为_阴蒂爱抚
+			STAIN:攻め側:口 |= STAIN:攻め側:手
+			CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+		CASE 住人同士行为_Ｖ性交Ｎ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,DATETIME() + RAND:20 + 10)
+			ELSEIF フラグ == 1 || フラグ == 2
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ後戯Ｎ,DATETIME() + RAND:5 + 10)
+			ELSE
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ENDIF
+		CASE 住人同士行为_Ｖ性交Ｃ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,DATETIME() + RAND:20 + 10)
+			ELSEIF フラグ == 1 || フラグ == 2
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ後戯Ｃ,DATETIME() + RAND:5 + 5)
+			ELSE
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ENDIF
+		CASE 住人同士行为_Ａ性交Ｎ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,DATETIME() + RAND:20 + 10)
+			ELSEIF フラグ == 1 || フラグ == 2
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ後戯Ｎ,DATETIME() + RAND:5 + 5)
+			ELSE
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ENDIF
+		CASE 住人同士行为_Ａ性交Ｃ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,DATETIME() + RAND:20 + 10)
+			ELSEIF フラグ == 1 || フラグ == 2
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ後戯Ｃ,DATETIME() + RAND:5 + 5)
+			ELSE
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ENDIF
+		CASE 住人同士行为_Ｖ後戯Ｎ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ後戯Ｎ,DATETIME() + RAND:5 + 5)
+			ELSEIF フラグ == 1
+				;LOCAL:5 = DATETIME() + RAND:5 + 5
+			ELSEIF フラグ == 2
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ELSEIF フラグ == 3
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,DATETIME() + RAND:20 + 10)
+			ENDIF
+		CASE 住人同士行为_Ｖ後戯Ｃ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ後戯Ｃ,DATETIME() + RAND:20 + 10)
+			ELSEIF フラグ == 1
+				;LOCAL:5 = DATETIME() + RAND:5 + 5
+			ELSEIF フラグ == 2
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ELSEIF フラグ == 3
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,DATETIME() + RAND:20 + 10)
+			ENDIF
+		CASE 住人同士行为_Ａ後戯Ｎ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ後戯Ｎ,DATETIME() + RAND:20 + 10)
+			ELSEIF フラグ == 1
+				;LOCAL:5 = DATETIME() + RAND:5 + 5
+			ELSEIF フラグ == 2
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ELSEIF フラグ == 3
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,DATETIME() + RAND:20 + 10)
+			ENDIF
+		CASE 住人同士行为_Ａ後戯Ｃ
+			IF フラグ == 0
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ後戯Ｃ,DATETIME() + RAND:20 + 10)
+			ELSEIF フラグ == 1
+				;LOCAL:5 = DATETIME() + RAND:5 + 5
+			ELSEIF フラグ == 2
+				CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+			ELSEIF フラグ == 3
+				CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,DATETIME() + RAND:20 + 10)
+			ENDIF
+		CASEELSE
+			CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,0,フラグ)
+	ENDSELECT
+	CALL INHABITANT_FRIENDSHIP_SOURCE(攻め側,終わり方,フラグ)
+ENDIF
+RETURN 0
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベントソース
+;@return 1:xxx,0:xxx
+@INHABITANT_FRIENDSHIP_SOURCE(キャラ番号,終わり方,フラグ)
+#DIM キャラ番号
+#DIM 終わり方		;終わり方(0=乱入による中断, 1=完了)
+#DIM フラグ			;シチュエーション他
+#DIM 攻め側			;攻め側のキャラ番号 or 立場が上
+#DIM 受け側			;受け側のキャラ番号 or 立場が下
+#DIM 攻め側増加量	;攻め側の基礎好感度増加量
+#DIM 受け側増加量	;受け側の基礎好感度増加量
+
+IF CFLAG:キャラ番号:住人同士イベント内容 % 10 == 0
+	受け側 = キャラ番号
+	攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+ELSE
+	受け側 = CFLAG:キャラ番号:住人同士イベント相手
+	攻め側 = キャラ番号
+ENDIF
+
+;◆基礎好感度増加量リセット
+受け側増加量 = 0
+攻め側増加量 = 0
+;◆◆
+
+TCVAR:受け側:行為者 = 攻め側
+TCVAR:攻め側:行為者 = 受け側
+
+SELECTCASE CFLAG:攻め側:住人同士イベント内容/10
+	CASE 住人同士行为_会话
+		攻め側増加量 += 1
+		DOWNBASE:攻め側:气力 += 10
+		SOURCE:攻め側:欢乐 += 200
+		受け側増加量 += 1
+		DOWNBASE:受け側:气力 += 10
+		SOURCE:受け側:欢乐 += 200
+	CASE 住人同士行为_お茶
+		攻め側増加量 += 3
+		DOWNBASE:攻め側:气力 += 10
+		SOURCE:攻め側:欢乐 += 500
+		受け側増加量 += 2
+		DOWNBASE:受け側:气力 += 10
+		SOURCE:受け側:欢乐 += 500
+		TCVAR:攻め側:飲茶日時 = DATETIME()
+		TCVAR:攻め側:水分過剰摂取量 += 110000
+		STAIN:攻め側:口 = 汚れ_なし
+		TCVAR:受け側:飲茶日時 = DATETIME()
+		TCVAR:受け側:水分過剰摂取量 += 110000
+		STAIN:受け側:口 = 汚れ_なし
+	CASE 住人同士行为_身体接触
+		攻め側増加量 += 4
+		DOWNBASE:攻め側:气力 += 30
+		SOURCE:攻め側:欢乐 += 100
+		SOURCE:攻め側:情爱 += 100
+		SOURCE:攻め側:露出 += 20
+		受け側増加量 += 4
+		DOWNBASE:受け側:气力 += 30
+		SOURCE:受け側:欢乐 += 100
+		SOURCE:受け側:情爱 += 100
+		SOURCE:受け側:露出 += 20
+		SOURCE:受け側:反感 += 50
+	CASE 住人同士行为_抚摸臀部
+		攻め側増加量 += 4
+		DOWNBASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 100
+		SOURCE:攻め側:情爱 += 100
+		受け側増加量 += ABL:攻め側:技巧 - ((200 - TA:受け側:攻め側:TA_好感度) / 10)
+		DOWNBASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 100
+		SOURCE:受け側:情爱 += 100
+		SOURCE:受け側:露出 += 100
+		SOURCE:受け側:反感 += 200
+	CASE 住人同士行为_抱きつく
+		攻め側増加量 += 6
+		DOWNBASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 120
+		SOURCE:攻め側:情爱 += 160
+		受け側増加量 += 6 - ((300 - TA:受け側:攻め側:TA_好感度) / 10)
+		DOWNBASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 120
+		SOURCE:受け側:情爱 += 160
+		SOURCE:受け側:露出 += 55
+		SOURCE:受け側:反感 += 250
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 1
+			EXP:受け側:百合经验 += 1
+		ENDIF
+	CASE 住人同士行为_接吻
+		攻め側増加量 += 8 + ABL:受け側:舌
+		SIF EXP:攻め側:接吻经验 == 0
+			攻め側増加量 += 20
+		DOWNBASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 180
+		SOURCE:攻め側:情爱 += 200
+		SOURCE:攻め側:露出 += 80
+		受け側増加量 += 8 + ABL:攻め側:舌 - ((500 - TA:受け側:攻め側:TA_好感度) / 10)
+		SIF EXP:受け側:接吻经验 == 0
+			受け側増加量 += 20
+		DOWNBASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 180
+		SOURCE:受け側:情爱 += 200
+		SOURCE:受け側:露出 += 80
+		SOURCE:受け側:反感 += 300
+		STAIN:攻め側:口 |= STAIN:受け側:口
+		STAIN:受け側:口 |= STAIN:攻め側:口
+		EXP:攻め側:接吻经验 += 1
+		EXP:受け側:接吻经验 += 1
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 2
+			EXP:受け側:百合经验 += 2
+		ENDIF
+		CALL INHABITANT_MEMORIAL_M(攻め側,CALLNAME:受け側+"に","")
+		CALL INHABITANT_MEMORIAL_M(受け側,CALLNAME:攻め側+"に","")
+		CALL LOST_VIRGIN_M(攻め側, 受け側)
+		CALL LOST_VIRGIN_M(受け側, 攻め側)
+	CASE 住人同士行为_胸爱抚
+		攻め側増加量 += 10
+		SIF EXP:受け側:Ｂ经验 == 0
+			攻め側増加量 += 20
+		DOWNBASE:攻め側:体力 += 5
+		DOWNBASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 100
+		SOURCE:攻め側:情爱 += 150
+		SOURCE:攻め側:欲情 += 200
+		SOURCE:攻め側:露出 += 70
+		受け側増加量 += 10 + ABL:攻め側:指 + ABL:受け側:Ｂ感觉 - ((600 - TA:受け側:攻め側:TA_好感度) / 10)
+		DOWNBASE:受け側:体力 += 5
+		DOWNBASE:受け側:气力 += 50
+		SOURCE:受け側:快Ｂ += 120
+		SOURCE:受け側:欢乐 += 100
+		SOURCE:受け側:情爱 += 150
+		SOURCE:受け側:欲情 += 170
+		SOURCE:受け側:露出 += 70
+		SOURCE:受け側:反感 += 350
+		SOURCE:受け側:被动 += 120 + 240 * ABL:受け側:顺从
+		STAIN:受け側:Ｂ |= STAIN:攻め側:手
+		STAIN:攻め側:手 |= STAIN:受け側:Ｂ
+		EXP:受け側:Ｂ经验 += 1
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 3
+			EXP:受け側:百合经验 += 3
+		ENDIF
+	CASE 住人同士行为_肛门爱抚
+		攻め側増加量 += 10
+		DOWNBASE:攻め側:体力 += 40
+		DOWNBASE:攻め側:气力 += 100
+		SOURCE:攻め側:露出 += 120
+		SOURCE:攻め側:欲情 += 200
+		SOURCE:攻め側:欢乐 += 50
+		SOURCE:攻め側:逸脱 += 80
+		受け側増加量 += 10 - ((700 - TA:受け側:攻め側:TA_好感度) / 10)
+		IF ABL:受け側:Ａ感觉 == 0
+			受け側増加量 -= 20
+		ELSE
+			受け側増加量 += ABL:受け側:Ａ感觉
+		ENDIF
+		DOWNBASE:受け側:体力 += 40
+		DOWNBASE:受け側:气力 += 100
+		SOURCE:受け側:快Ａ += 100
+		SOURCE:受け側:苦痛 += 50
+		SOURCE:受け側:屈从 += 100
+		SOURCE:受け側:露出 += 120
+		SOURCE:受け側:欲情 += 170
+		SOURCE:受け側:欢乐 += 50
+		SOURCE:受け側:逸脱 += 80
+		SOURCE:受け側:反感 += 60
+		SOURCE:受け側:被动 += 150 + 300 * ABL:受け側:顺从
+		CALL 締り具合変動, 受け側, 1, 1
+		STAIN:攻め側:手 |= STAIN:受け側:Ａ
+		STAIN:攻め側:手 |= STAIN:受け側:腸内
+		STAIN:受け側:Ａ |= STAIN:攻め側:手
+		STAIN:受け側:腸内 |= STAIN:攻め側:手
+		EXP:受け側:Ａ经验 += 1
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 4
+			EXP:受け側:百合经验 += 4
+		ENDIF
+	CASE 住人同士行为_阴蒂爱抚
+		攻め側増加量 += 10
+		DOWNBASE:攻め側:体力 += 5
+		DOWNBASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 100
+		SOURCE:攻め側:情爱 += 150
+		SOURCE:攻め側:欲情 += 200
+		SOURCE:攻め側:露出 += 100
+		受け側増加量 += 10 + ABL:攻め側:指 + ABL:受け側:Ｃ感觉 - ((800 - TA:受け側:攻め側:TA_好感度) / 10)
+		DOWNBASE:受け側:体力 += 5
+		DOWNBASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 100
+		SOURCE:受け側:情爱 += 150
+		SOURCE:受け側:欲情 += 150
+		SOURCE:受け側:露出 += 100
+		SOURCE:受け側:反感 += 370
+		SOURCE:受け側:快Ｃ += 100
+		SOURCE:受け側:被动 += 145 + 270 * ABL:受け側:顺从
+		STAIN:受け側:Ｖ |= STAIN:攻め側:手
+		STAIN:攻め側:手 |= STAIN:受け側:Ｖ
+		EXP:受け側:Ｃ经验 += 1
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 3
+			EXP:受け側:百合经验 += 3
+		ENDIF
+	CASE 住人同士行为_手指插入
+		TFLAG:2 = 1
+		攻め側増加量 += 10
+		DOWNBASE:攻め側:体力 += 30
+		DOWNBASE:攻め側:气力 += 80
+		IF !TALENT:受け側:处女
+			SOURCE:攻め側:情爱 += 150
+			SOURCE:攻め側:欲情 += 250
+			SOURCE:攻め側:露出 += 120
+			SOURCE:攻め側:逸脱 += 150
+		ELSE
+			SOURCE:攻め側:情爱 += 150
+			SOURCE:攻め側:欲情 += 250
+			SOURCE:攻め側:露出 += 120
+			SOURCE:攻め側:逸脱 += 300
+			攻め側増加量 += 20
+		ENDIF
+		受け側増加量 += 10 + ABL:攻め側:指 + ABL:受け側:Ｖ感觉 - ((900 - TA:受け側:攻め側:TA_好感度) / 10)
+		DOWNBASE:受け側:体力 += 30
+		DOWNBASE:受け側:气力 += 80
+		IF !TALENT:受け側:处女
+			SOURCE:受け側:快Ｖ += 120
+			SOURCE:受け側:情爱 += 150
+			SOURCE:受け側:苦痛 += 250
+			SOURCE:受け側:欲情 += 200
+			SOURCE:受け側:露出 += 120
+			SOURCE:受け側:逸脱 += 150
+			SOURCE:受け側:反感 += 200
+		ELSE
+			SOURCE:受け側:快Ｖ += 60
+			SOURCE:受け側:情爱 += 150
+			SOURCE:受け側:苦痛 += 250
+			SOURCE:受け側:欲情 += 200
+			SOURCE:受け側:露出 += 120
+			SOURCE:受け側:逸脱 += 300
+			SOURCE:受け側:反感 += 400
+			CALL 締り具合変動, 受け側, 1, 0
+		ENDIF
+		STAIN:受け側:膣内 |= STAIN:攻め側:手
+		STAIN:攻め側:手 |= STAIN:受け側:膣内
+		EXP:受け側:Ｖ经验 += 1
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 3
+			EXP:受け側:百合经验 += 3
+		ENDIF
+	CASE 住人同士行为_Ｖ性交Ｎ, 住人同士行为_Ｖ性交Ｃ
+		攻め側増加量 += 20
+		IF HAS_PENIS(攻め側)
+			TEQUIP:受け側:Ｖ性爱 = 攻め側
+			攻め側増加量 -= (BASE:受け側:Ｖ松弛度 - 700) / 100 - ABL:攻め側:Ｃ感觉
+			受け側増加量 += ABL:攻め側:腰 + ABL:受け側:Ｖ感觉
+			EXP:攻め側:Ｃ经验 ++
+			SOURCE:攻め側:快Ｃ += 400
+			EXP:受け側:Ｖ经验 ++
+			EXP:受け側:Ｖ性交经验 ++
+			SOURCE:受け側:快Ｖ += 400
+		ELSEIF HAS_PENIS(受け側)
+			TEQUIP:攻め側:Ｖ性爱 = 受け側
+			受け側増加量 -= (BASE:受け側:Ｖ松弛度 - 700) / 100 - ABL:受け側:Ｃ感觉 - ABL:攻め側:腰
+			攻め側増加量 += ABL:攻め側:Ｖ感觉
+			EXP:攻め側:Ｖ经验 ++
+			EXP:攻め側:Ｖ性交经验 ++
+			SOURCE:攻め側:快Ｖ += 400
+			EXP:受け側:Ｃ经验 ++
+			SOURCE:受け側:快Ｃ += 400
+		ELSE
+			攻め側増加量 += ABL:攻め側:Ｃ感觉
+			受け側増加量 += ABL:攻め側:腰 + ABL:受け側:Ｃ感觉
+			SOURCE:受け側:快Ｃ += 400
+			SOURCE:攻め側:快Ｃ += 400
+			EXP:受け側:Ｃ经验 ++
+			EXP:攻め側:Ｃ经验 ++
+		ENDIF
+		DOWNBASE:攻め側:体力 += 50
+		DOWNBASE:攻め側:气力 += 100
+		SOURCE:攻め側:情爱 += 150
+		SOURCE:攻め側:露出 += 50
+		BASE:攻め側:满足 += 50
+		受け側増加量 += 20 - ((1000 - TA:受け側:攻め側:TA_好感度) / 10)
+		DOWNBASE:受け側:体力 += 50
+		DOWNBASE:受け側:气力 += 100
+		SOURCE:受け側:情爱 += 150
+		SOURCE:受け側:苦痛 += 500
+		SOURCE:受け側:露出 += 50
+		SOURCE:受け側:反感 += 300
+		BASE:受け側:满足 += 25
+		IF IS_DOUTEI(攻め側) && TALENT:受け側:处女
+			攻め側増加量 += 100
+			受け側増加量 += 200
+			SETBIT TALENT:攻め側:童贞,0
+			STAIN:受け側:膣内 |= 汚れ_破瓜の血
+			CALL INHABITANT_MEMORIAL_V(受け側,CALLNAME:攻め側+"に","")
+			CALL LOST_VIRGIN(受け側, 攻め側)
+			TALENT:受け側:处女 = 0
+			CFLAG:受け側:处女喪失中 = 1
+		ELSEIF IS_DOUTEI(攻め側)
+			攻め側増加量 += 50
+			受け側増加量 += 25
+			SETBIT TALENT:攻め側:童贞,0
+		ELSEIF HAS_PENIS(攻め側) && TALENT:受け側:处女
+			攻め側増加量 += 80
+			受け側増加量 += 150
+			STAIN:受け側:膣内 |= 汚れ_破瓜の血
+			CALL INHABITANT_MEMORIAL_V(受け側,CALLNAME:攻め側+"に","")
+			CALL LOST_VIRGIN(受け側, 攻め側)
+			TALENT:受け側:处女 = 0
+			CFLAG:受け側:处女喪失中 = 1
+		ELSEIF TALENT:攻め側:处女 && IS_DOUTEI(受け側)
+			攻め側増加量 += 200
+			受け側増加量 += 80
+			SETBIT TALENT:受け側:童贞,0
+			STAIN:攻め側:膣内 |= 汚れ_破瓜の血
+			CALL INHABITANT_MEMORIAL_V(攻め側,CALLNAME:受け側+"に","")
+			CALL LOST_VIRGIN(攻め側, 受け側)
+			TALENT:攻め側:处女 = 0
+			CFLAG:攻め側:处女喪失中 = 1
+		ELSEIF IS_DOUTEI(受け側)
+			攻め側増加量 += 50
+			受け側増加量 += 25
+			SETBIT TALENT:受け側:童贞,0
+		ELSEIF TALENT:攻め側:处女 && HAS_PENIS(受け側)
+			攻め側増加量 += 150
+			受け側増加量 += 50
+			STAIN:攻め側:膣内 |= 汚れ_破瓜の血
+			CALL INHABITANT_MEMORIAL_V(攻め側,CALLNAME:受け側+"に","")
+			CALL LOST_VIRGIN(攻め側, 受け側)
+			TALENT:攻め側:处女 = 0
+			CFLAG:攻め側:处女喪失中 = 1
+		ENDIF
+		IF HETEROSEX(受け側,攻め側)
+			EXP:受け側:(50 + HETEROSEX(受け側,攻め側)) += 4
+			EXP:攻め側:(50 + HETEROSEX(受け側,攻め側)) += 4
+		ENDIF
+		SIF 終わり方 == 1 || CFLAG:キャラ番号:住人同士イベント終了時間 <= DATETIME()
+			CALL INHABITANT_FRIENDSHIP_SHOOT(攻め側)
+		IF HAS_PENIS(攻め側)
+			STAIN:攻め側:Ｐ |= STAIN:受け側:Ｖ
+			STAIN:攻め側:Ｐ |= STAIN:受け側:膣内
+			STAIN:受け側:Ｖ |= STAIN:攻め側:Ｐ
+			STAIN:受け側:膣内 |= STAIN:攻め側:Ｐ
+		ELSEIF HAS_PENIS(受け側)
+			STAIN:受け側:Ｐ |= STAIN:攻め側:Ｖ
+			STAIN:受け側:Ｐ |= STAIN:攻め側:膣内
+			STAIN:攻め側:Ｖ |= STAIN:受け側:Ｐ
+			STAIN:攻め側:膣内 |= STAIN:受け側:Ｐ
+		ELSE
+			STAIN:攻め側:Ｖ |= STAIN:受け側:Ｖ
+			STAIN:攻め側:Ｖ |= STAIN:受け側:膣内
+			STAIN:受け側:Ｖ |= STAIN:攻め側:Ｖ
+			STAIN:受け側:Ｖ |= STAIN:攻め側:膣内
+		ENDIF
+	CASE 住人同士行为_Ａ性交Ｎ, 住人同士行为_Ａ性交Ｃ
+		攻め側増加量 += 20  
+		IF HAS_PENIS(攻め側)
+			TEQUIP:受け側:Ａ性爱 = 攻め側
+			攻め側増加量 -= (BASE:受け側:Ａ松弛度 - 700) / 100 - ABL:攻め側:Ｃ感觉
+			受け側増加量 += ABL:攻め側:腰
+			IF ABL:受け側:Ａ感觉 <= 1
+				受け側増加量 += (ABL:受け側:Ａ感觉 - 2) * 10
+			ELSE
+				受け側増加量 += ABL:受け側:Ａ感觉
+			ENDIF
+			SOURCE:攻め側:快Ｃ += 400
+			EXP:攻め側:Ｃ经验 ++
+			SOURCE:受け側:快Ａ += 400
+			EXP:受け側:Ａ经验 ++
+			EXP:受け側:Ａ性交经验 ++
+		ELSEIF HAS_PENIS(受け側)
+			TEQUIP:攻め側:Ａ性爱 = 受け側
+			受け側増加量 -= (BASE:受け側:Ａ松弛度 - 700) / 100 - ABL:受け側:Ｃ感觉 - ABL:攻め側:腰
+			IF ABL:攻め側:Ａ感觉 <= 1
+				攻め側増加量 += (ABL:攻め側:Ａ感觉 - 2) * 10
+			ELSE
+				攻め側増加量 += ABL:受け側:Ａ感觉
+			ENDIF
+			SOURCE:受け側:快Ｃ += 400
+			EXP:受け側:Ｃ经验 ++
+			SOURCE:攻め側:快Ａ += 400
+			EXP:攻め側:Ａ经验 ++
+			EXP:攻め側:Ａ性交经验 ++
+		ENDIF
+		DOWNBASE:攻め側:体力 += 50
+		DOWNBASE:攻め側:气力 += 150
+		BASE:攻め側:满足 += 50
+		受け側増加量 += 20 - ((1000 - TA:受け側:攻め側:TA_好感度) / 10)
+		DOWNBASE:受け側:体力 += 50
+		DOWNBASE:受け側:气力 += 150
+		BASE:攻め側:满足 += 25
+		SOURCE:攻め側:情爱 += 50
+		SOURCE:攻め側:性行动 += 500
+		SOURCE:攻め側:达成 += 50
+		SOURCE:攻め側:征服 += 1000
+		SOURCE:攻め側:逸脱 += 500
+		SOURCE:受け側:情爱 += 50
+		SOURCE:受け側:性行动 += 500
+		SOURCE:受け側:达成 += 50
+		SOURCE:受け側:征服 += 1000
+		SOURCE:受け側:逸脱 += 500
+		SOURCE:受け側:反感 += 500
+		IF IS_DOUTEI(攻め側)
+			攻め側増加量 += 50
+			受け側増加量 += 25
+			SETBIT TALENT:攻め側:童贞,0
+		ENDIF
+		;同性愛　レズなら戻り値1ゲイなら戻り値2
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:(50 + HETEROSEX(受け側,攻め側)) += 4
+			EXP:受け側:(50 + HETEROSEX(受け側,攻め側)) += 4
+		ENDIF
+		SIF 終わり方 == 1 || CFLAG:キャラ番号:住人同士イベント終了時間 <= DATETIME()
+			CALL INHABITANT_FRIENDSHIP_SHOOT(攻め側)
+		IF HAS_PENIS(攻め側)
+			CALL INHABITANT_MEMORIAL_A(受け側,CALLNAME:攻め側+"に","")
+			CALL LOST_VIRGIN_A(受け側, 攻め側)
+			STAIN:攻め側:Ｐ |= STAIN:受け側:Ａ
+			STAIN:攻め側:Ｐ |= STAIN:受け側:腸内
+			STAIN:受け側:Ａ |= STAIN:攻め側:Ｐ
+			STAIN:受け側:腸内 |= STAIN:攻め側:Ｐ
+		ELSEIF HAS_PENIS(受け側)
+			CALL INHABITANT_MEMORIAL_A(攻め側,CALLNAME:受け側+"に","")
+			CALL LOST_VIRGIN_A(攻め側, 受け側)
+			STAIN:受け側:Ｐ |= STAIN:攻め側:Ａ
+			STAIN:受け側:Ｐ |= STAIN:攻め側:腸内
+			STAIN:攻め側:Ａ |= STAIN:受け側:Ｐ
+			STAIN:攻め側:腸内 |= STAIN:受け側:Ｐ
+		ENDIF
+	CASE 住人同士行为_Ｖ後戯Ｎ
+		攻め側増加量 += 8
+		BASE:攻め側:体力 += 20
+		BASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 180
+		SOURCE:攻め側:情爱 += 200
+		SIF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+			受け側増加量 += 8
+		BASE:受け側:体力 += 20
+		BASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 180
+		SOURCE:受け側:情爱 += 200
+		IF CFLAG:攻め側:住人同士イベントシチュエーション == 2
+			IF HAS_PENIS(攻め側)
+				IF RAND:2
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ｖ
+					STAIN:受け側:Ｖ |= STAIN:攻め側:Ｐ
+				ELSE
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ａ
+					STAIN:受け側:Ａ |= STAIN:攻め側:Ｐ
+				ENDIF
+			ELSEIF HAS_PENIS(受け側)
+				IF RAND:2
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ｖ
+					STAIN:攻め側:Ｖ |= STAIN:受け側:Ｐ
+				ELSE
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ａ
+					STAIN:攻め側:Ａ |= STAIN:受け側:Ｐ
+				ENDIF
+			ENDIF
+		ENDIF
+		EXP:攻め側:接吻经验 += 1
+		EXP:受け側:接吻经验 += 1
+		;爱抚による増加
+		EXP:受け側:Ｃ经验 += 1
+		EXP:受け側:Ｂ经验 += 1
+		IF フラグ <= 1
+			;挿入継続による増加
+			IF HAS_PENIS(攻め側)
+				EXP:攻め側:Ｃ经验 += 1
+				EXP:受け側:Ｖ经验 += 1
+				EXP:受け側:Ｖ性交经验 ++
+			ELSEIF HAS_PENIS(受け側)
+				EXP:攻め側:Ｖ经验 += 1
+				EXP:攻め側:Ｖ性交经验 ++
+			ELSE
+				EXP:攻め側:Ｃ经验 += 1
+			ENDIF
+		ENDIF
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 2
+			EXP:受け側:百合经验 += 2
+		ENDIF
+		CALL INHABITANT_MEMORIAL_M(攻め側,CALLNAME:受け側+"に","")
+		CALL INHABITANT_MEMORIAL_M(受け側,CALLNAME:攻め側+"に","")
+		CALL LOST_VIRGIN_M(攻め側, 受け側)
+		CALL LOST_VIRGIN_M(受け側, 攻め側)
+	CASE 住人同士行为_Ｖ後戯Ｃ
+		攻め側増加量 += 8
+		BASE:攻め側:体力 += 20
+		BASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 180
+		SOURCE:攻め側:情爱 += 200
+		受け側増加量 += 8
+		BASE:受け側:体力 += 20
+		BASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 180
+		SOURCE:受け側:情爱 += 200
+		IF CFLAG:攻め側:住人同士イベントシチュエーション == 2
+			IF HAS_PENIS(攻め側)
+				IF RAND:2
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ｖ
+					STAIN:受け側:Ｖ |= STAIN:攻め側:Ｐ
+				ELSE
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ａ
+					STAIN:受け側:Ａ |= STAIN:攻め側:Ｐ
+				ENDIF
+			ELSEIF HAS_PENIS(受け側)
+				IF RAND:2
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ｖ
+					STAIN:攻め側:Ｖ |= STAIN:受け側:Ｐ
+				ELSE
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ａ
+					STAIN:攻め側:Ａ |= STAIN:受け側:Ｐ
+				ENDIF
+			ENDIF
+		ENDIF
+		EXP:攻め側:接吻经验 += 1
+		EXP:受け側:接吻经验 += 1
+		;爱抚による増加
+		EXP:受け側:Ｃ经验 += 1
+		EXP:受け側:Ｂ经验 += 1
+		IF フラグ <= 1
+			;挿入継続による増加
+			IF HAS_PENIS(攻め側)
+				EXP:攻め側:Ｃ经验 += 1
+				EXP:受け側:Ｖ经验 += 1
+				EXP:受け側:Ｖ性交经验 ++
+			ELSEIF HAS_PENIS(受け側)
+				EXP:攻め側:Ｖ经验 += 1
+				EXP:攻め側:Ｖ性交经验 ++
+			ELSE
+				EXP:攻め側:Ｃ经验 += 1
+			ENDIF
+		ENDIF
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 2
+			EXP:受け側:百合经验 += 2
+		ENDIF
+		CALL INHABITANT_MEMORIAL_M(攻め側,CALLNAME:受け側+"に","")
+		CALL INHABITANT_MEMORIAL_M(受け側,CALLNAME:攻め側+"に","")
+		CALL LOST_VIRGIN_M(攻め側, 受け側)
+		CALL LOST_VIRGIN_M(受け側, 攻め側)
+	CASE 住人同士行为_Ａ後戯Ｎ
+		攻め側増加量 += 8
+		BASE:攻め側:体力 += 20
+		BASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 180
+		SOURCE:攻め側:情爱 += 200
+		受け側増加量 += 8
+		BASE:受け側:体力 += 20
+		BASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 180
+		SOURCE:受け側:情爱 += 200
+		IF CFLAG:攻め側:住人同士イベントシチュエーション == 2
+			IF HAS_PENIS(攻め側)
+				IF RAND:2
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ｖ
+					STAIN:受け側:Ｖ |= STAIN:攻め側:Ｐ
+				ELSE
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ａ
+					STAIN:受け側:Ａ |= STAIN:攻め側:Ｐ
+				ENDIF
+			ELSEIF HAS_PENIS(受け側)
+				IF RAND:2
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ｖ
+					STAIN:攻め側:Ｖ |= STAIN:受け側:Ｐ
+				ELSE
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ａ
+					STAIN:攻め側:Ａ |= STAIN:受け側:Ｐ
+				ENDIF
+			ENDIF
+		ENDIF
+		EXP:攻め側:接吻经验 += 1
+		EXP:受け側:接吻经验 += 1
+		;爱抚による増加
+		EXP:受け側:Ｃ经验 += 1
+		EXP:受け側:Ｂ经验 += 1
+		IF フラグ <= 1
+			;挿入継続による増加
+			IF HAS_PENIS(攻め側)
+				EXP:攻め側:Ｃ经验 += 1
+				EXP:受け側:Ａ经验 += 1
+				EXP:受け側:Ａ性交经验 ++
+			ELSEIF HAS_PENIS(受け側)
+				EXP:攻め側:Ａ经验 += 1
+				EXP:攻め側:Ａ性交经验 ++
+			ENDIF
+		ENDIF
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 2
+			EXP:受け側:百合经验 += 2
+		ENDIF
+		CALL INHABITANT_MEMORIAL_M(攻め側,CALLNAME:受け側+"に","")
+		CALL INHABITANT_MEMORIAL_M(受け側,CALLNAME:攻め側+"に","")
+		CALL LOST_VIRGIN_M(攻め側, 受け側)
+		CALL LOST_VIRGIN_M(受け側, 攻め側)
+	CASE 357
+		攻め側増加量 += 8
+		BASE:攻め側:体力 += 20
+		BASE:攻め側:气力 += 50
+		SOURCE:攻め側:欢乐 += 180
+		SOURCE:攻め側:情爱 += 200
+		受け側増加量 += 8
+		BASE:受け側:体力 += 20
+		BASE:受け側:气力 += 50
+		SOURCE:受け側:欢乐 += 180
+		SOURCE:受け側:情爱 += 200
+		IF CFLAG:攻め側:住人同士イベントシチュエーション == 2
+			IF HAS_PENIS(攻め側)
+				IF RAND:2
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ｖ
+					STAIN:受け側:Ｖ |= STAIN:攻め側:Ｐ
+				ELSE
+					STAIN:攻め側:Ｐ |= STAIN:受け側:Ａ
+					STAIN:受け側:Ａ |= STAIN:攻め側:Ｐ
+				ENDIF
+			ELSEIF HAS_PENIS(受け側)
+				IF RAND:2
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ｖ
+					STAIN:攻め側:Ｖ |= STAIN:受け側:Ｐ
+				ELSE
+					STAIN:受け側:Ｐ |= STAIN:攻め側:Ａ
+					STAIN:攻め側:Ａ |= STAIN:受け側:Ｐ
+				ENDIF
+			ENDIF
+		ENDIF
+		EXP:攻め側:接吻经验 += 1
+		EXP:受け側:接吻经验 += 1
+		EXP:受け側:Ｃ经验 += 1
+		EXP:受け側:Ｂ经验 += 1
+		IF フラグ <= 1
+			IF HAS_PENIS(攻め側)
+				EXP:攻め側:Ｃ经验 += 1
+				EXP:受け側:Ａ经验 += 1
+				EXP:受け側:Ａ性交经验 ++
+			ELSEIF HAS_PENIS(受け側)
+				EXP:攻め側:Ａ经验 += 1
+				EXP:攻め側:Ａ性交经验 ++
+			ENDIF
+		ENDIF
+		IF HETEROSEX(受け側,攻め側)
+			EXP:攻め側:百合经验 += 2
+			EXP:受け側:百合经验 += 2
+		ENDIF
+		CALL INHABITANT_MEMORIAL_M(攻め側,CALLNAME:受け側+"に","")
+		CALL INHABITANT_MEMORIAL_M(受け側,CALLNAME:攻め側+"に","")
+		CALL LOST_VIRGIN_M(攻め側, 受け側)
+		CALL LOST_VIRGIN_M(受け側, 攻め側)
+ENDSELECT
+
+;◆好感度の相性補正を計算
+LOCAL = 受け側増加量
+IF RELATION:受け側:攻め側
+	TA:受け側:攻め側:TA_好感度 += LOCAL * RELATION:受け側:攻め側 / 100
+ELSE
+	TA:受け側:攻め側:TA_好感度 += LOCAL
+ENDIF
+SIF GETBIT(FLAG:住人同士イベント設定,2) && LOCAL
+	PRINTFORML 　%CALLNAME:受け側% → %CALLNAME:攻め側% 好感度 \@ LOCAL >= 0 ?+{LOCAL}#{LOCAL}\@
+;血統による屈服度上昇
+IF GETBIT(FLAG:住人同士イベント設定,4) && TALENT:攻め側:访问者的血统 && LOCAL > 0
+	TIMES LOCAL, 0.73
+	LOCAL = MAX(LOCAL, 1)
+	CFLAG:受け側:屈服度 += LOCAL
+	SIF GETBIT(FLAG:住人同士イベント設定,2)
+		PRINTFORML 　%CALLNAME:受け側% 屈服度 +{LOCAL}
+ENDIF
+
+LOCAL = 攻め側増加量
+IF RELATION:攻め側:受け側
+	TA:攻め側:受け側:TA_好感度 += LOCAL * RELATION:攻め側:受け側 / 100
+ELSE
+	TA:攻め側:受け側:TA_好感度 += LOCAL
+ENDIF
+SIF GETBIT(FLAG:住人同士イベント設定,2) && LOCAL
+	PRINTFORML 　%CALLNAME:攻め側% → %CALLNAME:受け側% 好感度 \@ LOCAL >= 0 ?+{LOCAL}#{LOCAL}\@
+IF GETBIT(FLAG:住人同士イベント設定,4) && TALENT:受け側:访问者的血统 && LOCAL > 0
+	TIMES LOCAL, 0.42
+	LOCAL = MAX(LOCAL, 1)
+	CFLAG:攻め側:屈服度 += LOCAL
+	SIF GETBIT(FLAG:住人同士イベント設定,2)
+		PRINTFORML 　%CALLNAME:攻め側% 屈服度 +{LOCAL}
+ENDIF
+;◆◆
+
+RETURN 0
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベント射精処理
+;@return 1:xxx,0:xxx
+@INHABITANT_FRIENDSHIP_SHOOT(キャラ番号)
+#DIM キャラ番号	;処理するキャラ番号
+#DIM 被害者		;射精される側
+#DIM 加害者		;射精する側
+IF HAS_PENIS(キャラ番号)
+	被害者 = CFLAG:キャラ番号:住人同士イベント相手
+	加害者 = キャラ番号
+ELSEIF HAS_PENIS(CFLAG:キャラ番号:住人同士イベント相手)
+	被害者 = キャラ番号
+	加害者 = CFLAG:キャラ番号:住人同士イベント相手
+ELSE
+	RETURN 0
+ENDIF
+
+;射精する側の経験処理
+EXP:加害者:射精经验 ++
+EXP:加害者:精液经验 ++
+SIF !EXP:加害者:射精经验 && HAS_VAGINA(加害者)
+	EXP:加害者:异常经验 += 1
+;射精される側の経験処理
+EXP:被害者:精液经验 ++
+SETBIT STAIN:加害者:Ｐ,汚れB_精液
+SELECTCASE CFLAG:加害者:住人同士イベント内容/10
+	CASE 住人同士行为_Ｖ性交Ｎ,住人同士行为_Ｖ性交Ｃ
+		TEQUIP:被害者:Ｖ性爱 = 加害者
+		TCVAR:被害者:行為者 = 加害者
+		CALL EJACULATION_V(被害者, 加害者)
+		;簡易絶頂判定
+		IF ABL:被害者:Ｖ感觉 > RAND:5
+			EXP:被害者:Ｖ绝顶经验 ++
+			EXP:被害者:绝顶经验 ++
+			TRYCALL 精子取得, 加害者, 被害者
+		ENDIF
+	CASE 住人同士行为_Ａ性交Ｎ,住人同士行为_Ａ性交Ｃ
+		TEQUIP:被害者:Ａ性爱 = 加害者
+		TCVAR:被害者:行為者 = 加害者
+		CALL EJACULATION_A(被害者, 加害者)
+		;簡易絶頂判定
+		IF ABL:被害者:Ａ感觉 > RAND:5
+			EXP:被害者:Ａ绝顶经验 ++
+			EXP:被害者:绝顶经验 ++
+		ENDIF
+ENDSELECT
+
+BASE:加害者:满足 += 200
+BASE:被害者:满足 += 100
+
+RETURN 0
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベント立場決定用処理
+;@return 1:xxx,0:xxx
+;ARG	処理するキャラ番号
+@INHABITANT_FRIENDSHIP_POWER(ARG)
+#FUNCTION
+LOCAL:0 = 0
+LOCAL:0 += (ABL:ARG:抖Ｓ之气 * 2) - (ABL:ARG:抖Ｍ之气 * 2)
+LOCAL:0 += (ABL:ARG:欲望 * 2) - (ABL:ARG:顺从 * 2)
+LOCAL:0 += (ABL:ARG:技巧 * 2) + ABL:ARG:教养 + (ABL:ARG:战斗技能 * 3 / 2)
+LOCAL:0 += ABL:ARG:指 + ABL:ARG:舌 + ABL:ARG:胸 + ABL:ARG:腰 + ABL:ARG:膣 + ABL:ARG:菊花
+LOCAL:0 += (CFLAG:ARG:住人同士イベント地位 * 4)
+LOCAL:0 += (TA:ARG:(CFLAG:ARG:住人同士イベント相手):TA_好感度 - 1000) / 100
+RETURNF LOCAL:0
+
+
+;-------------------------------------------------------------------------------
+;青姦等の目立たない場所の文字列
+;@return 1:xxx,0:xxx
+@NOT_CONSPICUOUS_PLACE(ARG)
+#FUNCTIONS
+LOCALS = %""%
+SELECTCASE ARG
+	CASE 位置_红魔馆正门, 位置_院子, 位置_湖, 位置_人間の里, 位置_博麗神社周辺, 位置_人間の里周辺, 位置_紅魔館周辺, 位置_冥界, 位置_迷いの竹林, 位置_無縁塚, 位置_妖怪の山, 位置_地底界, 位置_魔界, 位置_魔法の森, 位置_湖南部, 位置_魔法の森内部
+		LOCALS = 目立たない茂み
+	CASE 位置_大厅, 位置_食堂, 位置_图书室, 位置_厨房, 位置_仓库, 位置_二楼楼梯间, 位置_二楼走廊, 位置_博麗神社, 位置_命蓮寺, 位置_白玉楼, 位置_永遠亭, 位置_守矢神社, 位置_地霊殿, 位置_霧雨魔法店, 位置_香霖堂, 位置_妖精女仆办公室, 位置_永琳診療所
+		LOCALS = 隅っこ
+	CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
+		LOCALS = トイレの個室
+	CASEELSE
+		PRINTFORML 目立たない場所例外 {ARG}
+ENDSELECT
+RETURNF LOCALS
+
+
+;-------------------------------------------------------------------------------
+;住人同士イベント一日終了処理
+;@return 1:xxx,0:xxx
+@INHABITANT_FRIENDSHIP_DAYEND
+#DIM LOOP_CHR_0
+#DIM MAX_LOOP
+#DIM 攻め側			;攻め側のキャラ番号 or 立場が上
+#DIM 受け側			;受け側のキャラ番号 or 立場が下
+
+MAX_LOOP = INHABITANT_LOOP_MAX()
+FOR LOOP_CHR_0,1,MAX_LOOP
+	IF CFLAG:LOOP_CHR_0:住人同士イベント相手 != 0
+		IF CFLAG:LOOP_CHR_0:住人同士イベント内容 % 10 == 0
+			受け側 = LOOP_CHR_0
+			攻め側 = CFLAG:LOOP_CHR_0:住人同士イベント相手
+		ELSE
+			受け側 = CFLAG:LOOP_CHR_0:住人同士イベント相手
+			攻め側 = LOOP_CHR_0
+		ENDIF
+		CALL INHABITANT_FRIENDSHIP_FINISH(攻め側,1,3)
+	ENDIF
+NEXT
+RETURN 0
+
+
+;-------------------------------------------------------------------------------
+;Ｖ初体験を記録する
+;すでに初体験が記録されている場合は無視される
+@INHABITANT_MEMORIAL_V(キャラ番号,相手,内容)
+#DIM キャラ番号
+#DIMS 相手
+#DIMS 内容
+
+IF (TEQUIP:キャラ番号:Ｖ性爱 >= 0) && (TEQUIP:キャラ番号:Ｖ性爱 != TCVAR:キャラ番号:行為者)
+	SELECTCASE TEQUIP:キャラ番号:Ｖ性爱
+		CASE IS < CHARANUM
+			相手 = %CALLNAME:(TEQUIP:キャラ番号:Ｖ性爱)+"に"%
+		CASEELSE
+			RETURN 0
+	ENDSELECT
+ELSE
+	相手 = %""%
+ENDIF
+IF CSTR:キャラ番号:V处女丧失记录 == ""
+	CSTR:キャラ番号:V处女丧失记录 = %INHABITANT_MEMORIAL_CREATE(キャラ番号,相手,内容)%
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;Ａ初体験を記録する
+;すでに初体験が記録されている場合は無視される
+@INHABITANT_MEMORIAL_A(キャラ番号,相手,内容)
+#DIM キャラ番号
+#DIMS 相手
+#DIMS 内容
+
+IF (TEQUIP:キャラ番号:Ａ性爱 >= 0) && (TEQUIP:キャラ番号:Ａ性爱 != TCVAR:キャラ番号:行為者)
+	SELECTCASE TEQUIP:キャラ番号:Ａ性爱
+		CASE IS < CHARANUM
+			相手 = %CALLNAME:(TEQUIP:キャラ番号:Ａ性爱)+"に"%
+		CASEELSE
+			RETURN 0
+	ENDSELECT
+ELSE
+	相手 = %""%
+ENDIF
+IF CSTR:キャラ番号:A处女丧失记录 == ""
+	CSTR:キャラ番号:A处女丧失记录 = %INHABITANT_MEMORIAL_CREATE(キャラ番号,相手,内容)%
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;Ｍ初体験を記録する
+;すでに初体験が記録されている場合は無視される
+@INHABITANT_MEMORIAL_M(キャラ番号,相手,内容)
+#DIM キャラ番号
+#DIMS 相手
+#DIMS 内容
+
+IF キャラ番号 == TCVAR:キャラ番号:行為者
+	IF 相手 == ""
+		相手 = %CALLNAME:(CFLAG:キャラ番号:住人同士イベント相手)+"に"%
+	ENDIF
+ENDIF
+IF 内容 == ""
+	SELECTCASE TCVAR:キャラ番号:行為者
+		CASE IS < CHARANUM
+			IF CFLAG:キャラ番号:住人同士イベント内容%10
+				;攻め側
+				内容 = %"捧げた"%
+			ELSE
+				LOCAL = CFLAG:キャラ番号:体を許す好感度
+				TIMES LOCAL , 0.60
+				IF TA:キャラ番号:(TCVAR:キャラ番号:行為者):TA_好感度 < LOCAL
+					内容 = %"奪われた"%
+				ELSE
+					内容 = %"許した"%
+				ENDIF
+			ENDIF
+		CASEELSE
+			RETURN 0
+	ENDSELECT
+ENDIF
+IF CSTR:キャラ番号:M处女丧失记录 == ""
+	CSTR:キャラ番号:M处女丧失记录 = %INHABITANT_MEMORIAL_CREATE(キャラ番号,相手,内容)%
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;初体験の文字列を作成する
+@INHABITANT_MEMORIAL_CREATE(キャラ番号,相手,内容)
+#FUNCTIONS
+#DIM キャラ番号
+#DIMS 日時
+#DIMS 場所
+#DIMS 相手
+#DIMS 内容
+
+日時 = %日付_月(暦法月)+"の"+天候(天候値)+"の日に"%
+場所 = %GETPLACENAME(CFLAG:キャラ番号:現在位置)+"で"%
+
+IF キャラ番号 == TCVAR:キャラ番号:行為者
+	IF 相手 == ""
+		相手 = %CALLNAME:(CFLAG:キャラ番号:住人同士イベント相手)+"に"%
+	ENDIF
+ENDIF
+IF 相手 == ""
+	SELECTCASE TCVAR:キャラ番号:行為者
+		CASE IS < CHARANUM
+			相手 = %CALLNAME:(TCVAR:キャラ番号:行為者)+"に"%
+		CASEELSE
+			相手 = "誰かに"
+	ENDSELECT
+ENDIF
+
+IF 内容 == ""
+	SELECTCASE TCVAR:キャラ番号:行為者
+		CASE IS < CHARANUM
+			IF CFLAG:キャラ番号:住人同士イベント内容%10
+				;攻め側
+				内容 = %"捧げた"%
+			ELSE
+				IF TA:キャラ番号:(TCVAR:キャラ番号:行為者):TA_好感度 < CFLAG:キャラ番号:体を許す好感度
+					内容 = %"奪われた"%
+				ELSE
+					;嫌がると表示されてからの好感度計算によりここに来る可能性あり
+					内容 = %"許した"%
+				ENDIF
+			ENDIF
+		CASEELSE
+			内容 = %"奪われた"%
+	ENDSELECT
+ENDIF
+RETURNF 日時+場所+相手+内容
+
+;-------------------------------------------------------------------------------
+;イベント内容、終了時間設定
+@INHABITANT_EVENT_SET(攻め側,受け側,内容,終了時間)
+#DIM 攻め側
+#DIM 受け側
+#DIM 内容		; -1の時は設定しない
+#DIM 終了時間	; -1の時は設定しない
+
+IF -1 != 内容
+	CFLAG:攻め側:住人同士イベント内容 = 内容 * 10 + 1
+	CFLAG:受け側:住人同士イベント内容 = 内容 * 10 + 0
+ENDIF
+IF -1 != 終了時間
+	CFLAG:攻め側:住人同士イベント終了時間 = 終了時間
+	CFLAG:受け側:住人同士イベント終了時間 = 終了時間
+ENDIF

@@ -1,0 +1,247 @@
+﻿
+@行為騒音, ARG
+;行為
+SELECTCASE SELECTCOM
+	CASE 20
+		LOCAL = 10
+	CASE 21
+		LOCAL = 0
+	CASE 40 TO 48
+		LOCAL = 25
+	CASE 60 TO 72, 92 TO 94, 97 TO 99 
+		LOCAL = 15
+	CASE 100, 101
+		LOCAL = 100
+	CASEELSE
+		LOCAL = 10
+ENDSELECT
+
+;喘ぎ
+LOCAL:1 = MAX(0, SOURCE:ARG:快Ｃ, SOURCE:ARG:快Ｖ, SOURCE:ARG:快Ａ, SOURCE:ARG:快Ｂ)
+IF LOCAL:1
+	;絶頂
+	;4重
+	IF (NOWEX:Ｂ绝顶 + NOWEX:Ａ绝顶 + NOWEX:Ｖ绝顶 + NOWEX:Ｃ绝顶) >= 8
+		TIMES LOCAL:1, 3.50
+		;3重
+	ELSEIF (NOWEX:Ｂ绝顶 + NOWEX:Ａ绝顶 + NOWEX:Ｖ绝顶 + NOWEX:Ｃ绝顶) >= 6
+		TIMES LOCAL:1, 2.75
+		;2重
+	ELSEIF (NOWEX:Ｂ绝顶 + NOWEX:Ａ绝顶 + NOWEX:Ｖ绝顶 + NOWEX:Ｃ绝顶) >= 4
+		TIMES LOCAL:1, 2.15
+		;1重強
+	ELSEIF (NOWEX:Ｂ绝顶 + NOWEX:Ａ绝顶 + NOWEX:Ｖ绝顶 + NOWEX:Ｃ绝顶) >= 2
+		TIMES LOCAL:1, 1.65
+		;通常
+	ELSEIF (NOWEX:Ｂ绝顶 + NOWEX:Ａ绝顶 + NOWEX:Ｖ绝顶 + NOWEX:Ｃ绝顶) >= 1
+		TIMES LOCAL:1, 1.35
+	ENDIF
+	SIF !TALENT:ARG:淫乱
+		TIMES LOCAL:1, 0.55
+	LOCAL:1 /= 100
+ENDIF
+TFLAG:行為騒音 = LOCAL + LOCAL:1
+
+;PRINTFORML {SOURCE:ARG:快Ｃ}, {SOURCE:ARG:快Ｖ}, {SOURCE:ARG:快Ａ}, {SOURCE:ARG:快Ｂ}
+;PRINTFORML {NOWEX:6}, {NOWEX:5}, {NOWEX:4}, {NOWEX:3}, {NOWEX:2}, {NOWEX:1}, {NOWEX:0}
+;PRINTFORML {LOCAL}, {LOCAL:1} {CFLAG:MASTER:うふふ}
+
+@特殊起床
+FOR LOCAL, 1, CHARANUM
+	SIF CFLAG:MASTER:現在位置 != CFLAG:LOCAL:現在位置
+		CONTINUE
+	SIF !CFLAG:LOCAL:睡眠
+		CONTINUE
+	CFLAG:LOCAL:睡眠深度 += RAND(1, 10)
+	SIF !TFLAG:行為騒音
+		CONTINUE
+	CFLAG:LOCAL:睡眠深度 = MAX(CFLAG:LOCAL:睡眠深度 - TFLAG:行為騒音, 0)
+
+	IF CFLAG:MASTER:うふふ
+		;起床判定
+		IF CFLAG:LOCAL:睡眠深度 <= 200 && CFLAG:LOCAL:睡眠深度 > 100
+			IF TFLAG:行為騒音 >= RAND(50, 100)
+				SIF CFLAG:MASTER:うふふ == 1
+					CALL うふふ中起床口上, LOCAL
+			ENDIF
+		ELSEIF CFLAG:LOCAL:睡眠深度 <= 100
+			IF TFLAG:行為騒音 >= RAND:100
+				SIF CFLAG:MASTER:うふふ == 1
+					CALL うふふ中起床口上, LOCAL
+			ENDIF
+		ELSEIF CFLAG:LOCAL:睡眠深度 == 0
+			SIF CFLAG:MASTER:うふふ == 1
+				CALL うふふ中起床口上, LOCAL
+		ENDIF
+
+		IF CFLAG:LOCAL:睡眠
+			PRINTFORM %CALLNAME:LOCAL%は
+			IF CFLAG:LOCAL:睡眠深度 > 2500
+				PRINTW 睡得像泥似的
+			ELSEIF CFLAG:LOCAL:睡眠深度 > 800
+				PRINTW 睡得很深
+			ELSEIF CFLAG:LOCAL:睡眠深度 > 500
+				PRINTW 睡得很香甜
+			ELSEIF CFLAG:LOCAL:睡眠深度 > 200
+				PRINTW 翻转着身子
+			ELSE
+				PRINTL 小声嘀咕着梦话
+				PRINTW 再吵一点也许就会醒来了
+			ENDIF
+		ENDIF
+	ENDIF
+NEXT
+
+@うふふ中起床口上, ARG
+;ARG 起きたキャラ
+PRINTFORML 注意到声音的%CALLNAME:ARG%起来了。
+PRINTW
+;キャラ別取得変更
+IF (TALENT:ARG:淫乱 || TALENT:ARG:亲爱)
+	;INFO.ERBの情事発覚処理との兼ね合いがうまくいかないので現状は追い出されない程度に
+	;CALL うふふ中起床_関心, ARG
+	RESULT = 3
+ELSE
+	SELECTCASE NO:ARG
+		CASE 3
+			IF TALENT:ARG:恋慕
+				CALL うふふ中起床_怒意, ARG
+			ELSE
+				CALL うふふ中起床_漠不关心, ARG
+			ENDIF
+		CASE 5, 6
+			CALL うふふ中起床_怒意, ARG
+		CASE 148, 149
+			IF CFLAG:ARG:成長度 <= 成長度_乳児
+				PRINTFORML %CALLNAME:ARG%哭出来了
+				RESULT = 3
+			ELSEIF TALENT:ARG:幼稚
+				CALL うふふ中起床_無知, ARG
+			ELSE
+				CALL うふふ中起床_怒意, ARG
+			ENDIF
+		CASEELSE
+			;ARGが身分上
+			IF CFLAG:ARG:館内地位 > CFLAG:TARGET:館内地位
+				CALL うふふ中起床_怒意, ARG
+			ELSE
+				CALL うふふ中起床_困惑, ARG
+			ENDIF
+	ENDSELECT
+ENDIF
+;RESULT 4= 起床キャラがうふふに加入
+;		3以下 うふふ終了
+;		3= パラメータ変化無し
+;		2以下 追い出し
+;		2= 伤心取得
+;		1= 怒意取得
+;		0= パラメータ変化無し
+IF RESULT <= 3
+	PRINTFORMW %CALLNAME:ARG%起床了，所以结束了行动
+ELSE
+	WAIT
+ENDIF
+
+IF RESULT <= 2
+	PRINTFORMW %CALLNAME:MASTER%被撵出去了
+	;追い出し処理
+	FOR LOCAL, 0, CHARANUM
+		SIF !CFLAG:ARG:うふふ
+			CONTINUE
+		FOR LOCAL:1,0,MAXROOM()
+			;庭は除外
+			SIF LOCAL:1 == 位置_院子
+				CONTINUE
+			IF CAN_MOVE(CFLAG:LOCAL:現在位置, LOCAL:1)
+				CFLAG:LOCAL:現在位置 = LOCAL:1
+				BREAK
+			ENDIF
+		NEXT
+	NEXT
+ENDIF
+;加入かリセット
+IF RESULT == 4
+	CFLAG:ARG:うふふ = CFLAG:MASTER:うふふ
+ELSE
+	;うふふリセット
+	CVARSET CFLAG, 317
+ENDIF
+
+;好感度減少
+IF (RESULT == 1 || RESULT == 2)
+	PRINTFORMW 好感度(%CALLNAME:ARG%) -{CFLAG:ARG:好感度/10}
+	CFLAG:ARG:好感度 -= (CFLAG:ARG:好感度/10)
+ENDIF
+IF RESULT == 1
+	BASE:ARG:怒意 = MAXBASE:ARG:怒意
+ELSEIF RESULT == 2
+	CALL 素質伤心取得, ARG
+ENDIF
+CFLAG:ARG:睡眠 = 0
+CFLAG:ARG:睡眠深度 = 0
+
+@うふふ中起床_MASTER状態, ARG
+SELECTCASE SELECTCOM
+	CASE 60 TO 72, 92 TO 94, 97 TO 99
+		;繋がっている
+		PRINTFORM 目の前で繋がった%CALLNAME:MASTER%達を見た
+	CASE 0, 3, 5, 6, 7
+		;行為：爱抚系
+		PRINTFORM 眼前是%CALLNAME:MASTER%在爱抚%CALLNAME:TARGET%的姿态
+	CASE 1, 2
+		;舐め
+		PRINTFORM 眼前是%CALLNAME:MASTER%把脸埋在%CALLNAME:TARGET%股间的姿态
+	CASEELSE
+		;その他
+		PRINTFORM 眼前是一片痴态
+ENDSELECT
+PRINTFORML 
+
+
+
+@うふふ中起床_怒意, ARG
+CALL うふふ中起床_MASTER状態, ARG
+PRINTFORML %CALLNAME:ARG%对%CALLNAME:MASTER%的逃跑行为进行责备
+SIF TALENT:ARG:恋慕 && !TALENT:ARG:亲爱 && !TALENT:ARG:淫乱 && !TALENT:ARG:NTR && !TALENT:ARG:公众便所
+	RETURN 2
+RETURN 1
+
+@うふふ中起床_無知, ARG
+CALL うふふ中起床_MASTER状態, ARG
+PRINTFORML %CALLNAME:ARG%的脸上浮现出问号
+PRINTFORML 看来这个状况似乎还没能被理解
+RETURN 3
+
+@うふふ中起床_関心, ARG
+PRINTFORML %CALLNAME:ARG%输了，把身体靠向%CALLNAME:MASTER%，混在了一起。
+RETURN 4
+
+@うふふ中起床_漠不关心, ARG
+PRINTFORML %CALLNAME:ARG%以冷静的态度告诉%CALLNAME:MASTER%终止现在的行为
+RETURN 0
+
+@うふふ中起床_困惑, ARG
+PRINTFORML %CALLNAME:ARG%很困惑
+SIF TALENT:ARG:恋慕 && !TALENT:ARG:亲爱 && !TALENT:ARG:淫乱 && !TALENT:ARG:NTR && !TALENT:ARG:公众便所
+	RETURN 2
+RETURN 1
+
+;素質「伤心」取得処理
+@素質伤心取得(奴隷, 取得方法, 浮気相手)
+#DIM 奴隷
+#DIM 取得方法	; 0:浮気現場目撃
+#DIM 浮気相手	; 浮気現場目撃時の相手
+
+IF 取得方法 == 0	; 浮気現場目撃
+	PRINTFORML %CALLNAME:奴隷%看到所爱的%CALLNAME:MASTER%的出轨现场，伤心难过...
+	PRINTFORMW 好感度(%CALLNAME:奴隷%) -{CFLAG:奴隷:好感度/10}
+	CFLAG:奴隷:好感度 -= (CFLAG:奴隷:好感度/10)
+	TALENT:奴隷:伤心 += 1000
+	IF CFLAG:奴隷:伤心相手1 == 0
+		CFLAG:奴隷:伤心相手1 = 浮気相手
+		CFLAG:奴隷:伤心相手2 = 0
+	ELSE
+		CFLAG:奴隷:伤心相手2 = 浮気相手
+	ENDIF
+ENDIF
+
