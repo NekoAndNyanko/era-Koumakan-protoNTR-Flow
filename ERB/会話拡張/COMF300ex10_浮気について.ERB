@@ -7,7 +7,7 @@
 
 奴隷 = TARGET:0
 RESULTS:0 = %"[10]-关于"+CALLNAME:奴隷+"出轨的事"%
-IF FLAG:非公开NTR模式
+IF FLAG:Flow版本
 	;todo
 	RETURN 0
 ELSEIF TCVAR:奴隷:会话不能
@@ -60,7 +60,7 @@ ENDIF
 ;-----------------------------------------------------------------------------
 EXP:MASTER:会话经验 ++
 TFLAG:コマンド成功度 = 0
-IF FLAG:非公开NTR模式
+IF FLAG:Flow版本
 	;todo
 ELSE
 	IF TALENT:奴隷:浮気公認 > 0

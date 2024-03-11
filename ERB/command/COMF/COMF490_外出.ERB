@@ -43,7 +43,7 @@ SIF CFLAG:MASTER:現在位置 != 位置_紅魔館周辺
 	PRINTFORM %"["+TOSTR(位置_紅魔館周辺)+"]"+GETPLACENAME(位置_紅魔館周辺),22,LEFT%
 SIF CFLAG:MASTER:現在位置 != 位置_人間の里周辺
 	PRINTFORM %"["+TOSTR(位置_人間の里周辺)+"]"+GETPLACENAME(位置_人間の里周辺),22,LEFT%
-SIF CFLAG:MASTER:現在位置 != 位置_博麗神社 && TALENT:人物_灵梦:恋慕 && CFLAG:MASTER:開始位置 == 位置_博麗神社
+SIF CFLAG:MASTER:現在位置 != 位置_博麗神社 && (TALENT:人物_灵梦:恋慕 || (TALENT:人物_灵梦:恋人 && TALENT:人物_灵梦:NTR)) && CFLAG:MASTER:開始位置 == 位置_博麗神社
 	PRINTFORM %"["+TOSTR(位置_博麗神社)+"]"+GETPLACENAME(位置_博麗神社),22,LEFT%
 SIF CFLAG:MASTER:現在位置 > 場所番号最大値
 	PRINTFORM %"["+TOSTR(位置_红魔馆正门)+"]回到红魔馆",22,LEFT%

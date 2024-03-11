@@ -324,7 +324,7 @@ ELSEIF GETBIT(CFLAG:着用者:服装パターンオプション,0)
 ELSEIF TALENT:着用者:淫乱
 	;淫乱/娼婦持ちならエロい下着限定
 	EQUIP:着用者:下半身下着１ = 0
-	IF FLAG:非公开NTR模式
+	IF FLAG:Flow版本
 		EQUIP:着用者:下半身下着２ = NTR_PANTS(着用者,1)
 	ELSE
 		EQUIP:着用者:下半身下着２ = PANTS_TODAY_ADULT(着用者, 0)
@@ -332,7 +332,7 @@ ELSEIF TALENT:着用者:淫乱
 ELSEIF CFLAG:着用者:屈服度 > CFLAG:着用者:好感度 && CFLAG:着用者:屈服度 > 999
 	;屈服度が好感度より高く、1000以上あるならエロい下着限定
 	EQUIP:着用者:下半身下着１ = 0
-	IF FLAG:非公开NTR模式
+	IF FLAG:Flow版本
 		EQUIP:着用者:下半身下着２ = NTR_PANTS(着用者,1)
 	ELSE
 		EQUIP:着用者:下半身下着２ = PANTS_TODAY_ADULT(着用者, 0)
@@ -340,7 +340,7 @@ ELSEIF CFLAG:着用者:屈服度 > CFLAG:着用者:好感度 && CFLAG:着用者:
 ELSE
 	;普通の下着
 	EQUIP:着用者:下半身下着１ = 0
-	IF FLAG:非公开NTR模式
+	IF FLAG:Flow版本
 		EQUIP:着用者:下半身下着２ = NTR_PANTS(着用者,0)
 	ELSE
 		EQUIP:着用者:下半身下着２ = PANTS_TODAY(着用者)

@@ -93,7 +93,7 @@ ENDIF
 ;経験:侍奉快乐经验が30以上
 ;能力:顺从が3以上
 IF CFLAG:奴隷:好感度 > 閾値 && EXP:奴隷:侍奉快乐经验 >= 30 && ABL:奴隷:顺从 >= 3 && !TALENT:奴隷:恋慕
-	SIF FLAG:非公开NTR模式 && TALENT:奴隷:NTR && TALENT:奴隷:恋人
+	SIF FLAG:Flow版本 && TALENT:奴隷:NTR && TALENT:奴隷:恋人
 		RETURN 0
 	;两人都被NTR则无法取得恋慕
 	SIF TALENT:奴隷:NTR && TALENT:MASTER:NTR
@@ -194,7 +194,7 @@ RETURN 0
 #DIM GET_NTR	; 寝取られフラグ
 
 GET_NTR = 0
-IF !FLAG:非公开NTR模式
+IF !FLAG:Flow版本
 	;浮気癖があると寝取られやすくなる
 	;浮気を公認している場合は寝取られにくくなる
 	IF TALENT:奴隷:亲爱
@@ -226,7 +226,7 @@ ELSE
 ENDIF
 
 IF GET_NTR
-	IF FLAG:非公开NTR模式
+	IF FLAG:Flow版本
 		;todo 加口上
 		PRINTFORML 在%NTR_NAME(0)%的调教下，%CALLNAME:奴隷%体会到了身为雌性真正的快乐
 		PRINTFORMW %CALLNAME:奴隷%彻底失去了对%CALLNAME:MASTER%的[恋慕]
@@ -328,7 +328,7 @@ IF 閾値 >= 1000 && TALENT:奴隷:淫乱 == 0
 	TALENT:奴隷:淫乱 = 1
 	MAXBASE:奴隷:满足 = MAX(MAXBASE:奴隷:满足, 5000)
 ENDIF
-IF !FLAG:非公开NTR模式 && TALENT:奴隷:公众便所 && EXP:奴隷:卖春经验 >= 200 && TALENT:奴隷:淫乱 == 1
+IF !FLAG:Flow版本 && TALENT:奴隷:公众便所 && EXP:奴隷:卖春经验 >= 200 && TALENT:奴隷:淫乱 == 1
 	PRINTFORML %CALLNAME:奴隷%似乎沉溺在用身体交换金钱的快感与快乐之中了…
 	PRINTFORMW %CALLNAME:奴隷%[娼女]获得了
 	TALENT:奴隷:淫乱 = 2

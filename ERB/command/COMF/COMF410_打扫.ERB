@@ -31,19 +31,19 @@ IF TARGET <= 0
 			LOCAL = 人物_琪露诺
 		CASE 位置_大妖精的家
 			LOCAL = 人物_大妖精
-		CASE 位置_魔理沙の家
+		CASE 位置_魔理沙的家
 			LOCAL = 人物_魔理沙
 		CASE 位置_博麗神社
 			LOCAL = 人物_灵梦
-		CASE 位置_ルーミアの住処
+		CASE 位置_露米娅的家
 			LOCAL = 人物_露米娅
-		CASE 位置_アリスの家
+		CASE 位置_爱丽丝的家
 			LOCAL = 人物_爱丽丝
 		CASEELSE
 			LOCAL = 0
 	ENDSELECT
 	;訪問者の方が影響力大
-	IF FLAG:非公开NTR模式
+	IF FLAG:Flow版本
 		IF CFLAG:LOCAL:屈服度 > CFLAG:LOCAL:好感度
 			LOCAL:1 = NTR_PANTS(LOCAL,1)
 		ELSE

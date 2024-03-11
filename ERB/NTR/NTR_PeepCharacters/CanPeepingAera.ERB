@@ -1,0 +1,283 @@
+;1X = 目击
+;├─ 10 = 直视无障碍
+;├─ 11 = 远眺无障碍
+;├─ 12 = 极目远眺无障碍（无法辨析身型：即连“像是xx”都无法分辨的距离，如相隔一整个雾之湖；正门->湖北部->湖南部）
+;├─ 13 = 直视/远眺物体阻碍（障碍物使得无法分辨）
+;├─ 14 = 隔窗无障碍（如只能看到舞动的足部等）
+;├─ 15 = 隔窗有障碍（如窗帘后的人影等）
+;├─ 16 = 槅门无障碍
+;├─ 
+;├─ 
+;2X = 声音
+;├─ 
+;├─ 
+;├─ 
+;├─ 
+;├─ 
+;├─ 
+;├─ 
+;eavesdrop - 偷听
+@canPeeping(所在地,目标地)
+#FUNCTION
+#DIM 所在地
+#DIM 目标地
+SELECTCASE 所在地
+	CASE 位置_红魔馆正门
+		IF 目标地 == 位置_大厅
+			RETURNF 1
+		ELSEIF 目标地 == 位置_守卫小屋
+			RETURNF 1
+		ELSEIF 目标地 == 位置_雾之湖北部
+			RETURNF 1
+		ELSEIF 目标地 == 位置_雾之湖南部
+			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
+	CASE 位置_大厅
+		IF GROUPMATCH(目标地,位置_红魔馆正门,位置_食堂,位置_二楼楼梯间)
+			RETURNF 10
+		ELSEIF GROUPMATCH(目标地,位置_图书室,位置_1F厕所)
+			RETURNF 16
+		ELSEIF GROUPMATCH(目标地,位置_地下室,位置_大浴場)
+
+		ELSE
+			RETURNF 0
+		ENDIF
+		SIF 目标地 == 位置_红魔馆正门
+			RETURNF 1
+		SIF 目标地 == 位置_食堂
+			RETURNF 1
+		SIF 目标地 == 位置_图书室
+			RETURNF 1
+		SIF 目标地 == 位置_二楼楼梯间
+			RETURNF 2
+		SIF 目标地 == 位置_地下室
+			RETURNF 1
+		SIF 目标地 == 位置_大浴場
+			RETURNF 1
+		SIF 目标地 == 位置_1F厕所
+			RETURNF 1
+	CASE 位置_食堂
+		SIF 目标地 == 位置_大厅
+			RETURNF 1
+		SIF 目标地 == 位置_厨房
+			RETURNF 1
+		SIF 目标地 == 位置_守卫小屋
+			RETURNF 1
+		SIF 目标地 == 位置_院子
+			RETURNF 2
+		SIF 目标地 == 位置_屋外厕所
+			RETURNF 1
+	CASE 位置_图书室
+		SIF 目标地 == 位置_大厅
+			RETURNF 1
+		SIF 目标地 == 位置_帕秋莉私室
+			RETURNF 1
+		SIF 目标地 == 位置_小恶魔私室
+			RETURNF 1
+	CASE 位置_厨房
+		SIF 目标地 == 位置_食堂
+			RETURNF 1
+	CASE 位置_仓库
+		SIF 目标地 == 位置_院子
+			RETURNF 1
+	CASE 位置_帕秋莉私室
+		SIF 目标地 == 位置_图书室
+			RETURNF 1
+	CASE 位置_小恶魔私室
+		SIF 目标地 == 位置_图书室
+			RETURNF 1
+	CASE 位置_守卫小屋
+		SIF 目标地 == 位置_红魔馆正门
+			RETURNF 1
+		SIF 目标地 == 位置_食堂
+			RETURNF 1
+		SIF 目标地 == 位置_院子
+			RETURNF 1
+		SIF 目标地 == 位置_屋外厕所
+			RETURNF 1
+	CASE 位置_院子
+		SIF 目标地 == 位置_红魔馆正门
+			RETURNF 2
+		SIF 目标地 == 位置_食堂
+			RETURNF 2
+		SIF 目标地 == 位置_仓库
+			RETURNF 1
+		SIF 目标地 == 位置_守卫小屋
+			RETURNF 1
+		SIF 目标地 == 位置_屋外厕所
+			RETURNF 1
+	CASE 位置_二楼楼梯间
+		SIF 目标地 == 位置_大厅
+			RETURNF 2
+		;二階廊下 + 見える
+		SIF 目标地 == 位置_二楼走廊
+			RETURNF 2
+		;蕾米莉亚私室
+		SIF 目标地 == 位置_蕾米莉亚私室
+			RETURNF 1
+		;二階廊下から
+	CASE 位置_二楼走廊
+		;踊り場 + 見える
+		SIF 目标地 == 位置_二楼楼梯间
+			RETURNF 2
+		;咲夜私室
+		SIF 目标地 == 位置_咲夜私室
+			RETURNF 1
+		;妖精メイド詰所
+		SIF 目标地 == 位置_妖精女仆办公室
+			RETURNF 1
+		;玩家房间
+		SIF 目标地 == 位置_玩家房间
+			RETURNF 1
+		;2F厕所
+		SIF 目标地 == 位置_2F厕所
+			RETURNF 1
+		;咲夜私室から
+	CASE 位置_咲夜私室
+		;庭 + 見える
+		SIF 目标地 == 位置_院子
+			RETURNF 2
+		;二階廊下
+		SIF 目标地 == 位置_二楼走廊
+			RETURNF 1
+		;妖精メイド詰所から
+	CASE 位置_妖精女仆办公室
+		;庭 + 見える
+		SIF 目标地 == 位置_院子
+			RETURNF 2
+		;二階廊下
+		SIF 目标地 == 位置_二楼走廊
+			RETURNF 1
+		;玩家房间から
+	CASE 位置_玩家房间
+		;庭 + 見える
+		SIF 目标地 == 位置_院子
+			RETURNF 2
+		;二階廊下
+		SIF 目标地 == 位置_二楼走廊
+			RETURNF 1
+		;蕾米莉亚私室から
+	CASE 位置_蕾米莉亚私室
+		;庭 + 見える
+		SIF 目标地 == 位置_院子
+			RETURNF 2
+		;踊り場
+		SIF 目标地 == 位置_二楼楼梯间
+			RETURNF 1
+		;3F阳台
+		SIF 目标地 == 位置_3F阳台
+			RETURNF 1
+		;地下室から
+	CASE 位置_地下室
+		;広間（階段）
+		SIF 目标地 == 位置_大厅
+			RETURNF 1
+		;大浴場から
+	CASE 位置_大浴場
+		;広間（階段）
+		SIF 目标地 == 位置_大厅
+			RETURNF 1
+		;湖北部から
+	CASE 位置_雾之湖北部
+		;正門
+		SIF 目标地 == 位置_红魔馆正门
+			RETURNF 1
+		;湖南部
+		SIF 目标地 == 位置_雾之湖南部
+			RETURNF 1
+		;森内部
+		SIF 目标地 == 位置_魔法之森内部
+			RETURNF 1
+		;琪露诺的家から
+	CASE 位置_琪露诺的家
+		;湖南部
+		SIF 目标地 == 位置_雾之湖南部
+			RETURNF 1
+		;大妖精的家から
+	CASE 位置_大妖精的家
+		;湖南部
+		SIF 目标地 == 位置_雾之湖南部
+			RETURNF 1
+	CASE 位置_魔理沙的家
+		;森内部
+		SIF 目标地 == 位置_魔法之森内部
+			RETURNF 1
+		;お手洗いパッチ拡張
+		;トイレはどこからも覗けない
+		;屋外厕所から
+
+	CASE 位置_屋外厕所
+		;庭
+		SIF 目标地 == 位置_院子
+			RETURNF 1
+		;守衛小屋
+		SIF 目标地 == 位置_守卫小屋
+			RETURNF 1
+		;食堂
+		SIF 目标地 == 位置_食堂
+			RETURNF 1
+		;1F厕所から
+	CASE 位置_1F厕所
+		;広間（階段）
+		SIF 目标地 == 位置_大厅
+			RETURNF 1
+		;2F厕所から
+	CASE 位置_2F厕所
+		;二階廊下
+		SIF 目标地 == 位置_二楼走廊
+			RETURNF 1
+		;3F阳台から
+	CASE 位置_3F阳台
+		;庭 + 見える
+		SIF 目标地 == 位置_院子
+			RETURNF 2
+		;正門 + 見える
+		SIF 目标地 == 位置_红魔馆正门
+			RETURNF 2
+		;蕾米莉亚私室
+		SIF 目标地 == 位置_蕾米莉亚私室
+			RETURNF 1
+
+		;湖南部から
+	CASE 位置_雾之湖南部
+		;湖北部
+		SIF 目标地 == 位置_雾之湖北部
+			RETURNF 1
+		;琪露诺的家
+		SIF 目标地 == 位置_琪露诺的家
+			RETURNF 1
+		;大妖精的家
+		SIF 目标地 == 位置_大妖精的家
+			RETURNF 1
+		;魔法之森内部から
+	CASE 位置_魔法之森内部
+		;湖北部
+		SIF 目标地 == 位置_雾之湖北部
+			RETURNF 1
+		;魔理沙的家
+		SIF 目标地 == 位置_魔理沙的家
+			RETURNF 1
+		;露米娅的家
+		SIF 目标地 == 位置_露米娅的家
+			RETURNF 1
+		;爱丽丝的家
+		SIF 目标地 == 位置_爱丽丝的家
+			RETURNF 1
+		;露米娅的家から
+	CASE 位置_露米娅的家
+		;森内部
+		SIF 目标地 == 位置_魔法之森内部
+			RETURNF 1
+		;博麗神社から
+	CASE 位置_博麗神社
+		;雾之湖南部
+		SIF 目标地 == 位置_雾之湖南部
+			RETURNF 1
+		;爱丽丝的家から
+	CASE 位置_爱丽丝的家
+		;森内部
+		SIF 目标地 == 位置_魔法之森内部
+			RETURNF 1
+ENDSELECT

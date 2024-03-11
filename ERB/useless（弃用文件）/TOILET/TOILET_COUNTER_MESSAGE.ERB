@@ -6572,16 +6572,16 @@ IF TALENT:TARGET:恋慕 || TALENT:TARGET:管理人
 		CASE 位置_大妖精的家
 			SIF TARGET != 人物_大妖精
 				プレイ場所 = 5
-		CASE 位置_魔理沙の家
+		CASE 位置_魔理沙的家
 			SIF TARGET != 人物_魔理沙
 				プレイ場所 = 5
 		CASE 位置_博麗神社
 			SIF TARGET != 人物_灵梦
 				プレイ場所 = 5
-		CASE 位置_ルーミアの住処
+		CASE 位置_露米娅的家
 			SIF TARGET != 人物_露米娅
 				プレイ場所 = 5
-		CASE 位置_アリスの家
+		CASE 位置_爱丽丝的家
 			SIF TARGET != 人物_爱丽丝
 				プレイ場所 = 5
 	ENDSELECT
@@ -6599,7 +6599,7 @@ ELSEIF ABL:TARGET:露出癖 <= 4 - 露出抵抗感
 				CASEELSE
 					プレイ場所 = 3
 			ENDSELECT
-		CASE 位置_湖,位置_湖南部,位置_魔法の森内部
+		CASE 位置_雾之湖北部,位置_雾之湖南部,位置_魔法之森内部
 			SELECTCASE TARGET
 				CASE 人物_美铃,人物_琪露诺,人物_大妖精,人物_魔理沙
 					IF CFLAG:TARGET:好感度 >= 500
@@ -6779,17 +6779,17 @@ IF プレイ場所 != 0
 					CFLAG:MASTER:現在位置 = 位置_大妖精的家
 					CFLAG:TARGET:現在位置 = 位置_大妖精的家
 				CASE 人物_魔理沙
-					CFLAG:MASTER:現在位置 = 位置_魔理沙の家
-					CFLAG:TARGET:現在位置 = 位置_魔理沙の家
+					CFLAG:MASTER:現在位置 = 位置_魔理沙的家
+					CFLAG:TARGET:現在位置 = 位置_魔理沙的家
 				CASE 人物_灵梦
 					CFLAG:MASTER:現在位置 = 位置_博麗神社
 					CFLAG:TARGET:現在位置 = 位置_博麗神社
 				CASE 人物_露米娅
-					CFLAG:MASTER:現在位置 = 位置_ルーミアの住処
-					CFLAG:TARGET:現在位置 = 位置_ルーミアの住処
+					CFLAG:MASTER:現在位置 = 位置_露米娅的家
+					CFLAG:TARGET:現在位置 = 位置_露米娅的家
 				CASE 人物_爱丽丝
-					CFLAG:MASTER:現在位置 = 位置_アリスの家
-					CFLAG:TARGET:現在位置 = 位置_アリスの家
+					CFLAG:MASTER:現在位置 = 位置_爱丽丝的家
+					CFLAG:TARGET:現在位置 = 位置_爱丽丝的家
 			ENDSELECT
 	ENDSELECT
 	PRINTFORM 带入(へ連れ込むと)

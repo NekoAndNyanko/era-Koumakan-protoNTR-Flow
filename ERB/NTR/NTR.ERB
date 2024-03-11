@@ -69,13 +69,13 @@ SIF CFLAG:8:現在位置 < 位置_訪問者宅
 SIF CFLAG:9:現在位置 < 位置_訪問者宅
 	CFLAG:9:現在位置 = 位置_大妖精的家
 SIF CFLAG:10:現在位置 < 位置_訪問者宅
-	CFLAG:10:現在位置 = 位置_魔理沙の家
+	CFLAG:10:現在位置 = 位置_魔理沙的家
 SIF CFLAG:11:現在位置 < 位置_訪問者宅
 	CFLAG:11:現在位置 = 位置_博麗神社
 SIF CFLAG:12:現在位置 < 位置_訪問者宅
-	CFLAG:12:現在位置 = 位置_ルーミアの住処
+	CFLAG:12:現在位置 = 位置_露米娅的家
 SIF CFLAG:13:現在位置 < 位置_訪問者宅
-	CFLAG:13:現在位置 = 位置_アリスの家
+	CFLAG:13:現在位置 = 位置_爱丽丝的家
 ;前日お持ち帰りされて帰ってきてない場合は朝帰り
 IF IS_NTR_IMPRISON_ENABLE()
 	TRYCALL NTR_MORNING_MASTER
@@ -138,7 +138,7 @@ FOR LOOP_CHR,1,CHARANUM
 			ENDIF
 		NEXT
 [SKIPSTART]
-		IF FLAG:非公开NTR模式
+		IF FLAG:Flow版本
 [SKIPEND]
 		;重置移动路径
 		CALLF RESET_ROUTE(LOOP_CHR,1)
@@ -476,7 +476,7 @@ IF FLAG:訪問者の气氛 == 0
 	ELSE
 		FLAG:訪問者の气氛 = RAND:(气氛上限値+1)
 		;覗きバレ後は行為エスカレート
-		IF !FLAG:非公开NTR模式 && (!IS_NTR_SOFT() || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い))
+		IF !FLAG:Flow版本 && (!IS_NTR_SOFT() || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い))
 			IF CFLAG:奴隷:覗き発覚回数 && FLAG:訪問者の气氛 < 2
 				FLAG:訪問者の气氛 += 1
 			ENDIF
@@ -573,36 +573,6 @@ SIF CFLAG:MASTER:現在位置 != CFLAG:奴隷:現在位置
 	CALL EXP_GOT_CHECK(奴隷)
 
 ;-------------------------------------------------------------------------------
-;密室度取得
-;戻り値…密室度	;0:堂々 1:普通 2:個室 3:私室)
-@GET_ROOM_SECURITY(場所)
-#FUNCTION
-#DIM 場所
-#DIM 密室度
-密室度 = 0
-SELECTCASE 場所
-		; 光明正大地した場所
-	CASE 位置_红魔馆正门, 位置_大厅, 位置_食堂, 位置_二楼楼梯间, 位置_妖精女仆办公室, 位置_3F阳台
-		密室度 = 0
-		;あまり光明正大地していない場所(正門, 広間, 食堂, 二階踊り場以外. 庭と湖はロマン)なら密室度:3を1に
-	CASE 位置_二楼走廊, 位置_玩家房间, 位置_大浴場, 位置_魔法の森内部
-		密室度 = 1
-		;さらに目立たない場所(死角のある場所や個室等…主観ですが)なら密室度:3を2に
-	CASE 位置_图书室, 位置_厨房, 位置_仓库, 位置_院子, 位置_湖 , 位置_湖南部
-		密室度 = 2
-		; 個室
-	CASE 位置_帕秋莉私室, 位置_小恶魔私室, 位置_守卫小屋, 位置_咲夜私室, 位置_蕾米莉亚私室, 位置_地下室
-		密室度 = 3
-	CASE 位置_琪露诺的家, 位置_大妖精的家, 位置_魔理沙の家, 位置_ルーミアの住処, 位置_アリスの家
-		密室度 = 3
-		; トイレ
-	CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
-		密室度 = 2
-		; Lv1が少ない ;-(
-ENDSELECT
-RETURNF 密室度
-
-;-------------------------------------------------------------------------------
 ;訪問者の气氛上限値判定
 ;戻り値…訪問者の气氛上限値
 @JUDGE_VISITOR_MOOD_MAX(奴隷, 密室度, 同席人数)
@@ -612,7 +582,7 @@ RETURNF 密室度
 #DIM 气氛上限値
 气氛上限値 = 0
 ;訪問者と住民が二人きりまたは主人空気化（屈服度高いとき？）
-IF 同席人数 == 1 || (!FLAG:非公开NTR模式 && (同席人数 == 2 && CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && IS_AIR_MASTER(奴隷)))
+IF 同席人数 == 1 || (!FLAG:Flow版本 && (同席人数 == 2 && CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && IS_AIR_MASTER(奴隷)))
 	SIF NTR_CHK_FAVORABLY(奴隷, FAV_接吻程度)
 		气氛上限値 += 1
 	;光明正大地していない場所
@@ -751,7 +721,7 @@ FOR LOOP_CHR,1,CHARANUM
 	IF CFLAG:LOOP_CHR:現在位置 == FLAG:訪問者の現在位置
 		IF CFLAG:LOOP_CHR:同行 
 			;NTRなら即座に同行解除
-			IF !FLAG:非公开NTR模式 && TALENT:LOOP_CHR:NTR
+			IF !FLAG:Flow版本 && TALENT:LOOP_CHR:NTR
 				CFLAG:LOOP_CHR:同行 = 0
 				SIF FLAG:口上颜色
 					CALL KOJO_COLOR(LOOP_CHR)
@@ -809,11 +779,11 @@ SIF 場所 == 位置_二楼走廊
 	RETURNF 0
 SIF 場所 == 位置_玩家房间
 	RETURNF 0
-SIF 場所 == 位置_湖
+SIF 場所 == 位置_雾之湖北部
 	RETURNF 0
-SIF 場所 == 位置_湖南部
+SIF 場所 == 位置_雾之湖南部
 	RETURNF 0
-SIF 場所 == 位置_魔法の森内部
+SIF 場所 == 位置_魔法之森内部
 	RETURNF 0
 RETURNF 1
 
@@ -1117,6 +1087,7 @@ IF 激化 && !IS_NTR_SOFT()
 ENDIF
 RETURN 气氛
 
+;todo 发现主角偷窥
 ;-------------------------------------------------------------------------------
 ;覗きバレした時の見せつけ
 @NTR_SHOW_PEEP(奴隷)
@@ -1172,7 +1143,7 @@ RETURN 1
 #FUNCTION
 #DIM 奴隷
 #DIM 結果
-SIF FLAG:非公开NTR模式
+SIF FLAG:Flow版本
 	RETURNF 0
 結果 = 0
 ;キス許容
@@ -1248,7 +1219,7 @@ RETURNF "不存在的体位 NTR_GET_SEX_LAGE"
 #DIM 奴隷
 #DIM 好感度LV
 #DIM 屈服度閾値
-IF FLAG:非公开NTR模式
+IF FLAG:Flow版本
 	IF 好感度LV == FAV_寝取り返し寸前
 		SIF TALENT:奴隷:NTR && CFLAG:奴隷:好感度 > 50000
 			RETURNF 1
@@ -1469,7 +1440,7 @@ SIF CFLAG:奴隷:現在位置 == CFLAG:奴隷:前ターン位置
 SIF CFLAG:奴隷:現在位置 != FLAG:訪問者の現在位置
 	RETURN 結果
 ;NTR, 公众便所な住人だと空気変わらない
-IF !FLAG:非公开NTR模式 && (TALENT:奴隷:NTR || TALENT:奴隷:公众便所)
+IF !FLAG:Flow版本 && (TALENT:奴隷:NTR || TALENT:奴隷:公众便所)
 	IF FLAG:訪問者との行為 != NTR_行为_なし
 		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
 			PRINTFORML %CALLNAME:奴隷%虽然来了、但%NTR_NAME(0)%毫不在意地继续行动。

@@ -24,10 +24,10 @@ PRINTFORML [6]  - %NTR_NAME(0)%会把角色带回家（建议关闭）%"	" * 3%\
 PRINTFORML [7]  - %NTR_NAME(0)%是否出现（建议打开）%"	" * 4%\@ GETBIT(FLAG:ＮＴＲパッチ設定,7) ? [是] # [否] \@
 PRINTFORML [8]  - %NTR_NAME(0)%会对角色进行野外調教（建议关闭）%"	" * 3%\@ GETBIT(FLAG:ＮＴＲパッチ設定,8) ? [是] # [否] \@
 PRINTFORML [9]  - %NTR_NAME(0)%进行睡奸（建议关闭）%"	" * 4%\@ GETBIT(FLAG:ＮＴＲパッチ設定,9) ? [是] # [否] \@
-PRINTFORML [10] - 角色与%NTR_NAME(0)%相爱%"	" * 6%\@ FLAG:非公开NTR模式 ? [是] # [否] \@
+PRINTFORML [10] - 角色与%NTR_NAME(0)%相爱%"	" * 6%\@ FLAG:Flow版本 ? [是] # [否] \@
 PRINTFORML [24] - %NTR_NAME(0)%仅调教[恋慕]角色（建议打开）%"	" * 3%\@ GETBIT(FLAG:ＮＴＲパッチ設定,24) ? [是] # [否] \@
 PRINTFORML [25] - 处女肛门調教（建议关闭）%"	" * 5%\@ GETBIT(FLAG:ＮＴＲパッチ設定,25) ? [是] # [否] \@
-; IF !FLAG:非公开NTR模式
+; IF !FLAG:Flow版本
 ; 	PRINTFORML [26] - 具有[亲爱]素质的角色在战败后被迫成为[公众便所]%"	" * 2% \@ GETBIT(FLAG:ＮＴＲパッチ設定,26) ? [是] # [否] \@
 ; ENDIF
 IF !FLAG:真实模式
@@ -180,7 +180,7 @@ ELSEIF RESULT == 7
 	ELSE
 		GOTO INPUT_LOOP_NTR_OPTION_7
 	ENDIF
-ELSEIF RESULT == 8 && !FLAG:非公开NTR模式
+ELSEIF RESULT == 8 && !FLAG:Flow版本
 	PRINTFORML 允许%NTR_NAME(0)%对住人进行野外调教吗？
 	PRINTFORML [0] 打开
 	PRINTFORML [1] 关闭
@@ -197,7 +197,7 @@ ELSEIF RESULT == 8 && !FLAG:非公开NTR模式
 	ELSE
 		GOTO INPUT_LOOP_NTR_OPTION_8
 	ENDIF
-ELSEIF RESULT == 9  && !FLAG:非公开NTR模式
+ELSEIF RESULT == 9  && !FLAG:Flow版本
 	PRINTFORML 允许%NTR_NAME(0)%对住人进行睡奸吗？
 	PRINTFORML [0] 打开
 	PRINTFORML [1] 关闭
@@ -223,7 +223,7 @@ ELSEIF RESULT == 10
 	$INPUT_LOOP_NTR_OPTION_10
 	INPUT
 	IF RESULT == 0
-		FLAG:非公开NTR模式 = 1
+		FLAG:Flow版本 = 1
 		;清除不兼容的设置
 		CLEARBIT FLAG:ＮＴＲパッチ設定,8
 		CLEARBIT FLAG:ＮＴＲパッチ設定,9
@@ -233,7 +233,7 @@ ELSEIF RESULT == 10
 		PRINTFORMW 已经打开
 		GOTO INPUT_LOOP_NTR_OPTION_TOP
 	ELSEIF RESULT == 1
-		FLAG:非公开NTR模式 = 0
+		FLAG:Flow版本 = 0
 		PRINTFORMW 已经关闭
 		GOTO INPUT_LOOP_NTR_OPTION_TOP
 	ELSE
@@ -275,7 +275,7 @@ ELSEIF RESULT == 25
 		GOTO INPUT_LOOP_NTR_OPTION_25
 	ENDIF
 	;亲爱持ち戦闘敗北で公众便所即行
-ELSEIF RESULT == 26 && !FLAG:非公开NTR模式
+ELSEIF RESULT == 26 && !FLAG:Flow版本
 	PRINTFORML 与%NTR_NAME(0)%战斗败北之后，持有亲爱的住人会变成公众便所吗？
 	PRINTFORML [0] 打开
 	PRINTFORML [1] 关闭
@@ -312,7 +312,7 @@ ELSEIF RESULT == 27
 		GOTO INPUT_LOOP_NTR_OPTION_27
 	ENDIF
 	;浮気発覚回避逃避
-ELSEIF RESULT == 30 && !FLAG:非公开NTR模式
+ELSEIF RESULT == 30 && !FLAG:Flow版本
 	PRINTFORML 住人会因为害怕发现外遇而逃跑吗？
 	PRINTFORML [0] 打开
 	PRINTFORML [1] 关闭

@@ -28,7 +28,7 @@ CALLF RESET_ROUTE(奴隷,1)
 ;お持ち帰り時初期化処理
 CALL INIT_TAKINGOUT(奴隷)
 [SKIPSTART]
-IF FLAG:非公开NTR模式
+IF FLAG:Flow版本
 [SKIPEND]
 IF NTR_CHK_VISIBLE(位置_訪問者宅)
 	TRYCALLLIST
@@ -246,7 +246,7 @@ IF BASE:奴隷:体力 < 100 && プレイ内容 == 5
 	プレイ内容 = 0
 	CFLAG:奴隷:性欲 /= 2
 [SKIPSTART]
-	IF FLAG:非公开NTR模式
+	IF FLAG:Flow版本
 [SKIPEND]
 	CFLAG:奴隷:访问者宅气氛 /= 2
 [SKIPSTART]
@@ -269,7 +269,7 @@ IF BASE:奴隷:体力 < 100 && プレイ内容 == 5
 	RETURN 0
 ENDIF
 [SKIPSTART]
-IF !FLAG:非公开NTR模式
+IF !FLAG:Flow版本
 [SKIPEND]
 IF FLAG:訪問者の現在位置 == 位置_訪問者宅
 	調教者 = 人物_訪問者
@@ -434,7 +434,7 @@ ELSE
 	;プレイ時間により屈服度が増加
 	CALL NTR_ADD_SURRENDER(奴隷, MAX(プレイ時間/2,0))
 [SKIPSTART]
-	IF !FALG:非公开NTR模式
+	IF !FALG:Flow版本
 		SELECTCASE 客の人数
 			CASE 1
 			;公众便所でない時の处女保存処理

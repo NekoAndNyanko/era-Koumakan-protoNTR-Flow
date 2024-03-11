@@ -686,7 +686,7 @@ RETURN RESULT
 @KOJO_MESSAGE_COM_K10_350_1
 IF FIRSTTIME(TOSTR(350),1)
 	;初めて集
-	;魔理沙の家OR玩家房间
+	;魔理沙的家OR玩家房间
 	IF (CFLAG:現在位置 ==25) || (CFLAG:MASTER:現在位置 == 15)
 		PRINTFORML 「これから、するんだよな・・・いいぜ、私も、ずっとして欲しかった。」
 		PRINTFORML 「あまり、乱暴にはしなんで欲しいな…。」
@@ -696,7 +696,7 @@ IF FIRSTTIME(TOSTR(350),1)
 		PRINTFORMW 「私はいいけど、見つかりたくはないかな…。」
 	ENDIF
 ELSEIF TALENT:恋慕
-	;あなたOR魔理沙の家
+	;あなたOR魔理沙的家
 	IF (CFLAG:現在位置 ==20) || (CFLAG:MASTER:現在位置 == 15)
 		PRINTFORML 「ふふ、なんだか嬉しいな、%CALLNAME:MASTER%とこういう関係になれてさ。」
 		PRINTFORML 「気持よくしてくれよ、%CALLNAME:MASTER%♪」
@@ -705,7 +705,7 @@ ELSEIF TALENT:恋慕
 		PRINTFORMW 「なんてのは言い訳くさいか、私だって内心嫌じゃないしな。」
 	ENDIF
 ELSE
-	;あなたOR魔理沙の家
+	;あなたOR魔理沙的家
 	IF (CFLAG:現在位置 ==20) || (CFLAG:MASTER:現在位置 == 15)
 		PRINTFORML 「またするんだな、もう、好きだよな%CALLNAME:MASTER%も。」
 	ELSE

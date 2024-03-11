@@ -12,7 +12,7 @@
 IF 0 >= 加算値
 	RETURN 0
 ENDIF
-IF FLAG:非公开NTR模式
+IF FLAG:Flow版本
 	;结婚戒指していると若干影響軽減。0にはならない。
 	; IF EQUIP:奴隷:配件 == 衣装_配件_结婚戒指
 	; 	加算値 = (加算値 * 4) / 5
@@ -110,7 +110,7 @@ RETURN 0
 @NTR_DRAIN_LOVE(奴隷,減少値)
 #DIM 奴隷
 #DIM 減少値
-IF FLAG:非公开NTR模式
+IF FLAG:Flow版本
 	;到屈服度增加（NTR_ADD_SURRENDER）中处理
 	RETURN 0
 ELSE

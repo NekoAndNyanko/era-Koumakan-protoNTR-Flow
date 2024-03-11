@@ -26,7 +26,7 @@ IF TALENT:MASTER:肉便器
 	NEXT
 	CALL EVENT_WC_COUNTER_COMBINATION
 	;;訪問者さんセクハラ判定と値
-	SIF !FLAG:非公开NTR模式
+	SIF !FLAG:Flow版本
 		CALL WC_SexHara
 	SIF CFLAG:MASTER:WC_訪問者の今回セクハラ > 0
 		CALL WC_SexHara_SOURCE(CFLAG:MASTER:WC_訪問者の今回セクハラ)

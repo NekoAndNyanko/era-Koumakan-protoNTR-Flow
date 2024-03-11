@@ -1,0 +1,112 @@
+;遠距離移动によるルート設定
+@FARMOVE(对象, 当前位置, 最终目的地)
+#FUNCTION
+#DIM 对象
+#DIM 当前位置
+#DIM 最终目的地
+#DIM Route_pos, 移动路线MAX
+#DIM Route_mus
+#DIM Route_Sp
+#DIM 暂定目的地
+#DIM 途经地
+#DIM 途经地修正
+
+;LOCAL一覧
+;1	暂定目的地
+;2	ルート設定における当前位置
+
+IF (0 >= 当前位置)
+	当前位置 = CFLAG:对象:開始位置
+ENDIF
+
+;ルートリセット
+CALLF RESET_ROUTE(对象, 0)
+
+VARSET Route_pos
+Route_mus = 0
+Route_Sp = 0
+暂定目的地 = 最终目的地
+途经地 = 当前位置
+
+;途经地から暂定目的地に直接移动できる場合、暂定目的地を保存してルート設定終了
+IF CAN_MOVE(途经地, 暂定目的地)
+	GOTO SUCCESS
+ENDIF
+
+;出発地点からのルートが固定されている場合その分を先に計算する
+;袋小路なら行ける場所は固定なので、そこを途经地に保存する
+途经地修正 = 特殊途经地快速计算(途经地)
+IF 途经地修正 != -1
+	Route_Sp = 途经地
+	途经地 = 途经地修正
+ENDIF
+
+;目的地から出発地点に向けて近づける
+WHILE 1
+	;途经地から暂定目的地に直接移动できる場合、暂定目的地を保存してルート設定終了
+	IF CAN_MOVE(途经地, 暂定目的地)
+		GOTO SUCCESS
+	ENDIF
+
+	;直接移动できない場合、1つ近い位置を暂定目的地に設定し直してループ
+	IF Route_mus >= 移动路线MAX
+		GOTO ERROR
+	ENDIF
+	Route_pos:Route_mus = 暂定目的地
+	Route_mus ++
+	IF Route_mus >= 移动路线MAX
+		GOTO ERROR
+	ENDIF
+	暂定目的地 = 前置目的地计算(途经地, 暂定目的地)
+	;前の目的地と今の目的地は必ず一致しない
+	IF 暂定目的地 == Route_pos:Route_mus
+		GOTO ERROR
+	ENDIF
+	;DEBUGPRINTFORML {暂定目的地} ルート逆算(当前位置({途经地})〜最終地点({最终目的地})までの道のり)
+WEND
+
+$SUCCESS
+IF Route_mus >= 移动路线MAX
+	GOTO ERROR
+ENDIF
+Route_pos:Route_mus = 暂定目的地
+
+;途经地が当前位置からずれている場合そこを最初の移动地点にする
+IF Route_Sp
+	Route_mus ++
+	IF Route_mus >= 移动路线MAX
+		GOTO ERROR
+	ENDIF
+	Route_pos:Route_mus = 途经地修正
+ENDIF
+;設定したルートを反対から取って保存
+FOR LOCAL, Route_mus, -1, -1
+	移动ルート:对象:(Route_mus-LOCAL) = Route_pos:LOCAL
+NEXT
+
+;PRINTFORM 目的地{最终目的地} ルート
+;REPEAT 移动路线MAX
+;	PRINTFORM {移动ルート:对象:COUNT} →
+;REND
+;PRINTW
+RETURNF
+
+$ERROR
+THROW ルート計算中にルート最大サイズを超えました {对象} 当前位置:{当前位置} 最终目的地:{最终目的地}
+
+;移动ルートのリセット
+@RESET_ROUTE(对象, 目的消去)
+#FUNCTION
+#DIM 对象
+#DIM 目的消去
+#DIM LOOP_I
+
+FOR LOOP_I, 0, 移动路线MAX
+	移动ルート:对象:LOOP_I = 0
+NEXT
+
+;移动目的を消す
+IF 目的消去 && CFLAG:对象:移动目的
+	CFLAG:对象:移动目的 = 0
+ENDIF
+RETURNF

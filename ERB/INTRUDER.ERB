@@ -282,13 +282,13 @@ SELECTCASE FLAG:侵入者の現在位置
 		住人 = 人物_琪露诺
 	CASE 位置_大妖精的家
 		住人 = 人物_大妖精
-	CASE 位置_魔理沙の家
+	CASE 位置_魔理沙的家
 		住人 = 人物_魔理沙
 	CASE 位置_博麗神社
 		住人 = 人物_灵梦
-	CASE 位置_ルーミアの住処
+	CASE 位置_露米娅的家
 		住人 = 人物_露米娅
-	CASE 位置_アリスの家
+	CASE 位置_爱丽丝的家
 		住人 = 人物_爱丽丝
 	CASEELSE
 		住人 = 0
@@ -299,7 +299,7 @@ IF 0 != 住人
 		PRINTFORML こいしは【%GETPLACENAME(FLAG:侵入者の現在位置)%】を漁った。
 		;訪問者の方が影響力大
 		IF CFLAG:住人:屈服度 > CFLAG:住人:好感度
-			IF FLAG:非公开NTR模式
+			IF FLAG:Flow版本
 				ぱんつ = NTR_PANTS(住人,1)
 			ELSE
 				ぱんつ = PANTS_TODAY_ADULT(住人, 1)
@@ -318,7 +318,7 @@ IF 0 != 住人
 					PRINTFORML （なんと%CALLNAME:住人%がこんなアダルツな・・）
 			ENDSELECT
 		ELSE
-			IF FLAG:非公开NTR模式
+			IF FLAG:Flow版本
 				ぱんつ = NTR_PANTS(住人,0)
 			ELSE
 				ぱんつ = PANTS_TODAY(住人)
