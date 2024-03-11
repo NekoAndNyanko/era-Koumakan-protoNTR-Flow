@@ -135,7 +135,7 @@ IF TFLAG:遠距離移动
 		NEXT
 	ELSE
 		;現在位置を更新し、次も移动の扱いにする
-		CFLAG:MASTER:現在位置 = 移动ルート:MASTER:0
+		CFLAG:MASTER:現在位置 = 移动路线:MASTER:0
 		CALL SORT_ROUTE(MASTER)
 		NEXTCOM = 400
 	ENDIF
@@ -265,7 +265,7 @@ ELSE
 	TFLAG:遠距離移动 = TargetRoom
 	CALLF FARMOVE(MASTER, CFLAG:MASTER:現在位置, TargetRoom)
 	;現在位置を更新し、次も移动の扱いにする
-	CFLAG:MASTER:現在位置 = 移动ルート:MASTER:0
+	CFLAG:MASTER:現在位置 = 移动路线:MASTER:0
 	CALL SORT_ROUTE(MASTER)
 	NEXTCOM = 400
 ENDIF
@@ -399,26 +399,26 @@ RETURN 0
 #DIM LOOP_I
 
 ;SETCOLOR 200, 200, 0
-;REPEAT 移动ルートMAX
-;	PRINTFORM {移动ルート:住人:COUNT} → 
+;REPEAT 移动路线MAX
+;	PRINTFORM {移动路线:住人:COUNT} → 
 ;REND
 ;PRINTFORML ルート設定変更前 (%CALLNAME:住人%)
 
 ;ARRAYSHIFTで行うと同室に複数キャラが居る時にこの処理に来ると何故か動作しない事があるので別の方法で
-; ARRAYSHIFT 移动ルート:住人, -1, 0, 0
+; ARRAYSHIFT 移动路线:住人, -1, 0, 0
 
-FOR LOOP_I, 1, 移动ルートMAX
-	移动ルート:住人:(LOOP_I-1) = 移动ルート:住人:LOOP_I
+FOR LOOP_I, 1, 移动路线MAX
+	移动路线:住人:(LOOP_I-1) = 移动路线:住人:LOOP_I
 NEXT
 
 ;RESETCOLOR
-;REPEAT 移动ルートMAX
-;	PRINTFORM  {移动ルート:住人:COUNT} →
+;REPEAT 移动路线MAX
+;	PRINTFORM  {移动路线:住人:COUNT} →
 ;REND
 ;PRINTFORML ルート設定変更後 (%CALLNAME:住人%)
 
 ;目的地到達なら移动目的を消す
-IF CFLAG:住人:移动目的 && 移动ルート:住人:0 == 0
+IF CFLAG:住人:移动目的 && 移动路线:住人:0 == 0
 	CFLAG:住人:移动目的 = 0
 ENDIF
 RETURN

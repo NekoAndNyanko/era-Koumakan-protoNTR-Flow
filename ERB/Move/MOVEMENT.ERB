@@ -194,7 +194,7 @@ RETURN
 CALL CHARA_MOVEMENT_T(住人)
 IF 0 == RESULT		; 0:行動不可
 	;移动が出来なかった場合ルート消去
-	SIF 移动ルート:住人:0
+	SIF 移动路线:住人:0
 		CALLF RESET_ROUTE(住人, 1)
 	RETURN
 ENDIF
@@ -250,14 +250,14 @@ IF GETBIT(FLAG:催眠設定,1)
 			CFLAG:住人:現在位置 = 位置_人間の里
 			CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 			;ルートが設定されていればリセット
-			SIF 移动ルート:住人:0
+			SIF 移动路线:住人:0
 				CALLF RESET_ROUTE(住人, 0)
 		ENDIF
 		IF CFLAG:住人:現在位置 == 位置_人間の里 && !FLAG:催眠 && RAND:50 < 25
 			PRINTFORMW %CALLNAME:住人%は怪しい男に付いていった
 			CFLAG:住人:現在位置 = 位置_民家
 			CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
-			SIF 移动ルート:住人:0
+			SIF 移动路线:住人:0
 				CALLF RESET_ROUTE(住人, 0)
 		ENDIF
 	ENDIF
@@ -1185,8 +1185,8 @@ IF CFLAG:住人:移动目的 == 0
 		ENDIF
 		CFLAG:住人:移动目的 = 移动目的_NTR逃避
 	ENDIF
-ELSEIF CFLAG:住人:移动目的 == 移动目的_訪問者 && 移动ルート:住人:0 == 0
-	;訪問者の元への移动かつ初期状態であれば移动ルート設定
+ELSEIF CFLAG:住人:移动目的 == 移动目的_訪問者 && 移动路线:住人:0 == 0
+	;訪問者の元への移动かつ初期状態であれば移动路线設定
 	IF FLAG:訪問者の現在位置 == 位置_訪問者宅
 		; 訪問者が自宅にいたらおでかけ可能かチェック、おでかけできるなら行く
 		; 行けない場合は仕方ないので正門に行ってフラグ解除して終了
@@ -1216,8 +1216,8 @@ IF CFLAG:住人:移动目的 == 0
 ENDIF
 
 ;目的地が設定されているならそこへ移动
-IF 移动ルート:住人:0
-	LOCAL = 移动ルート:住人:0
+IF 移动路线:住人:0
+	LOCAL = 移动路线:住人:0
 	CALL SORT_ROUTE(住人)
 	RETURN LOCAL
 ENDIF

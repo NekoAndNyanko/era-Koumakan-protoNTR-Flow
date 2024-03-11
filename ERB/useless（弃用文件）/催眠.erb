@@ -19,7 +19,7 @@ IF GETBIT(FLAG:催眠設定,1)
 						CFLAG:住人:現在位置 = 位置_人間の里
 						CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 						;方式が設定されていれば復位
-						SIF 移动ルート:住人:0
+						SIF 移动路线:住人:0
 							CALLF RESET_ROUTE(住人, 0)
 						CALL 催眠姦初始判定(住人)
 					ENDIF
@@ -34,7 +34,7 @@ IF GETBIT(FLAG:催眠設定,1)
 						CFLAG:住人:現在位置 = 位置_人間の里
 						CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 						;方式が設定されていれば復位
-						SIF 移动ルート:住人:0
+						SIF 移动路线:住人:0
 							CALLF RESET_ROUTE(住人, 0)
 						CALL 催眠姦初始判定(住人)
 					ENDIF
@@ -92,7 +92,7 @@ ELSE
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
 							CFLAG:住人:現在位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
-							SIF 移动ルート:住人:0
+							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)
@@ -105,7 +105,7 @@ ELSE
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
 							CFLAG:住人:現在位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
-							SIF 移动ルート:住人:0
+							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)
@@ -118,7 +118,7 @@ ELSE
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
 							CFLAG:住人:現在位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
-							SIF 移动ルート:住人:0
+							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)
@@ -131,7 +131,7 @@ ELSE
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
 							CFLAG:住人:現在位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
-							SIF 移动ルート:住人:0
+							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)

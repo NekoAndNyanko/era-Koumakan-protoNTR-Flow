@@ -42,7 +42,7 @@ RETURN 0
 #DIM LOOP_CHR
 #DIM 侍奉種別
 #DIM 帰宅フラグ
-#DIM 移动ルートループ
+#DIM 移动路线循环
 #DIM 移动目撃フラグ
 #DIM 访问者拜访几率
 #DIM 外泊人数
@@ -76,12 +76,14 @@ SIF CFLAG:12:現在位置 < 位置_訪問者宅
 	CFLAG:12:現在位置 = 位置_露米娅的家
 SIF CFLAG:13:現在位置 < 位置_訪問者宅
 	CFLAG:13:現在位置 = 位置_爱丽丝的家
+[SKIPSTART]
 ;前日お持ち帰りされて帰ってきてない場合は朝帰り
 IF IS_NTR_IMPRISON_ENABLE()
 	TRYCALL NTR_MORNING_MASTER
 ELSE
 	TRYCALL NTR_MORNING_MASTER_OLD
 ENDIF
+[SKIPEND]
 FOR LOOP_CHR,1,CHARANUM
 	帰宅フラグ = !IS_NTR_LONG_STAY()
 	IF NTR_GET_STAYOUT_CURRENT(LOOP_CHR) >= NTR_GET_STAYOUT_MAXIMUM(LOOP_CHR)
@@ -132,8 +134,8 @@ FOR LOOP_CHR,1,CHARANUM
 		;紅魔館玄関から私室への移动経路を算出
 		CALLF FARMOVE(LOOP_CHR,位置_红魔馆正门,CFLAG:LOOP_CHR:現在位置)
 		移动目撃フラグ = 0
-		FOR 移动ルートループ,0,移动ルートMAX
-			IF NTR_CHK_VISIBLE( 移动ルート:LOOP_CHR:移动ルートループ )
+		FOR 移动路线循环,0,移动路线MAX
+			IF NTR_CHK_VISIBLE( 移动路线:LOOP_CHR:移动路线循环 )
 				移动目撃フラグ = 1
 			ENDIF
 		NEXT
@@ -163,7 +165,7 @@ FOR LOOP_CHR,1,CHARANUM
 			IF TALENT:LOOP_CHR:恋慕 && TALENT:LOOP_CHR:浮気公認
 				移动目撃フラグ = 1
 			ENDIF
-			;移动経路算出に使った移动ルートを消去しておく
+			;移动経路算出に使った移动路线を消去しておく
 			CALLF RESET_ROUTE(LOOP_CHR,1)
 			;帰宅を目撃できていれば口上を表示
 			IF 移动目撃フラグ

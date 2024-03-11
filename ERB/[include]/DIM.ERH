@@ -4,8 +4,8 @@
 
 #DIMS 依頼内容, 8
 
-#DIM CONST 移动ルートMAX = 13 
-#DIM CHARADATA 移动ルート, 移动ルートMAX
+#DIM CONST 移动路线MAX = 13 
+#DIM CHARADATA 移动路线, 移动路线MAX
 
 ;-------------------------------------------------------------------------------
 ;保存するものは #DIM SAVEDATA

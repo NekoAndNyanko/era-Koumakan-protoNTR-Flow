@@ -10,20 +10,20 @@
 @VISITER_TAKINGOUT(奴隷)
 #DIM 奴隷
 #DIM LOOP_I
-#DIM 移动ルートループ
+#DIM 移动路线循环
 #DIM 移动目撃フラグ
 ;現在位置から紅魔館玄関への移动経路を算出
 CALLF FARMOVE(奴隷,CFLAG:奴隷:現在位置,位置_红魔馆正门)
 移动目撃フラグ = 0
-FOR 移动ルートループ,0,移动ルートMAX
-	IF (0 == 移动ルート:奴隷:移动ルートループ)
+FOR 移动路线循环,0,移动路线MAX
+	IF (0 == 移动路线:奴隷:移动路线循环)
 		BREAK
 	ENDIF
-	IF NTR_CHK_VISIBLE( 移动ルート:奴隷:移动ルートループ )
+	IF NTR_CHK_VISIBLE( 移动路线:奴隷:移动路线循环 )
 		移动目撃フラグ = 1
 	ENDIF
 NEXT
-;移动経路算出に使った移动ルートを消去しておく
+;移动経路算出に使った移动路线を消去しておく
 CALLF RESET_ROUTE(奴隷,1)
 ;お持ち帰り時初期化処理
 CALL INIT_TAKINGOUT(奴隷)

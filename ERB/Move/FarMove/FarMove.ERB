@@ -81,12 +81,12 @@ IF Route_Sp
 ENDIF
 ;設定したルートを反対から取って保存
 FOR LOCAL, Route_mus, -1, -1
-	移动ルート:对象:(Route_mus-LOCAL) = Route_pos:LOCAL
+	移动路线:对象:(Route_mus-LOCAL) = Route_pos:LOCAL
 NEXT
 
 ;PRINTFORM 目的地{最终目的地} ルート
 ;REPEAT 移动路线MAX
-;	PRINTFORM {移动ルート:对象:COUNT} →
+;	PRINTFORM {移动路线:对象:COUNT} →
 ;REND
 ;PRINTW
 RETURNF
@@ -94,7 +94,7 @@ RETURNF
 $ERROR
 THROW ルート計算中にルート最大サイズを超えました {对象} 当前位置:{当前位置} 最终目的地:{最终目的地}
 
-;移动ルートのリセット
+;移动路线のリセット
 @RESET_ROUTE(对象, 目的消去)
 #FUNCTION
 #DIM 对象
@@ -102,7 +102,7 @@ THROW ルート計算中にルート最大サイズを超えました {对象} �
 #DIM LOOP_I
 
 FOR LOOP_I, 0, 移动路线MAX
-	移动ルート:对象:LOOP_I = 0
+	移动路线:对象:LOOP_I = 0
 NEXT
 
 ;移动目的を消す
