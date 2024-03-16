@@ -34,7 +34,7 @@ SELECTCASE セクハラ内容
 		RETURNF 1
 	CASE 14		;;小便淋浴
 		;;大浴場じゃないとだめ
-		SIF CFLAG:MASTER:現在位置 != 位置_大浴場
+		SIF CFLAG:MASTER:現在位置 != 位置_红魔馆_大浴场
 			RETURNF 0
 		;;女の子がいたらだめ
 		SIF GET_TARGETNUM() > 0

@@ -294,14 +294,14 @@ RETURNF
 #FUNCTION
 VARSET LOCAL
 SELECTCASE ARG
-	CASE 位置_屋外厕所
-		SIF CFLAG:MASTER:現在位置 == 位置_守卫小屋 || CFLAG:MASTER:現在位置 == 位置_院子 || CFLAG:MASTER:現在位置 == 位置_二楼走廊
+	CASE 位置_红魔馆_屋外厕所
+		SIF CFLAG:MASTER:現在位置 == 位置_红魔馆_守卫小屋 || CFLAG:MASTER:現在位置 == 位置_红魔馆_后院 || CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼走廊
 			LOCAL = 1
-	CASE 位置_1F厕所
-		SIF CFLAG:MASTER:現在位置 == 位置_大厅
+	CASE 位置_红魔馆_一楼厕所
+		SIF CFLAG:MASTER:現在位置 == 位置_红魔馆_大厅
 			LOCAL = 1
-	CASE 位置_2F厕所
-		SIF CFLAG:MASTER:現在位置 == 位置_二楼走廊 || CFLAG:MASTER:現在位置 == 位置_二楼楼梯间
+	CASE 位置_红魔馆_二楼厕所
+		SIF CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼走廊 || CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼楼梯间
 			LOCAL = 1
 ENDSELECT
 RETURNF LOCAL
@@ -316,16 +316,16 @@ RETURNF LOCAL
 VARSET LOCAL
 SELECTCASE ARG
 		;地下室
-	CASE 位置_地下室
+	CASE 位置_红魔馆_地下室
 		LOCAL = 4
 		;1F厕所
-	CASE 位置_1F厕所
+	CASE 位置_红魔馆_一楼厕所
 		LOCAL = 1
 		;2F厕所
-	CASE 位置_2F厕所
+	CASE 位置_红魔馆_二楼厕所
 		LOCAL = 2
 		;屋外厕所
-	CASE 位置_屋外厕所
+	CASE 位置_红魔馆_屋外厕所
 		LOCAL = 3
 		;琪露诺的家
 	CASE 位置_琪露诺的家
@@ -346,49 +346,49 @@ RETURNF LOCAL
 VARSET LOCAL
 ;各トイレの現在の利用者数
 FOR LOCAL:1,1,CHARANUM
-	SIF CFLAG:(LOCAL:1):現在位置 == 位置_屋外厕所
+	SIF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_屋外厕所
 		LOCAL:2 ++
-	SIF CFLAG:(LOCAL:1):現在位置 == 位置_1F厕所
+	SIF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_一楼厕所
 		LOCAL:3 ++
-	SIF CFLAG:(LOCAL:1):現在位置 == 位置_2F厕所
+	SIF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_二楼厕所
 		LOCAL:4 ++
 NEXT
 SELECTCASE ARG
 		;屋外＞1F＞2F 美鈴
 	CASE 1
 		IF LOCAL:2 == 0
-			LOCAL = 位置_屋外厕所
+			LOCAL = 位置_红魔馆_屋外厕所
 		ELSEIF LOCAL:3 < 1
-			LOCAL = 位置_1F厕所
+			LOCAL = 位置_红魔馆_一楼厕所
 		ELSE
-			LOCAL = 位置_2F厕所
+			LOCAL = 位置_红魔馆_二楼厕所
 		ENDIF
 		;1F＞屋外＞2F 小恶魔、咲夜、子悪魔
 	CASE 2, 4, 7
 		IF LOCAL:3 < 2
-			LOCAL = 位置_1F厕所
+			LOCAL = 位置_红魔馆_一楼厕所
 		ELSEIF LOCAL:2 == 0
-			LOCAL = 位置_屋外厕所
+			LOCAL = 位置_红魔馆_屋外厕所
 		ELSE
-			LOCAL = 位置_2F厕所
+			LOCAL = 位置_红魔馆_二楼厕所
 		ENDIF
 		;1F＞2F＞屋外 パチュリー
 	CASE 3
 		IF LOCAL:3 < 2
-			LOCAL = 位置_1F厕所
+			LOCAL = 位置_红魔馆_一楼厕所
 		ELSEIF LOCAL:4 == 0
-			LOCAL = 位置_2F厕所
+			LOCAL = 位置_红魔馆_二楼厕所
 		ELSE
-			LOCAL = 位置_屋外厕所
+			LOCAL = 位置_红魔馆_屋外厕所
 		ENDIF
 		;2F＞1F＞屋外 蕾米莉亚
 	CASE 5
 		IF LOCAL:4 == 0
-			LOCAL = 位置_2F厕所
+			LOCAL = 位置_红魔馆_二楼厕所
 		ELSEIF LOCAL:3 < 1
-			LOCAL = 位置_1F厕所
+			LOCAL = 位置_红魔馆_一楼厕所
 		ELSE
-			LOCAL = 位置_屋外厕所
+			LOCAL = 位置_红魔馆_屋外厕所
 		ENDIF
 		;地下室 フラン
 	CASE 6
@@ -398,31 +398,31 @@ SELECTCASE ARG
 		IF CFLAG:(ARG):現在位置 == 19
 			LOCAL = 20
 		ELSEIF LOCAL:2 == 0
-			LOCAL = 位置_屋外厕所
+			LOCAL = 位置_红魔馆_屋外厕所
 		ELSEIF LOCAL:3 < 1
-			LOCAL = 位置_1F厕所
+			LOCAL = 位置_红魔馆_一楼厕所
 		ELSE
-			LOCAL = 位置_2F厕所
+			LOCAL = 位置_红魔馆_二楼厕所
 		ENDIF
 		;自宅＞屋外＞1F＞2F 大妖精
 	CASE 9
 		IF CFLAG:(ARG):現在位置 == 19
 			LOCAL = 21
 		ELSEIF LOCAL:2 == 0
-			LOCAL = 位置_屋外厕所
+			LOCAL = 位置_红魔馆_屋外厕所
 		ELSEIF LOCAL:3 < 1
-			LOCAL = 位置_1F厕所
+			LOCAL = 位置_红魔馆_一楼厕所
 		ELSE
-			LOCAL = 位置_2F厕所
+			LOCAL = 位置_红魔馆_二楼厕所
 		ENDIF
 		;屋外＞1F＞2F その他
 	CASEELSE
 		IF LOCAL:2 == 0
-			LOCAL = 位置_屋外厕所
+			LOCAL = 位置_红魔馆_屋外厕所
 		ELSEIF LOCAL:3 < 1
-			LOCAL = 位置_1F厕所
+			LOCAL = 位置_红魔馆_一楼厕所
 		ELSE
-			LOCAL = 位置_2F厕所
+			LOCAL = 位置_红魔馆_二楼厕所
 		ENDIF
 ENDSELECT
 ;トイレに向かう出発点記録

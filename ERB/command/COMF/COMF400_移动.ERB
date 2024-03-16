@@ -81,14 +81,14 @@ IF TFLAG:遠距離移动
 	;遠距離移动
 	IF CAN_MOVE(CFLAG:MASTER:現在位置, TargetRoom)
 		;地下室
-		IF TargetRoom == 位置_地下室 && ABL:MASTER:战斗技能 <= 0
+		IF TargetRoom == 位置_红魔馆_地下室 && ABL:MASTER:战斗技能 <= 0
 			PRINTW 从门里感到不祥之意……
 			PRINTW 为了能平安返回，一定程度的实力是必要的吧。
 			;遠距離移动フラグ消去
 			NEXTCOM = -1
 			CALLF RESET_ROUTE(MASTER, 1)
 			RETURN 0
-		ELSEIF TargetRoom != 位置_玩家房间 && isLocked(TargetRoom) && !canUnLock(MASTER, TargetRoom)
+		ELSEIF TargetRoom != 位置_红魔馆_玩家房间 && isLocked(TargetRoom) && !canUnLock(MASTER, TargetRoom)
 			;あなた以外の私室 and 合鍵無し
 			PRINTW 门从里面锁着……
 			IF GETBIT(FLAG:雑多設定,2)
@@ -154,13 +154,14 @@ $LOOP_PAGE
 
 DRAWLINE
 PRINTL
-PRINTL 移动場所選択
+PRINTL 地图选择
 PRINTL
 CALLFORM MAP_PRINT_{PAGE}
+CALLFORM 地图绘制(PAGE)
 PRINTL
 DRAWLINE
 ;マップの数だけ表示
-FOR WK, 0, 2
+FOR WK, 0, 3
 	PRINT 　
 	;現在のマップを橙色で表示
 	IF PAGE == WK
@@ -168,9 +169,11 @@ FOR WK, 0, 2
 	ENDIF
 	SELECTCASE WK
 		CASE 0
-			WKNAME = 紅魔館
+			WKNAME = 红魔馆1F与地下室
 		CASE 1
-			WKNAME = 霧の湖周辺他
+			WKNAME = 红魔馆2F与3F
+		CASE 2
+			WKNAME = 雾之湖及其附近
 	ENDSELECT
 	PRINT 　　
 	PRINTBUTTON @"[%WKNAME%]", WK+1000
@@ -217,7 +220,7 @@ ELSEIF INRANGE(TargetRoom, 1000, 1001)
 	PAGE = TargetRoom - 1000
 	GOTO LOOP_PAGE
 	;目的地がテラスなら蕾米莉亚私室が閉まっている且つ合鍵を持っていないと進めない
-ELSEIF TargetRoom == 位置_3F阳台 && CFLAG:MASTER:現在位置 != 位置_蕾米莉亚私室 &&  isLocked(位置_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_蕾米莉亚私室)
+ELSEIF TargetRoom == 位置_红魔馆_三楼阳台 && CFLAG:MASTER:現在位置 != 位置_红魔馆_蕾米莉亚私室 &&  isLocked(位置_红魔馆_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_红魔馆_蕾米莉亚私室)
 	PRINTW 因为不能通过蕾米莉亚的房间，所以不能移动
 	GOTO LOOP_PAGE
 ELSEIF TargetRoom == 0
@@ -234,7 +237,7 @@ ELSEIF CAN_MOVE(CFLAG:MASTER:現在位置, TargetRoom)
 	ENDIF
 
 	;地下室
-	IF TargetRoom == 位置_地下室 && ABL:MASTER:战斗技能 <= 0
+	IF TargetRoom == 位置_红魔馆_地下室 && ABL:MASTER:战斗技能 <= 0
 		PRINTW 从门里感到不祥之意……
 		PRINTW 为了能平安返回，一定程度的实力是必要的吧。
 		RESTART

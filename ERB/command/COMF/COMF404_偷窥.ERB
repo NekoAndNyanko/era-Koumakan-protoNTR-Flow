@@ -340,21 +340,21 @@ RETURN 1
 
 POS =  CFLAG:MASTER:現在位置		; 覗いてる側の場所
 ;広間から踊り場を見上げたとき1/3でパンチラ
-IF POS == 位置_大厅 && targetArea == 位置_二楼楼梯间 && !RAND:3
+IF POS == 位置_红魔馆_大厅 && targetArea == 位置_红魔馆_二楼楼梯间 && !RAND:3
 	CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 0)
 ENDIF
 ;踊り場から二階廊下を見上げたとき1/4でパンチラ
-IF POS == 位置_二楼楼梯间 && targetArea == 位置_二楼走廊 && !RAND:4 
+IF POS == 位置_红魔馆_二楼楼梯间 && targetArea == 位置_红魔馆_二楼走廊 && !RAND:4 
 	CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 0)
 ENDIF
 ;庭に面した一階から庭を見たとき1/3でパンチラ
-IF POS == 位置_食堂 || POS == 位置_仓库 || POS == 位置_屋外厕所
-	IF targetArea == 位置_院子 && !RAND:3 
+IF POS == 位置_红魔馆_餐厅 || POS == 位置_红魔馆_仓库 || POS == 位置_红魔馆_屋外厕所
+	IF targetArea == 位置_红魔馆_后院 && !RAND:3 
 		CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 1)
 	ENDIF
 ENDIF
 ;湖に面した一階から湖を見たとき1/3でパンチラ
-IF POS == 位置_红魔馆正门 
+IF POS == 位置_红魔馆_正门 
 	IF targetArea == 位置_雾之湖北部 && !RAND:3 
 		CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 1)
 	ENDIF
@@ -506,9 +506,9 @@ SIF EQUIP:MASTER:裙子 == 5
 	RETURN 0
 ;パンチラ不可能な場所の場合処理しない（踊り場、二階廊下、庭、湖以外）
 SELECTCASE CFLAG:MASTER:現在位置
-	CASE 位置_二楼楼梯间
-	CASE 位置_二楼走廊
-	CASE 位置_院子
+	CASE 位置_红魔馆_二楼楼梯间
+	CASE 位置_红魔馆_二楼走廊
+	CASE 位置_红魔馆_后院
 	CASE 位置_雾之湖北部
 	CASE 位置_雾之湖南部
 		;パンチラ不可
@@ -565,24 +565,24 @@ RETURN 0
 
 SELECTCASE targetArea
 		;踊り場
-	CASE 位置_二楼楼梯间
+	CASE 位置_红魔馆_二楼楼梯间
 		;広間のみ
-		SIF POS == 位置_大厅
+		SIF POS == 位置_红魔馆_大厅
 			RETURNF 0
 		;二階廊下
-	CASE 位置_二楼走廊
+	CASE 位置_红魔馆_二楼走廊
 		;踊り場のみ
-		SIF POS == 位置_二楼楼梯间
+		SIF POS == 位置_红魔馆_二楼楼梯间
 			RETURNF 0
 		;庭
-	CASE 位置_院子
+	CASE 位置_红魔馆_后院
 		;庭に面した一階
-		SIF POS == 位置_食堂 || POS == 位置_仓库 || POS == 位置_屋外厕所
+		SIF POS == 位置_红魔馆_餐厅 || POS == 位置_红魔馆_仓库 || POS == 位置_红魔馆_屋外厕所
 			RETURNF 1
 		;湖
 	CASE 位置_雾之湖北部
 		;湖に面した一階から湖を見たとき1/3でパンチラ
-		SIF POS == 位置_红魔馆正门
+		SIF POS == 位置_红魔馆_正门
 			RETURNF 1
 		;湖南部
 	CASE 位置_雾之湖南部

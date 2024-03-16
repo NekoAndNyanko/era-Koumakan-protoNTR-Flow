@@ -51,17 +51,17 @@ SIF !GETBIT(FLAG:ＮＴＲパッチ設定,0)
 	CALL NTR_OPTION
 ;お持ち帰りされていた場合は位置を初期化
 SIF CFLAG:1:現在位置 < 位置_訪問者宅
-	CFLAG:1:現在位置 = 位置_守卫小屋
+	CFLAG:1:現在位置 = 位置_红魔馆_守卫小屋
 SIF CFLAG:2:現在位置 < 位置_訪問者宅
-	CFLAG:2:現在位置 = 位置_小恶魔私室
+	CFLAG:2:現在位置 = 位置_红魔馆_小恶魔私室
 SIF CFLAG:3:現在位置 < 位置_訪問者宅
-	CFLAG:3:現在位置 = 位置_帕秋莉私室
+	CFLAG:3:現在位置 = 位置_红魔馆_帕秋莉私室
 SIF CFLAG:4:現在位置 < 位置_訪問者宅
-	CFLAG:4:現在位置 = 位置_咲夜私室
+	CFLAG:4:現在位置 = 位置_红魔馆_咲夜私室
 SIF CFLAG:5:現在位置 < 位置_訪問者宅
-	CFLAG:5:現在位置 = 位置_蕾米莉亚私室
+	CFLAG:5:現在位置 = 位置_红魔馆_蕾米莉亚私室
 SIF CFLAG:6:現在位置 < 位置_訪問者宅
-	CFLAG:6:現在位置 = 位置_地下室
+	CFLAG:6:現在位置 = 位置_红魔馆_地下室
 SIF CFLAG:7:現在位置 < 位置_訪問者宅
 	CFLAG:7:現在位置 = (TALENT:7:恋慕 ? 15 # 8)
 SIF CFLAG:8:現在位置 < 位置_訪問者宅
@@ -132,7 +132,7 @@ FOR LOOP_CHR,1,CHARANUM
 		PRINTFORMW %CALLNAME:LOOP_CHR%不知道从哪里回来了
 		CFLAG:LOOP_CHR:現在位置 = GET_PRIVATE_ROOM(LOOP_CHR, 0)
 		;紅魔館玄関から私室への移动経路を算出
-		CALLF FARMOVE(LOOP_CHR,位置_红魔馆正门,CFLAG:LOOP_CHR:現在位置)
+		CALLF FARMOVE(LOOP_CHR,位置_红魔馆_正门,CFLAG:LOOP_CHR:現在位置)
 		移动目撃フラグ = 0
 		FOR 移动路线循环,0,移动路线MAX
 			IF NTR_CHK_VISIBLE( 移动路线:LOOP_CHR:移动路线循环 )
@@ -255,9 +255,9 @@ IF (GETBIT(FLAG:ゲームモード, 3) && IS_NTR_VISITOR_COME()) || (RAND(100) <
 	NEXT
 	;訪問者出現場所
 	;FLAG:訪問者の現在位置 = 位置_薄暗い路地裏
-	FLAG:訪問者の現在位置 = 位置_红魔馆正门
-	;FLAG:訪問者の現在位置 = 位置_仓库
-	;FLAG:訪問者の現在位置 = 位置_大浴場
+	FLAG:訪問者の現在位置 = 位置_红魔馆_正门
+	;FLAG:訪問者の現在位置 = 位置_红魔馆_仓库
+	;FLAG:訪問者の現在位置 = 位置_红魔馆_大浴场
 	;CALL NTR_RESET_VISITOR_ACTION(-1)
 	FLAG:訪問者との汚れ判定に使用 = 0
 	FLAG:訪問者滞在時間カウンタ = 0
@@ -678,7 +678,7 @@ ELSE
 		FLAG:訪問者の現在位置 = FLAG:訪問者のお気に入りの場所
 		FLAG:訪問者同行フラグ = 0
 	ELSE
-		FLAG:訪問者の現在位置 = 位置_仓库
+		FLAG:訪問者の現在位置 = 位置_红魔馆_仓库
 		FLAG:訪問者同行フラグ = 0
 	ENDIF
 	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
@@ -769,17 +769,17 @@ RETURN
 @IS_CAN_LOCK(場所)
 #FUNCTION
 #DIM 場所
-SIF 場所 == 位置_红魔馆正门
+SIF 場所 == 位置_红魔馆_正门
 	RETURNF 0
-SIF 場所 == 位置_大厅
+SIF 場所 == 位置_红魔馆_大厅
 	RETURNF 0
-SIF 場所 == 位置_院子
+SIF 場所 == 位置_红魔馆_后院
 	RETURNF 0
-SIF 場所 == 位置_二楼楼梯间
+SIF 場所 == 位置_红魔馆_二楼楼梯间
 	RETURNF 0
-SIF 場所 == 位置_二楼走廊
+SIF 場所 == 位置_红魔馆_二楼走廊
 	RETURNF 0
-SIF 場所 == 位置_玩家房间
+SIF 場所 == 位置_红魔馆_玩家房间
 	RETURNF 0
 SIF 場所 == 位置_雾之湖北部
 	RETURNF 0

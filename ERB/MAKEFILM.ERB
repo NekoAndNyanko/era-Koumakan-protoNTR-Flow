@@ -234,7 +234,7 @@ SIF TALENT:LOCAL:人气
 LOCAL:3 = SLOTPLACE(ARGS)
 SELECTCASE LOCAL:3
 		;ぱんちら補正
-	CASE 位置_大厅, 位置_二楼楼梯间, 位置_二楼走廊
+	CASE 位置_红魔馆_大厅, 位置_红魔馆_二楼楼梯间, 位置_红魔馆_二楼走廊
 		;BIT(0=裙子, 3=ズボン)
 		IF GETBIT(TEQUIP:LOCAL:0, 0) && !GETBIT(TEQUIP:LOCAL:0, 3)
 			LOCAL:2 += 30
@@ -243,9 +243,9 @@ SELECTCASE LOCAL:3
 				LOCAL:2 += 30
 		ENDIF
 		;トイレ補正
-	CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
+	CASE 位置_红魔馆_屋外厕所, 位置_红魔馆_一楼厕所, 位置_红魔馆_二楼厕所
 		LOCAL:2 += 60
-	CASE 位置_地下室
+	CASE 位置_红魔馆_地下室
 		LOCAL:2 += 30
 	CASEELSE
 		;補正なし

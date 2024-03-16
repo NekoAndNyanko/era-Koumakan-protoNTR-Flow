@@ -76,24 +76,24 @@
 
 PRINTL 〜紅魔館〜
 PRINTL
-CALL MAP_SETING, "■■■■■■■■■■■■■■■■　", 位置_红魔馆正门, 位置_大厅
-CALL MAP_SETING, "■22　　　　　　　　　　10　６■　", 位置_食堂, 位置_图书室
-CALL MAP_SETING, "■　■■■■■　■■■　　　　■　", 位置_厨房, 位置_仓库
-CALL MAP_SETING, "■　■　５　　３　■■■■■　■　", 位置_帕秋莉私室
+CALL MAP_SETING, "■■■■■■■■■■■■■■■■　", 位置_红魔馆_正门, 位置_红魔馆_大厅
+CALL MAP_SETING, "■22　　　　　　　　　　10　６■　", 位置_红魔馆_餐厅, 位置_红魔馆_大图书馆
+CALL MAP_SETING, "■　■■■■■　■■■　　　　■　", 位置_红魔馆_厨房, 位置_红魔馆_仓库
+CALL MAP_SETING, "■　■　５　　３　■■■■■　■　", 位置_红魔馆_帕秋莉私室
 CALL MAP_SETING, "■　■■■■■　■■　　８■　■　", 位置_小悪魔私室
-CALL MAP_SETING, "■　■17■　＜　＞■４　■■　■　", 位置_守卫小屋
-CALL MAP_SETING, "■　■23　　　２　　　　７■　■　", 位置_院子;, 位置_地下室階段
-CALL MAP_SETING, "■　■■■■■　■■■■■■　■　", 位置_屋外厕所, 位置_1F厕所
+CALL MAP_SETING, "■　■17■　＜　＞■４　■■　■　", 位置_红魔馆_守卫小屋
+CALL MAP_SETING, "■　■23　　　２　　　　７■　■　", 位置_红魔馆_后院;, 位置_红魔馆_地下室階段
+CALL MAP_SETING, "■　■■■■■　■■■■■■　■　", 位置_红魔馆_屋外厕所, 位置_红魔馆_一楼厕所
 CALL MAP_SETING, "■９　　　　　１　　　　　　　■　"
 CALL MAP_SETING, "■■■■■■■　■■■■■■■■　"
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　"
-CALL MAP_SETING, "２階　　　　　　　　　　地下　　　", 位置_二楼楼梯间, 位置_二楼走廊
-CALL MAP_SETING, "■■■■■■■■　　　　■■■■　", 位置_咲夜私室
-CALL MAP_SETING, "■13■15■14■■■　　　■17＞■　", 位置_妖精女仆办公室
-CALL MAP_SETING, "■　　　12　　24■　　　■■■■■", 位置_玩家房间
-CALL MAP_SETING, "■■■■■　■■■■■　■　＞　■", 位置_レミリア私室, 位置_3F阳台
-CALL MAP_SETING, "■■■２＜11＞16　26■　■　18　■", 位置_2F厕所
-CALL MAP_SETING, "■■■■■■■■■■■　■■■■■", 位置_地下室, 位置_大浴場
+CALL MAP_SETING, "２階　　　　　　　　　　地下　　　", 位置_红魔馆_二楼楼梯间, 位置_红魔馆_二楼走廊
+CALL MAP_SETING, "■■■■■■■■　　　　■■■■　", 位置_红魔馆_咲夜私室
+CALL MAP_SETING, "■13■15■14■■■　　　■17＞■　", 位置_红魔馆_妖精女仆办公室
+CALL MAP_SETING, "■　　　12　　24■　　　■■■■■", 位置_红魔馆_玩家房间
+CALL MAP_SETING, "■■■■■　■■■■■　■　＞　■", 位置_レミリア私室, 位置_红魔馆_三楼阳台
+CALL MAP_SETING, "■■■２＜11＞16　26■　■　18　■", 位置_红魔馆_二楼厕所
+CALL MAP_SETING, "■■■■■■■■■■■　■■■■■", 位置_红魔馆_地下室, 位置_红魔馆_大浴场
 
 
 PRINTL 〜霧の湖周辺など〜
@@ -111,7 +111,7 @@ CALL MAP_SETING, "　　　／／／霧の湖／／／　　　　●●●■�
 CALL MAP_SETING, "　　　　／／／／／／／　　　　　　●●●●●●"
 CALL MAP_SETING, "　　　　　／／／／／　　　　　　　　　　●●●"
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　●"
-CALL MAP_SETING, "　　　　　　　27　　　　　　　　　　　　　　　", 位置_红魔馆正门
+CALL MAP_SETING, "　　　　　　　27　　　　　　　　　　　　　　　", 位置_红魔馆_正门
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　", 位置_魔法之森内部, 位置_露米娅的家
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　", 位置_魔理沙的家
 CALL MAP_SETING, "■20■　　　■21■　　　　　　　　　　　　　　", 位置_雾之湖北部, 位置_雾之湖南部

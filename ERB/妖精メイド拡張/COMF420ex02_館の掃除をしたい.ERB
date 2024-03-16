@@ -20,7 +20,7 @@ DRAWLINE
 PRINTFORML %"場所名                  清潔度    場所名                  清潔度"%
 DRAWLINE
 FOR 場所番号,1,場所番号最大値+1
-	IF 場所番号 == 位置_玩家房间
+	IF 場所番号 == 位置_红魔馆_玩家房间
 		場所名称 = %CALLNAME:MASTER%私室
 	ELSE
 		場所名称 = %GETPLACENAME(場所番号)%
@@ -42,7 +42,7 @@ IF RESULT == 0
 	RETURN 1
 ELSEIF RESULT > 0 &&  RESULT <= 場所番号最大値
 	;目的地がテラスなら蕾米莉亚私室が閉まっている且つ合鍵を持っていないと進めない
-	IF RESULT == 位置_3F阳台 && FLAG:(300 + 位置_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_蕾米莉亚私室)
+	IF RESULT == 位置_红魔馆_三楼阳台 && FLAG:(300 + 位置_红魔馆_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_红魔馆_蕾米莉亚私室)
 		PRINTW 蕾米莉亚私室を通れない為、移动できません
 		CLEARLINE 2
 		GOTO COM420_02_INPUT_LOOP

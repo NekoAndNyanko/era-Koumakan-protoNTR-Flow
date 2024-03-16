@@ -42,7 +42,7 @@ SELECTCASE セクハラ内容
 				セクハラ成立 = 1
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+					CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 						セクハラ成立 = 1
 				ENDSELECT
 			ENDIF
@@ -701,7 +701,7 @@ SELECTCASE セクハラ内容
 				興奮要素 = 1	;;露出系
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+					CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 						興奮要素 = 2	;;屈辱系
 					CASEELSE
 						SELECTCASE GET_ROOM_SECURITY(CFLAG:MASTER:現在位置)
@@ -786,7 +786,7 @@ SELECTCASE セクハラ内容
 				興奮要素 = 1	;;露出系
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+					CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 						興奮要素 = 2	;;屈辱系
 					CASEELSE
 						SELECTCASE GET_ROOM_SECURITY(CFLAG:MASTER:現在位置)

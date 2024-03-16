@@ -4,29 +4,29 @@ IF CFLAG:人物_艾丽娅:睡眠 == 0
 	IF (TIME >= 180 && TIME <= 540) || CFLAG:人物_艾丽娅:衰弱
 		;恋慕->她真的爱你的时候（划掉）
 		IF TALENT:人物_艾丽娅:恋慕 == 1 && !NTR_CHK_FAVORABLY(人物_艾丽娅,FAV_主人より高い)
-			CFLAG:人物_艾丽娅:開始位置 = 位置_玩家房间
+			CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_玩家房间
 		ELSEIF TALENT:人物_艾丽娅:恋慕 && NTR_CHK_FAVORABLY(人物_艾丽娅,FAV_寝取られそう)
 			IF RAND:2 == 0
-				CFLAG:人物_艾丽娅:開始位置 = 位置_玩家房间
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_玩家房间
 			ELSEIF RAND:5 == 0
-				CFLAG:人物_艾丽娅:開始位置 = 位置_仓库
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_仓库
 			ELSE
-				CFLAG:人物_艾丽娅:開始位置 = 位置_图书室
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_大图书馆
 			ENDIF
 			;NTR
 		ELSEIF !TALENT:人物_艾丽娅:恋慕 && TALENT:人物_艾丽娅:恋人
 			IF RAND:5 == 0
-				CFLAG:人物_艾丽娅:開始位置 = 位置_玩家房间
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_玩家房间
 			ELSEIF RAND:3 == 0
-				CFLAG:人物_艾丽娅:開始位置 = 位置_仓库
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_仓库
 			ELSE
-				CFLAG:人物_艾丽娅:開始位置 = 位置_图书室
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_大图书馆
 			ENDIF
 		ELSE
 			IF RAND:2 == 0
-				CFLAG:人物_艾丽娅:開始位置 = 位置_仓库
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_仓库
 			ELSE
-				CFLAG:人物_艾丽娅:開始位置 = 位置_图书室
+				CFLAG:人物_艾丽娅:開始位置 = 位置_红魔馆_大图书馆
 			ENDIF
 		ENDIF
 	ENDIF
@@ -39,75 +39,75 @@ RETURN (TIME >= 180 && TIME <= 540) || CFLAG:ARG:衰弱
 RETURN 80
 
 @CHARA_MOVEMENT_7(ARG,ARG:1)
-RESULT:1 = 位置_红魔馆正门 * 倍_万 + 80
-RESULT:2 = 位置_大厅 * 倍_万 + 100
-RESULT:3 = 位置_食堂 * 倍_万 + 100
-RESULT:4 = 位置_图书室 * 倍_万 + 100
-RESULT:5 = 位置_厨房 * 倍_万 + 100
-RESULT:6 = 位置_仓库 * 倍_万 + 100
-RESULT:7 = 位置_帕秋莉私室 * 倍_万 + 90
-RESULT:8 = 位置_小恶魔私室 * 倍_万 + 90
-RESULT:9 = 位置_守卫小屋 * 倍_万 + 100
-RESULT:10 = 位置_院子 * 倍_万 + 80
-RESULT:11 = 位置_二楼楼梯间 * 倍_万 + 100
-RESULT:12 = 位置_二楼走廊 * 倍_万 + 100
-RESULT:13 = 位置_咲夜私室 * 倍_万 + 80
-RESULT:14 = 位置_妖精女仆办公室 * 倍_万 + 100
-RESULT:15 = 位置_玩家房间 * 倍_万 + 80 + (10 * ((TALENT:人物_艾丽娅:NTR ? 0 # 1) + (TALENT:人物_艾丽娅:恋人 ? 1 # 0)))
-RESULT:16 = 位置_大浴場 * 倍_万 + 100
-RESULT:17 = 位置_屋外厕所 * 倍_万 + 60
-RESULT:18 = 位置_1F厕所 * 倍_万 + 100
-RESULT:19 = 位置_2F厕所 * 倍_万 + 100
+RESULT:1 = 位置_红魔馆_正门 * 倍_万 + 80
+RESULT:2 = 位置_红魔馆_大厅 * 倍_万 + 100
+RESULT:3 = 位置_红魔馆_餐厅 * 倍_万 + 100
+RESULT:4 = 位置_红魔馆_大图书馆 * 倍_万 + 100
+RESULT:5 = 位置_红魔馆_厨房 * 倍_万 + 100
+RESULT:6 = 位置_红魔馆_仓库 * 倍_万 + 100
+RESULT:7 = 位置_红魔馆_帕秋莉私室 * 倍_万 + 90
+RESULT:8 = 位置_红魔馆_小恶魔私室 * 倍_万 + 90
+RESULT:9 = 位置_红魔馆_守卫小屋 * 倍_万 + 100
+RESULT:10 = 位置_红魔馆_后院 * 倍_万 + 80
+RESULT:11 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 100
+RESULT:12 = 位置_红魔馆_二楼走廊 * 倍_万 + 100
+RESULT:13 = 位置_红魔馆_咲夜私室 * 倍_万 + 80
+RESULT:14 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 100
+RESULT:15 = 位置_红魔馆_玩家房间 * 倍_万 + 80 + (10 * ((TALENT:人物_艾丽娅:NTR ? 0 # 1) + (TALENT:人物_艾丽娅:恋人 ? 1 # 0)))
+RESULT:16 = 位置_红魔馆_大浴场 * 倍_万 + 100
+RESULT:17 = 位置_红魔馆_屋外厕所 * 倍_万 + 60
+RESULT:18 = 位置_红魔馆_一楼厕所 * 倍_万 + 100
+RESULT:19 = 位置_红魔馆_二楼厕所 * 倍_万 + 100
 
 LOCAL:3 = 1
 FOR LOCAL:4, 1, 場所番号最大値+1
 	;紅魔館内の風呂、トイレ、納屋以外の汚れている場所を優先して移动
-	SIF MAP_DISTINCTION(LOCAL:4) != 0 || LOCAL:4 == 位置_仓库
+	SIF MAP_DISTINCTION(LOCAL:4) != 0 || LOCAL:4 == 位置_红魔馆_仓库
 		CONTINUE
 
 	SELECTCASE LOCAL:4
-		CASE 位置_屋外厕所
+		CASE 位置_红魔馆_屋外厕所
 			;お手洗いパッチ
 			;基本的には1F厕所を使用
 			IF REST_NeedRestroom(ARG:1)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
-					RESULT:(LOCAL:3) = 位置_屋外厕所 * 倍_万 + 10
+					RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
 					LOCAL:3 ++
 				ENDIF
 			ENDIF
-		CASE 位置_1F厕所
+		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(ARG:1)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 < 2
-					RESULT:(LOCAL:3) = 位置_1F厕所 * 倍_万 + 10
+					RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
 					LOCAL:3 ++
 				ENDIF
 			ENDIF
-		CASE 位置_2F厕所
+		CASE 位置_红魔馆_二楼厕所
 			IF REST_NeedRestroom(ARG:1)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1
-					RESULT:(LOCAL:3) = 位置_2F厕所 * 倍_万 + 10
+					RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
 					LOCAL:3 ++
 				ENDIF
 			ENDIF
-		CASE 位置_大浴場
+		CASE 位置_红魔馆_大浴场
 			IF CFLAG:(ARG:1):風呂 >= 1000
-				RESULT:(LOCAL:3) = 位置_大浴場 * 倍_万 + 8000
+				RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 8000
 				LOCAL:3 ++
 			ENDIF
 		CASEELSE
@@ -120,19 +120,19 @@ NEXT
 IF CFLAG:人物_艾丽娅:亲密程度 == 2
 	SELECTCASE ARG
 			;私室にも侵入する
-		CASE 位置_帕秋莉私室,位置_小恶魔私室,位置_守卫小屋,位置_咲夜私室
+		CASE 位置_红魔馆_帕秋莉私室,位置_红魔馆_小恶魔私室,位置_红魔馆_守卫小屋,位置_红魔馆_咲夜私室
 			RETURN 60
 			;図書室
-		CASE 位置_图书室
+		CASE 位置_红魔馆_大图书馆
 			RETURN 100
 			;広間
-		CASE 位置_大厅
+		CASE 位置_红魔馆_大厅
 			RETURN 90
 			;屋内は割と移动
-		CASE 位置_食堂,位置_厨房,位置_二楼楼梯间,位置_二楼走廊,位置_妖精女仆办公室
+		CASE 位置_红魔馆_餐厅,位置_红魔馆_厨房,位置_红魔馆_二楼楼梯间,位置_红魔馆_二楼走廊,位置_红魔馆_妖精女仆办公室
 			RETURN 80
 			;玩家房间 起床時刻にいてくれるかもしれない
-		CASE 位置_玩家房间
+		CASE 位置_红魔馆_玩家房间
 			IF CFLAG:MASTER:312 < 60 && TIME <= CFLAG:MASTER:312 + 1480 && ( TIME+15 > CFLAG:MASTER:312 + 1480)
 				IF TALENT:人物_艾丽娅:恋慕 == 1
 					IF RAND:3 == 0
@@ -165,33 +165,33 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 				RETURN 80
 			ENDIF
 			;風呂
-		CASE 位置_大浴場
+		CASE 位置_红魔馆_大浴场
 			IF CFLAG:人物_艾丽娅:風呂 < 1000
 				RETURN 0
 			ELSE
 				RETURN 200
 			ENDIF
 			;庭
-		CASE 位置_院子
+		CASE 位置_红魔馆_后院
 			RETURN 70
 			;正門とお嬢様にはあまり近づきたくない
-		CASE 位置_红魔馆正门,位置_蕾米莉亚私室
+		CASE 位置_红魔馆_正门,位置_红魔馆_蕾米莉亚私室
 			RETURN 60
 			;まれに納屋に侵入
-		CASE 位置_仓库
+		CASE 位置_红魔馆_仓库
 			RETURN 40
 			;ふらんちゃんには近づかない
-		CASE 位置_地下室
+		CASE 位置_红魔馆_地下室
 			RETURN 0
 			;お手洗いパッチ
 			;基本的には1F厕所を使用
 			;屋外厕所
-		CASE 位置_屋外厕所
+		CASE 位置_红魔馆_屋外厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
@@ -203,10 +203,10 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 				RETURN 0
 			ENDIF
 			;1F厕所
-		CASE 位置_1F厕所
+		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:1 ++
 				NEXT
 				IF LOCAL:1 < 2
@@ -218,13 +218,13 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 				RETURN 0
 			ENDIF
 			;2F厕所
-		CASE 位置_2F厕所
+		CASE 位置_红魔馆_二楼厕所
 			VARSET LOCAL
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1
@@ -242,19 +242,19 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 	SELECTCASE ARG
 			;私室にも侵入する
-		CASE 位置_帕秋莉私室,位置_小恶魔私室,位置_守卫小屋,位置_咲夜私室
+		CASE 位置_红魔馆_帕秋莉私室,位置_红魔馆_小恶魔私室,位置_红魔馆_守卫小屋,位置_红魔馆_咲夜私室
 			RETURN  70
 			;図書室
-		CASE 位置_图书室
+		CASE 位置_红魔馆_大图书馆
 			RETURN 100
 			;広間
-		CASE 位置_大厅
+		CASE 位置_红魔馆_大厅
 			RETURN 90
 			;屋内は割と移动
-		CASE 位置_食堂,位置_厨房,位置_二楼楼梯间,位置_二楼走廊,位置_妖精女仆办公室
+		CASE 位置_红魔馆_餐厅,位置_红魔馆_厨房,位置_红魔馆_二楼楼梯间,位置_红魔馆_二楼走廊,位置_红魔馆_妖精女仆办公室
 			RETURN 80
 			;玩家房间 起床時刻にいてくれるかもしれない
-		CASE 位置_玩家房间
+		CASE 位置_红魔馆_玩家房间
 			IF CFLAG:MASTER:312 < 60 && TIME <= CFLAG:MASTER:312 + 1480 && ( TIME+15 > CFLAG:MASTER:312 + 1480)
 				IF TALENT:人物_艾丽娅:恋慕 == 1
 					IF RAND:3 == 0
@@ -287,33 +287,33 @@ ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 				RETURN 80
 			ENDIF
 			;風呂
-		CASE 位置_大浴場
+		CASE 位置_红魔馆_大浴场
 			IF CFLAG:人物_艾丽娅:風呂 < 1000
 				RETURN 0
 			ELSE
 				RETURN 200
 			ENDIF
 			;庭
-		CASE 位置_院子
+		CASE 位置_红魔馆_后院
 			RETURN 70
 			;正門とお嬢様にはあまり近づきたくない
-		CASE 位置_红魔馆正门,位置_蕾米莉亚私室
+		CASE 位置_红魔馆_正门,位置_红魔馆_蕾米莉亚私室
 			RETURN 60
 			;まれに納屋に侵入
-		CASE 位置_仓库
+		CASE 位置_红魔馆_仓库
 			RETURN 40
 			;ふらんちゃんには近づかない
-		CASE 位置_地下室
+		CASE 位置_红魔馆_地下室
 			RETURN 0
 			;お手洗いパッチ
 			;基本的には1F厕所を使用
 			;屋外厕所
-		CASE 位置_屋外厕所
+		CASE 位置_红魔馆_屋外厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
@@ -325,10 +325,10 @@ ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 				RETURN 0
 			ENDIF
 			;1F厕所
-		CASE 位置_1F厕所
+		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:1 ++
 				NEXT
 				IF LOCAL:1 < 2
@@ -340,13 +340,13 @@ ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 				RETURN 0
 			ENDIF
 			;2F厕所
-		CASE 位置_2F厕所
+		CASE 位置_红魔馆_二楼厕所
 			VARSET LOCAL
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1
@@ -365,19 +365,19 @@ ELSE
 
 	SELECTCASE ARG
 			;私室にも侵入する
-		CASE 位置_帕秋莉私室,位置_小恶魔私室,位置_守卫小屋,位置_咲夜私室
+		CASE 位置_红魔馆_帕秋莉私室,位置_红魔馆_小恶魔私室,位置_红魔馆_守卫小屋,位置_红魔馆_咲夜私室
 			RETURN  70
 			;図書室
-		CASE 位置_图书室
+		CASE 位置_红魔馆_大图书馆
 			RETURN 100
 			;広間
-		CASE 位置_大厅
+		CASE 位置_红魔馆_大厅
 			RETURN 90
 			;屋内は割と移动
-		CASE 位置_食堂,位置_厨房,位置_二楼楼梯间,位置_二楼走廊,位置_妖精女仆办公室
+		CASE 位置_红魔馆_餐厅,位置_红魔馆_厨房,位置_红魔馆_二楼楼梯间,位置_红魔馆_二楼走廊,位置_红魔馆_妖精女仆办公室
 			RETURN 80
 			;玩家房间 起床時刻にいてくれるかもしれない
-		CASE 位置_玩家房间
+		CASE 位置_红魔馆_玩家房间
 			IF CFLAG:MASTER:312 < 60 && TIME <= CFLAG:MASTER:312 + 1480 && ( TIME+15 > CFLAG:MASTER:312 + 1480)
 				IF TALENT:人物_艾丽娅:恋慕 == 1
 					IF RAND:3 == 0
@@ -410,33 +410,33 @@ ELSE
 				RETURN 70
 			ENDIF
 			;風呂
-		CASE 位置_大浴場
+		CASE 位置_红魔馆_大浴场
 			IF CFLAG:人物_艾丽娅:風呂 < 1000
 				RETURN 0
 			ELSE
 				RETURN 200
 			ENDIF
 			;庭
-		CASE 位置_院子
+		CASE 位置_红魔馆_后院
 			RETURN 70
 			;正門とお嬢様にはあまり近づきたくない
-		CASE 位置_红魔馆正门,位置_蕾米莉亚私室
+		CASE 位置_红魔馆_正门,位置_红魔馆_蕾米莉亚私室
 			RETURN 60
 			;まれに納屋に侵入
-		CASE 位置_仓库
+		CASE 位置_红魔馆_仓库
 			RETURN 40
 			;ふらんちゃんには近づかない
-		CASE 位置_地下室
+		CASE 位置_红魔馆_地下室
 			RETURN 0
 			;お手洗いパッチ
 			;基本的には1F厕所を使用
 			;屋外厕所
-		CASE 位置_屋外厕所
+		CASE 位置_红魔馆_屋外厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
@@ -448,10 +448,10 @@ ELSE
 				RETURN 0
 			ENDIF
 			;1F厕所
-		CASE 位置_1F厕所
+		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:1 ++
 				NEXT
 				IF LOCAL:1 < 2
@@ -463,13 +463,13 @@ ELSE
 				RETURN 0
 			ENDIF
 			;2F厕所
-		CASE 位置_2F厕所
+		CASE 位置_红魔馆_二楼厕所
 			VARSET LOCAL
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_屋外厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_1F厕所
+					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1

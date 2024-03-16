@@ -4,79 +4,78 @@
 @MAP_PRINT_0
 
 ;・マップ作成
-;CALL MAP_SETING, "■■■■■▲▲▲■■■■■■■■ ", -1, 位置_红魔馆正门, 位置_大厅
+;CALL MAP_SETING, "■■■■■▲▲▲■■■■■■■■ ", -1, 位置_红魔馆_正门, 位置_红魔馆_大厅
 ;　　　　　　　　　　　↑表示されるマップ　　　　　　　↑　　　↑マップ横のボタン、最高５つまで、省略可
 ;　　　　　　　　　　　　　　　　　　　　　　　　　　　｜
 ;　　　　　　　　　　　　　　　　　　　　　　　　　色コード値(下で説明)
 
 ;・マップ内ボタン作成
-;CALL MAP_SETING, "１/■■■■■/16/▲▲▲■■■/５/■■■■■ ", -1, 位置_红魔馆正门, 位置_大厅
+;CALL MAP_SETING, "１/■■■■■/16/▲▲▲■■■/５/■■■■■ ", -1, 位置_红魔馆_正门, 位置_红魔馆_大厅
 ;マップ内のボタンとなる数値の左右を"/"で囲う、末端の場合は端ではない方のみ"/"を置く
 ;"/"で囲われた数字がボタンになる
 
 ;・部分カラー指定
-;CALL MAP_SETING, "１/■■■■■/16/#FF8000=▲▲▲/■■■/５/■■■■■ ", -1, 位置_红魔馆正门, 位置_大厅
+;CALL MAP_SETING, "１/■■■■■/16/#FF8000=▲▲▲/■■■/５/■■■■■ ", -1, 位置_红魔馆_正门, 位置_红魔馆_大厅
 ;色を変えたい文字(記号)の右端に"#(16進数色コード)="で色を指定できる、色コードの英字は大文字小文字どちらでも可
 ;指定すると次の"/"までの文字が指定した色に変わる、上の場合▲▲▲の部分が違う色で表示される
 ;"#resetC="でEmueraに設定している基本の文字色に設定できる
 ;ボタンの色は変えられない
 
 ;・色コード値
-;CALL MAP_SETING, "１/■■■■■/16/#FF8000=▲▲▲■■/■/５/■■■■■ ", 0Xdc143c, 位置_红魔馆正门, 位置_大厅
+;CALL MAP_SETING, "１/■■■■■/16/#FF8000=▲▲▲■■/■/５/■■■■■ ", 0Xdc143c, 位置_红魔馆_正门, 位置_红魔馆_大厅
 ;0X(16進数色コード)で色コード値を変えるとボタンを除く全ての文字(記号)がその色で表示される
 ;色の指定は部分カラー指定が優先される、上の場合▲▲▲■■の部分のみ違う色で表示される
 ;"-1"でEmueraに設定している基本の文字色になる
 
 PRINTL ～紅魔館～
 PRINTL
-CALL MAP_SETING, "二楼　　　　　　　　　　　　　　　　　　"							, -1
-CALL MAP_SETING, "　　　　　　　■■■■■■■　　　　　　"							, 0Xdc143c, 位置_妖精女仆办公室
-CALL MAP_SETING, "　　　　　　　■/13/■/15/■/14/■■　　　　　"			, 0Xdc143c, 位置_咲夜私室, 位置_玩家房间
-CALL MAP_SETING, "　　　　　　　■　　　/12/　/24/■　　　　　"						, 0Xdc143c, 位置_二楼走廊, 位置_2F厕所
-CALL MAP_SETING, "　　　　　　　■■■■■　■■■■　　　"					, 0Xdc143c, 位置_蕾米莉亚私室, 位置_3F阳台
-CALL MAP_SETING, "　　　　　　　■■/２/#resetC=＜/11/#resetC=＞/16/　/26/■　　　"	, 0Xdc143c, 位置_二楼楼梯间
-CALL MAP_SETING, "　　　　　　　■■■■■■■■■■　　　"							, 0Xdc143c
-CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　"							, -1
-CALL MAP_SETING, "一楼　　　　　　　　　　　　　　　　　　"							, -1
-CALL MAP_SETING, "■■■■■■■■■■■■■■■■■■■　"							, 0Xdc143c
-CALL MAP_SETING, "■/22/　　　　　　　　　　　　/10/　　/６/■　"						, 0Xdc143c, 位置_屋外厕所, 位置_院子, 位置_仓库
-CALL MAP_SETING, "■　　■■■■■■　■■■■　　　　■　"							, 0Xdc143c, 位置_厨房, 位置_食堂
-CALL MAP_SETING, "■　　■　/５/　　　/３/　■■■■■■　■　"						, 0Xdc143c
-CALL MAP_SETING, "■　　■■■■■■　■■　　　/８/■　■　"							, 0Xdc143c, 位置_小恶魔私室
-CALL MAP_SETING, "■　　■/23/■　　　　　　　/４/　■■　■　"				, 0Xdc143c, 位置_图书室, 位置_帕秋莉私室
-CALL MAP_SETING, "■　　■　　　■/#resetC=＜/２/#resetC=＞/■　　　/７/■　■　"						, 0Xdc143c, 位置_1F厕所, 位置_大厅
-CALL MAP_SETING, "■　　■■■■■■　■■■■■■■　■　"							, 0Xdc143c
-CALL MAP_SETING, "■/９/　　　　　　　/１/　　　　　　　　■　"						, 0Xdc143c, 位置_守卫小屋, 位置_红魔馆正门
-CALL MAP_SETING, "■■■■■■■■■　■■■■■■■■■　"							, 0Xdc143c
+CALL MAP_SETING, "二楼　　　　　　　　　　　　　　　　　　"								, -1
+CALL MAP_SETING, "　　　　　　　■■■■■■■　　　　　　"									, 0Xdc143c, 位置_红魔馆_妖精女仆办公室
+CALL MAP_SETING, "　　　　　　　■/13/■/15/■/14/■■　　　　　"							, 0Xdc143c, 位置_红魔馆_咲夜私室, 位置_红魔馆_玩家房间
+CALL MAP_SETING, "　　　　　　　■　　　/12/　/24/■　　　　　"							, 0Xdc143c, 位置_红魔馆_二楼走廊, 位置_红魔馆_二楼厕所
+CALL MAP_SETING, "　　　　　　　■■■■■　■■■■　　　"										, 0Xdc143c, 位置_红魔馆_蕾米莉亚私室, 位置_红魔馆_三楼阳台
+CALL MAP_SETING, "　　　　　　　■■/２/#resetC=＜/11/#resetC=＞/16/　/26/■　　　"		, 0Xdc143c, 位置_红魔馆_二楼楼梯间
+CALL MAP_SETING, "　　　　　　　■■■■■■■■■■　　　"									, 0Xdc143c
+CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　"								, -1
+CALL MAP_SETING, "一楼　　　　　　　　　　　　　　　　　　"								, -1
+CALL MAP_SETING, "■■■■■■■■■■■■■■■■■■■　"											, 0Xdc143c
+CALL MAP_SETING, "■/22/　　　　　　　　　　　　/10/　　/６/■　"						, 0Xdc143c, 位置_红魔馆_屋外厕所, 位置_红魔馆_后院, 位置_红魔馆_仓库
+CALL MAP_SETING, "■　　■■■■■■　■■■■　　　　■　"										, 0Xdc143c, 位置_红魔馆_厨房, 位置_红魔馆_餐厅
+CALL MAP_SETING, "■　　■　/５/　　　/３/　■■■■■■　■　"								, 0Xdc143c
+CALL MAP_SETING, "■　　■■■■■■　■■　　　/８/■　■　"									, 0Xdc143c, 位置_红魔馆_小恶魔私室
+CALL MAP_SETING, "■　　■/23/■　　　　　　　/４/　■■　■　"							, 0Xdc143c, 位置_红魔馆_大图书馆, 位置_红魔馆_帕秋莉私室
+CALL MAP_SETING, "■　　■　　　■/#resetC=＜/２/#resetC=＞/■　　　/７/■　■　"			, 0Xdc143c, 位置_红魔馆_一楼厕所, 位置_红魔馆_大厅
+CALL MAP_SETING, "■　　■■■■■■　■■■■■■■　■　"										, 0Xdc143c
+CALL MAP_SETING, "■/９/　　　　　　　/１/　　　　　　　　■　"						, 0Xdc143c, 位置_红魔馆_守卫小屋, 位置_红魔馆_正门
+CALL MAP_SETING, "■■■■■■■■■　■■■■■■■■■　"										, 0Xdc143c
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　"							, 0Xdc143c
 CALL MAP_SETING, "地下　　　　　　　　　　　　　　　　　　"							, -1
-CALL MAP_SETING, "　　　■■■■■■■　　　　　　　　　　"							, 0Xdc143c
-CALL MAP_SETING, "　　　■/17/　　/31/#resetC=＞/■　　　　　　　　　　"			, 0Xdc143c, 位置_地下室, 位置_地下室走廊
-CALL MAP_SETING, "　　　■■■　■■■　　　　　　　　　　"						, 0Xdc143c
-CALL MAP_SETING, "　　　■　　　　　■　　　　　　　　　　"					, 0Xdc143c
-CALL MAP_SETING, "　　　■　　/18/　　■　　　　　　　　　　"	, 0Xdc143c, 位置_大浴場
-CALL MAP_SETING, "　　　■■■■■■■　　　　　　　　　　"							, 0Xdc143c
+CALL MAP_SETING, "　　　■■■■■■■　　　　　　　　　　"								, 0Xdc143c
+CALL MAP_SETING, "　　　■/17/　　/31/#resetC=＞/■　　　　　　　　　　"				, 0Xdc143c, 位置_红魔馆_地下室, 位置_红魔馆_地下室走廊
+CALL MAP_SETING, "　　　■■■　■■■　　　　　　　　　　"								, 0Xdc143c
+CALL MAP_SETING, "　　　■　　　　　■　　　　　　　　　　"							, 0Xdc143c
+CALL MAP_SETING, "　　　■　　/18/　　■　　　　　　　　　　"							, 0Xdc143c, 位置_红魔馆_大浴场
+CALL MAP_SETING, "　　　■■■■■■■　　　　　　　　　　"								, 0Xdc143c
 [SKIPSTART]
-CALL MAP_SETING, "■■■■■■■■■■■■■■■■　"							, 0Xdc143c, 位置_红魔馆正门, 位置_大厅
-CALL MAP_SETING, "■/22/　　　　　　　　　　/10/　/６/■　"						, 0Xdc143c, 位置_食堂, 位置_图书室
-CALL MAP_SETING, "■　■■■■■　■■■　　　　■　"							, 0Xdc143c, 位置_厨房, 位置_仓库
-CALL MAP_SETING, "■　■　/５/　　/３/　■■■■■　■　"						, 0Xdc143c, 位置_帕秋莉私室
-CALL MAP_SETING, "■　■■■■■　■■　　/８/■　■　"							, 0Xdc143c, 位置_小恶魔私室
-CALL MAP_SETING, "■　■/17/■　/#resetC=＜　＞/■/４/　■■　■　"				, 0Xdc143c, 位置_守卫小屋
-CALL MAP_SETING, "■　■/23/　　　/２/　　　　/７/■　■　"						, 0Xdc143c, 位置_院子;, 位置_地下室階段
-CALL MAP_SETING, "■　■■■■■　■■■■■■　■　"							, 0Xdc143c, 位置_屋外厕所, 位置_1F厕所
+CALL MAP_SETING, "■■■■■■■■■■■■■■■■　"							, 0Xdc143c, 位置_红魔馆_正门, 位置_红魔馆_大厅
+CALL MAP_SETING, "■/22/　　　　　　　　　　/10/　/６/■　"						, 0Xdc143c, 位置_红魔馆_餐厅, 位置_红魔馆_大图书馆
+CALL MAP_SETING, "■　■■■■■　■■■　　　　■　"							, 0Xdc143c, 位置_红魔馆_厨房, 位置_红魔馆_仓库
+CALL MAP_SETING, "■　■　/５/　　/３/　■■■■■　■　"						, 0Xdc143c, 位置_红魔馆_帕秋莉私室
+CALL MAP_SETING, "■　■■■■■　■■　　/８/■　■　"							, 0Xdc143c, 位置_红魔馆_小恶魔私室
+CALL MAP_SETING, "■　■/17/■　/#resetC=＜　＞/■/４/　■■　■　"				, 0Xdc143c, 位置_红魔馆_守卫小屋
+CALL MAP_SETING, "■　■/23/　　　/２/　　　　/７/■　■　"						, 0Xdc143c, 位置_红魔馆_后院;, 位置_红魔馆_地下室階段
+CALL MAP_SETING, "■　■■■■■　■■■■■■　■　"							, 0Xdc143c, 位置_红魔馆_屋外厕所, 位置_红魔馆_一楼厕所
 CALL MAP_SETING, "■/９/　　　　　/１/　　　　　　　■　"						, 0Xdc143c
 CALL MAP_SETING, "■■■■■■■　■■■■■■■■　"							, 0Xdc143c
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　"							, 0Xdc143c
-CALL MAP_SETING, "２階　　　　　　　　　　地下　　　"							, -1, 位置_二楼楼梯间, 位置_二楼走廊
-CALL MAP_SETING, "■■■■■■■■　　　　■■■■　"							, 0Xdc143c, 位置_咲夜私室
-CALL MAP_SETING, "■/13/■/15/■/14/■■■　　　■/17/#resetC=＞/■　"			, 0Xdc143c, 位置_妖精女仆办公室
-CALL MAP_SETING, "■　　　/12/　　/24/■　　　■■■■■"						, 0Xdc143c, 位置_玩家房间
-CALL MAP_SETING, "■■■■■　■■■■■　■　/#resetC=＞/　■"					, 0Xdc143c, 位置_蕾米莉亚私室, 位置_3F阳台
-CALL MAP_SETING, "■■■/２/#resetC=＜/11/#resetC=＞/16/　/26/■　■　/18/　■"	, 0Xdc143c, 位置_2F厕所
-CALL MAP_SETING, "■■■■■■■■■■■　■■■■■"							, 0Xdc143c, 位置_地下室, 位置_大浴場
+CALL MAP_SETING, "２階　　　　　　　　　　地下　　　"							, -1, 位置_红魔馆_二楼楼梯间, 位置_红魔馆_二楼走廊
+CALL MAP_SETING, "■■■■■■■■　　　　■■■■　"							, 0Xdc143c, 位置_红魔馆_咲夜私室
+CALL MAP_SETING, "■/13/■/15/■/14/■■■　　　■/17/#resetC=＞/■　"			, 0Xdc143c, 位置_红魔馆_妖精女仆办公室
+CALL MAP_SETING, "■　　　/12/　　/24/■　　　■■■■■"						, 0Xdc143c, 位置_红魔馆_玩家房间
+CALL MAP_SETING, "■■■■■　■■■■■　■　/#resetC=＞/　■"					, 0Xdc143c, 位置_红魔馆_蕾米莉亚私室, 位置_红魔馆_三楼阳台
+CALL MAP_SETING, "■■■/２/#resetC=＜/11/#resetC=＞/16/　/26/■　■　/18/　■"	, 0Xdc143c, 位置_红魔馆_二楼厕所
+CALL MAP_SETING, "■■■■■■■■■■■　■■■■■"							, 0Xdc143c, 位置_红魔馆_地下室, 位置_红魔馆_大浴场
 [SKIPEND]
-
 
 ;－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
 ;霧の湖他
@@ -97,7 +96,7 @@ CALL MAP_SETING, "#1E90FF=　　　／／／/霧の湖/#1E90FF=／／／/　　�
 CALL MAP_SETING, "#1E90FF=　　　　／／／／／／／/　　　　　　●●●●●●"									, 0X228b22
 CALL MAP_SETING, "#1E90FF=　　　　　／／／／／/　　　　　　　　　　●●●"									, 0X228b22
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　●"											, 0X228b22
-CALL MAP_SETING, "　　　　　　　/27/　　　　　　　　　　　　　　　"											, -1, 位置_红魔馆正门
+CALL MAP_SETING, "　　　　　　　/27/　　　　　　　　　　　　　　　"											, -1, 位置_红魔馆_正门
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　"											, -1, 位置_魔法之森内部, 位置_露米娅的家
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　"											, -1, 位置_魔理沙的家, 位置_爱丽丝的家
 CALL MAP_SETING, "■/20/■　　　■/21/■　　　　　　　　　　　　　　"										, -1, 位置_雾之湖北部, 位置_雾之湖南部
@@ -110,7 +109,7 @@ CALL MAP_SETING, "■■■　　　■■■　　　　　　　　　　　�
 
 #DIM C_CODE
 #DIMS MAPING, 50
-
+SETFONT "ＭＳ ゴシック"
 ;ARG:n = マップの横に表示するボタン
 
 VARSET MAPING
@@ -126,6 +125,7 @@ FOR LOCAL, 0, LOCAL:1
 	;数値ならボタン化
 	IF RESULT != 0
 		CALL GETMAP(RESULT)
+		;HTML_PRINT @"<font color = '%"#" + TOSTR(BUTTON_COLOR(RESULT), "X6")%'>" + @"<button value = '{RESULT}'>" + HTML_ESCAPE((RESULT > 9 ? TOSTR(RESULT) # TOFULL(TOSTR(RESULT)))) + "</button>" + "</font>"
 	ELSE
 		;先頭８文字を取得、先頭が#、後尾が=ならカラー取得
 		IF STRLENSU(MAPING:LOCAL) >= 8 && SUBSTRINGU(MAPING:LOCAL, 0, 1) == "#" && SUBSTRINGU(MAPING:LOCAL, 7, 1) == "="
@@ -168,6 +168,7 @@ FOR LOCAL, 0, 5
 	PRINTBUTTON @"%LOCALS%:%GETPLACENAME(ARG:LOCAL, 0)% ", ARG:LOCAL
 NEXT
 PRINTL
+SETFONT
 
 
 @MAP_SETC(ARGS, ARGS:1, ARG)
@@ -243,4 +244,5 @@ IF FLAG:訪問者の現在位置 != 900 && FLAG:訪問者の現在位置 == 場�
 	ENDIF
 ENDIF
 PRINTBUTTON (場所 > 9 ? TOSTR(場所) # TOFULL(TOSTR(場所))),場所
+; PRINTBUTTON (場所 > 9 ? TOSTR(場所) # "0"+TOSTR(場所)),場所
 RESETCOLOR

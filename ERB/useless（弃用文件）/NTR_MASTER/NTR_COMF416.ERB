@@ -39,9 +39,9 @@ ENDIF
 ; 実行確定条件
 SIF CFLAG:MASTER:うふふ == 3
 	FLAG_EXECUTE = 1 ; MASTERの一人情事
-SIF FLAG:訪問者の現在位置 == 位置_大浴場
+SIF FLAG:訪問者の現在位置 == 位置_红魔馆_大浴场
 	FLAG_EXECUTE = 2 ; 大欲情なら仕方ない
-SIF FLAG:訪問者のお気に入り == 0 && FLAG:訪問者の現在位置 == 位置_玩家房间 && HAS_VAGINA(MASTER)
+SIF FLAG:訪問者のお気に入り == 0 && FLAG:訪問者の現在位置 == 位置_红魔馆_玩家房间 && HAS_VAGINA(MASTER)
 	FLAG_EXECUTE = 4
 
 SIF FLAG_EXECUTE
@@ -102,12 +102,12 @@ ELSEIF FLAG_EXECUTE >= 1 && FLAG_EXECUTE <= 3
 
 	IF BEDROOM(FLAG:訪問者の現在位置)
 		;大浴場の場合、専用テキスト
-		IF FLAG:訪問者の現在位置 == 位置_大浴場
+		IF FLAG:訪問者の現在位置 == 位置_红魔馆_大浴场
 			PRINT 在浴场的角落里、强行打开了%CALLNAME:MASTER%的大腿
 		ELSE
 			PRINT 把%CALLNAME:MASTER%压到床上、强行打开了大腿
 		ENDIF
-	ELSEIF OPENPLACE(FLAG:訪問者の現在位置) == 位置_大厅
+	ELSEIF OPENPLACE(FLAG:訪問者の現在位置) == 位置_红魔馆_大厅
 		PRINT 走进不显眼的树丛里，强行打开了%CALLNAME:MASTER%的大腿
 	ELSE
 		PRINT 在墙角里、强行打开了%CALLNAME:MASTER%的大腿
@@ -135,7 +135,7 @@ ELSEIF FLAG_EXECUTE
 			PRINTFORML ＜%CALLNAME:MASTER%处女丧失＞
 		ENDIF
 		PRINTFORML 在{行為時間}分钟内充分品尝%CALLNAME:MASTER%小穴的滋味后、%NTR_NAME(0)%将大量精液注入了子宫里
-		PRINTFORMW 一些精液\@ TALENT:MASTER:处女 ? 伴随着处女血 # \@溢了出来、洒落到\@ BEDROOM(FLAG:訪問者の現在位置) && !FLAG:訪問者の現在位置 == 位置_大浴場 ?  床单 # 地面 \@上、慢慢渗了进去
+		PRINTFORMW 一些精液\@ TALENT:MASTER:处女 ? 伴随着处女血 # \@溢了出来、洒落到\@ BEDROOM(FLAG:訪問者の現在位置) && !FLAG:訪問者の現在位置 == 位置_红魔馆_大浴场 ?  床单 # 地面 \@上、慢慢渗了进去
 
 		FOR iLoop,0,行為時間,5
 			CALL 締り具合変動, MASTER, 3, 0

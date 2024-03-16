@@ -364,19 +364,19 @@ SELECTCASE 部屋番号
 		ELSEIF RAND(2) == 1
 			RETURNF 写真_着替え
 		ENDIF
-	CASE 位置_红魔馆正门
+	CASE 位置_红魔馆_正门
 		IF CSVNAME(NO:キャラ番号) == "紅美鈴" && RAND(3) == 1
 			RETURNF 写真_居眠り
 		ENDIF
-	CASE 位置_图书室
+	CASE 位置_红魔馆_大图书馆
 		IF RAND(2) == 1
 			RETURNF 写真_読書
 		ENDIF
-	CASE 位置_厨房
+	CASE 位置_红魔馆_厨房
 		RETURNF 写真_料理
-	CASE 位置_大浴場
+	CASE 位置_红魔馆_大浴场
 		RETURNF 写真_入浴
-	CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+	CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 		RETURNF 写真_トイレ
 	CASEELSE
 		RETURNF 写真_普段

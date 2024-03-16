@@ -24,7 +24,7 @@
 @NTR_KOJO_K_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_大浴場
+IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の背中を流しながら、彼の股間を手で扱いている。
 	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
@@ -80,7 +80,7 @@ RETURN 0
 @NTR_KOJO_KW_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_大浴場
+IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%と密着するように入浴している。
 		PRINTFORML %NTR_NAME(0)%の手が%CALLNAME:奴隷%のあちこちを撫で回している。

@@ -247,7 +247,7 @@ ELSE
 	ENDIF
 	;対象：ふ×ふ、ふ×♀、♂×ふ、♂×♀
 	IF HAS_PENIS(攻め側) && HAS_VAGINA(受け側) && WK == 0
-		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
 			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
@@ -296,7 +296,7 @@ ELSE
 		;暫定処理：攻め側がふたなりの場合は対象外
 		;対象：♀×ふ、♀×♂
 	ELSEIF HAS_VAGINA(攻め側) && HAS_PENIS(受け側) && WK == 0 && !HAS_PENIS(攻め側)
-		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
 			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
@@ -346,7 +346,7 @@ ELSE
 		;対象：♀×♀
 		;ELSEIF WK == 0
 	ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
-		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
 			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
@@ -396,7 +396,7 @@ ELSE
 		;対象：ふ×♀、ふ×ふ、ふ×♂、♂×ふ、♂×♀、♂×♂
 		;ELSEIF HAS_PENIS(攻め側) && WK == 1
 	ELSEIF HAS_PENIS(攻め側)
-		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
 			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
@@ -444,7 +444,7 @@ ELSE
 		ENDIF
 		;対象：♀×ふ、♀×♂
 	ELSEIF HAS_PENIS(受け側) && WK == 1
-		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
 			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
@@ -493,7 +493,7 @@ ELSE
 		;暫定処理：両者ついていない場合は阴部摩擦固定
 		;対象：♀×♀
 	ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
-		IF CFLAG:攻め側:現在位置 == 位置_大浴場
+		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
 			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
@@ -2166,11 +2166,11 @@ RETURNF LOCAL:0
 #FUNCTIONS
 LOCALS = %""%
 SELECTCASE ARG
-	CASE 位置_红魔馆正门, 位置_院子, 位置_雾之湖北部, 位置_人間の里, 位置_博麗神社周辺, 位置_人間の里周辺, 位置_紅魔館周辺, 位置_冥界, 位置_迷いの竹林, 位置_無縁塚, 位置_妖怪の山, 位置_地底界, 位置_魔界, 位置_魔法の森, 位置_雾之湖南部, 位置_魔法之森内部
+	CASE 位置_红魔馆_正门, 位置_红魔馆_后院, 位置_雾之湖北部, 位置_人間の里, 位置_博麗神社周辺, 位置_人間の里周辺, 位置_紅魔館周辺, 位置_冥界, 位置_迷いの竹林, 位置_無縁塚, 位置_妖怪の山, 位置_地底界, 位置_魔界, 位置_魔法の森, 位置_雾之湖南部, 位置_魔法之森内部
 		LOCALS = 目立たない茂み
-	CASE 位置_大厅, 位置_食堂, 位置_图书室, 位置_厨房, 位置_仓库, 位置_二楼楼梯间, 位置_二楼走廊, 位置_博麗神社, 位置_命蓮寺, 位置_白玉楼, 位置_永遠亭, 位置_守矢神社, 位置_地霊殿, 位置_霧雨魔法店, 位置_香霖堂, 位置_妖精女仆办公室, 位置_永琳診療所
+	CASE 位置_红魔馆_大厅, 位置_红魔馆_餐厅, 位置_红魔馆_大图书馆, 位置_红魔馆_厨房, 位置_红魔馆_仓库, 位置_红魔馆_二楼楼梯间, 位置_红魔馆_二楼走廊, 位置_博麗神社, 位置_命蓮寺, 位置_白玉楼, 位置_永遠亭, 位置_守矢神社, 位置_地霊殿, 位置_霧雨魔法店, 位置_香霖堂, 位置_红魔馆_妖精女仆办公室, 位置_永琳診療所
 		LOCALS = 隅っこ
-	CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
+	CASE 位置_红魔馆_屋外厕所, 位置_红魔馆_一楼厕所, 位置_红魔馆_二楼厕所
 		LOCALS = トイレの個室
 	CASEELSE
 		PRINTFORML 目立たない場所例外 {ARG}

@@ -20,8 +20,8 @@ FOR LOOP_CHR,1,CHARANUM
 				FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_0(LOOP_CHR)
 				FUNC KOJO_MESSAGE_COM_KU_463_0(LOOP_CHR)
 			ENDFUNC
-			CFLAG:MASTER:現在位置 = 位置_玩家房间
-			CFLAG:LOOP_CHR:現在位置 = 位置_玩家房间
+			CFLAG:MASTER:現在位置 = 位置_红魔馆_玩家房间
+			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_玩家房间
 			RETURN 0
 			; 訪問者に懐いて(?)なく、主人公ともあまり親しくない場合は逃跑
 		ELSEIF CFLAG:LOOP_CHR:屈服度 <= 400
@@ -50,9 +50,9 @@ FOR LOOP_CHR,1,CHARANUM
 					FUNC KOJO_MESSAGE_COM_K{LOOP_CHR}_463_3(LOOP_CHR)
 					FUNC KOJO_MESSAGE_COM_KU_463_3(LOOP_CHR)
 				ENDFUNC
-				CFLAG:MASTER:現在位置 = 位置_玩家房间
-				CFLAG:LOOP_CHR:現在位置 = 位置_玩家房间
-				FLAG:訪問者の現在位置 = 位置_玩家房间
+				CFLAG:MASTER:現在位置 = 位置_红魔馆_玩家房间
+				CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_玩家房间
+				FLAG:訪問者の現在位置 = 位置_红魔馆_玩家房间
 				CALL NTR_MASTER_3P_SEX(LOOP_CHR)
 				RETURN 1
 			ELSEIF RESULT == 1
@@ -91,8 +91,8 @@ IF CFLAG:MASTER:現在位置 == 位置_訪問者宅
 	CFLAG:MASTER:現在位置 = 位置_訪問者宅
 	CFLAG:MASTER:現在位置詳細 = 9
 ELSE
-	CFLAG:MASTER:現在位置 = 位置_玩家房间
-	FLAG:訪問者の現在位置 = 位置_玩家房间
+	CFLAG:MASTER:現在位置 = 位置_红魔馆_玩家房间
+	FLAG:訪問者の現在位置 = 位置_红魔馆_玩家房间
 ENDIF
 PRINTFORM 进到房间里后，%NTR_NAME(0)%将%CALLNAME:MASTER%的
 SIF DRESS_LEVEL(MASTER) & (1p4)

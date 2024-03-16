@@ -1,0 +1,215 @@
+;-------------------------------------------------------------------------------
+;这里返回从場所0能否一步移动到場所1
+;FIXME:関数の説明を書いてください
+;@return 2:移动可＋目視可, 1:移动可, 0:移动不可
+@CAN_MOVE(場所0, 場所1)
+#FUNCTION
+#DIM 場所0
+#DIM 場所1
+;RETURNF 2は間に扉がなく見透かせる。庭から二階は見えないが逆は見える
+SELECTCASE 場所0
+	CASE 位置_红魔馆_正门
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_仓库
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_守卫小屋
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_后院
+			RETURNF 2
+		SIF 場所1 == 位置_雾之湖北部
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_屋外厕所
+			RETURNF 1
+	CASE 位置_红魔馆_大厅
+		SIF 場所1 == 位置_红魔馆_正门
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_厨房
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_大图书馆
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_餐厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_二楼楼梯间
+			RETURNF 2
+		SIF 場所1 == 位置_红魔馆_一楼厕所
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_地下室走廊
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_会客厅
+			RETURNF 1
+	CASE 位置_红魔馆_餐厅
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_厨房
+			RETURNF 1
+	CASE 位置_红魔馆_大图书馆
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_帕秋莉私室
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_小恶魔私室
+			RETURNF 1
+	CASE 位置_红魔馆_厨房
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_餐厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_后院
+			RETURNF 1
+	CASE 位置_红魔馆_仓库
+		SIF 場所1 == 位置_红魔馆_后院
+			RETURNF 1
+	CASE 位置_红魔馆_帕秋莉私室
+		SIF 場所1 == 位置_红魔馆_大图书馆
+			RETURNF 1
+	CASE 位置_红魔馆_小恶魔私室
+		SIF 場所1 == 位置_红魔馆_大图书馆
+			RETURNF 1
+	CASE 位置_红魔馆_守卫小屋
+		SIF 場所1 == 位置_红魔馆_正门
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_后院
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_屋外厕所
+			RETURNF 1
+	CASE 位置_红魔馆_后院
+		SIF 場所1 == 位置_红魔馆_正门
+			RETURNF 2
+		SIF 場所1 == 位置_红魔馆_厨房
+			RETURNF 2
+		SIF 場所1 == 位置_红魔馆_仓库
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_守卫小屋
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_屋外厕所
+			RETURNF 1
+	CASE 位置_红魔馆_二楼楼梯间
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 2
+		SIF 場所1 == 位置_红魔馆_二楼走廊
+			RETURNF 2
+	CASE 位置_红魔馆_二楼走廊
+		SIF 場所1 == 位置_红魔馆_二楼楼梯间
+			RETURNF 2
+		SIF 場所1 == 位置_红魔馆_咲夜私室
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_妖精女仆办公室
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_玩家房间
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_蕾米莉亚私室
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_二楼阳台
+			RETURNF 1
+	CASE 位置_红魔馆_咲夜私室
+		SIF 場所1 == 位置_红魔馆_二楼走廊
+			RETURNF 1
+	CASE 位置_红魔馆_妖精女仆办公室
+		SIF 場所1 == 位置_红魔馆_二楼走廊
+			RETURNF 1
+	CASE 位置_红魔馆_玩家房间
+		SIF 場所1 == 位置_红魔馆_二楼走廊
+			RETURNF 1
+	CASE 位置_红魔馆_蕾米莉亚私室
+		SIF 場所1 == 位置_红魔馆_二楼楼梯间
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_三楼阳台
+			RETURNF 1
+	CASE 位置_红魔馆_地下室
+		SIF 場所1 == 位置_红魔馆_地下室走廊
+			RETURNF 1
+	CASE 位置_红魔馆_大浴场
+		SIF 場所1 == 位置_红魔馆_更衣室
+			RETURNF 1
+	CASE 位置_雾之湖北部
+		SIF 場所1 == 位置_红魔馆_正门
+			RETURNF 1
+		SIF 場所1 == 位置_雾之湖南部
+			RETURNF 1
+		SIF 場所1 == 位置_魔法之森内部
+			RETURNF 1
+	CASE 位置_琪露诺的家
+		SIF 場所1 == 位置_雾之湖南部
+			RETURNF 1
+	CASE 位置_大妖精的家
+		SIF 場所1 == 位置_雾之湖南部
+			RETURNF 1
+	CASE 位置_魔理沙的家
+		SIF 場所1 == 位置_魔法之森内部
+			RETURNF 1
+		;お手洗いパッチ拡張
+		;トイレはどこからも覗けない
+		;屋外厕所から
+
+	CASE 位置_红魔馆_屋外厕所
+		SIF 場所1 == 位置_红魔馆_后院
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_守卫小屋
+			RETURNF 1
+	CASE 位置_红魔馆_一楼厕所
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_会客厅
+			RETURNF 1
+	CASE 位置_红魔馆_二楼厕所
+		SIF 場所1 == 位置_红魔馆_二楼走廊
+			RETURNF 1
+	CASE 位置_红魔馆_三楼阳台
+		SIF 場所1 == 位置_红魔馆_蕾米莉亚私室
+			RETURNF 1
+	CASE 位置_雾之湖南部
+		SIF 場所1 == 位置_雾之湖北部
+			RETURNF 1
+		SIF 場所1 == 位置_琪露诺的家
+			RETURNF 1
+		SIF 場所1 == 位置_大妖精的家
+			RETURNF 1
+	CASE 位置_魔法之森内部
+		SIF 場所1 == 位置_雾之湖北部
+			RETURNF 1
+		SIF 場所1 == 位置_魔理沙的家
+			RETURNF 1
+		SIF 場所1 == 位置_露米娅的家
+			RETURNF 1
+		SIF 場所1 == 位置_爱丽丝的家
+			RETURNF 1
+	CASE 位置_露米娅的家
+		SIF 場所1 == 位置_魔法之森内部
+			RETURNF 1
+	CASE 位置_爱丽丝的家
+		SIF 場所1 == 位置_魔法之森内部
+			RETURNF 1
+	CASE 位置_红魔馆_地下室走廊
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_地下室
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_更衣室
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_地下房间甲
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_地下房间乙
+			RETURNF 1
+	CASE 位置_红魔馆_会客厅
+		SIF 場所1 == 位置_红魔馆_大厅
+			RETURNF 1
+		SIF 場所1 == 位置_红魔馆_一楼厕所
+			RETURNF 1
+	CASE 位置_红魔馆_更衣室
+		SIF 場所1 == 位置_红魔馆_地下室走廊
+			RETURNF 1
+	CASE 位置_红魔馆_地下房间甲
+		SIF 場所1 == 位置_红魔馆_地下室走廊
+			RETURNF 1
+	CASE 位置_红魔馆_地下房间乙
+		SIF 場所1 == 位置_红魔馆_地下室走廊
+			RETURNF 1
+	CASE 位置_红魔馆_二楼阳台
+		SIF 場所1 == 位置_红魔馆_二楼走廊
+			RETURNF 1
+	CASE 位置_博麗神社
+		;湖北部
+		SIF 場所1 == 位置_雾之湖北部
+			RETURNF 1
+ENDSELECT

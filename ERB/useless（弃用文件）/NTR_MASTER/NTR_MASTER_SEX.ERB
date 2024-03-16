@@ -431,7 +431,7 @@ WHILE 1
 					PRINT 做为恋人的轻吻之后
 				ENDIF
 				PRINTW 从屋里出去了
-				FLAG:訪問者の現在位置 = 位置_二楼走廊
+				FLAG:訪問者の現在位置 = 位置_红魔馆_二楼走廊
 				FLAG:訪問者同行フラグ = 0
 				BREAK
 			ELSEIF RESULT == 1
@@ -456,7 +456,7 @@ WHILE 1
 					PRINTFORM 用湿润的眼睛积极地寻求吻、在品尝了%CALLNAME:MASTER%的嘴唇之后
 				ENDIF
 				PRINTW 从屋里出去了
-				FLAG:訪問者の現在位置 = 位置_二楼走廊
+				FLAG:訪問者の現在位置 = 位置_红魔馆_二楼走廊
 				FLAG:訪問者同行フラグ = 0
 				BREAK
 			ELSE
@@ -539,7 +539,7 @@ WHILE 1
 				PRINTFORMW 　　　　　　・
 				PRINTFORMW 也许是睡着了、当%CALLNAME:MASTER%注意到时、身体上盖上了被褥、没有、%NTR_NAME(0)%的身影
 				TIME += 30 + RAND:30
-				FLAG:訪問者の現在位置 = 位置_二楼走廊
+				FLAG:訪問者の現在位置 = 位置_红魔馆_二楼走廊
 				FLAG:訪問者同行フラグ = 0
 			ELSE
 				GOTO INPUT_LOOP_NMS_5
@@ -577,7 +577,7 @@ WHILE 1
 			PRINTFORMW 　　　　　　・
 			PRINTFORMW 也许是睡着了、当%CALLNAME:MASTER%注意到时、身体上盖上了被褥、没有%NTR_NAME(0)%的身影
 			TIME += 30 + RAND:30
-			FLAG:訪問者の現在位置 = 位置_二楼走廊
+			FLAG:訪問者の現在位置 = 位置_红魔馆_二楼走廊
 			FLAG:訪問者同行フラグ = 0
 		ENDIF
 		FLAG:1840 = 9
@@ -1207,7 +1207,7 @@ IF FLAG:1840 == 10
 		PRINTFORMW %CALLNAME:MASTER%说想再拔出来的话、%NTR_NAME(0)%就一直想要再射精一次。
 		LOCAL:11 = 0
 		FOR LOCAL:10, 1, CHARANUM
-			SIF CFLAG:(LOCAL:10):現在位置 == 位置_玩家房间
+			SIF CFLAG:(LOCAL:10):現在位置 == 位置_红魔馆_玩家房间
 				LOCAL:11 ++
 		NEXT
 		LOCAL:10 = 0
@@ -1250,8 +1250,8 @@ IF FLAG:1840 == 10
 					PRINTFORMW 　　　　　　・
 					PRINTFORMW 　　　　　　・
 					PRINTFORMW 　　　　　　・
-					CFLAG:MASTER:現在位置 = 位置_玩家房间
-					FLAG:訪問者の現在位置 = 位置_玩家房间
+					CFLAG:MASTER:現在位置 = 位置_红魔馆_玩家房间
+					FLAG:訪問者の現在位置 = 位置_红魔馆_玩家房间
 					PRINTFORML %NTR_NAME(0)%一到房间就无法忍受、把%CALLNAME:MASTER%稍微强行推倒在床上、对着\@ TALENT:MASTER:体型 < 0 ? 幼いワレメ # 秘裂 \@一口气插入…
 					PRINTFORML %CALLNAME:MASTER%虽然被强力敲打着腰部、但接受了%NTR_NAME(0)%委身与他
 					PRINTFORMW 　　　　　　・
@@ -1329,8 +1329,8 @@ ELSEIF FLAG:1840 == 11
 	PRINTFORML 回过神来、我躺在自己房间的床上
 	PRINTFORMW 看来是被%NTR_NAME(0)%搬运过来了
 	FLAG:1840 = 9
-	CFLAG:MASTER:現在位置 = 位置_玩家房间
-	FLAG:訪問者の現在位置 = 位置_玩家房间
+	CFLAG:MASTER:現在位置 = 位置_红魔馆_玩家房间
+	FLAG:訪問者の現在位置 = 位置_红魔馆_玩家房间
 ELSEIF FLAG:1840 == 12
 	PRINTFORM %NTR_NAME(0)%会将%CALLNAME:MASTER%的%OPPAI_DESCRIPTION(MASTER)%保留为插入阴茎
 	IF TALENT:MASTER:胸部尺寸 > 0
@@ -1420,7 +1420,7 @@ ELSE
 	INPUT
 	IF RESULT == 0
 		PRINTFORMW 感到身处危险的%CALLNAME:MASTER%放置了%NTR_NAME(0)%迅速离开了现场
-		CFLAG:MASTER:現在位置 = 位置_大厅
+		CFLAG:MASTER:現在位置 = 位置_红魔馆_大厅
 		FLAG:訪問者同行フラグ = 0
 		FLAG:1840 = 0
 	ELSEIF RESULT == 1 && CFLAG:MASTER:屈服度 >= 600

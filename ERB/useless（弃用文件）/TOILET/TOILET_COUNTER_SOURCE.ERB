@@ -199,11 +199,11 @@ SELECTCASE TCVAR:ARG:カウンター行動
 		SOURCE:ARG:侮辱 += 100
 		SOURCE:ARG:强迫 += 300
 		SOURCE:ARG:虐待 += 100
-		IF CFLAG:MASTER:現在位置 == 位置_屋外厕所 || CFLAG:MASTER:現在位置 == 位置_1F厕所 || CFLAG:MASTER:現在位置 == 位置_2F厕所 || CFLAG:MASTER:現在位置 == 位置_地下室
+		IF CFLAG:MASTER:現在位置 == 位置_红魔馆_屋外厕所 || CFLAG:MASTER:現在位置 == 位置_红魔馆_一楼厕所 || CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼厕所 || CFLAG:MASTER:現在位置 == 位置_红魔馆_地下室
 			SOURCE:ARG:征服 += 100
 			SOURCE:ARG:侮辱 += 200
 		ENDIF
-		IF CFLAG:MASTER:現在位置 == 位置_大浴場
+		IF CFLAG:MASTER:現在位置 == 位置_红魔馆_大浴场
 			SOURCE:ARG:欢乐 += 100
 			SOURCE:ARG:征服 += 100
 			SOURCE:ARG:侮辱 += 100

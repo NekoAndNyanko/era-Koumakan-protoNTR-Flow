@@ -48,19 +48,19 @@ ELSEIF CFLAG:(ARG:1):成長度 == 成長度_幼児
 	LOCAL:3 = 1
 	FOR LOCAL:4, 1, 場所番号最大値+1
 		SELECTCASE LOCAL:4
-			CASE 位置_仓库
+			CASE 位置_红魔馆_仓库
 				IF TALENT:(ARG:1):胆量 == -1 && !(GET_NOW_POS(CFLAG:(ARG:1):父親) == 6 || GET_NOW_POS(CFLAG:(ARG:1):母親) == 6)
-					RESULT:(LOCAL:3) = 位置_仓库 * 倍_万 + 200
+					RESULT:(LOCAL:3) = 位置_红魔馆_仓库 * 倍_万 + 200
 					LOCAL:3 ++
 				ENDIF
-			CASE 位置_地下室
+			CASE 位置_红魔馆_地下室
 				IF TALENT:(ARG:1):胆量 == -1 && !(CFLAG:(ARG:1):父親 == 6 || CFLAG:(ARG:1):母親 == 6)
-					RESULT:(LOCAL:3) = 位置_地下室 * 倍_万 + 200
+					RESULT:(LOCAL:3) = 位置_红魔馆_地下室 * 倍_万 + 200
 					LOCAL:3 ++
 				ENDIF
-			CASE 位置_大浴場
+			CASE 位置_红魔馆_大浴场
 				IF CFLAG:(ARG:1):風呂 >= 1000
-					RESULT:(LOCAL:3) = 位置_大浴場 * 倍_万 + 200
+					RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
 					LOCAL:3 ++
 				ENDIF
 			CASEELSE
@@ -73,19 +73,19 @@ ELSEIF CFLAG:(ARG:1):成長度 >= 成長度_成長期
 	LOCAL:3 = 1
 	FOR LOCAL:4, 1, 場所番号最大値+1
 		SELECTCASE LOCAL:4
-			CASE 位置_仓库
+			CASE 位置_红魔馆_仓库
 				IF TALENT:(ARG:1):胆量 == -1 && !(GET_NOW_POS(CFLAG:(ARG:1):父親) == 6 || GET_NOW_POS(CFLAG:(ARG:1):母親) == 6)
-					RESULT:(LOCAL:3) = 位置_仓库 * 倍_万 + 200
+					RESULT:(LOCAL:3) = 位置_红魔馆_仓库 * 倍_万 + 200
 					LOCAL:3 ++
 				ENDIF
-			CASE 位置_地下室
+			CASE 位置_红魔馆_地下室
 				IF TALENT:(ARG:1):胆量 == -1 && !(CFLAG:(ARG:1):父親 == 6 || CFLAG:(ARG:1):母親 == 6)
-					RESULT:(LOCAL:3) = 位置_地下室 * 倍_万 + 200
+					RESULT:(LOCAL:3) = 位置_红魔馆_地下室 * 倍_万 + 200
 					LOCAL:3 ++
 				ENDIF
-			CASE 位置_大浴場
+			CASE 位置_红魔馆_大浴场
 				IF CFLAG:(ARG:1):風呂 >= 1000
-					RESULT:(LOCAL:3) = 位置_大浴場 * 倍_万 + 200
+					RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
 					LOCAL:3 ++
 				ENDIF
 			CASEELSE

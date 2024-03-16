@@ -13,7 +13,7 @@
 #DIM 移动路线循环
 #DIM 移动目撃フラグ
 ;現在位置から紅魔館玄関への移动経路を算出
-CALLF FARMOVE(奴隷,CFLAG:奴隷:現在位置,位置_红魔馆正门)
+CALLF FARMOVE(奴隷,CFLAG:奴隷:現在位置,位置_红魔馆_正门)
 移动目撃フラグ = 0
 FOR 移动路线循环,0,移动路线MAX
 	IF (0 == 移动路线:奴隷:移动路线循环)
@@ -376,7 +376,7 @@ ENDIF
 ;气氛が悪い時は帰る
 IF CFLAG:奴隷:访问者宅气氛 < 0 && TALENT:奴隷:浮気公認 < 5
 	;PRINTW 气氛不好回来了
-	CFLAG:奴隷:現在位置 = 位置_红魔馆正门
+	CFLAG:奴隷:現在位置 = 位置_红魔馆_正门
 	SIF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
 		TRYCALL 客口上(奴隷, 0, TB:奴隷:0:TB_客種別)
 	IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)

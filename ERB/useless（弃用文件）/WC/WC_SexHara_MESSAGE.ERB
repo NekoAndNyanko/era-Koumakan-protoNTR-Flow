@@ -436,7 +436,7 @@ SELECTCASE セクハラ内容
 				興奮要素 = 1	;;露出系
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+					CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 						興奮要素 = 2	;;屈辱系
 					CASEELSE
 						SELECTCASE GET_ROOM_SECURITY(CFLAG:MASTER:現在位置)
@@ -489,7 +489,7 @@ SELECTCASE セクハラ内容
 				興奮要素 = 1	;;露出系
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+					CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 						興奮要素 = 2	;;屈辱系
 					CASEELSE
 						SELECTCASE GET_ROOM_SECURITY(CFLAG:MASTER:現在位置)
@@ -571,8 +571,8 @@ SELECTCASE セクハラ内容
 
 			CALL WC_SexHara_MESSAGE41(客人数)
 
-			CFLAG:MASTER:現在位置 = 位置_红魔馆正门
-			FLAG:訪問者の現在位置 = 位置_红魔馆正门
+			CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+			FLAG:訪問者の現在位置 = 位置_红魔馆_正门
 			CFLAG:MASTER:WC_人里プレイ開始 = 0
 		ENDIF
 		SIF CFLAG:MASTER:WC_訪問者受け入れ具合 < 5
@@ -597,8 +597,8 @@ SELECTCASE セクハラ内容
 
 			CALL WC_SexHara_MESSAGE42(客人数)
 
-			CFLAG:MASTER:現在位置 = 位置_红魔馆正门
-			FLAG:訪問者の現在位置 = 位置_红魔馆正门
+			CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+			FLAG:訪問者の現在位置 = 位置_红魔馆_正门
 			CFLAG:MASTER:WC_人里プレイ開始 = 0
 		ENDIF
 		CFLAG:MASTER:WC_訪問者セクハラ屈服上昇値 += WC_SURRENDER(MASTER, 4)
@@ -640,8 +640,8 @@ SELECTCASE セクハラ内容
 					ENDIF
 				ENDIF
 			NEXT
-			CFLAG:MASTER:現在位置 = 位置_红魔馆正门
-			FLAG:訪問者の現在位置 = 位置_红魔馆正门
+			CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+			FLAG:訪問者の現在位置 = 位置_红魔馆_正门
 			CFLAG:MASTER:WC_人里プレイ開始 = 0
 		ENDIF
 		CFLAG:MASTER:WC_訪問者セクハラ屈服上昇値 += WC_SURRENDER(MASTER, 4)
@@ -683,8 +683,8 @@ SELECTCASE セクハラ内容
 					CALL 締り具合変動, MASTER, 3, 1
 				ENDIF
 			NEXT
-			CFLAG:MASTER:現在位置 = 位置_红魔馆正门
-			FLAG:訪問者の現在位置 = 位置_红魔馆正门
+			CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+			FLAG:訪問者の現在位置 = 位置_红魔馆_正门
 			CFLAG:MASTER:WC_人里プレイ開始 = 0
 		ENDIF
 		CFLAG:MASTER:WC_訪問者セクハラ屈服上昇値 += WC_SURRENDER(MASTER, 4)
@@ -739,8 +739,8 @@ SELECTCASE セクハラ内容
 						NEXT
 					ENDIF
 			ENDSELECT
-			CFLAG:MASTER:現在位置 = 位置_红魔馆正门
-			FLAG:訪問者の現在位置 = 位置_红魔馆正门
+			CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+			FLAG:訪問者の現在位置 = 位置_红魔馆_正门
 			CFLAG:MASTER:WC_人里プレイ開始 = 0
 		ENDIF
 		CFLAG:MASTER:WC_訪問者セクハラ屈服上昇値 += WC_SURRENDER(MASTER, 4)
@@ -1027,21 +1027,21 @@ IF CFLAG:MASTER:WC_訪問者受け入れ具合 > 1
 				PRINTFORM 现在这个地方还有人、在这种地方做这种事可就不好处理了，
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_院子,位置_雾之湖北部,位置_屋外厕所,位置_1F厕所,位置_2F厕所
+					CASE 位置_红魔馆_后院,位置_雾之湖北部,位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 						PRINTFORML %CALLNAME:MASTER%想拒绝却说不出/找不到拒绝的话、不情愿地在%NTR_NAME(0)%的面前跪下了。
 						RETURN
 					CASEELSE
 						SELECTCASE CFLAG:MASTER:現在位置
-							CASE 位置_红魔馆正门,位置_大厅,位置_图书室,位置_仓库,位置_二楼楼梯间,位置_二楼走廊,位置_妖精女仆办公室,位置_玩家房间
+							CASE 位置_红魔馆_正门,位置_红魔馆_大厅,位置_红魔馆_大图书馆,位置_红魔馆_仓库,位置_红魔馆_二楼楼梯间,位置_红魔馆_二楼走廊,位置_红魔馆_妖精女仆办公室,位置_红魔馆_玩家房间
 								PRINTFORM 不能在这里、至少得去厕所
 							CASEELSE
 								PRINTFORM さすがに
 								SELECTCASE CFLAG:MASTER:現在位置
-									CASE 位置_食堂
+									CASE 位置_红魔馆_餐厅
 										PRINTFORM 食堂
-									CASE 位置_厨房
+									CASE 位置_红魔馆_厨房
 										PRINTFORM 厨房
-									CASE 位置_大浴場
+									CASE 位置_红魔馆_大浴场
 										PRINTFORM 浴場
 									CASEELSE
 										PRINTFORM 这个房间
@@ -1052,7 +1052,7 @@ IF CFLAG:MASTER:WC_訪問者受け入れ具合 > 1
 			ENDIF
 			PRINTFORML 于是、%CALLNAME:MASTER%想办法拒绝了。
 			PRINTFORM 可是、%NTR_NAME(0)%好像并不在意的样子。
-			IF CFLAG:MASTER:現在位置 == 位置_大浴場
+			IF CFLAG:MASTER:現在位置 == 位置_红魔馆_大浴场
 				PRINTFORM 慢慢地举起肉棒，
 			ELSE
 				PRINTFORM 开始将衣服解开，
@@ -1081,7 +1081,7 @@ ELSE
 		ELSE
 			;;場所がトイレで女の子がいないと逃げられない
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF !GET_TARGETNUM()
 						PRINTFORML 但是、%NTR_NAME(0)%占据了厕所的出口处并且并不打算让开、不仅如此还将鼓起的裤裆解开了。
 						PRINTFORMW 根本逃不掉、%CALLNAME:MASTER%在%NTR_NAME(0)%的面前不满而又一脸不情愿地被迫跪了下去。
@@ -1172,7 +1172,7 @@ ELSE
 		ELSE
 			;;場所がトイレで女の子がいないと逃げられない
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF !GET_TARGETNUM()
 						PRINTFORML 但是、%NTR_NAME(0)%占据了厕所的出口处并且并不打算让开、不仅如此还将鼓起的裤裆解开了。
 						PRINTFORMW 根本逃不掉、%CALLNAME:MASTER%在%NTR_NAME(0)%的面前不满而又一脸不情愿地被迫跪了下去。
@@ -1247,7 +1247,7 @@ ENDIF
 RETURN
 ;;-------------------------------------------------------------------------------
 @WC_SexHara_MESSAGE13_drink
-IF CFLAG:MASTER:現在位置 == 位置_大浴場
+IF CFLAG:MASTER:現在位置 == 位置_红魔馆_大浴场
 	PRINTFORM %NTR_NAME(0)%的肉棒突然翘了上来，
 ELSE
 	PRINTFORM %NTR_NAME(0)%把肉棒掏了出来、
@@ -1287,7 +1287,7 @@ RETURN
 ;;-------------------------------------------------------------------------------
 ;;小便シャワー
 @WC_SexHara_MESSAGE_URINESHOWER
-IF CFLAG:MASTER:現在位置 == 位置_大浴場
+IF CFLAG:MASTER:現在位置 == 位置_红魔馆_大浴场
 	PRINTFORM %NTR_NAME(0)%的肉棒突然翘了上来，
 ELSE
 	PRINTFORM %NTR_NAME(0)%把肉棒掏了出来、
@@ -2206,13 +2206,13 @@ ELSE
 	PRINTFORM 非常不愿意干这种事、%NTR_NAME(0)%只好强行把%CALLNAME:MASTER%的身体按在按在
 	CALL WC_SexHara_MESSAGE_bottomOUT(0)		;;1=お尻／0=それ以外
 	SELECTCASE CFLAG:MASTER:現在位置
-		CASE 位置_红魔馆正门,位置_院子
+		CASE 位置_红魔馆_正门,位置_红魔馆_后院
 			PRINTFORM 塀
-		CASE 位置_图书室
+		CASE 位置_红魔馆_大图书馆
 			PRINTFORM 書架
 		CASE 位置_雾之湖北部
 			PRINTFORM 木
-		CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+		CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 			PRINTFORM 便座
 		CASEELSE
 			PRINTFORM 墙壁
@@ -2389,9 +2389,9 @@ ELSE
 				PRINTFORML 拖进树林的阴影里。
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_图书室
+					CASE 位置_红魔馆_大图书馆
 						PRINTFORML 拖进书架集群的阴影里。
-					CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
+					CASE 位置_红魔馆_屋外厕所, 位置_红魔馆_一楼厕所, 位置_红魔馆_二楼厕所
 						PRINTFORML 拖进无人的单间里。
 					CASEELSE
 						PRINTFORML 拖进不易察觉的暗处。
@@ -2654,11 +2654,11 @@ ELSE
 			ENDIF
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_图书室
+				CASE 位置_红魔馆_大图书馆
 					PRINTFORM 按在在书架上
-				CASE 位置_厨房
+				CASE 位置_红魔馆_厨房
 					PRINTFORM 按在料理台/洗漱台上
-				CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所, 位置_红魔馆_一楼厕所, 位置_红魔馆_二楼厕所
 					IF あなた応答 == 2
 						PRINTFORM 按在墙上
 					ELSE
@@ -3463,7 +3463,7 @@ IF GET_TARGETNUM() > 0
 	興奮要素 = 1	;;露出系
 ELSE
 	SELECTCASE CFLAG:MASTER:現在位置
-		CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+		CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 			PRINTFORM 在厕所内、被%NTR_NAME(0)%当做性欲专用处理肉便器所任意使用着，
 			興奮要素 = 2	;;屈辱系
 		CASE 位置_訪問者宅
@@ -3635,7 +3635,7 @@ IF 希望穴 == 0
 			ENDIF
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF CFLAG:MASTER:WC_訪問者ふぁっく前回体位 != 5
 						体位チョイス = 5	;;正面座位
 					ELSE
@@ -3658,7 +3658,7 @@ IF 希望穴 == 0
 			ENDIF
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF CFLAG:MASTER:WC_訪問者ふぁっく前回体位 != 4
 						体位チョイス = 4	;;背面座位
 					ELSE
@@ -3683,7 +3683,7 @@ ELSEIF 希望穴 == セクハラ内容
 			ENDIF
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF CFLAG:MASTER:WC_訪問者ふぁっく前回体位 != 5
 						体位チョイス = 5	;;正面座位
 					ELSE
@@ -3706,7 +3706,7 @@ ELSEIF 希望穴 == セクハラ内容
 			ENDIF
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF CFLAG:MASTER:WC_訪問者ふぁっく前回体位 != 4
 						体位チョイス = 4	;;背面座位
 					ELSE
@@ -3731,7 +3731,7 @@ ELSE
 			ENDIF
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF CFLAG:MASTER:WC_訪問者ふぁっく前回体位 != 0
 						体位チョイス = 0	;;后背位
 					ELSE
@@ -3754,7 +3754,7 @@ ELSE
 			ENDIF
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					IF CFLAG:MASTER:WC_訪問者ふぁっく前回体位 != 8
 						体位チョイス = 8	;;屈曲位
 					ELSE
@@ -3786,11 +3786,11 @@ SELECTCASE 体位チョイス
 			PRINTFORM 拉到了不易被人察觉的树丛中，
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_图书室
+				CASE 位置_红魔馆_大图书馆
 					PRINTFORM 带到了书架下漆黑的阴影中，
-				CASE 位置_大浴場
+				CASE 位置_红魔馆_大浴场
 					PRINTFORM 扶着将手放在浴池的边缘
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					PRINTFORM 把手放在了马桶边缘上，
 				CASEELSE
 					PRINTFORM 按在了墙上，
@@ -3810,9 +3810,9 @@ SELECTCASE 体位チョイス
 			PRINTFORM 拉到了不易被人察觉的树丛中，
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_图书室
+				CASE 位置_红魔馆_大图书馆
 					PRINTFORM 带到了书架下漆黑的阴影中，
-				CASE 位置_大浴場
+				CASE 位置_红魔馆_大浴场
 					IF ITEM:20	;;游戏座垫
 						PRINTFORM 压在游戏坐垫上，
 					ELSE
@@ -3834,11 +3834,11 @@ SELECTCASE 体位チョイス
 			PRINTFORM 树上
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_图书室
+				CASE 位置_红魔馆_大图书馆
 					PRINTFORM 書架，
-				CASE 位置_大浴場
+				CASE 位置_红魔馆_大浴场
 					PRINTFORM 浴场的墙壁，
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					PRINTFORM 单间的墙壁，
 				CASEELSE
 					PRINTFORM 墙壁，
@@ -3866,9 +3866,9 @@ SELECTCASE 体位チョイス
 			PRINTFORM 拖入不起眼的密林中，
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_图书室
+				CASE 位置_红魔馆_大图书馆
 					PRINTFORM 带到了书架下漆黑的阴影中，
-				CASE 位置_大浴場
+				CASE 位置_红魔馆_大浴场
 					PRINTFORM 扶着将手放在浴池的边缘，
 				CASEELSE
 					PRINTFORM 按着墙，
@@ -3894,9 +3894,9 @@ SELECTCASE 体位チョイス
 			PRINTFORM 拉到了不易被人察觉的树丛中，
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_图书室
+				CASE 位置_红魔馆_大图书馆
 					PRINTFORM 带到了书架下漆黑的阴影中，
-				CASE 位置_大浴場
+				CASE 位置_红魔馆_大浴场
 					IF ITEM:20	;;游戏座垫
 						PRINTFORM 压在游戏坐垫上，
 					ELSE
@@ -3920,15 +3920,15 @@ SELECTCASE 体位チョイス
 			PRINTFORM 拖入不起眼的密林中，
 		ELSE
 			SELECTCASE CFLAG:MASTER:現在位置
-				CASE 位置_图书室
+				CASE 位置_红魔馆_大图书馆
 					PRINTFORM 带到了书架下漆黑的阴影中
-				CASE 位置_大浴場
+				CASE 位置_红魔馆_大浴场
 					IF ITEM:20	;;游戏座垫
 						PRINTFORM 压在游戏坐垫上，
 					ELSE
 						PRINTFORM 推到洗手池边缘，
 					ENDIF
-				CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 					PRINTFORM 按在马桶盖上，
 				CASEELSE
 					PRINTFORM 按在了墙上，
@@ -3936,7 +3936,7 @@ SELECTCASE 体位チョイス
 		ENDIF
 		PRINTFORM 让%CALLNAME:MASTER%
 		SELECTCASE CFLAG:MASTER:現在位置
-			CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+			CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 				PRINTFORM 的身体浅浅的坐下去(浅く座らせ)，
 			CASEELSE
 				PRINTFORM 的身体翻过去像躺/趴着一样(転がすように寝かせ)，
@@ -3944,7 +3944,7 @@ SELECTCASE 体位チョイス
 		SIF EQUIP:MASTER:下半身下着１ == 100
 			PRINTFORM 把贞操帯脱了下来并
 		SELECTCASE CFLAG:MASTER:現在位置
-			CASE 位置_屋外厕所,位置_1F厕所,位置_2F厕所
+			CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 				PRINTFORM 并将腰部抱起、自己
 			CASEELSE
 				PRINTFORM 、

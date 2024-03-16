@@ -46,7 +46,7 @@ SIF CFLAG:MASTER:現在位置 != 位置_人間の里周辺
 SIF CFLAG:MASTER:現在位置 != 位置_博麗神社 && (TALENT:人物_灵梦:恋慕 || (TALENT:人物_灵梦:恋人 && TALENT:人物_灵梦:NTR)) && CFLAG:MASTER:開始位置 == 位置_博麗神社
 	PRINTFORM %"["+TOSTR(位置_博麗神社)+"]"+GETPLACENAME(位置_博麗神社),22,LEFT%
 SIF CFLAG:MASTER:現在位置 > 場所番号最大値
-	PRINTFORM %"["+TOSTR(位置_红魔馆正门)+"]回到红魔馆",22,LEFT%
+	PRINTFORM %"["+TOSTR(位置_红魔馆_正门)+"]回到红魔馆",22,LEFT%
 SIF TALENT:MASTER:NTR
 	PRINTFORM %"["+TOSTR(位置_訪問者宅)+"]去访问者的家",22,LEFT%
 $COM490_INPUT_LOOP
@@ -55,9 +55,9 @@ INPUT
 SELECTCASE RESULT:0
 	CASE 0
 		RETURN 0
-	CASE 位置_红魔馆正门
+	CASE 位置_红魔馆_正门
 		TIME:0 += 30
-		CFLAG:MASTER:現在位置 = 位置_红魔馆正门
+		CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
 		RETURN 1
 	CASE 位置_紅魔館周辺
 		TIME:0 += 30

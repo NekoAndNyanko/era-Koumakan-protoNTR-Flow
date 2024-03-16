@@ -92,7 +92,7 @@ ELSE
 			CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
 		CASE NTR_MOOD_侍奉
 			; 行動選択→侍奉
-			IF 密室度 != 3  && CFLAG:奴隷:現在位置 != 位置_仓库
+			IF 密室度 != 3  && CFLAG:奴隷:現在位置 != 位置_红魔馆_仓库
 				CALL VISITOR_GOWITH_ROOM(奴隷)
 			ENDIF
 			;前回住人がNTRカウンターで股間をまさぐっていた場合口交
@@ -118,7 +118,7 @@ ELSE
 			CFLAG:奴隷:NTRカウンターセクハラ = NTR_CNT_なし
 		CASE NTR_MOOD_性交
 			; 行動選択→性交(お持ち帰り抑制時も)に成功
-			IF 密室度 != 3  && CFLAG:奴隷:現在位置 != 位置_仓库
+			IF 密室度 != 3  && CFLAG:奴隷:現在位置 != 位置_红魔馆_仓库
 				CALL VISITOR_GOWITH_ROOM(奴隷)
 			ENDIF
 			IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女

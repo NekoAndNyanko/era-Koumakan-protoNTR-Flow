@@ -71,7 +71,7 @@ SIF GLOBAL_COMABLE(403)
 ;私室設定
 ;10分休息パッチ変更点
 ;私室以外でも休息できるようにするため
-;SIF CFLAG:MASTER:現在位置 != CFLAG:MASTER:開始位置 && CFLAG:MASTER:現在位置 != 位置_大浴場
+;SIF CFLAG:MASTER:現在位置 != CFLAG:MASTER:開始位置 && CFLAG:MASTER:現在位置 != 位置_红魔馆_大浴场
 ;	RETURN 0
 ;訪問者宅での休息は禁止
 SIF CFLAG:MASTER:現在位置 == 位置_訪問者宅
@@ -143,7 +143,7 @@ SIF !TFLAG:100
 SIF GLOBAL_COMABLE(411)
 	RETURN RESULT
 ;庭
-SIF CFLAG:MASTER:現在位置 != 位置_院子
+SIF CFLAG:MASTER:現在位置 != 位置_红魔馆_后院
 	RETURN 0
 ;气力0
 SIF BASE:MASTER:气力 <= 0
@@ -162,7 +162,7 @@ SIF !TFLAG:100
 SIF GLOBAL_COMABLE(412)
 	RETURN RESULT
 ;図書室
-SIF CFLAG:MASTER:現在位置 != 位置_图书室
+SIF CFLAG:MASTER:現在位置 != 位置_红魔馆_大图书馆
 	RETURN 0
 ;气力0
 SIF BASE:MASTER:气力 <= 0
@@ -215,10 +215,10 @@ SIF TCVAR:PLAYER:304
 SIF CFLAG:うふふ == 2
 	RETURN 0
 ;便所飯ＮＧ ただしトイレと私室が同じ場所にある場合は吃饭可能
-SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
+SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
 	RETURN 0
 ;大浴場では吃饭不可、食堂以外での主食、デザートの吃饭不可
-SIF (CFLAG:MASTER:現在位置 != 位置_食堂 && GETDISHMENU(FLAG:料理 % 1000) != "軽食") || CFLAG:MASTER:現在位置 == 位置_大浴場
+SIF (CFLAG:MASTER:現在位置 != 位置_红魔馆_餐厅 && GETDISHMENU(FLAG:料理 % 1000) != "軽食") || CFLAG:MASTER:現在位置 == 位置_红魔馆_大浴场
 	RETURN 0
 RETURN 1
 
@@ -249,11 +249,11 @@ SIF (TCVAR:304 & 2) && (GETDISHMENU(FLAG:料理 % 1000) == "主食")
 SIF (TCVAR:304 & 4) && (GETDISHMENU(FLAG:料理 % 1000) == "甜点")
 	RETURN 0
 ;便所飯ＮＧ ただしトイレと私室が同じ場所にある場合は吃饭可能
-SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
+SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
 	RETURN 0
 ;その他食べられそうな場所でのみ吃饭可能、軽食は何処でも吃饭可
 IF  GETDISHMENU(FLAG:料理 % 1000) != "軽食"
-	IF CFLAG:MASTER:現在位置 == 位置_红魔馆正门 || CFLAG:MASTER:現在位置 == 位置_大厅 || CFLAG:MASTER:現在位置 == 位置_图书室 || CFLAG:MASTER:現在位置 == 位置_院子 || CFLAG:MASTER:現在位置 == 位置_二楼楼梯间 || CFLAG:MASTER:現在位置 == 位置_二楼走廊 || CFLAG:MASTER:現在位置 == 位置_大浴場
+	IF CFLAG:MASTER:現在位置 == 位置_红魔馆_正门 || CFLAG:MASTER:現在位置 == 位置_红魔馆_大厅 || CFLAG:MASTER:現在位置 == 位置_红魔馆_大图书馆 || CFLAG:MASTER:現在位置 == 位置_红魔馆_后院 || CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼楼梯间 || CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼走廊 || CFLAG:MASTER:現在位置 == 位置_红魔馆_大浴场
 		RETURN 0
 	ENDIF
 ENDIF
@@ -389,7 +389,7 @@ SIF !TFLAG:100
 SIF GLOBAL_COMABLE(430)
 	RETURN RESULT
 ;私室
-SIF CFLAG:MASTER:現在位置 != 位置_玩家房间
+SIF CFLAG:MASTER:現在位置 != 位置_红魔馆_玩家房间
 	RETURN 0
 SIF CFLAG:うふふ == 2
 	RETURN 0

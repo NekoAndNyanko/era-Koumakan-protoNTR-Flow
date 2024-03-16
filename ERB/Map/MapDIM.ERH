@@ -1,0 +1,79 @@
+;場所番号最大値は手動で調整してください。
+#DIM CONST 場所番号最大値				= 36
+#DIM CONST 位置_红魔馆_正门				= 1
+#DIM CONST 位置_红魔馆_大厅				= 2
+#DIM CONST 位置_红魔馆_餐厅				= 3
+#DIM CONST 位置_红魔馆_大图书馆			= 4
+#DIM CONST 位置_红魔馆_厨房				= 5
+#DIM CONST 位置_红魔馆_仓库				= 6
+#DIM CONST 位置_红魔馆_帕秋莉私室		= 7
+#DIM CONST 位置_红魔馆_小恶魔私室		= 8
+#DIM CONST 位置_红魔馆_守卫小屋			= 9
+#DIM CONST 位置_红魔馆_后院				= 10
+#DIM CONST 位置_红魔馆_二楼楼梯间		= 11
+#DIM CONST 位置_红魔馆_二楼走廊			= 12
+#DIM CONST 位置_红魔馆_咲夜私室			= 13
+#DIM CONST 位置_红魔馆_妖精女仆办公室	= 14
+#DIM CONST 位置_红魔馆_玩家房间			= 15
+#DIM CONST 位置_红魔馆_蕾米莉亚私室		= 16
+#DIM CONST 位置_红魔馆_地下室			= 17
+#DIM CONST 位置_红魔馆_大浴场			= 18
+#DIM CONST 位置_雾之湖北部			= 19
+#DIM CONST 位置_琪露诺的家			= 20
+#DIM CONST 位置_大妖精的家			= 21
+#DIM CONST 位置_红魔馆_屋外厕所			= 22
+#DIM CONST 位置_红魔馆_一楼厕所			= 23
+#DIM CONST 位置_红魔馆_二楼厕所			= 24
+#DIM CONST 位置_魔理沙的家			= 25
+#DIM CONST 位置_红魔馆_三楼阳台			= 26
+#DIM CONST 位置_雾之湖南部			= 27
+#DIM CONST 位置_魔法之森内部		= 28
+#DIM CONST 位置_露米娅的家			= 29
+#DIM CONST 位置_爱丽丝的家			= 30
+#DIM CONST 位置_红魔馆_地下室走廊		= 31
+#DIM CONST 位置_红魔馆_会客厅			= 32
+#DIM CONST 位置_红魔馆_更衣室			= 33
+#DIM CONST 位置_红魔馆_地下房间甲		= 34
+#DIM CONST 位置_红魔馆_地下房间乙		= 35
+#DIM CONST 位置_红魔馆_二楼阳台			= 36
+
+
+#DIM CONST 区域_红魔馆		= 1
+#DIM CONST 区域_雾之湖		= 2
+#DIM CONST 区域_魔法之森	= 3
+
+
+
+
+
+
+
+
+;通常の「移动(400)」コマンドでは辿り着けない場所 - NTR専用
+#DIM CONST 位置_訪問者宅         = 900
+#DIM CONST 位置_売春宿           = 901
+;通常の「移动(400)」コマンドでは辿り着けない場所 - 固有の建物
+#DIM CONST 位置_里の住処         = 948
+#DIM CONST 位置_民家             = 949
+#DIM CONST 位置_永琳診療所       = 950
+#DIM CONST 位置_人間の里         = 951
+#DIM CONST 位置_博麗神社         = 952
+#DIM CONST 位置_命蓮寺           = 953
+#DIM CONST 位置_白玉楼           = 954
+#DIM CONST 位置_永遠亭           = 955
+#DIM CONST 位置_守矢神社         = 956
+#DIM CONST 位置_地霊殿           = 957
+#DIM CONST 位置_霧雨魔法店       = 958
+#DIM CONST 位置_香霖堂           = 959
+;通常の「移动(400)」コマンドでは辿り着けない場所 - 地域
+#DIM CONST 位置_博麗神社周辺     = 980
+#DIM CONST 位置_人間の里周辺     = 981
+#DIM CONST 位置_紅魔館周辺       = 982
+#DIM CONST 位置_冥界             = 983
+#DIM CONST 位置_迷いの竹林       = 984
+#DIM CONST 位置_無縁塚           = 985
+#DIM CONST 位置_妖怪の山         = 986
+#DIM CONST 位置_地底界           = 987
+#DIM CONST 位置_魔界             = 988
+#DIM CONST 位置_魔法の森         = 989
+#DIM CONST 位置_薄暗い路地裏     = 990

@@ -36,10 +36,10 @@ SIF TIME_PROGRESS(TCVAR:300) < 120
 SIF CFLAG:睡眠
 	RETURN 0
 ;浴場 ただし私室は吃饭可能
-SIF BATHROOM(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
+SIF BATHROOM(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
 	RETURN 0
 ;トイレ ただし私室は吃饭可能
-SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
+SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
 	RETURN 0
 ;气力0
 SIF BASE:MASTER:气力 <= 0
@@ -463,7 +463,7 @@ SIF GET_N_WITH_VISITER(TARGET) >= 2
 SIF FLAG:訪問者のお気に入り != 0
 	RETURN 0
 ;玩家房间でないとダメ
-SIF CFLAG:MASTER:現在位置 != 位置_玩家房间 && CFLAG:MASTER:現在位置 != 位置_大浴場
+SIF CFLAG:MASTER:現在位置 != 位置_红魔馆_玩家房间 && CFLAG:MASTER:現在位置 != 位置_红魔馆_大浴场
 	RETURN 0
 ;訪問者と同室でないとダメ
 SIF FLAG:訪問者の現在位置 != CFLAG:MASTER:現在位置

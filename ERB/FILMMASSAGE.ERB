@@ -25,7 +25,7 @@ FOR LOCAL, 1, CHARANUM
 			LOCALS:1 = %GETPLACENAME(ARG:1)%
 
 			SELECTCASE ARG:1
-				CASE 位置_大厅, 位置_二楼楼梯间, 位置_二楼走廊
+				CASE 位置_红魔馆_大厅, 位置_红魔馆_二楼楼梯间, 位置_红魔馆_二楼走廊
 					PRINTFORML %LOCALS%经过了%LOCALS:1%……
 					;BIT(0=裙子, 3=ズボン)
 					IF GETBIT(TEQUIP:(LOCAL:1):0, 0) && !GETBIT(TEQUIP:(LOCAL:1):0, 3)
@@ -46,11 +46,11 @@ FOR LOCAL, 1, CHARANUM
 					ELSE
 						PRINTFORML 能够看到%LOCALS%底下穿着的%PANTSNAME(EQUIP:(LOCAL:1):下半身下着２)%……
 					ENDIF
-				CASE 位置_大浴場
+				CASE 位置_红魔馆_大浴场
 					PRINTFORML 拍到了%LOCALS:1%里%LOCALS%的身姿……
 					PRINTFORML 相机忠实地将%LOCALS%更衣和入浴的样子收纳了起来、
 					PRINTFORML %LOCALS%赤裸娇艳的肉体映在相片里……
-				CASE 位置_屋外厕所, 位置_1F厕所, 位置_2F厕所
+				CASE 位置_红魔馆_屋外厕所, 位置_红魔馆_一楼厕所, 位置_红魔馆_二楼厕所
 					PRINTFORML 拍到了在%LOCALS:1%里%LOCALS%的样子……
 					LOCAL:1 = RAND:3
 					IF LOCAL:1 == 0 && !RAND:8
