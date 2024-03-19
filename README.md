@@ -1,1 +1,2 @@
-# era紅魔館protoNTR Flow
+# era红魔馆protoNTR Flow
+该版本是era红魔馆protoNTR的分支版本，是使用SLG游戏制作工具erakanon以及其衍生版本Emuera进行二次开发的，以NTR为主题的文字游戏。
