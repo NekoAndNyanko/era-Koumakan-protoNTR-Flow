@@ -1,5 +1,5 @@
 ;場所番号最大値は手動で調整してください。
-#DIM CONST 場所番号最大値				= 36
+#DIM CONST 場所番号最大値				= 41
 #DIM CONST 位置_红魔馆_正门				= 1
 #DIM CONST 位置_红魔馆_大厅				= 2
 #DIM CONST 位置_红魔馆_餐厅				= 3
@@ -18,24 +18,30 @@
 #DIM CONST 位置_红魔馆_蕾米莉亚私室		= 16
 #DIM CONST 位置_红魔馆_地下室			= 17
 #DIM CONST 位置_红魔馆_大浴场			= 18
-#DIM CONST 位置_雾之湖北部			= 19
-#DIM CONST 位置_琪露诺的家			= 20
-#DIM CONST 位置_大妖精的家			= 21
+#DIM CONST 位置_雾之湖_湖北部			= 19
+#DIM CONST 位置_雾之湖_琪露诺的家		= 20
+#DIM CONST 位置_雾之湖_大妖精的家		= 21
 #DIM CONST 位置_红魔馆_屋外厕所			= 22
 #DIM CONST 位置_红魔馆_一楼厕所			= 23
 #DIM CONST 位置_红魔馆_二楼厕所			= 24
-#DIM CONST 位置_魔理沙的家			= 25
+#DIM CONST 位置_魔法之森_雾雨魔法店		= 25
 #DIM CONST 位置_红魔馆_三楼阳台			= 26
-#DIM CONST 位置_雾之湖南部			= 27
-#DIM CONST 位置_魔法之森内部		= 28
-#DIM CONST 位置_露米娅的家			= 29
-#DIM CONST 位置_爱丽丝的家			= 30
+#DIM CONST 位置_雾之湖_湖南部			= 27
+#DIM CONST 位置_魔法之森_森林岔路		= 28
+#DIM CONST 位置_魔法之森_露米娅的树屋	= 29
+#DIM CONST 位置_魔法之森_爱丽丝的家		= 30
 #DIM CONST 位置_红魔馆_地下室走廊		= 31
 #DIM CONST 位置_红魔馆_会客厅			= 32
 #DIM CONST 位置_红魔馆_更衣室			= 33
 #DIM CONST 位置_红魔馆_地下房间甲		= 34
 #DIM CONST 位置_红魔馆_地下房间乙		= 35
 #DIM CONST 位置_红魔馆_二楼阳台			= 36
+#DIM CONST 位置_雾之湖_北湖畔			= 37
+#DIM CONST 位置_魔法之森_大树广场		= 38
+#DIM CONST 位置_魔法之森_电波塔			= 39
+#DIM CONST 位置_魔法之森_成美的家		= 40
+#DIM CONST 位置_魔法之森_地藏台石		= 41
+
 
 
 #DIM CONST 区域_红魔馆		= 1

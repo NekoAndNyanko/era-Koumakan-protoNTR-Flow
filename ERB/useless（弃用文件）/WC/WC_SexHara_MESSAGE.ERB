@@ -1027,7 +1027,7 @@ IF CFLAG:MASTER:WC_訪問者受け入れ具合 > 1
 				PRINTFORM 现在这个地方还有人、在这种地方做这种事可就不好处理了，
 			ELSE
 				SELECTCASE CFLAG:MASTER:現在位置
-					CASE 位置_红魔馆_后院,位置_雾之湖北部,位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
+					CASE 位置_红魔馆_后院,位置_雾之湖_湖北部,位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 						PRINTFORML %CALLNAME:MASTER%想拒绝却说不出/找不到拒绝的话、不情愿地在%NTR_NAME(0)%的面前跪下了。
 						RETURN
 					CASEELSE
@@ -2210,7 +2210,7 @@ ELSE
 			PRINTFORM 塀
 		CASE 位置_红魔馆_大图书馆
 			PRINTFORM 書架
-		CASE 位置_雾之湖北部
+		CASE 位置_雾之湖_湖北部
 			PRINTFORM 木
 		CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
 			PRINTFORM 便座

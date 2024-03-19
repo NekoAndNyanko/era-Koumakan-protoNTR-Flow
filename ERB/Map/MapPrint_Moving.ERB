@@ -1,0 +1,134 @@
+@mapPrint(当前选中地图,LOOP_CHR,LOOP_POS,TargetRoom,地图编号,地图名称)
+#DIM REF 当前选中地图
+#DIM REF LOOP_CHR
+#DIM REF LOOP_POS
+#DIM REF 地图编号
+#DIM REF TargetRoom
+#DIMS REF 地图名称
+
+$LOOP_PAGE
+DRAWLINE
+PRINTL
+PRINTL 地图选择
+PRINTL
+;CALLFORM MAP_PRINT_{当前选中地图}
+CALLFORM 地图绘制(当前选中地图)
+PRINTL
+DRAWLINE
+;マップの数だけ表示
+FOR 地图编号, 0, 4
+	PRINT 　
+	;現在のマップを橙色で表示
+	IF 当前选中地图 == 地图编号
+		SETCOLOR 0XFF8000
+	ENDIF
+	SELECTCASE 地图编号
+		CASE 0
+			地图名称 = 红魔馆1F与地下室
+		CASE 1
+			地图名称 = 红魔馆2F与3F
+		CASE 2
+			地图名称 = 红魔馆-雾之湖西北部
+		CASE 3
+			地图名称 = 雾之湖西南部-魔法森林
+	ENDSELECT
+	PRINT 　　
+	PRINTBUTTON @"[%地图名称%]", 地图编号+1000
+	RESETCOLOR
+NEXT
+PRINTL
+DRAWLINE
+PRINTL
+PRINTFORML 现在位置：%GETPLACENAME(CFLAG:MASTER:現在位置)%（{CFLAG:MASTER:現在位置}）
+IF !CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:MASTER:開始位置) && CFLAG:MASTER:現在位置 != CFLAG:MASTER:開始位置
+	PRINTL [0] - 回到自己的房间
+ENDIF
+FOR LOOP_POS,0, 場所番号最大値+1
+	IF CAN_MOVE(CFLAG:MASTER:現在位置, LOOP_POS)
+		PRINTFORML [{LOOP_POS}] - %GETPLACENAME(LOOP_POS)%
+	ENDIF
+NEXT
+PRINT [100] - 返回
+$INPUT_LOOP
+INPUTS
+IF RESULTS == ""
+	GOTO INPUT_LOOP
+ENDIF
+TargetRoom = TOINT(RESULTS) - (TOINT(RESULTS) == 0 && RESULTS != "0")
+IF TargetRoom == -1
+	REPLACE RESULTS, CALLNAME:MASTER, "%CALLNAME:MASTER%"
+	FOR LOOP_POS, 1, 18
+		IF GETPLACENAME(LOOP_POS) == RESULTS
+			TargetRoom = LOOP_POS
+		ENDIF
+	NEXT
+ENDIF
+
+IF TargetRoom == 0
+	;直接ワープで返回のはよくないので置換
+	TargetRoom = CFLAG:MASTER:開始位置
+ENDIF
+
+
+IF TargetRoom == 100
+	RETURN 0
+;改变选中的地图，在1xxx设置最大地图编号（マップ変更）
+ELSEIF INRANGE(TargetRoom, 1000, 1003)
+	当前选中地图 = TargetRoom - 1000
+	GOTO LOOP_PAGE
+;目的地がテラスなら蕾米莉亚私室が閉まっている且つ合鍵を持っていないと進めない
+ELSEIF TargetRoom == 位置_红魔馆_三楼阳台 && CFLAG:MASTER:現在位置 != 位置_红魔馆_蕾米莉亚私室 &&  isLocked(位置_红魔馆_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_红魔馆_蕾米莉亚私室)
+	PRINTW 因为不能通过蕾米莉亚的房间，所以不能移动
+	GOTO LOOP_PAGE
+ELSEIF TargetRoom == 0
+;どうしようもなければワープで返回
+	CFLAG:MASTER:現在位置 = CFLAG:MASTER:開始位置
+ELSEIF !INRANGE(TargetRoom, 0, 場所番号最大値)
+	CLEARLINE 1
+	REUSELASTLINE 
+	GOTO INPUT_LOOP
+;移动先が隣の場所
+ELSEIF CAN_MOVE(CFLAG:MASTER:現在位置, TargetRoom)
+	IF FLAG:1840 < 2
+		FLAG:1840 = 0
+	ENDIF
+
+	;地下室
+	IF TargetRoom == 位置_红魔馆_地下室 && ABL:MASTER:战斗技能 <= 0
+		PRINTW 从门里感到不祥之意……
+		PRINTW 为了能平安返回，一定程度的实力是必要的吧。
+		RESTART
+	ELSEIF isLocked(TargetRoom)
+		;施錠されている
+		IF tryUnLock(MASTER, TargetRoom)
+			IF HAS_DUPLICATE_KEY(TargetRoom)
+				PRINTFORML 用钥匙进去了
+			ELSE
+				PRINTFORML 打开锁进去了
+			ENDIF
+		ELSE
+			PRINTW 门从里面锁着……
+			RESTART
+		ENDIF
+	ENDIF
+	CFLAG:MASTER:現在位置 = TargetRoom
+	PRINTFORML 
+	FOR LOOP_CHR, 1, CHARANUM
+		CALL CHAR_ON_PLACE(LOOP_CHR)
+	NEXT
+	CALL NTR_CHK_GOWITH(10)
+ELSE
+	IF FLAG:1840 < 2
+		FLAG:1840 = 0
+	ENDIF
+	;目的地が離れているので、最終目的地として設定
+	TFLAG:遠距離移动 = TargetRoom
+	CALLF FARMOVE(MASTER, CFLAG:MASTER:現在位置, TargetRoom)
+	;現在位置を更新し、次も移动の扱いにする
+	CFLAG:MASTER:現在位置 = 移动路线:MASTER:0
+	CALL SORT_ROUTE(MASTER)
+	NEXTCOM = 400
+ENDIF
+IF FLAG:訪問者同行フラグ
+	FLAG:訪問者の現在位置 = CFLAG:MASTER:現在位置
+ENDIF

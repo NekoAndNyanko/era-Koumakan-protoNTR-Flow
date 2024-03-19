@@ -215,7 +215,7 @@ SIF TCVAR:PLAYER:304
 SIF CFLAG:うふふ == 2
 	RETURN 0
 ;便所飯ＮＧ ただしトイレと私室が同じ場所にある場合は吃饭可能
-SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
+SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_雾之湖_大妖精的家)
 	RETURN 0
 ;大浴場では吃饭不可、食堂以外での主食、デザートの吃饭不可
 SIF (CFLAG:MASTER:現在位置 != 位置_红魔馆_餐厅 && GETDISHMENU(FLAG:料理 % 1000) != "軽食") || CFLAG:MASTER:現在位置 == 位置_红魔馆_大浴场
@@ -249,7 +249,7 @@ SIF (TCVAR:304 & 2) && (GETDISHMENU(FLAG:料理 % 1000) == "主食")
 SIF (TCVAR:304 & 4) && (GETDISHMENU(FLAG:料理 % 1000) == "甜点")
 	RETURN 0
 ;便所飯ＮＧ ただしトイレと私室が同じ場所にある場合は吃饭可能
-SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_大妖精的家)
+SIF REST_IsRestRoom(CFLAG:MASTER:現在位置) && (CFLAG:MASTER:現在位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:現在位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:現在位置 != 位置_雾之湖_大妖精的家)
 	RETURN 0
 ;その他食べられそうな場所でのみ吃饭可能、軽食は何処でも吃饭可
 IF  GETDISHMENU(FLAG:料理 % 1000) != "軽食"

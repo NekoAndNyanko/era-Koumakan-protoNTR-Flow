@@ -112,10 +112,10 @@ CALL MAP_SETING, "　　　　／／／／／／／　　　　　　●●●�
 CALL MAP_SETING, "　　　　　／／／／／　　　　　　　　　　●●●"
 CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　●"
 CALL MAP_SETING, "　　　　　　　27　　　　　　　　　　　　　　　", 位置_红魔馆_正门
-CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　", 位置_魔法之森内部, 位置_露米娅的家
-CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　", 位置_魔理沙的家
-CALL MAP_SETING, "■20■　　　■21■　　　　　　　　　　　　　　", 位置_雾之湖北部, 位置_雾之湖南部
-CALL MAP_SETING, "■■■　　　■■■　　　　　　　　　　　　　　", 位置_琪露诺的家, 位置_大妖精的家
+CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　", 位置_魔法之森_森林岔路, 位置_魔法之森_露米娅的树屋
+CALL MAP_SETING, "　　　　　　　　　　　　　　　　　　　　　　　", 位置_魔法之森_雾雨魔法店
+CALL MAP_SETING, "■20■　　　■21■　　　　　　　　　　　　　　", 位置_雾之湖_湖北部, 位置_雾之湖_湖南部
+CALL MAP_SETING, "■■■　　　■■■　　　　　　　　　　　　　　", 位置_雾之湖_琪露诺的家, 位置_雾之湖_大妖精的家
 
 
 ・キャラクター追加

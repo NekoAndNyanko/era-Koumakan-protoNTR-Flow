@@ -22,7 +22,6 @@ TFLAG:行為騒音 = 0
 ;全員分ループして処理
 FOR 奴隷, 0, CHARANUM
 	CALL 桃霧処理(奴隷)
-	CALL 催眠中毒処理(奴隷)
 	;满足度最大値上昇処理
 	SIF !CFLAG:奴隷:满足度上昇 && BASE:奴隷:满足 >= MAXBASE:奴隷:满足
 		CFLAG:奴隷:满足度上昇 = 1
@@ -362,29 +361,6 @@ IF 天候(天候値) == "桃雾"
 	ENDIF
 ENDIF
 RETURN 0
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@催眠中毒処理(奴隷)
-#DIM 奴隷
-#DIM 性欲上昇値
-IF TALENT:奴隷:催眠中毒 == 1
-	性欲上昇値 += TIME_PROGRESS(TFLAG:300)
-	IF OPENPLACE(CFLAG:奴隷:現在位置) == 2
-		;野外
-		IF 性欲上昇値 >= 5
-			CFLAG:奴隷:性欲 += 性欲上昇値
-			性欲上昇値 -= 性欲上昇値
-		ENDIF
-	ELSE
-		;野外でない
-		IF 性欲上昇値 >= 20
-			CFLAG:奴隷:性欲 += 性欲上昇値
-			性欲上昇値 -= 性欲上昇値
-		ENDIF
-	ENDIF
-ENDIF
-RETURN 0
 ;------------------------------------------------
 @キャラ自慰中処理(奴隷)
 #DIM 奴隷
@@ -405,7 +381,7 @@ IF !IS_PRIVATE_ROOM(奴隷, 0)
 	RETURN
 ENDIF
 ;部屋に誰か居れば中断(値をマイナスにして保存)
-IF GET_N_IN_ROOM(CFLAG:奴隷:現在位置,1,1,1) > 1
+IF 当前位置存在人数(CFLAG:奴隷:現在位置,1,1) > 1
 	CFLAG:奴隷:自慰中 = -ABS(CFLAG:奴隷:自慰中)
 	RETURN
 ENDIF

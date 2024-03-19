@@ -355,13 +355,13 @@ IF POS == 位置_红魔馆_餐厅 || POS == 位置_红魔馆_仓库 || POS == �
 ENDIF
 ;湖に面した一階から湖を見たとき1/3でパンチラ
 IF POS == 位置_红魔馆_正门 
-	IF targetArea == 位置_雾之湖北部 && !RAND:3 
+	IF targetArea == 位置_雾之湖_湖北部 && !RAND:3 
 		CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 1)
 	ENDIF
 ENDIF
 ;湖南部に面した一階から湖を見たとき1/3でパンチラ
-IF POS == 位置_琪露诺的家 || POS == 位置_大妖精的家 
-	IF targetArea == 位置_雾之湖南部 && !RAND:3 
+IF POS == 位置_雾之湖_琪露诺的家 || POS == 位置_雾之湖_大妖精的家 
+	IF targetArea == 位置_雾之湖_湖南部 && !RAND:3 
 		CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 1)
 	ENDIF
 ENDIF
@@ -509,14 +509,14 @@ SELECTCASE CFLAG:MASTER:現在位置
 	CASE 位置_红魔馆_二楼楼梯间
 	CASE 位置_红魔馆_二楼走廊
 	CASE 位置_红魔馆_后院
-	CASE 位置_雾之湖北部
-	CASE 位置_雾之湖南部
+	CASE 位置_雾之湖_湖北部
+	CASE 位置_雾之湖_湖南部
 		;パンチラ不可
 	CASEELSE
 		RETURN 0
 ENDSELECT
 ;MASTER以外に誰かいたら見られない
-SIF GET_N_IN_ROOM(CFLAG:MASTER:現在位置, 0, 1, 1)
+SIF 当前位置存在人数(CFLAG:MASTER:現在位置, 0, 1)
 	RETURN 0
 
 FLG_LOOKED = 0 ; 0:パンチラを見られていない 1:パンチラを見られた
@@ -580,14 +580,14 @@ SELECTCASE targetArea
 		SIF POS == 位置_红魔馆_餐厅 || POS == 位置_红魔馆_仓库 || POS == 位置_红魔馆_屋外厕所
 			RETURNF 1
 		;湖
-	CASE 位置_雾之湖北部
+	CASE 位置_雾之湖_湖北部
 		;湖に面した一階から湖を見たとき1/3でパンチラ
 		SIF POS == 位置_红魔馆_正门
 			RETURNF 1
 		;湖南部
-	CASE 位置_雾之湖南部
+	CASE 位置_雾之湖_湖南部
 		;湖に面した一階から湖を見たとき1/3でパンチラ
-		SIF POS == 位置_琪露诺的家 || POS == 位置_大妖精的家
+		SIF POS == 位置_雾之湖_琪露诺的家 || POS == 位置_雾之湖_大妖精的家
 			RETURNF 1
 ENDSELECT
 RETURNF -1

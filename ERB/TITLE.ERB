@@ -16,15 +16,15 @@ DO
 		PRINTL
 		PRINTFORML era紅魔館protoNTR Flow
 		;GameBase内的版本，前两位在前，后两位算小数
-		PRINTFORML Ver{GAMEBASE_VERSION/100}.{GAMEBASE_VERSION%100}.1
+		PRINTFORML Ver{GAMEBASE_VERSION/100}.{GAMEBASE_VERSION%100}
 		PRINTFORML 【原作】寝の人（2013-2019）
 		PRINTFORML 【Flow分支】xhmmmm（超级猫猫）
 		PRINTFORML 【制作协力】LanKE 不怕猫的苦力怕 不翻案的小狐狸
 		PRINTFORML （2013-2024）
 		;显示GameBase内的“追加情报”
-		PRINTFORML %GAMEBASE_INFO%
+		;PRINTFORML %GAMEBASE_INFO%
 		PRINTFORML
-		PRINTFORML ※这是利用调教SLG制作工具erakanon进行二次改编、发布的程序。
+		PRINTFORML ※这是利用调教SLG制作工具Erakanon、Emuera进行二次改编、发布的程序。
 		CUSTOMDRAWLINE ━
 		PRINTFORML [0] 新的开始
 		PRINTFORML [1] 读取存档
@@ -107,10 +107,10 @@ SELECTCASE RESULT
 		PRINTFORML 
 		PRINTFORML 
 		PRINTFORML Flow版本更新履历--------------------------------------------------------------------------------最旧
-		PRINTFORML 版本号--------------------------------------------------------------------------------------24.xx.xx
-		PRINTFORML 1.修改了地图样式，使得其更为清晰。
+		PRINTFORML Alpha0.1------------------------------------------------------------------------------------24.xx.xx
+		PRINTFORML 1.移植了eraTW的地图绘制功能，并重置了部分地图。
 		PRINTFORML 2.重置了偷窥系统，支持角色、场景差分的口上。
-		PRINTFORML 
+		PRINTFORML 3.
 		PRINTFORMW Flow版本更新履历--------------------------------------------------------------------------------最新
 		GOTO VERSION_INFO
 	CASE 1

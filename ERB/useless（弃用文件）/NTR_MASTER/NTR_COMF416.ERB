@@ -22,7 +22,7 @@ SIF FLAG:訪問者の現在位置 == 950
 	RETURN
 SIF FLAG:訪問者の現在位置 == 951
 	RETURN
-SIF GET_N_IN_ROOM(FLAG:訪問者の現在位置, 0, 0, 1) != 0
+SIF 当前位置存在人数(FLAG:訪問者の現在位置, 0, 0) != 0
 	RETURN
 
 ;一定の確率で見逃してもらえる

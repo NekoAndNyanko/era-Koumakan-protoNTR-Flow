@@ -1,4 +1,6 @@
-﻿;位置関係
+﻿;原名：COMMON_PLACE.ERB
+
+;位置関係
 ;部屋名出力
 @GETPLACENAME(場所番号,場所番号詳細)
 #FUNCTIONS
@@ -10,9 +12,9 @@ SELECTCASE 場所番号
 	CASE 位置_红魔馆_大厅
 		RETURNF "大厅"
 	CASE 位置_红魔馆_餐厅
-		RETURNF "食堂"
+		RETURNF "餐厅"
 	CASE 位置_红魔馆_大图书馆
-		RETURNF "图书室"
+		RETURNF "大图书馆"
 	CASE 位置_红魔馆_厨房
 		RETURNF "厨房"
 	CASE 位置_红魔馆_仓库
@@ -24,7 +26,7 @@ SELECTCASE 場所番号
 	CASE 位置_红魔馆_守卫小屋
 		RETURNF "守卫小屋"
 	CASE 位置_红魔馆_后院
-		RETURNF "院子"
+		RETURNF "后院"
 	CASE 位置_红魔馆_二楼楼梯间
 		RETURNF "二楼楼梯间"
 	CASE 位置_红魔馆_二楼走廊
@@ -40,36 +42,54 @@ SELECTCASE 場所番号
 	CASE 位置_红魔馆_地下室
 		RETURNF "地下室"
 	CASE 位置_红魔馆_大浴场
-		RETURNF "大浴室"
-	CASE 位置_雾之湖北部
+		RETURNF "大浴场"
+	CASE 位置_雾之湖_湖北部
 		RETURNF "湖北部"
-	CASE 位置_琪露诺的家
+	CASE 位置_雾之湖_琪露诺的家
 		RETURNF @"%CALLNAME:人物_琪露诺%的家"
-	CASE 位置_大妖精的家
+	CASE 位置_雾之湖_大妖精的家
 		RETURNF @"%CALLNAME:人物_大妖精%的家"
-	CASE 位置_魔理沙的家
-		RETURNF @"%CALLNAME:人物_魔理沙%的家"
 	CASE 位置_红魔馆_屋外厕所
-		RETURNF "院子厕所"
+		RETURNF "屋外厕所"
 	CASE 位置_红魔馆_一楼厕所
-		RETURNF "1F厕所"
+		RETURNF "一楼厕所"
 	CASE 位置_红魔馆_二楼厕所
-		RETURNF "2F厕所"
-	CASE 位置_魔理沙的家
-		;RETURNF "魔理沙的家"
-		RETURNF @"%CALLNAME:人物_魔理沙%的家"
+		RETURNF "二楼厕所"
+	CASE 位置_魔法之森_雾雨魔法店
+		RETURNF "雾雨魔法店"
 	CASE 位置_红魔馆_三楼阳台
-		RETURNF "3F阳台"
-	CASE 位置_雾之湖南部
+		RETURNF "三楼阳台"
+	CASE 位置_雾之湖_湖南部
 		RETURNF "湖南部"
-	CASE 位置_魔法之森内部
-		RETURNF "魔法之森内"
-	CASE 位置_露米娅的家
-		RETURNF @"%CALLNAME:人物_露米娅%的家处"
-	CASE 位置_爱丽丝的家
-		RETURNF @"%CALLNAME:人物_爱丽丝%的家"
+	CASE 位置_魔法之森_森林岔路
+		RETURNF "森林岔路"
+	CASE 位置_魔法之森_露米娅的树屋
+		RETURNF @"%CALLNAME:人物_露米娅%的树屋"
+	CASE 位置_魔法之森_爱丽丝的家
+		RETURNF "玛格特洛依德邸"
 	CASE 位置_红魔馆_地下室走廊
 		RETURNF "地下室走廊"
+	CASE 位置_红魔馆_会客厅
+		RETURNF "会客厅"
+	CASE 位置_红魔馆_更衣室
+		RETURNF "更衣室"
+	CASE 位置_红魔馆_地下房间甲
+		RETURNF "废弃房间甲"
+	CASE 位置_红魔馆_地下房间乙
+		RETURNF "废弃房间乙"
+	CASE 位置_红魔馆_二楼阳台
+		RETURNF "二楼阳台"
+	CASE 位置_雾之湖_北湖畔
+		RETURNF "北湖畔"
+	CASE 位置_魔法之森_大树广场
+		RETURNF "大树广场"
+	CASE 位置_魔法之森_电波塔
+		RETURNF "电波塔"
+	CASE 位置_魔法之森_成美的家
+		RETURNF "成美的家"
+	CASE 位置_魔法之森_地藏台石
+		RETURNF "地藏台石"
+;----------------------------------------------------------------------------------------------------
 	CASE 位置_訪問者宅
 		RETURNF @"%NTR_NAME(0)%的家"
 	CASE 位置_売春宿
@@ -228,6 +248,26 @@ SELECTCASE 対象変数
 		RETURNF RET_VAL
 ENDSELECT
 
+
+@当前位置存在人数(当前位置, 包含主角, 包含访问者)
+#FUNCTION
+#DIM 当前位置
+#DIM 包含主角
+#DIM 包含访问者
+LOCAL:1 = 0
+FOR LOCAL, 0, CHARANUM
+	IF LOCAL != MASTER
+		SIF CFLAG:LOCAL:現在位置 == 当前位置
+			LOCAL:1 ++
+	ENDIF
+NEXT
+SIF 包含主角 && CFLAG:MASTER:現在位置 == 当前位置
+	LOCAL:1 ++
+SIF 包含访问者 && FLAG:訪問者の現在位置 == 当前位置
+	LOCAL:1 ++
+RETURNF LOCAL:1
+
+[SKIPSTART]
 ;部屋にいる人数を求める
 ;ARG … 対象の部屋
 ;ARG:1 … 0:MASTERは含めない 1:MASTERも含める
@@ -254,7 +294,7 @@ SIF ARG:3 && FLAG:侵入者の現在位置 == ARG
 	LOCAL:1 ++
 
 RETURNF LOCAL:1
-
+[SKIPEND]
 
 @MAXROOM()
 #FUNCTION
@@ -264,7 +304,7 @@ RETURNF 場所番号最大値+1
 @BEDROOM(ARG)
 #FUNCTION
 SELECTCASE ARG
-	CASE 位置_红魔馆_帕秋莉私室,位置_红魔馆_小恶魔私室,位置_红魔馆_守卫小屋,位置_红魔馆_咲夜私室,位置_红魔馆_玩家房间,位置_红魔馆_蕾米莉亚私室,位置_红魔馆_地下室,位置_琪露诺的家,位置_大妖精的家,位置_魔理沙的家,位置_露米娅的家,位置_爱丽丝的家
+	CASE 位置_红魔馆_帕秋莉私室,位置_红魔馆_小恶魔私室,位置_红魔馆_守卫小屋,位置_红魔馆_咲夜私室,位置_红魔馆_玩家房间,位置_红魔馆_蕾米莉亚私室,位置_红魔馆_地下室,位置_雾之湖_琪露诺的家,位置_雾之湖_大妖精的家,位置_魔法之森_雾雨魔法店,位置_魔法之森_露米娅的树屋,位置_魔法之森_爱丽丝的家
 		RETURNF 1
 	CASE 位置_红魔馆_大浴场
 		;游戏座垫
@@ -288,7 +328,7 @@ RETURNF 0
 @KITCHEN(ARG)
 #FUNCTION
 SELECTCASE ARG
-	CASE 位置_红魔馆_厨房,位置_琪露诺的家,位置_大妖精的家,位置_魔理沙的家,位置_爱丽丝的家
+	CASE 位置_红魔馆_厨房,位置_雾之湖_琪露诺的家,位置_雾之湖_大妖精的家,位置_魔法之森_雾雨魔法店,位置_魔法之森_爱丽丝的家
 		RETURNF 1
 ENDSELECT
 RETURNF 0
@@ -299,22 +339,10 @@ RETURNF 0
 #FUNCTION
 SELECTCASE ARG
 		;庭、正門、湖、テラス
-	CASE 位置_红魔馆_正门,位置_红魔馆_后院,位置_雾之湖北部,位置_雾之湖南部,位置_红魔馆_三楼阳台
+	CASE 位置_红魔馆_正门,位置_红魔馆_后院,位置_雾之湖_湖北部,位置_雾之湖_湖南部,位置_红魔馆_三楼阳台
 		RETURNF 2
 		;広間,踊り場,廊下
 	CASE 位置_红魔馆_大厅,位置_红魔馆_二楼楼梯间,位置_红魔馆_二楼走廊
 		RETURNF 1
 ENDSELECT
 RETURNF 0
-
-
-;マップ別の場所設定
-@MAP_DISTINCTION(ARG)
-#FUNCTION
-SELECTCASE ARG
-	CASE 位置_雾之湖北部, 位置_雾之湖南部, 位置_琪露诺的家, 位置_大妖精的家, 位置_魔理沙的家, 位置_魔法之森内部, 位置_露米娅的家,位置_爱丽丝的家
-		RETURNF 1
-	CASEELSE
-		RETURNF 0
-ENDSELECT
-

@@ -694,9 +694,9 @@ RETURN
 IF TALENT:TARGET:恋慕
 	PRINTFORML 「えへ……えへへへへ%UNICODE(0x2764)%　ふ、二人きりに、なれたねっ」
 	PRINTFORMW そう言われて、%CALLNAME:MASTER%は小首を傾げた。
-	IF CFLAG:MASTER:現在位置 == 位置_琪露诺的家
+	IF CFLAG:MASTER:現在位置 == 位置_雾之湖_琪露诺的家
 		PRINTFORM 確かに今現在、彼女の家には
-	ELSEIF CFLAG:MASTER:現在位置 == 位置_大妖精的家
+	ELSEIF CFLAG:MASTER:現在位置 == 位置_雾之湖_大妖精的家
 		PRINTFORML ここは他人様の家であり、出かけている家主がいつ戻ってくるかもしれない。
 		PRINTFORM もちろん、少なくとも今現在に限って言えば、
 	ELSE
@@ -704,7 +704,7 @@ IF TALENT:TARGET:恋慕
 		PRINTFORM ただ、少なくともこの部屋に限って言えば、
 	ENDIF
 	PRINTFORM %CALLNAME:TARGET%と%CALLNAME:MASTER%
-	IF CFLAG:MASTER:現在位置 == 位置_琪露诺的家
+	IF CFLAG:MASTER:現在位置 == 位置_雾之湖_琪露诺的家
 		PRINTFORML だけだから、二人きりには違いない。
 		PRINTFORML しかし%CALLNAME:MASTER%は、%CALLNAME:TARGET%の真意を察することが出来なかった。
 	ELSE
