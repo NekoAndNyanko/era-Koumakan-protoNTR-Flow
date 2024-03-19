@@ -48,7 +48,7 @@ ELSE
 ENDIF
 TFLAG:300 = DATETIME()
 CFLAG:MASTER:睡眠 = 0
-;調教ターゲット＆馴れ合い強度設定
+;調教ターゲット＆亲密程度設定
 ;CALL INFO_SetTarget
 ;MASTERと同室フラグ
 FOR LOCAL,1,CHARANUM
@@ -80,7 +80,7 @@ FOR LOCAL,1,CHARANUM
 		CFLAG:LOCAL:同室 = 0
 	ENDIF
 NEXT
-;調教ターゲット＆馴れ合い強度設定
+;調教ターゲット＆亲密程度設定
 CALL INFO_SetTarget
 ;ウフフ終了TEQUIP処理
 FOR LOCAL,0,CHARANUM
@@ -561,7 +561,7 @@ FOR LOCAL:10,1,CHARANUM
 NEXT
 
 ;-------------------------------------------------------------------------------
-;キャラの态度(馴れ合い強度)を決定する。
+;キャラの态度(亲密程度)を決定する。
 ;基本的に「そのキャラがどれくらい積極的に行動してくるか」を示すもの。
 ;強度 0:身体接触まで ,1:軽いセクハラしてくる ,2:セクハラしてくる ,3+:押し倒してくる
 ;@return 0
@@ -591,7 +591,7 @@ FOR 奴隷,1,CHARANUM
 	; 好感度基準値 += 5*GETBIT(CFLAG:奴隷:既成事実,1)                   ;既成事実:うふふ(5)、うふふはセクハラしやすさには影響しない。
 	好感度基準値 += 5*CFLAG:奴隷:和主角已做爱
 
-	;基本的に馴れ合い強度の上限は1
+	;基本的に亲密程度の上限は1
 	馴れ合い上限値 = 1
 	;馴れ合い上限値 += GETBIT(CFLAG:奴隷:既成事実,0) ;既成事実:告白がある場合は最大ランク+1
 	馴れ合い上限値 += TALENT:奴隷:恋人
@@ -1004,17 +1004,17 @@ RETURN 0
 
 ;-------------------------------------------------------------------------------
 ;調教ターゲットを選択する。
-;部屋内における各キャラの馴れ合い強度についても設定。
+;部屋内における各キャラの亲密程度についても設定。
 ;@param ARG:0 未使用
 @INFO_SetTarget(ARG:0)
 ;ターゲットを初期化
 VARSET TARGET
 ;CFLAG:館内地位(310)でソート
 CALL SORT_CFLAG(310)
-; LOCAL 0:ループ用、1:キャラ番号、2:ターゲット数、3:起きてるキャラの最小馴れ合い強度
+; LOCAL 0:ループ用、1:キャラ番号、2:ターゲット数、3:起きてるキャラの最小亲密程度
 VARSET LOCAL
 LOCAL:3 = 99
-TCVAR:MASTER:馴れ合い強度=0
+TCVAR:MASTER:亲密程度=0
 ;現在位置が同じキャラを取得し、ターゲット候補一覧に追加
 FOR LOCAL:0,1,CHARANUM
 	;先ほど取得した館内地位順でキャラ番号を取得
@@ -1031,17 +1031,17 @@ FOR LOCAL:0,1,CHARANUM
 		IF LOCAL:1 == TFLAG:現在のTARGET
 			TARGET:0 = LOCAL:1
 		ENDIF
-		;馴れ合い強度は、同室中の上位キャラの馴れ合い強度以下に制限される。偉い人の前ではうふふできない。
-		TCVAR:(LOCAL:1):馴れ合い強度 = MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
+		;亲密程度は、同室中の上位キャラの亲密程度以下に制限される。偉い人の前ではうふふできない。
+		TCVAR:(LOCAL:1):亲密程度 = MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
 		IF !CFLAG:(LOCAL:1):睡眠
-			;起きてるキャラの最小馴れ合い強度を取得
+			;起きてるキャラの最小亲密程度を取得
 			LOCAL:3 = MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
-			TCVAR:MASTER:馴れ合い強度 = MAX(CFLAG:(LOCAL:1):亲密程度,0)
+			TCVAR:MASTER:亲密程度 = MAX(CFLAG:(LOCAL:1):亲密程度,0)
 		ENDIF
 	ENDIF
-	;DEBUGPRINTFORML %CALLNAME:(LOCAL:1)+"の馴れ合い強度:"%{TCVAR:(LOCAL:1):馴れ合い強度}
+	;DEBUGPRINTFORML %CALLNAME:(LOCAL:1)+"の亲密程度:"%{TCVAR:(LOCAL:1):亲密程度}
 NEXT
-;DEBUGPRINTFORML %CALLNAME:MASTER+"の馴れ合い強度:"%{TCVAR:MASTER:馴れ合い強度}
+;DEBUGPRINTFORML %CALLNAME:MASTER+"の亲密程度:"%{TCVAR:MASTER:亲密程度}
 ;現在のターゲットを更新
 TFLAG:現在のTARGET = TARGET:0
 RETURN 0
@@ -1074,8 +1074,8 @@ IF 奴隷 && !CFLAG:奴隷:睡眠
 	ELSEIF CFLAG:奴隷:うふふ == 2
 		;押し倒し(2)時
 		TFLAG:COMABLE管理 = 3
-	ELSEIF TCVAR:MASTER:馴れ合い強度 > 2 && !同室人数 && BASE:奴隷:满足*2 < MAXBASE:奴隷:满足 && !OPENPLACE(POS_NOW) && POS_NOW != FLAG:访问者当前位置 && !TALENT:NTR && CHK_350_STAIN_SEMEN(奴隷) && CFLAG:奴隷:性欲 > 25 && COM417_is_Protected_CheckOnly(MASTER,奴隷,淫纹_太股) == 0
-		;あなたの馴れ合い強度が3以上で、対象が满足状態でなく、密室で、訪問者がいなく、NTRでもない場合は押し倒される
+	ELSEIF TCVAR:MASTER:亲密程度 > 2 && !同室人数 && BASE:奴隷:满足*2 < MAXBASE:奴隷:满足 && !OPENPLACE(POS_NOW) && POS_NOW != FLAG:访问者当前位置 && !TALENT:NTR && CHK_350_STAIN_SEMEN(奴隷) && CFLAG:奴隷:性欲 > 25 && COM417_is_Protected_CheckOnly(MASTER,奴隷,淫纹_太股) == 0
+		;あなたの亲密程度が3以上で、対象が满足状態でなく、密室で、訪問者がいなく、NTRでもない場合は押し倒される
 		;如果集齐了淫纹 只能在淫纹失效时逆推
 		;オープンスペース（正門、広間、庭、二階踊り場、廊下）では押し倒されない
 		;精液汚れによる押し倒し可否で失敗すると押し倒されない

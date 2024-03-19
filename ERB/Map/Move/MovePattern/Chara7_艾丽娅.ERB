@@ -117,7 +117,7 @@ FOR LOCAL:4, 1, 場所番号最大値+1
 	ENDSELECT
 NEXT
 [SKIPSTART]
-;馴れ合い強度を見る
+;亲密程度を見る
 IF CFLAG:人物_艾丽娅:亲密程度 == 2
 	SELECTCASE ARG
 			;私室にも侵入する
@@ -239,7 +239,7 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 	ENDSELECT
 
 
-	;馴れ合い強度を見る
+	;亲密程度を見る
 ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 	SELECTCASE ARG
 			;私室にも侵入する
@@ -361,7 +361,7 @@ ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 	ENDSELECT
 
 
-	;馴れ合い強度を見る
+	;亲密程度を見る
 ELSE		
 
 	SELECTCASE ARG

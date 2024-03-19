@@ -17,7 +17,7 @@ IF !FLAG:真实模式
 	PRINTFORML [1]  - %NTR_NAME(0)%吸收角色对%CALLNAME:MASTER%的好感度（建议打开）%"	" * 2%\@ GETBIT(FLAG:ＮＴＲパッチ設定,1) ? [是] # [否] \@
 	;PRINTFORML [2] - [恋慕] 等素质消去 \@ GETBIT(FLAG:ＮＴＲパッチ設定,2) ? [是] # [否] \@
 	;PRINTFORML [3] - %NTR_NAME(0)%家的长期滞在 \@ GETBIT(FLAG:ＮＴＲパッチ設定,3) ? [是] # [否] \@
-	PRINTFORML [4]  - %NTR_NAME(0)%会监禁%CALLNAME:MASTER%%"	" * 6%\@ GETBIT(FLAG:ＮＴＲパッチ設定,4) ? [是] # [否] \@
+	;PRINTFORML [4]  - %NTR_NAME(0)%会监禁%CALLNAME:MASTER%%"	" * 6%\@ GETBIT(FLAG:ＮＴＲパッチ設定,4) ? [是] # [否] \@
 ENDIF
 PRINTFORML [5]  - 角色会怀上%NTR_NAME(0)%的孩子%"	" * 5%\@ GETBIT(FLAG:ＮＴＲパッチ設定,5) ? [是] # [否] \@
 PRINTFORML [6]  - %NTR_NAME(0)%会把角色带回家（建议关闭）%"	" * 3%\@ GETBIT(FLAG:ＮＴＲパッチ設定,6) ? [是] # [否] \@
@@ -77,7 +77,7 @@ IF RESULT == 1
 		ENDIF
 [SKIPEND]
 ELSEIF RESULT == 3
-	GOTO INPUT_LOOP_NTR_OPTION_TOP
+	;GOTO INPUT_LOOP_NTR_OPTION_TOP
 	PRINTFORML 住民在%NTR_NAME(0)%家的长期滞在有效？
 	PRINTFORML [0] 打开
 	PRINTFORML [1] 关闭
@@ -112,6 +112,7 @@ ELSEIF RESULT == 3
 	ELSE
 		GOTO INPUT_LOOP_NTR_OPTION_3
 	ENDIF
+[SKIPSTART]
 ELSEIF RESULT == 4
 	PRINTFORML "%CALLNAME:MASTER%"会被%NTR_NAME(0)%打包带回家监禁？
 	PRINTFORML [0] 打开
@@ -129,6 +130,7 @@ ELSEIF RESULT == 4
 	ELSE
 		GOTO INPUT_LOOP_NTR_OPTION_4
 	ENDIF
+[SKIPEND]
 ELSEIF RESULT == 5
 	PRINTFORML 使%NTR_NAME(0)%的精液可以导致妊娠(仅妊娠补丁启用时有效，即禁止妊娠为关闭时)
 	PRINTFORML [0] 打开
