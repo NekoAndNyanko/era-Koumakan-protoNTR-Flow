@@ -104,21 +104,7 @@ ELSEIF TALENT:奴隷:处女 && NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	ENDIF
 	;その他
 ELSE
-	IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「次の…あとでいいか？その話は」
-			DATAFORM 「この前の『お仕事』はどんな具合だったか…？ はて、何の話だ？」
-			DATAFORM 「そういう話は後にしてくれ」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は『仕事』の話を持ちかけられ嫌そうな顔をしている。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「はい…分かりました。言いつけどおりにしておけばいいんだな？」
-			DATAFORM 「今度のお客様は…準備しておけばいいんだな？」
-			DATAFORM 「いつも通りに…ああ、%呼称%の言うとおりにするぜ」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は頬を染め淫らさを感じさせる笑みを浮かべている。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		IF TALENT:奴隷:妊娠
 			PRINTDATAL
 				DATAFORM 「ああ…この子が生まれたら、おまんこを%阴茎%でいっぱい愛してくれ…」
@@ -7178,7 +7164,7 @@ RETURN 0
 #DIM 密室度			;0:堂々 1:普通 2:個室 3:私室
 
 ;部屋の密室度で分岐
-密室度 = GET_ROOM_SECURITY(FLAG:訪問者の現在位置)
+密室度 = GET_ROOM_SECURITY(FLAG:访问者当前位置)
 SELECTCASE 密室度
 	CASE 0
 		CALL NTR_KOJO_K10_11_0(奴隷, 誘いフラグ)
@@ -7207,7 +7193,7 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	ELSE
 		PRINTFORML 「ここで？ いや、いいけどさ…%MSG_HEART()%」
 	ENDIF
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 	PRINTFORML 誰かに見られてしまっても問題は無い。それほどまでに彼女は快楽に屈していた。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
@@ -7217,7 +7203,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 	ELSE
 		PRINTFORML 「ここで？ いや、いいけどさ…%MSG_HEART()%」
 	ENDIF
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML %MSG_LOVER(奴隷)%に見られたら、という意識はもはや%CALLNAME:奴隷%の中には存在しなかった。
 		IF TALENT:奴隷:浮気公認
@@ -7237,7 +7223,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	ELSE
 		PRINTFORML 「ここで？ いや、いいけどさ…」
 	ENDIF
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%CALLNAME:奴隷%は期待を込めた笑顔で%NTR_NAME(0)%を見つめた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%CALLNAME:奴隷%は期待を込めた笑顔で%NTR_NAME(0)%を見つめた。
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
 			PRINTFORML %MSG_LOVER(奴隷)%に覗かれたらそれもまた一興、と%CALLNAME:奴隷%は考えていた。
@@ -7257,10 +7243,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 	ELSE
 		PRINTFORML 「こんなところだけど…お前が言うなら仕方ない」
 	ENDIF
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7278,7 +7264,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放してっ、やだっ！」
-	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれた。
+	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた。
 
 ENDIF
 RETURN 0
@@ -7297,7 +7283,7 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	ELSE
 		PRINTFORML 「ここで？ いや、いいけどさ…%MSG_HEART()%」
 	ENDIF
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 	PRINTFORML 誰かに見られてしまうかもしれない。だがそれでも問題は無い。それほどまでに彼女は快楽に屈していた。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
@@ -7307,7 +7293,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 	ELSE
 		PRINTFORML 「ここで？ いや、いいけどさ…%MSG_HEART()%」
 	ENDIF
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML %MSG_LOVER(奴隷)%に見られたら、という意識はもはや%CALLNAME:奴隷%の中には存在しなかった。
 		IF TALENT:奴隷:浮気公認
@@ -7327,10 +7313,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	ELSE
 		PRINTFORML 「ここで？ いや、いいけどさ…」
 	ENDIF
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の鍵をかけると、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の鍵をかけると、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%で、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7351,10 +7337,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 	ELSE
 		PRINTFORML 「こんなところだけど…お前が言うなら仕方ないな」
 	ENDIF
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7372,7 +7358,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放してっ、やだあっ」
-	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれた。
+	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた。
 
 ENDIF
 RETURN 0
@@ -7392,12 +7378,12 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「いいぜ…%呼称%が望むなら…%MSG_HEART()%」
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「いいぜ…%呼称%が望むなら…%MSG_HEART()%」
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
@@ -7406,10 +7392,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	ELSE
 		PRINTFORML 「ふふ…ここならたぶん大丈夫だろ…」
 	ENDIF
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の鍵をかけると、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の鍵をかけると、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%で、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7431,10 +7417,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 	ELSE
 		PRINTFORML 「ここなら大丈夫だろ」
 	ENDIF
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7452,7 +7438,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放してっ、やだあっ」
-	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれた。
+	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた。
 
 ENDIF
 RETURN 0
@@ -7472,12 +7458,12 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「いいぜ…%呼称%が望むなら…%MSG_HEART()%」
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「いいぜ…%呼称%が望むなら…%MSG_HEART()%」
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(0)%の前に跪いた%CALLNAME:奴隷%は艶のある目つきで%NTR_NAME(4)%を見上げた。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML 万一%MSG_LOVER(奴隷)%に見られたら、という意識はもはや%CALLNAME:奴隷%の中には存在しなかった。
 		IF TALENT:奴隷:浮気公認
@@ -7492,10 +7478,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「ここなら大丈夫だろ…」
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の鍵をかけると、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の鍵をかけると、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%で、%NTR_NAME(0)%を期待を込めた笑顔で見つめた。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7517,10 +7503,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 	ELSE
 		PRINTFORML 「ここなら大丈夫だろ」
 	ENDIF
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の鍵をかけると、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%で、%NTR_NAME(0)%を妖しげな笑顔で見つめた。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7538,7 +7524,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放してっ、やだあっ」
-	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれた。
+	PRINTFORML %CALLNAME:奴隷%は腕を掴まれ強引に%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた。
 
 ENDIF
 
@@ -7603,61 +7589,6 @@ ENDIF
 ;浮気公認時
 IF TALENT:奴隷:浮気公認
 	PRINTFORML 「ははっ、嬉しいだろ？ %呼称%の望みどおりに%呼称%に抱かれて、%呼称%に寝取られるんだから…」
-ENDIF
-
-RETURN 0
-
-;==================================================
-;公众便所宣言
-;==================================================
-@NTR_KOJO_K10_13(奴隷)
-#DIM 奴隷
-#DIMS 呼称
-#DIMS 阴茎
-
-呼称 = %MSG_NTR_SEX_10(奴隷)%
-阴茎 = %MSG_CALL_PENIS_10(奴隷)%
-
-IF TALENT:奴隷:亲爱
-	;たぶんここには来ないと思うけど念のため余計なものを出さないように
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:浮気公認
-		PRINTFORML 「なあ%CALLNAME:MASTER%…前に私に言ったよな？ もっともっと寝取られたいって…」
-		PRINTFORML 「だから私も色々考えて…ああ、どうするのかって？」
-	ELSEIF TALENT:奴隷:淫乱
-		PRINTFORML 「なあ%CALLNAME:MASTER%…私、もっとエッチなことしたい」
-		PRINTFORML 「%CALLNAME:MASTER%や%呼称%だけじゃなくて、いろんな人に抱かれたくて」
-	ELSE
-		;たぶんないとは思うけど恋慕かつ非公認のケース
-		PRINTFORML （…いえない…%CALLNAME:MASTER%に、この事を言うなんてできない…）
-		PRINTFORML （…許して…許して、%CALLNAME:MASTER%…）
-	ENDIF
-	PRINTFORML 「私は、%呼称%の下で精液便所になることに決めたぜ」
-	PRINTFORML %CALLNAME:奴隷%は裙子をたくし上げ、局部を覆い隠す贞操帯を見せ付けた。
-	PRINTFORML 「%呼称%の管理で、色々な人に抱かれるんだぜ」
-	PRINTFORML 「そういう理由で私のカラダは『商品』になったから。だから%CALLNAME:MASTER%も私を抱きたい時はお金を出して鍵を買ってくれよ？」
-	IF TALENT:奴隷:人妻
-		PRINTFORML 「たとえ夫婦でも、例外はなしだ。いいか？」
-	ELSE
-		PRINTFORML 「たとえ恋人でも、例外はなしだ。いいか？」
-	ENDIF
-ELSE
-	;初回
-	IF EXP:奴隷:公众便所陷落经验 == 0
-		PRINTFORML 「ああ%CALLNAME:MASTER%、一応教えておくぞ」
-		PRINTFORML 「私、%CALLNAME:奴隷%は、%呼称%の下で精液便所になることを決めたぜ」
-		PRINTFORML %CALLNAME:奴隷%は裙子をたくし上げ、局部を覆い隠す贞操帯を見せ付けた。
-		PRINTFORML 「%CALLNAME:MASTER%も私とセックスしたかったら、%呼称%にお願いして私を買ってくれよ」
-		PRINTFORML 「まあ、%呼称%が鍵を売ってくれるかどうかは分からないけどな？」
-		;2回目以降
-		;NTRからの回復は恋慕獲得だから死に分岐？
-	ELSE
-		PRINTFORML 「ああ%CALLNAME:MASTER%、一応教えておくぞ」
-		PRINTFORML 「さすがに2回目以降だと察しが早いな？ 私、%CALLNAME:奴隷%は、精液便所に返回ことを決めたぜ」
-		PRINTFORML %CALLNAME:奴隷%は裙子をたくし上げ、局部を覆い隠す贞操帯を見せ付けた。
-		PRINTFORML 「%CALLNAME:MASTER%も私とセックスしたかったら、%呼称%にお願いして私を買ってくれ%MSG_HEART()%」
-		PRINTFORML そう告げる%CALLNAME:奴隷%の贞操帯からは淫蜜が滴るのが%CALLNAME:MASTER%にも見てとれた
-	ENDIF
 ENDIF
 
 RETURN 0
@@ -8195,117 +8126,6 @@ ELSE
 ENDIF
 
 ;==================================================
-;贞操帯鍵購入に対する反応
-;==================================================
-;本人
-@NTR_KOJO_K10_16_0(奴隷)
-#DIM 奴隷
-#DIMS 呼称
-#DIMS 阴茎
-
-呼称 = %MSG_NTR_SEX_10(奴隷)%
-阴茎 = %MSG_CALL_PENIS_10(奴隷)%
-
-IF TALENT:奴隷:亲爱
-
-	PRINTFORML 「ああ…%呼称%から私を買ってくれたんだな」
-	PRINTFORML 「嬉しい…すごく。今日は私を独り占めしてくれるんだろう？」
-	IF TALENT:奴隷:人妻
-		PRINTFORML 「たっぷりお前で満たしてくれ…。だって、夫婦なんだから…」
-	ELSE
-		PRINTFORML 「たっぷりお前で満たしてくれ…。だって、恋人なんだから…」
-	ENDIF
-
-ELSEIF TALENT:奴隷:恋慕
-
-	IF CFLAG:奴隷:NTR鍵購入回数 <= 5
-		PRINTFORML 「ああ…%呼称%から私を買ってくれたんだな」
-		IF TALENT:奴隷:人妻
-			PRINTFORML 「自分の伴侶とセックスをする権利を、伴侶のまんこを、間男から買うのってどんな気持ちなんだ？」
-		ELSE
-			PRINTFORML 「自分の恋人とセックスをする権利を、恋人のまんこを、間男から買うのってどんな気持ちなんだ？」
-		ENDIF
-	ELSE
-		PRINTFORML 「あれ？ また私のことを買ってくれたのか？」
-		IF TALENT:奴隷:人妻
-			PRINTFORML 「いや、もちろん嬉しいさ。たっぷりお前で満たしてくれ…。だって、夫婦なんだから…ふふっ」
-		ELSE
-			PRINTFORML 「いや、もちろん嬉しいさ。たっぷりお前で満たしてくれ…。だって、恋人なんだから…ふふっ」
-		ENDIF
-	ENDIF
-
-ELSE
-
-	;非恋慕
-	IF CFLAG:奴隷:NTR鍵購入回数 <= 5
-		;初回
-		PRINTFORML 「あれ？ 今日のお相手はお前なのか？」
-		PRINTFORML 「ああ、今は%CALLNAME:MASTER%がご主人様だ」
-	ELSEIF CFLAG:奴隷:NTR鍵購入回数 <= 10
-		PRINTFORML 「あらら、また私を買ってくれたのか？」
-		PRINTFORML 「いや、もちろん嬉しいさ。今は%CALLNAME:MASTER%がご主人様…私の持てる技術で侍奉するぜ」
-	ELSE
-		;もはや常連
-		PRINTFORML 「ああ…また買ってくれたんだな。」
-		PRINTFORML 「すっかりお前もお得意様だな…正直、嬉しいぜ。」
-		PRINTFORML 「今日も私を心行くまで使っていってくださいませ。」
-	ENDIF
-
-ENDIF
-RETURN
-
-;本人以外
-@NTR_KOJO_K10_16_1(奴隷)
-#DIM 奴隷
-#DIMS 呼称
-
-呼称 = %MSG_NTR_SEX_10(奴隷)%
-
-;公众便所
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-
-	PRINTFORML 「それは…%CALLNAME_K10(奴隷, FLAG:贞操帯鍵購入フラグ)%の鍵だな…」
-	PRINTFORML 「お前のことを信じていたのにな…」
-	PRINTFORML 「…すまない、我侭なことを言ったな…」
-
-ELSEIF TALENT:奴隷:公众便所
-
-	PRINTFORML 「ふーん…%CALLNAME_K10(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんだな…」
-	IF TALENT:奴隷:恋慕
-		IF TALENT:奴隷:人妻
-			PRINTFORML 「妻が他人に抱かれているのに、他の娼婦を買うなんてどういうことだか分かってるか？」
-		ELSE
-			PRINTFORML 「恋人が他人に抱かれているのに、他の娼婦を買うなんてどういうことだか分かってるか？」
-		ENDIF
-		PRINTFORML 「はは、冗談だよ。」
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%は耳元で
-		PRINTFORML 「今度は私を買ってくれよな」
-		PRINTFORML と囁いて去っていった。
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
-
-	PRINTFORML 「%CALLNAME_K10(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんだな…」
-	PRINTFORML 「%呼称%のすることだから、怒るも悲しむもないさ」
-	PRINTFORML 「ちなみに、私が『商品』になったら、%CALLNAME:MASTER%は買われてしまうのかな？」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) && TALENT:奴隷:恋慕
-
-	PRINTFORML 「…%CALLNAME:MASTER%もそういうことするんだな」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) && TALENT:奴隷:恋慕
-
-	PRINTFORML 「…%CALLNAME:MASTER%もそういうことするんだな」
-
-ELSE
-
-	PRINTFORML 「うっわ…。変態が移るから近づくな」
-
-ENDIF
-RETURN
-
-;==================================================
 ;情事中に踏み込み
 ;==================================================
 ;覗きバレしてる→情事中断
@@ -8666,30 +8486,7 @@ RETURN
 @NTR_KOJO_K10_21(奴隷)
 #DIM 奴隷
 
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML %NTR_NAME(0)%に目配せされた%CALLNAME:奴隷%はうつむき加減で%CALLNAME:MASTER%に声をかけた。
-	PRINTDATAL
-		DATAFORM 「…悪い、%NTR_NAME(4)%が呼んでいる」
-		DATAFORM 「…悪い、お呼びがかかった」
-		DATAFORM 「%NTR_NAME(4)%が呼んでいるみたいだから…悪い」
-	ENDDATA
-ELSEIF TALENT:奴隷:公众便所
-	IF TALENT:奴隷:恋慕
-		PRINTFORML %NTR_NAME(0)%に目配せされた%CALLNAME:奴隷%は%CALLNAME:MASTER%に声をかけた。
-		PRINTDATAL
-			DATAFORM 「悪い、%NTR_NAME(4)%が私に用があるらしい」
-			DATAFORM 「悪い、お呼びがかかった」
-			DATAFORM 「%NTR_NAME(4)%が呼んでいるみたいだから、悪い」
-		ENDDATA
-	ELSE
-		PRINTFORML %NTR_NAME(0)%に目配せされた%CALLNAME:奴隷%は頬を染めた。
-		PRINTDATAL
-			DATAFORM 「ああ、呼んだか？」
-			DATAFORM 「ああ、分かった」
-			DATAFORM 「ああ、来たぜ」
-		ENDDATA
-	ENDIF
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	PRINTFORML %NTR_NAME(0)%に目配せされた%CALLNAME:奴隷%は頬を染めた。
 	PRINTDATAL
 		DATAFORM 「ああ、呼んだか？」
@@ -8993,14 +8790,7 @@ ENDIF
 ;	ELSE
 ;		RETURNF "貴方"
 ;	ENDIF
-
-IF TALENT:奴隷:公众便所
-	IF TALENT:奴隷:亲爱
-		RETURNF "お前"
-	ELSE
-		RETURNF "ご主人様"
-	ENDIF
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	RETURNF "ご主人様"
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 	RETURNF "ご主人様"
@@ -9020,9 +8810,7 @@ ENDIF
 #FUNCTIONS
 #DIM 奴隷
 
-IF  TALENT:奴隷:公众便所
-	RETURNF "おちんぽ"
-ELSEIF TALENT:奴隷:淫乱
+IF TALENT:奴隷:淫乱
 	RETURNF "おちんぽ"
 ELSE
 	RETURNF "おちんちん"

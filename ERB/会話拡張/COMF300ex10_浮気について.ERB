@@ -405,14 +405,6 @@ IF TALENT:奴隷:浮気公認 == 5
 			TALENT:奴隷:浮気公認 = 1
 		ENDIF
 	ENDIF
-ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	;亲爱つき公众便所は０にはならない
-	TALENT:奴隷:浮気公認 = 1
-	PRINTFORML %CALLNAME:奴隷+"说虽然自己也不想再继续下去了，但是因为被威胁了所以也没办法停下来..."%
-ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:浮気公認 >= 4
-	;公众便所の場合4以下にはならない
-	TALENT:奴隷:浮気公認 = 4
-	PRINTFORML %CALLNAME:奴隷+"表示即使这么说，和"+NTR_NAME(0)+"的关系也不能停止，所以也没办法停止卖春..."%
 ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
 	;快楽を覚えてしまっている場合０にはならない
 	TALENT:奴隷:浮気公認 = 1
@@ -445,8 +437,6 @@ IF TALENT:奴隷:浮気公認 == 5
 	ELSE
 		PRINTFORML %CALLNAME:奴隷+"问道真的要去做"+NTR_NAME(0)+"的妻子吗？现在反悔还可以哦，只是一句话的事情···"%
 	ENDIF
-ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML %CALLNAME:奴隷+"疑惑这样真的好吗、看起来有些不安。"%
 ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
 	IF TALENT:奴隷:浮気公認 < MARK:奴隷:浮気快乐刻印
 		PRINTFORML %CALLNAME:奴隷+"还想再被多侵犯几次、神色显得很遗憾。"%
@@ -473,9 +463,6 @@ RETURN 0
 奴隷 = TARGET:0
 調教者 = PLAYER:0
 MSG0 = %"然后这么笑着。"%
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	MSG0 = %"就这样说着。"%
-ENDIF
 IF TALENT:奴隷:浮気公認 == 4
 	PRINTFORMW %CALLNAME:調教者+"说出了希望"+CALLNAME:奴隷+"成为"+NTR_NAME(0)+"的妻子的话、"%
 	PRINTFORMW %CALLNAME:奴隷+"在惊讶过后，认真地问了一次「真的吗？要我做"+NTR_NAME(0)+"的妻子吗？」"+MSG0%

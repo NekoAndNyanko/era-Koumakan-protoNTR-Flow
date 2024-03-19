@@ -251,7 +251,7 @@ SELECTCASE LOCAL:3
 		;補正なし
 ENDSELECT
 ;お風呂補正、個人宅に二度補正がかからないように
-IF BATHROOM(LOCAL:3)
+IF 存在浴室(LOCAL:3)
 	LOCAL:2 += 80
 	;私室補正
 ELSEIF CFLAG:LOCAL:開始位置 == LOCAL:3

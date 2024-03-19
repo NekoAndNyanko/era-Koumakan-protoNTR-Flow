@@ -1,0 +1,149 @@
+﻿;-------------------------------------------------------------------------------
+;COMABLE一括管理
+; RETURN 0 コマンドの実行可能
+; RETURN 1 コマンドの実行不可
+@GLOBAL_COMABLE(コマンド番号)
+#FUNCTION
+#DIM コマンド番号
+;コマンドフィルタ
+LOCALS = /{コマンド番号}/
+IF STRCOUNT(SAVESTR:0,LOCALS)
+	RESULT = 0
+	RETURNF 1
+ENDIF
+;一括管理
+;TFLAG:COMABLE管理,(1=日常ON 2=ウフフON)
+SELECTCASE コマンド番号
+	CASE 000 TO 199
+		;0～100類(通常調教コマンド)、500類(多人数プレイ)は、うふふOFFの場合不可、自慰の場合も不可
+		IF TFLAG:COMABLE管理 != 2 || CFLAG:うふふ == 3
+			RESULT = 0
+			RETURNF 1
+		ENDIF
+	CASE 200 TO 299
+		;200系（脱衣）はうふふONでなければ不可
+		IF TFLAG:COMABLE管理 != 2
+			RESULT = 0
+			RETURNF 1
+		ENDIF
+	CASE 300 TO 309
+		;会话(300)、お茶を入れる(301)、身体接触(302)などは日常モード限定
+		IF TFLAG:COMABLE管理 != 1
+			RESULT = 0
+			RETURNF 1
+		ENDIF
+	CASE 310 TO 399
+		;抚摸臀部(310)～指挿入(316)などは日常モード限定
+		IF TFLAG:COMABLE管理 == 2
+			RESULT = 0
+			RETURNF 1
+		ENDIF
+		;お風呂場ではガチエロになるので、押し倒され状態でない場合、連れ出す(351)と推到(350)と不打扰(354)以外は不可
+		IF 存在浴室(CFLAG:MASTER:現在位置) && CFLAG:うふふ != 2
+			IF コマンド番号 != 350 && コマンド番号 != 351 && コマンド番号 != 354
+				RESULT = 0
+				RETURNF 1
+			ENDIF
+		ENDIF
+	CASE 400 TO 499
+		;400系(休息、收藏などあなた特殊系コマンド)はうふふONの場合不可
+		IF TFLAG:COMABLE管理 == 2
+			RESULT = 0
+			RETURNF 1
+		ENDIF
+	CASE 500 TO 599
+		;0～100類(通常調教コマンド)、500類(多人数プレイ)は、うふふOFFの場合不可、自慰の場合も不可
+		IF TFLAG:COMABLE管理 != 2 || CFLAG:うふふ == 3
+			RESULT = 0
+			RETURNF 1
+		ENDIF
+	CASE 600 TO 699
+		;600系（自慰専用）は自慰状態じゃない場合不可
+		IF CFLAG:うふふ != 3
+			RESULT = 0
+			RETURNF 1
+		ENDIF
+	CASEELSE
+ENDSELECT
+IF TARGET:1 > 0 && CFLAG:睡眠 == 1 && (コマンド番号 < 400 || コマンド番号 >= 500)
+	;寝ている相手には大半のコマンドは不可
+	RESULT = 0
+	RETURNF 1
+ENDIF
+;ビデオ処理（固定相机ならば制限なし）
+IF (TFLAG:摄像机 == 1 && !ASSIPLAY) || (TFLAG:摄像机 == 2 && ASSIPLAY)
+	;摄影者が調教中、ビデオ片手ではいろいろ制限される
+	SELECTCASE TRAINNAME:コマンド番号
+		CASE "爱抚"
+		CASE "手指插入"
+		CASE "肛门爱抚"
+		CASE "胸爱抚"
+		CASE "玩弄乳首"
+		CASE "掰开小穴"
+		CASE "自慰"
+		CASE "什麽也不做"
+		CASE "跳蛋"
+		CASE "E按摩棒"
+		CASE "阴蒂夹"
+		CASE "振动棒"
+		CASE "肛门振动棒"
+		CASE "肛珠"
+		CASE "乳头夹"
+		CASE "搾乳机"
+		CASE "骑乘位"
+		CASE "肛交骑乘位"
+		CASE "手淫"
+		CASE "口交"
+		CASE "乳交"
+		CASE "素股"
+		CASE "泡澡"
+		CASE "足交"
+		CASE "打屁股"
+		CASE "鞭"
+		CASE "蜡烛"
+		CASE "针"
+		CASE "眼罩"
+		CASE "绳"
+		CASE "助手を犯させる"
+		CASE "调教者足交"
+		CASE "强迫口交"
+		CASE "拳交"
+		CASE "肛门拳交"
+		CASE "放尿"
+		CASE "舔肛侍奉"
+		CASE "灌肠"
+		CASE "扩张气球"
+		CASE "肛门电极"
+		CASE "G点刺激"
+		CASE "乱れ牡丹"
+		CASE "双人素股"
+		CASE "双人乳交"
+		CASEELSE
+			RESULT = 0
+			RETURNF 1
+	ENDSELECT
+	RETURNF 0
+ELSEIF TFLAG:摄像机 == 1 && ASSIPLAY
+	;MASTERが摄影中、助手が調教中
+	SELECTCASE TRAINNAME:コマンド番号
+		CASE "二穴插入"
+		CASE "助手を犯す"
+		CASEELSE
+			RESULT = 0
+			RETURNF 1
+	ENDSELECT
+	RETURNF 0
+ELSEIF TFLAG:摄像机 == 2 && !ASSIPLAY
+	;助手が摄影中、MASTERが調教中
+	SELECTCASE TRAINNAME:コマンド番号
+		CASE "二穴插入"
+		CASE "助手を犯す"
+		CASE "双人素股"
+		CASE "双人乳交"
+		CASEELSE
+			RESULT = 0
+			RETURNF 1
+	ENDSELECT
+	RETURNF 0
+ENDIF
+RETURNF 0

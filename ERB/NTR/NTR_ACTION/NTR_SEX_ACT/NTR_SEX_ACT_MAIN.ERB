@@ -46,7 +46,7 @@ ELSE
 		CASE NTR_MOOD_会话
 			$SELECT_CASE_ELSE
 			; 行動選択→会话
-			IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && !CFLAG:奴隷:睡眠
+			IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 && !CFLAG:奴隷:睡眠
 				;会话（主人同席）
 				CALL NTR_MESSAGE_1_1(奴隷)
 				CALL NTR_RESET_VISITOR_ACTION(奴隷)
@@ -54,7 +54,7 @@ ELSE
 					FUNC NTR_KOJO_KW{CFLAG:奴隷:口上パターン}_1(奴隷)
 					FUNC NTR_KOJO_KW_1(奴隷)
 				ENDFUNC
-			ELSEIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) && !CFLAG:奴隷:睡眠
+			ELSEIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) && !CFLAG:奴隷:睡眠
 				;会话（主人不在）
 				CALL NTR_MESSAGE_1_0(奴隷)
 				CALL NTR_RESET_VISITOR_ACTION(奴隷)

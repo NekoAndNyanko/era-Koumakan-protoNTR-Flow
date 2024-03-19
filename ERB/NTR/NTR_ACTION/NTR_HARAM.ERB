@@ -7,12 +7,12 @@
 #DIM LOOP_CHR
 #DIM 同席人数
 ;主人がいるとNG
-SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+SIF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
 	RETURN 0
 同席人数 = 0
 FOR LOOP_CHR,1,CHARANUM
 	;訪問者と同じ場所にいる住人についてチェック
-	IF CFLAG:LOOP_CHR:現在位置 == FLAG:訪問者の現在位置
+	IF CFLAG:LOOP_CHR:現在位置 == FLAG:访问者当前位置
 		;オトコがいたら自粛
 		SIF !HAS_VAGINA(LOOP_CHR)
 			RETURN 0
@@ -59,13 +59,13 @@ IF FLAG:ハーレム時カウンタ == 1
 		CFLAG:LOOP_CHR:NTR訪問者との行為の終了時刻 = 0
 		CFLAG:LOOP_CHR:NTR訪問者との行為 = NTR_行为_なし
 	NEXT
-	密室度 = GET_ROOM_SECURITY(FLAG:訪問者の現在位置)
+	密室度 = GET_ROOM_SECURITY(FLAG:访问者当前位置)
 	;条件を満たしていくと行動の選択肢が増える
 	行為上限値 = 0
 	FOR LOOP_CHR,1,CHARANUM
 		CFLAG:LOOP_CHR:NTRハーレム行為種別 = 0
 		;訪問者と同じ場所にいる住人についてチェック
-		IF CFLAG:LOOP_CHR:現在位置 == FLAG:訪問者の現在位置
+		IF CFLAG:LOOP_CHR:現在位置 == FLAG:访问者当前位置
 			;SIF CFLAG:LOOP_CHR:屈服度 > CFLAG:LOOP_CHR:好感度 / 4
 			SIF NTR_CHK_FAVORABLY(LOOP_CHR, FAV_接吻程度)
 				行為上限値 += 1
@@ -93,19 +93,19 @@ IF FLAG:ハーレム時カウンタ == 1
 		ENDIF
 	NEXT
 	;ハーレム状態の時の施錠処理を外す
-	;IF !FLAG:(300 + FLAG:訪問者の現在位置)
-	;	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
-	;		PRINTFORMW %NTR_NAME(0)%のハーレム状態のため【%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%】に入りづらくなった。
+	;IF !FLAG:(300 + FLAG:访问者当前位置)
+	;	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+	;		PRINTFORMW %NTR_NAME(0)%のハーレム状態のため【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】に入りづらくなった。
 	;	ENDIF
 	;ENDIF
-	;FLAG:(300 + FLAG:訪問者の現在位置) = 1
+	;FLAG:(300 + FLAG:访问者当前位置) = 1
 	FLAG:ハーレム時カウンタ ++
 ENDIF
 ;全員に対して実行
 FOR LOOP_CHR,1,CHARANUM
 	浮気快楽強度 = 0
 	;訪問者と同じ場所にいる住人について処理
-	IF CFLAG:LOOP_CHR:現在位置 == FLAG:訪問者の現在位置
+	IF CFLAG:LOOP_CHR:現在位置 == FLAG:访问者当前位置
 		;好感度変化
 		IF TALENT:LOOP_CHR:亲爱 && CFLAG:LOOP_CHR:屈服度 > 500
 			CFLAG:LOOP_CHR:屈服度 -= 100

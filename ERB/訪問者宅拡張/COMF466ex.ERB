@@ -17,7 +17,7 @@ RETURN RESULT:0
 IF CFLAG:奴隷:現在位置詳細 == 0
 	CFLAG:奴隷:現在位置詳細 = 9
 ENDIF
-IF FLAG:訪問者の現在位置 != 位置_訪問者宅 && RAND:20 == 0
+IF FLAG:访问者当前位置 != 位置_訪問者宅 && RAND:20 == 0
 	CALL COMMAND466_01(奴隷)
 	RETURN 1
 ENDIF
@@ -38,7 +38,7 @@ RETURN 0
 ;@return 1:xxx,0:xxx
 @COMMAND466_01(奴隷)
 #DIM 奴隷
-FLAG:訪問者の現在位置 = 位置_訪問者宅
+FLAG:访问者当前位置 = 位置_訪問者宅
 PRINTFORMW %"どうやら、"+NTR_NAME(0)+"が帰ってきたようだ……"%
 SELECTCASE CFLAG:奴隷:現在位置詳細
 	CASE 1

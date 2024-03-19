@@ -14,23 +14,8 @@
 #DIM MOVE_PROB_DENO
 
 #DIM MAX_STAY_TIME
-[SKIPSTART]
-;;肉便器系追加処理
-;;人里プレイが開始したら、人里周辺へ移动。人里周辺に居るなら、移动しない。１時間経過してるとあなたの元へ
-IF TALENT:MASTER:肉便器 && CFLAG:MASTER:WC_人里プレイ開始 > 0
-	SELECTCASE FLAG:訪問者の現在位置
-		CASE 位置_人間の里,位置_人間の里周辺
-			SIF TIME_PROGRESS(CFLAG:MASTER:WC_人里プレイ開始) >= 90 && CFLAG:MASTER:WC_人里プレイ開始 != 0
-				RETURN 1
-			RETURN 0
-		CASEELSE
-			RETURN 1
-	ENDSELECT
-ENDIF
-;;
-[SKIPEND]
 ;訪問者宅などの場合移动しない
-SIF FLAG:訪問者の現在位置 == 0 || FLAG:訪問者の現在位置 == 位置_訪問者宅 || FLAG:訪問者の現在位置 == 901
+SIF FLAG:访问者当前位置 == 0 || FLAG:访问者当前位置 == 位置_訪問者宅 || FLAG:访问者当前位置 == 901
 	RETURN 0
 ;包含访问者、主角、住人3P中
 SIF FLAG:1840 > 0 && FLAG:1840 < 9
@@ -45,7 +30,7 @@ SIF FLAG:訪問者との行為の終了時刻 != 0
 存在讨厌的对象 = 0
 存在喜欢的对象 = 0
 FOR LOOP_CHR,0,CHARANUM
-	IF FLAG:訪問者の現在位置 == CFLAG:LOOP_CHR:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:LOOP_CHR:現在位置
 		同室人数 += 1
 
 		;嫌いなキャラが登録済み、居た場合
@@ -109,7 +94,7 @@ ELSE
 	RET_MOVE = 1
 ENDIF
 ;現在位置を強制的に開錠
-;FLAG:(300 + FLAG:訪問者の現在位置) = 0
+;FLAG:(300 + FLAG:访问者当前位置) = 0
 
 IF !存在喜欢的对象
 	MAX_STAY_TIME = 30

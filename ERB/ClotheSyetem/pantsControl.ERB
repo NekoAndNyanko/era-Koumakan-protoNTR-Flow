@@ -59,12 +59,6 @@ RETURNF 内裤选择
 #DIM DYNAMIC 内衣偏好_淫靡
 #DIM DYNAMIC 仅淫靡
 下着決定 = 0
-IF TALENT:着用者:公众便所 && !FLAG:屏蔽部分貞操帶
-	;公众便所なら贞操帯(強制)
-	RETURNF 100
-ELSEIF TALENT:着用者:肉便器 && CFLAG:PLAYER:WC_あなたに贞操帯を着けた人 != 0 && !FLAG:屏蔽部分貞操帶
-	RETURNF 100
-ENDIF
 SELECTCASE TALENT:着用者:体型
 	CASE -2
 		;幼儿体型
@@ -221,26 +215,14 @@ WHILE !下着決定
 		CASE 41
 			;レザーパンツ（黒）
 			下着決定 = (内衣偏好_淫靡 && ABL:着用者:抖Ｓ之气 > 4)
-		CASE 100
-			;贞操帯 100番に変更しました
-			下着決定 = TALENT:着用者:公众便所 && !FLAG:屏蔽部分貞操帶
 	ENDSELECT
 WEND
 RETURNF 内裤选择
 
 ;-------------------------------------------------------------------------------
 ;Hな下着のみ返す版
-@PANTS_TODAY_ADULT(住人, 贞操帯抑制)
+@PANTS_TODAY_ADULT(住人)
 #FUNCTION
 #DIM 住人		; 住人選択
-#DIM 贞操帯抑制	; 0:通常動作（公众便所は常に贞操帯） 1:公众便所でも贞操帯以外を返す
 
-IF 贞操帯抑制 == 0
-	IF TALENT:住人:公众便所
-		;贞操帯
-		RETURNF 100
-	ELSEIF TALENT:住人:肉便器 && CFLAG:PLAYER:WC_あなたに贞操帯を着けた人
-		RETURNF 100
-	ENDIF
-ENDIF
 RETURNF PANTS_TODAY(住人,1)

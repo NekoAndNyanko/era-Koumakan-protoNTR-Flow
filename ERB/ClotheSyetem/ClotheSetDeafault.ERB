@@ -22,11 +22,6 @@ EQUIP:着用者:着物           = 0
 EQUIP:着用者:紧身衣     = 0
 EQUIP:着用者:手     = 0
 IF 下着変更
-	IF !TALENT:着用者:公众便所 && !CFLAG:PLAYER:WC_あなたに贞操帯を着けた人 && FLAG:屏蔽部分貞操帶
-		;公众便所は下着を自由に脱ぐ事はできない
-		EQUIP:着用者:下半身下着１ = 0
-		EQUIP:着用者:下半身下着２ = 0
-	ENDIF
 	EQUIP:着用者:上半身下着１ = 0
 	EQUIP:着用者:上半身下着２ = 0
 ENDIF
@@ -62,18 +57,7 @@ IF TALENT:着用者:人妻
 		EQUIP:着用者:配件     = 衣装_配件_结婚戒指
 ENDIF
 
-IF TALENT:着用者:公众便所
-	;公众便所であれば项圈装着
-	WK_RATE = 10
-	;寝取り返し寸前、寝取り返し中だと外すことも
-	IF NTR_CHK_FAVORABLY(着用者, FAV_寝取り返し寸前)
-		WK_RATE = 7
-	ELSEIF NTR_CHK_FAVORABLY(着用者, FAV_寝取り返し寸前)
-		WK_RATE = 8
-	ENDIF
-	SIF WK_RATE >= RAND:10
-		EQUIP:着用者:配件     = 衣装_配件_项圈
-ELSEIF TALENT:着用者:NTR
+IF TALENT:着用者:NTR
 	;NTRであればチョーカー装着
 	WK_RATE = 10
 	;寝取り返し寸前、寝取り返し中だと外すことも
@@ -221,10 +205,6 @@ IF 下着変更
 		CALL CLOTHES_Change_Knickers(着用者,下着変更)
 	ELSE
 		EQUIP:着用者:下半身下着２ = CFLAG:着用者:私服_下半身下着２	
-	ENDIF
-	IF (!TALENT:着用者:公众便所 && !CFLAG:PLAYER:WC_あなたに贞操帯を着けた人) || FLAG:屏蔽部分貞操帶
-		;公众便所は下着を自由に変更することはできない
-		EQUIP:着用者:下半身下着１ = CFLAG:着用者:私服_下半身下着１
 	ENDIF
 	EQUIP:着用者:上半身下着１ = CFLAG:着用者:私服_上半身下着１
 	EQUIP:着用者:上半身下着２ = CFLAG:着用者:私服_上半身下着２

@@ -1,0 +1,60 @@
+;-------------------------------------------------------------------------------
+;美鈴
+@CHARA_MOVEMENT_ACTIVETIME_1(住人)
+#DIM 住人
+
+;22時〜6時、13時〜14時は寝てる
+RETURN TIME < 360 || (TIME > 780 && TIME < 840)|| TIME > 1320 || CFLAG:住人:衰弱
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CHARA_MOVEMENT_MOVERATE_1
+RETURN 90
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CHARA_MOVEMENT_1(ARG,ARG:1)
+;書かれていない場所へは移动しない
+RESULT:1 = 位置_红魔馆_正门 * 倍_万 + 100
+RESULT:2 = 位置_红魔馆_守卫小屋 * 倍_万 + 100
+RESULT:3 = 位置_红魔馆_后院 * 倍_万 + 100
+RESULT:4 = 位置_雾之湖_湖北部 * 倍_万 + 100
+RESULT:5 = 位置_红魔馆_大厅 * 倍_万 + 80
+RESULT:6 = 位置_红魔馆_餐厅 * 倍_万 + 80
+RESULT:7 = 位置_红魔馆_厨房 * 倍_万 + 80
+RESULT:8 = 位置_红魔馆_大图书馆 * 倍_万 + 60
+RESULT:9 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 60
+RESULT:10 = 位置_红魔馆_二楼走廊 * 倍_万 + 40
+RESULT:11 = 位置_红魔馆_咲夜私室 * 倍_万 + 20
+RESULT:12 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 20
+
+LOCAL:3 = 13
+;お手洗いパッチ
+;基本的には屋外厕所を使用
+;2F厕所はかなり条件が揃わないと使用しない
+IF REST_NeedRestroom(ARG:1)
+	FOR LOCAL,0,CHARANUM
+		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+			LOCAL:1++
+		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+			LOCAL:2 ++
+	NEXT
+	IF LOCAL:1 != 0 && LOCAL:2 > 1
+		RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
+		LOCAL:3 ++
+	ENDIF
+	IF LOCAL:2 < 2 && LOCAL:1 != 0
+		RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
+		LOCAL:3 ++
+	ENDIF
+	IF LOCAL:1 == 0
+		RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
+		LOCAL:3 ++
+	ENDIF
+ENDIF
+
+IF CFLAG:(ARG:1):風呂 >= 1000
+	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
+ENDIF

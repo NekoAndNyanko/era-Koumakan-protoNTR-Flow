@@ -190,16 +190,7 @@ RETURN 0
 @KOJO_MESSAGE_COM_K8_300_10_02_01(奴隷, 調教者)
 #DIM 奴隷
 #DIM 調教者
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML 「あたいだってあんなことしたくないよ！ だけど、だけど、あいつが・・」
-ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認
-	PRINTFORML 「ええっ！？ なにそれ！？」
-	PRINTFORML 「%CALLNAME:MASTER%が何を言っても、あの人ともみんなともエッチは止めないからね！！」
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「だいいち、あの人とセックスしてもいいって言ったのは%CALLNAME:MASTER%じゃんか！！」
-	ENDIF
-	;快乐刻印浮気快乐刻印で分岐。その中でさらに好感度、屈服度で分岐
-ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+IF CHK_NTR_SATISFACTORY(奴隷) 
 	;快楽を覚えてしまっている場合０にはならない
 	TALENT:奴隷:浮気公認 = 1
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
@@ -233,10 +224,7 @@ RETURN 0
 @KOJO_MESSAGE_COM_K8_300_10_02_02(奴隷, 調教者)
 #DIM 奴隷
 #DIM 調教者
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML 「・・どーしてそんなこと言うの？」
-	;快乐刻印浮気快乐刻印で分岐。その中でさらに好感度、屈服度で分岐
-ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+IF CHK_NTR_SATISFACTORY(奴隷) 
 	IF TALENT:奴隷:浮気公認 < MARK:奴隷:浮気快乐刻印
 		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 			PRINTFORML 「今のままでいいの？ もっとスゴイことしてきてもいいのに」
@@ -271,10 +259,6 @@ RETURN 0
 @KOJO_MESSAGE_COM_K8_300_10_02_03(奴隷, 調教者)
 #DIM 奴隷
 #DIM 調教者
-
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML 「・・どーして、どーしてそんなこと言うの？」
-ENDIF
 ;浮気公認Lvで分岐。その中でさらに好感度、屈服度で分岐できればよし
 SELECTCASE TALENT:奴隷:浮気公認
 	CASE 1 ;最低１からスタートなので発生しないはず
@@ -343,47 +327,6 @@ ELSEIF TALENT:奴隷:淫乱
 ENDIF
 RETURN 0
 
-
-;==================================================
-;300ex - 売春について - 鍵の有無、恋慕
-;==================================================
-@KOJO_MESSAGE_COM_K8_300_13_02(奴隷, 調教者)
-#DIM 奴隷
-#DIM 調教者
-#DIMS 関係
-
-;恋慕、鍵の有無で分岐
-IF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:人妻
-		関係 = %"フーフ"%
-	ELSE
-		関係 = %"コイビト"%
-	ENDIF
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML 「これってあたいの贞操帯の鍵だよね？ %関係%だから独占したいの？ うれしいな！」
-	ELSE
-		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-			PRINTFORML 「ごめんね・・あたいたち%関係%だけど、贞操帯の鍵がないとエッチしちゃいけないの」
-			PRINTFORML 「鍵さえあれば、誰とだってエッチするけどね？」
-			PRINTFORML %CALLNAME:奴隷%は贞操帯を見せつけながら%CALLNAME:MASTER%にささやいた。
-		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
-			PRINTFORML 「ごめんね・・あたいたち%関係%だけど、贞操帯の鍵がないとエッチしちゃいけないの」
-			PRINTFORML %CALLNAME:奴隷%は贞操帯を手で撫でながら%CALLNAME:MASTER%にささやいた。
-		ELSE
-			PRINTFORML 「ごめんね・・あたいたち%関係%だけど、贞操帯の鍵がないとエッチしちゃいけないの」
-			PRINTFORML %CALLNAME:奴隷%は辛そうに%CALLNAME:MASTER%にささやいた。
-		ENDIF
-	ENDIF
-ELSE
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML 「あたいのことを買ってくれたんだ？ あたいとエッチしたいの？ 吼啊、いいよ？」
-	ELSE
-		PRINTFORML 「ごめんね・・この贞操帯の鍵がないとエッチしちゃいけないの」
-	ENDIF
-ENDIF
-RETURN 0
-
-
 ;==================================================
 ;カウンター：乳搾り手コキ
 ;==================================================
@@ -433,121 +376,6 @@ SELECTCASE BASE:PLAYER:精力
 		PRINTFORML 「たっぷり出たね？ でももっともっと出せるよね？」
 ENDSELECT
 RETURN 1
-
-;==================================================
-;押し倒し中に贞操帯の期限切れになった時の口上(公众便所専用)
-;==================================================
-@NTR_MESSAGE_COM_K8_350_0_3(奴隷)
-#DIM 奴隷
-;公众便所
-IF TALENT:奴隷:公众便所
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「ごめんね、時間切れみたい。%CALLNAME:MASTER%とエッチできて、楽しかったよ」
-		PRINTFORML 「コイビトなんだし、もっともっとエッチしたいな」
-	ELSE
-		PRINTFORML 「ごめんね、時間切れみたい。楽しかった？」
-		PRINTFORML 「また今度ね？」
-	ENDIF
-ELSE
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「・・・いいよ、もういいんだよ。鍵なんて無くても、これからは%CALLNAME:MASTER%だけの%CALLNAME:奴隷%だよ？」
-	ELSE
-		PRINTFORML 「もう、鍵なんて必要ないんだよね？」
-	ENDIF
-ENDIF
-RETURN 0
-
-;==================================================
-;463,诱惑访问者→あなたを連れて逃走
-;==================================================
-@KOJO_MESSAGE_COM_K8_463_0(奴隷)
-#DIM 奴隷
-PRINTDATAL
-	DATAFORM 「だめだよ、%CALLNAME:MASTER%！」
-	DATAFORM 「%CALLNAME:MASTER%！こっち！」
-	DATAFORM 「いいからこっち！！」
-ENDDATA
-RETURN 0
-
-;==================================================
-;463,诱惑访问者→一人で逃走
-;==================================================
-@KOJO_MESSAGE_COM_K8_463_1(奴隷)
-#DIM 奴隷
-PRINTDATAL
-	DATAFORM 「や、やだよっ」
-	DATAFORM 「や、やだあ！」
-	DATAFORM 「そんなの嫌だよっ！」
-ENDDATA
-RETURN 0
-
-;==================================================
-;463,诱惑访问者→3P持ちかけ
-;==================================================
-@KOJO_MESSAGE_COM_K8_463_2(奴隷)
-#DIM 奴隷
-PRINTDATAL
-	DATAFORM 「ねぇ二人で遊ぶの？ あたいも混ざっていいよね？」
-	DATAFORM 「二人だけで遊ぶなんてずっるーい！」
-	DATAFORM 「このあたい抜きで遊ぶなんて許さないよ！」
-ENDDATA
-RETURN 0
-
-;==================================================
-;463,诱惑访问者→3P持ちかけ→承諾時
-;==================================================
-@KOJO_MESSAGE_COM_K8_463_3(奴隷)
-#DIM 奴隷
-PRINTDATAL
-	DATAFORM 「えへへっ、早く行こうよ！」
-	DATAFORM 「ね、ナニして遊ぶの？」
-	DATAFORM 「で、どこで遊ぶの？」
-ENDDATA
-RETURN 0
-
-;==================================================
-;463,诱惑访问者→3P持ちかけ→拒否時
-;==================================================
-@KOJO_MESSAGE_COM_K8_463_4(奴隷)
-#DIM 奴隷
-PRINTDATAL
-	DATAFORM 「えーーっ、どうして？ やだやだ！」
-	DATAFORM 「この次は呼んでね！絶対だよ！」
-	DATAFORM 「つまんなーーい！！」
-ENDDATA
-RETURN 0
-
-;==================================================
-;463,诱惑访问者→あなたを牽制
-;==================================================
-@KOJO_MESSAGE_COM_K8_463_5(奴隷)
-#DIM 奴隷
-PRINTDATAL
-	DATAFORM 「ね、聞いてよ！」
-	DATAFORM 「でさでさ！今度ね！」
-	DATAFORM 「ねぇねぇ、遊んでよぉ」
-ENDDATA
-RETURN 0
-
-
-;-------------------------------------------
-;訪問者の家におでかけするときの挨拶
-;	前提条件	浮気公認Lv >= 浮気_外泊公認、[亲爱][公众便所]
-;-------------------------------------------
-@KOJO_MESSAGE_K8_SeeYou_900_0(奴隷,同伴)
-#DIM 奴隷
-#DIM 同伴
-RETURN 0
-
-;-------------------------------------------
-;訪問者の家におでかけするときの挨拶
-;	前提条件	浮気公認Lv >= 浮気_外泊公認、[公众便所]
-;-------------------------------------------
-@KOJO_MESSAGE_K8_SeeYou_900_1(奴隷,同伴)
-#DIM 奴隷
-#DIM 同伴
-CALL KOJO_MESSAGE_K8_SeeYou_900_2(奴隷,同伴)
-RETURN 0
 
 ;-------------------------------------------
 ;訪問者の家におでかけするときの挨拶

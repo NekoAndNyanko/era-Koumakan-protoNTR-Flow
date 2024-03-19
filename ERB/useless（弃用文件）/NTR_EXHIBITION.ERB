@@ -8,7 +8,7 @@
 
 ;再表示防止
 IF !TALENT:奴隷:被访问者抓到把柄
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%は自慰行為を%NTR_NAME(0)%に撮影されてしまったようだ
 		PRINTFORMW %CALLNAME:奴隷%は%NTR_NAME(0)%に弱みを握られた。
 	ENDIF
@@ -24,7 +24,7 @@ RETURN
 IF TALENT:奴隷:恋慕
 	;再表示防止
 	IF !TALENT:奴隷:被访问者抓到把柄
-		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			PRINTFORMW %CALLNAME:奴隷%与%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%身体重叠。
 			PRINTFORMW %CALLNAME:奴隷%被%NTR_NAME(0)%掌握了弱点。
 		ENDIF
@@ -37,19 +37,19 @@ RETURN
 ;NTR野外調教開始
 @NTR_EXHIBITION_START(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	PRINTFORMW 因为%CALLNAME:奴隷%被抓住了弱点，所以无法阻止%NTR_NAME(0)%
 ENDIF
 ;念のため同行解除
 IF CFLAG:奴隷:同行 != 0
 	CFLAG:奴隷:同行 = 0
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%远离%CALLNAME:MASTER%向%NTR_NAME(0)%的方向走去。
 	ENDIF
 ENDIF
 ;訪問者の同行も解除
 FLAG:訪問者同行フラグ = 0
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	IF CFLAG:奴隷:脅迫度 > 野外調教閾値_放置プレイ
 		PRINTFORMW %CALLNAME:奴隷%穿着内衣和%NTR_NAME(0)%一起出去了。
 		TRYCALLLIST
@@ -66,7 +66,7 @@ IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
 ENDIF
 CFLAG:奴隷:NTR野外調教 = 1
 CFLAG:奴隷:自慰中 = 0			
-FLAG:訪問者の現在位置 = 位置_薄暗い路地裏
+FLAG:访问者当前位置 = 位置_薄暗い路地裏
 CFLAG:奴隷:現在位置 = 位置_薄暗い路地裏
 CFLAG:奴隷:NTR訪問者との行為の終了時刻 = DATETIME() + RAND:60 + 60 + RAND(CFLAG:奴隷:脅迫度+1)
 RETURN
@@ -99,7 +99,7 @@ ENDIF
 #DIM 奴隷
 
 IF RAND:100 < 20
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%受到%NTR_NAME(0)%的威胁，开始羞耻地自慰
 		PRINTFORMW %NTR_NAME(0)%在%CALLNAME:奴隷%绝顶之前一直看着%CALLNAME:奴隷%
 		TRYCALLLIST
@@ -116,7 +116,7 @@ IF RAND:100 < 20
 	SOURCE:奴隷:露出 = 200
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF RAND:100 < 80 || CFLAG:奴隷:NTR訪問者との行為の終了時刻 >= DATETIME()
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %NTR_NAME(0)%让%CALLNAME:奴隷%拉起裙子，开始拍摄暴露出来的秘密场所
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_17_4(奴隷)
@@ -142,7 +142,7 @@ RETURN
 #DIM 奴隷
 
 IF RAND:100 < 30
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%被%NTR_NAME(0)%戴上项圈，四肢爬行
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_0_1(奴隷)
@@ -153,7 +153,7 @@ IF RAND:100 < 30
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 	EXP:奴隷:浮気露出快乐经验 ++
 ELSE
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %NTR_NAME(0)%留下%CALLNAME:奴隷%就不知道去哪了
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_0_2(奴隷)
@@ -172,7 +172,7 @@ RETURN
 #DIM 奴隷
 
 IF RAND:100 < 10
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW 村民路过，仅仅只穿着内衣的%CALLNAME:奴隷%被吓跑了
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_1_0(奴隷)
@@ -191,7 +191,7 @@ ELSEIF RAND:100 < 15 && CFLAG:奴隷:NTR訪問者との行為の終了時刻 < D
 	ENDIF
 	CALL NTR_EXHIBITION_END(奴隷)
 ELSEIF RAND:100 < 50 && !CFLAG:奴隷:村人のセクハラ
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW 经过的村民笑眯眯地看着穿着内衣的%CALLNAME:奴隷%
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_1_2(奴隷)
@@ -201,7 +201,7 @@ ELSEIF RAND:100 < 50 && !CFLAG:奴隷:村人のセクハラ
 	SOURCE:奴隷:露出 = 200
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSE
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW 路过的村民穿着内衣的%CALLNAME:奴隷%产生了情欲，拥抱过来了
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_1_3(奴隷)
@@ -220,7 +220,7 @@ RETURN
 #DIM 奴隷
 
 IF RAND:100 < 10
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%被村民爱抚秘所和胸部
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_2_0(奴隷)
@@ -235,7 +235,7 @@ IF RAND:100 < 10
 	SOURCE:奴隷:露出 = 200
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF  RAND:100 < 20
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%被村民强吻
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_2_1(奴隷)
@@ -247,7 +247,7 @@ ELSEIF  RAND:100 < 20
 	SOURCE:奴隷:露出 = 200
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF  RAND:100 < 30
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%被村民剥下内衣
 		PRINTFORMW 现在没有任何东西能遮住%CALLNAME:奴隷%的皮肤
 		TRYCALLLIST
@@ -261,7 +261,7 @@ ELSEIF  RAND:100 < 30
 	SOURCE:奴隷:露出 = 500
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF  RAND:100 < 40
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW 村民们在把下体的贴在了%CALLNAME:奴隷%的内衣上
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_2_3(奴隷)
@@ -273,7 +273,7 @@ ELSEIF  RAND:100 < 40
 	SOURCE:奴隷:露出 = 500
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF  RAND:100 < 80 || CFLAG:奴隷:NTR訪問者との行為の終了時刻 >= DATETIME()
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%正在挣扎以逃避村民
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_2_4(奴隷)
@@ -283,7 +283,7 @@ ELSEIF  RAND:100 < 80 || CFLAG:奴隷:NTR訪問者との行為の終了時刻 >=
 	SOURCE:奴隷:露出 = 300
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSE
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%甩开村民逃走了
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_2_5(奴隷)
@@ -302,7 +302,7 @@ RETURN
 #DIM 奴隷
 
 IF RAND:100 < 10
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW 村民们在玩弄着%CALLNAME:奴隷%的乳头
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_3_0(奴隷)
@@ -315,7 +315,7 @@ IF RAND:100 < 10
 	SOURCE:奴隷:露出 = 500
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF RAND:100 < 20
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW 村民们在%CALLNAME:奴隷%的屁股缝上夹着阴茎，扭动着腰。
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_3_1(奴隷)
@@ -327,7 +327,7 @@ ELSEIF RAND:100 < 20
 	SOURCE:奴隷:露出 = 500
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF RAND:100 < 30
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW 村民和%CALLNAME:奴隷%亲吻、玩弄着%CALLNAME:奴隷%的小穴
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_3_2(奴隷)
@@ -341,7 +341,7 @@ ELSEIF RAND:100 < 30
 	SOURCE:奴隷:露出 = 500
 	CALL NTR_EXH_SOURCE_OP(奴隷)
 ELSEIF RAND:100 < 40 && !(IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女)
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%被村民用正常位侵犯
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_3_3(奴隷)
@@ -358,7 +358,7 @@ ELSEIF RAND:100 < 40 && !(IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女)
 	ENDIF
 	CALL EJACULATION_V(奴隷, 人物_村人)
 ELSEIF RAND:100 < 90 || CFLAG:奴隷:NTR訪問者との行為の終了時刻 >= DATETIME()
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORMW %CALLNAME:奴隷%被村民抚摸着身体
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_18_3_4(奴隷)
@@ -390,7 +390,7 @@ CFLAG:奴隷:村人 = 0
 CFLAG:奴隷:村人のセクハラ = 0
 CFLAG:奴隷:下着剥ぎ取り = 0
 CFLAG:奴隷:現在位置 = 位置_红魔馆_正门
-FLAG:訪問者の現在位置 = 位置_訪問者宅
+FLAG:访问者当前位置 = 位置_訪問者宅
 CFLAG:奴隷:NTR訪問者との行為の終了時刻 = 0
 RETURN
 

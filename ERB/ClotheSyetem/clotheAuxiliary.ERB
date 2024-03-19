@@ -246,11 +246,6 @@ EQUIP:着用者:着物           = CFLAG:着用者:服装_着物
 EQUIP:着用者:紧身衣     = CFLAG:着用者:服装_紧身衣
 EQUIP:着用者:手             = CFLAG:着用者:服装_手
 IF 下着変更
-	IF (!TALENT:着用者:公众便所 && !CFLAG:PLAYER:WC_あなたに贞操帯を着けた人) || FLAG:屏蔽部分貞操帶
-		;公众便所は下着を自由に変更することはできない
-		EQUIP:着用者:下半身下着１ = CFLAG:着用者:服装_下半身下着１
-		EQUIP:着用者:下半身下着２ = CFLAG:着用者:服装_下半身下着２
-	ENDIF
 	EQUIP:着用者:上半身下着１ = CFLAG:着用者:服装_上半身下着１
 	EQUIP:着用者:上半身下着２ = CFLAG:着用者:服装_上半身下着２
 ENDIF
@@ -310,33 +305,18 @@ RETURNF 0
 IF 下着変更 == 0
 	RETURN 0
 ENDIF
-IF TALENT:着用者:公众便所 && !FLAG:屏蔽部分貞操帶
-	;公众便所であれば贞操帯(100)。これは最優先。
-	EQUIP:着用者:下半身下着１ = 100
-	EQUIP:着用者:下半身下着２ = 0
-ELSEIF 着用者 == PLAYER && TALENT:着用者:肉便器 && CFLAG:PLAYER:WC_あなたに贞操帯を着けた人 != 0
-	EQUIP:着用者:下半身下着１ = 100
-	EQUIP:着用者:下半身下着２ = 0
-ELSEIF GETBIT(CFLAG:着用者:服装パターンオプション,0)
+IF GETBIT(CFLAG:着用者:服装パターンオプション,0)
 	;ノーパン指定があればノーパン
 	EQUIP:着用者:下半身下着１ = 0
 	EQUIP:着用者:下半身下着２ = 0
 ELSEIF TALENT:着用者:淫乱
 	;淫乱/娼婦持ちならエロい下着限定
 	EQUIP:着用者:下半身下着１ = 0
-	IF FLAG:Flow版本
-		EQUIP:着用者:下半身下着２ = NTR_PANTS(着用者,1)
-	ELSE
-		EQUIP:着用者:下半身下着２ = PANTS_TODAY_ADULT(着用者, 0)
-	ENDIF
+	EQUIP:着用者:下半身下着２ = NTR_PANTS(着用者)
 ELSEIF CFLAG:着用者:屈服度 > CFLAG:着用者:好感度 && CFLAG:着用者:屈服度 > 999
 	;屈服度が好感度より高く、1000以上あるならエロい下着限定
 	EQUIP:着用者:下半身下着１ = 0
-	IF FLAG:Flow版本
-		EQUIP:着用者:下半身下着２ = NTR_PANTS(着用者,1)
-	ELSE
-		EQUIP:着用者:下半身下着２ = PANTS_TODAY_ADULT(着用者, 0)
-	ENDIF
+	EQUIP:着用者:下半身下着２ = NTR_PANTS(着用者,1)
 ELSE
 	;普通の下着
 	EQUIP:着用者:下半身下着１ = 0

@@ -87,21 +87,7 @@ IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 	ENDIF
 	;それ以外
 ELSE
-	IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「接下来的“工作”是・・、讨厌、已经、不想做那样的事了・・・」
-			DATAFORM 「同时好几个人・・・那样的事・・・这样的事・・・」
-			DATAFORM 「已经…请原谅我」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%似乎讨厌听到%NTR_NAME(0)%談关于“工作”的事。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「下一个“工作”是什么时候？好的，请随时叫我。」
-			DATAFORM 「同时有多少人？百人什么的？诶？不是吗？啊，啊，是那边啊♪」
-			DATAFORM 「客人的对象当然也是・・・偶尔・・・那个・・」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%染红了脸颊,和%NTR_NAME(0)%談关于“工作”的事。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「是啊。看起来很开心♪」 
 			DATAFORM 「哎……又来了？是的、当然」
@@ -1509,42 +1495,42 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「是……正如您所说……」
 	IF 0 == 誘いフラグ
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
 	ELSE
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「是……照您所说的……」
 	IF 0 == 誘いフラグ
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
 	ELSE
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%に被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%に被紧紧抱住脸颊染红了。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「嗯……这里没问题。」
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置)
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%的钥匙，染红了脸颊,对%NTR_NAME(0)%微笑了。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置)
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%的钥匙，染红了脸颊,对%NTR_NAME(0)%微笑了。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%然后，脸颊染红了,对%NTR_NAME(0)%的微笑。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%然后，脸颊染红了,对%NTR_NAME(0)%的微笑。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「・・这里没关系・・・」
-	IF IS_CAN_LOCK(FLAG:訪問者の現在位置)
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%的钥匙，对%NTR_NAME(0)%微笑了。
+	IF IS_CAN_LOCK(FLAG:访问者当前位置)
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%的钥匙，对%NTR_NAME(0)%微笑了。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%然后，对%NTR_NAME(0)%微笑。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%然后，对%NTR_NAME(0)%微笑。
 	ENDIF
 
 ELSE
 
 	PRINTFORML 「请放开我」
-	PRINTFORML %CALLNAME:奴隷%被抓住手腕强行带入%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%。
+	PRINTFORML %CALLNAME:奴隷%被抓住手腕强行带入%NTR_GETPLACENAME(FLAG:访问者当前位置)%。
 
 ENDIF
 RETURN 0
@@ -1584,47 +1570,6 @@ IF TALENT:奴隷:浮気公認
 ENDIF
 
 RETURN 0
-
-;==================================================
-;公众便所宣言
-;==================================================
-@NTR_KOJO_K1_13(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	;たぶんここには来ないと思うけど念のため余計なものを出さないように
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:浮気公認
-		PRINTFORML 「%CALLNAME:MASTER%・・您以前说过吧？想让我更多地出軌」
-		PRINTFORML 「所以我决定了。想要回应%CALLNAME:MASTER%的想法」
-		PRINTFORML 「诶？怎么办好呢？啊哈哈，经那個人的介绍，也被其他男人抱了」
-	ELSEIF TALENT:奴隷:淫乱
-		PRINTFORML 「%CALLNAME:MASTER%・・我，已經不能不做色情的事了」
-		PRINTFORML 「%CALLNAME:MASTER%不只是和那個人，而是和更多更多的人」
-		PRINTFORML 「所以我，在那个人的介绍下，也被其他男人抱了」
-	ELSE
-		;たぶんないとは思うけど恋慕かつ非公認のケース
-		PRINTFORML （・・不能说・・%CALLNAME:MASTER%这、这件事我不能说）
-		PRINTFORML （・・原谅我・・原谅我、%CALLNAME:MASTER%・・）
-	ENDIF
-ELSE
-	;初回
-	IF EXP:奴隷:公众便所陷落经验 == 0
-
-		PRINTFORML 「%CALLNAME:奴隷%发誓要成为性处理厕所♪」
-		PRINTFORML 「含着陌生人的鸡鸡，让它拿出来满满射出來♪」
-
-		;2回目以降
-	ELSE
-
-		PRINTFORML 「%CALLNAME:奴隷%我发誓要回去做性处理厕所喔♪」
-		PRINTFORML 「%CALLNAME:MASTER%如果想和我做爱的话，就拜托主人买我吧♪」
-
-	ENDIF
-ENDIF
-
-RETURN 0
-
 
 ;==================================================
 ;訪問者によるおしおき
@@ -1825,55 +1770,3 @@ ELSE
 	ENDIF
 
 ENDIF
-
-
-;==================================================
-;贞操帯鍵購入に対する反応
-;==================================================
-;本人
-@NTR_KOJO_K1_16_0(奴隷)
-#DIM 奴隷
-IF TALENT:奴隷:亲爱
-	PRINTFORML 「啊・・・你买了我的吧・・・」
-	PRINTFORML 「你买了我・・・我很高兴・・・」
-ELSE
-	PRINTFORML 「啊・・・你买了我的吧・・・」
-	PRINTFORML 「嗯，只有现在你就是我的主人了。」
-ENDIF
-
-;本人以外
-@NTR_KOJO_K1_16_1(奴隷)
-#DIM 奴隷
-;公众便所
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-
-	PRINTFORML 「あ・・%CALLNAME_K1(奴隷, FLAG:贞操帯鍵購入フラグ)%您买了吧・・」
-	PRINTFORML 「・・反正・・・把我・・・」
-
-ELSEIF TALENT:奴隷:公众便所
-
-	PRINTFORML 「あ・・%CALLNAME_K1(奴隷, FLAG:贞操帯鍵購入フラグ)%您买了吧・・」
-	PRINTFORML 「呵呵，主人您很高兴呢」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
-
-	PRINTFORML 「あ・・%CALLNAME_K1(奴隷, FLAG:贞操帯鍵購入フラグ)%的钥匙吧・・」
-ELSE
-
-	LOCAL = 1
-	SELECTCASE FLAG:贞操帯鍵購入フラグ
-		CASE 人物_小恶魔,人物_帕秋莉,人物_咲夜,人物_蕾米莉亚,人物_芙兰朵露,人物_艾丽娅
-			PRINTFORML 「%CALLNAME_K1(奴隷, FLAG:贞操帯鍵購入フラグ)%到底為什么呢！？」
-			;他
-		CASEELSE
-			PRINTFORML 「・・看错了你了」
-			LOCAL = 0
-	ENDSELECT
-	IF LOCAL
-		PRINTFORML %CALLNAME:奴隷%反射性地想打%CALLNAME:MASTER%
-		PRINTFORML %CALLNAME:MASTER%の%CALLNAME:(FLAG:贞操帯鍵購入フラグ)%を解放するために彼女と集中して
-		PRINTFORML 为了得到说话的机会这样的说明,勉勉强强同意而下手了。
-	ENDIF
-
-ENDIF
-

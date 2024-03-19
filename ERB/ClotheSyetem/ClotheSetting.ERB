@@ -198,10 +198,6 @@ ELSEIF RESULT == 3
 		GOTO INPUT_LOOP_03
 	ENDIF
 ELSEIF RESULT == 4
-	IF TALENT:ARG:公众便所
-		PRINTFORMW %"贞操帯の鍵を持っていないので、下着を替える事はできません"%
-		GOTO INPUT_LOOP
-	ENDIF
 	$INPUT_LOOP_3
 	PRINTL [0] - 脱掉
 	PRINTL [1] - 男物

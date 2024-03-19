@@ -143,7 +143,7 @@ RETURN
 
 入浴フラグ = CFLAG:住人:風呂
 CFLAG:住人:風呂 += TIME_PROGRESS(TFLAG:300)
-IF BATHROOM(CFLAG:住人:現在位置)
+IF 存在浴室(CFLAG:住人:現在位置)
 	SIF 住人 == 0 && 入浴フラグ
 		PRINTFORMW %CALLNAME:MASTER%は風呂に浸かった
 	CFLAG:住人:風呂 = 0
@@ -204,7 +204,7 @@ SIF 0 == RESULT		; 0:行動不可
 	RETURN
 目標地点 = RESULT		; 0:移动しない
 ;訪問者と同じ位置にいて、屈服度が高い状態なら訪問者によるお仕置きが発生
-IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置
+IF CFLAG:住人:現在位置 == FLAG:访问者当前位置
 	IF IS_NTR_SOFT()
 		SIF CFLAG:住人:屈服度 > 1000 && (CFLAG:住人:屈服度 - 500) > RAND:500 && GET_N_WITH_VISITER(住人) == 1 && FLAG:訪問者の气氛 >= 3
 			TRYCALL NTR_PUNISHMENT(住人)
@@ -231,7 +231,7 @@ IF CFLAG:住人:現在位置 != 目標地点
 	ENDIF
 	;DEBUGPRINTFORML %CALLNAME:住人%:%GETPLACENAME(CFLAG:住人:現在位置)%→%GETPLACENAME(目標地点)%
 	IF 目標地点
-		;IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置
+		;IF CFLAG:住人:現在位置 == FLAG:访问者当前位置
 		;	FLAG:訪問者の气氛 = 0
 		;	FLAG:訪問者との行為の終了時刻 = 0
 		;	FLAG:訪問者との行為 = 0
@@ -264,697 +264,6 @@ IF GETBIT(FLAG:催眠設定,1)
 ENDIF
 [SKIPEND]
 RETURN
-
-;-------------------------------------------------------------------------------
-;美鈴
-@CHARA_MOVEMENT_ACTIVETIME_1(住人)
-#DIM 住人
-
-;22時〜6時、13時〜14時は寝てる
-RETURN TIME < 360 || (TIME > 780 && TIME < 840)|| TIME > 1320 || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_1
-RETURN 90
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_1(ARG,ARG:1)
-;書かれていない場所へは移动しない
-RESULT:1 = 位置_红魔馆_正门 * 倍_万 + 100
-RESULT:2 = 位置_红魔馆_守卫小屋 * 倍_万 + 100
-RESULT:3 = 位置_红魔馆_后院 * 倍_万 + 100
-RESULT:4 = 位置_雾之湖_湖北部 * 倍_万 + 100
-RESULT:5 = 位置_红魔馆_大厅 * 倍_万 + 80
-RESULT:6 = 位置_红魔馆_餐厅 * 倍_万 + 80
-RESULT:7 = 位置_红魔馆_厨房 * 倍_万 + 80
-RESULT:8 = 位置_红魔馆_大图书馆 * 倍_万 + 60
-RESULT:9 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 60
-RESULT:10 = 位置_红魔馆_二楼走廊 * 倍_万 + 40
-RESULT:11 = 位置_红魔馆_咲夜私室 * 倍_万 + 20
-RESULT:12 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 20
-
-LOCAL:3 = 13
-;お手洗いパッチ
-;基本的には屋外厕所を使用
-;2F厕所はかなり条件が揃わないと使用しない
-IF REST_NeedRestroom(ARG:1)
-	FOR LOCAL,0,CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-			LOCAL:1++
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-			LOCAL:2 ++
-	NEXT
-	IF LOCAL:1 != 0 && LOCAL:2 > 1
-		RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:2 < 2 && LOCAL:1 != 0
-		RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:1 == 0
-		RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-ENDIF
-
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-
-;-------------------------------------------------------------------------------
-;小恶魔
-@CHARA_MOVEMENT_ACTIVETIME_2(住人)
-#DIM 住人
-
-;2時〜10時は寝てる
-RETURN (TIME > 120 && TIME < 600) || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_2
-RETURN 90
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_2(ARG,ARG:1)
-;書かれていない場所へは移动しない
-RESULT:1 = 位置_红魔馆_大图书馆 * 倍_万 + 100
-RESULT:2 = 位置_红魔馆_小恶魔私室 * 倍_万 + 100
-RESULT:3 = 位置_红魔馆_大厅 * 倍_万 + 90
-RESULT:4 = 位置_红魔馆_餐厅 * 倍_万 + 80
-RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 80
-RESULT:6 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 80
-RESULT:7 = 位置_红魔馆_厨房 * 倍_万 + 60
-RESULT:8 = 位置_红魔馆_后院 * 倍_万 + 60
-RESULT:9 = 位置_红魔馆_二楼走廊 * 倍_万 + 60
-RESULT:10 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 40
-
-LOCAL:3 = 11
-;パチュリーが在室なら私室に入れる
-IF CFLAG:3:現在位置 == 位置_红魔馆_帕秋莉私室
-	RESULT:(LOCAL:3) = 位置_红魔馆_大图书馆 * 倍_万 + 40
-	LOCAL:3 ++
-ENDIF
-;お手洗いパッチ
-;基本的には1F厕所を使用
-IF REST_NeedRestroom(ARG:1)
-	FOR LOCAL,0,CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-			LOCAL:1++
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-			LOCAL:2 ++
-	NEXT
-	IF LOCAL:1 != 0 && LOCAL:2 > 1
-		RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:2 < 2
-		RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:2 > 2 && LOCAL:1 == 0
-		RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-ENDIF
-
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-
-;-------------------------------------------------------------------------------
-;パチュリー
-@CHARA_MOVEMENT_ACTIVETIME_3(住人)
-#DIM 住人
-
-;2時〜10時は寝てる
-RETURN (TIME > 120 && TIME < 600) || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_3
-RETURN 120
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_3(ARG,ARG:1)
-;書かれていない場所へは移动しない
-RESULT:1 = 位置_红魔馆_大图书馆 * 倍_万 + 100
-RESULT:2 = 位置_红魔馆_帕秋莉私室 * 倍_万 + 100
-;あとはおおよそ図書室からの距離に依存
-RESULT:3 = 位置_红魔馆_大厅 * 倍_万 + 80
-RESULT:4 = 位置_红魔馆_小恶魔私室 * 倍_万 + 80
-RESULT:5 = 位置_红魔馆_餐厅 * 倍_万 + 60
-RESULT:6 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 60
-RESULT:7 = 位置_红魔馆_厨房 * 倍_万 + 40
-RESULT:8 = 位置_红魔馆_二楼走廊 * 倍_万 + 40
-;外周にはあまり出ない
-RESULT:9 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 20
-RESULT:10 = 位置_红魔馆_后院 * 倍_万 + 20
-RESULT:11 = 位置_红魔馆_正门* 倍_万 + 20
-
-LOCAL:3 = 12
-;お手洗いパッチ
-;基本的には1F厕所を使用
-IF REST_NeedRestroom(ARG:1)
-	FOR LOCAL,0,CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-			LOCAL:1++
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-			LOCAL:2 ++
-	NEXT
-	IF LOCAL:1 != 0 && LOCAL:2 > 1
-		RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:2 < 2
-		RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:2 > 2 && LOCAL:1 == 0
-		RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-ENDIF
-
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-
-;-------------------------------------------------------------------------------
-;咲夜
-@CHARA_MOVEMENT_ACTIVETIME_4(住人)
-#DIM 住人
-
-;4時〜7時は寝てる
-RETURN (TIME > 240 && TIME < 420) || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_4
-RETURN 60
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_4(ARG,ARG:1)
-;書かれていない場所へは移动しない
-RESULT:1 = 位置_红魔馆_咲夜私室 * 倍_万 + 100
-RESULT:2 = 位置_红魔馆_二楼走廊 * 倍_万 + 100
-RESULT:3 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 100
-RESULT:4 = 位置_红魔馆_大厅 * 倍_万 + 100
-RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 100
-RESULT:6 = 位置_红魔馆_大图书馆 * 倍_万 + 100
-RESULT:7 = 位置_红魔馆_餐厅 * 倍_万 + 100
-RESULT:8 = 位置_红魔馆_厨房 * 倍_万 + 100
-RESULT:9 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 100
-RESULT:10 = 位置_红魔馆_帕秋莉私室 * 倍_万 + 80
-RESULT:11 = 位置_红魔馆_小恶魔私室 * 倍_万 + 80
-RESULT:12 = 位置_红魔馆_大浴场 * 倍_万 + 80
-RESULT:13 = 位置_红魔馆_玩家房间 * 倍_万 + 80
-RESULT:14 = 位置_红魔馆_地下室 * 倍_万 + 80
-RESULT:15 = 位置_红魔馆_蕾米莉亚私室 * 倍_万 + 80
-RESULT:16 = 位置_红魔馆_一楼厕所 * 倍_万 + 100
-RESULT:17 = 位置_红魔馆_二楼厕所 * 倍_万 + 100
-RESULT:18 = 位置_红魔馆_仓库 * 倍_万 + 100
-RESULT:19 = 位置_红魔馆_守卫小屋 * 倍_万 + 80
-RESULT:20 = 位置_红魔馆_后院 * 倍_万 + 100
-RESULT:21 = 位置_红魔馆_三楼阳台 * 倍_万 + 100
-
-LOCAL:3 = 1
-FOR LOCAL:4, 1, 場所番号最大値+1
-	;紅魔館内の風呂、トイレ、納屋以外の汚れている場所を優先して移动
-	SIF MAP_DISTINCTION(LOCAL:4) != 0 || LOCAL:4 == 位置_红魔馆_仓库
-		CONTINUE
-
-	SELECTCASE LOCAL:4
-		CASE 位置_红魔馆_屋外厕所
-			;お手洗いパッチ
-			;基本的には1F厕所を使用
-			IF REST_NeedRestroom(ARG:1)
-				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-						LOCAL:2 ++
-				NEXT
-				IF LOCAL:2 > 2 && LOCAL:1 == 0
-					RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
-					LOCAL:3 ++
-				ENDIF
-			ENDIF
-		CASE 位置_红魔馆_一楼厕所
-			IF REST_NeedRestroom(ARG:1)
-				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-						LOCAL:2 ++
-				NEXT
-				IF LOCAL:2 < 2
-					RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
-					LOCAL:3 ++
-				ENDIF
-			ENDIF
-		CASE 位置_红魔馆_二楼厕所
-			IF REST_NeedRestroom(ARG:1)
-				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-						LOCAL:2 ++
-				NEXT
-				IF LOCAL:1 != 0 && LOCAL:2 > 1
-					RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
-					LOCAL:3 ++
-				ENDIF
-			ENDIF
-		CASE 位置_红魔馆_大浴场
-			IF CFLAG:(ARG:1):風呂 >= 1000
-				RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 8000
-				LOCAL:3 ++
-			ENDIF
-		CASEELSE
-			RESULT:(LOCAL:3) = LOCAL:4 * 倍_万 + (FLAG:(100 + LOCAL:4) + 100)
-			LOCAL:3 ++
-	ENDSELECT
-NEXT
-
-
-;-------------------------------------------------------------------------------
-;蕾米莉亚
-@CHARA_MOVEMENT_ACTIVETIME_5(住人)
-#DIM 住人
-
-;6時〜18時は寝てる。ちょっと寝過ぎ。
-RETURN (TIME > 360 && TIME < 1080) || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_5
-RETURN 90
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_5(ARG,ARG:1)
-;書かれていない場所へは移动しない
-;紅魔館外及び納屋、外には移动しない
-RESULT:1 = 位置_红魔馆_蕾米莉亚私室 * 倍_万 + 100
-RESULT:2 = 位置_红魔馆_二楼走廊 * 倍_万 + 100
-RESULT:3 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 100
-RESULT:4 = 位置_红魔馆_大厅 * 倍_万 + 100
-RESULT:5 = 位置_红魔馆_三楼阳台 * 倍_万 + 100
-RESULT:6 = 位置_红魔馆_大图书馆 * 倍_万 + 100
-RESULT:7 = 位置_红魔馆_餐厅 * 倍_万 + 100
-RESULT:8 = 位置_红魔馆_厨房 * 倍_万 + 100
-RESULT:9 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 100
-;私室にも侵入する
-RESULT:10 = 位置_红魔馆_帕秋莉私室 * 倍_万 + 80
-RESULT:11 = 位置_红魔馆_小恶魔私室 * 倍_万 + 80
-RESULT:12 = 位置_红魔馆_咲夜私室 * 倍_万 + 80
-RESULT:13 = 位置_红魔馆_玩家房间 * 倍_万 + 80
-RESULT:14 = 位置_红魔馆_地下室 * 倍_万 + 80
-
-LOCAL:3 = 15
-;お手洗いパッチ
-;基本的には1F厕所を使用
-IF REST_NeedRestroom(ARG:1)
-	FOR LOCAL,0,CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-			LOCAL:1++
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-			LOCAL:2 ++
-	NEXT
-	IF LOCAL:1 != 0 && LOCAL:2 > 1
-		RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:2 < 2
-		RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-ENDIF
-
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-
-;-------------------------------------------------------------------------------
-;フランドール
-@CHARA_MOVEMENT_ACTIVETIME_6(住人)
-#DIM 住人
-
-;6時〜18時は寝てる。
-RETURN (TIME > 360 && TIME < 1080) || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_6
-RETURN 90
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_6(ARG,ARG:1)
-;紅魔館外及び納屋、外には移动しない
-RESULT:1 = 位置_红魔馆_地下室 * 倍_万 + 100
-RESULT:2 = 位置_红魔馆_二楼走廊 * 倍_万 + 100
-RESULT:3 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 100
-RESULT:4 = 位置_红魔馆_大厅 * 倍_万 + 100
-RESULT:5 = 位置_红魔馆_三楼阳台 * 倍_万 + 100
-RESULT:6 = 位置_红魔馆_大图书馆 * 倍_万 + 100
-RESULT:7 = 位置_红魔馆_餐厅 * 倍_万 + 100
-RESULT:8 = 位置_红魔馆_厨房 * 倍_万 + 100
-RESULT:9 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 100
-;私室にも侵入する
-RESULT:10 = 位置_红魔馆_帕秋莉私室 * 倍_万 + 80
-RESULT:11 = 位置_红魔馆_小恶魔私室 * 倍_万 + 80
-RESULT:12 = 位置_红魔馆_咲夜私室 * 倍_万 + 80
-RESULT:13 = 位置_红魔馆_玩家房间 * 倍_万 + 80
-RESULT:14 = 位置_红魔馆_蕾米莉亚私室 * 倍_万 + 80
-
-LOCAL:3 = 15
-;お手洗いパッチ
-;基本的には1F厕所を使用
-IF REST_NeedRestroom(ARG:1)
-	FOR LOCAL,0,CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-			LOCAL:1++
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-			LOCAL:2 ++
-	NEXT
-	IF LOCAL:1 != 0 && LOCAL:2 > 1
-		RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-	IF LOCAL:2 < 2
-		RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
-		LOCAL:3 ++
-	ENDIF
-ENDIF
-
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-;-------------------------------------------------------------------------------
-;チルノ
-@CHARA_MOVEMENT_ACTIVETIME_8(住人)
-#DIM 住人
-
-;21時〜6時は寝てる
-RETURN TIME < 360 || TIME > 1260 || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_8
-RETURN 70
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_8(ARG,ARG:1)
-
-;移动範囲 霧の湖周辺、紅魔館外
-RESULT:1 = 位置_雾之湖_琪露诺的家 * 倍_万 + 100
-RESULT:2 = 位置_雾之湖_大妖精的家 * 倍_万 + 100
-RESULT:3 = 位置_雾之湖_湖北部 * 倍_万 + 100
-RESULT:4 = 位置_雾之湖_湖南部 * 倍_万 + 120
-RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 120
-RESULT:6 = 位置_红魔馆_后院 * 倍_万 + 120
-RESULT:7 = 位置_红魔馆_地下室 * 倍_万 + 120
-
-LOCAL:3 = 8
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-
-;-------------------------------------------------------------------------------
-;大妖精
-@CHARA_MOVEMENT_ACTIVETIME_9(住人)
-#DIM 住人
-
-;21時〜6時は寝てる
-RETURN TIME < 360 || TIME > 1260 || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_9
-RETURN 80
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_9(ARG,ARG:1)
-;移动範囲 霧の湖周辺、紅魔館外
-RESULT:1 = 位置_雾之湖_大妖精的家 * 倍_万 + 100
-RESULT:2 = 位置_雾之湖_琪露诺的家 * 倍_万 + 100
-RESULT:3 = 位置_雾之湖_湖北部 * 倍_万 + 100
-RESULT:4 = 位置_雾之湖_湖南部 * 倍_万 + 120
-RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 120
-RESULT:6 = 位置_红魔馆_后院 * 倍_万 + 120
-RESULT:7 = 位置_红魔馆_地下室 * 倍_万 + 120
-
-LOCAL:3 = 8
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-
-;-------------------------------------------------------------------------------
-;魔理沙
-@CHARA_MOVEMENT_ACTIVETIME_10(住人)
-#DIM 住人
-
-;21時〜6時は寝てる
-RETURN TIME < 360 || TIME > 1260 || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_10
-RETURN 80
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_10(ARG,ARG:1)
-;移动範囲 霧の湖周辺、紅魔館外
-RESULT:1 = 位置_魔法之森_雾雨魔法店 * 倍_万 + 100
-RESULT:2 = 位置_魔法之森_爱丽丝的家 * 倍_万 + 100
-RESULT:3 = 位置_雾之湖_湖北部 * 倍_万 + 100
-RESULT:4 = 位置_雾之湖_湖南部 * 倍_万 + 120
-RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 120
-RESULT:6 = 位置_红魔馆_后院 * 倍_万 + 120
-RESULT:7 = 位置_红魔馆_大图书馆 * 倍_万 + 120
-RESULT:8 = 位置_红魔馆_地下室 * 倍_万 + 120
-RESULT:9 = 位置_红魔馆_餐厅 * 倍_万 + 120
-RESULT:10 = 位置_红魔馆_厨房 * 倍_万 + 120
-RESULT:11 = 位置_红魔馆_大厅 * 倍_万 + 120
-RESULT:12 = 位置_魔法之森_森林岔路 * 倍_万 + 120
-
-LOCAL:3 = 13
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-
-
-;-------------------------------------------------------------------------------
-;霊夢
-@CHARA_MOVEMENT_ACTIVETIME_11(住人)
-#DIM 住人
-
-;22時〜5時は寝てる
-RETURN TIME < 300 || TIME > 1320 || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_11
-RETURN 100
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_11(ARG,ARG:1)
-;移动範囲 霧の湖周辺、紅魔館外
-RESULT:1 = 位置_魔法之森_雾雨魔法店 * 倍_万 + 100
-RESULT:2 = 位置_魔法之森_爱丽丝的家 * 倍_万 + 100
-RESULT:3 = 位置_雾之湖_湖北部 * 倍_万 + 100
-RESULT:4 = 位置_雾之湖_湖南部 * 倍_万 + 120
-RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 120
-RESULT:6 = 位置_红魔馆_后院 * 倍_万 + 120
-RESULT:7 = 位置_红魔馆_大图书馆 * 倍_万 + 120
-RESULT:8 = 位置_红魔馆_地下室 * 倍_万 + 120
-RESULT:9 = 位置_红魔馆_餐厅 * 倍_万 + 120
-RESULT:10 = 位置_红魔馆_厨房 * 倍_万 + 120
-RESULT:11 = 位置_红魔馆_大厅 * 倍_万 + 120
-RESULT:12 = 位置_魔法之森_森林岔路 * 倍_万 + 120
-
-LOCAL:3 = 13
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-;-------------------------------------------------------------------------------
-;ルーミア
-@CHARA_MOVEMENT_ACTIVETIME_12(住人)
-#DIM 住人
-
-;5時〜9時は寝てる
-RETURN (TIME > 300 && TIME < 540) || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_12
-RETURN 80
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_12(ARG,ARG:1)
-
-;移动範囲 霧の湖周辺、紅魔館外
-RESULT:1 = 位置_魔法之森_露米娅的树屋 * 倍_万 + 100
-RESULT:2 = 位置_雾之湖_湖北部 * 倍_万 + 100
-RESULT:3 = 位置_雾之湖_湖南部 * 倍_万 + 120
-RESULT:4 = 位置_红魔馆_正门 * 倍_万 + 120
-RESULT:5 = 位置_红魔馆_后院 * 倍_万 + 120
-RESULT:6 = 位置_红魔馆_大厅 * 倍_万 + 120
-RESULT:7 = 位置_魔法之森_森林岔路 * 倍_万 + 120
-
-LOCAL:3 = 8
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-;-------------------------------------------------------------------------------
-;アリス
-@CHARA_MOVEMENT_ACTIVETIME_13(住人)
-#DIM 住人
-
-;22時〜6時は寝てる
-RETURN TIME < 360 || TIME > 1320 || CFLAG:住人:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_13
-RETURN 80
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_13(ARG,ARG:1)
-;移动範囲 霧の湖周辺、紅魔館外
-RESULT:1 = 位置_魔法之森_爱丽丝的家 * 倍_万 + 100
-RESULT:2 = 位置_魔法之森_雾雨魔法店 * 倍_万 + 100
-RESULT:3 = 位置_雾之湖_湖北部 * 倍_万 + 100
-RESULT:4 = 位置_雾之湖_湖南部 * 倍_万 + 120
-RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 120
-RESULT:6 = 位置_红魔馆_后院 * 倍_万 + 120
-RESULT:7 = 位置_红魔馆_大图书馆 * 倍_万 + 120
-RESULT:8 = 位置_红魔馆_地下室 * 倍_万 + 120
-RESULT:9 = 位置_红魔馆_餐厅 * 倍_万 + 120
-RESULT:10 = 位置_红魔馆_厨房 * 倍_万 + 120
-RESULT:11 = 位置_红魔馆_大厅 * 倍_万 + 120
-RESULT:12 = 位置_魔法之森_森林岔路 * 倍_万 + 120
-
-LOCAL:3 = 13
-IF CFLAG:(ARG:1):風呂 >= 1000
-	RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 200
-ENDIF
-;-------------------------------------------------------------------------------
-;あなた
-@CHARA_MOVEMENT_ACTIVETIME_0(ARG)
-;21時〜6時は寝てる
-RETURN TIME < 360 || TIME > 1260 || CFLAG:ARG:衰弱
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_MOVERATE_0
-RETURN 60
-
-;-------------------------------------------------------------------------------
-;FIXME:関数の説明を書いてください
-;@return 1:xxx,0:xxx
-@CHARA_MOVEMENT_0(ARG,ARG:1)
-;書かれていない場所へは移动しない
-LOCAL:3 = 1
-FOR LOCAL:4, 1, 場所番号最大値+1
-	;紅魔館内の風呂、トイレ、納屋以外の汚れている場所を優先して移动
-	SIF MAP_DISTINCTION(LOCAL:4) != 0 || LOCAL:4 == 位置_红魔馆_仓库
-		CONTINUE
-
-	SELECTCASE LOCAL:4
-		CASE 位置_红魔馆_屋外厕所
-			;お手洗いパッチ
-			;基本的には1F厕所を使用
-			IF REST_NeedRestroom(ARG:1)
-				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-						LOCAL:2 ++
-				NEXT
-				IF LOCAL:2 > 2 && LOCAL:1 == 0
-					RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
-					LOCAL:3 ++
-				ENDIF
-			ENDIF
-		CASE 位置_红魔馆_一楼厕所
-			IF REST_NeedRestroom(ARG:1)
-				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-						LOCAL:2 ++
-				NEXT
-				IF LOCAL:2 < 2
-					RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
-					LOCAL:3 ++
-				ENDIF
-			ENDIF
-		CASE 位置_红魔馆_二楼厕所
-			IF REST_NeedRestroom(ARG:1)
-				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
-						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
-						LOCAL:2 ++
-				NEXT
-				IF LOCAL:1 != 0 && LOCAL:2 > 1
-					RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
-					LOCAL:3 ++
-				ENDIF
-			ENDIF
-		CASE 位置_红魔馆_大浴场
-			IF CFLAG:(ARG:1):風呂 >= 1000
-				RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 8000
-				LOCAL:3 ++
-			ENDIF
-		CASEELSE
-			RESULT:(LOCAL:3) = LOCAL:4 * 倍_万 + (FLAG:(100 + LOCAL:4) + 100)
-			LOCAL:3 ++
-	ENDSELECT
-
-NEXT
 
 ;-------------------------------------------------------------------------------
 ;指定した時間から現在までの経過時間を返す
@@ -1063,7 +372,7 @@ RETURN 0
 SIF CFLAG:住人:うふふ
 	RETURN 0
 ;汚れ発覚による逃走処理
-IF CFLAG:住人:汚れ発覚 == 汚れ発覚_逃走 && BATHROOM(CFLAG:住人:現在位置) 
+IF CFLAG:住人:汚れ発覚 == 汚れ発覚_逃走 && 存在浴室(CFLAG:住人:現在位置) 
 	;お風呂に入ったら汚れ発覚による逃走終了
 	CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 ENDIF
@@ -1083,7 +392,7 @@ SIF CFLAG:住人:同行
 SIF CFLAG:住人:自慰中 > 0 && IS_PRIVATE_ROOM(住人, 0)
 	RETURN 0
 ;訪問者に何かされている間は不可
-SIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && (FLAG:訪問者との行為の終了時刻 > DATETIME() || FLAG:訪問者との行為の終了時刻 != 0)
+SIF CFLAG:住人:現在位置 == FLAG:访问者当前位置 && (FLAG:訪問者との行為の終了時刻 > DATETIME() || FLAG:訪問者との行為の終了時刻 != 0)
 	RETURN 0
 ;住人同士で何かしている間は不可
 SIF CFLAG:住人:住人同士イベント相手 != 0 || CFLAG:住人:住人同士イベント内容 != 0
@@ -1187,7 +496,7 @@ IF CFLAG:住人:移动目的 == 0
 	ENDIF
 ELSEIF CFLAG:住人:移动目的 == 移动目的_訪問者 && 移动路线:住人:0 == 0
 	;訪問者の元への移动かつ初期状態であれば移动路线設定
-	IF FLAG:訪問者の現在位置 == 位置_訪問者宅
+	IF FLAG:访问者当前位置 == 位置_訪問者宅
 		; 訪問者が自宅にいたらおでかけ可能かチェック、おでかけできるなら行く
 		; 行けない場合は仕方ないので正門に行ってフラグ解除して終了
 		CALL GoOut_Able_Check(住人)
@@ -1198,7 +507,7 @@ ELSEIF CFLAG:住人:移动目的 == 移动目的_訪問者 && 移动路线:住�
 		ENDIF
 		CFLAG:住人:移动目的 = 0
 	ELSE
-		CALLF FARMOVE(住人, CFLAG:住人:現在位置, FLAG:訪問者の現在位置)
+		CALLF FARMOVE(住人, CFLAG:住人:現在位置, FLAG:访问者当前位置)
 	ENDIF
 ENDIF
 ;自慰判定
@@ -1239,13 +548,13 @@ ENDCATCH
 IF RAND:(TIME_PROGRESS(TFLAG:300) + 1) <= RAND:RESULT
 	RETURN 0
 ENDIF
-IF FLAG:訪問者の現在位置 == CFLAG:住人:現在位置 && FLAG:訪問者との行為の終了時刻 != 0
+IF FLAG:访问者当前位置 == CFLAG:住人:現在位置 && FLAG:訪問者との行為の終了時刻 != 0
 	;訪問者に捕まっている場合(非監禁的な意味で)は移动不可
 	RETURN 0
 ENDIF
 
 ;屈服度が高く、訪問者に手を出されている場合は抵抗できない(屈服度5000で侍奉(3)まで行ったら半々ぐらいの確率)
-IF FLAG:訪問者の現在位置 == CFLAG:住人:現在位置 && ( 10000 < (RAND( CFLAG:住人:屈服度 + 1 ) + FLAG:訪問者の气氛 * 1000) )
+IF FLAG:访问者当前位置 == CFLAG:住人:現在位置 && ( 10000 < (RAND( CFLAG:住人:屈服度 + 1 ) + FLAG:訪問者の气氛 * 1000) )
 	RETURN 0
 ENDIF
 
@@ -1286,7 +595,7 @@ DO
 	SIF LOOT_NUM == CFLAG:MASTER:現在位置 && CAN_MOVE(CFLAG:住人:現在位置, CFLAG:MASTER:現在位置) == 2 
 		LOOT_PROB += LOOT_PROB / 10 * CFLAG:住人:亲密程度
 	;訪問者が紅魔館のアイドルならば、接近します。
-	SIF LOOT_NUM == FLAG:訪問者の現在位置 && CAN_MOVE(CFLAG:住人:現在位置, FLAG:訪問者の現在位置) == 2
+	SIF LOOT_NUM == FLAG:访问者当前位置 && CAN_MOVE(CFLAG:住人:現在位置, FLAG:访问者当前位置) == 2
 		LOOT_PROB += MAX(0, (CFLAG:住人:屈服度 - CFLAG:住人:好感度) / 3)
 
 	;PRINTFORM {RESULT:LOCAL} {LOOT_PROB}｜
@@ -1462,7 +771,7 @@ SIF (BASE:奴隷:体力 <= (MAXBASE:奴隷:体力/2) || BASE:奴隷:气力 <= (M
 	RETURN 0
 ;PRINTFORM {奴隷}P2 
 ;・訪問者と同じ場所にいない
-SIF CFLAG:奴隷:現在位置 == FLAG:訪問者の現在位置
+SIF CFLAG:奴隷:現在位置 == FLAG:访问者当前位置
 	RETURN 0
 ;PRINTFORM {奴隷}P3 
 ;・お持ち帰りされていない

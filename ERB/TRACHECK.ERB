@@ -1251,22 +1251,6 @@ SIF TFLAG:97 > 0 && SELECTCOM == 21
 ;助手調教中
 SIF ASSIPLAY == 1
 	TFLAG:97 = 0
-IF TALENT:ARG:公众便所 && TFLAG:97 > 0
-	IF TALENT:ARG:浮気公認 && TALENT:ARG:NTR == 0
-		;浮気公認してて、寝取られてない時は好感度がちゃんと延びる
-	ELSEIF FLAG:贞操帯鍵購入フラグ == ARG
-		;公众便所は使ってもらえると好感度が伸びる。別に等倍でいいよね
-		PRINTL
-		PRINTFORML 成为公共便所的%CALLNAME:(ARG:0)%似乎对被%CALLNAME:(MASTER:0)%买的事抱有好感……
-		PRINTL
-	ELSE
-		;公众便所は使ってもらえないと好感度が上がらない
-		PRINTL
-		PRINTFORML 成为公共便所的%CALLNAME:(ARG:0)%好像只会对买春对象抱有好感……
-		PRINTL
-		TFLAG:97 = 0
-	ENDIF
-ENDIF
 
 ;好感度取得
 CALL MASTER_FAVOR_CHECK2(ARG, TFLAG:97)

@@ -426,35 +426,6 @@ ENDIF
 RETURN 0
 
 ;==================================================
-;300ex - 売春について - 鍵の有無、恋慕
-;==================================================
-@KOJO_MESSAGE_COM_KU_300_13_02(奴隷, 調教者)
-#DIM 奴隷
-#DIM 調教者
-#DIMS 関係
-
-;恋慕、鍵の有無で分岐
-IF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:人妻
-		関係 = %"夫婦"%
-	ELSE
-		関係 = %"恋人"%
-	ENDIF
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML 「买下来了吗・・？ 因为是%関係%，所以想要独占我吧？ 嘻嘻嘻，好高兴啊・・」
-	ELSE
-		PRINTFORML 「对不起・・就算是%関係%、不买下贞操带的钥匙的话，我是不可以和你做的・・」
-	ENDIF
-ELSE
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML 「买下来了吗・・？ 很想要和我做的吧？ 库呵呵、好高兴・・」
-	ELSE
-		PRINTFORML 「抱歉・・不买这个钥匙的话，我无论如何都是不能和你做的・・」
-	ENDIF
-ENDIF
-RETURN 0
-
-;==================================================
 ;301,泡一杯茶
 ;==================================================
 @KOJO_MESSAGE_COM_KU_301
@@ -663,16 +634,7 @@ CALL KOJO_MESSAGE_COM_KU_350_1
 RETURN RESULT
 
 @KOJO_MESSAGE_COM_KU_350_1
-;公众便所
-IF TALENT:TARGET:公众便所
-	;鍵購入済み
-	IF FLAG:贞操帯鍵購入フラグ == TARGET
-		PRINTFORML 「嗯嗯。有那把钥匙的话，就可以随意玩弄我喔・・・」
-		;未購入
-	ELSE
-		PRINTFORML 「不行・・・会被主人大人责骂的・・」
-	ENDIF
-ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ)
 
 	IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取り返し中)
 		PRINTFORML 「・・・没办法。对主人要保密啊・・」
@@ -721,24 +683,10 @@ IF TFLAG:193
 
 	;告白失敗
 ELSE
-	;公众便所
-	IF TALENT:公众便所
-		IF IS_DOUTEI(MASTER)
-			PRINTFORML 「呵呵，就那么想舍弃童贞吗？」
-		ELSE
-			PRINTFORML 「呵呵，就那么想干我吗？」
-		ENDIF
-		PRINTFORML 「不过真是对不起呢。虽然我确实是只要给钱、向任何人献上肉体都没关系的精液便器…」
-		PRINTFORML 「但主人大人下过命令，只有%CALLNAME:MASTER%是不行的呢」
-		RETURN 0
-		;寝取られ
-	ELSEIF TALENT:NTR
-		PRINTFORML 「呵呵，在说什么傻话。早就说了、我已经是主人大人的专属母狗了」
-		PRINTFORML 「所以、%CALLNAME:MASTER%的心意、没法回应」
-		RETURN 0
-		;その他
-	ELSE
-	ENDIF
+	;寝取られ
+	PRINTFORML 「呵呵，在说什么傻话。早就说了、我已经是主人大人的专属母狗了」
+	PRINTFORML 「所以、%CALLNAME:MASTER%的心意、没法回应」
+	RETURN 0
 ENDIF
 
 
@@ -6125,25 +6073,6 @@ ELSEIF TCVAR:奴隷:反発刻印取得 == 2
 ELSEIF TCVAR:奴隷:反発刻印取得 == 3
 	PRINTFORMW 
 ENDIF
-
-;-------------------------------------------
-;訪問者の家におでかけするときの挨拶
-;	前提条件	浮気公認Lv >= 浮気_外泊公認、[亲爱][公众便所]
-;-------------------------------------------
-@KOJO_MESSAGE_KU_SeeYou_900_0(奴隷,同伴)
-#DIM 奴隷
-#DIM 同伴
-RETURN 0
-
-;-------------------------------------------
-;訪問者の家におでかけするときの挨拶
-;	前提条件	浮気公認Lv >= 浮気_外泊公認、[公众便所]
-;-------------------------------------------
-@KOJO_MESSAGE_KU_SeeYou_900_1(奴隷,同伴)
-#DIM 奴隷
-#DIM 同伴
-CALL KOJO_MESSAGE_KU_SeeYou_900_2(奴隷,同伴)
-RETURN 0
 
 ;-------------------------------------------
 ;訪問者の家におでかけするときの挨拶

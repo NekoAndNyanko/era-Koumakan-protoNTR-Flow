@@ -32,7 +32,7 @@ FOR LOCAL,0,CHARANUM
 	CFLAG:LOCAL:同行 = 0
 NEXT
 ;訪問者関係のフラグをリセット
-FLAG:訪問者の現在位置 = 0
+FLAG:访问者当前位置 = 0
 FLAG:訪問者同行フラグ = 0
 
 SIF FLAG:真实模式
@@ -46,7 +46,7 @@ SIF STRLENS(TSTR:1)
 ;访问者给住人避孕
 FOR LOOP_CHR, 0, CHARANUM
 	;PRINTFORMW 访问者的避孕药{FLAG:访问者的避孕药}
-	IF (TALENT:LOOP_CHR:NTR || TALENT:LOOP_CHR:公众便所 || TALENT:LOOP_CHR:浮気公認 > 0 || NTR_CHK_FAVORABLY(LOOP_CHR, FAV_主人より高い)) && FLAG:访问者的避孕药 > 0 && CFLAG:LOOP_CHR:卵子生存日数 == 1 && CFLAG:LOOP_CHR:避孕药使用 != 3 && TALENT:LOOP_CHR:妖精 == 0
+	IF (TALENT:LOOP_CHR:NTR || TALENT:LOOP_CHR:浮気公認 > 0 || NTR_CHK_FAVORABLY(LOOP_CHR, FAV_主人より高い)) && FLAG:访问者的避孕药 > 0 && CFLAG:LOOP_CHR:卵子生存日数 == 1 && CFLAG:LOOP_CHR:避孕药使用 != 3 && TALENT:LOOP_CHR:妖精 == 0
 		;精子量
 		精子量 = 0
 		FOR LOCAL, 0, 301

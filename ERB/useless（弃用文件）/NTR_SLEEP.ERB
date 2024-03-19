@@ -9,7 +9,7 @@ IF FLAG:睡姦フラグ == 1
 	TCVAR:LOCAL:行為者 = 人物_訪問者
 	IF CFLAG:奴隷:睡眠
 		IF 觉醒等待 == 1 && CFLAG:奴隷:覚醒 > 0
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %NTR_NAME(0)%正在等待%CALLNAME:奴隷%的睡眠恢复稳定、
 			CFLAG:奴隷:覚醒 -= 1
 			SIF CFLAG:奴隷:覚醒 == 0
@@ -92,7 +92,7 @@ ENDIF
 @睡奸觉醒(奴隷)
 #DIM 奴隷
 IF RAND(100) < CFLAG:奴隷:性欲 / 2
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		PRINTFORMW %CALLNAME:奴隷%似乎快要醒了，所以%NTR_NAME(0)%中断了行为
 	ENDIF
 ELSE
@@ -105,14 +105,14 @@ TCVAR:LOCAL:行為者 = 0
 @NTR_SLEEP_摄影(奴隷)
 #DIM 奴隷
 IF !CFLAG:奴隷:服装_下半身下着２
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		PRINTFORMW %NTR_NAME(0)%在%CALLNAME:奴隷%睡觉的时候，拍摄了%CALLNAME:奴隷%的裸体写真
 		CALL 角色睡奸性欲表现(奴隷)
 	ENDIF
 	EXP:奴隷:浮気照相经验 ++
 	EXP:奴隷:浮気情色经验 ++
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 90
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -131,7 +131,7 @@ ENDIF
 @NTR_SLEEP_脱内裤(奴隷)
 #DIM 奴隷
 IF CFLAG:奴隷:服装_下半身下着２
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		PRINTFORMW %NTR_NAME(0)%把%CALLNAME:奴隷%的内裤脱下来，放进了自己的口袋
 		CALL 角色睡奸性欲表现(奴隷)
 	ENDIF
@@ -141,7 +141,7 @@ IF CFLAG:奴隷:服装_下半身下着２
 		CFLAG:奴隷:覚醒 += 1
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 50
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -160,7 +160,7 @@ ENDIF
 ;睡奸接吻
 @NTR_SLEEP_接吻(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的嘴唇吻了上去，不停搜刮着%CALLNAME:奴隷%的口腔，丝丝唾液闪闪发光
 	CALL 角色睡奸性欲表现(奴隷)
 ENDIF
@@ -181,7 +181,7 @@ ENDIF
 ;睡奸爱抚
 @NTR_SLEEP_爱抚(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%抚摸着睡着的%CALLNAME:奴隷%的身体
 	PRINTFORMW 柔软的乳房和秘部都没能逃脱%NTR_NAME(0)%熟练的手
 	CALL 角色睡奸性欲表现(奴隷)
@@ -200,7 +200,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF RAND(10) < 3
 		CFLAG:奴隷:覚醒 += 1
 	ENDIF
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 20
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -216,7 +216,7 @@ ENDIF
 ;睡奸胸爱抚
 @NTR_SLEEP_胸爱抚(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%揉捏着%CALLNAME:奴隷%柔软的胸部
 	PRINTFORMW %CALLNAME:奴隷%根本就不知道自己的乳头正在被怎样得玩弄
 	CALL 角色睡奸性欲表现(奴隷)
@@ -233,7 +233,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF RAND(10) < 3
 		CFLAG:奴隷:覚醒 += 1
 	ENDIF
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 50
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -245,7 +245,7 @@ ENDIF
 ;睡奸舔菊
 @NTR_SLEEP_舔菊(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%舔舐着睡着的%CALLNAME:奴隷%的肛门，口活相当好的样子
 	CALL 角色睡奸性欲表现(奴隷)
 ENDIF
@@ -260,7 +260,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF RAND(10) < 3
 		CFLAG:奴隷:覚醒 += 1
 	ENDIF
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -280,7 +280,7 @@ ENDIF
 ;睡奸口交
 @NTR_SLEEP_口交(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%把自己的肉棒放进睡着的%CALLNAME:奴隷%的嘴里磨蹭
 	CALL 角色睡奸性欲表现(奴隷)
 ENDIF
@@ -295,7 +295,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		CFLAG:奴隷:覚醒 += 1
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -312,7 +312,7 @@ ENDIF
 ;睡奸69
 @NTR_SLEEP_69(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%跟睡着的%CALLNAME:奴隷%摆成６９的姿势，舔着%CALLNAME:奴隷%的小穴，%NTR_NAME(0)%鸡巴时不时在%CALLNAME:奴隷%的脸上磨蹭，时不时在嘴里抽插
 	CALL 角色睡奸性欲表现(奴隷)
 ENDIF
@@ -329,7 +329,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		CFLAG:奴隷:覚醒 += 1
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 10
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -350,7 +350,7 @@ ENDIF
 ;睡奸素股
 @NTR_SLEEP_素股(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%把肉棒插在睡着的%CALLNAME:奴隷%的股间，用阴唇夹着反复抽插
 	CALL 角色睡奸性欲表现(奴隷)
 ENDIF
@@ -365,7 +365,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		CFLAG:奴隷:覚醒 += 1
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -386,7 +386,7 @@ ENDIF
 体位 = RAND(7)
 CALLFORM NTR_SLEEP_SEX_{体位}(奴隷)
 IF TALENT:奴隷:处女
-	SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		PRINTFORMW %CALLNAME:奴隷%完全不知道自己在不知不觉中被夺去了处女
 	SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_破瓜の血
 	CALL LOST_VIRGIN(奴隷, 人物_訪問者)
@@ -414,7 +414,7 @@ CALL LOST_VIRGIN_A(奴隷, 人物_訪問者)
 ;V正常位
 @NTR_SLEEP_SEX_0(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的膣内
 	PRINTFORMW %NTR_NAME(0)%慢慢地动着腰
 	CALL 角色睡奸性欲表现(奴隷)
@@ -437,7 +437,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的膣内因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ｖ扩张经验+EXP:奴隷:Ｖ扩张经验 < 450
@@ -450,7 +450,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -466,7 +466,7 @@ ENDIF
 ;V后背位
 @NTR_SLEEP_SEX_1(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %CALLNAME:奴隷%伏卧着，脸贴在床上歪向一边
 	CALL 角色睡奸性欲表现(奴隷)
 	PRINTFORMW %NTR_NAME(0)%抓着%CALLNAME:奴隷%的下半身，来回抽插…
@@ -489,7 +489,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的膣内因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ｖ扩张经验+EXP:奴隷:Ｖ扩张经验 < 450
@@ -502,7 +502,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 20
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -518,7 +518,7 @@ ENDIF
 ;V骑乘位
 @NTR_SLEEP_SEX_2(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %CALLNAME:奴隷%被放在%NTR_NAME(0)%的下体上
 	CALL 角色睡奸性欲表现(奴隷)
 	PRINTFORMW %NTR_NAME(0)%抓着%CALLNAME:奴隷%的下半身，来回抽插…
@@ -541,7 +541,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的膣内因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ｖ扩张经验+EXP:奴隷:Ｖ扩张经验 < 450
@@ -554,7 +554,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 20
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -570,7 +570,7 @@ ENDIF
 ;V对面座位
 @NTR_SLEEP_SEX_3(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的膣内
 	PRINTFORMW V对面座位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -593,7 +593,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的膣内因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ｖ扩张经验+EXP:奴隷:Ｖ扩张经验 < 450
@@ -606,7 +606,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 10
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -622,7 +622,7 @@ ENDIF
 ;V背面座位
 @NTR_SLEEP_SEX_4(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的膣内
 	PRINTFORMW V背面座位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -645,7 +645,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的膣内因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ｖ扩张经验+EXP:奴隷:Ｖ扩张经验 < 450
@@ -658,7 +658,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -674,7 +674,7 @@ ENDIF
 ;V对面立位
 @NTR_SLEEP_SEX_5(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的膣内
 	PRINTFORMW V对面立位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -697,7 +697,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的膣内因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ｖ扩张经验+EXP:奴隷:Ｖ扩张经验 < 450
@@ -710,7 +710,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 10
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -726,7 +726,7 @@ ENDIF
 ;V背面立位
 @NTR_SLEEP_SEX_6(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的膣内
 	PRINTFORMW V背面立位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -749,7 +749,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的膣内因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ｖ扩张经验+EXP:奴隷:Ｖ扩张经验 < 450
@@ -762,7 +762,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -780,7 +780,7 @@ ENDIF
 ;A正常位
 @NTR_SLEEP_A_SEX_0(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的肛门内
 	PRINTFORMW A正常位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -803,7 +803,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的肛门因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ａ扩张经验+EXP:奴隷:Ａ扩张经验 < 450
@@ -816,7 +816,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -833,7 +833,7 @@ ENDIF
 ;A后背位
 @NTR_SLEEP_A_SEX_1(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的肛门内
 	PRINTFORMW A后背位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -856,7 +856,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的肛门因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ａ扩张经验+EXP:奴隷:Ａ扩张经验 < 450
@@ -869,7 +869,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 20
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -881,7 +881,7 @@ ENDIF
 ;A骑乘位
 @NTR_SLEEP_A_SEX_2(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的肛门内
 	PRINTFORMW A骑乘位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -904,7 +904,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的肛门因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ａ扩张经验+EXP:奴隷:Ａ扩张经验 < 450
@@ -917,7 +917,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 20
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -933,7 +933,7 @@ ENDIF
 ;A对面座位
 @NTR_SLEEP_A_SEX_3(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的肛门内
 	PRINTFORMW A对面座位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -956,7 +956,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的肛门因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ａ扩张经验+EXP:奴隷:Ａ扩张经验 < 450
@@ -969,7 +969,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 10
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -985,7 +985,7 @@ ENDIF
 ;A背面座位
 @NTR_SLEEP_A_SEX_4(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的肛门内
 	PRINTFORMW A背面座位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -1008,7 +1008,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的肛门因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ａ扩张经验+EXP:奴隷:Ａ扩张经验 < 450
@@ -1021,7 +1021,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -1037,7 +1037,7 @@ ENDIF
 ;A对面立位
 @NTR_SLEEP_A_SEX_5(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的肛门内
 	PRINTFORMW A对面立位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -1060,7 +1060,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的肛门因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ａ扩张经验+EXP:奴隷:Ａ扩张经验 < 450
@@ -1073,7 +1073,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 10
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -1090,7 +1090,7 @@ ENDIF
 ;A背面立位
 @NTR_SLEEP_A_SEX_6(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%的阴茎插在睡着的%CALLNAME:奴隷%的肛门内
 	PRINTFORMW A背面立位
 	CALL 角色睡奸性欲表现(奴隷)
@@ -1113,7 +1113,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	IF 訪問者_Ｐ大きさ >= 2
 		CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
 		IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-			SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+			SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 				PRINTFORML %CALLNAME:奴隷%的肛门因为%NTR_NAME(0)%过大的阴茎而被扩张了…
 		ENDIF
 		IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:浮気Ａ扩张经验+EXP:奴隷:Ａ扩张经验 < 450
@@ -1126,7 +1126,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		ENDIF
 	ENDIF
 	;能观察到时
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		IF RAND(100) < 30
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
@@ -1148,7 +1148,7 @@ ENDIF
 
 @NTR_SLEEP_接吻_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	;PRINTFORMW %NTR_NAME(0)%和睡着的%CALLNAME:奴隷%的嘴唇之间的缠绵结束了
 	;PRINTFORMW %CALLNAME:奴隷%的身体在颤抖，难道被吻到绝顶了吗？……
 ENDIF
@@ -1157,28 +1157,28 @@ CALL 绝顶确认(奴隷,1,0,0,0,0,人物_訪問者)
 
 @NTR_SLEEP_爱抚_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	;PRINTFORMW %CALLNAME:奴隷%浑身颤抖着，蜜穴喷出大量的晶莹液体，绝顶了…
 ENDIF
 CALL 绝顶确认(奴隷,0,1,1,0,0,人物_訪問者)
 
 @NTR_SLEEP_胸爱抚_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	;PRINTFORMW %CALLNAME:奴隷%浑身颤抖着，蜜穴喷出大量的晶莹液体，乳头绝顶了…
 ENDIF
 CALL 绝顶确认(奴隷,0,0,1,0,0,人物_訪問者)
 
 @NTR_SLEEP_舔菊_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	;PRINTFORMW %CALLNAME:奴隷%浑身颤抖着，蜜穴喷出大量的晶莹液体，肛门绝顶了…
 ENDIF
 CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 
 @NTR_SLEEP_口交_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的喉咙把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的喉咙不停吞咽的样子，身体在颤抖，难道口交绝顶了吗？……
 	CALL EJACULATION_M(奴隷, 人物_訪問者)
@@ -1187,7 +1187,7 @@ CALL 绝顶确认(奴隷,1,0,0,0,0,人物_訪問者)
 
 @NTR_SLEEP_69_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的最把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的喉咙不停吞咽的样子，身体在颤抖，蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_M(奴隷, 人物_訪問者)
@@ -1196,7 +1196,7 @@ CALL 绝顶确认(奴隷,1,1,0,0,0,人物_訪問者)
 
 @NTR_SLEEP_素股_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%在快要射的时候%CALLNAME:奴隷%把龟头插入小穴里
 	PRINTFORMW 对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
@@ -1207,7 +1207,7 @@ CALL 绝顶确认(奴隷,0,1,0,0,0,人物_訪問者)
 
 @NTR_SLEEP_SEX_0_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_V(奴隷, 人物_訪問者)
@@ -1216,7 +1216,7 @@ CALL 绝顶确认(奴隷,0,0,0,1,0,人物_訪問者)
 
 @NTR_SLEEP_SEX_1_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_V(奴隷, 人物_訪問者)
@@ -1225,7 +1225,7 @@ CALL 绝顶确认(奴隷,0,0,0,1,0,人物_訪問者)
 
 @NTR_SLEEP_SEX_2_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_V(奴隷, 人物_訪問者)
@@ -1234,7 +1234,7 @@ CALL 绝顶确认(奴隷,0,0,0,1,0,人物_訪問者)
 
 @NTR_SLEEP_SEX_3_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_V(奴隷, 人物_訪問者)
@@ -1244,7 +1244,7 @@ CALL 绝顶确认(奴隷,0,0,0,1,0,人物_訪問者)
 
 @NTR_SLEEP_SEX_4_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_V(奴隷, 人物_訪問者)
@@ -1253,7 +1253,7 @@ CALL 绝顶确认(奴隷,0,0,0,1,0,人物_訪問者)
 
 @NTR_SLEEP_SEX_5_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_V(奴隷, 人物_訪問者)
@@ -1262,7 +1262,7 @@ CALL 绝顶确认(奴隷,0,0,0,1,0,人物_訪問者)
 
 @NTR_SLEEP_SEX_6_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的膣内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_V(奴隷, 人物_訪問者)
@@ -1271,7 +1271,7 @@ CALL 绝顶确认(奴隷,0,0,0,1,0,人物_訪問者)
 
 @NTR_SLEEP_A_SEX_0_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的肠内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_A(奴隷, 人物_訪問者)
@@ -1280,7 +1280,7 @@ CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 
 @NTR_SLEEP_A_SEX_1_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的肠内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_A(奴隷, 人物_訪問者)
@@ -1289,7 +1289,7 @@ CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 
 @NTR_SLEEP_A_SEX_2_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的肠内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_A(奴隷, 人物_訪問者)
@@ -1298,7 +1298,7 @@ CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 
 @NTR_SLEEP_A_SEX_3_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的肠内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_A(奴隷, 人物_訪問者)
@@ -1307,7 +1307,7 @@ CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 
 @NTR_SLEEP_A_SEX_4_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的肠内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_A(奴隷, 人物_訪問者)
@@ -1316,7 +1316,7 @@ CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 
 @NTR_SLEEP_A_SEX_5_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的肠内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_A(奴隷, 人物_訪問者)
@@ -1325,7 +1325,7 @@ CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 
 @NTR_SLEEP_A_SEX_6_结束(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 	PRINTFORMW %NTR_NAME(0)%对着%CALLNAME:奴隷%的肠内把所有精液都射了进去…
 	;PRINTFORMW %CALLNAME:奴隷%的蜜穴喷出大量的晶莹液体，看来是绝顶了…
 	CALL EJACULATION_A(奴隷, 人物_訪問者)
@@ -1337,7 +1337,7 @@ CALL 绝顶确认(奴隷,0,0,0,0,1,人物_訪問者)
 @睡奸觉醒度状态表现(奴隷)
 #DIM 奴隷
 IF CFLAG:奴隷:覚醒 >= 7
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		IF CFLAG:奴隷:性欲 >= 80 && CFLAG:奴隷:性欲 < 100
 			PRINTFORMW %CALLNAME:奴隷%半睁着眼，因为喘气而发出了细细的声音，眨眼也十分频繁，身体的异动似乎表示她就要苏醒了
 		ELSEIF CFLAG:奴隷:性欲 < 100
@@ -1347,7 +1347,7 @@ IF CFLAG:奴隷:覚醒 >= 7
 		ENDIF
 	ENDIF
 ELSEIF CFLAG:奴隷:覚醒 >= 5
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		IF CFLAG:奴隷:性欲 >= 80 && CFLAG:奴隷:性欲 < 100
 			PRINTFORMW %CALLNAME:奴隷%半睁着眼，还不时地喘气，脑袋和身子时不时就会转动一下
 		ELSEIF CFLAG:奴隷:性欲 < 100
@@ -1357,7 +1357,7 @@ ELSEIF CFLAG:奴隷:覚醒 >= 5
 		ENDIF
 	ENDIF
 ELSEIF CFLAG:奴隷:覚醒 >= 3
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		IF CFLAG:奴隷:性欲 >= 80 && CFLAG:奴隷:性欲 < 100
 			PRINTFORMW %CALLNAME:奴隷%半睁着眼，还不时地喘气，但还没有要醒来的迹象
 		ELSEIF CFLAG:奴隷:性欲 < 100
@@ -1367,10 +1367,10 @@ ELSEIF CFLAG:奴隷:覚醒 >= 3
 		ENDIF
 	ENDIF
 ELSEIF CFLAG:奴隷:覚醒 >= 1
-	SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		PRINTFORMW %CALLNAME:奴隷%扭动了下身子
 ELSEIF CFLAG:奴隷:覚醒 == 0
-	SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		PRINTFORMW %CALLNAME:奴隷%熟睡的样子
 ENDIF
 
@@ -1468,7 +1468,7 @@ IF M绝顶强度+C绝顶强度+B绝顶强度+V绝顶强度+A绝顶强度 > 0
 		EXP:ARG:Ａ绝顶经验 += A绝顶强度
 	ENDIF
 	;口上呼出
-	IF FLAG:睡姦フラグ == 1 && NTR_CHK_VISIBLE(FLAG:訪問者の現在位置) || IS_NTR_SHOW_ALL()
+	IF FLAG:睡姦フラグ == 1 && NTR_CHK_VISIBLE(FLAG:访问者当前位置) || IS_NTR_SHOW_ALL()
 		IF CFLAG:ARG:睡眠
 			PRINTFORMW %CALLNAME:ARG%的蜜穴喷出了晶莹的液体，看来是绝顶了…
 

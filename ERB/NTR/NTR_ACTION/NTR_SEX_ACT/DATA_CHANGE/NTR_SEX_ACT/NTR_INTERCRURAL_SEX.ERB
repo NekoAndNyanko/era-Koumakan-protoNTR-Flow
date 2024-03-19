@@ -4,8 +4,8 @@
 #DIM 奴隷
 #DIM 調教者
 TCVAR:奴隷:行為者 = 調教者
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
-	PRINTFORM 在【%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%】，%CALLNAME:奴隷%把%NTR_NAME(0)%灼热的肉棒夹在了两腿之间、
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+	PRINTFORM 在【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】，%CALLNAME:奴隷%把%NTR_NAME(0)%灼热的肉棒夹在了两腿之间、
 	IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度
 		PRINTFORM 一边用溢满爱慕的双眼，陶醉地注视着%NTR_NAME(0)%
 	ELSEIF TALENT:奴隷:淫乱
@@ -74,8 +74,8 @@ RETURN 0
 ;@return 常に0
 @NTR_THUG_FINISH(奴隷)
 #DIM 奴隷
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%】%NTR_NAME(0)%的肉棒在%CALLNAME:奴隷%两腿间以惊人的气势喷射出了大量精液
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%的肉棒在%CALLNAME:奴隷%两腿间以惊人的气势喷射出了大量精液
 	SIF FLAG:口上颜色
 		CALL KOJO_COLOR(奴隷)
 	TRYCALLLIST

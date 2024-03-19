@@ -50,18 +50,7 @@
 #DIM 奴隷
 
 IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「库库库・・・对客人来说，这样做比较好吧・・？」
-			DATAFORM 「诶诶・・客人也非常高兴・・%MSG_HEART()%」
-			DATAFORM 「是的・・你这样做是对的%MSG_HEART()%」
-		ENDDATA
-		PRINTDATAL
-			DATAFORM %CALLNAME:奴隷%跪在%NTR_NAME(0)%的面前、清洗着%NTR_NAME(4)%的股间
-			DATAFORM %CALLNAME:奴隷%从%NTR_NAME(0)%的背后转手洗净%NTR_NAME(4)%的股間
-			DATAFORM %CALLNAME:奴隷%从%NTR_NAME(0)%的背后抱住，用满是泡沫的身体清洗着%NTR_NAME(4)%的股间。
-		ENDDATA
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「哈啊・・・竟然让他做到这种地步・・・呼呼・・」
 			DATAFORM 「这里？ 是这里吗？ 一直很健康啊・・」
@@ -134,21 +123,7 @@ IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 		PRINTFORML %CALLNAME:奴隷%盯着、%NTR_NAME(0)%移开视线。
 	ENDIF
 ELSEIF CFLAG:奴隷:現在位置 == 位置_红魔馆_蕾米莉亚私室
-	IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「・・又想让我做那种事・・？」
-			DATAFORM 「不要再让那种客人陪着我了。我是有限度的！」
-			DATAFORM 「・・我不会逃跑的」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%听到%NTR_NAME(0)%『商务』的对话、低着头回答。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「那么、这次有几位客人？ 我可不想跟太变态的客人打交道呢？」
-			DATAFORM 「下次是什么时候？太闲的话、红人的招牌可是会哭的呢？」
-			DATAFORM 「呼呼・・比起『工作』的话题、现在我们俩一起玩玩吧？」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%与%NTR_NAME(0)%贴近、坐在床上、谈着『商务』的话题。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 		PRINTDATAL
 			DATAFORM 「啊啊・・喂・・可以吗・・？」
 			DATAFORM 「呼呼・・你是在着急吗・・？」
@@ -202,21 +177,7 @@ ELSEIF TALENT:奴隷:处女 && NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	ENDIF
 	;それ以外
 ELSE
-	IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「・・又想让我做那种事・・？」
-			DATAFORM 「不要再让那种客人陪着我了。我是有限度的！」
-			DATAFORM 「・・我不会逃跑的」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%听到%NTR_NAME(0)%『商务』的对话、低着头回答。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「那么、这次有几位客人？ 我可不想跟太变态的客人打交道呢？」
-			DATAFORM 「下次是什么时候？太闲的话、红人的招牌可是会哭的呢？」
-			DATAFORM 「录像摄影？ 不会是白天吧？」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%一边脸红一边说着『商务』的话题。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 		PRINTDATAL
 			DATAFORM 「你又没有邀请我吗？ 呼呼」
 			DATAFORM 「你知道吗・・？ 库库库」
@@ -7015,19 +6976,19 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「这里不碍事・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「这里不碍事・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%引导至%NTR_NAME(0)%的地方
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%引导至%NTR_NAME(0)%的地方
-		IF FLAG:訪問者の現在位置 == 位置_红魔馆_蕾米莉亚私室 && TALENT:奴隷:恋慕
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
+		IF FLAG:访问者当前位置 == 位置_红魔馆_蕾米莉亚私室 && TALENT:奴隷:恋慕
 			PRINTFORML %MSG_LOVER(奴隷)%虽然在，但是邀请其他的%NTR_NAME(3)%到卧室・・空气中漂浮着背德感的香气、%CALLNAME:奴隷%洋溢着妖异的微笑。
 		ELSE
 		ENDIF
@@ -7037,10 +6998,10 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「这里不碍事・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%引导至%NTR_NAME(0)%的地方
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%引导至%NTR_NAME(0)%的地方
-		IF FLAG:訪問者の現在位置 == 位置_红魔馆_蕾米莉亚私室 && TALENT:奴隷:恋慕
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
+		IF FLAG:访问者当前位置 == 位置_红魔馆_蕾米莉亚私室 && TALENT:奴隷:恋慕
 			PRINTFORML %MSG_LOVER(奴隷)%虽然在，但是邀请其他的%NTR_NAME(3)%到卧室・・空气中漂浮着背德感的香气、%CALLNAME:奴隷%洋溢着妖异的微笑。
 		ELSE
 		ENDIF
@@ -7049,7 +7010,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「这里应该没问题吧・・」
-	PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%引导%NTR_NAME(0)%
+	PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导%NTR_NAME(0)%
 
 ELSE
 
@@ -7117,56 +7078,6 @@ ELSE
 		PRINTFORML 「库库、不是很高兴吗？ 因为你自己就是这样对待我的。 这也是命运吧？」
 	ENDIF
 
-ENDIF
-
-RETURN 0
-
-;==================================================
-;公众便所宣言
-;==================================================
-@NTR_KOJO_K5_13(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	;たぶんここには来ないと思うけど念のため余計なものを出さないように
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:浮気公認
-		PRINTFORML 「呐%CALLNAME:MASTER%・・之前我已经说过了吧？ 我更想被他寝取・・」
-		PRINTFORML 「所以我、会实现那个愿望的。感谢我吧。诶、怎么办？」
-		PRINTFORML 「库库库・・在那个男人的介绍下、被其他男人用钱围住」
-	ELSEIF TALENT:奴隷:淫乱
-		PRINTFORML 「啊啊%CALLNAME:MASTER%・・我啊，更想感受一下.。想更淫乱一点」
-		PRINTFORML 「要做到这一点、只有%CALLNAME:MASTER%和那个男人是不够的。」
-		PRINTFORML 「所以呢、在那个男人的介绍下、被其他男人用钱围住」
-	ELSE
-		;たぶんないとは思うけど恋慕かつ非公認のケース
-		PRINTFORML （・・不能说・・不能对%CALLNAME:MASTER%、说这件事・・）
-		PRINTFORML （・・原谅我・・原谅我、%CALLNAME:MASTER%・・）
-	ENDIF
-	PRINTFORML %CALLNAME:奴隷%掀起裙子，将穿在腿间的贞操带展示给%CALLNAME:MASTER%
-	IF TALENT:奴隷:处女
-		PRINTFORML 「因此我的身体变成了『商品』、包括我的处女在内。我的第一次、会是谁买下来呢・・？」
-		PRINTFORML 露出了诡异的微笑的%CALLNAME:奴隷%、暗示了会把处女献给%ANATA_LOVER(奴隷)%以外的对象
-	ELSE
-		PRINTFORML 「因此我的身体变成了『商品』、所以在%CALLNAME:MASTER%在抱我的时候也拿出钱给我吧」
-	ENDIF
-ELSE
-	;初回
-	IF EXP:奴隷:公众便所陷落经验 == 0
-
-		PRINTFORML 「哦是%CALLNAME:MASTER%啊、我会告诉你的」
-		PRINTFORML 「我、发誓要成为精液便器♪」
-		PRINTFORML 「啊、但是你不行啊。如果让你使用的话主人会生气的」
-		PRINTFORML 「使用后要把污垢弄干净的时候，叫你过来吧。」
-
-		;2回目以降
-	ELSE
-
-		PRINTFORML 「哦是%CALLNAME:MASTER%啊、我会告诉你的」
-		PRINTFORML 「因为我发誓要变回精液便器♪」
-		PRINTFORML 「所以、『便所扫除』拜托了」
-
-	ENDIF
 ENDIF
 
 RETURN 0
@@ -7454,163 +7365,12 @@ ELSE
 ENDIF
 
 ;==================================================
-;贞操帯鍵購入に対する反応
-;==================================================
-;本人
-@NTR_KOJO_K5_16_0(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	PRINTDATAL
-		DATAFORM 「是・・你給我買的東西。我很高兴」
-		DATAFORM 「现在、我就是%CALLNAME:MASTER%独有的东西・・」
-		DATAFORM 「嗯、有了那把钥匙你就可以自由对待我了・・」
-	ENDDATA
-	IF TALENT:奴隷:亲爱
-		PRINTFORML 「现在、是夫妻时间啊」
-	ELSE
-		PRINTFORML 「现在、是恋人的时间」
-	ENDIF
-
-ELSEIF TALENT:奴隷:恋慕
-	PRINTDATAL
-		DATAFORM 「是・・你給我買了些東西。我很高兴」
-		DATAFORM 「阿拉。那个人经常把钥匙卖给%CALLNAME:MASTER%・・肯定是被偷走了呢？」
-		DATAFORM 「嗯、有了那把钥匙你就可以自由对待我了・・」
-	ENDDATA
-	PRINTDATAL
-		DATAFORM 「但是・・%MSG_RE_LOVER(奴隷)%用金钱买的身体、库库库、倒錯不就好了吗？」
-		DATAFORM 「用钱买下来%MSG_RE_LOVER(奴隷)%的身体来开发・・库库库、倒錯不就行了吗？」
-		DATAFORM 「呵呵、好好享受时间吧・・%MSG_LOVER(奴隷)%先生？」
-	ENDDATA
-ELSE
-	PRINTDATAL
-		DATAFORM 「是・・你給我買的東西」
-		DATAFORM 「阿拉。那个人经常把钥匙卖给%CALLNAME:MASTER%呢」
-		DATAFORM 「呵呵、有了那把钥匙你就可以自由对待我了・・」
-	ENDDATA
-	PRINTDATAL
-		DATAFORM 「但是、被馆内的佣人用钱买主人的身体、库库库、倒錯不就行了吗？」
-		DATAFORM 「用钱买来向佣人敞开身体・・库库库、倒錯不就行了吗？」
-		DATAFORM 「呵呵、好好享受时间吧・・主人？」
-	ENDDATA
-ENDIF
-RETURN
-
-;本人以外
-@NTR_KOJO_K5_16_1(奴隷)
-#DIM 奴隷
-;公众便所
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「阿拉・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったのね・・」
-		DATAFORM 「谁的钥匙？・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%是什么？」
-		DATAFORM 「呼呼・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%的钥匙、ねぇ・・」
-	ENDDATA
-	PRINTFORML 「・・下一次买我吧。怎么样」
-
-ELSEIF TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「あら・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったのね・・」
-		DATAFORM 「誰の鍵かしら・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%ですって？」
-		DATAFORM 「ふぅん・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%の鍵、ねぇ・・」
-	ENDDATA
-	IF TALENT:奴隷:恋慕
-		PRINTDATAL
-			DATAFORM 「%MSG_RE_LOVER(奴隷)%抛开我，去买别的女人是怎样的心思呢？」
-			DATAFORM 「%CALLNAME:MASTER%喜欢那样吗？」
-			DATAFORM 「比起我、还是%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%比较好呢？」
-		ENDDATA
-		PRINTDATAL
-			DATAFORM 「库库、开玩笑的。下回你买我吧。好吗？」
-			DATAFORM 「你在害怕什么？这不是开玩笑的吗・・下次是我了？」
-			DATAFORM 「・・再吓唬一下。太没劲了」
-		ENDDATA
-	ELSE
-		PRINTDATAL
-			DATAFORM 「ククッ、下回你买我吧。好吗？」
-			DATAFORM 「你很有品味啊！但是下次要买我呢？」
-			DATAFORM 「他会很高兴的。库库」
-		ENDDATA
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
-
-	PRINTDATAL
-		DATAFORM 「あら・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったのね・・」
-		DATAFORM 「誰の鍵かしら・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%ですって？」
-		DATAFORM 「ふぅん・・%CALLNAME_K5(奴隷, FLAG:贞操帯鍵購入フラグ)%の鍵、ねぇ・・」
-	ENDDATA
-	PRINTDATAL
-		DATAFORM 「库库、我可没生气。随你便」
-		DATAFORM 「・・那种是兴趣吗？」
-		DATAFORM 「他会很高兴的。库库」
-	ENDDATA
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
-
-	PRINTFORML 「・・ふうん・・そう・・」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-
-	PRINTFORML 「・・ふうん・・そう・・」
-
-ELSE
-
-	IF FLAG:贞操帯鍵購入フラグ == 人物_帕秋莉 || FLAG:贞操帯鍵購入フラグ == 人物_芙兰朵露
-		PRINTFORML 「看来是想死呢？」
-		PRINTFORML %CALLNAME:奴隷%在没有%NTR_NAME(0)%的情况下和她单独交谈。
-		PRINTFORML 对%CALLNAME:MASTER%的说明一边竖起眉毛一边抑制了杀气。
-	ELSEIF TALENT:奴隷:恋慕
-		PRINTDATAL
-			DATAFORM 「看来是想死呢？」
-			DATAFORM 「如果能死在%MSG_RE_LOVER(奴隷)%的手中那该有多好？」
-			DATAFORM 「难道你连自己做着不体面的事的自觉都没有吗？」
-		ENDDATA
-		PRINTFORML 氷のような冷たい視線を向けてくる%CALLNAME:奴隷%は%NTR_NAME(0)%抜きで彼女と二人きりで話すためだという
-		PRINTFORML 对%CALLNAME:MASTER%的说明一边竖起眉毛一边抑制了杀气。
-	ELSE
-		PRINTDATAL
-			DATAFORM 「红魔馆的耻辱！」
-			DATAFORM 「你不打算为那种事发工资吗？」
-			DATAFORM 「难道你连自己做着不体面的事的自觉都没有吗？」
-		ENDDATA
-	ENDIF
-
-ENDIF
-
-;==================================================
 ;同行解除
 ;==================================================
 @NTR_KOJO_K5_21(奴隷)
 #DIM 奴隷
 
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML 被%NTR_NAME(0)%注视着的%CALLNAME:奴隷%低着头向%CALLNAME:MASTER%搭话
-	PRINTDATAL
-		DATAFORM 「・・不好意思、%NTR_NAME(4)%在叫你呢」
-		DATAFORM 「・・不好意思，我想叫你一下」
-		DATAFORM 「%NTR_NAME(4)%好像在叫我・・不好意思」
-	ENDDATA
-ELSEIF TALENT:奴隷:公众便所
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 被%NTR_NAME(0)%注视着的%CALLNAME:奴隷%向%CALLNAME:MASTER%打招呼。
-		PRINTDATAL
-			DATAFORM 「不好意思、我找的是%NTR_NAME(4)%」
-			DATAFORM 「抱歉，我想叫你一下」
-			DATAFORM 「好像是%NTR_NAME(4)%在叫我，不好意思啊、」
-		ENDDATA
-	ELSE
-		PRINTFORML 被%NTR_NAME(0)%注视着的%CALLNAME:奴隷%脸蛋发红。
-		PRINTDATAL
-			DATAFORM 「阿拉、是叫我吗？」
-			DATAFORM 「阿拉、有什么事吗？」
-			DATAFORM 「诶诶、我在这里哦」
-		ENDDATA
-	ENDIF
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	PRINTFORML 被%NTR_NAME(0)%注视着的%CALLNAME:奴隷%脸蛋发红。
 	PRINTDATAL
 		DATAFORM 「阿拉、是叫我吗？」

@@ -144,8 +144,6 @@ BASE:MASTER:气力 += MAXBASE:MASTER:气力 * (CFLAG:MASTER:起床時間 - CFLAG
 BASE:MASTER:体力 = MIN(MAXBASE:MASTER:体力,BASE:MASTER:体力)
 BASE:MASTER:气力 = MIN(MAXBASE:MASTER:气力,BASE:MASTER:气力)
 BASE:MASTER:勃起 = MIN(1000 * BASE:MASTER:体力 / MAXBASE:MASTER:体力,1500)
-;勃起ペナルティ判定
-CALL SOJI_SexHara_ErectPunishment(MASTER)
 ;調教者は誰か
 IF ASSIPLAY == 0
 	PLAYER = MASTER
@@ -365,42 +363,4 @@ IF TARGET
 		ENDIF
 		CALL KOJO_EVENT(6, TARGET, 1)
 	ENDIF
-ELSEIF CFLAG:MASTER:現在位置 == 位置_人間の里周辺 && HAS_VAGINA(MASTER) && !(TALENT:公众便所 == 1 && EQUIP:MASTER:下半身下着２ == 0 && EQUIP:MASTER:下半身下着１ == 1)
-	PRINTFORMW 在人间之里昏倒睡着后的%CALLNAME:MASTER%醒来了，但眼前的景色并不是睡着之前看到的景色
-	PRINTFORMW 好像是在睡着的时候被带到了暗处
-	PRINTFORMW 空气中漂浮着的腥味，让%CALLNAME:MASTER%怀疑是自己身上涂着的那些都是精液
-	PRINTFORMW %CALLNAME:MASTER%明白了被轮奸的事情，含着泪将自己整理打扮好
-	TEQUIP:MASTER:Ｖ性爱 = 人物_客
-	FOR LOOP_I,1,(RAND:20 + 10)
-		IF RAND:2
-			EXP:MASTER:Ｖ经验 ++
-			EXP:MASTER:Ｖ性交经验 ++
-			IF ABL:MASTER:Ｖ感觉 > RAND:5
-				EXP:MASTER:Ｖ绝顶经验 ++
-				EXP:MASTER:绝顶经验 ++
-			ENDIF
-			CALL EJACULATION_V(MASTER, 人物_客)
-			IF TALENT:MASTER:处女
-				CALL LOST_VIRGIN(MASTER, 人物_客)
-			ENDIF
-			;V感覚が高いと绝顶经验加算（強絶頂扱い）
-			;CALL NTR_V_EXP_PLUS(MASTER)
-		ELSEIF !RAND:3
-			EXP:MASTER:精液经验 ++
-			EXP:MASTER:手淫经验 ++
-			CALL STAIN_ADD_SEMEN_HAND(MASTER, 人物_客)
-		ELSEIF RAND:2
-			EXP:MASTER:精液经验 ++
-			EXP:MASTER:口淫经验 ++
-			CALL STAIN_ADD_SEMEN_M(MASTER, 人物_客)
-		ELSE
-			EXP:MASTER:精液经验 ++
-			EXP:MASTER:乳交经验 ++
-			IF ABL:MASTER:Ｂ感觉 > RAND:5
-				EXP:MASTER:Ｂ绝顶经验 ++
-				EXP:MASTER:绝顶经验 ++
-			ENDIF
-			CALL STAIN_ADD_SEMEN_B(MASTER, 人物_客)
-		ENDIF
-	NEXT
 ENDIF

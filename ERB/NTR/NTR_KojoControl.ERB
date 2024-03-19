@@ -9,7 +9,7 @@
 SIF FLAG:口上颜色
 	CALL KOJO_COLOR(奴隷)
 ;主人同席（見せつけ）
-IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && 奴隷 != MASTER
+IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 && 奴隷 != MASTER
 	;開始
 	IF FLAG:訪問者との行為の終了時刻 == 0
 		CALLFORM NTR_MESSAGE_W_{行為}_0(奴隷)
@@ -31,7 +31,7 @@ IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && 奴隷 != MASTE
 	CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, 行為)
 	;二人きり
 ELSE
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		;開始
 		IF FLAG:訪問者との行為の終了時刻 == 0
 			CALLFORM NTR_MESSAGE_{行為}_0(奴隷)
@@ -63,7 +63,7 @@ RETURN 0
 SIF FLAG:口上颜色
 	CALL KOJO_COLOR(奴隷)
 ;主人同席（見せつけ）
-IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && 奴隷 != MASTER
+IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 && 奴隷 != MASTER
 	CALLFORM NTR_MESSAGE_{行為}_2(奴隷)
 	TRYCALLLIST
 		FUNC NTR_KOJO_KW{CFLAG:奴隷:口上パターン}_{行為}_2(奴隷)
@@ -74,7 +74,7 @@ IF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && 奴隷 != MASTE
 	CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, 行為)
 	;二人きり
 ELSE
-	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		CALLFORM NTR_MESSAGE_{行為}_2(奴隷)
 		TRYCALLLIST
 			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_{行為}_2(奴隷)
@@ -95,11 +95,11 @@ RETURN 0
 #DIM 主人同席
 SIF FLAG:口上颜色
 	CALL KOJO_COLOR(奴隷)
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	; 開始／継続フラグ
 	開始継続 = ( FLAG:訪問者との行為の終了時刻 == 0 ? 0 # 1 )
 	; 主人同席（見せつけ）フラグ
-	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 ? 1 # 0 )
+	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 ? 1 # 0 )
 	CALL NTR_SEX_KOJO_EX(奴隷, 開始継続, 主人同席, "KOJO_PRE")
 	CALL NTR_SEX_KOJO_EX(奴隷, 開始継続, 主人同席, "MESSAGE")
 	CALL NTR_SEX_KOJO_EX(奴隷, 開始継続, 主人同席, "KOJO")
@@ -116,9 +116,9 @@ RETURN 0
 #DIM 主人同席
 SIF FLAG:口上颜色
 	CALL KOJO_COLOR(奴隷)
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	; 主人同席（見せつけ）フラグ
-	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 ? 1 # 0 )
+	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 ? 1 # 0 )
 	CALL NTR_SEX_KOJO_EX(奴隷, 2, 主人同席, "KOJO_PRE")
 	CALL NTR_SEX_KOJO_EX(奴隷, 2, 主人同席, "MESSAGE")
 	CALL NTR_SEX_KOJO_EX(奴隷, 2, 主人同席, "KOJO")
@@ -239,11 +239,11 @@ RETURN 0
 #DIM 主人同席
 SIF FLAG:口上颜色
 	CALL KOJO_COLOR(奴隷)
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	; 開始／継続フラグ
 	開始継続 = ( FLAG:訪問者との行為の終了時刻 == 0 ? 0 # 1 )
 	; 主人同席（見せつけ）フラグ
-	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 ? 1 # 0 )
+	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 ? 1 # 0 )
 	CALL NTR_A_SEX_KOJO_EX(奴隷, 開始継続, 主人同席, "KOJO")
 	CALL NTR_A_SEX_KOJO_EX(奴隷, 開始継続, 主人同席, "MESSAGE")
 ENDIF
@@ -259,9 +259,9 @@ RETURN 0
 #DIM 主人同席
 SIF FLAG:口上颜色
 	CALL KOJO_COLOR(奴隷)
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	; 主人同席（見せつけ）フラグ
-	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 ? 1 # 0 )
+	主人同席 = ( CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 ? 1 # 0 )
 	CALL NTR_A_SEX_KOJO_EX(奴隷, 2, 主人同席, "KOJO_PRE")
 	CALL NTR_A_SEX_KOJO_EX(奴隷, 2, 主人同席, "MESSAGE")
 	CALL NTR_A_SEX_KOJO_EX(奴隷, 2, 主人同席, "KOJO")

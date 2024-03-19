@@ -60,8 +60,6 @@ IF TFLAG:遠距離移动
 			IF RESULT == 1
 				RETURN 0
 			ENDIF
-		ELSEIF FLAG:贞操帯鍵購入フラグ && RAND:2 && CFLAG:TARGET:NTR贞操帯反応
-			CALL CHK_LOCK(住人)
 		ELSE
 			PRINTL ……怎么办呢？
 			PRINTL [0]继续移动
@@ -140,7 +138,7 @@ IF TFLAG:遠距離移动
 		NEXTCOM = 400
 	ENDIF
 	IF FLAG:訪問者同行フラグ
-		FLAG:訪問者の現在位置 = CFLAG:MASTER:現在位置
+		FLAG:访问者当前位置 = CFLAG:MASTER:現在位置
 	ENDIF
 	CALL INHABITANT_FRIENDSHIP_END_MASTER_MOVE
 	TIME += 3
@@ -188,29 +186,15 @@ IF RESULT == 1
 ENDIF
 RETURN 0
 
-;住人による贞操帯鍵チェック
-@CHK_LOCK(住人)
-#DIM 住人
-
-PRINTL 
-PRINTFORMW 被%CALLNAME:TARGET%盯上并搜身了……
-PRINTFORMW 
-PRINTFORMW 
-PRINTFORMW 
-PRINTFORMW 发现了贞操带的钥匙。
-CALL NTR_LOCK_REACTION(TARGET)
-
-RETURN 0
-
 ;移动時住人を無視した場合の処理
 ;戻り値 常に0
 @IGNORE_WHEN_MOVE(住人)
 #DIM 住人
 
 ;什麽也不做でいいかな…無視されて怒らせる？
-IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者の气氛 != 0
+IF CFLAG:住人:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者の气氛 != 0
 	PRINTFORMW %CALLNAME:住人%好像和谁躲起来做了什么
-ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置
+ELSEIF CFLAG:住人:現在位置 == FLAG:访问者当前位置
 	PRINTFORMW %CALLNAME:住人%好像在和谁说话
 ELSE
 	CALL KOJO_EVENT(10, 住人, 0)
@@ -225,12 +209,12 @@ RETURN 0
 @STOP_WHEN_MOVE(住人)
 #DIM 住人
 
-IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者の气氛 != 0
+IF CFLAG:住人:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者の气氛 != 0
 	IF IS_AIR_MASTER(住人) < FLAG:訪問者の气氛
 		PRINTFORMW %CALLNAME:住人%好像和谁躲起来做了什么、但因为%CALLNAME:MASTER%来了停了下来
 		CALL NTR_RESET_VISITOR_ACTION(住人)
 	ENDIF
-ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置
+ELSEIF CFLAG:住人:現在位置 == FLAG:访问者当前位置
 	PRINTFORMW %CALLNAME:住人%好像在和谁说话
 	CALL NTR_RESET_VISITOR_ACTION(住人)
 ELSE
@@ -247,7 +231,7 @@ RETURN 0
 
 ;todo 和访问者偷情时玩家到场
 ;ターゲットと訪問者が一緒 and 訪問者の气氛が会话以外(キス以上) and あなたとターゲットが一緒
-IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者の气氛 != 0 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置
+IF CFLAG:住人:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者の气氛 != 0 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置
 	;性交以外
 	IF 1 <= FLAG:訪問者との行為 && FLAG:訪問者との行為 <= 6
 		PRINTFORML 【%GETPLACENAME(FLAG:21)%】%CALLNAME:住人%和%NTR_NAME(0)%好像在做什么、但因为%CALLNAME:MASTER%来了停了下来
@@ -264,10 +248,10 @@ IF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者�
 		PRINTFORMW 
 		CALL NTR_RESET_VISITOR_ACTION(住人)
 	ENDIF
-ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置 && CFLAG:住人:睡眠 && FLAG:睡姦フラグ != 0
+ELSEIF CFLAG:住人:現在位置 == FLAG:访问者当前位置 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置 && CFLAG:住人:睡眠 && FLAG:睡姦フラグ != 0
 	PRINTFORMW 睡梦中的%CALLNAME:住人%被%NTR_NAME(0)%袭击
 	;ターゲットと訪問者が一緒 and あなたとターゲットが一緒
-ELSEIF CFLAG:住人:現在位置 == FLAG:訪問者の現在位置 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置
+ELSEIF CFLAG:住人:現在位置 == FLAG:访问者当前位置 && CFLAG:MASTER:現在位置 == CFLAG:住人:現在位置
 	PRINTFORMW %CALLNAME:住人%好像在和谁说话
 	CALL NTR_RESET_VISITOR_ACTION(住人)
 	;あなたとターゲットが一緒 and 睡眠中

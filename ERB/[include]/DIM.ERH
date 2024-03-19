@@ -290,14 +290,7 @@
 #DIM CONST CNT_股間をまさぐる			= 34
 #DIM CONST CNT_裙子の中を見せる		= 35
 #DIM CONST CNT_胸を揉む					= 36
-#DIM CONST CNT_处女献上					= 40
-#DIM CONST CNT_強制絶頂・Ｐ				= 41
-#DIM CONST CNT_強制絶頂・Ｖ				= 42
-#DIM CONST CNT_強制絶頂・Ａ				= 43
-#DIM CONST CNT_強制絶頂・Ｃ				= 44
-#DIM CONST CNT_強制絶頂・Ｂ				= 45
-#DIM CONST CNT_性欲処理・Ｖ				= 46
-#DIM CONST CNT_性欲処理・Ａ				= 47
+
 #DIM CONST CNT_手淫						= 50
 #DIM CONST CNT_口交				= 51
 #DIM CONST CNT_素股						= 52
@@ -337,14 +330,6 @@
 #DIM CONST 訪問者宅_床扉解錠済 = 1p3
 #DIM CONST 訪問者宅_玄関解錠済 = 1p4
 #DIM CONST 訪問者宅_便所使用済 = 1p5
-
-;客口上用客種別
-#DIM CONST 客種別_擬音系				= 0
-#DIM CONST 客種別_DQN・口悪い系			= 1
-#DIM CONST 客種別_紳士のような変態系	= 2
-#DIM CONST 客種別_おっさん系			= 3
-#DIM CONST 客種別_キモデブ系			= 4
-#DIM CONST 客種別_性経験少ない系		= 5
 
 ;淫纹ビット番号
 #DIM CONST 淫纹_恥丘				= 0
@@ -415,10 +400,6 @@
 #DIM CONST 住人同士行为_Ｖ後戯Ｃ	= 355
 #DIM CONST 住人同士行为_Ａ後戯Ｎ	= 356
 #DIM CONST 住人同士行为_Ａ後戯Ｃ	= 357
-
-;前回売春フラグ
-#DIM CONST 前回売春_初売春			= 1
-#DIM CONST 前回売春_处女喪失		= 2
 
 ;TA変数用
 ;0～7は子宮内精液管理に使用
@@ -523,6 +504,3 @@
 #DIM CONST 出掛理由_外泊公認_時間経過 = 11
 #DIM CONST 出掛理由_外泊公認_あなたのため = 12
 #DIM CONST 出掛理由_外泊公認_訪問者のため = 13
-#DIM CONST 出掛理由_公众便所_時間経過 = 21
-#DIM CONST 出掛理由_公众便所_亲爱 = 22
-#DIM CONST 出掛理由_公众便所_精液量不足 = 23

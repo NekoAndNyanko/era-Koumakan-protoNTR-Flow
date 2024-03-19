@@ -1,10 +1,5 @@
 ﻿;告白
 @COM352
-;公众便所時、好意度が低いと失敗
-IF TALENT:公众便所 && 700 > CFLAG:好感度
-	TFLAG:193 = 0
-	RETURN 1
-ENDIF
 ;NTR時、好意度が低いと失敗
 IF TALENT:NTR && 500 > CFLAG:好感度
 	TFLAG:193 = 0

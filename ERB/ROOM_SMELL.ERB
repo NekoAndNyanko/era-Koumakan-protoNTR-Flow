@@ -131,7 +131,7 @@ RETURN 0
 
 ;風呂に入るとにおいが消える
 FOR LOOP_CHARA, 0, CHARANUM
-	IF BATHROOM(CFLAG:LOOP_CHARA:現在位置)
+	IF 存在浴室(CFLAG:LOOP_CHARA:現在位置)
 		CFLAG:LOOP_CHARA:角色的气味_初期CFLAG = 1
 		CFLAG:LOOP_CHARA:角色的气味_自己的气味 = 0
 		CFLAG:LOOP_CHARA:角色的气味_膣内精液の主 = -1

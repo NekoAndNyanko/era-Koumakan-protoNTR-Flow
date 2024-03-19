@@ -3,9 +3,6 @@
 ; RETURN 0 コマンドの実行不可
 ; RETURN 1 コマンドの実行可能
 @COM_ABLE490
-;;肉便器の屈服レイプで、押さえ込まれたら移动不可
-SIF CFLAG:MASTER:WC_屈服レイプ押さえ込み
-	RETURN 0
 ;訪問者宅では不可
 SIF CFLAG:MASTER:現在位置 == 位置_訪問者宅
 	RETURN 0
@@ -66,12 +63,6 @@ SELECTCASE RESULT:0
 	CASE 位置_人間の里周辺
 		TIME:0 += 30
 		CFLAG:MASTER:現在位置 = 位置_人間の里周辺
-		;;肉便器追加処理
-		SELECTCASE CFLAG:MASTER:WC_訪問者の今回セクハラ
-			CASE 41 TO 45		;;人里系
-				SIF FLAG:訪問者の現在位置 == 位置_人間の里 || FLAG:訪問者の現在位置 == 位置_人間の里周辺
-					CALL WC_SexHara_SOURCE(CFLAG:MASTER:WC_訪問者の今回セクハラ)
-		ENDSELECT
 		RETURN 1
 	CASE 位置_博麗神社
 		IF TALENT:人物_灵梦:恋慕 && CFLAG:MASTER:開始位置 == 位置_博麗神社
@@ -85,12 +76,12 @@ SELECTCASE RESULT:0
 		TIME:0 += 60
 		;訪問者同行中は訪問者も一緒に来る
 		IF FLAG:訪問者同行フラグ
-			FLAG:訪問者の現在位置 = 位置_訪問者宅
+			FLAG:访问者当前位置 = 位置_訪問者宅
 			PRINTFORMW %CALLNAME:PLAYER%牵着%NTR_NAME(0)%的手、邀请一起去%NTR_NAME(0)%的家。
 			PRINTFORMW %NTR_NAME(0)%苦笑着答应了，两人挽着手一起向着%NTR_NAME(0)%的家去了……。
 		ELSE
 			PRINTFORMW %CALLNAME:PLAYER%想和%NTR_NAME(0)%见面、往%NTR_NAME(0)%的家去了。
-			IF FLAG:訪問者の現在位置 == 位置_訪問者宅
+			IF FLAG:访问者当前位置 == 位置_訪問者宅
 				IF RAND:2 == 0
 					PRINTFORMW %NTR_NAME(0)%对%CALLNAME:PLAYER%的到来感到很惊讶，但很快就邀请到家里来了。
 				ELSE

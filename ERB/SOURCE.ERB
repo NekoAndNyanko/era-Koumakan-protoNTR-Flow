@@ -16,29 +16,13 @@ CALL TRACHECK_TIME
 ;-------------------------------------------------
 CALL TOUCH_SUCCESSION(TARGET)
 ;カウンター
-;;別系統を呼び出すようにしたら、いろいろ楽かと思って
-IF TALENT:MASTER:肉便器
-	FOR LOOP_CHR,1,CHARANUM
-		SIF TARGET:LOOP_CHR <= 0
-			CONTINUE
-		CALL EVENT_WC_COUNTER(TARGET:LOOP_CHR,LOOP_CHR)
-		CALL EVENT_WC_COUNTER_SOURCE(TARGET:LOOP_CHR,LOOP_CHR)
-	NEXT
-	CALL EVENT_WC_COUNTER_COMBINATION
-	;;訪問者さんセクハラ判定と値
-	SIF !FLAG:Flow版本
-		CALL WC_SexHara
-	SIF CFLAG:MASTER:WC_訪問者の今回セクハラ > 0
-		CALL WC_SexHara_SOURCE(CFLAG:MASTER:WC_訪問者の今回セクハラ)
-ELSE
-	FOR LOOP_CHR,1,CHARANUM
-		SIF TARGET:LOOP_CHR <= 0
-			CONTINUE
-		CALL EVENT_COUNTER(TARGET:LOOP_CHR,LOOP_CHR)
-		CALL EVENT_COUNTER_SOURCE(TARGET:LOOP_CHR,LOOP_CHR)
-	NEXT
-	CALL EVENT_COUNTER_COMBINATION
-ENDIF
+FOR LOOP_CHR,1,CHARANUM
+	SIF TARGET:LOOP_CHR <= 0
+		CONTINUE
+	CALL EVENT_COUNTER(TARGET:LOOP_CHR,LOOP_CHR)
+	CALL EVENT_COUNTER_SOURCE(TARGET:LOOP_CHR,LOOP_CHR)
+NEXT
+CALL EVENT_COUNTER_COMBINATION
 FOR LOCAL,0,CHARANUM
 	;性交フラグの設定
 	IF TEQUIP:LOCAL:膣 == 1
@@ -83,8 +67,6 @@ IF !LOCAL:100
 	GOTO SKIP
 ENDIF
 FOR LOCAL,0,CHARANUM
-	;肉便器装着チェック
-	CALL CHK_WC_EQUIP(LOCAL)
 	;跳蛋Ｖ挿入チェック
 	CALL CHK_INS_ROTOR_V(LOCAL)
 	;跳蛋Ａ挿入チェック
@@ -203,10 +185,6 @@ FOR LOCAL,0,CHARANUM
 	;絶頂処理
 	;-------------------------------------------------
 	CALL ORGASM_ADD(LOCAL, TCVAR:LOCAL:行為者)
-	;;肉便器追加処理
-	SIF CFLAG:MASTER:WC_訪問者の今回セクハラ > 0
-		CFLAG:MASTER:WC_訪問者快楽強度格納 = RESULT
-	;;
 	IF TCVAR:行為者 > CHARANUM
 		;ORGASM_ADDを呼んだ直後なら R で本来の快楽強度が取得できる
 		;訪問者なら最大LV12まで、客の場合6までとする。
@@ -376,31 +354,14 @@ $SKIP
 ;調教口上
 ;-------------------------------------------------
 CALL KOJO_MESSAGE_COM
-;;別系統を呼び出すようにしたら、いろいろ楽かと思って
-IF TALENT:MASTER:肉便器
-	IF TARGET
-		DRAWLINE
-		FOR LOCAL,1,CHARANUM
-			SIF TCVAR:(TARGET:LOCAL):30 > 1
-				CONTINUE
-			SIF TCVAR:(TARGET:LOCAL):20
-				CALL KOJO_MESSAGE_WC_COUNTER(TARGET:LOCAL)
-		NEXT
-	ENDIF
-	;;訪問者さんセクハラ描写
-	CALL WC_SexHara_MESSAGEbase(CFLAG:MASTER:WC_訪問者の今回セクハラ)
-	SIF CFLAG:MASTER:WC_訪問者の今回セクハラ > 0
-		CALL NTR_MARK_5(MASTER,CFLAG:MASTER:WC_訪問者快楽強度格納)
-ELSE
-	IF TARGET
-		DRAWLINE
-		FOR LOCAL,1,CHARANUM
-			SIF TCVAR:(TARGET:LOCAL):30 > 1
-				CONTINUE
-			SIF TCVAR:(TARGET:LOCAL):20
-				CALL KOJO_MESSAGE_COUNTER(TARGET:LOCAL)
-		NEXT
-	ENDIF
+IF TARGET
+	DRAWLINE
+	FOR LOCAL,1,CHARANUM
+		SIF TCVAR:(TARGET:LOCAL):30 > 1
+			CONTINUE
+		SIF TCVAR:(TARGET:LOCAL):20
+			CALL KOJO_MESSAGE_COUNTER(TARGET:LOCAL)
+	NEXT
 ENDIF
 
 ;图像插入：挿絵　正面系　ゴムありの射精時、体位もなくなるのはどうしてだ
@@ -620,315 +581,6 @@ NEXT
 IF (TCVAR:行為者 < CHARANUM)
 	CALL FAVOR_CALC(TARGET)
 ENDIF
-CALL ChastityBelt_Check()
-
-;------------------------------------------------------------
-;肉便器装着チェック
-;　肉便器系を追加（現状、肉便器系ではあなた以外は付けられないのっで、「"あなた"以外」の分岐は用意しないでおく）
-@CHK_WC_EQUIP(奴隷)
-#DIM 奴隷
-#DIM LOOP_CHR
-
-;;あなたで、肉便器
-IF TALENT:奴隷:肉便器
-	SELECTCASE CFLAG:奴隷:WC_乳头夹装着
-		CASE IS > 2
-			SOURCE:奴隷:快Ｂ += TIME_PROGRESS(CFLAG:奴隷:WC_乳头夹装着) * 10
-			SIF TIME_PROGRESS(CFLAG:奴隷:WC_乳头夹装着) >= 240 && CFLAG:奴隷:WC_乳头夹装着 >= 2
-				CFLAG:奴隷:WC_乳头夹装着 = 2
-			;訪問者が付けたのならば屈服度加算
-			SIF CFLAG:奴隷:WC_道具Ｂ装着者 == 21
-				CFLAG:奴隷:屈服度 ++
-		CASE 1,2
-			SOURCE:奴隷:快Ｂ += 10
-	ENDSELECT
-	SELECTCASE CFLAG:奴隷:WC_阴蒂夹装着
-		CASE IS > 2
-			SOURCE:奴隷:快Ｃ += TIME_PROGRESS(CFLAG:奴隷:WC_阴蒂夹装着) * 10
-			SIF TIME_PROGRESS(CFLAG:奴隷:WC_阴蒂夹装着) >= 240 && CFLAG:奴隷:WC_阴蒂夹装着 >= 2
-				CFLAG:奴隷:WC_阴蒂夹装着 = 2
-			;訪問者が付けたのならば屈服度加算
-			SIF CFLAG:奴隷:WC_道具Ｃ装着者 == 21
-				CFLAG:奴隷:屈服度 ++
-		CASE 1,2
-			SOURCE:奴隷:快Ｃ += 10
-	ENDSELECT
-	SELECTCASE CFLAG:奴隷:WC_振动棒装着
-		CASE IS > 2
-			SOURCE:奴隷:快Ｖ += TIME_PROGRESS(CFLAG:奴隷:WC_振动棒装着) * 10
-			SIF TIME_PROGRESS(CFLAG:奴隷:WC_振动棒装着) >= 240 && CFLAG:奴隷:WC_振动棒装着 >= 2
-				CFLAG:奴隷:WC_振动棒装着 = 2
-			;訪問者が付けたのならば屈服度加算
-			SIF CFLAG:奴隷:WC_道具Ｖ装着者 == 21
-				CFLAG:奴隷:屈服度 ++
-		CASE 1,2
-			SOURCE:奴隷:快Ｖ += 10
-	ENDSELECT
-	SELECTCASE CFLAG:奴隷:WC_肛门振动棒装着
-		CASE IS > 2
-			SOURCE:奴隷:快Ａ += TIME_PROGRESS(CFLAG:奴隷:WC_肛门振动棒装着) * 10
-			SIF TIME_PROGRESS(CFLAG:奴隷:WC_肛门振动棒装着) >= 240 && CFLAG:奴隷:WC_肛门振动棒装着 >= 2
-				CFLAG:奴隷:WC_肛门振动棒装着 = 2
-			;訪問者が付けたのならば屈服度加算
-			SIF CFLAG:奴隷:WC_道具Ａ装着者 == 21
-				CFLAG:奴隷:屈服度 ++
-		CASE 1,2
-			SOURCE:奴隷:快Ａ += 10
-	ENDSELECT
-	SELECTCASE CFLAG:奴隷:WC_跳蛋Ｃ装着
-		CASE IS > 2
-			SOURCE:奴隷:快Ｃ += TIME_PROGRESS(CFLAG:奴隷:WC_跳蛋Ｃ装着) * 10
-			SIF TIME_PROGRESS(CFLAG:奴隷:WC_跳蛋Ｃ装着) >= 240 && CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2
-				CFLAG:奴隷:WC_跳蛋Ｃ装着 = 2
-			;訪問者が付けたのならば屈服度加算
-			SIF CFLAG:奴隷:WC_道具Ｃ装着者 == 21
-				CFLAG:奴隷:屈服度 ++
-		CASE 1,2
-			SOURCE:奴隷:快Ｃ += 10
-	ENDSELECT
-	SELECTCASE CFLAG:奴隷:WC_跳蛋Ｖ装着
-		CASE IS > 2
-			SOURCE:奴隷:快Ｖ += TIME_PROGRESS(CFLAG:奴隷:WC_跳蛋Ｖ装着) * 10
-			SIF TIME_PROGRESS(CFLAG:奴隷:WC_跳蛋Ｖ装着) >= 240 && CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2
-				CFLAG:奴隷:WC_跳蛋Ｖ装着 = 2
-			;訪問者が付けたのならば屈服度加算
-			SIF CFLAG:奴隷:WC_道具Ｖ装着者 == 21
-				CFLAG:奴隷:屈服度 ++
-		CASE 1,2
-			SOURCE:奴隷:快Ｖ += 10
-	ENDSELECT
-	SELECTCASE CFLAG:奴隷:WC_跳蛋Ａ装着
-		CASE IS > 2
-			SOURCE:奴隷:快Ａ += TIME_PROGRESS(CFLAG:奴隷:WC_跳蛋Ａ装着) * 10
-			SIF TIME_PROGRESS(CFLAG:奴隷:WC_跳蛋Ａ装着) >= 240 && CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-				CFLAG:奴隷:WC_跳蛋Ａ装着 = 2
-			;訪問者が付けたのならば屈服度加算
-			SIF CFLAG:奴隷:WC_道具Ａ装着者 == 21
-				CFLAG:奴隷:屈服度 ++
-		CASE 1,2
-			SOURCE:奴隷:快Ａ += 10
-	ENDSELECT
-	IF CFLAG:奴隷:WC_乳头夹装着 == 2
-		PRINTFORMW %CALLNAME:奴隷%戴着的乳头夹好像没电了。
-		CFLAG:奴隷:WC_乳头夹装着 = 1
-		EXP:奴隷:Ｂ经验 += 9
-	ENDIF
-	IF CFLAG:奴隷:WC_阴蒂夹装着 == 2
-		PRINTFORMW %CALLNAME:奴隷%戴着的阴蒂夹好像没电了。
-		CFLAG:奴隷:WC_阴蒂夹装着 = 1
-		EXP:奴隷:Ｃ经验 += 9
-	ENDIF
-	IF CFLAG:奴隷:WC_振动棒装着 == 2
-		PRINTFORMW %CALLNAME:奴隷%插入的振动棒好像没电了。
-		CFLAG:奴隷:WC_振动棒装着 = 1
-		EXP:奴隷:Ｖ经验 += 9
-	ENDIF
-	IF CFLAG:奴隷:WC_肛门振动棒装着 == 2
-		PRINTFORMW %CALLNAME:奴隷%插入的肛门振动棒好像没电了。
-		CFLAG:奴隷:WC_肛门振动棒装着 = 1
-		EXP:奴隷:Ａ经验 += 9
-	ENDIF
-	IF CFLAG:奴隷:WC_跳蛋Ｃ装着 == 2 || CFLAG:奴隷:WC_跳蛋Ｖ装着 == 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 == 2
-		PRINTFORMW %CALLNAME:奴隷%戴着的跳蛋好像没电了。
-		IF CFLAG:奴隷:WC_跳蛋Ｃ装着 == 2
-			CFLAG:奴隷:WC_跳蛋Ｃ装着 = 1
-			EXP:奴隷:Ｃ经验 += 9
-		ENDIF
-		IF CFLAG:奴隷:WC_跳蛋Ｖ装着 == 2
-			CFLAG:奴隷:WC_跳蛋Ｖ装着 = 1
-			EXP:奴隷:Ｖ经验 += 9
-		ENDIF
-		IF CFLAG:奴隷:WC_跳蛋Ａ装着 == 2
-			CFLAG:奴隷:WC_跳蛋Ａ装着 = 1
-			EXP:奴隷:Ａ经验 += 9
-		ENDIF
-	ENDIF
-	IF RAND:3 == 0 
-		IF CFLAG:奴隷:WC_乳头夹装着 >= 2 || CFLAG:奴隷:WC_阴蒂夹装着 >= 2 || CFLAG:奴隷:WC_振动棒装着 >= 2 || CFLAG:奴隷:WC_肛门振动棒装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-			FOR LOOP_CHR,1,CHARANUM
-				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置
-					PRINTFORM %CALLNAME:奴隷%の
-					IF CFLAG:奴隷:WC_振动棒装着 >= 2 || CFLAG:奴隷:WC_肛门振动棒装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-						IF CFLAG:奴隷:WC_乳头夹装着 >= 2
-							PRINTFORM 到处都
-						ELSE
-							PRINTFORM 下半身
-						ENDIF
-					ELSEIF CFLAG:奴隷:WC_乳头夹装着 >= 2
-						PRINTFORM 胸口
-					ENDIF
-					PRINTFORM 有微弱的声音泄露出来，
-					IF LOOP_CHR == CFLAG:奴隷:WC_管理人は誰
-						PRINTFORM 好像被注意到了，
-					ELSE
-						PRINTFORM 是被察觉了吗？
-					ENDIF
-					PRINTFORM %CALLNAME:LOOP_CHR%
-					IF LOOP_CHR == CFLAG:奴隷:WC_管理人は誰
-						PRINTFORML 的视线转了过去。
-					ELSE
-						PRINTFORML 只是看了一眼。
-					ENDIF
-					IF LOOP_CHR == CFLAG:奴隷:WC_管理人は誰
-						PRINTFORM 頬を赤く染めた%CALLNAME:奴隷%は、%CALLNAME:LOOP_CHR%
-						IF CFLAG:奴隷:WC_振动棒装着 >= 2
-							;;下半身裸
-							IF !TEQUIP:PLAYER:0
-								PRINTFORM 转过身来、
-							ELSE
-								PRINTFORM 为了被清楚地看见、慢慢地
-								;;裙子状の物をはいてる
-								IF EQUIP:PLAYER:9 || !TEQUIP:PLAYER:0 > 3
-									PRINTFORM 挽起了自己的裙子
-									;;裙子じゃない
-								ELSE
-									PRINTFORM 一点点地敞开了衣服
-								ENDIF
-							ENDIF
-						ELSEIF CFLAG:奴隷:WC_肛门振动棒装着 >= 2
-							;;下半身裸
-							IF !TEQUIP:PLAYER:0
-								PRINTFORM 转过身挺起圆润的翘臀。
-							ELSE
-								PRINTFORM 为了被清楚地看见、慢慢地
-								;;裙子状の物をはいてる
-								IF EQUIP:PLAYER:9 || !TEQUIP:PLAYER:0 > 3
-									PRINTFORM 一边卷起裙子
-									;;裙子じゃない
-								ELSE
-									PRINTFORM 一点点地敞开了衣服
-								ENDIF
-								PRINTFORM 一边向后看
-							ENDIF
-						ELSEIF CFLAG:奴隷:WC_阴蒂夹装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2
-							;;下半身裸
-							IF !TEQUIP:PLAYER:0
-								PRINTFORM 转过身来、
-							ELSE
-								PRINTFORM 为了被清楚地看见、慢慢地
-								;;裙子状の物をはいてる
-								IF EQUIP:PLAYER:9 || !TEQUIP:PLAYER:0 > 3
-									PRINTFORM 挽起了自己的裙子
-									;;裙子じゃない
-								ELSE
-									PRINTFORM 一点点地敞开了衣服
-								ENDIF
-							ENDIF
-						ELSEIF CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-							;;下半身裸
-							IF !TEQUIP:PLAYER:0
-								PRINTFORM 转过身挺起圆润的翘臀。
-							ELSE
-								PRINTFORM 为了被清楚地看见、慢慢地
-								;;裙子状の物をはいてる
-								IF EQUIP:PLAYER:9 || !TEQUIP:PLAYER:0 > 3
-									PRINTFORM 挽起了自己的裙子
-									;;裙子じゃない
-								ELSE
-									PRINTFORM 一点点地敞开了衣服
-								ENDIF
-								PRINTFORM 一边向后看
-							ENDIF
-						ELSEIF CFLAG:奴隷:WC_乳头夹装着 >= 2
-							;;上半身裸
-							IF !TEQUIP:PLAYER:1
-								PRINTFORM 转过身来、
-							ELSE
-								PRINTFORM 敞开胸口、
-							ENDIF
-						ENDIF
-						IF CFLAG:奴隷:WC_振动棒装着 >= 2 || CFLAG:奴隷:WC_肛门振动棒装着 >= 2
-							PRINTFORM 将不停地震动着的
-						ELSEIF CFLAG:奴隷:WC_阴蒂夹装着 >= 2 || CFLAG:奴隷:WC_乳头夹装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2
-							PRINTFORM 将持续微微振动着的
-						ELSEIF CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-							PRINTFORM 将插入到体内的、
-						ENDIF
-						IF CFLAG:奴隷:WC_振动棒装着 >= 2
-							PRINTFORM 振动棒
-							SIF CFLAG:奴隷:WC_肛门振动棒装着 >= 2 || CFLAG:奴隷:WC_阴蒂夹装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-								PRINTFORM 等
-						ELSEIF CFLAG:奴隷:WC_肛门振动棒装着 >= 2
-							PRINTFORM 肛门振动棒
-							SIF CFLAG:奴隷:WC_阴蒂夹装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-								PRINTFORM 等
-						ELSEIF CFLAG:奴隷:WC_阴蒂夹装着 >= 2
-							PRINTFORM 阴蒂夹
-							SIF CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-								PRINTFORM 等
-						ELSEIF CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2
-							PRINTFORM 跳蛋
-						ELSEIF CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2
-							PRINTFORM 股間
-						ELSEIF CFLAG:奴隷:WC_乳头夹装着 >= 2
-							PRINTFORM 乳头夹
-						ENDIF
-						IF !TEQUIP:PLAYER:0 && (CFLAG:奴隷:WC_振动棒装着 >= 2 || CFLAG:奴隷:WC_阴蒂夹装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｃ装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ｖ装着 >= 2 || CFLAG:奴隷:WC_肛门振动棒装着 >= 2 || CFLAG:奴隷:WC_跳蛋Ａ装着 >= 2)
-							PRINTFORM 请对方查看了。
-						ELSEIF !TEQUIP:PLAYER:1 && CFLAG:奴隷:WC_乳头夹装着 >= 2
-							PRINTFORM 请对方查看了。
-						ELSE
-							PRINTFORM 展露出来。
-						ENDIF
-						IF TALENT:奴隷:淫乱
-							PRINTFORML 
-							PRINTFORMW 在%CALLNAME:LOOP_CHR%展现出自己淫荡下流的姿态所带来的强烈快感、让%CALLNAME:奴隷%露出了要溶化一样的陶醉表情。
-						ELSEIF ABL:奴隷:露出癖 >= 2 || ABL:奴隷:抖Ｍ之气 >= 2
-							PRINTFORML 
-							PRINTFORMW 因为将自己下流卑贱的姿态暴露给%CALLNAME:LOOP_CHR%观看、强烈的兴奋令%CALLNAME:奴隷%微微颤抖的大腿间流出了几道晶莹的液体。
-						ELSE
-							PRINTFORMW 
-						ENDIF
-					ELSE 
-						IF TALENT:奴隷:淫乱 || ABL:奴隷:露出癖 >= 2 || ABL:奴隷:抖Ｍ之气 >= 2
-							PRINTFORM 一边被器具责备着、
-							IF TALENT:奴隷:淫乱
-								PRINTFORM 一边请求%CALLNAME:LOOP_CHR%一同玩弄自己淫乱的肉体
-							ELSEIF ABL:奴隷:露出癖 >= 2
-								PRINTFORM 一边将自己卑贱下流的身体暴露在%CALLNAME:LOOP_CHR%眼前
-							ELSEIF ABL:奴隷:抖Ｍ之气 >= 2
-								PRINTFORM 一边恳求%CALLNAME:LOOP_CHR%前来蹂躏下贱的自己
-							ENDIF
-							PRINTFORML …虽然被这样强烈的冲动叩击着神经，但%CALLNAME:奴隷%终于还是抑制住了自己的行为。
-							PRINTFORMW 等到%CALLNAME:LOOP_CHR%注意力转移为止，%CALLNAME:奴隷%一直低着头，脸颊泛红发烫，扭动着腰拼命地忍耐着。
-						ELSE
-							PRINTFORMW %CALLNAME:LOOP_CHR%的视线移开了，但%CALLNAME:奴隷%仍是时不时摩擦着大腿，扭捏着臀部。
-						ENDIF
-					ENDIF
-				ENDIF
-			NEXT
-		ELSEIF CFLAG:奴隷:WC_乳头夹装着 || CFLAG:奴隷:WC_阴蒂夹装着 || CFLAG:奴隷:WC_振动棒装着 || CFLAG:奴隷:WC_肛门振动棒装着 || CFLAG:奴隷:WC_跳蛋Ｃ装着 || CFLAG:奴隷:WC_跳蛋Ｖ装着 || CFLAG:奴隷:WC_跳蛋Ａ装着
-			PRINTFORM 每当%CALLNAME:奴隷%活动身体、都会意识到
-			IF CFLAG:奴隷:WC_振动棒装着 || CFLAG:奴隷:WC_肛门振动棒装着 || CFLAG:奴隷:WC_跳蛋Ｖ装着 || CFLAG:奴隷:WC_跳蛋Ａ装着
-				PRINTFORM 挿入
-			ELSE
-				PRINTFORM 装着
-			ENDIF
-			PRINTFORM 的
-			IF CFLAG:奴隷:WC_振动棒装着
-				PRINTFORM 振动棒
-				SIF CFLAG:奴隷:WC_肛门振动棒装着 || CFLAG:奴隷:WC_阴蒂夹装着 || CFLAG:奴隷:WC_乳头夹装着 || CFLAG:奴隷:WC_跳蛋Ｃ装着 || CFLAG:奴隷:WC_跳蛋Ｖ装着 || CFLAG:奴隷:WC_跳蛋Ａ装着
-					PRINTFORM 等
-			ELSEIF CFLAG:奴隷:WC_肛门振动棒装着
-				PRINTFORM 肛门振动棒
-				SIF CFLAG:奴隷:WC_阴蒂夹装着 || CFLAG:奴隷:WC_乳头夹装着 || CFLAG:奴隷:WC_跳蛋Ｃ装着 || CFLAG:奴隷:WC_跳蛋Ｖ装着 || CFLAG:奴隷:WC_跳蛋Ａ装着
-					PRINTFORM 等
-			ELSEIF CFLAG:奴隷:WC_阴蒂夹装着
-				PRINTFORM 阴蒂夹
-				SIF CFLAG:奴隷:WC_乳头夹装着 || CFLAG:奴隷:WC_跳蛋Ｃ装着 || CFLAG:奴隷:WC_跳蛋Ｖ装着 || CFLAG:奴隷:WC_跳蛋Ａ装着
-					PRINTFORM 等
-			ELSEIF CFLAG:奴隷:WC_乳头夹装着
-				PRINTFORM 乳头夹
-				SIF CFLAG:奴隷:WC_跳蛋Ｃ装着 || CFLAG:奴隷:WC_跳蛋Ｖ装着 || CFLAG:奴隷:WC_跳蛋Ａ装着
-					PRINTFORM 等
-			ELSEIF CFLAG:奴隷:WC_跳蛋Ｃ装着 || CFLAG:奴隷:WC_跳蛋Ｖ装着 || CFLAG:奴隷:WC_跳蛋Ａ装着
-				PRINTFORM 跳蛋
-			ENDIF
-			PRINTFORML 正不断地责备自己的敏感带。
-		ENDIF
-	ENDIF
-ENDIF
-RETURN
 
 ;------------------------------------------------------------
 ;跳蛋Ｖ挿入チェック
@@ -943,11 +595,7 @@ IF CFLAG:奴隷:跳蛋挿入
 		IF 奴隷 > 0
 			IF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
 				PRINTFORMW 当%CALLNAME:MASTER%顺着低低的喘息声看过去后，%CALLNAME:奴隷%的脸泛起了大片红晕。
-				IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
-					PRINTFORMW %CALLNAME:奴隷%慌忙移开了视线、夹紧了大腿、不断扭捏着。
-				ELSEIF TALENT:奴隷:公众便所
-					PRINTFORMW 反正已经暴露了，%CALLNAME:奴隷%全身颤栗着、开始放荡地呻吟起来，卷起裙子、将插入下体的振动棒展示了出来。
-				ELSEIF TALENT:奴隷:NTR
+				IF TALENT:奴隷:NTR
 					PRINTFORMW %CALLNAME:奴隷%眼神恍惚地摇晃着腰部。
 				ELSE 
 					PRINTFORMW %CALLNAME:奴隷%慌忙移开了视线、夹紧了大腿、不断扭捏着。
@@ -958,9 +606,7 @@ IF CFLAG:奴隷:跳蛋挿入
 			FOR LOOP_CHR,1,CHARANUM
 				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置
 					PRINTFORMW 可能是漏出来的喘息声吸引到了%CALLNAME:LOOP_CHR%的注意、%CALLNAME:LOOP_CHR%看了过来，%CALLNAME:奴隷%的脸泛起了大片红晕。
-					IF TALENT:奴隷:公众便所
-						PRINTFORMW 反正已经暴露了，%CALLNAME:奴隷%全身颤栗着、开始放荡地呻吟起来，卷起裙子、将插入下体的振动棒展示了出来。
-					ELSEIF TALENT:奴隷:NTR
+					IF TALENT:奴隷:NTR
 						PRINTFORMW 在%CALLNAME:LOOP_CHR%的注视下，%CALLNAME:奴隷%眼神恍惚地摇晃着腰部。
 					ELSE 
 						PRINTFORMW %CALLNAME:奴隷%慌忙移开了视线、夹紧了大腿、不断扭捏着。
@@ -1002,11 +648,7 @@ IF CFLAG:奴隷:跳蛋A挿入
 			; "あなた"以外
 			IF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
 				PRINTFORMW 当%CALLNAME:MASTER%顺着低低的喘息声看过去后，%CALLNAME:奴隷%的脸泛起了大片红晕。
-				IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
-					PRINTFORMW %CALLNAME:奴隷%一直不停地扭动着臀部、似乎是屁股很痒的样子。
-				ELSEIF TALENT:奴隷:公众便所
-					PRINTFORMW 反正已经暴露了，%CALLNAME:奴隷%全身颤栗着、开始放荡地呻吟起来，翘起臀部、卷起裙子、将插入肛门不停搅动的振动棒展示了出来。
-				ELSEIF TALENT:奴隷:NTR
+				IF TALENT:奴隷:NTR
 					PRINTFORMW 眼前的%CALLNAME:奴隷%正露出恍惚的表情不断地扭动着屁股。
 				ELSE 
 					PRINTFORMW %CALLNAME:奴隷%一直不停地扭动着臀部、似乎是屁股很痒的样子。
@@ -1017,11 +659,7 @@ IF CFLAG:奴隷:跳蛋A挿入
 			FOR LOOP_CHR,1,CHARANUM
 				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置
 					PRINTFORMW 可能是漏出来的喘息声吸引到了%CALLNAME:LOOP_CHR%的注意、%CALLNAME:LOOP_CHR%看了过来，%CALLNAME:奴隷%的脸泛起了大片红晕。
-					IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-						PRINTFORMW %CALLNAME:LOOP_CHR%感到奇怪，%CALLNAME:奴隷%一直不停地扭动着臀部、似乎是屁股很痒的样子。
-					ELSEIF TALENT:奴隷:公众便所
-						PRINTFORMW 反正已经暴露了，%CALLNAME:奴隷%全身颤栗着、开始放荡地呻吟起来，翘起臀部、卷起裙子、将插入肛门不停搅动的振动棒展示了出来。
-					ELSEIF TALENT:奴隷:NTR
+					IF TALENT:奴隷:NTR
 						PRINTFORMW 眼前的%CALLNAME:奴隷%正露出恍惚的表情不断地扭动着屁股。
 					ELSEIF CFLAG:奴隷:跳蛋挿入者 == LOOP_CHR
 						PRINTFORMW %CALLNAME:LOOP_CHR%笑眯眯地看着%CALLNAME:奴隷%不停扭动屁股的样子。
@@ -1063,16 +701,16 @@ IF CFLAG:奴隷:精液残留中 && !CFLAG:奴隷:睡眠
 		IF 奴隷 > 0 && FLAG:1840 <= 500
 			ノーパン = CFLAG:奴隷:服装_下半身下着２ == 0
 			;ターゲットとあなたと訪問者が一緒
-			IF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置 && CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+			IF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置 && CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
 				CALL CHK_SEMEN_STAY_WITH_MASTER_AND_VISITOR(奴隷)
 				;ターゲットとあなたが一緒
 			ELSEIF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
 				CALL CHK_SEMEN_STAY_WITH_MASTER(奴隷, ノーパン)
 				;ターゲットと訪問者が一緒、一人だけ
-			ELSEIF FLAG:訪問者の現在位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) == 1
+			ELSEIF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) == 1
 				CALL CHK_SEMEN_STAY_WITH_VISITOR(奴隷, ノーパン)
 				;ターゲットと訪問者が一緒、同じ場所に2人以上
-			ELSEIF FLAG:訪問者の現在位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) > 1
+			ELSEIF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) > 1
 				CALL CHK_SEMEN_STAY_WITH_VISITOR_AND_OTHER(奴隷, ノーパン)
 				;あなたと訪問者が居ない、他の住人が居る
 			ELSEIF GET_N_WITH_VISITER(奴隷) > 1
@@ -1085,13 +723,13 @@ IF CFLAG:奴隷:精液残留中 && !CFLAG:奴隷:睡眠
 		ELSEIF 奴隷 == 0
 			ノーパン = CFLAG:奴隷:服装_下半身下着２ == 0
 			;ターゲット(訪問者・あなた以外)と訪問者が一緒、同じ場所に(あなたを含み、訪問者を除いて)2人超
-			IF FLAG:訪問者の現在位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) > 2
+			IF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) > 2
 				CALL CHK_SEMEN_STAY_MASTER_WITH_VISITOR_AND_OTHERS(奴隷, ノーパン)
 				RETURN
 			ENDIF
 			FOR LOOP_CHR,1,CHARANUM && FLAG:1840 <= 500
 				;ターゲット(訪問者・あなた以外)とあなたと訪問者が一緒
-				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置 && CFLAG:奴隷:現在位置 == FLAG:訪問者の現在位置
+				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置 && CFLAG:奴隷:現在位置 == FLAG:访问者当前位置
 					CALL CHK_SEMEN_STAY_MASTER_WITH_VISITOR_AND_OTHER(奴隷, ノーパン, LOOP_CHR)
 					RETURN
 					;ターゲット(訪問者・あなた以外)とあなたが一緒
@@ -1101,7 +739,7 @@ IF CFLAG:奴隷:精液残留中 && !CFLAG:奴隷:睡眠
 				ENDIF
 			NEXT
 			;あなたと訪問者が一緒
-			IF FLAG:訪問者の現在位置 == CFLAG:奴隷:現在位置
+			IF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置
 				CALL CHK_SEMEN_STAY_MASTER_WITH_VISITOR(奴隷, ノーパン)
 				;誰も居ない（フェール）
 			ELSE
@@ -1118,22 +756,7 @@ RETURN
 @CHK_SEMEN_STAY_WITH_MASTER_AND_VISITOR(奴隷)
 #DIM 奴隷
 
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML %CALLNAME:奴隷%表情僵了一下、突然用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
-	IF CFLAG:奴隷:射精者V == 人物_あなた
-		PRINTFORML 脸上泛起潮红、神色十分慌乱。
-	ELSE
-		PRINTFORML 不知道为什么神色苍白起来、显得有些慌张。
-		PRINTFORML 当%CALLNAME:MASTER%担心地询问时、%CALLNAME:奴隷%一言不发地红着耳朵低下头。
-		IF CFLAG:奴隷:射精者V == 人物_訪問者
-			IF RAND:2 == 0 
-				PRINTFORMW 已经离开的%NTR_NAME(0)%远远看到那个状况，露出了暧昧的笑容。
-			ELSE
-				PRINTFORMW 无意间往旁边一瞥、%NTR_NAME(0)%正面带暧昧的笑容看着这边。
-			ENDIF
-		ENDIF
-	ENDIF
-ELSEIF TALENT:奴隷:NTR || TALENT:奴隷:公众便所 || TALENT:奴隷:浮気公認
+IF TALENT:奴隷:NTR || TALENT:奴隷:浮気公認
 	PRINTFORML %CALLNAME:奴隷%的脸上泛起了红晕、用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
 	PRINTFORMW %CALLNAME:奴隷%眼神微微恍惚地在嘴角勾起了淫靡的微笑。
 	IF CFLAG:奴隷:射精者V == 人物_訪問者
@@ -1168,14 +791,7 @@ IF ノーパン != 0
 	PRINTFORML 某些液体滴落的声音吸引了%CALLNAME:MASTER%的注意力
 	PRINTFORMW %CALLNAME:奴隷%双颊通红，尽力做出些许声音、想掩盖过去。
 ELSE
-	IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-		IF CFLAG:奴隷:射精者V == 人物_あなた
-			PRINTFORML %CALLNAME:奴隷%脸颊忽然升起了一片红晕、有些慌张地用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
-		ELSE
-			PRINTFORML %CALLNAME:奴隷%表情僵了一下、突然用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
-			PRINTFORMW 不知道为什么神色苍白起来、显得有些慌张。
-		ENDIF
-	ELSEIF TALENT:奴隷:NTR || TALENT:奴隷:公众便所 || TALENT:奴隷:浮気公認
+	IF TALENT:奴隷:NTR || TALENT:奴隷:浮気公認
 		PRINTFORML %CALLNAME:奴隷%的脸上泛起了红晕、用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
 		IF CFLAG:奴隷:射精者V != 人物_あなた
 			PRINTFORMW 眼神有些恍惚地在嘴角勾起了淫靡的微笑。
@@ -1209,7 +825,7 @@ IF CFLAG:奴隷:NTR野外調教 && CFLAG:奴隷:村人
 	相手_彼 = %"彼"%
 	相手番号 = 人物_村人
 	;売春中であれば相手は「客」
-ELSEIF FLAG:訪問者の現在位置 == 位置_訪問者宅 && CFLAG:奴隷:客人数 >= 1
+ELSEIF FLAG:访问者当前位置 == 位置_訪問者宅 && CFLAG:奴隷:客人数 >= 1
 	相手名称 = %"客"%
 	相手_彼 = %"彼"%
 	相手番号 = 人物_客
@@ -1236,7 +852,7 @@ IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
 		ELSE
 			PRINTW %CALLNAME:奴隷%羞耻地低下了头、移开了视线。
 		ENDIF
-	ELSEIF TALENT:奴隷:NTR || (TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱)
+	ELSEIF TALENT:奴隷:NTR
 		IF CFLAG:奴隷:射精者V == 相手番号
 			PRINTFORMW %CALLNAME:奴隷%阴道内渐渐发起来痒来，带着期待被再次注入的心情、向%相手名称%献出了身体。
 		ELSE
@@ -1397,7 +1013,7 @@ RETURN
 
 IF ノーパン != 0
 	PRINTFORML 『笨蛋…』满溢的精液从小穴滴落下来、%NTR_NAME(0)%有些生气地指出了那件事
-	IF TALENT:奴隷:NTR || TALENT:奴隷:公众便所
+	IF TALENT:奴隷:NTR
 		IF CFLAG:奴隷:射精者V == 人物_訪問者
 			PRINTFORMW %CALLNAME:奴隷%阴道内顿时发起来痒来，带着期待被再次注入的心情、向%NTR_NAME(0)%献出了身体。
 		ELSE
@@ -1431,35 +1047,6 @@ IF CFLAG:奴隷:汚れ継続時間
 	ENDIF
 ENDIF
 RETURN
-;------------------------------------------------------------
-;NTR贞操帯有効期限チェック
-@ChastityBelt_Check
-#DIM 奴隷
-
-;NTR贞操帯カウンタ処理
-IF FLAG:贞操帯鍵購入フラグ
-	奴隷 = FLAG:贞操帯鍵購入フラグ
-	IF FLAG:贞操帯鍵有効カウンタ < TIME_PROGRESS()
-		IF CFLAG:奴隷:うふふ>0 && CFLAG:MASTER:うふふ>0
-			;うふふ中に切れた場合
-			PRINTFORMW %CALLNAME:奴隷+"把"+CALLNAME:MASTER+"推开了、拿走了贞操带的钥匙。好像是钥匙的有效期到了。"%
-			TRYCALLLIST
-				FUNC NTR_MESSAGE_COM_K{奴隷}_350_0_3(奴隷)
-				FUNC NTR_MESSAGE_COM_K_350_0_3(奴隷)
-			ENDFUNC
-			IF TALENT:奴隷:公众便所
-				CFLAG:奴隷:うふふ = 0
-				CFLAG:MASTER:うふふ = 0
-			ENDIF
-		ELSE
-			PRINTFORMW %NTR_NAME(0)+"那里买来的"+CALLNAME:奴隷+"的贞操带钥匙好像过期了。"%
-		ENDIF
-		CALL CLOTHES_Change_Knickers(奴隷)
-		FLAG:贞操帯鍵購入フラグ = 0
-	ENDIF
-ENDIF
-RETURN 0
-
 
 ;-------------------------------------------------
 ;調教ソースの表示（DOWNもここで）

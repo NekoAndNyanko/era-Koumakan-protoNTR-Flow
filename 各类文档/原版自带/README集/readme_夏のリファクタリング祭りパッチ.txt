@@ -14,7 +14,7 @@
 主な追加処理
 	●「変数一覧.txt」をベースに「CFLAG.csv」、「FLAG.csv」に変数名を定義。
 	●多数のERBファイルで、「FLAG:21」等の数字ベースの記述から、
-	　「FLAG:訪問者の現在位置」等の内容ベースの記述に変更。
+	　「FLAG:访问者当前位置」等の内容ベースの記述に変更。
 	●IF〜ELSEIF〜ELSE〜ENDIFの表記をSELECTCASE〜ENDSELECTに変更。（NTR.ERBのみ）
 	●口上の呼び出しを、TRYCALLFORMからTRYCALLLISTに変更。（NTR.ERBのみ）
 	●パチュリー口上、チルノ口上のバグ取り

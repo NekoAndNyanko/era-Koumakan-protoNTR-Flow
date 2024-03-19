@@ -23,7 +23,7 @@ IF FLAG:訪問者宅の施錠状態 & 訪問者宅_玄関解錠済
 	INPUT
 	SELECTCASE RESULT:0
 		CASE 0
-			IF FLAG:訪問者の現在位置 == 位置_訪問者宅
+			IF FLAG:访问者当前位置 == 位置_訪問者宅
 				PRINTFORML %CALLNAME:奴隷+"对"+NTR_NAME(0)+"说『要回一次红魔馆了』，征得同意后，就回去了"%
 				PRINTFORMW %NTR_NAME(0)+"虽然感到很遗憾，但因为知道"+CALLNAME:奴隷+"还会回来的，所以没有特别挽留"%
 			ELSE
@@ -168,8 +168,6 @@ ENDIF
 #DIM 奴隷
 CFLAG:奴隷:現在位置詳細 = 7
 PRINTFORML %"宽敞的浴室。"%
-SIF CFLAG:MASTER:WC_訪問者受け入れ具合 > 4
-	PRINTFORML %"偶尔被"+NTR_NAME(0)+"在这里疼爱，或许也不错"%
 PRINTFORML %""%
 RETURN 1
 

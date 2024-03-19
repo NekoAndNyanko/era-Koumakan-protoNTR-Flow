@@ -38,7 +38,7 @@ IF FLAG:Flow版本
 				好感记录值 = 加算値
 				CFLAG:奴隷:好感度 -= 加算値
 			ENDIF
-			IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 				IF 好感记录值 != 0
 					PRINTFORML 屈服度+{加算値} 好感度-{好感记录值}
 				ELSE
@@ -53,7 +53,7 @@ IF FLAG:Flow版本
 				好感记录值 = 加算値
 				CFLAG:奴隷:好感度 -= 加算値 * (FLAG:屈服度倍率) / 10
 			ENDIF
-			IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 				IF 好感记录值 != 0
 					PRINTFORML 屈服度+{加算値 * (FLAG:屈服度倍率) / 10} 好感度-{好感记录值 * (FLAG:屈服度倍率) / 10}
 				ELSE
@@ -64,7 +64,7 @@ IF FLAG:Flow版本
 		; SIF CFLAG:奴隷:好感度 == 0 && 好感记录值 != 0
 		; 	PRINTFORML 好❤感❤度❤归❤零
 	ELSE
-		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			IF FLAG:屈服度倍率 == 0
 				PRINTFORML 屈服度+{加算値}
 			ELSE
@@ -93,7 +93,7 @@ ELSE
 		CFLAG:奴隷:屈服度 += 加算値 * (FLAG:屈服度倍率) / 10
 	ENDIF
 	IF !FLAG:真实模式
-		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			IF FLAG:屈服度倍率 == 0
 				PRINTFORML 屈服度+{加算値}
 			ELSE
@@ -162,7 +162,7 @@ RETURN 0
 #DIM 浮気快楽強度
 IF MARK:奴隷:浮気快乐刻印 < 浮気快楽強度
 	MARK:奴隷:浮気快乐刻印 = MIN(浮気快楽強度,MARK:奴隷:浮気快乐刻印+1)
-	; IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	; IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	IF 奴隷 != MASTER
 		PRINTFORML %CALLNAME:奴隷+"感受到了与"+CALLNAME:MASTER+"在一起从来没有得到过的强烈的快乐，幸福到意识都已经朦胧了……"%
 	ENDIF

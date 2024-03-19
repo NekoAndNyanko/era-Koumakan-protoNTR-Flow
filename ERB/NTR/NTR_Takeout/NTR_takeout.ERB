@@ -62,10 +62,6 @@ ENDIF
 ELSE
 	IF 移动目撃フラグ
 		PRINTFORMW %CALLNAME:奴隷%被%NTR_NAME(0)%带去了某个地方
-		IF TALENT:奴隷:公众便所 && TALENT:奴隷:处女 
-			;处女公众便所競売
-			CALL NTR_VIRGIN_AUCTION(奴隷)
-		ELSE
 		;口上呼び出しの前に口上の特殊な客情報生成があれば実行
 			TRYCALLLIST
 				FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_MAKE_CLIENT(奴隷)
@@ -109,9 +105,9 @@ ENDIF
 ;汚れ発覚による逃走なし
 CFLAG:奴隷:汚れ発覚 = 汚れ発覚_なし
 ;現在位置を強制的に開錠
-FLAG:(300 + FLAG:訪問者の現在位置) = 0
+FLAG:(300 + FLAG:访问者当前位置) = 0
 ;訪問者宅へ移动
-FLAG:訪問者の現在位置 = 位置_訪問者宅
+FLAG:访问者当前位置 = 位置_訪問者宅
 CFLAG:奴隷:現在位置 = 位置_訪問者宅
 FLAG:訪問者同行フラグ = 0
 FLAG:訪問者との汚れ判定に使用 = 0
@@ -173,11 +169,7 @@ RETURN 0
 #DIM LOOP_I
 ;客の人数保存
 CFLAG:奴隷:客人数 = 客の人数
-IF TALENT:奴隷:公众便所
-	客の種類 = 1000
-ELSE
-	客の種類 = 10
-ENDIF
+客の種類 = 10
 客番号 = RAND(客の種類)
 ;重複しないように設定する
 FOR LOOP_I,0,客の人数
@@ -224,7 +216,6 @@ CFLAG:奴隷:访问者宅气氛 += 1 * TALENT:奴隷:浮気的菊花
 CFLAG:奴隷:访问者宅气氛 += 1 * TALENT:奴隷:浮気癖
 CFLAG:奴隷:访问者宅气氛 += 1 * TALENT:奴隷:淫乱
 CFLAG:奴隷:访问者宅气氛 += 1 * TALENT:奴隷:NTR
-CFLAG:奴隷:访问者宅气氛 += 1 * TALENT:奴隷:公众便所
 CFLAG:奴隷:访问者宅气氛 += 1 * TALENT:奴隷:浮気公認
 ;予約時間になるまでは同じ行動
 IF CFLAG:奴隷:访问者宅行为终止时刻 > DATETIME()
@@ -252,13 +243,8 @@ IF BASE:奴隷:体力 < 100 && プレイ内容 == 5
 [SKIPSTART]
 	ELSE
 		;貸切でなければ客も入れ替え、气氛も減らす
-		IF TALENT:奴隷:公众便所 && CFLAG:奴隷:持帰分岐 == 0
-			CFLAG:奴隷:客人数 = -1
-			CFLAG:奴隷:访问者宅气氛 = 5
-			;CFLAG:奴隷:持帰Ｖ射精回数 = 0
-			;CFLAG:奴隷:持帰Ａ射精回数 = 0
-		ELSEIF TALENT:奴隷:公众便所 == 0 && CFLAG:奴隷:持帰分岐 == 0 && RAND(10) == 0
-			;不是公众便所，分歧为0 十分之一的几率
+		IF CFLAG:奴隷:持帰分岐 == 0 && RAND(10) == 0
+			;十分之一的几率
 			CFLAG:奴隷:客人数 = -1
 			CFLAG:奴隷:访问者宅气氛 = 5
 		ELSE
@@ -271,7 +257,7 @@ ENDIF
 [SKIPSTART]
 IF !FLAG:Flow版本
 [SKIPEND]
-IF FLAG:訪問者の現在位置 == 位置_訪問者宅
+IF FLAG:访问者当前位置 == 位置_訪問者宅
 	調教者 = 人物_訪問者
 ELSE
 	SIF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
@@ -283,19 +269,10 @@ ELSE
 	IF CFLAG:奴隷:客人数 != -1
 		;客がいる場合継続
 		客の人数 = CFLAG:奴隷:客人数
-	ELSEIF CFLAG:奴隷:再教育フラグ == 1 && FLAG:訪問者の現在位置 == 位置_訪問者宅
+	ELSEIF CFLAG:奴隷:再教育フラグ == 1 && FLAG:访问者当前位置 == 位置_訪問者宅
 		;再教育モード
 		客の人数 = 0
 		CFLAG:奴隷:访问者宅气氛 = 50
-	ELSEIF TALENT:奴隷:公众便所 && CFLAG:奴隷:持帰分岐 > 0
-		;プレイの指定がある場合、口上の都合で相手は１人。多分貸切にしてるのだろう。
-		客の人数 = 1
-	ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:处女
-		;处女オークションの時は相手は一人。
-		客の人数 = 1
-	ELSEIF TALENT:奴隷:公众便所
-		;プレイの指定が無い場合は客を1～3人取る。淫乱/娼婦なら人数が増えやすくなる。
-		客の人数 = LIMIT(RAND:(4+TALENT:奴隷:淫乱),1,3)
 	ELSEIF TALENT:奴隷:亲爱
 		;屈服しない亲爱持ちを輪姦する
 		客の人数 = LIMIT(RAND:(4+TALENT:奴隷:淫乱),2,3)
@@ -363,7 +340,7 @@ ELSE
 			客の人数 = CFLAG:奴隷:客人数
 		ENDIF
 	ELSE
-		IF FLAG:訪問者の現在位置 == 位置_訪問者宅
+		IF FLAG:访问者当前位置 == 位置_訪問者宅
 			調教者 = 人物_訪問者
 		ELSE
 			SIF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
@@ -377,8 +354,6 @@ ENDIF
 IF CFLAG:奴隷:访问者宅气氛 < 0 && TALENT:奴隷:浮気公認 < 5
 	;PRINTW 气氛不好回来了
 	CFLAG:奴隷:現在位置 = 位置_红魔馆_正门
-	SIF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-		TRYCALL 客口上(奴隷, 0, TB:奴隷:0:TB_客種別)
 	IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
 		;PRINTFORML CFLAG:奴隷:访问者宅气氛{CFLAG:奴隷:访问者宅气氛}
 		PRINTFORMW %CALLNAME:奴隷%不知道从哪里回来了
@@ -437,8 +412,8 @@ ELSE
 	IF !FALG:Flow版本
 		SELECTCASE 客の人数
 			CASE 1
-			;公众便所でない時の处女保存処理
-				IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女 && !TALENT:奴隷:公众便所
+			;处女保存処理
+				IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女
 					TFLAG:輪姦内容 = 輪姦_1A
 				ELSE
 				;一人であれば必ずＶ（持帰分岐時の都合でＶ以外とは合わない）、１人で３部位相手にするのでプレイ時間は1/3。
@@ -468,8 +443,8 @@ ELSE
 				ENDSELECT
 			CASE 2
 			;二人いるときは２穴使用。２人で４部位相手にするのでプレイ時間は2/4で。
-				IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女 && !TALENT:奴隷:公众便所
-				;公众便所でない時の处女保存処理
+				IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女 &&
+				;处女保存処理
 					TFLAG:輪姦内容 = 輪姦_2MA ;ＭＡ、イメージ的にＡ后背位
 				;口上(地の文)呼び出し
 					IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
@@ -582,14 +557,6 @@ ELSE
 				ENDIF
 				CALL NTR_Play_M_0(奴隷,調教者,プレイ内容-4,プレイ時間/4)
 		ENDSELECT
-	;公众便所で客とのプレイは売春としてカウント(訪問者は金を払ってない設定)
-		IF 調教者 == 人物_客 && TALENT:奴隷:公众便所 > 0
-		; 今回が初めて
-			IF EXP:奴隷:卖春经验  == 0
-				CFLAG:奴隷:前回売春フラグ |= 前回売春_初売春
-			ENDIF
-			EXP:奴隷:卖春经验 ++
-		ENDIF
 		IF 0 != CFLAG:奴隷:客人数加算フラグ
 			FOR LOOP_I, 0, 客の人数
 				EXP:奴隷:浮気人数 = NTR_FickleCount(奴隷,調教者,LOOP_I)
@@ -610,7 +577,7 @@ CALL ORGASM_ADD(奴隷,調教者)
 ;口上呼び出し
 IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
 	IF 客の人数
-		TRYCALL 客口上(奴隷, プレイ内容, TB:奴隷:0:TB_客種別)
+		;TRYCALL 客口上(奴隷, プレイ内容, TB:奴隷:0:TB_客種別)
 	ENDIF
 	TRYCALLLIST
 		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_10_{プレイ内容}(奴隷, 調教者, 客の人数)
@@ -639,7 +606,7 @@ IF RESULT:0 && TALENT:奴隷:浮気公認 < 5
 ENDIF
 DEBUGPRINTFORML 浮気快楽強度{浮気快楽強度} 訪問者の气氛{CFLAG:奴隷:访问者宅气氛}
 ;气氛の上下。最初のベース増加で0～19程度増えるので特別な判定はしない。
-;NTR、公众便所あたりがあれば減る事はない。快楽により气氛増加。上限以上あれば上限値に切り詰め。
+;NTRがあれば減る事はない。快楽により气氛増加。上限以上あれば上限値に切り詰め。
 CFLAG:奴隷:访问者宅气氛 += MIN(气氛上限値,CFLAG:奴隷:访问者宅气氛+(RAND:13 - 4)+浮気快楽強度)
 ;行為における口上や射精関連のフラグリセット
 TFLAG:輪姦内容 = 輪姦_0

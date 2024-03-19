@@ -31,15 +31,9 @@ SOURCE:奴隷:情爱 = 50
 SOURCE:奴隷:性行动 = 10
 SOURCE:奴隷:屈从 = 10
 SOURCE:奴隷:逸脱 = 10
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感 = 5 * !TALENT:奴隷:浮気的蜜唇
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 5
-ELSE
-	SOURCE:奴隷:反感 = 10 * !TALENT:奴隷:浮気的蜜唇
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 10
-ENDIF
+SOURCE:奴隷:反感 = 10 * !TALENT:奴隷:浮気的蜜唇
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 10
 CALL NTR_EXP_ADD_KISS(奴隷,1)
 ; SIF !TALENT:奴隷:亲爱
 ; CALL NTR_EXP_ADD_KISS(奴隷,1)
@@ -75,11 +69,7 @@ SOURCE:奴隷:液体 = 80
 SOURCE:奴隷:露出 = 100
 SOURCE:奴隷:屈从 = 800
 SOURCE:奴隷:逸脱 = 600
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感 = 200
-ELSE
-	SOURCE:奴隷:反感 = 600
-ENDIF
+SOURCE:奴隷:反感 = 600
 IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女
 	SOURCE:奴隷:快Ａ += 20
 ENDIF
@@ -88,17 +78,10 @@ IF !TALENT:奴隷:处女
 ENDIF
 SOURCE:奴隷:露出 += 10 + 20*(TALENT:奴隷:处女>0)
 SOURCE:奴隷:逸脱 += 20 + 10*(TALENT:奴隷:处女>0)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:苦痛 += 5 +  5*(TALENT:奴隷:处女>0)
-	SOURCE:奴隷:反感 += 10 + 50*(TALENT:奴隷:处女>0)
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 400
-ELSE
-	SOURCE:奴隷:苦痛 += 15 +  5*(TALENT:奴隷:处女>0)
-	SOURCE:奴隷:反感 += 20 + 10*(TALENT:奴隷:处女>0)
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 800
-ENDIF
+SOURCE:奴隷:苦痛 += 15 +  5*(TALENT:奴隷:处女>0)
+SOURCE:奴隷:反感 += 20 + 10*(TALENT:奴隷:处女>0)
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 800
 CALL STAIN_ADD_SEMEN_M(奴隷, 調教者)
 CALL NTR_EXP_ADD_M_SEX(奴隷,1)
 EXP:奴隷:嗜虐快乐经验 += TALENT:奴隷:猫舌
@@ -136,17 +119,10 @@ SOURCE:奴隷:欲情   += 150 * (プレイ時間/5)
 SOURCE:奴隷:露出   += 100 * (プレイ時間/5)
 SOURCE:奴隷:快Ｃ   += 100 * (プレイ時間/5)
 SOURCE:奴隷:被动   += (145+270*ABL:奴隷:顺从) * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   += 185 * (プレイ時間/5)
+SOURCE:奴隷:反感   += 370 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 10
-ELSE
-	SOURCE:奴隷:反感   += 370 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 20
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 20
 SIF TALENT:奴隷:亲爱
 	EXP:奴隷:紧缚经验 ++
 CALL 改变小穴色素(奴隷,1)
@@ -181,17 +157,10 @@ SOURCE:奴隷:欢乐   += 100 * (プレイ時間/5)
 SOURCE:奴隷:情爱   += 150 * (プレイ時間/5)
 SOURCE:奴隷:欲情   += 170 * (プレイ時間/5)
 SOURCE:奴隷:露出   +=  70 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   += 175 * (プレイ時間/5)
+SOURCE:奴隷:反感   += 350 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 10
-ELSE
-	SOURCE:奴隷:反感   += 350 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 20
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 20
 SIF TALENT:奴隷:亲爱
 	EXP:奴隷:紧缚经验 ++
 CALL 改变乳头色素(奴隷,1)
@@ -229,17 +198,10 @@ SOURCE:奴隷:性行动 +=  300 * (TALENT:奴隷:浮気的蜜唇 ? 150 # 100) / 
 SOURCE:奴隷:达成   +=  150 * (TALENT:奴隷:浮気的蜜唇 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:屈从   +=  700 * (TALENT:奴隷:浮気的蜜唇 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   66 * (TALENT:奴隷:浮気的蜜唇 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  100 * (TALENT:奴隷:浮気的蜜唇 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  200 * (TALENT:奴隷:浮気的蜜唇 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 200
-ELSE
-	SOURCE:奴隷:反感   +=  200 * (TALENT:奴隷:浮気的蜜唇 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 400
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 400
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が増える
 SIF CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 200
@@ -294,17 +256,10 @@ SOURCE:奴隷:苦痛   +=  800 * (TALENT:奴隷:浮気的菊花 ? 150 # 100) / 1
 SOURCE:奴隷:露出   +=   60 * (TALENT:奴隷:浮気的菊花 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   +=  200 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  250 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  500 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 250
-ELSE
-	SOURCE:奴隷:反感   +=  500 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 500
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 500
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が一気に増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1500
@@ -357,17 +312,10 @@ SOURCE:奴隷:苦痛   +=  900 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 1
 SOURCE:奴隷:露出   +=   80 * (TALENT:奴隷:浮気的菊花 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   +=  200 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  250 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  500 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 250
-ELSE
-	SOURCE:奴隷:反感   +=  500 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 500
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 500
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が一気に増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1500
@@ -422,17 +370,10 @@ SOURCE:奴隷:苦痛   +=  800 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 1
 SOURCE:奴隷:露出   +=  120 * (TALENT:奴隷:浮気的菊花 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   +=  700 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  450 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  900 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 450
-ELSE
-	SOURCE:奴隷:反感   +=  900 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 900
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 900
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が一気に増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1500
@@ -488,17 +429,10 @@ SOURCE:奴隷:苦痛   +=  800 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 1
 SOURCE:奴隷:露出   +=  120 * (TALENT:奴隷:浮気的菊花 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   +=  700 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  450 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  900 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 450
-ELSE
-	SOURCE:奴隷:反感   +=  900 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 900
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 900
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が一気に増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1500
@@ -553,17 +487,10 @@ SOURCE:奴隷:苦痛   += 800 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 10
 SOURCE:奴隷:露出   += 120 * (TALENT:奴隷:浮気的菊花 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   += 700 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=  60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   += 450 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   += 900 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 450
-ELSE
-	SOURCE:奴隷:反感   += 900 * (TALENT:奴隷:浮気的菊花 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 900
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 900
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が一気に増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1500
@@ -615,35 +542,20 @@ SOURCE:奴隷:情爱   +=  150 * (TALENT:奴隷:浮気的蜜壶 ? 150 # 100) / 1
 SOURCE:奴隷:苦痛   +=  500 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:露出   +=   50 * (TALENT:奴隷:浮気的蜜壶 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  150 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  300 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 150
-ELSE
-	SOURCE:奴隷:反感   +=  300 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 300
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 300
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1000
 ;处女であれば苦痛が増加
 IF TALENT:奴隷:处女 == 1
 	SOURCE:奴隷:苦痛 += 2000
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 1500
-	ELSE
-		SOURCE:奴隷:反感 += 3000
-	ENDIF
+	SOURCE:奴隷:反感 += 3000
 ELSEIF TALENT:奴隷:处女 == 2
 	SOURCE:奴隷:苦痛 += 500
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 500
-	ELSE
-		SOURCE:奴隷:反感 += 1000
-	ENDIF
+	SOURCE:奴隷:反感 += 1000
 ENDIF
 ;口上との整合性を取るため、射精指定があれば最低１回の射精を確保
 CALL NTR_Insert_V(奴隷,調教者,射精)
@@ -695,35 +607,20 @@ SOURCE:奴隷:情爱   +=  150 * (TALENT:奴隷:浮気的蜜壶 ? 150 # 100) / 1
 SOURCE:奴隷:苦痛   +=  400 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:露出   +=   70 * (TALENT:奴隷:浮気的蜜壶 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  150 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  300 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 150
-ELSE
-	SOURCE:奴隷:反感   +=  300 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 300
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 300
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1000
 ;处女であれば苦痛が増加
 IF TALENT:奴隷:处女 == 1
 	SOURCE:奴隷:苦痛 += 2000
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 1500
-	ELSE
-		SOURCE:奴隷:反感 += 3000
-	ENDIF
+	SOURCE:奴隷:反感 += 3000
 ELSEIF TALENT:奴隷:处女 == 2
 	SOURCE:奴隷:苦痛 += 500
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 500
-	ELSE
-		SOURCE:奴隷:反感 += 1000
-	ENDIF
+	SOURCE:奴隷:反感 += 1000
 ENDIF
 ;口上との整合性を取るため、射精指定があれば最低１回の射精を確保
 CALL NTR_Insert_V(奴隷,調教者,射精)
@@ -778,35 +675,20 @@ SOURCE:奴隷:苦痛   +=  500 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 1
 SOURCE:奴隷:露出   +=  120 * (TALENT:奴隷:浮気的蜜壶 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   +=  600 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   +=  400 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   +=  800 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 400
-ELSE
-	SOURCE:奴隷:反感   +=  800 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 800
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 800
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1000
 ;处女であれば苦痛が増加
 IF TALENT:奴隷:处女 == 1
 	SOURCE:奴隷:苦痛 += 2000
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 1500
-	ELSE
-		SOURCE:奴隷:反感 += 3000
-	ENDIF
+	SOURCE:奴隷:反感 += 3000
 ELSEIF TALENT:奴隷:处女 == 2
 	SOURCE:奴隷:苦痛 += 500
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 500
-	ELSE
-		SOURCE:奴隷:反感 += 1000
-	ENDIF
+	SOURCE:奴隷:反感 += 1000
 ENDIF
 ;口上との整合性を取るため、射精指定があれば最低１回の射精を確保
 CALL NTR_Insert_V(奴隷,調教者,射精)
@@ -860,35 +742,20 @@ SOURCE:奴隷:苦痛   +=  500 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 1
 SOURCE:奴隷:恭顺   +=  300 * (TALENT:奴隷:浮気的蜜壶 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   +=  500 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   += 500 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   += 1000 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 450
-ELSE
-	SOURCE:奴隷:反感   += 1000 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 900
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 900
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1000
 ;处女であれば苦痛が増加
 IF TALENT:奴隷:处女 == 1
 	SOURCE:奴隷:苦痛 += 2000
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 1500
-	ELSE
-		SOURCE:奴隷:反感 += 3000
-	ENDIF
+	SOURCE:奴隷:反感 += 3000
 ELSEIF TALENT:奴隷:处女 == 2
 	SOURCE:奴隷:苦痛 += 500
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 500
-	ELSE
-		SOURCE:奴隷:反感 += 1000
-	ENDIF
+	SOURCE:奴隷:反感 += 1000
 ENDIF
 ;口上との整合性を取るため、射精指定があれば最低１回の射精を確保
 CALL NTR_Insert_V(奴隷,調教者,射精)
@@ -943,35 +810,20 @@ SOURCE:奴隷:苦痛   +=  400 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 1
 SOURCE:奴隷:露出   +=  200 * (TALENT:奴隷:浮気的蜜壶 ? 150 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:逸脱   +=  600 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 SOURCE:奴隷:肮脏   +=   60 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-	SOURCE:奴隷:反感   += 500 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
+SOURCE:奴隷:反感   += 1000 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
 	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 400
-ELSE
-	SOURCE:奴隷:反感   += 1000 * (TALENT:奴隷:浮気的蜜壶 ?  66 # 100) / 100 * (プレイ時間/5)
-	;抑圧 or 抵抗があると抑郁が溜まる
-	SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
-		SOURCE:奴隷:抑郁 += 800
-ENDIF
+SIF TALENT:奴隷:自己爱 < 0 || TALENT:奴隷:抵抗
+	SOURCE:奴隷:抑郁 += 800
 ;贞操観念があり、訪問者への屈服度があなたの好感度より低い場合反感が増える
 SIF TALENT:奴隷:贞操 > 0 && CFLAG:奴隷:屈服度 < CFLAG:奴隷:好感度
 	SOURCE:奴隷:反感 += 1000
 ;处女であれば苦痛が増加
 IF TALENT:奴隷:处女 == 1
 	SOURCE:奴隷:苦痛 += 2000
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 1500
-	ELSE
-		SOURCE:奴隷:反感 += 3000
-	ENDIF
+	SOURCE:奴隷:反感 += 3000
 ELSEIF TALENT:奴隷:处女 == 2
 	SOURCE:奴隷:苦痛 += 500
-	IF TALENT:奴隷:公众便所 && !TALENT:奴隷:亲爱 
-		SOURCE:奴隷:反感 += 500
-	ELSE
-		SOURCE:奴隷:反感 += 1000
-	ENDIF
+	SOURCE:奴隷:反感 += 1000
 ENDIF
 ;口上との整合性を取るため、射精指定があれば最低１回の射精を確保
 CALL NTR_Insert_V(奴隷,調教者,射精)
@@ -1092,9 +944,6 @@ IF TALENT:奴隷:处女
 	;处女/再生处女フラグを保存
 	CFLAG:奴隷:处女喪失中 = TALENT:奴隷:处女
 	CALL LOST_VIRGIN(奴隷, 調教者)
-	IF 調教者 == 人物_客 && TALENT:奴隷:公众便所 > 0
-		CFLAG:奴隷:前回売春フラグ |= 前回売春_处女喪失
-	ENDIF
 ENDIF
 IF 射精
 	CALL EJACULATION_V(奴隷, 調教者)

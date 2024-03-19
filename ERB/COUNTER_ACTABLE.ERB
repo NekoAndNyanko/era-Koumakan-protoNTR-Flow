@@ -42,8 +42,6 @@ SELECTCASE カウンター行為
 	CASE CNT_乳搾り手コキ
 		SIF !(HAS_PENIS(MASTER))
 			RETURNF 0
-		SIF CFLAG:MASTER:阴茎用贞操帯着用 != 0
-			RETURNF 0
 		SIF MAXBASE:MASTER:勃起 < 300	; ED状態
 			RETURNF 0
 		;押し倒し時はされない
@@ -114,8 +112,6 @@ SELECTCASE カウンター行為
 			RETURNF 0
 		SIF !(HAS_PENIS(MASTER))
 			RETURNF 0
-		SIF CFLAG:MASTER:阴茎用贞操帯着用 != 0
-			RETURNF 0
 		SIF ABL:加害者:舌 < 1
 			RETURNF 0
 		RETURNF 1
@@ -127,8 +123,6 @@ SELECTCASE カウンター行為
 		SIF ABL:加害者:腰 < 1
 			RETURNF 0
 		SIF !(HAS_PENIS(MASTER))
-			RETURNF 0
-		SIF CFLAG:MASTER:阴茎用贞操帯着用 != 0
 			RETURNF 0
 		;润滑
 		SIF PALAM:加害者:润滑 < 2000
@@ -145,8 +139,6 @@ SELECTCASE カウンター行為
 			RETURNF 0
 		SIF !(HAS_PENIS(MASTER))
 			RETURNF 0
-		SIF CFLAG:MASTER:阴茎用贞操帯着用 != 0
-			RETURNF 0
 		;[絶壁]だと不可
 		SIF TALENT:加害者:胸部尺寸 == -2
 			RETURNF 0
@@ -160,8 +152,6 @@ SELECTCASE カウンター行為
 		SIF TFLAG:62
 			RETURNF 0
 		SIF !(HAS_PENIS(MASTER))
-			RETURNF 0
-		SIF CFLAG:MASTER:阴茎用贞操帯着用 != 0
 			RETURNF 0
 		SIF ABL:加害者:抖Ｓ之气 < 1
 			RETURNF 0
@@ -323,8 +313,6 @@ SELECTCASE カウンター行為
 		SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,淫纹_太股) == 0
 			RETURNF 0
 		SIF !(HAS_PENIS(MASTER))
-			RETURNF 0
-		SIF CFLAG:MASTER:阴茎用贞操帯着用 != 0
 			RETURNF 0
 		SIF !(HAS_VAGINA(加害者))
 			RETURNF 0

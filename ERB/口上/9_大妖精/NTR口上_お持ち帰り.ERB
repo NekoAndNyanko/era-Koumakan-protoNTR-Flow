@@ -13,26 +13,7 @@
 @NTR_KOJO_K9_0(奴隷)
 #DIM 奴隷
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTFORML 精液に塗れ体中に男の臭いを纏わせている。
-	PRINTFORML %CALLNAME:奴隷%は下腹部に手を当てながら湖のほうへ走っていった。
-	IF CFLAG:奴隷:前回売春フラグ & 前回売春_初売春
-		PRINTFORML 部屋の扉に鍵をかけた%CALLNAME:奴隷%はベッドに倒れこんだ。
-		PRINTFORML 小さな手がシーツを握り締め、薄暗い部屋に嗚咽が響く。
-		PRINTFORML 「うっ・・ううっ・・うわああーーーーーーっ！ ごめんなさい！ ごめんなさい！！」
-		PRINTFORML 愛する人を裏切ってしまったという心の痛みに、%CALLNAME:奴隷%はただ泣き続けるしかなかった。
-		PRINTFORML
-	ENDIF
-
-	;公众便所
-ELSEIF TALENT:奴隷:公众便所
-
-	PRINTFORML 精液に塗れ体中に男の臭いを纏わせている。
-	PRINTFORML 眼からは涙とも精液ともつかないモノが流れていた。
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML %CALLNAME:奴隷%は惚けた表情とおぼつかない足取りで歩いていった。
 	PRINTFORML 膣内射精の名残であろう液体がふとももを伝っているのに気づいていないようだ。
@@ -55,45 +36,13 @@ RETURN 0
 ;
 ;持ち帰り分岐の特殊処理
 ;持ち帰り分岐=100
-;　FAV_寝取られで屈服度>4000の時、公众便所デビュー前のPRとしてAV摄影
 ;==================================================
 ;訪問者宅へ
 ;==================================================
 @NTR_KOJO_K9_10_0(奴隷)
 #DIM 奴隷
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「ううっ・・やっぱり・・やっぱり、いやです・・！」
-		DATAFORM 「ううっ・・ぐすっ・・ぐすんっ・・」
-		DATAFORM 「いや・・いや・・かえして・・」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に連れられ、地下室に閉じ込められた。
-	PRINTFORML 扉の鍵をかけられ、项圈に鎖を繋がれ・・%CALLNAME:奴隷%に逃げ場などどこにもなかった。
-
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「いっ、いやああっ！ 助けて、助けて%CALLNAME:MASTER%！！」
-		DATAFORM 「いっ、いやああっ！ 離してっ、離してえええっ！」
-		DATAFORM 「いやああっ！ は、離してえええっ！」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%によって縛られたまま%NTR_NAME(4)%の家へと拉致された。
-	PRINTFORML 地下室の壁に鎖で繋がれた%CALLNAME:奴隷%の怯える姿を見て、%NTR_NAME(0)%は下卑た笑いを浮かべた。
-
-ELSEIF TALENT:奴隷:公众便所
-
-	IF RAND:2 == 0
-		PRINTFORML 「は、はい・・・今日も私をみなさまの思うように犯してください・・・」
-		PRINTFORML 薄暗い部屋に鎖で繋がれた%CALLNAME:奴隷%は、彼女を買ったご主人様たちに恭しく跪いた。
-	ELSE
-		PRINTFORML 「今日は私をお買い上げいただきまことにありがとうございます・・・」
-		PRINTFORML 薄暗い部屋に鎖で繋がれた%CALLNAME:奴隷%は、彼女を買ったご主人様に恭しく跪いた。
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影開始判定
 	IF CFLAG:奴隷:屈服度 > 4000
@@ -166,69 +115,7 @@ RETURN 0
 #DIM 調教者
 #DIM 客の人数
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「・・い、痛いことは、しないでください・・」
-		DATAFORM 「・・せ、せめて、優しく・・してください・・」
-		DATAFORM 「・・言うこと・・聞きますから・・ひどいこと・・しないで・・」
-	ENDDATA
-	IF 客の人数 > 1
-		PRINTFORML いやらしい笑いを浮かべる男達に恐怖を感じるが、%CALLNAME:奴隷%は鎖に繋がれ逃跑こともできない。
-	ELSE
-		PRINTFORML いやらしい笑いを浮かべる男に恐怖を感じるが、%CALLNAME:奴隷%は鎖に繋がれ逃跑こともできない。
-	ENDIF
-
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「い・・いやあ・・、こ、こないで・・！」
-		DATAFORM 「こ、こないでっ・・こないでくださいっ！」
-		DATAFORM 「い、いや・・帰して・・帰してください・・！」
-	ENDDATA
-	IF 客の人数 > 1
-		PRINTFORML いやらしい笑いを浮かべる男達に恐怖を感じるが、%CALLNAME:奴隷%は鎖に繋がれ逃跑こともできない。
-	ELSE
-		PRINTFORML いやらしい笑いを浮かべる男に恐怖を感じるが、%CALLNAME:奴隷%は鎖に繋がれ逃跑こともできない。
-	ENDIF
-
-ELSEIF TALENT:奴隷:公众便所 &&調教者 == 人物_客
-
-	IF RAND:2 == 0
-		PRINTFORML 「は、はいっ・・心を込めて御侍奉します・・・」
-		IF 客の人数 > 1
-			PRINTFORML %CALLNAME:奴隷%は客達に寄り添い甘い声で話しかけている。
-		ELSE
-			PRINTFORML %CALLNAME:奴隷%は客に寄り添い甘い声で話しかけている。
-		ENDIF
-	ELSE
-		IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
-			PRINTFORML 「は、はいっ・・私の、は、初めてをお買い上げいただきまして、あ、ありがとうございましたっ」
-			PRINTFORML %CALLNAME:奴隷%は客の足元に跪き、三つ指をついて感謝の意を口にした。
-		ELSE
-			PRINTFORML 「は、はいっ・・こうですか？」
-			PRINTFORML %CALLNAME:奴隷%は客に言われるままに裙子をたくし上げ、何も穿いていない下半身を見せ付けた。
-		ENDIF
-	ENDIF
-
-	;公众便所ではない売春
-ELSEIF 調教者 == 人物_客
-
-	;IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
-	;	PRINTFORML 「は、はいっ・・私の、は、初めてをお買い上げいただきまして、あ、ありがとうございましたっ」
-	;	PRINTFORML %CALLNAME:奴隷%は客の足元に跪き、三つ指をついて感謝の意を口にした。
-	;ELSE
-	IF RAND:2 == 0
-		PRINTFORML 「は、はいっ・・心を込めて御侍奉します・・・」
-		PRINTFORML %CALLNAME:奴隷%は客に寄り添い甘い声で話しかけている。
-	ELSE
-		PRINTFORML 「は、はいっ・・こうですか？」
-		PRINTFORML %CALLNAME:奴隷%は客に言われるままに裙子をたくし上げ、何も穿いていない下半身を見せ付けた。
-	ENDIF
-	;ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影？
 	IF CFLAG:奴隷:持帰分岐 == 100
@@ -298,53 +185,7 @@ RETURN 0
 #DIM 調教者
 #DIM 客の人数
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「んっ！ん・・んっ、んっ・・やあ・・」
-		DATAFORM 「いっ、いや・・んっ、んっ・・」
-		DATAFORM 「んんっ！ は、はなして・・んんっ！」
-	ENDDATA
-	IF 客の人数 > 1
-		PRINTFORML %CALLNAME:奴隷%は男達に無理矢理に唇を奪われ、舌を絡みあわせられている。
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%は男に無理矢理に唇を奪われ、舌を絡みあわせられている。
-	ENDIF
-	PRINTFORML 名も知らぬ相手と唇を重ねる%CALLNAME:奴隷%の目尻に涙が滲んだ。
-
-	;亲爱のみの場合は拉致監禁強姦
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「んっ！んむぅ！・・んっ、んっ・・いやああっ・・んぅ！」
-		DATAFORM 「いっ、いやあっ・・んっ、んんっ・・むうっ！」
-		DATAFORM 「んんっ！ は、はなしてぇ・・んんんっ！」
-	ENDDATA
-	IF 客の人数 > 1
-		PRINTFORML %CALLNAME:奴隷%は男達に押さえこまれ無理矢理に唇を奪われ、舌を絡みあわせられている。
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%は男に押さえこまれ無理矢理に唇を奪われ、舌を絡みあわせられている。
-	ENDIF
-
-ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
-
-	PRINTFORML 「んっ・・んっ・・んちゅっ・・」
-	IF 客の人数 > 2
-		PRINTFORML %CALLNAME:奴隷%は客達とかわるがわる互いに舌を使いながらキスをしている。
-	ELSEIF 客の人数 == 2
-		PRINTFORML %CALLNAME:奴隷%は二人の客とかわるがわる互いに舌を使いながらキスをしている。
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%は客と互いに舌を使いながらキスをしている。
-	ENDIF
-
-	;公众便所ではない売春
-ELSEIF 調教者 == 人物_客
-
-	PRINTFORML 「んっ・・んっ・・んちゅっ・・」
-	PRINTFORML %CALLNAME:奴隷%は客と互いに舌を使いながらキスをしている。
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影？
 	IF CFLAG:奴隷:持帰分岐 == 100
@@ -405,64 +246,7 @@ RETURN 0
 #DIM 調教者
 #DIM 客の人数
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「うっ・・うぐっ・・んむっ・・！！」
-		DATAFORM 「ううっ・・や、やぁっ・・んむうっ！」
-		DATAFORM 「んっ・・んむっ・・だ、だめっ・・ああっ！」
-	ENDDATA
-	IF 客の人数 > 1
-		PRINTFORML %CALLNAME:奴隷%は仰向けになった男の上に乗り、しぶしぶ六九式侍奉をしている。
-		PRINTFORML 肉棒で口を犯される%CALLNAME:奴隷%の秘所をその男がしゃぶり、もう一人の男が彼女のアヌスに舌をもぐりこませている。
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%は仰向けになった男の上に乗り、しぶしぶ六九式侍奉をしている。
-		PRINTFORML 男は%CALLNAME:奴隷%の口を犯しながら、彼女の濡れた股間にしゃぶりついている。
-	ENDIF
-
-	;亲爱のみの場合は拉致監禁強姦
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「うっ・・うぐっ・・んんっ・・！！」
-		DATAFORM 「ううっ・・い、いやっ・・んぐうっ！」
-		DATAFORM 「んっ・・んむっ・・だ、だめっ・・ああっ！」
-	ENDDATA
-	IF 客の人数 > 1
-		PRINTFORML %CALLNAME:奴隷%は仰向けになった男の上に乗せられ、六九式侍奉を強いられている。
-		PRINTFORML 肉棒で口を犯される%CALLNAME:奴隷%の秘所をその男がしゃぶり、もう一人の男が彼女のアヌスに舌をもぐりこませている。
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%は男に無理矢理押さえ込まれ口に阴茎を捻じ込まれている。
-		PRINTFORML 男は%CALLNAME:奴隷%の口を犯しながら、彼女の濡れた股間にしゃぶりついている。
-	ENDIF
-
-ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
-
-	PRINTDATAL
-		DATAFORM 「あむぅ・・ちゅっ・・・ふわぁっ・・あっ・・あっ・・♪」
-		DATAFORM 「ちゅっ・・むっ・・うン・・おっきぃ・・♪」
-		DATAFORM 「あん・・きもち・・いいっ・・んっ・・♪」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は客の顔に股間を擦り付けながら、相手の阴茎に舌を伸ばしている。
-	IF 客の人数 > 2
-		PRINTFORML 残り二人の客は%CALLNAME:奴隷%の胸や尻を撫で回したり吸ったりしている。
-	ELSEIF 客の人数 == 2
-		PRINTFORML もう一人の客は%CALLNAME:奴隷%の尻に顔を埋め、アヌスをしゃぶっている。
-	ELSE
-	ENDIF
-
-	;公众便所ではない売春
-ELSEIF 調教者 == 人物_客
-
-	PRINTDATAL
-		DATAFORM 「あむぅ・・ちゅっ・・・ふわぁっ・・あっ・・あっ・・♪」
-		DATAFORM 「ちゅっ・・むっ・・うン・・おっきぃ・・♪」
-		DATAFORM 「あん・・きもち・・いいっ・・んっ・・♪」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は客の顔に股間を擦り付けながら、相手の阴茎に舌を伸ばしている。
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影？
 	IF CFLAG:奴隷:持帰分岐 == 100
@@ -553,56 +337,7 @@ RETURN 0
 #DIM 調教者
 #DIM 客の人数
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「いやっ・・やっぱり、いやあっ・・！！ ああああっ！！」
-		DATAFORM 「だ、だめっ・・！ ゆるしてくださいいっ！！」
-		DATAFORM 「ああっ！ だめ、だめええっ！ ああーーーっ！」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は男に組み敷かれ肉棒を突き込まれている。
-
-	;亲爱のみの場合は拉致監禁強姦
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「いやっ・・いやあっ・・！！ ああああっ！！」
-		DATAFORM 「だ、だめっ・・！ いやあああっ！！」
-		DATAFORM 「ああっ！ だめ、だめええっ！ ああああっ！！」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は男に組み敷かれ肉棒を突き込まれている。
-
-ELSEIF TALENT:奴隷:公众便所 &&調教者 == 人物_客
-
-	IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
-		PRINTFORML 「あんっあっ・・はいっ・・これが、私の、はじめてっ・・です・・ああああっ！！」
-		PRINTFORML %CALLNAME:奴隷%は客の阴茎に处女を捧げた。
-	ELSE
-		PRINTDATAL
-			DATAFORM 「ひゃんっ、あっ、んっんっ、はぁっ・・・こんなっ・・太いのって・・きもちいっ・・」
-			DATAFORM 「あっ、ああんっ、おっきくて、すごいですぅ！」
-			DATAFORM 「ああんっ、も、もっと、もっと、してくださいっ」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は客の阴茎に突かれながら、淫らな言葉を発している
-	ENDIF
-
-	;公众便所ではない売春
-ELSEIF 調教者 == 人物_客
-
-	IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
-		PRINTFORML 「あんっあっ・・はいっ・・これが、私の、はじめてっ・・です・・ああああっ！！」
-		PRINTFORML %CALLNAME:奴隷%は客の阴茎に处女を捧げた。
-	ELSE
-		PRINTDATAL
-			DATAFORM 「ひゃんっ、あっ、んっんっ、はぁっ・・・こんなっ・・太いのって・・きもちいっ・・」
-			DATAFORM 「あっ、ああんっ、おっきくて、すごいですぅ！」
-			DATAFORM 「ああんっ、も、もっと、もっと、してくださいっ」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は客の阴茎に突かれながら、淫らな言葉を発している
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影？
 	IF CFLAG:奴隷:持帰分岐 == 100
@@ -710,38 +445,7 @@ RETURN 0
 #DIM 調教者
 #DIM 客の人数
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「いやっ・・いやあっ・・！！ ああああっ！！」
-		DATAFORM 「だ、だめっ・・！ いやあああっ！！」
-		DATAFORM 「ああっ！ だめ、だめええっ！ ああああっ！！」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は男に組み敷かれアヌスに肉棒を突き込まれている。
-
-	;亲爱のみの場合は拉致監禁強姦
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「いやっ・・いやあっ・・！！ ああああっ！！」
-		DATAFORM 「だ、だめっ・・！ いやあああっ！！」
-		DATAFORM 「ああっ！ だめ、だめええっ！ ああああっ！！」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は男に組み敷かれアヌスに肉棒を突き込まれている。
-
-ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
-
-	PRINTFORML 「ひゃんっ、あっ、んっんっ、はぁっ・・・こんなっ・・太いのって・・きもちいっ・・」
-	PRINTFORML %CALLNAME:奴隷%は尻穴を客の阴茎で突かれながら、淫らな言葉を発している
-
-	;公众便所ではない売春
-ELSEIF 調教者 == 人物_客
-
-	PRINTFORML 「ひゃんっ、あっ、んっんっ、はぁっ・・・こんなっ・・太いのって・・きもちいっ・・」
-	PRINTFORML %CALLNAME:奴隷%は尻穴を客の阴茎で突かれながら、淫らな言葉を発している
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影？
 	IF CFLAG:奴隷:持帰分岐 == 100
@@ -807,50 +511,7 @@ RETURN 0
 #DIM 調教者
 #DIM 客の人数
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTDATAL
-		DATAFORM 「だっ、だめっ！ 中は、中はだめえええっ！」
-		DATAFORM 「いやっ・・いやああっ！ ぬいてくださいぃぃっ！」
-		DATAFORM 「い、いやっ、いやあああっ！！」
-	ENDDATA
-	PRINTFORML 男は容赦なく%CALLNAME:奴隷%の膣内に射精し、彼女の小さな性器を真っ白に染め抜いた。
-	IF TALENT:奴隷:处女 || CFLAG:奴隷:处女喪失中
-		PRINTFORML %ANATA_LOVER(奴隷)%に捧げられる筈だった純潔を散らされ、汚され、%CALLNAME:奴隷%はぼろぼろと涙をこぼした。
-		PRINTFORML （ごめんなさい・・ごめんなさい・・っ！）
-	ENDIF
-
-	;亲爱のみの場合は拉致監禁強姦
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTDATAL
-		DATAFORM 「だっ、だめっ！ 中は、中はだめえええっ！」
-		DATAFORM 「いやっ・・いやああっ！ ぬいてくださいぃぃっ！」
-		DATAFORM 「い、いやっ、いやあああっ！！」
-	ENDDATA
-	PRINTFORML 男は容赦なく%CALLNAME:奴隷%の膣内に射精し、彼女の小さな性器を真っ白に染め抜いた。
-
-ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
-
-	PRINTDATAL
-		DATAFORM 「んはぁぁあああっ！・・はぁ・・あついの・・いっぱい・・・」
-		DATAFORM 「ああああんっ！ いっぱい、いっぱいくるぅぅっ！」
-		DATAFORM 「あああっ！！ い、いきますっ、いっちゃいますぅ！！」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は胎内に放たれた客の熱を感じると、蕩けた瞳で余韻に浸った
-
-	;公众便所ではない売春
-ELSEIF 調教者 == 人物_客
-
-	PRINTDATAL
-		DATAFORM 「んはぁぁあああっ！・・はぁ・・あついの・・いっぱい・・・」
-		DATAFORM 「ああああんっ！ いっぱい、いっぱいくるぅぅっ！」
-		DATAFORM 「あああっ！！ い、いきますっ、いっちゃいますぅ！！」
-	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は胎内に放たれた客の熱を感じると、蕩けた瞳で余韻に浸った
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影？
 	IF CFLAG:奴隷:持帰分岐 == 100
@@ -939,30 +600,7 @@ RETURN 0
 #DIM 調教者
 #DIM 客の人数
 
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-
-	PRINTFORML 「いっ、いやああっ！ だめええええっ！！」
-	PRINTFORML 男は容赦なく%CALLNAME:奴隷%の腸内に射精し、彼女の体内を真っ白に染め抜いた。
-
-	;亲爱のみの場合は拉致監禁強姦
-ELSEIF TALENT:奴隷:亲爱
-
-	PRINTFORML 「いっ、いやああっ！ だめええええっ！！」
-	PRINTFORML 男は容赦なく%CALLNAME:奴隷%の腸内に射精し、彼女の体内を真っ白に染め抜いた。
-
-ELSEIF TALENT:奴隷:公众便所 && 調教者 == 人物_客
-
-	PRINTFORML 「んはぁぁあああっ！・・はぁ・・あついの・・いっぱい・・・」
-	PRINTFORML %CALLNAME:奴隷%は腸内に放たれた客の熱を感じると、蕩けた瞳で余韻に浸った
-
-	;公众便所ではない売春
-ELSEIF 調教者 == 人物_客
-
-	PRINTFORML 「んはぁぁあああっ！・・はぁ・・あついの・・いっぱい・・・」
-	PRINTFORML %CALLNAME:奴隷%は腸内に放たれた客の熱を感じると、蕩けた瞳で余韻に浸った
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	;AV摄影？
 	IF CFLAG:奴隷:持帰分岐 == 100
@@ -1014,42 +652,5 @@ ELSE
 	ENDIF
 	PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%の小菊から白濁が流れおちるのを眺めながら征服欲を満たしている
 
-ENDIF
-RETURN 0
-
-;==================================================
-;处女オークション開始
-;==================================================
-@NTR_KOJO_K9_VA_0(奴隷)
-#DIM 奴隷
-
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-	PRINTFORML 项圈に鎖を繋がれた%CALLNAME:奴隷%は%NTR_NAME(0)%に引かれてステージに立たされた。
-	PRINTFORML %NTR_NAME(0)%に言われたとおりの言葉をたどたどしく紡ぐ。
-	PRINTFORML 「ほ、本日は私のためにお集まりいただきまして、まことにありがとうございました」
-	PRINTFORML 「ど、どうか私の・・私の处女を、お、お買い上げ・・ください・・」
-	PRINTFORML 集まった客達の視線を浴び、羞恥と恐怖で震えるその姿はあまりにも可憐で、そして哀れだった。
-ELSE
-	PRINTFORML %NTR_NAME(0)%に目配せされた%CALLNAME:奴隷%はもじもじとしながら客達に挨拶した。
-	PRINTFORML 「ほ、本日は私のためにお集まりいただきまして、まことにありがとうございました」
-	PRINTFORML 「ど、どうか私の处女を、お、お買い上げください」
-	PRINTFORML %CALLNAME:奴隷%は集まった男たちの前で、彼女自身の处女を売り渡すことを公言した。
-ENDIF
-RETURN 0
-
-;==================================================
-;处女オークション終了
-;==================================================
-@NTR_KOJO_K9_VA_1(奴隷)
-#DIM 奴隷
-;亲爱かつ公众便所の場合は売春强迫
-IF TALENT:奴隷:亲爱 && TALENT:奴隷:公众便所
-	PRINTFORML 「は・・はい・・、ありがとう・・ざいました・・」
-	PRINTFORML %CALLNAME:奴隷%は彼女の处女を競り落とした客に微笑んでみせた。
-	PRINTFORML 微笑んだ彼女の頬に涙が一筋流れていた。
-ELSE
-	PRINTFORML 「は、はいっ、ありがとうございましたっ」
-	PRINTFORML %CALLNAME:奴隷%は彼女の处女を競り落とした客に微笑んだ。
 ENDIF
 RETURN 0

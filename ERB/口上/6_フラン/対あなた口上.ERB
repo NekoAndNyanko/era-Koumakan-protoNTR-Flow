@@ -277,20 +277,7 @@ RETURN 0
 @KOJO_MESSAGE_COM_K6_300_10_02_01(奴隷, 調教者)
 #DIM 奴隷
 #DIM 調教者
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML 「・・私だって・・あんなこと・・したくないよ・・」
-	PRINTFORML 「・・やめられるなら・・今すぐ・・」
-ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認
-	PRINTFORML 「ええーーっ！？ いまさら何を言っているの！？」
-	PRINTFORML 「%CALLNAME:奴隷%はね、あの人ともエッチしたいし、おじさま達やお兄様達ともエッチしたいもん！」
-	PRINTFORML 「放弃なんてやだやだ！」
-	IF TALENT:奴隷:人妻
-		PRINTFORML 「お嫁さんだけど他の人とエッチしていい、って言ってたよね！？」
-	ELSEIF TALENT:奴隷:恋慕
-		PRINTFORML 「コイビトだけど他の人とエッチしていい、って言ってたよね！？」
-	ENDIF
-	;快乐刻印浮気快乐刻印で分岐。その中でさらに好感度、屈服度で分岐
-ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+IF CHK_NTR_SATISFACTORY(奴隷) 
 	;快楽を覚えてしまっている場合０にはならない
 	TALENT:奴隷:浮気公認 = 浮気_浮気公認
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
@@ -327,9 +314,6 @@ RETURN 0
 @KOJO_MESSAGE_COM_K6_300_10_02_02(奴隷, 調教者)
 #DIM 奴隷
 #DIM 調教者
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML 「・・今のままでいいって・・本気で言ってるの・・？」
-ENDIF
 ;快乐刻印浮気快乐刻印で分岐。その中でさらに好感度、屈服度で分岐
 IF CHK_NTR_SATISFACTORY(奴隷) 
 	IF TALENT:奴隷:浮気公認 < MARK:奴隷:浮気快乐刻印
@@ -368,9 +352,6 @@ RETURN 0
 @KOJO_MESSAGE_COM_K6_300_10_02_03(奴隷, 調教者)
 #DIM 奴隷
 #DIM 調教者
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	PRINTFORML 「・・どうして・・どうしてそんなこと言うの？」
-ENDIF
 ;浮気公認Lvで分岐。その中でさらに好感度、屈服度で分岐できればよし
 SELECTCASE TALENT:奴隷:浮気公認
 	CASE 浮気_浮気公認 ;最低１からスタートなので発生しないはず
@@ -491,47 +472,6 @@ ELSEIF TALENT:奴隷:淫乱
 ENDIF
 RETURN 0
 
-
-;==================================================
-;300ex - 売春について - 鍵の有無、恋慕
-;==================================================
-@KOJO_MESSAGE_COM_K6_300_13_02(奴隷, 調教者)
-#DIM 奴隷
-#DIM 調教者
-#DIMS 関係
-
-;恋慕、鍵の有無で分岐
-IF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:人妻
-		関係 = %"フーフ"%
-	ELSE
-		関係 = %"コイビト"%
-	ENDIF
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML 「私のことを買ってくれたんだ？ 吼啊、%関係%だもんね！」
-	ELSE
-		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-			PRINTFORML 「たとえ%関係%でも、この贞操帯の鍵がないとセックスしちゃいけないんだって」
-			PRINTFORML 「鍵さえあれば、誰とだってエッチするのにね？」
-			PRINTFORML %CALLNAME:奴隷%は贞操帯を見せつけながら艶っぽい声で%CALLNAME:MASTER%にささやいた。
-		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
-			PRINTFORML 「たとえ%関係%でも、この贞操帯の鍵がないとセックスしちゃいけないんだよ？」
-			PRINTFORML %CALLNAME:奴隷%は贞操帯を見せつけながら%CALLNAME:MASTER%にささやいた。
-		ELSE
-			PRINTFORML 「たとえ%関係%でも、この贞操帯の鍵がないとセックスしちゃいけないの・・」
-			PRINTFORML %CALLNAME:奴隷%は辛そうに%CALLNAME:MASTER%にささやいた。
-		ENDIF
-	ENDIF
-ELSE
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML 「私のことを買ってくれたんだ？ 私とセックスしたいの？ 吼啊、いいよ？」
-	ELSE
-		PRINTFORML 「ごめんね・・この贞操帯の鍵がないとセックスしちゃいけないの」
-	ENDIF
-ENDIF
-RETURN 0
-
-
 ;==================================================
 ;会话拡張：结婚戒指について
 ;　前提：恋慕かつ人妻
@@ -540,26 +480,7 @@ RETURN 0
 #DIM 調教者
 #DIM 奴隷
 
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	;亲爱持ちでも项圈が優先
-	PRINTDATAL
-		DATALIST
-			DATAFORM 「ごめんね・・指輪は今はつけてないの。だって、私は『公众便所』だから誰かのお嫁さんじゃないの・・」
-			DATAFORM 「お金を払ってくれたお客様みんなのお嫁さんだから・・」
-			DATAFORM 「いつか解放されたら、胸を張ってあの指輪を着けるね」
-		ENDLIST
-	ENDDATA
-	PRINTFORML %"自分は『公众便所』だから、指輪は外して项圈をするよう命じられていると言われてしまった。"%
-ELSEIF TALENT:奴隷:公众便所
-	;项圈が優先
-	PRINTDATAL
-		DATALIST
-			DATAFORM 「指輪？もうつけてないよ。だって、お客様が邪魔だって言うんだもん」
-			DATAFORM 「それより見て。この项圈、私の名前が彫ってあるんだよ？」
-		ENDLIST
-	ENDDATA
-	PRINTFORML %"『お客様』に不評だから、指輪は外して项圈をする事にしたのだと言われてしまった。"%
-ELSEIF TALENT:奴隷:NTR
+IF TALENT:奴隷:NTR
 	;チョーカーが優先
 	PRINTFORML %"もう"+CALLNAME:MASTER+"のものではないのだから指輪をする必要は無いと言い切られた。"%
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
@@ -899,102 +820,6 @@ SELECTCASE BASE:PLAYER:精力
 		PRINTFORML 「まだまだ元気だよね。もっと搾ってあげるよ？
 ENDSELECT
 RETURN 1
-
-
-;==================================================
-;押し倒し中に贞操帯の期限切れになった時の口上(公众便所専用)
-;==================================================
-@NTR_MESSAGE_COM_K6_350_0_3(奴隷)
-#DIM 奴隷
-;公众便所
-IF TALENT:奴隷:公众便所
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「・・ごめんね、もう時間ぎれなの。%CALLNAME:奴隷%も、%CALLNAME:MASTER%ともっとエッチしたいけど、あの人がダメだって」
-		IF TALENT:奴隷:人妻
-			PRINTFORML 「夫婦なんだから、また誘ってくれるよね？」
-		ELSE
-			PRINTFORML 「恋人なんだから、また誘ってくれるよね？」
-		ENDIF
-	ELSE
-		PRINTFORML 「・・ごめんね、もう時間ぎれなの。%CALLNAME:奴隷%も楽しかったよ？」
-	ENDIF
-ELSE
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「・・・いいよ、もういいんだよ。鍵なんて無くても、これからは%CALLNAME:MASTER%だけの%CALLNAME:奴隷%よ」
-	ELSE
-		PRINTFORML 「もう、鍵なんて必要ないよ・・・そうだよね？」
-	ENDIF
-ENDIF
-RETURN 0
-
-
-;-------------------------------------------
-;訪問者の家におでかけするときの挨拶
-;	前提条件	浮気公認Lv >= 浮気_外泊公認、[亲爱][公众便所]
-;-------------------------------------------
-@KOJO_MESSAGE_K6_SeeYou_900_0(奴隷,同伴)
-#DIM 奴隷
-#DIM 同伴
-RETURN 0
-
-;-------------------------------------------
-;訪問者の家におでかけするときの挨拶
-;	前提条件	浮気公認Lv >= 浮気_外泊公認、[公众便所]
-;-------------------------------------------
-@KOJO_MESSAGE_K6_SeeYou_900_1(奴隷,同伴)
-#DIM 奴隷
-#DIM 同伴
-
-IF 同伴
-	PRINTFORML 「あ、見つけた。%CALLNAME:MASTER%、私この人のところにお泊りしてくるね♪」
-	PRINTFORML %CALLNAME:奴隷%は嬉しそうに%NTR_NAME(0)%の腕にしがみ付いている。
-ELSE
-	PRINTFORML 「あ、見つけた。%CALLNAME:MASTER%、私あの人のところにお泊りしてくるね♪」
-ENDIF
-; 今回が初めて
-IF EXP:奴隷:卖春经验 == 0
-	IF 同伴
-		PRINTFORML 「吼啊、お泊りだよ。今日が私の売春デビューなんだって」
-	ELSE
-		PRINTFORML 「吼啊、お泊りだよ。今日が私の売春デビューって、伝言があったの」
-	ENDIF
-ELSE
-	IF TALENT:奴隷:处女
-		PRINTFORML 「吼啊、お泊りだよ。だって、お客様が待ってるんだもの」
-	ELSE
-		IF 同伴
-			PRINTFORML 「吼啊、お泊りだよ。お客様からご指名があったんだって」
-		ELSE
-			PRINTFORML 「吼啊、お泊りだよ。お客様からご指名って、伝言があったの」
-		ENDIF
-	ENDIF
-ENDIF
-
-IF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:处女
-		PRINTFORML 「あとね、私のハジメテをオークションにかけるんだって」
-		PRINTFORML 「そうだよ。%MSG_LOVER(奴隷)%の%CALLNAME:MASTER%をさしおいて、他の人と初体験するんだよ」
-		IF 同伴
-			PRINTFORML 「・・あのね・・！！」
-			PRINTFORML 何かを言おうとする%CALLNAME:奴隷%だったが、%NTR_NAME(0)%に肩を抱き寄せられ言葉を飲み込んだ。
-		ELSE
-			PRINTFORML %CALLNAME:奴隷%は僅かに顔を曇らせ、小さな声で囁いた。
-			PRINTFORML 「・・あのね・・・・初めては・・好きな人としたかったな・・」
-		ENDIF
-		PRINTFORML 「・・それじゃ、行ってくるね」
-	ELSE
-		PRINTDATAL
-			DATAFORM 「そうだよ？ うふふ、他の人とエッチしてくるんだよ？」
-			DATAFORM 「そうだよ。%MSG_LOVER(奴隷)%の%CALLNAME:MASTER%をさしおいて、他の人とセックスしてくるの%MSG_HEART()%」
-			DATAFORM 「だから、今はもう私の身体はその人のものなの」
-		ENDDATA
-		PRINTFORML 「それじゃ、行ってくるね♪」
-	ENDIF
-ELSE
-	PRINTFORML 「それじゃ、行ってくるね♪」
-ENDIF
-
-RETURN 0
 
 ;-------------------------------------------
 ;訪問者の家におでかけするときの挨拶

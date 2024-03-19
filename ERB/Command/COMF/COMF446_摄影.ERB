@@ -321,7 +321,7 @@ ENDSELECT
 #DIM キャラ番号
 #DIM 部屋番号
 ;訪問者と一緒で、何かしらの行為中であれば寝取られ姿の摄影
-IF CFLAG:キャラ番号:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者との行為 != 0
+IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者との行為 != 0
 	SELECTCASE FLAG:訪問者との行為
 		CASE NTR_行为_キス
 			RETURNF 写真_NTR_キス
@@ -342,7 +342,7 @@ IF CFLAG:キャラ番号:現在位置 == FLAG:訪問者の現在位置 && FLAG:�
 	ENDSELECT
 ENDIF
 ;訪問者と一緒で、住人からのカウンターセクハラの場合
-IF CFLAG:キャラ番号:現在位置 == FLAG:訪問者の現在位置 && FLAG:訪問者との行為 == 0
+IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者との行為 == 0
 	SELECTCASE CFLAG:キャラ番号:NTRカウンターセクハラ
 		CASE NTR_CNT_接吻, NTR_CNT_深吻
 			RETURNF 写真_NTR_キス
@@ -395,7 +395,7 @@ RETURNF 写真_普段
 IF FLAG:訪問者との行為 == 0
 	RETURNF 写真詳細_なし
 ENDIF
-IF CFLAG:キャラ番号:現在位置 != FLAG:訪問者の現在位置
+IF CFLAG:キャラ番号:現在位置 != FLAG:访问者当前位置
 	RETURNF 写真詳細_なし
 ENDIF
 

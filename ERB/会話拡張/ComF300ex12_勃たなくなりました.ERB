@@ -21,9 +21,6 @@ ELSEIF !TALENT:奴隷:恋人
 ELSEIF CFLAG:調教者:勃起条件_キャラ > 0 || CFLAG:調教者:勃起条件_プレイ > 0
 	;すでに勃起する条件が設定されているとダメ
 	RETURN 0
-ELSEIF CFLAG:調教者:阴茎用贞操帯着用 == 0 && MAXBASE:調教者:勃起 <= 勃起制限
-	;勃起不全の場合だけ成立
-	RETURN 1
 ENDIF
 RETURN 0
 

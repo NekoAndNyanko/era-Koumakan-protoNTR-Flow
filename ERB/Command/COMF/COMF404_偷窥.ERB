@@ -4,6 +4,8 @@
 @COM404
 TFLAG:現在覗いている場所 = 0
 IF FLAG:Flow版本
+	;todo 偷窥入口
+	CALL COM404_01_TargetSelect()
 ELSE
 	CALL COM404_01_TargetSelect()
 ENDIF
@@ -103,8 +105,8 @@ RETURN 1
 #DIM 見付けた人数
 #DIMS 見付けたキャラ説明
 
-IF targetArea == FLAG:訪問者の現在位置
-	IF 位置_訪問者宅 != FLAG:訪問者の現在位置
+IF targetArea == FLAG:访问者当前位置
+	IF 位置_訪問者宅 != FLAG:访问者当前位置
 		CALL LOOK_WITH_VISITOR(targetArea, isSoundOnly)
 		RETURN 1
 	ENDIF
@@ -149,7 +151,7 @@ IF FLAG:侵入者の現在位置 == targetArea
 	ENDIF
 	見付けた人数++
 ENDIF
-IF FLAG:訪問者の現在位置 == targetArea
+IF FLAG:访问者当前位置 == targetArea
 	IF 見付けた人数
 		見付けたキャラ説明 += " 、 " + NTR_NAME(0)
 	ELSE
@@ -174,7 +176,7 @@ ELSE
 	ENDIF
 ENDIF
 
-IF BATHROOM(targetArea)
+IF 存在浴室(targetArea)
 	SOURCE:PLAYER:欲情 = 10
 ENDIF
 
@@ -237,7 +239,7 @@ RETURN 1
 訪問者との描写 = %""%
 訪問者との音声 = %""%
 
-IF FLAG:訪問者の現在位置 != targetArea
+IF FLAG:访问者当前位置 != targetArea
 	RETURN 0
 ENDIF
 
@@ -538,7 +540,7 @@ NEXT
 ;訪問者チェック
 IF FLG_LOOKED == 0
 	;パンチラを窥视ことのできる場所にいるかチェック
-	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, FLAG:訪問者の現在位置)
+	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, FLAG:访问者当前位置)
 	IF RSLT_CHK != -1 && RAND:2
 		CALL LOOK_PANCHIRA(MASTER, 人物_訪問者, CFLAG:MASTER:現在位置, RSLT_CHK)
 		FLG_LOOKED = 1
@@ -643,7 +645,6 @@ RETURN 0
 ;戻り値：0…誰かの名前　1…あなたの名前　-1…訪問者の名前
 @LOOK_MASTURBATION(奴隷, isSoundOnly)
 #DIM 奴隷
-#DIM 贞操帯着用中
 #DIM 自慰部位１
 #DIM 自慰感覚
 #DIM 戻り値
@@ -653,163 +654,97 @@ RETURN 0
 #DIMS 自慰行為音声
 ;自慰行動保存 Bit 0=行為C 1=行為V 2=行為A 3=行為B 4=2点行為 5=絶頂
 
-贞操帯着用中 = (下着名１_２(奴隷)=="贞操帯")
 自慰行為映像 = %CALLNAME:奴隷 + "在里面正"%
 自慰行為音声 = %CALLNAME:奴隷 + "从里面正"%
-IF 贞操帯着用中
-	自慰感覚 = 0
+IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
+	自慰行為映像 += "阴蒂"
+	自慰部位１ = 0
+	自慰感覚 = ABL:奴隷:Ｃ感觉
 	IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
-		;単一部位
-		IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
-			自慰行為映像 += "想触摸阴蒂而抠着"+下着名１_２(奴隷)+"的表面"
-		ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
-			自慰行為映像 += "想触摸阴道里而抠着"+下着名１_２(奴隷)+"的表面"
-		ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
-			自慰行為映像 += "想要触摸肛门而抠着"+下着名１_２(奴隷)+"的表面"
-		ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,3)
-			自慰感覚 = ABL:奴隷:Ｂ感觉
-			IF ABL:奴隷:Ｂ感觉 >= 4
-				自慰行為映像 += "用手指轻轻捏住乳头给予刺激"
-			ELSEIF TALENT:奴隷:胸部尺寸 >= 0
-				自慰行為映像 += "激烈的揉着胸部"
-			ELSE
-				自慰行為映像 += "像用手指抚摸般地爱抚"
-			ENDIF
-		ENDIF
-	ELSE
-		;複数部位
-		IF GETBIT(CFLAG:奴隷:自慰行動保存,3)
-			;胸とセット
-			IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
-				自慰行為映像 += "想触摸阴蒂而抠着"+下着名１_２(奴隷)+"的表面，一边"
-			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
-				自慰行為映像 += "想触摸阴道里而抠着"+下着名１_２(奴隷)+"的表面，一边"
-			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
-				自慰行為映像 += "想要触摸肛门而抠着"+下着名１_２(奴隷)+"的表面，一边"
-			ENDIF
-			IF ABL:奴隷:Ｂ感觉 >= 4
-				自慰行為映像 += "用手指轻轻捏住乳头给予刺激"
-			ELSEIF TALENT:奴隷:胸部尺寸 >= 0
-				自慰行為映像 += "激烈的揉着胸部"
-			ELSE
-				自慰行為映像 += "像用手指抚摸般地爱抚"
-			ENDIF
-			自慰感覚 = ABL:奴隷:Ｂ感觉
+		IF 自慰感覚 >= 4
+			自慰行為映像 += "用手指轻轻捏住给予刺激"
 		ELSE
-			;胸以外のセット、つまり刺激無し
-			IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
-				自慰部位１ = 0
-				自慰行為映像 += "阴蒂和"
-			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
-				自慰部位１ = 1
-				自慰行為映像 += "阴道内和"
-			ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
-				自慰部位１ = 2
-				自慰行為映像 += "肛门和"
-			ENDIF
-
-			IF 自慰部位１ != 0 && GETBIT(CFLAG:奴隷:自慰行動保存,0)
-				自慰行為映像 += "想触摸阴蒂而抠着"+下着名１_２(奴隷)+"的表面"
-			ELSEIF 自慰部位１ != 1 && GETBIT(CFLAG:奴隷:自慰行動保存,1)
-				自慰行為映像 += "想触摸阴道里而抠着"+下着名１_２(奴隷)+"的表面"
-			ELSEIF 自慰部位１ != 2 && GETBIT(CFLAG:奴隷:自慰行動保存,2)
-				自慰行為映像 += "想要触摸肛门而抠着"+下着名１_２(奴隷)+"的表面"
-			ENDIF
+			自慰行為映像 += "像用手指抚摸般地爱抚着"
 		ENDIF
+	ENDIF
+ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
+	自慰行為映像 += "膣内"
+	自慰部位１ = 1
+	自慰感覚 = ABL:奴隷:Ｖ感觉
+	IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+		IF 自慰感覚 >= 4
+			自慰行為映像 += "用插入阴道内两根手指在不停的搅弄着"
+		ELSE
+			自慰行為映像 += "用插入的手指刺激着阴道"
+		ENDIF
+		CALL 确认小穴颜色(奴隷)
+		CALL 确认小穴松弛度(奴隷)
+	ENDIF
+ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
+	自慰行為映像 +=  "菊花"
+	自慰部位１ = 2
+	自慰感覚 = ABL:奴隷:Ａ感觉
+	IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+		IF 自慰感覚 >= 4
+			自慰行為映像 +=  "用插入肛门的两根手指在肠子里不停的搅弄着"
+		ELSE
+			自慰行為映像 +=  "用插入肛门的手指刺激着肠子"
+		ENDIF
+		CALL 确认肛门颜色(奴隷)
+		CALL 确认肛门松弛度(奴隷)
 	ENDIF
 ELSE
-	;贞操帯なし、普通の自慰
-	IF GETBIT(CFLAG:奴隷:自慰行動保存,0)
-		自慰行為映像 += "阴蒂"
-		自慰部位１ = 0
-		自慰感覚 = ABL:奴隷:Ｃ感觉
-		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
-			IF 自慰感覚 >= 4
-				自慰行為映像 += "用手指轻轻捏住给予刺激"
-			ELSE
-				自慰行為映像 += "像用手指抚摸般地爱抚着"
-			ENDIF
-		ENDIF
-	ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,1)
-		自慰行為映像 += "膣内"
-		自慰部位１ = 1
-		自慰感覚 = ABL:奴隷:Ｖ感觉
-		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
-			IF 自慰感覚 >= 4
-				自慰行為映像 += "用插入阴道内两根手指在不停的搅弄着"
-			ELSE
-				自慰行為映像 += "用插入的手指刺激着阴道"
-			ENDIF
-			CALL 确认小穴颜色(奴隷)
-			CALL 确认小穴松弛度(奴隷)
-		ENDIF
-	ELSEIF GETBIT(CFLAG:奴隷:自慰行動保存,2)
-		自慰行為映像 +=  "菊花"
-		自慰部位１ = 2
-		自慰感覚 = ABL:奴隷:Ａ感觉
-		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
-			IF 自慰感覚 >= 4
-				自慰行為映像 +=  "用插入肛门的两根手指在肠子里不停的搅弄着"
-			ELSE
-				自慰行為映像 +=  "用插入肛门的手指刺激着肠子"
-			ENDIF
-			CALL 确认肛门颜色(奴隷)
-			CALL 确认肛门松弛度(奴隷)
-		ENDIF
+	IF 自慰感覚 >= 4
+		自慰行為映像 +=  "乳首"
 	ELSE
-		IF 自慰感覚 >= 4
-			自慰行為映像 +=  "乳首"
-		ELSE
-			自慰行為映像 +=  "胸"
-		ENDIF
-		自慰部位１ = 3
-		自慰感覚 = ABL:奴隷:Ｂ感觉
-		IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
-			IF 自慰感覚 >= 4
-				自慰行為映像 +=  "用手指轻轻捏住给予刺激"
-			ELSE
-				IF TALENT:奴隷:胸部尺寸 >= 0
-					自慰行為映像 +=  "激烈的揉着"
-				ELSE
-					自慰行為映像 +=  "用手指像抚摸般地爱抚着"
-				ENDIF
-				CALL 确认乳头颜色(奴隷)
-				CALL 确认乳头大小(奴隷)
-			ENDIF
-		ENDIF
+		自慰行為映像 +=  "胸"
 	ENDIF
-	IF GETBIT(CFLAG:奴隷:自慰行動保存,4)
-		自慰行為映像 +=  "、"
-		IF 自慰部位１ != 0 && GETBIT(CFLAG:奴隷:自慰行動保存,0)
-			自慰行為映像 +=  "阴蒂"
-			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｃ感觉)
-		ELSEIF 自慰部位１ != 1 && GETBIT(CFLAG:奴隷:自慰行動保存,1)
-			自慰行為映像 +=  "膣内"
-			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｖ感觉)
-		ELSEIF 自慰部位１ != 2 && GETBIT(CFLAG:奴隷:自慰行動保存,2)
-			自慰行為映像 +=  "菊花"
-			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ａ感觉)
-		ELSEIF 自慰部位１ != 3 && GETBIT(CFLAG:奴隷:自慰行動保存,3)
-			自慰行為映像 +=  "胸"
-			自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｂ感觉)
-		ENDIF
-		自慰行為映像 +=  "同时玩弄"
-		IF RAND(100) < 50
+	自慰部位１ = 3
+	自慰感覚 = ABL:奴隷:Ｂ感觉
+	IF !GETBIT(CFLAG:奴隷:自慰行動保存,4)
+		IF 自慰感覚 >= 4
+			自慰行為映像 +=  "用手指轻轻捏住给予刺激"
+		ELSE
+			IF TALENT:奴隷:胸部尺寸 >= 0
+				自慰行為映像 +=  "激烈的揉着"
+			ELSE
+				自慰行為映像 +=  "用手指像抚摸般地爱抚着"
+			ENDIF
 			CALL 确认乳头颜色(奴隷)
 			CALL 确认乳头大小(奴隷)
 		ENDIF
-		IF RAND(100) < 50
-			CALL 确认小穴颜色(奴隷)
-			CALL 确认小穴松弛度(奴隷)
-		ENDIF
-		IF RAND(100) < 50
-			CALL 确认肛门颜色(奴隷)
-			CALL 确认肛门松弛度(奴隷)
-		ENDIF
 	ENDIF
-	PRINTL
-
 ENDIF
+IF GETBIT(CFLAG:奴隷:自慰行動保存,4)
+	自慰行為映像 +=  "、"
+	IF 自慰部位１ != 0 && GETBIT(CFLAG:奴隷:自慰行動保存,0)
+		自慰行為映像 +=  "阴蒂"
+		自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｃ感觉)
+	ELSEIF 自慰部位１ != 1 && GETBIT(CFLAG:奴隷:自慰行動保存,1)
+		自慰行為映像 +=  "膣内"
+		自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｖ感觉)
+	ELSEIF 自慰部位１ != 2 && GETBIT(CFLAG:奴隷:自慰行動保存,2)
+		自慰行為映像 +=  "菊花"
+		自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ａ感觉)
+	ELSEIF 自慰部位１ != 3 && GETBIT(CFLAG:奴隷:自慰行動保存,3)
+		自慰行為映像 +=  "胸"
+		自慰感覚 = MAX(自慰感覚, ABL:奴隷:Ｂ感觉)
+	ENDIF
+	自慰行為映像 +=  "同时玩弄"
+	IF RAND(100) < 50
+		CALL 确认乳头颜色(奴隷)
+		CALL 确认乳头大小(奴隷)
+	ENDIF
+	IF RAND(100) < 50
+		CALL 确认小穴颜色(奴隷)
+		CALL 确认小穴松弛度(奴隷)
+	ENDIF
+	IF RAND(100) < 50
+		CALL 确认肛门颜色(奴隷)
+		CALL 确认肛门松弛度(奴隷)
+	ENDIF
+ENDIF
+PRINTL
 
 名前 = %"誰か"%
 戻り値 = 0

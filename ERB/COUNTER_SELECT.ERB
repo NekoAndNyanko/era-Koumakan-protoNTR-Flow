@@ -41,7 +41,7 @@ SIF 加害者 <= 0
 SIF CFLAG:加害者:睡眠
 	RETURN 0
 ;同じ場所に訪問者がいる場合
-IF CFLAG:加害者:現在位置 == FLAG:訪問者の現在位置
+IF CFLAG:加害者:現在位置 == FLAG:访问者当前位置
 	;NTRだとカウンター抑制
 	SIF TALENT:加害者:NTR
 		RETURN 0

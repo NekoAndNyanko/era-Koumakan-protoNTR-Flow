@@ -6,10 +6,6 @@
 
 FLAG:侵入者の現在位置 = 0
 ;-------------------------------------------------------------------------------
-[SKIPSTART]
-;肉便器获得判定
-CALL  CHK_RBQ_GET	
-[SKIPEND]
 
 FOR LOOP_CHR,1,CHARANUM
 	;-------------------------------------------------------------------------------
@@ -31,14 +27,6 @@ FOR LOOP_CHR,1,CHARANUM
 	;---------------------------------------------------------------------------
 	;寝取られ判定
 	CALL CHK_NTR_CHANGE(LOOP_CHR)
-[SKIPSTART]
-	;-------------------------------------------------------------------------------		
-	;管理人獲得判定
-	CALL CHK_CARETAKER_GET(LOOP_CHR)
-	;---------------------------------------------------------------------------
-	;公众便所判定
-	CALL CHK_PUBLIC_TOILET_CHANGE(LOOP_CHR)
-[SKIPEND]
 	;---------------------------------------------------------------------------
 	;淫乱・娼婦取得判定
 	CALL CHK_LEWDNESS_GET(LOOP_CHR)
@@ -79,11 +67,10 @@ BEGIN SHOP
 ;通常時は好感度1000以上が必要
 ;[淫乱]であれば好感度は1500以上が必要
 ;[娼婦]であれば好感度は2000以上が必要
-;;あなたが[肉便器]なら、さらに+2000
 ;[浮気癖]があれば1/3で済む
 ;NTR陷落经验１回につき5%上昇(寝取り返しは徐々に難しくなる)
 ;;		閾値 = (1000+(500*TALENT:奴隷:淫乱))*(100+EXP:奴隷:NTR陷落经验*5)/100
-閾値 = (1000+(500*TALENT:奴隷:淫乱)+(2000*TALENT:MASTER:肉便器))*(100+EXP:奴隷:NTR陷落经验*5)/100
+閾値 = (1000+(500*TALENT:奴隷:淫乱))*(100+EXP:奴隷:NTR陷落经验*5)/100
 IF TALENT:奴隷:浮気癖
 	閾値 /= 3
 ENDIF
@@ -134,20 +121,6 @@ IF CFLAG:奴隷:好感度 > 閾値 && EXP:奴隷:侍奉快乐经验 >= 30 && ABL
 	ENDIF
 	;主人の屈服度減算ボーナス
 	CFLAG:MASTER:屈服度 = MAX(CFLAG:MASTER:屈服度 - 20 - RAND:20, 0)
-	;恋慕獲得で公众便所も消失。贞操帯の鍵を持っていたらそれもクリア。
-	IF TALENT:奴隷:公众便所
-		PRINTL
-		PRINTFORML %CALLNAME:奴隷%从肉便器的身份中被解放出来
-		IF TALENT:奴隷:淫乱 == 2
-			PRINTFORML 但是到现在为止被许多男人购买过的身体并不会消失
-			PRINTFORMW %CALLNAME:奴隷%无法抹去娼女的污名
-		ENDIF
-		TALENT:奴隷:公众便所 = 0
-		IF 奴隷 == FLAG:贞操帯鍵購入フラグ
-			FLAG:贞操帯鍵購入フラグ = 0
-			FLAG:贞操帯鍵有効カウンタ = 0
-		ENDIF
-	ENDIF
 	IF CFLAG:奴隷:幽閉
 		PRINTL
 		PRINTFORML %CALLNAME:奴隷%的精神似乎稳定下来了
@@ -239,11 +212,6 @@ IF GET_NTR
 		TALENT:奴隷:NTR = 1
 		EXP:奴隷:NTR陷落经验 ++
 	ELSE
-[SKIPSTART]
-		;恋慕＋告白済みの状態でNTRを取得
-		SIF CFLAG:奴隷:NTR陥落イベントフラグ == 1 && GETBIT(CFLAG:奴隷:既成事実 , 0)
-			TRYCALL NTR陥落イベント, 奴隷
-[SKIPEND]
 		SIF CFLAG:奴隷:NTR陥落イベントフラグ == 1 && TALENT:奴隷:恋人
 			TRYCALL NTR陥落イベント, 奴隷
 		;初回
@@ -328,11 +296,6 @@ IF 閾値 >= 1000 && TALENT:奴隷:淫乱 == 0
 	TALENT:奴隷:淫乱 = 1
 	MAXBASE:奴隷:满足 = MAX(MAXBASE:奴隷:满足, 5000)
 ENDIF
-IF !FLAG:Flow版本 && TALENT:奴隷:公众便所 && EXP:奴隷:卖春经验 >= 200 && TALENT:奴隷:淫乱 == 1
-	PRINTFORML %CALLNAME:奴隷%似乎沉溺在用身体交换金钱的快感与快乐之中了…
-	PRINTFORMW %CALLNAME:奴隷%[娼女]获得了
-	TALENT:奴隷:淫乱 = 2
-ENDIF
 RETURN 0
 
 ;-------------------------------------------------------------------------------
@@ -381,7 +344,7 @@ RETURN 0
 @CHK_HEART_BREAK_CLEAR(奴隷)
 #DIM 奴隷
 
-IF TALENT:奴隷:伤心 && (TALENT:奴隷:亲爱 || TALENT:奴隷:淫乱 || TALENT:奴隷:NTR || TALENT:奴隷:公众便所)
+IF TALENT:奴隷:伤心 && (TALENT:奴隷:亲爱 || TALENT:奴隷:淫乱 || TALENT:奴隷:NTR)
 	PRINTFORMW %CALLNAME:奴隷%从伤心状态恢复了
 	TALENT:奴隷:伤心 = 0
 ENDIF
@@ -683,138 +646,3 @@ PRINTFORML 提高好感度而获得的奖金 {FLAG:今日好感度累计上升�
 LOCAL:2 += LOCAL:1 +  LOCAL:2 +FLAG:今日好感度累计上升值 * 5
 FLAG:今日好感度累计上升值 = 0
 MONEY += LOCAL:2
-
-[SKIPSTART]
-;-------------------------------------------------------------------------------
-;肉便器获得判定	
-@CHK_RBQ_GET
-#DIM LOOP_CHR
-#DIM 弱点计数
-;;掌握你弱点的住人在5人以上
-;;淫乱、娼妇、公众便所素质会降低人数要求1
-FOR LOOP_CHR,1,CHARANUM
-	IF  CFLAG:LOOP_CHR:MASTERの弱味
-		弱点计数 ++
-	ENDIF
-NEXT
-IF TALENT:MASTER:淫乱 || TALENT:MASTER:公众便所 
-	弱点计数 ++
-ENDIF	
-
-IF !TALENT:MASTER:肉便器 && 弱点计数 > 4
-	PRINTFORML ;%CALLNAME:MASTER%的抖M本质已经在馆内流传开了,在%CALLNAME:MASTER%不知道的时候,住民们已经做出了决议
-	PRINTFORML 红魔馆的主人雷米莉亚宣布,从今天开始,%CALLNAME:MASTER%将成为馆内地位最低的人
-	PRINTFORML 也就是『肉便器』	
-	PRINTFORMW %CALLNAME:MASTER%成为了『肉便器』
-	TALENT:MASTER:肉便器 = 1
-ENDIF
-RETURN 0
-
-;-------------------------------------------------------------------------------
-;管理人獲得判定
-@CHK_CARETAKER_GET(奴隷)
-	#DIM 奴隷
-	;;あなたが[肉便器]の時の、管理人獲得条件
-	;;・好感度は通常の恋慕並み（＝1000以上が必要）
-	;;　淫乱や娼婦は影響せず
-	;;・好感度順位が、１位
-	;;・まだ管理人がいない
-	;;・告白を受けている（CFLAG:既成事実,0）
-	;;・チルノ、大妖精、魔理沙は管理人になれない
-	;;・そもそもあなたが肉便器じゃないとだめ
-	;;--------------------------------------------
-	IF TALENT:MASTER:肉便器 && GETBIT(CFLAG:奴隷:既成事実,0) && WC_LOVEranking(奴隷) == 1 && CFLAG:奴隷:好感度 >= 1000 && CFLAG:PLAYER:WC_管理人は誰 == 0 && 奴隷 < 人物_琪露诺
-		;;管理人宣言
-		TRYCALLFORM KOJO_WC_COUNTER_caretaker_K{奴隷}
-
-		PRINTFORML %CALLNAME:奴隷%宣布，从今以后，自己就是肉便器%CALLNAME:MASTER%的管理人了。
-		IF 奴隷 == 人物_蕾米莉亚
-			PRINTFORML 因为%CALLNAME:奴隷%本身就是紅魔館的主人，所以没有任何人对此异议。
-		ELSE
-			PRINTFORML %CALLNAME:人物_蕾米莉亚%对于%CALLNAME:奴隷%成为肉便器的管理人，没有意见。
-		ENDIF
-		PRINTL
-		PRINTFORMW %CALLNAME:奴隷%获得了[管理人]的头衔
-		CFLAG:PLAYER:WC_管理人は誰 = 奴隷
-		TALENT:奴隷:管理人 = 1
-		IF CFLAG:奴隷:幽閉
-			PRINTL
-			PRINTFORML %CALLNAME:奴隷%的精神似乎稳定下来了
-			PRINTFORMW %CALLNAME:奴隷%从幽闭中走出来了
-			CFLAG:奴隷:幽閉 = 0
-		ENDIF
-	ENDIF
-
-RETURN 0
-
-;-------------------------------------------------------------------------------
-;公众便所判定
-@CHK_PUBLIC_TOILET_CHANGE(奴隷)
-	#DIM 奴隷
-
-	IF CFLAG:奴隷:屈服度 > 10000 && EXP:奴隷:浮気人数 >= 10 && !TALENT:奴隷:公众便所
-		; 初回
-		IF EXP:奴隷:公众便所陷落经验 == 0
-			PRINTFORML %CALLNAME:奴隷%被%NTR_NAME(0)%蹂躏的快乐被刻在身上
-			PRINTFORM %CALLNAME:奴隷%作为
-			IF TALENT:奴隷:恋慕
-				PRINTFORM %CALLNAME:MASTER%的%MSG_LOVER(奴隷)%的身体成为了
-			ENDIF
-			PRINTFORML %NTR_NAME(0)%的肉便器被客人取用
-			; 2回目以降
-		ELSE
-			PRINTFORML %CALLNAME:奴隷%无法忘记被%NTR_NAME(0)%蹂躏所获得的快乐
-			PRINTFORM %CALLNAME:奴隷%作为
-			IF TALENT:奴隷:恋慕
-				PRINTFORM %CALLNAME:MASTER%的%MSG_LOVER(奴隷)%的身体再次成为了
-			ENDIF
-			PRINTFORML %NTR_NAME(0)%的肉便器被客人取用
-		ENDIF
-		TRYCALLLIST
-			FUNC NTR_KOJO_K{奴隷}_13(奴隷)
-			FUNC NTR_KOJO_K_13(奴隷)
-		ENDFUNC
-		IF TALENT:奴隷:恋慕
-			PRINTFORML %CALLNAME:奴隷%以%CALLNAME:MASTER%的%MSG_LOVER(奴隷)%的身份宣告自己成为%CALLNAME:MASTER%的肉便器
-		ELSE
-			PRINTFORML %CALLNAME:奴隷%用黯淡浑浊的眼神宣告自己成为了肉便器
-		ENDIF
-		PRINTFORMW %CALLNAME:奴隷%获得了[公众便所]
-		PRINTFORML 作为隶属于%NTR_NAME(0)%的证明，%CALLNAME:奴隷%得到了一个项圈，每天都有佩戴项圈的义务。
-		PRINTFORML 项圈上刻着%CALLNAME:奴隷%的名字和作为娼女之证的淫靡纹样。
-		IF TALENT:奴隷:淫乱 == 2
-			PRINTFORML 娼女%CALLNAME:奴隷%回归的消息瞬间在原来的顾客间传开
-			PRINTFORMW 已经有很多客人在预约购买%CALLNAME:奴隷%的身体
-		ENDIF
-		PRINTFORML %NTR_NAME(0)%为了管理好这一切，%CALLNAME:奴隷%有义务穿着贞操带。
-		EQUIP:奴隷:下半身下着１ = 100
-		EQUIP:奴隷:下半身下着２ = 0
-		TALENT:奴隷:公众便所 = 1
-		EXP:奴隷:公众便所陷落经验 ++
-		IF !TALENT:奴隷:恋慕
-			CFLAG:奴隷:好感度 = 0
-			CFLAG:奴隷:既成事実 = 0
-			CFLAG:奴隷:亲密程度 = 0
-		ENDIF
-		IF ABL:奴隷:顺从 > 20
-			ABL:奴隷:顺从 = 10
-		ELSEIF ABL:奴隷:顺从 > 10
-			ABL:奴隷:顺从 = 5
-		ELSEIF ABL:奴隷:顺从 > 5
-			ABL:奴隷:顺从 = 3
-		ENDIF
-		IF ABL:奴隷:亲密 > 20
-			ABL:奴隷:亲密 = 10
-		ELSEIF ABL:奴隷:亲密 > 10
-			ABL:奴隷:亲密 = 5
-		ELSEIF ABL:奴隷:亲密 > 5
-			ABL:奴隷:亲密 = 3
-		ENDIF
-		;浮気公認時ペナルティ
-		IF TALENT:奴隷:浮気公認 > 0
-			ABL:奴隷:顺从 /= 2
-			ABL:奴隷:亲密 /= 2
-		ENDIF
-	ENDIF
-RETURN 0
-[SKIPEND]

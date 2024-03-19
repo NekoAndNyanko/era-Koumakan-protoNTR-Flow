@@ -79,7 +79,7 @@ IF 0 == RAND:10
 	PRINTL
 	; 一定の確率でアクションを起こす
 	; 状況で分岐。分岐した先の処理内で、さらに詳細な状況や場所で分岐
-	IF CFLAG:MASTER:現在位置 == FLAG:侵入者の現在位置 && FLAG:訪問者の現在位置 == FLAG:侵入者の現在位置
+	IF CFLAG:MASTER:現在位置 == FLAG:侵入者の現在位置 && FLAG:访问者当前位置 == FLAG:侵入者の現在位置
 		; MASTERと訪問者と同室
 		IF 1 <= 住人人数
 			; MASTER, 訪問者以外に住人がいる
@@ -110,7 +110,7 @@ IF 0 == RAND:10
 			; etc...
 			CALL INTRUDER_WITH_MASTER
 		ENDIF
-	ELSEIF FLAG:訪問者の現在位置 == FLAG:侵入者の現在位置
+	ELSEIF FLAG:访问者当前位置 == FLAG:侵入者の現在位置
 		; 訪問者と同室
 		IF 1 <= 住人人数
 			; 訪問者以外に住人がいる
@@ -303,7 +303,7 @@ IF 0 != 住人
 			IF FLAG:Flow版本
 				ぱんつ = NTR_PANTS(住人,1)
 			ELSE
-				ぱんつ = PANTS_TODAY_ADULT(住人, 1)
+				ぱんつ = PANTS_TODAY_ADULT(住人)
 			ENDIF
 			PRINTFORML こいしは%PANTSNAME(ぱんつ)%をみつけた。
 			;相手によってリアクション変化

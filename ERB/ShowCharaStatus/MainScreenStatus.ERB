@@ -40,12 +40,6 @@ ELSE
 			NEXT
 		ENDIF
 	ENDIF
-	IF FLAG:1840 == 10
-		FOR LOCAL:0, 1, CHARANUM
-			SIF CFLAG:(LOCAL:0):現在位置 == CFLAG:MASTER:現在位置
-				CALL NTR_COM416_BATHTIME_INTERRUPT
-		NEXT
-	ENDIF
 	VARSET LOCAL
 	CALL INHABITANT_DO		; 住人同士の交流
 	CALL VISITER_DO			; 訪問者のアクション
@@ -104,7 +98,7 @@ FOR LOCAL,0,CHARANUM
 			TCVAR:LOCAL:イきそう = 0
 		ENDIF
 	ENDIF
-	IF BATHROOM(CFLAG:LOCAL:現在位置)
+	IF 存在浴室(CFLAG:LOCAL:現在位置)
 		EQUIP:LOCAL:0 = 0
 		IF CFLAG:LOCAL:うふふ || TCVAR:LOCAL:130 > 2
 			TEQUIP:(LOCAL):浴场PLAY = 1
@@ -151,7 +145,7 @@ IF TARGET > 0
 	CALL INFO_PrintPalams(TARGET)
 ENDIF
 ;●マスター状態呼び出し
-PRINTFORML %"自分の状態："+SHOW_EQUIP_3(MASTER)%
+PRINTFORML %"自身状态："+SHOW_EQUIP_3(MASTER)%
 CALL INFO_PrintPalams(MASTER)
 IF TFLAG:COMABLE管理 == 2 || TFLAG:COMABLE管理 == 3
 	;うふふ中
@@ -188,56 +182,29 @@ PRINTL
 CUSTOMDRAWLINE =
 IF TFLAG:COMABLE管理 == 3 || TFLAG:COMABLE管理 == 4
 	;カウンター
-	;;別系統を呼び出すようにしたら、いろいろ楽かと思って
-	IF TALENT:MASTER:肉便器
-		FOR LOCAL,1,CHARANUM
-			SIF TARGET:LOCAL <= 0
-				CONTINUE
-			CALL EVENT_WC_COUNTER(TARGET:LOCAL,LOCAL)
-			CALL EVENT_WC_COUNTER_POSE(TARGET:LOCAL,LOCAL)
-		NEXT
-		CALL EVENT_WC_COUNTER_COMBINATION
-		FOR LOCAL,1,CHARANUM
-			SIF TARGET:LOCAL <= 0
-				CONTINUE
-			CALL EVENT_WC_COUNTER_SOURCE(TARGET:LOCAL,LOCAL)
-		NEXT
-		FOR LOCAL,1,CHARANUM
-			SIF TARGET:LOCAL <= 0
-				CONTINUE
-			IF TCVAR:(TARGET:LOCAL):20
-				CALL KOJO_MESSAGE_WC_COUNTER(TARGET:LOCAL)
-				DRAWLINE
-			ENDIF
-		NEXT
-		FOR LOCAL,1,CHARANUM
-			TRYCALL PREGNACY_S_EVENT(LOCAL)
-		NEXT
-	ELSE
-		FOR LOCAL,1,CHARANUM
-			SIF TARGET:LOCAL <= 0
-				CONTINUE
-			CALL EVENT_COUNTER(TARGET:LOCAL,LOCAL)
-			CALL EVENT_COUNTER_POSE(TARGET:LOCAL,LOCAL)
-		NEXT
-		CALL EVENT_COUNTER_COMBINATION
-		FOR LOCAL,1,CHARANUM
-			SIF TARGET:LOCAL <= 0
-				CONTINUE
-			CALL EVENT_COUNTER_SOURCE(TARGET:LOCAL,LOCAL)
-		NEXT
-		FOR LOCAL,1,CHARANUM
-			SIF TARGET:LOCAL <= 0
-				CONTINUE
-			IF TCVAR:(TARGET:LOCAL):20
-				CALL KOJO_MESSAGE_COUNTER(TARGET:LOCAL)
-				DRAWLINE
-			ENDIF
-		NEXT
-		FOR LOCAL,1,CHARANUM
-			TRYCALL PREGNACY_S_EVENT(LOCAL)
-		NEXT
-	ENDIF
+	FOR LOCAL,1,CHARANUM
+		SIF TARGET:LOCAL <= 0
+			CONTINUE
+		CALL EVENT_COUNTER(TARGET:LOCAL,LOCAL)
+		CALL EVENT_COUNTER_POSE(TARGET:LOCAL,LOCAL)
+	NEXT
+	CALL EVENT_COUNTER_COMBINATION
+	FOR LOCAL,1,CHARANUM
+		SIF TARGET:LOCAL <= 0
+			CONTINUE
+		CALL EVENT_COUNTER_SOURCE(TARGET:LOCAL,LOCAL)
+	NEXT
+	FOR LOCAL,1,CHARANUM
+		SIF TARGET:LOCAL <= 0
+			CONTINUE
+		IF TCVAR:(TARGET:LOCAL):20
+			CALL KOJO_MESSAGE_COUNTER(TARGET:LOCAL)
+			DRAWLINE
+		ENDIF
+	NEXT
+	FOR LOCAL,1,CHARANUM
+		TRYCALL PREGNACY_S_EVENT(LOCAL)
+	NEXT
 ENDIF
 RETURN 0
 
@@ -296,17 +263,6 @@ REPEAT 8
 		PRINT [跳蛋挿入中]
 	ELSEIF COUNT == 4 && CFLAG:MASTER:跳蛋A挿入 != 0
 		PRINT [跳蛋挿入中]
-	ENDIF
-	IF COUNT == 3 && CFLAG:MASTER:WC_振动棒装着
-		PRINT [振动棒挿入中]
-	ELSEIF COUNT == 3 && CFLAG:MASTER:WC_跳蛋Ｖ装着
-		PRINT [跳蛋挿入中]
-	ELSEIF COUNT == 4 && CFLAG:MASTER:WC_肛门振动棒装着
-		PRINT [肛门振动棒挿入中]
-	ELSEIF COUNT == 4 && CFLAG:MASTER:WC_跳蛋Ａ装着
-		PRINT [跳蛋挿入中]
-	ELSEIF COUNT == 5 && CFLAG:MASTER:WC_乳头夹装着
-		PRINT [乳头夹装着中]
 	ENDIF
 	PRINTL 
 REND
@@ -523,41 +479,6 @@ SIF CFLAG:(ARG:0):跳蛋挿入
 	LOCALS:0 = %LOCALS:0+"跳蛋挿入中  "%
 SIF CFLAG:(ARG:0):跳蛋A挿入
 	LOCALS:0 = %LOCALS:0+"菊花跳蛋挿入中  "%
-SIF CFLAG:(ARG:0):阴茎用贞操帯着用
-	LOCALS:0 = %LOCALS:0+"阴茎用贞操帯着用中  "%
-IF TALENT:(ARG:0):公众便所 && !FLAG:屏蔽部分貞操帶
-	LOCALS:0 = %LOCALS:0+"贞操帯着用中  "%
-ELSEIF CFLAG:PLAYER:WC_あなたに贞操帯を着けた人
-	LOCALS:0 = %LOCALS:0+"贞操帯着用中  "%
-ENDIF
-SIF CFLAG:(ARG:0):WC_乳头夹装着 > 1
-	LOCALS:0 = %LOCALS:0+"乳头夹動作中  "%
-SIF CFLAG:(ARG:0):WC_阴蒂夹装着 > 1
-	LOCALS:0 = %LOCALS:0+"阴蒂夹動作中  "%
-SIF CFLAG:(ARG:0):WC_振动棒装着 > 1
-	LOCALS:0 = %LOCALS:0+"振动棒動作中  "%
-SIF CFLAG:(ARG:0):WC_肛门振动棒装着 > 1
-	LOCALS:0 = %LOCALS:0+"肛门振动棒動作中  "%
-SIF CFLAG:(ARG:0):WC_跳蛋Ｃ装着 > 1
-	LOCALS:0 = %LOCALS:0+"Ｃ跳蛋動作中  "%
-SIF CFLAG:(ARG:0):WC_跳蛋Ｖ装着 > 1
-	LOCALS:0 = %LOCALS:0+"跳蛋動作中  "%
-SIF CFLAG:(ARG:0):WC_跳蛋Ａ装着 > 1
-	LOCALS:0 = %LOCALS:0+"菊花跳蛋動作中  "%
-SIF CFLAG:(ARG:0):WC_乳头夹装着 == 1
-	LOCALS:0 = %LOCALS:0+"乳头夹停止中  "%
-SIF CFLAG:(ARG:0):WC_阴蒂夹装着 == 1
-	LOCALS:0 = %LOCALS:0+"阴蒂夹停止中  "%
-SIF CFLAG:(ARG:0):WC_振动棒装着 == 1
-	LOCALS:0 = %LOCALS:0+"振动棒動作中  "%
-SIF CFLAG:(ARG:0):WC_肛门振动棒装着 == 1
-	LOCALS:0 = %LOCALS:0+"肛门振动棒停止中  "%
-SIF CFLAG:(ARG:0):WC_跳蛋Ｃ装着 == 1
-	LOCALS:0 = %LOCALS:0+"Ｃ跳蛋停止中  "%
-SIF CFLAG:(ARG:0):WC_跳蛋Ｖ装着 == 1
-	LOCALS:0 = %LOCALS:0+"跳蛋停止中  "%
-SIF CFLAG:(ARG:0):WC_跳蛋Ａ装着 == 1
-	LOCALS:0 = %LOCALS:0+"菊花跳蛋停止中  "%
 RETURNF LOCALS:0
 
 ;-------------------------------------------------------------------------------
@@ -658,7 +579,6 @@ FOR 奴隷,1,CHARANUM
 	CFLAG:奴隷:屈服度 = MAX(0,CFLAG:奴隷:屈服度)
 	;好感度補正、基準は0
 	好感度基準値 = 0
-	好感度基準値 += TALENT:奴隷:管理人 * 10                           ;管理人(10)
 	好感度基準値 += TALENT:奴隷:恋慕 * 10                             ;恋慕(10)
 	好感度基準値 += GET_MARK_LEVEL(奴隷,刻印番号_屈服刻印,MASTER) * 3 ;屈服刻印(LV×3)
 	好感度基準値 += GET_MARK_LEVEL(奴隷,刻印番号_快乐刻印,MASTER) * 3 ;快乐刻印(LV×3)
@@ -677,24 +597,17 @@ FOR 奴隷,1,CHARANUM
 	馴れ合い上限値 += TALENT:奴隷:恋人
 	馴れ合い上限値 += (TALENT:奴隷:淫乱 > 0)        ;淫乱/娼婦なら積極的にセクハラしてくる。上限ランクが増える。
 
-	IF TALENT:MASTER:肉便器 || CFLAG:奴隷:MASTERの弱味
-		;MASTERの弱味を握っているなら積極的にセクハラしてくる。基準値に+5して上限ランクを+2に
-		;「あなた」が肉便器の場合は、弱味を握られているものとして扱う。基準値に+5して上限ランクを+2に
-		好感度基準値 += 5
-		馴れ合い上限値 += 2
-	ELSE
-		;弱みを握っていないなら欲情補正(0.5～1.0倍)
-		好感度基準値 = 好感度基準値 * (5000 + MIN(PALAM:奴隷:欲情,5000)) / 10000
-	ENDIF
+	;弱みを握っていないなら欲情補正(0.5～1.0倍)
+	好感度基準値 = 好感度基準値 * (5000 + MIN(PALAM:奴隷:欲情,5000)) / 10000
 
 	IF CFLAG:奴隷:怒意 || CFLAG:奴隷:睡眠
 		;怒意 or 睡眠なら最大ランクは０
 		馴れ合い上限値 = 0
 	ENDIF
 
-	;馴れ合い基準値50(一線超えない場合60)毎に仮ランク１、NTRや公众便所がある場合は仮ランクが減る
-	;NTRや公众便所(管理状態)でも、我慢できなくなれば的な表現。
-	仮強度 = MAX( 好感度基準値 / (50+TALENT:奴隷:难以越过的界线*10) - (TALENT:奴隷:NTR + TALENT:奴隷:公众便所) , 0 )
+	;馴れ合い基準値50(一線超えない場合60)毎に仮ランク１、NTRがある場合は仮ランクが減る
+	;NTRでも、我慢できなくなれば的な表現。
+	仮強度 = MAX( 好感度基準値 / (50+TALENT:奴隷:难以越过的界线*10) - (TALENT:奴隷:NTR) , 0 )
 	;最大ランクまでに切り詰める
 	CFLAG:奴隷:亲密程度 = MIN( 仮強度 , 馴れ合い上限値 )
 	;DEBUGPRINTFORML %CALLNAME:奴隷+"(CFLAG:亲密程度"%{CFLAG:奴隷:亲密程度}%")"%
@@ -718,7 +631,7 @@ IF (LOCAL:1 && CFLAG:(LOCAL:1):うふふ) || CFLAG:MASTER:うふふ == 3
 		ELSE
 			PRINTFORMW %CALLNAME:(LOCAL:1)%との情事を見られてしまった！
 			;伤心判定
-			SIF TALENT:ARG:恋慕 && !TALENT:ARG:亲爱 && !TALENT:ARG:淫乱 && !TALENT:ARG:NTR && !TALENT:ARG:公众便所
+			SIF TALENT:ARG:恋慕 && !TALENT:ARG:亲爱 && !TALENT:ARG:淫乱 && !TALENT:ARG:NTR
 				LOCAL:4 = 1
 		ENDIF
 		IF LOCAL:4 == 1
@@ -1161,8 +1074,8 @@ IF 奴隷 && !CFLAG:奴隷:睡眠
 	ELSEIF CFLAG:奴隷:うふふ == 2
 		;押し倒し(2)時
 		TFLAG:COMABLE管理 = 3
-	ELSEIF TCVAR:MASTER:馴れ合い強度 > 2 && !同室人数 && BASE:奴隷:满足*2 < MAXBASE:奴隷:满足 && !OPENPLACE(POS_NOW) && POS_NOW != FLAG:訪問者の現在位置 && !TALENT:NTR && !TALENT:TARGET:公众便所 && CHK_350_STAIN_SEMEN(奴隷) && CFLAG:奴隷:性欲 > 25 && COM417_is_Protected_CheckOnly(MASTER,奴隷,淫纹_太股) == 0
-		;あなたの馴れ合い強度が3以上で、対象が满足状態でなく、密室で、訪問者がいなく、NTRでも公众便所でもない場合は押し倒される
+	ELSEIF TCVAR:MASTER:馴れ合い強度 > 2 && !同室人数 && BASE:奴隷:满足*2 < MAXBASE:奴隷:满足 && !OPENPLACE(POS_NOW) && POS_NOW != FLAG:访问者当前位置 && !TALENT:NTR && CHK_350_STAIN_SEMEN(奴隷) && CFLAG:奴隷:性欲 > 25 && COM417_is_Protected_CheckOnly(MASTER,奴隷,淫纹_太股) == 0
+		;あなたの馴れ合い強度が3以上で、対象が满足状態でなく、密室で、訪問者がいなく、NTRでもない場合は押し倒される
 		;如果集齐了淫纹 只能在淫纹失效时逆推
 		;オープンスペース（正門、広間、庭、二階踊り場、廊下）では押し倒されない
 		;精液汚れによる押し倒し可否で失敗すると押し倒されない
@@ -1189,33 +1102,10 @@ IF 奴隷 && !CFLAG:奴隷:睡眠
 		告白判定値 += BASE:气氛 / 50                                  ;气氛による増加:0～30
 		告白判定値 += (1000 - BASE:理性) / 30                           ;理性による増加:0～33
 		;NTR時告白してこない
-		;;あなたが肉便器の時は、その限りではない（恋情ではないから）
-		IF TALENT:NTR && !TALENT:MASTER:肉便器
-			;ToDo 判定に好意度を含めるか？
-			;屈服度の方が高いとき告白できない。
-		ELSEIF CFLAG:屈服度 > CFLAG:好感度 && !TALENT:MASTER:肉便器
-			IF RAND:5 == 0
-				;PRINTFORMW %CALLNAME:TARGET%は%CALLNAME:MASTER%に恋情を伝えようとしたが、訪問者を恐れてしまい果たせなかった。
-			ENDIF
-		ELSE
-			IF 告白判定値 > 180 + TALENT:难以越过的界线 * 20
-				IF TALENT:MASTER:肉便器 && TARGET <= 人物_艾丽娅
-					PRINTFORMW %CALLNAME:TARGET%は%CALLNAME:MASTER%のことを気に入ったと言ってくれた。
-				ELSE
-					PRINTFORMW %CALLNAME:TARGET%向%CALLNAME:MASTER%诉说了自己的恋情・・・・・・
-				ENDIF
-				CALL KOJO_EVENT(13, TARGET)
-				IF TALENT:MASTER:肉便器
-					IF TARGET <= 人物_艾丽娅
-						PRINTFORMW これからは%CALLNAME:MASTER%からも積極的に侍奉するようにと言う%CALLNAME:TARGET%の頬が、いくらか上気している……
-					ELSE
-						PRINTFORMW %CALLNAME:MASTER%は自分のような者でもいいのだろうかと戸惑いながらも、%CALLNAME:TARGET%の告白を受け入れた……
-					ENDIF
-				ELSE
-					PRINTFORMW %CALLNAME:MASTER%红着脸接受了%CALLNAME:TARGET%的告白……
-				ENDIF
-				TALENT:TARGET:恋人 = 1
-			ENDIF
+		IF 告白判定値 > 180 + TALENT:难以越过的界线 * 20
+			PRINTFORMW %CALLNAME:TARGET%向%CALLNAME:MASTER%诉说了自己的恋情・・・・・・
+			PRINTFORMW %CALLNAME:MASTER%红着脸接受了%CALLNAME:TARGET%的告白……
+			TALENT:TARGET:恋人 = 1
 		ENDIF
 	ELSE
 		TFLAG:COMABLE管理 = 1
@@ -1236,7 +1126,7 @@ IF FLAG:侵入者の現在位置 == POS_NOW
 	同室人数++
 ENDIF
 ;侵入者
-IF FLAG:訪問者の現在位置 == POS_NOW
+IF FLAG:访问者当前位置 == POS_NOW
 	IF 同室人数
 		PRINTFORM %"、"%
 	ENDIF

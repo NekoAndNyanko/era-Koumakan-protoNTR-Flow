@@ -1,11 +1,8 @@
 ﻿
-@NTR陥落イベント(奴隷, イベント種別)
+@NTR陥落イベント(奴隷)
 #DIM 奴隷
-#DIM イベント種別	;0=NTR取得 1=公众便所取得
 
-IF イベント種別 == 0
-	CALL NTR陥落イベント_NTR口上(奴隷)
-ENDIF
+CALL NTR陥落イベント_NTR口上(奴隷)
 
 CFLAG:奴隷:NTR陥落イベントフラグ = 2
 RETURN

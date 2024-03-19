@@ -10,7 +10,6 @@ FOR LOOP_I,1,CHARANUM
 	奴隷 = TARGET:LOOP_I
 	;NGの場合もあるので後でフラグを立てる。
 	;CFLAG:奴隷:うふふ = 1
-	CALL CHK_350_WC_KEY(奴隷)
 	IF 0 == RESULT
 		RETURN 0
 	ENDIF
@@ -35,50 +34,6 @@ NEXT
 CFLAG:MASTER:うふふ = 1
 TIME += 5
 TEQUIP:眼罩 = CFLAG:眼罩
-RETURN 1
-
-;公众便所押し倒し可否チェック
-;  戻り値： 1: 押し倒し成功
-;           0: 押し倒し失敗
-@CHK_350_WC_KEY(奴隷)
-#DIM 奴隷
-IF TALENT:奴隷:公众便所 && EQUIP:奴隷:下半身下着１ == 100
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		;公众便所相手に鍵を買っていた場合
-		IF CFLAG:奴隷:NTR贞操帯反応
-			;公众便所自身が贞操帯の鍵を認識していない場合
-			IF TCVAR:奴隷:馴れ合い強度 < 2
-				;公众便所がその気になってないのに押し倒した場合
-				PRINTFORML %CALLNAME:奴隷%不由自主地想把%CALLNAME:MASTER%推开
-				PRINTFORML 但是在看见贞操带钥匙之后，马上就放弃抵抗了。
-				CFLAG:奴隷:ぱんつ確認 = 1
-			ELSE
-				;公众便所がその気になってる時に押し倒した場合
-				PRINTFORML %CALLNAME:奴隷%摸着自己的贞操带，问%CALLNAME:MASTER%什么时候才会买下钥匙
-				PRINTFORML %CALLNAME:MASTER%把刚买的钥匙亮出来，%CALLNAME:奴隷%打开两脚抚摸着钥匙孔。
-				CFLAG:奴隷:ぱんつ確認 = 1
-			ENDIF
-			CALL NTR_LOCK_REACTION(奴隷)
-		ELSE
-			;公众便所自身が贞操帯の鍵を認識している場合
-			IF TCVAR:奴隷:馴れ合い強度 < 2
-				;公众便所がその気になってないのに押し倒した場合
-				PRINTFORML %CALLNAME:奴隷%稍微露出一点抵抗的样子，马上就卸掉了力量接手了%CALLNAME:MASTER%。
-			ELSE
-				;公众便所がその気になってる時に押し倒した場合
-				PRINTFORML %CALLNAME:奴隷%在%CALLNAME:MASTER%面前露出了贞操带，并且要求%CALLNAME:MASTER%快点用钥匙打开。
-				CFLAG:奴隷:ぱんつ確認 = 1
-			ENDIF
-		ENDIF
-	ELSE
-		PRINTFORML %CALLNAME:MASTER+"接近的时候，"+CALLNAME:奴隷+"展示出了上锁的贞操带，并说『"+CALLNAME:奴隷+"』是"+NTR_NAME(0)+"的商品，如果想要使用的话就要从"+NTR_NAME(0)+"那里购买钥匙，然后拒绝了"+CALLNAME:MASTER%
-		CFLAG:奴隷:ぱんつ確認 = 1
-		CFLAG:奴隷:うふふ = 0
-		CFLAG:MASTER:うふふ = 0
-		TIME += 5
-		RETURN 0
-	ENDIF
-ENDIF
 RETURN 1
 
 ;精液汚れによる押し倒し可否チェック(メッセージあり)
