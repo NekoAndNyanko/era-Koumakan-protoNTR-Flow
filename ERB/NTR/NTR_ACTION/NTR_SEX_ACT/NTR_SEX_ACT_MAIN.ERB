@@ -15,24 +15,6 @@ ENDIF
 IF (TALENT:奴隷:浮気公認 == 浮気_性交公認) && ( 100 < RAND:(CFLAG:奴隷:好感度) )
 	訪問者气氛 = MIN(訪問者气氛, NTR_MOOD_性交)
 ENDIF
-[SKIPSTART]
-IF CFLAG:奴隷:睡眠 && ((IS_NTR_ATTACK_LOVER_ONLY() && TALENT:奴隷:恋慕) || TALENT:奴隷:NTR)
-	訪問者气氛 = 0
-	;睡姦実行
-	CALL VISITER_FRIENDSHIP_SLEEP(奴隷)
-ELSEIF CFLAG:奴隷:自慰中 && !TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:睡眠
-	; 自慰目撃による弱み獲得
-	CALL NTR_GET_WEAKNESS_1(奴隷)
-ELSEIF RAND:100 < 30 && CFLAG:奴隷:自慰中 && TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:NTR野外調教  && !CFLAG:奴隷:睡眠
-	; 弱みを握られた状態で自慰を目撃されるとNTR野外調教開始
-	SIF IS_NTR_EXHIBITION()
-		CALL NTR_EXHIBITION_START(奴隷)
-ELSEIF RAND:100 < 5 && TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:NTR野外調教 && !CFLAG:奴隷:睡眠 
-	; 弱みを握られた状態で5%でNTR野外調教開始
-	SIF IS_NTR_EXHIBITION()
-		CALL NTR_EXHIBITION_START(奴隷)
-ENDIF
-[SKIPEND]
 IF CFLAG:奴隷:自慰中 && !TALENT:奴隷:被访问者抓到把柄 && !CFLAG:奴隷:睡眠
 	;被发现自慰而被握住把柄
 	CALL NTR_GET_WEAKNESS_1(奴隷)

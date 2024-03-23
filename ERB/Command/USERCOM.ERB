@@ -174,8 +174,6 @@ ENDIF
 ;FIXME:関数の説明を書いてください
 ;@return 1:xxx,0:xxx
 @USERCOM
-SIF RESULT == 99999
-	FLAG:真实模式 = FLAG:真实模式 ? 0 # 1
 IF RESULT >= 0 && RESULT <= 700
 	IF RESULT == 351
 		CALL COM_ABLE351

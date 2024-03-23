@@ -26,9 +26,9 @@ SELECTCASE 当前目的地
 				RETURNF 位置_红魔馆_正门
 			ELSEIF GROUPMATCH(出发地, 位置_红魔馆_仓库, 位置_红魔馆_后院, 位置_红魔馆_屋外厕所)
 				RETURNF 位置_红魔馆_厨房
-			ELSEIF GROUPMATCH(出发地, 位置_红魔馆_帕秋莉私室, 位置_红魔馆_小恶魔私室)
-				RETURNF 位置_红魔馆_大图书馆
-			ELSE
+			ELSEIF 出发地 == 位置_红魔馆_更衣室
+				RETURNF 位置_红魔馆_地下室走廊
+			ELSEIF GROUPMATCH(出发地, 位置_红魔馆_二楼走廊, 位置_红魔馆_蕾米莉亚私室)
 				RETURNF 位置_红魔馆_二楼楼梯间
 			ENDIF
 		ENDIF
@@ -41,7 +41,11 @@ SELECTCASE 当前目的地
 	CASE 位置_红魔馆_大图书馆
 		RETURNF 位置_红魔馆_大厅
 	CASE 位置_红魔馆_厨房
-		RETURNF 位置_红魔馆_大厅
+		IF GROUPMATCH(出发地, 位置_红魔馆_仓库, 位置_红魔馆_屋外厕所)
+			RETURNF 位置_红魔馆_后院
+		ELSE
+			RETURNF 位置_红魔馆_大厅
+		ENDIF
 	CASE 位置_红魔馆_仓库
 		RETURNF 位置_红魔馆_后院
 	CASE 位置_红魔馆_帕秋莉私室

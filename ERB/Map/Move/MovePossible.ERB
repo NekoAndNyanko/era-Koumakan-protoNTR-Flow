@@ -10,8 +10,6 @@ SELECTCASE 出发地
 	CASE 位置_红魔馆_正门
 		SIF 目的地 == 位置_红魔馆_大厅
 			RETURNF 1
-		SIF 目的地 == 位置_红魔馆_仓库
-			RETURNF 1
 		SIF 目的地 == 位置_红魔馆_守卫小屋
 			RETURNF 1
 		SIF 目的地 == 位置_红魔馆_后院
@@ -57,8 +55,6 @@ SELECTCASE 出发地
 		SIF 目的地 == 位置_红魔馆_后院
 			RETURNF 1
 	CASE 位置_红魔馆_仓库
-		SIF 目的地 == 位置_红魔馆_正门
-			RETURNF 1
 		SIF 目的地 == 位置_红魔馆_后院
 			RETURNF 1
 	CASE 位置_红魔馆_帕秋莉私室
@@ -70,8 +66,6 @@ SELECTCASE 出发地
 	CASE 位置_红魔馆_守卫小屋
 		SIF 目的地 == 位置_红魔馆_正门
 			RETURNF 1
-		SIF 目的地 == 位置_红魔馆_后院
-			RETURNF 1
 		SIF 目的地 == 位置_红魔馆_屋外厕所
 			RETURNF 1
 	CASE 位置_红魔馆_后院
@@ -80,8 +74,6 @@ SELECTCASE 出发地
 		SIF 目的地 == 位置_红魔馆_厨房
 			RETURNF 1
 		SIF 目的地 == 位置_红魔馆_仓库
-			RETURNF 1
-		SIF 目的地 == 位置_红魔馆_守卫小屋
 			RETURNF 1
 		SIF 目的地 == 位置_红魔馆_屋外厕所
 			RETURNF 1
@@ -204,6 +196,8 @@ SELECTCASE 出发地
 		SIF 目的地 == 位置_红魔馆_一楼厕所
 			RETURNF 1
 	CASE 位置_红魔馆_更衣室
+		SIF 目的地 == 位置_红魔馆_大浴场
+			RETURNF 1
 		SIF 目的地 == 位置_红魔馆_地下室走廊
 			RETURNF 1
 	CASE 位置_红魔馆_地下房间甲
