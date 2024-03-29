@@ -1,7 +1,0 @@
-﻿性交系の分岐だけ細分化されまくってますが減らすも増やすも手を出そうと考えた方のお好きにいじってください。
-
-作る際には
-@INHABITANT_FRIENDSHIP_KOJO_KX_0(LOCAL:0,LOCAL:1,LOCAL:2,LOCAL:3)
-の KX の X をキャラ番号にしてください。
-例：美鈴の場合
-@INHABITANT_FRIENDSHIP_KOJO_K1_0(LOCAL:0,LOCAL:1,LOCAL:2,LOCAL:3)
