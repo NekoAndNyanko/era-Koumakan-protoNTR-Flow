@@ -1,0 +1,340 @@
+﻿;-------------------------------------------------------------------------------
+;実行可否判定を行う
+@ACTABLE(加害者,カウンター行為)
+	#FUNCTION
+	#DIM 加害者
+	#DIM カウンター行為
+	VARSET LOCAL
+	;前のキャラが何をしたかをLOCAL:100〜に出力
+	FOR LOCAL,1,CHARANUM
+		SIF TARGET:LOCAL <= 0
+			CONTINUE
+		SIF TCVAR:(TARGET:LOCAL):20
+			LOCAL:(100 + TCVAR:(TARGET:LOCAL):20) ++
+	NEXT
+	;実行可否判定本体
+	SELECTCASE カウンター行為
+		CASE CNT_色っぽい仕草
+			RETURNF 1
+		CASE CNT_見つめる
+			RETURNF 1
+		CASE CNT_体を摺り寄せる
+			RETURNF 1
+		CASE CNT_スカートを捲る
+			;スカート着用
+			SIF !EQUIP:MASTER:9
+				RETURNF 0
+			SIF TEQUIP:MASTER:0 > 3
+				RETURNF 0
+			;全裸
+			SIF !EQUIP:MASTER:0
+				RETURNF 0
+			SIF !ONCE("スカートめくられ",1,加害者)
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_耳元に息を吹きかける
+			;会話中はダメ
+			SIF SELECTCOM == 300
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_尻を撫でる
+			RETURNF 1
+		CASE CNT_乳搾り手コキ
+			SIF !(HAS_PENIS(MASTER))
+				RETURNF 0
+			SIF CFLAG:MASTER:ペニス用貞操帯着用 != 0
+				RETURNF 0
+			SIF MAXBASE:MASTER:勃起 < 300	; ED状態
+				RETURNF 0
+			;押し倒し時はされない
+			SIF SELECTCOM == 350
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_キス
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_右頬) == 0
+				RETURNF 0
+			SIF CHK_COM312_STAIN(加害者, MASTER)
+				RETURNF 0
+			SIF TFLAG:60
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_背面抱擁
+			SIF LOCAL:131
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_対面抱擁
+			SIF LOCAL:132
+				RETURNF 0
+			;キス
+			SIF LOCAL:131
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_胸を揉ませる
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_胸元) == 0
+				RETURNF 0
+			SIF TFLAG:61
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_股間をまさぐる
+			SIF TEQUIP:MASTER:0 <= 3
+				RETURNF 0
+			SIF TFLAG:62
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_スカートの中を見せる
+			;スカート着用
+			SIF !EQUIP:加害者:9
+				RETURNF 0
+			SIF TEQUIP:加害者:0 > 3
+				RETURNF 0
+			;全裸
+			SIF !EQUIP:MASTER:0
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_胸を揉む
+			SIF !(HAS_VAGINA(MASTER))
+				RETURNF 0
+			SIF TEQUIP:MASTER:1 < 1
+				RETURNF 0
+			SIF TFLAG:65
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_手淫
+			SIF TFLAG:62
+				RETURNF 0
+			SIF ABL:加害者:指 < 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_フェラチオ
+			SIF is_virgin_m(加害者)
+				RETURNF 0
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_右頬) == 0
+				RETURNF 0
+			SIF TFLAG:62
+				RETURNF 0
+			SIF !(HAS_PENIS(MASTER))
+				RETURNF 0
+			SIF CFLAG:MASTER:ペニス用貞操帯着用 != 0
+				RETURNF 0
+			SIF ABL:加害者:舌 < 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_素股
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_恥丘) == 0
+				RETURNF 0
+			SIF TFLAG:62
+				RETURNF 0
+			SIF ABL:加害者:腰 < 1
+				RETURNF 0
+			SIF !(HAS_PENIS(MASTER))
+				RETURNF 0
+			SIF CFLAG:MASTER:ペニス用貞操帯着用 != 0
+				RETURNF 0
+			;潤滑
+			SIF PALAM:加害者:潤滑 < 2000
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_パイズリ
+			SIF is_virgin_m(加害者)
+				RETURNF 0
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_胸元) == 0
+				RETURNF 0
+			SIF TFLAG:62
+				RETURNF 0
+			SIF ABL:加害者:胸 < 1
+				RETURNF 0
+			SIF !(HAS_PENIS(MASTER))
+				RETURNF 0
+			SIF CFLAG:MASTER:ペニス用貞操帯着用 != 0
+				RETURNF 0
+			;[絶壁]だと不可
+			SIF TALENT:加害者:バストサイズ == -2
+				RETURNF 0
+			;[爆乳]なら技巧LV1以上、[巨乳]でなければ技巧3以上、[貧乳]だと技巧4以上必要
+			SIF TALENT:加害者:バストサイズ + ABL:加害者:技巧 < 3
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_足コキ
+			SIF TCVAR:MASTER:120 != 1
+				RETURNF 0
+			SIF TFLAG:62
+				RETURNF 0
+			SIF !(HAS_PENIS(MASTER))
+				RETURNF 0
+			SIF CFLAG:MASTER:ペニス用貞操帯着用 != 0
+				RETURNF 0
+			SIF ABL:加害者:サドっ気 < 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_アナル愛撫
+			SIF TFLAG:64
+				RETURNF 0
+			SIF ABL:加害者:指 < 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_アナル舐め
+			SIF is_virgin_m(加害者)
+				RETURNF 0
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_右頬) == 0
+				RETURNF 0
+			SIF TFLAG:64
+				RETURNF 0
+			SIF STAIN:MASTER:Ａ & 汚れ_アナル && TALENT:加害者:汚臭耐性 < 1
+				RETURNF 0
+			SIF ABL:加害者:舌 < 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_指挿入
+			SIF TFLAG:63
+				RETURNF 0
+			SIF TALENT:MASTER:処女
+				RETURNF 0
+			SIF !(HAS_VAGINA(MASTER))
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_胸愛撫
+			SIF TFLAG:65
+				RETURNF 0
+			SIF ABL:加害者:指 < 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_乳首吸い
+			SIF is_virgin_m(加害者)
+				RETURNF 0
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_右頬) == 0
+				RETURNF 0
+			SIF TFLAG:65
+				RETURNF 0
+			SIF ABL:加害者:舌 < 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_ディープキス
+			;初めてがディープキスでもいいじゃない
+			;SIF is_virgin_m(加害者)
+			;	RETURNF 0
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_右頬) == 0
+				RETURNF 0
+			SIF CHK_COM312_STAIN(加害者, MASTER)
+				RETURNF 0
+			SIF TFLAG:60
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_クンニ強制
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_恥丘) == 0
+				RETURNF 0
+			SIF !(HAS_VAGINA(加害者))
+				RETURNF 0
+			SIF TFLAG:60
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_フェラチオ強制
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_恥丘) == 0
+				RETURNF 0
+			SIF !(HAS_PENIS(加害者))
+				RETURNF 0
+			SIF TFLAG:60
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_アナル奉仕
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_左尻) == 0
+				RETURNF 0
+			SIF TFLAG:60
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_ぱふぱふ
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_胸元) == 0
+				RETURNF 0
+			SIF !(HAS_VAGINA(MASTER))
+				RETURNF 0
+			SIF TFLAG:60
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_乳合わせ
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_胸元) == 0
+				RETURNF 0
+			SIF !(HAS_VAGINA(MASTER))
+				RETURNF 0
+			SIF TFLAG:65
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_タワシ洗い
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_右頬) == 0
+				RETURNF 0
+			SIF !(HAS_VAGINA(MASTER))
+				RETURNF 0
+			;潤滑
+			SIF PALAM:加害者:潤滑 < 500
+				RETURNF 0
+			;口が空いてればクンニさせる
+			SIF !TFLAG:60
+				RETURNF 0
+			SIF TFLAG:61 > 1
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_正常位挿入される
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_太股) == 0
+				RETURNF 0
+			SIF !(HAS_PENIS(加害者))
+				RETURNF 0
+			SIF !(HAS_VAGINA(MASTER))
+				RETURNF 0
+			SIF BASE:加害者:勃起 < 1000
+				RETURNF 0
+			SIF TFLAG:63
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_騎乗位A挿入される
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_左尻) == 0
+				RETURNF 0
+			SIF !(HAS_PENIS(加害者))
+				RETURNF 0
+			SIF BASE:加害者:勃起 < 1000
+				RETURNF 0
+			SIF PALAM:MASTER:潤滑 < PALAMLV:2 && !TALENT:加害者:サド && ABL:加害者:サドっ気 < 1
+				RETURNF 0
+			SIF TFLAG:64
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_後背位A挿入される
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_左尻) == 0
+				RETURNF 0
+			SIF !(HAS_PENIS(加害者))
+				RETURNF 0
+			SIF BASE:加害者:勃起 < 1000
+				RETURNF 0
+			SIF PALAM:MASTER:潤滑 < PALAMLV:2 && !TALENT:加害者:サド && ABL:加害者:サドっ気 < 1
+				RETURNF 0
+			SIF TFLAG:64
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_背面座位A挿入される
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_左尻) == 0
+				RETURNF 0
+			SIF !(HAS_PENIS(加害者))
+				RETURNF 0
+			SIF BASE:加害者:勃起 < 1000
+				RETURNF 0
+			SIF PALAM:MASTER:潤滑 < PALAMLV:2 && !TALENT:加害者:サド && ABL:加害者:サドっ気 < 1
+				RETURNF 0
+			SIF TFLAG:64
+				RETURNF 0
+			RETURNF 1
+		CASE CNT_騎乗位逆レイプ
+			SIF !COM417_is_Protected_CheckOnly(MASTER,加害者,娼婦紋_太股) == 0
+				RETURNF 0
+			SIF !(HAS_PENIS(MASTER))
+				RETURNF 0
+			SIF CFLAG:MASTER:ペニス用貞操帯着用 != 0
+				RETURNF 0
+			SIF !(HAS_VAGINA(加害者))
+				RETURNF 0
+			SIF BASE:MASTER:勃起 <= 1000
+				RETURNF 0
+			;潤滑
+			SIF PALAM:加害者:潤滑 <= 3000
+				RETURNF 0
+			SIF TFLAG:62
+				RETURNF 0
+			RETURNF 1
+	ENDSELECT
+RETURNF 0

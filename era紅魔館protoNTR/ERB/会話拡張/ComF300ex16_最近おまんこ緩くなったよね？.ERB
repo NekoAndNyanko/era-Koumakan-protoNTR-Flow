@@ -1,0 +1,239 @@
+;-------------------------------------------------------------------------------
+;会話コマンド(拡張版) - 最近おまんこ緩くなったよね？ 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_16_ENABLE
+	#DIM 奴隷
+	奴隷 = TARGET:0
+	IF TCVAR:奴隷:会話不能
+		RETURN 0
+	ELSEIF TALENT:奴隷:親愛
+		;親愛持ちには可哀想過ぎて指摘できない
+		RETURN 0
+	ELSEIF TALENT:奴隷:恋慕 == 0 && TALENT:奴隷:公衆便所 == 0
+		;相手が恋人あるいは公衆便所でなければ指摘できない
+		RETURN 0
+	ELSEIF BASE:奴隷:Ｖ緩さ < MAXBASE:奴隷:Ｖ緩さ
+		;最大値が更新された時とその翌日のみ可能
+		RETURN 0
+	ENDIF
+	SELECTCASE BASE:奴隷:Ｖ緩さ
+		CASE   0 TO 249
+			RETURN 0
+		CASEELSE
+			RESULTS:0 = %"[16]-"+CALLNAME:奴隷+"のおまんこ緩くなったよね……？"%
+			RETURN 1
+	ENDSELECT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;会話コマンド(拡張版) - 最近おまんこ緩くなったよね？話す
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_16
+	#DIM 調教者
+	#DIM 奴隷
+	調教者 = PLAYER:0
+	奴隷 = TARGET:0
+	
+	SELECTCASE BASE:奴隷:Ｖ緩さ
+		CASE   0 TO 249
+			RETURN 0
+		CASEELSE
+			CALL MESSAGE_COM_300_16(調教者,奴隷)
+	ENDSELECT
+	PRINTFORML %"[1]-あまり緩くなると困る"%
+	PRINTFORML %"[2]-今の"+締り具合名称(BASE:奴隷:Ｖ緩さ)+"具合が好き"%
+	PRINTFORML %"[3]-もっと緩い方が好き"%
+	$COM300_16_01_INPUT_LOOP
+	INPUT
+	TRYCCALLFORM COM300_16_%TOSTR(RESULT:0,"00")%,調教者,奴隷
+		RETURN RESULT:0
+	CATCH
+		CLEARLINE 1
+		GOTO COM300_16_01_INPUT_LOOP
+	ENDCATCH
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会話拡張：最近おまんこ緩くなったよね？
+;　前提：公衆便所
+@MESSAGE_COM_300_16(調教者,奴隷)
+	#DIM 調教者
+	#DIM 奴隷
+	PRINTFORM %CALLNAME:調教者+"がヴァギナが緩くなったのではないかと指摘すると、"%
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:浮気公認 > 2
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆浮気公認＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"は望み通りにした結果なのに不満があるのかと言い返してきた。"%
+			ELSE
+				;恋慕＆浮気公認
+				PRINTFORML %CALLNAME:奴隷+"は"+NTR_NAME(0)+"のペニスが大きすぎるのかもしれない、と笑った。"%
+			ENDIF
+		ELSE
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"はお客様が手加減してくれないから、仕方が無いのだと言い訳をした。"%
+			ELSE
+				;恋慕
+				PRINTFORML %CALLNAME:奴隷+"は"+CALLNAME:調教者+"のせいでこうなったのだと言い返してきた。"%
+			ENDIF
+		ENDIF
+	ELSEIF TALENT:奴隷:公衆便所
+		;公衆便所のみ
+		PRINTFORML %CALLNAME:奴隷+"はお客様に楽しんで貰えないと"+NTR_KARE()+"に怒られてしまうと慌てだした。"%
+	ELSE
+		;恋慕でも公衆便所でもなければここにはこないはず
+		RETURN 0
+	ENDIF
+	TRYCALLLIST
+		FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:297}_300_16_01(奴隷, 調教者)
+		FUNC KOJO_MESSAGE_COM_KU_300_16_01(奴隷, 調教者)
+	ENDFUNC
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会話コマンド(拡張版) - 最近おまんこ緩くなったよね？ - 困る
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_16_01(調教者,奴隷)
+	#DIM 調教者
+	#DIM 奴隷
+	CALL MESSAGE_COM_300_16_01(調教者,奴隷)
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会話拡張：最近おまんこ緩くなったよね？ - 困る
+;　前提：公衆便所
+@MESSAGE_COM_300_16_01(調教者,奴隷)
+	#DIM 調教者
+	#DIM 奴隷
+	PRINTFORM %CALLNAME:調教者+"があまり緩くなるのは困ると言うと、"%
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:浮気公認 > 2
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆浮気公認＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"は意地悪な顔をして、それを決めるのは自分達ではなく、"+NTR_NAME(0)+"と『便所』の鍵を買ったお客様次第なのだと言った。"%
+			ELSE
+				;恋慕＆浮気公認
+				PRINTFORML %CALLNAME:奴隷+"は意地悪な顔をして、このまま"+NTR_NAME(0)+"のペニスにぴったりのサイズになってしまったらどうする？と尋ねてきた。"%
+			ENDIF
+		ELSE
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"はお客様に拡げられてしまわないように、"+CALLNAME:調教者+"が自分を買ってくれれば良いのだと言った。"%
+			ELSE
+				;恋慕
+				PRINTFORML %CALLNAME:奴隷+"はそれなら少しは手加減をしてくれればいいのに、と溜息をついた。"%
+			ENDIF
+		ENDIF
+	ELSEIF TALENT:奴隷:公衆便所
+		;公衆便所のみ
+		PRINTFORML %CALLNAME:奴隷+"は困るけれど、『便所』である自分にはどうしようもないのだと悲しそうな顔をした。"%
+	ELSE
+		;恋慕でも公衆便所でもなければここにはこないはず
+		RETURN 0
+	ENDIF
+	TRYCALLLIST
+		FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:297}_300_16_01(奴隷, 調教者)
+		FUNC KOJO_MESSAGE_COM_KU_300_16_01(奴隷, 調教者)
+	ENDFUNC
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会話コマンド(拡張版) - 最近おまんこ緩くなったよね？ - 丁度いい
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_16_02(調教者,奴隷)
+	#DIM 調教者
+	#DIM 奴隷
+	CALL MESSAGE_COM_300_16_02(調教者,奴隷)
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会話拡張：最近おまんこ緩くなったよね？ - 丁度いい
+;　前提：公衆便所
+@MESSAGE_COM_300_16_02(調教者,奴隷)
+	#DIM 調教者
+	#DIM 奴隷
+	PRINTFORM %CALLNAME:調教者+"が今の"+締り具合名称(BASE:奴隷:Ｖ緩さ)+"具合が好きだと言うと、"%
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:浮気公認 > 2
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆浮気公認＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"は意地悪な顔をして、もっと緩くなる前に『便所』を使ったほうがいい、もっとも、お小遣いが足りるのならね、と笑った。"%
+			ELSE
+				;恋慕＆浮気公認
+				PRINTFORML %CALLNAME:奴隷+"は意地悪な顔をして、拡げてくれた"+NTR_NAME(0)+"にお礼を言っておくように、と言った。"%
+			ENDIF
+		ELSE
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"はそれならばもっと『便所』を沢山使ってくれるのかと嬉しそうだった。"%
+			ELSE
+				;恋慕
+				PRINTFORML %CALLNAME:奴隷+"は勝手な事ばかり言ってと不満を口にしたが、満更でも無いようだった。"%
+			ENDIF
+		ENDIF
+	ELSEIF TALENT:奴隷:公衆便所
+		;公衆便所のみ
+		PRINTFORML %CALLNAME:奴隷+"はお客様に楽しんで貰えるのなら良かったと、一安心したようだった。"%
+	ELSE
+		;恋慕でも公衆便所でもなければここにはこないはず
+		RETURN 0
+	ENDIF
+	TRYCALLLIST
+		FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:297}_300_16_02(奴隷, 調教者)
+		FUNC KOJO_MESSAGE_COM_KU_300_16_02(奴隷, 調教者)
+	ENDFUNC
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会話コマンド(拡張版) - 最近おまんこ緩くなったよね？ - もっと
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_16_03(調教者,奴隷)
+	#DIM 調教者
+	#DIM 奴隷
+	CALL MESSAGE_COM_300_16_03(調教者,奴隷)
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;会話拡張：最近おまんこ緩くなったよね？ - もっと
+;　前提：公衆便所
+@MESSAGE_COM_300_16_03(調教者,奴隷)
+	#DIM 調教者
+	#DIM 奴隷
+	PRINTFORM %CALLNAME:調教者+"がもっと緩いほうが好きだと言うと、"%
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:浮気公認 > 2
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆浮気公認＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"は本当にどうしようもない変態だと呆れ顔だった。"%
+			ELSE
+				;恋慕＆浮気公認
+				PRINTFORML %CALLNAME:奴隷+"はこれ以上拡がったら"+NTR_NAME(0)+"に嫌われてしまうかもしれないのに、と溜息をついた。"%
+			ENDIF
+		ELSE
+			IF TALENT:奴隷:公衆便所
+				;恋慕＆公衆便所
+				PRINTFORML %CALLNAME:奴隷+"はこれ以上緩くなったら"+CALLNAME:調教者+"以外には買って貰えなくなってしまう、と溜息をついた。"%
+			ELSE
+				;恋慕
+				PRINTFORML %CALLNAME:奴隷+"はこれ以上緩くしたいなんて冗談では無いと怒り出した。"%
+			ENDIF
+		ENDIF
+	ELSEIF TALENT:奴隷:公衆便所
+		;公衆便所のみ
+		PRINTFORML %CALLNAME:奴隷+"はそんな事をしたら他のお客様に楽しんで貰えなくなってしまう、と泣きそうな顔をした。"%
+	ELSE
+		;恋慕でも公衆便所でもなければここにはこないはず
+		RETURN 0
+	ENDIF
+	TRYCALLLIST
+		FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:297}_300_16_03(奴隷, 調教者)
+		FUNC KOJO_MESSAGE_COM_KU_300_16_03(奴隷, 調教者)
+	ENDFUNC
+RETURN 1
+

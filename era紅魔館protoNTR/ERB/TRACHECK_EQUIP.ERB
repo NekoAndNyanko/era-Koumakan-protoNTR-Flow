@@ -1,0 +1,225 @@
+﻿
+;-------------------------------------------------
+;バイブなど付けっぱなしアイテムのチェック
+;-------------------------------------------------
+@EQUIP_CHECK(ARG)
+;クリキャップ装着中
+SIF TEQUIP:ARG:クリキャップ
+	CALL EQUIP_COM42(ARG)
+
+;オナホール装着中
+SIF TEQUIP:ARG:オナホール
+	CALL EQUIP_COM43(ARG)
+
+;バイブ装着中
+SIF TEQUIP:ARG:バイブ
+	CALL EQUIP_COM44(ARG)
+
+;アナルバイブ装着中
+SIF TEQUIP:ARG:アナルバイブ
+	CALL EQUIP_COM45(ARG)
+
+;アナルビーズ使用中
+SIF TEQUIP:ARG:アナルビーズ
+	CALL EQUIP_COM46(ARG)
+
+;ニプルキャップ装着中
+SIF TEQUIP:ARG:ニプルキャップ
+	CALL EQUIP_COM47(ARG)
+
+;搾乳器装着中
+SIF TEQUIP:ARG:搾乳機
+	CALL EQUIP_COM48(ARG)
+
+;アイマスク装着中
+SIF TEQUIP:ARG:アイマスク
+	CALL EQUIP_COM104(ARG)
+
+;縄で緊縛中
+SIF TEQUIP:ARG:縄
+	CALL EQUIP_COM105(ARG)
+
+;ボールギャグ装着中
+SIF TEQUIP:ARG:ボールギャグ
+	CALL EQUIP_COM106(ARG)
+
+;浣腸＋アナルプラグ装着中
+SIF TEQUIP:ARG:浣腸
+	CALL EQUIP_COM146(ARG)
+
+;拡張バルーン装着中
+SIF TEQUIP:ARG:拡張バルーン
+	CALL EQUIP_COM147(ARG)
+
+;アナル電極装着中
+SIF TEQUIP:ARG:アナル電極
+	CALL EQUIP_COM148(ARG)
+
+;ビデオ撮影中
+SIF ARG > 0 && TEQUIP:MASTER:ビデオ撮影
+	CALL EQUIP_COM183(ARG)
+;野外プレイ中
+SIF TEQUIP:ARG:野外プレイ
+	CALL EQUIP_COM184(ARG)
+
+;羞恥プレイ中
+;SIF TEQUIP:ARG:羞恥プレイ
+;	CALL EQUIP_COM186(ARG)
+
+;お風呂場プレイ中
+SIF TEQUIP:ARG:お風呂場プレイ
+	CALL EQUIP_COM187(ARG)
+
+;シャワー使用中
+SIF TEQUIP:ARG:シャワー
+	CALL EQUIP_COM188(ARG)
+
+;新妻プレイ中
+SIF TEQUIP:ARG:新妻プレイ
+	CALL EQUIP_COM189(ARG)
+
+;服装効果関連
+CALL CLOTHE_EFFECT(ARG)
+
+
+;挿入中
+IF ARG != PLAYER
+	SIF TEQUIP:ARG:Ｖセックス >= 0 && !SOURCE:ARG:快Ｖ
+		CALL EQUIP_INCERT_V(ARG)
+	SIF TEQUIP:ARG:Ａセックス >= 0 && !SOURCE:ARG:快Ａ
+		CALL EQUIP_INCERT_A(ARG)
+ENDIF
+RETURN 1
+
+;挿入継続の処理
+@EQUIP_INCERT_V(ARG)
+;-------------------------------------------------
+;行為者
+;-------------------------------------------------
+TCVAR:ARG:116 = TEQUIP:ARG:Ｖセックス
+;TCVAR:2 射精箇所フラグ（-1=コンドーム 1=膣内 2=アナル 3=手淫 4=口淫 5=パイズリ 6=素股 7=足コキ 8=体表 ）
+;TCVAR:4 射精快感強度
+
+LOCALS = {ARG}/
+CSTR:(TEQUIP:ARG:Ｖセックス):10 += LOCALS
+TCVAR:(TEQUIP:ARG:Ｖセックス):2 = 1
+;強度
+TCVAR:(TEQUIP:ARG:Ｖセックス):4 = 700
+
+PRINTFORML ＜%CALLNAME:(TEQUIP:9)%Ｖインサート＞
+DOWNBASE:ARG:体力 += 20
+DOWNBASE:ARG:気力 += 50
+
+SOURCE:ARG:快Ｖ += 150
+SOURCE:ARG:情愛 += 75
+SOURCE:ARG:露出 += 25
+
+;Vへの苦痛は先に処理しておく
+;EXP:Ｖ経験をみる（処女はありえない）
+LOCAL = 200
+LOCAL:1 = 150
+IF EXP:ARG:Ｖ経験 < EXPLV:2
+	TIMES LOCAL , 0.80
+	TIMES LOCAL:1 , 1.20
+ELSEIF EXP:ARG:Ｖ経験 < EXPLV:3
+	TIMES LOCAL , 0.40
+ELSEIF EXP:ARG:Ｖ経験 < EXPLV:4
+	TIMES LOCAL , 0.10
+ELSEIF EXP:ARG:Ｖ経験 < EXPLV:5
+	TIMES LOCAL , 0.00
+ELSEIF EXP:ARG:Ｖ経験 >= EXPLV:5
+	TIMES LOCAL , 0.00
+ENDIF
+
+;PALAM:潤滑をみる
+IF PALAM:ARG:潤滑 < PALAMLV:1
+	TIMES LOCAL , 1.20
+	TIMES LOCAL:1 , 1.50
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:2
+	TIMES LOCAL , 0.70
+	TIMES LOCAL:1 , 1.20
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:3
+	TIMES LOCAL , 0.40
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:4
+	TIMES LOCAL , 0.10
+ELSEIF PALAM:ARG:潤滑 >= PALAMLV:4
+	TIMES LOCAL , 0.10
+ENDIF
+
+SOURCE:ARG:苦痛 += LOCAL
+SOURCE:ARG:反感 += LOCAL:1
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:ARG:Ｖ性交経験 ++
+RETURN 1
+
+@EQUIP_INCERT_A(ARG)
+;-------------------------------------------------
+;行為者
+;-------------------------------------------------
+TCVAR:ARG:116 = TEQUIP:ARG:Ａセックス
+;TCVAR:0 射精対象フラグ（ビット0=TARGET 1=PLAYER 2=MASTER 3=ASSI 4=触手 5=その他）
+;TCVAR:1 予備射精対象フラグ（ビットを使いたくない人用、CFLAG:100に翻訳されます）
+;	（1=TARGET 2=PLAYER 3=MASTER 4=ASSI 5=TARGET+ASSI 6=MASTER+ASSI -1=触手 -2=その他）
+;TCVAR:2 射精箇所フラグ（-1=コンドーム 1=膣内 2=アナル 3=手淫 4=口淫 5=パイズリ 6=素股 7=足コキ 8=体表 ）
+;TCVAR:4 射精快感強度
+LOCALS = {ARG}/
+CSTR:(TEQUIP:ARG:Ａセックス):10 += LOCALS
+SETBIT TCVAR:(TEQUIP:ARG:Ａセックス):0, 0
+TCVAR:(TEQUIP:ARG:Ａセックス):2 = 2
+;強度
+TCVAR:(TEQUIP:ARG:Ａセックス):4 = 900
+DOWNBASE:ARG:体力 += 30
+DOWNBASE:ARG:気力 += 60
+
+SOURCE:ARG:快Ａ += 200
+SOURCE:ARG:情愛 += 50
+SOURCE:ARG:露出 += 30
+SOURCE:ARG:逸脱 += 100
+
+LOCAL = 400
+LOCAL:1 = 250
+;Aへの苦痛は先に処理しておく
+IF EXP:ARG:Ａ経験 < EXPLV:1
+	TIMES LOCAL , 3.00
+	TIMES LOCAL:1 , 3.00
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:2
+	TIMES LOCAL , 1.20
+	TIMES LOCAL:1 , 2.00
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:3
+	TIMES LOCAL , 0.80
+	TIMES LOCAL:1 , 1.50
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:4
+	TIMES LOCAL , 0.60
+	TIMES LOCAL:1 , 1.20
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:5
+	TIMES LOCAL , 0.40
+ELSEIF EXP:ARG:Ａ経験 >= EXPLV:5
+	TIMES LOCAL , 0.20
+ENDIF
+
+;PALAM:潤滑をみる
+IF PALAM:ARG:潤滑 < PALAMLV:1
+	TIMES LOCAL, 1.20
+	TIMES LOCAL:1 , 2.00
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:2
+	TIMES LOCAL , 1.00
+	TIMES LOCAL:1 , 1.50
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:3
+	TIMES LOCAL , 0.60
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:4
+	TIMES LOCAL , 0.30
+ELSEIF PALAM:ARG:潤滑 >= PALAMLV:4
+	TIMES LOCAL , 0.20
+ENDIF
+
+SOURCE:ARG:苦痛 += LOCAL
+SOURCE:ARG:反感 += LOCAL:1
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:ARG:Ａ性交経験 ++
+EXP:ARG:Ａ経験 ++
+RETURN 1
+

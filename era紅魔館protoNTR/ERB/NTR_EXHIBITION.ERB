@@ -1,0 +1,469 @@
+﻿;NTR野外調教関係
+;　訪問者による住人野外調教関係の処理
+
+;-------------------------------------------------------------------------------
+;弱み獲得1 自慰行為を目撃されることによる訪問者への弱み獲得
+@NTR_GET_WEAKNESS_1(奴隷)
+	#DIM 奴隷
+
+	;再表示防止
+	IF !TALENT:奴隷:訪問者への弱み
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は自慰行為を%NTR_NAME(0)%に撮影されてしまったようだ
+			PRINTFORMW %CALLNAME:奴隷%は%NTR_NAME(0)%に弱みを握られた。
+		ENDIF
+		TALENT:奴隷:訪問者への弱み = 1
+	ENDIF
+RETURN
+
+;-------------------------------------------------------------------------------
+;弱み獲得2 恋人以外との性行為による訪問者への弱み獲得
+@NTR_GET_WEAKNESS_2(奴隷)
+	#DIM 奴隷
+	;恋慕でなければチェックしない
+	IF TALENT:奴隷:恋慕
+		;再表示防止
+		IF !TALENT:奴隷:訪問者への弱み
+			IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+				PRINTFORMW %CALLNAME:奴隷%は%ANATA_LOVER(奴隷)%以外の%NTR_OTOKO()%と身体を重ねてしまった。
+				PRINTFORMW %CALLNAME:奴隷%は%NTR_NAME(0)%に弱みを握られた。
+			ENDIF
+			TALENT:奴隷:訪問者への弱み = 1
+		ENDIF
+	ENDIF
+RETURN
+
+;-------------------------------------------------------------------------------
+;NTR野外調教開始
+@NTR_EXHIBITION_START(奴隷)
+	#DIM 奴隷
+	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		PRINTFORMW %CALLNAME:奴隷%は弱みを握られているため%NTR_NAME(0)%を無碍にできない
+	ENDIF
+	;念のため同行解除
+	IF CFLAG:奴隷:同行 != 0
+		CFLAG:奴隷:同行 = 0
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は%CALLNAME:MASTER%から離れ%NTR_NAME(0)%の方に歩いていった。
+		ENDIF
+	ENDIF
+	;訪問者の同行も解除
+	FLAG:訪問者同行フラグ = 0
+	IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+		IF CFLAG:奴隷:脅迫度 > 野外調教閾値_放置プレイ
+			PRINTFORMW %CALLNAME:奴隷%は下着姿のまま%NTR_NAME(0)%と共に出かけていった。
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_17_0(奴隷)
+				FUNC NTR_KOJO_K_17_0(奴隷)
+			ENDFUNC
+		ELSE
+			PRINTFORMW %CALLNAME:奴隷%は下着を履かずに露出の多い衣装で%NTR_NAME(0)%と共に出かけていった。
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_17_1(奴隷)
+				FUNC NTR_KOJO_K_17_1(奴隷)
+			ENDFUNC
+		ENDIF
+	ENDIF
+	CFLAG:奴隷:NTR野外調教 = 1
+	CFLAG:奴隷:自慰中 = 0			
+	FLAG:訪問者の現在位置 = 場所_薄暗い路地裏
+	CFLAG:奴隷:現在位置 = 場所_薄暗い路地裏
+	CFLAG:奴隷:NTR訪問者との行為の終了時刻 = DATETIME() + RAND:60 + 60 + RAND(CFLAG:奴隷:脅迫度+1)
+RETURN
+
+;-------------------------------------------------------------------------------
+;NTR野外調教
+@NTR_EXHIBITION(奴隷)
+	#DIM 奴隷
+	IF CFLAG:奴隷:脅迫度 > 野外調教閾値_放置プレイ
+		IF !CFLAG:奴隷:村人
+			;村人がまだいないとき
+			CALL NTR_EXHIBITION_LEAVE_0(奴隷)
+		ELSEIF !CFLAG:奴隷:村人のセクハラ
+			;村人がいるけどまだ見てるだけ
+			CALL NTR_EXHIBITION_LEAVE_1(奴隷)
+		ELSEIF !CFLAG:奴隷:下着剥ぎ取り
+			;村人が手を出してきた（下着着用）
+			CALL NTR_EXHIBITION_LEAVE_2(奴隷)
+		ELSE
+			;村人が手を出してきた（全裸）
+			CALL NTR_EXHIBITION_LEAVE_3(奴隷)
+		ENDIF
+	ELSE
+		CALL NTR_EXHIBITION_STAY(奴隷)
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;NTR野外調教
+@NTR_EXHIBITION_STAY(奴隷)
+	#DIM 奴隷
+
+	IF RAND:100 < 20
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は%NTR_NAME(0)%に脅され、羞恥に顔を染めながら自慰をし始めた
+			PRINTFORMW %NTR_NAME(0)%は%CALLNAME:奴隷%が絶頂に達するまで%CALLNAME:奴隷%を眺めていた
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_17_3(奴隷)
+				FUNC NTR_KOJO_K_17_3(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:露出快楽経験 ++
+		EXP:奴隷:自慰経験 ++
+		EXP:奴隷:調教自慰経験 ++	
+		EXP:奴隷:絶頂経験 ++
+		CFLAG:奴隷:脅迫度 ++
+		SOURCE:奴隷:露出 = 200
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF RAND:100 < 80 || CFLAG:奴隷:NTR訪問者との行為の終了時刻 >= DATETIME()
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %NTR_NAME(0)%は%CALLNAME:奴隷%にスカートをたくし上げさせ、丸見えになった秘所を撮影している
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_17_4(奴隷)
+				FUNC NTR_KOJO_K_17_4(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:露出快楽経験 ++
+		EXP:奴隷:被写経験 ++
+		CFLAG:奴隷:脅迫度 ++
+		SOURCE:奴隷:露出 = 200
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSE
+		IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+			PRINTFORMW %CALLNAME:奴隷%がどこかから帰ってきたようだ
+		ENDIF
+		CALL NTR_EXHIBITION_END(奴隷)
+	ENDIF
+RETURN
+	
+;-------------------------------------------------------------------------------
+;NTR野外調教(放置プレイ:村人がまだいない)
+@NTR_EXHIBITION_LEAVE_0(奴隷)
+	#DIM 奴隷
+	
+	IF RAND:100 < 30
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は%NTR_NAME(0)%に首輪を掛けられ、四つん這いで歩いている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_0_1(奴隷)
+				FUNC NTR_KOJO_K_18_0_1(奴隷)
+			ENDFUNC
+		ENDIF
+		SOURCE:奴隷:露出 = 100
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+		EXP:奴隷:露出快楽経験 ++
+	ELSE
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %NTR_NAME(0)%は%CALLNAME:奴隷%を残したままどこかへ行ったようだ
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_0_2(奴隷)
+				FUNC NTR_KOJO_K_18_0_2(奴隷)
+			ENDFUNC
+		ENDIF
+		CFLAG:奴隷:村人 = 1
+		SOURCE:奴隷:露出 = 100
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ENDIF
+RETURN
+	
+;-------------------------------------------------------------------------------
+;NTR野外調教(放置プレイ：村人あり)
+@NTR_EXHIBITION_LEAVE_1(奴隷)
+	#DIM 奴隷
+
+	IF RAND:100 < 10
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW 村人が通りかかったが下着姿の%CALLNAME:奴隷%に驚き、逃げていった
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_1_0(奴隷)
+				FUNC NTR_KOJO_K_18_1_0(奴隷)
+			ENDFUNC
+		ENDIF
+		SOURCE:奴隷:露出 = 100
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF RAND:100 < 15 && CFLAG:奴隷:NTR訪問者との行為の終了時刻 < DATETIME()
+		IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+			PRINTFORMW %CALLNAME:奴隷%がどこかから帰ってきたようだ
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_1_1(奴隷)
+				FUNC NTR_KOJO_K_18_1_1(奴隷)
+			ENDFUNC
+		ENDIF
+		CALL NTR_EXHIBITION_END(奴隷)
+	ELSEIF RAND:100 < 50 && !CFLAG:奴隷:村人のセクハラ
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW 通りかかった村人は下着姿の%CALLNAME:奴隷%をニヤニヤしながら見ている。
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_1_2(奴隷)
+				FUNC NTR_KOJO_K_18_1_2(奴隷)
+			ENDFUNC
+		ENDIF
+		SOURCE:奴隷:露出 = 200
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSE
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW 通りかかった村人が下着姿の%CALLNAME:奴隷%に欲情し、抱き付いてきた
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_1_3(奴隷)
+				FUNC NTR_KOJO_K_18_1_3(奴隷)
+			ENDFUNC
+		ENDIF
+		CFLAG:奴隷:村人のセクハラ = 1
+		SOURCE:奴隷:露出 = 200
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ENDIF
+RETURN
+	
+;-------------------------------------------------------------------------------
+;NTR野外調教(放置プレイ：着衣村人セクハラ)
+@NTR_EXHIBITION_LEAVE_2(奴隷)
+	#DIM 奴隷
+
+	IF RAND:100 < 10
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は村人に秘所や胸を愛撫されている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_2_0(奴隷)
+				FUNC NTR_KOJO_K_18_2_0(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:Ｃ経験 ++
+		EXP:奴隷:Ｂ経験 ++
+		SOURCE:奴隷:露出 = 200
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF  RAND:100 < 20
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は村人に無理やりキスをされている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_2_1(奴隷)
+				FUNC NTR_KOJO_K_18_2_1(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:キス経験 ++
+		CALL LOST_VIRGIN_M(奴隷, 人物_村人)
+		SOURCE:奴隷:露出 = 200
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF  RAND:100 < 30
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は村人に下着をはぎ取られた
+			PRINTFORMW 今や%CALLNAME:奴隷%の肌を隠すものは何もない
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_2_2(奴隷)
+				FUNC NTR_KOJO_K_18_2_2(奴隷)
+			ENDFUNC
+		ENDIF
+		CFLAG:奴隷:下着剥ぎ取り = 1
+		CFLAG:奴隷: 服装_上半身下着２ = 0
+		CFLAG:奴隷:服装_下半身下着２ = 0
+		SOURCE:奴隷:露出 = 500
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF  RAND:100 < 40
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW 村人は%CALLNAME:奴隷%の下着越しに自分の股間を擦り付けている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_2_3(奴隷)
+				FUNC NTR_KOJO_K_18_2_3(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:Ｃ経験 ++
+		SOURCE:奴隷:露出 = 500
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF  RAND:100 < 80 || CFLAG:奴隷:NTR訪問者との行為の終了時刻 >= DATETIME()
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は村人から逃げようともがいている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_2_4(奴隷)
+				FUNC NTR_KOJO_K_18_2_4(奴隷)
+			ENDFUNC
+		ENDIF
+		SOURCE:奴隷:露出 = 300
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSE
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は村人を振り払い、逃げ出した
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_2_5(奴隷)
+				FUNC NTR_KOJO_K_18_2_5(奴隷)
+			ENDFUNC
+		ENDIF
+		CFLAG:奴隷:村人のセクハラ = 0
+		SOURCE:奴隷:露出 = 200
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ENDIF
+RETURN
+	
+;-------------------------------------------------------------------------------
+;NTR野外調教(放置プレイ：全裸村人セクハラ)
+@NTR_EXHIBITION_LEAVE_3(奴隷)
+	#DIM 奴隷
+	
+	IF RAND:100 < 10
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW 村人は%CALLNAME:奴隷%の乳首を嘗め回している
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_3_0(奴隷)
+				FUNC NTR_KOJO_K_18_3_0(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:Ｂ経験 ++
+		SOURCE:奴隷:露出 = 500
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF RAND:100 < 20
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW 村人は%CALLNAME:奴隷%の尻の割れ目にペニスを挟み、腰を動かしている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_3_1(奴隷)
+				FUNC NTR_KOJO_K_18_3_1(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:Ａ経験 ++
+		SOURCE:奴隷:露出 = 500
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF RAND:100 < 30
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW 村人は%CALLNAME:奴隷%にキスをしながら、%CALLNAME:奴隷%の膣を弄っている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_3_2(奴隷)
+				FUNC NTR_KOJO_K_18_3_2(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:Ｖ経験 ++
+		EXP:奴隷:キス経験 ++
+		CALL LOST_VIRGIN_M(奴隷, 人物_村人)
+		SOURCE:奴隷:露出 = 500
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSEIF RAND:100 < 40 && !(IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:処女)
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は村人に正常位で犯されている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_3_3(奴隷)
+				FUNC NTR_KOJO_K_18_3_3(奴隷)
+			ENDFUNC
+		ENDIF
+		EXP:奴隷:Ｖ経験 ++
+		EXP:奴隷:Ｖ絶頂経験 ++
+		EXP:奴隷:絶頂経験 ++
+		EXP:奴隷:Ｖ性交経験 ++	  	 
+		EXP:奴隷:被強姦経験 ++
+		SOURCE:奴隷:露出 = 1000
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+		IF TALENT:奴隷:処女
+			CALL LOST_VIRGIN(奴隷, 人物_村人)
+		ENDIF
+		CALL EJACULATION_V(奴隷, 人物_村人)
+	ELSEIF RAND:100 < 90 || CFLAG:奴隷:NTR訪問者との行為の終了時刻 >= DATETIME()
+		IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は村人に体を撫で回されている
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_3_4(奴隷)
+				FUNC NTR_KOJO_K_18_3_4(奴隷)
+			ENDFUNC
+		ENDIF
+		SOURCE:奴隷:露出 = 500
+		CALL NTR_EXH_SOURCE_OP(奴隷)
+	ELSE 
+		IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+			PRINTFORMW %CALLNAME:奴隷%は全裸のまま、紅魔館に逃げ帰ってきた
+			TRYCALLLIST
+				FUNC NTR_KOJO_K{CFLAG:奴隷:297}_18_3_5(奴隷)
+				FUNC NTR_KOJO_K_18_3_5(奴隷)
+			ENDFUNC
+		ENDIF
+		CALL NTR_EXHIBITION_END(奴隷)
+	ENDIF
+RETURN
+
+;-------------------------------------------------------------------------------
+;NTR野外調教終了
+;　関連変数のリセット
+@NTR_EXHIBITION_END(奴隷)
+	#DIM 奴隷
+
+	CFLAG:奴隷:NTR野外調教 = 0
+	CFLAG:奴隷:村人 = 0
+	CFLAG:奴隷:村人のセクハラ = 0
+	CFLAG:奴隷:下着剥ぎ取り = 0
+	CFLAG:奴隷:現在位置 = 場所_正門
+	FLAG:訪問者の現在位置 = 場所_訪問者宅
+	CFLAG:奴隷:NTR訪問者との行為の終了時刻 = 0
+RETURN
+
+;-------------------------------------------------------------------------------
+;NTR野外調教許容度計算
+;　口上で使用する許容度の計算
+@NTR_EXH_CALC_PERMISSIBLE(奴隷, 相手)
+	#FUNCTION
+	#DIM 奴隷
+	#DIM 相手	; 相手の人物コード　訪問者相手だとNTRや脅迫度が加算される
+	#DIM 許容度		; 露出行為に対する許容度 0:拒否的 数値が大きいほど許容
+
+	許容度 = 0
+	許容度 -= TALENT:奴隷:応答				; 反抗的だと拒否
+	許容度 -= TALENT:奴隷:プライド			; プライド高いと拒否
+	許容度 += TALENT:奴隷:目立ちたがり		; 目立ちたがりだと許容
+	許容度 -= TALENT:奴隷:羞恥心			; 恥じらいだと拒否
+	許容度 += TALENT:奴隷:マゾ				; マゾだと許容
+	許容度 += (ABL:奴隷:マゾっ気 / 2)		; マゾっ気高いと許容
+	許容度 += (ABL:奴隷:露出癖 / 2)			; 露出癖高いと許容
+
+	; 訪問者相手の補正
+	IF 相手 == 人物_訪問者
+		許容度 += TALENT:奴隷:NTR				; NTRだと許容
+		SIF CFLAG:奴隷:脅迫度 > 20				; 脅迫度高いと許容
+			許容度 += 1
+	ENDIF
+
+RETURNF 許容度
+
+;-------------------------------------------------------------------------------
+;NTR野外調教ソース処理
+@NTR_EXH_SOURCE_OP(奴隷)
+	#DIM 奴隷
+
+	SELECTCASE ABL:奴隷:マゾっ気
+		CASE 0
+			TIMES SOURCE:奴隷:露出 , 0.80
+			SOURCE:奴隷:液体 += 0
+			SOURCE:奴隷:欲情 += 0
+		CASE 1
+			TIMES SOURCE:奴隷:露出 , 1.00
+			SOURCE:奴隷:液体 += 20
+			SOURCE:奴隷:欲情 += 30
+		CASE 2
+			TIMES SOURCE:奴隷:露出 , 1.20
+			SOURCE:奴隷:液体 += 40
+			SOURCE:奴隷:欲情 += 70
+		CASE 3
+			TIMES SOURCE:奴隷:露出 , 1.40
+			SOURCE:奴隷:液体 += 70
+			SOURCE:奴隷:欲情 += 120
+		CASE 4
+			TIMES SOURCE:露出 , 1.50
+			SOURCE:奴隷:液体 += 110
+			SOURCE:奴隷:欲情 += 180
+		CASE 5
+			TIMES SOURCE:露出 , 1.70
+			SOURCE:奴隷:液体 += 150
+			SOURCE:奴隷:欲情 += 250
+		CASE 6
+			TIMES SOURCE:奴隷:露出 , 1.90
+			SOURCE:奴隷:液体 += 200
+			SOURCE:奴隷:欲情 += 300
+		CASE 7
+			TIMES SOURCE:奴隷:露出 , 2.10
+			SOURCE:奴隷:液体 += 250
+			SOURCE:奴隷:欲情 += 350
+		CASE 8
+			TIMES SOURCE:奴隷:露出 , 2.30
+			SOURCE:奴隷:液体 += 300
+			SOURCE:奴隷:欲情 += 400
+		CASE 9
+			TIMES SOURCE:奴隷:露出 , 2.50
+			SOURCE:奴隷:液体 += 350
+			SOURCE:奴隷:欲情 += 450
+		CASEELSE
+			TIMES SOURCE:奴隷:露出 , 3.00
+			SOURCE:奴隷:液体 += 500
+			SOURCE:奴隷:欲情 += 500
+	ENDSELECT
+RETURN
+

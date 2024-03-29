@@ -1,0 +1,451 @@
+﻿;--------------------
+;汎用口上ランダム生成
+;--------------------
+[SKIPSTART]
+
+
+・使用例
+	CALL 汎用口上Ｒ, "<文字>", (対象の数値), (数値A), (数値B), (数値C)
+		文字は現在 喘ぎ フェラ キス の3種類、どれか一つを入れる
+		対象の数値はキャラの通し番号
+		
+		表示する文字量や表示される文字を変えたい場合は後ろ三つに数字を入れてカスタマイズできる
+		数値A ランダムに文字が表示される最低値
+		数値B ランダムに文字が表示される最大値
+		数値C 表示する口上のレベル
+		後ろ三つに数値を入れる場合
+			数値Aと数値Bは０以下ではない事
+			数値Aは数値Bよりも小さい事(小さくなくてもいいような気もするけど)
+			数値Bは数値A未満にならない事
+			数値Cは１〜３のいずれかの数値である事
+			
+		こんな感じ
+		CALL 汎用口上Ｒ, "喘ぎ", TARGET, 1, 4, 3
+		
+		カスタマイズせずにそのまま使う場合は省略してもよい
+		CALL 汎用口上Ｒ, "喘ぎ", TARGET
+
+
+・汎用口上レベル設定
+
+	喘ぎ系
+	 CVABいずれかによって快感を与えられたときの喘ぎ、口を塞がれていないVer
+	 
+	 弄られた部分の中で一番パラメータの高い部位を判定
+	 その部位の感覚の高さ、又は現在のパラメータの状態によって変化
+		レベル３ 指定部位の感覚が5以上 または指定部位における現在のパラメータがLV4以上の場合
+		レベル２ 指定部位の感覚が3以上 または指定部位における現在のパラメータがLV2以上の場合
+		レベル１ その他
+
+	;※複数個所を弄られた場合は感覚の高い部分を優先
+
+	キス
+	 能力:舌と、キス経験と浮気キス経験の総合値によって変化
+		レベル３ 舌のレベルが4以上 且つキス経験+浮気キス経験の合計が３００以上
+		レベル２ 舌のレベルが2以上 且つキス経験+浮気キス経験の合計が１００以上
+		レベル１ その他
+	
+	フェラ系
+	 能力:舌と、口淫経験と浮気口淫経験の総合値によって変化
+		レベル３ 舌のレベルが4以上 且つ口淫経験+浮気口淫経験の合計が３００以上
+		レベル２ 舌のレベルが2以上 且つ口淫経験+浮気口淫経験の合計が１００以上
+		レベル１ その他
+
+	尚使用した口上のレベルを返す為、その後に続く文章にも対応
+	
+	;喘ぎ系以外は男性でも使えるかも
+	
+@汎用口上_○○, ARG, ARG:1
+;ARG 表示回数
+;ARG:1 レベル
+	
+PRINTDATA
+	DATALIST
+		DATA
+		DATAFORM
+	ENDLIST
+	DATA
+	DATAFORM
+ENDDATA
+	
+[SKIPEND]
+
+@汎用口上Ｒ, ARGS, ARG, ARG:1, ARG:2, ARG:3
+;ARGS  表示する口上の種類
+;ARG   キャラ番号
+;以下カスタマイズ用の数値
+;ARG:1 口上内の文章表示回数(最低値)
+;ARG:2 口上内の文章表示回数(最大値)
+;ARG:3 表示する口上のレベル
+
+SELECTCASE ARGS
+	CASE "喘ぎ"
+		IF ARG:1
+			CALL 汎用口上_喘ぎ, RAND(ARG:1, ARG:2), ARG:3
+			RETURN ARG:3
+		ELSE
+			;行為におけるCVABの感度取得状況
+			;LOCAL   CVABのいずれか
+			;LOCAL:1 今回の行為における対象(LOCAL)の快感の上昇値
+			;LOCAL:2 快CVABにおける一番高いパラメータ
+			LOCAL:2 = -1
+			;今回の行為における快CVABの上昇値を見る
+			FOR LOCAL, 0, 4
+				LOCAL:1 = CUP:ARG:LOCAL - CDOWN:ARG:LOCAL
+				;行為によって感じたか
+				IF LOCAL:1 >= 1
+					IF LOCAL:2 == -1
+						LOCAL:2 = LOCAL
+					;感じた部位が複数ある場合、現在最も高いパラメータの部位を指定
+					ELSEIF PALAM:ARG:LOCAL > PALAM:ARG:(LOCAL:2)
+						LOCAL:2 = LOCAL
+					ENDIF
+				ENDIF
+			NEXT
+			;現在最も高いパラメータの部位の感覚及びパラメータで喘ぎ方が変化する
+			IF (ABL:ARG:(LOCAL:2) >= 5 || PALAM:ARG:(LOCAL:2) >= PALAMLV:4)
+				CALL 汎用口上_喘ぎ, RAND(3, 5), 3
+				RETURN 3
+			ELSEIF (ABL:ARG:(LOCAL:2) >= 3 || PALAM:ARG:(LOCAL:2) >= PALAMLV:2)
+				CALL 汎用口上_喘ぎ, RAND(3, 5), 2
+				RETURN 2
+			ELSE
+				CALL 汎用口上_喘ぎ, RAND(2, 3), 1
+				RETURN 1
+			ENDIF
+		ENDIF
+	CASE "フェラ"
+		IF ARG:1
+			CALL 汎用口上_フェラ, RAND(ARG:1, ARG:2), ARG:3
+			RETURN ARG:3
+		ELSEIF ABL:舌 >= 4 && (EXP:ARG:口淫経験 + EXP:ARG:浮気口淫経験) >= 300
+			CALL 汎用口上_フェラ, RAND(3, 5), 3
+			RETURN 3
+		ELSEIF ABL:舌 >= 2 && (EXP:ARG:口淫経験 + EXP:ARG:浮気口淫経験) >= 300
+			CALL 汎用口上_フェラ, RAND(3, 5), 2
+			RETURN 2
+		ELSE
+			CALL 汎用口上_フェラ, RAND(3, 5), 1
+			RETURN 1
+		ENDIF
+	CASE "キス"
+		IF ARG:1
+			CALL 汎用口上_キス, RAND(ARG:1, ARG:2), ARG:3
+			RETURN ARG:3
+		ELSEIF ABL:舌 >= 4 && (EXP:ARG:キス経験 + EXP:ARG:浮気キス経験) >= 300
+			CALL 汎用口上_キス, RAND(3, 5), 3
+			RETURN 3
+		ELSEIF ABL:舌 >= 2 && (EXP:ARG:キス経験 + EXP:ARG:浮気キス経験) >= 100
+			CALL 汎用口上_キス, RAND(3, 5), 2
+			RETURN 2
+		ELSE
+			CALL 汎用口上_キス, RAND(3, 5), 1
+			RETURN 1
+		ENDIF
+ENDSELECT
+
+
+;キスーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+@汎用口上_キス, ARG, ARG:1
+;ARG 表示回数
+;ARG:1 レベル
+LOCAL:1 = 0
+PRINT 「
+FOR LOCAL, 0, ARG
+	;最後の文には読点がつかない
+	SIF LOCAL == ARG-1
+		LOCAL:1 = 1
+	;初め
+	IF LOCAL == 0
+		CALL 汎用口上_キス_はじめ, LOCAL:1
+	ELSEIF LOCAL == ARG-1
+		CALL 汎用口上_キス_おわり, LOCAL:1
+		
+	ELSEIF ARG:1 == 3
+		CALL 汎用口上_キス_ＬＶ３, LOCAL:1
+	ELSEIF ARG:1 == 2
+		CALL 汎用口上_キス_ＬＶ２, LOCAL:1
+	ELSE
+		CALL 汎用口上_キス_ＬＶ１, LOCAL:1
+	ENDIF
+	
+NEXT
+PRINTL 」
+
+@汎用口上_キス_はじめ, ARG
+PRINTDATA
+	DATA …あ…
+	DATA …あむ
+	DATA …ちゅ
+	DATA …ん
+	DATA …んむ
+ENDDATA
+CALL 点表示, 1, 3, 0, ARG
+
+
+@汎用口上_キス_ＬＶ１, ARG
+PRINTDATA
+	DATA ぁ
+	DATA ちゅ
+	DATA は
+	DATA ふあ
+	DATA ん
+	DATA んぁ
+	DATA んぅ
+	DATA んんぅ
+ENDDATA
+CALL 点表示, 1, 3, 1, ARG
+
+@汎用口上_キス_ＬＶ２, ARG
+PRINTDATA
+	DATA ちゅ
+	DATA ちゅっ
+	DATA ちゅぴ
+	DATA ちゅぷ
+	DATA はっ
+	DATA ふあ
+	DATA ん
+	DATA んっ
+	DATA んぁ
+	DATA んぅ
+ENDDATA
+CALL 点表示, 1, 3, 1, ARG
+
+@汎用口上_キス_ＬＶ３, ARG
+PRINTDATA
+	DATA くちゅ
+	DATA ちゅ
+	DATA ちゅくちゅく
+	DATA ちゅっ
+	DATA ちゅぴ
+	DATA ちゅぷ
+	DATA ちゅる
+	DATA ちゅるる
+	DATA はっ
+	DATA ふあ
+	DATA れる
+	DATA れるれる
+	DATA ん
+	DATA んっ
+	DATA んっんっ
+	DATA んぁ
+	DATA んぅ
+ENDDATA
+CALL 点表示, 1, 3, 1, ARG
+	
+@汎用口上_キス_おわり, ARG, ARG:1
+PRINTDATA
+	DATA …あふっ
+	DATA …はぅ
+	DATA …はふぅ
+	DATA …ぷあっ
+	DATA …ぷはっ
+	DATA …ん
+	DATA …んあっ
+	DATA …んはっ
+ENDDATA
+CALL 点表示, 0, 2, 0, ARG
+
+;余韻
+IF ARG < 3
+	PRINTDATA
+		DATA ……はふぅ
+		DATA ……はぁ…はぁ
+		DATA ……んう
+		DATA ……んん
+	ENDDATA
+	CALL 点表示, 1, 2, 0, ARG
+ENDIF
+
+;フェラーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+@汎用口上_フェラ, ARG, ARG:1
+;ARG 表示回数
+;ARG:1 レベル
+LOCAL:1 = 0
+PRINT 「
+FOR LOCAL, 0, ARG
+	SIF LOCAL == ARG-1
+		LOCAL:1 = 1
+	IF ARG:1 == 3
+		CALL 汎用口上_フェラ_ＬＶ３, LOCAL:1
+	ELSEIF ARG:1 == 2
+		CALL 汎用口上_フェラ_ＬＶ２, LOCAL:1
+	ELSE
+		CALL 汎用口上_フェラ_ＬＶ１, LOCAL:1
+	ENDIF
+	
+NEXT
+PRINTL 」
+
+@汎用口上_フェラ_ＬＶ１, ARG
+PRINTDATA
+	DATA ぁ
+	DATA は
+	DATA はっ
+	DATA ん
+	DATA んっ
+	DATA んん
+	DATA んんっ
+	DATA んむぅ
+	DATA んちゅぅ
+ENDDATA
+CALL 点表示, 1, 2, 0, ARG
+
+@汎用口上_フェラ_ＬＶ２, ARG
+PRINTDATA
+	DATA ぁむ
+	DATA は
+	DATA …はっ
+	DATA ちゅぱっ
+	DATA ん
+	DATA んは…ん
+	DATA んん
+	DATA んふぅ
+	DATA んちゅぅ
+ENDDATA
+CALL 点表示, 1, 2, 0, ARG
+
+@汎用口上_フェラ_ＬＶ３, ARG
+PRINTDATA
+	DATA じゅぷ
+	DATA じゅぷっじゅぷっ
+	DATA じゅぽ
+	DATA じゅぽっじゅぽっ
+	DATA ぴちゅ
+	DATA ぺちゅ
+	DATA れる
+	DATA れるれる
+	DATA れろ
+	DATA れろれろ
+	DATA ちゅ
+	DATA ちゅぱっ
+	DATA れりゅ
+	DATA れりゅん
+	DATA んは…ん
+	DATA んふぅ
+	DATA んん
+ENDDATA
+CALL 点表示, 1, 2, 1, ARG
+		
+		
+;喘ぎーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+@汎用口上_喘ぎ, ARG, ARG:1
+;ARG 表示回数
+;ARG:1 レベル
+LOCAL:1 = 0
+PRINT 「
+FOR LOCAL, 0, ARG
+	SIF LOCAL == ARG-1
+		LOCAL:1 = 1
+	IF ARG:1 == 3
+		CALL 汎用口上_喘ぎ_ＬＶ３, LOCAL:1
+	ELSEIF ARG:1 == 2
+		CALL 汎用口上_喘ぎ_ＬＶ２, LOCAL:1
+	ELSE
+		CALL 汎用口上_喘ぎ_ＬＶ１, LOCAL:1
+	ENDIF
+NEXT
+PRINTL 」
+
+
+@汎用口上_喘ぎ_ＬＶ１, ARG
+PRINTDATA
+	DATA あ
+	DATA あん
+	DATA や
+	DATA ん
+	DATA んぅ
+ENDDATA
+CALL 点表示, 1, 2, 0, ARG
+
+@汎用口上_喘ぎ_ＬＶ２, ARG
+PRINTDATA
+	DATA ああ
+	DATA あぁぅ
+	DATA あン
+	DATA うぅん
+	DATA は、んぅ
+	DATA はあぁぁ
+	DATA はぁ
+	DATA はぁあ、うぅん
+	DATA はぁんっ！
+	DATA はぅっ！
+	DATA ふあ
+	DATA ふあぁ
+	DATA ふあぅぅ
+	DATA ふあぅっ
+	DATA ふぅっ
+	DATA ふぅっん
+	DATA や
+	DATA やぁん
+	DATA ん
+	DATA んっ！
+	DATA んふぅ…
+	DATA んふぅっ
+	DATA んぁっ
+	DATA んぅ
+	DATA んん
+ENDDATA
+CALL 点表示, 1, 2, RAND:2, ARG
+
+@汎用口上_喘ぎ_ＬＶ３, ARG
+;「いや」や「だめ」などは性格のみえる喘ぎ言葉なので慎重に
+[SKIPSTART]
+
+	DATA いやぁっ
+	DATA いやぁん
+	DATA いやぁっ
+	DATA いやぁん
+	DATA ダメッ！
+	DATA ダメェッ！
+	DATA だ、だめ
+	DATA だ、だめっ
+	DATA だめぇっ
+	DATA だめっ！
+	DATA だめぇ…
+	
+[SKIPEND]
+
+PRINTDATA
+	DATA あっ
+	DATA ぁっ
+	DATA ああっ
+	DATA あぁっ
+	DATA ああぁっ
+	DATA ああぁん
+	DATA あぁん
+	DATA あうぅうんっ！！
+	DATA うぅんっ！
+	DATA きゃぅぅ
+	DATA きゃぅっ
+	DATA きゃんっ
+	DATA ふあっ
+	DATA ふぁんっ！
+	DATA ふぅあっ！
+	DATA やぁ
+	DATA やぁん
+	DATA ん
+	DATA んああっ
+	DATA んぅっ
+	DATA んはぅっ
+	DATA んふぅっ
+ENDDATA
+CALL 点表示, 1, 2, 0, ARG
+
+;その他ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+@点表示, ARG, ARG:1, ARG:2, ARG:3
+;ARG   点表示の最小数
+;ARG:1 点表示の最大数
+;ARG:2 読点の表示 0=OFF 1=ON
+;ARG:3 最後の文字 0=否 1=正
+LOCAL:1 = RAND(ARG, ARG:1)
+IF LOCAL:1
+	FOR LOCAL, 0, LOCAL:1
+		PRINT …
+	NEXT
+ENDIF
+;文章の最後の文字でなければ読点
+SIF ARG:2 && !ARG:3
+	PRINT 、
+

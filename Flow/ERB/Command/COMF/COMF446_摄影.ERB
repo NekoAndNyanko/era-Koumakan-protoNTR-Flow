@@ -1,0 +1,546 @@
+﻿;-------------------------------------------------
+;摄影
+;-------------------------------------------------
+@COM446
+#DIM キャラ番号
+#DIM 部屋番号
+#DIM 摄影する部屋
+PRINTL 拍摄哪里？
+FOR 部屋番号,0,MAXROOM()
+	IF CAN_MOVE(CFLAG:MASTER:現在位置,部屋番号)
+		FOR キャラ番号,1,CHARANUM
+			IF CFLAG:キャラ番号:現在位置 == 部屋番号
+				SETCOLOR 色設定_マップ_他人
+			ENDIF
+		NEXT
+		PRINTFORML %"["%{部屋番号,2}%"] - "+GETPLACENAME(部屋番号)%
+		RESETCOLOR
+	ENDIF
+NEXT
+PRINTL [999] - 返回
+$INPUT_LOOP
+INPUT
+摄影する部屋 = RESULT
+TFLAG:現在覗いている場所 = 0
+IF 摄影する部屋 == 999
+	RETURN 0
+ENDIF
+IF CAN_MOVE(CFLAG:MASTER:現在位置,摄影する部屋)
+	CALL PEEP(摄影する部屋)
+	TIME += 5
+ELSE
+	CLEARLINE 1
+	GOTO INPUT_LOOP
+ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;摄影処理
+@PEEP(部屋番号)
+#DIM キャラ番号
+#DIM 部屋番号
+#DIM 摄影枚数
+#DIM 写真内容
+#DIM 写真詳細
+#DIM 攻め側
+#DIM 受け側
+
+摄影枚数 = 0
+
+
+; 鍵がかかっている場合
+IF isLocked(部屋番号)
+	IF canUnLock(MASTER, 部屋番号)
+		PRINTFORML %CALLNAME:MASTER + "は鍵を使って扉を少しだけ開き、中の様子を相机に収めた。"%
+	ELSE
+		IF isLockedByBolt(部屋番号)
+			PRINTFORM どうやら内側から閂がかけられているらしく、
+		ELSE
+			PRINTFORM 鍵がかかっていて、
+		ENDIF
+		PRINTFORML 扉を開けることができなかった。
+		;		IF IS_NTR_SHOW_ALL()
+		PRINTFORML %CALLNAME:MASTER + "は仕方なく、採光用の小さな窓から" + GETPLACENAME(部屋番号) + "の様子を摄影した……。"%
+		;		ELSE
+		;			HTML_PRINT @"<font color='#" +TOSTR(色設定_テキスト_備考,"x") ;+"'>ＮＴＲ筒抜けモードを有効にすると、採光窓から中を窥视事ができるようになります。</font>"
+		;			RETURN 1
+		;		ENDIF
+	ENDIF
+ENDIF
+
+TFLAG:現在覗いている場所 = 部屋番号
+;住人同士の交流は先に判定する
+IF ITEM:胶卷 > 1
+	FOR キャラ番号,1,CHARANUM
+		IF CFLAG:キャラ番号:現在位置 == 部屋番号
+			IF 0 != CFLAG:キャラ番号:住人同士イベント内容 
+				;攻め・受けを判定
+				IF CFLAG:キャラ番号:住人同士イベント内容 % 10 == 0
+					受け側 = キャラ番号
+					攻め側 = CFLAG:キャラ番号:住人同士イベント相手
+				ELSE
+					受け側 = CFLAG:キャラ番号:住人同士イベント相手
+					攻め側 = キャラ番号
+				ENDIF
+				摄影枚数++
+				写真内容 = CHOOSE_PHOTO2(攻め側,受け側,部屋番号)
+				IF 写真内容 <= 写真_住人同士_キス
+					PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の%PHOTO_NAME(写真内容)%を摄影した
+					TSTR:3 = %CALLNAME:攻め側%と%CALLNAME:受け側%{写真内容}PH/
+				ELSE
+					PRINTFORML %CALLNAME:攻め側%が%CALLNAME:受け側%に%PHOTO_NAME(写真内容)%を摄影した
+					TSTR:3 = %CALLNAME:攻め側%が%CALLNAME:受け側%{写真内容}PH/
+				ENDIF
+				;PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%の{写真内容}を摄影した
+				CFLAG:MASTER:収集品死守戦フラグ ++
+				CSTR:MASTER:収集品 += TSTR:3
+				ITEM:胶卷--
+				BREAK
+			ENDIF
+		ENDIF
+	NEXT
+ENDIF
+;住人同士の交流で摄影できなければ通常の処理
+IF 0 == 摄影枚数
+	FOR キャラ番号,1,CHARANUM
+		IF ITEM:胶卷 < 1
+			;胶卷が無ければ終了
+			RETURN 0
+		ELSEIF CFLAG:キャラ番号:現在位置 == 部屋番号
+			摄影枚数++
+			写真内容 = CHOOSE_PHOTO(キャラ番号,部屋番号)
+			写真詳細 = CHOOSE_PHOTO_DETAIL(キャラ番号,部屋番号)
+			PRINTFORML %CALLNAME:キャラ番号%の%PHOTO_NAME(写真内容, 写真詳細)%を摄影した
+			CFLAG:MASTER:収集品死守戦フラグ ++
+			TSTR:3 = %CALLNAME:キャラ番号 + TOSTR(写真内容) + "PH" + TOSTR(写真詳細, "#")  + "/"%
+			CSTR:MASTER:収集品 += TSTR:3
+			ITEM:胶卷--
+		ENDIF
+	NEXT
+ENDIF
+IF !摄影枚数
+	PRINTL 什么也没拍到。
+	RETURN 0
+ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;写真の名称を取得する
+@PHOTO_NAME(写真番号, 写真詳細=0)
+#FUNCTIONS
+#DIM 写真番号
+#DIM 写真詳細
+SELECTCASE 写真番号
+	CASE 写真_NTR_キス TO 写真_NTR_Ａ性爱, 写真_NTR_接触, 写真_NTR_抱擁
+		RETURNF PHOTO_DETAIL_NAME(写真番号, 写真詳細)
+	CASE 写真_普段
+		RETURNF "平时"
+	CASE 写真_着替え
+		RETURNF "换衣服"
+	CASE 写真_入浴
+		RETURNF "入浴"
+	CASE 写真_寝顔
+		RETURNF "睡颜"
+	CASE 写真_料理
+		RETURNF "做料理的样子"
+	CASE 写真_居眠り
+		RETURNF "打瞌睡"
+	CASE 写真_読書
+		RETURNF "读书的样子"
+	CASE 写真_トイレ
+		RETURNF "上厕所的样子"
+	CASE 写真_自慰
+		RETURNF "自慰的样子"
+	CASE 写真_住人同士_会话
+		RETURNF "说话的样子"
+	CASE 写真_住人同士_お茶
+		RETURNF "喝茶的样子"
+	CASE 写真_住人同士_接触
+		RETURNF "亲密接触的样子"
+	CASE 写真_住人同士_抱擁
+		RETURNF "拥抱着的样子"
+	CASE 写真_住人同士_キス
+		RETURNF "接吻的样子"
+	CASE 写真_住人同士_爱抚
+		RETURNF "爱抚股间的样子"
+	CASE 写真_住人同士_Ａ爱抚
+		RETURNF "爱抚肛门的样子"
+	CASE 写真_住人同士_胸爱抚
+		RETURNF "抚摸胸部的样子"
+	CASE 写真_住人同士_Ｖ性交
+		RETURNF "性交的样子"
+	CASE 写真_住人同士_Ａ性交
+		RETURNF "肛交的样子"
+ENDSELECT
+
+;写真の詳細を返す。あまり長く描写するとはみ出るので全角16文字程度に収めること
+@PHOTO_DETAIL_NAME(写真番号, 写真詳細)
+#FUNCTIONS
+#DIM 写真番号
+#DIM 写真詳細
+SELECTCASE 写真番号
+	CASE 写真_NTR_キス
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "主动地伸出舌头索吻的样子"
+			CASE 写真詳細_快楽
+				RETURNF "带着快要融化的表情接受接吻的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "只是接吻就抵达高潮的样子"
+			CASE 写真詳細_恋人
+				RETURNF "如同恋人一般浓厚亲热地接吻的样子"
+			CASEELSE
+				RETURNF "接吻的样子"
+		ENDSELECT
+	CASE 写真_NTR_爱抚
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "不成体统地张开双腿乞求爱抚的样子"
+			CASE 写真詳細_快楽
+				RETURNF "用快融化的表情享受爱抚侍奉的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "被爱抚到高潮用力拥抱对方的样子"
+			CASE 写真詳細_恋人
+				RETURNF "亲密地享受彼此爱抚的样子"
+			CASEELSE
+				RETURNF "被爱抚的样子"
+		ENDSELECT
+	CASE 写真_NTR_胸爱抚
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "向前挺着胸脯乞求爱抚的样子"
+			CASE 写真詳細_快楽
+				RETURNF "被揉胸而露出快融化的表情的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "被提起乳头达到绝顶的样子"
+			CASE 写真詳細_恋人
+				RETURNF "主动让对方吸吮胸部两人调情的样子"
+			CASEELSE
+				RETURNF "被抚摸胸部的样子"
+		ENDSELECT
+	CASE 写真_NTR_口交
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "张开嘴巴乞求肉棒的样子"
+			CASE 写真詳細_快楽
+				RETURNF "用快融化的表情吸吮着肉棒的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "吸吮着肉棒就到达绝顶的样子"
+			CASE 写真詳細_恋人
+				RETURNF "怜爱地亲吻肉棒的样子"
+			CASEELSE
+				RETURNF "口交的样子"
+		ENDSELECT
+	CASE 写真_NTR_六九式
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "吸允着肉棒向对方抬起屁股的样子"
+			CASE 写真詳細_快楽
+				RETURNF "不愿输给快感而努力吸吮肉棒的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "舔舐着肉棒抵达高潮身体颤抖的样子"
+			CASE 写真詳細_恋人
+				RETURNF "相互亲吻彼此的阴部贪求快乐的样子"
+			CASEELSE
+				RETURNF "６９侍奉的样子"
+		ENDSELECT
+	CASE 写真_NTR_素股
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "光靠素股无法忍耐而乞求插入的样子"
+			CASE 写真詳細_快楽
+				RETURNF "用快融化的表情素股侍奉的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "素股时一边扭动腰肢一边绝顶的样子"
+			CASE 写真詳細_恋人
+				RETURNF "带着爱怜的表情扭着腰素股的样子"
+			CASEELSE
+				RETURNF "素股侍奉的样子"
+		ENDSELECT
+	CASE 写真_NTR_Ｖ性爱
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "打开双腿张开私处乞求插入的样子"
+			CASE 写真詳細_快楽
+				RETURNF "沉浸在做爱的快感中神魂颠倒的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "在激烈的交合中绝顶身体颤抖的样子"
+			CASE 写真詳細_恋人
+				RETURNF "如恋人一般饱含感情身心交合的样子"
+			CASEELSE
+				RETURNF "性交的样子"
+		ENDSELECT
+	CASE 写真_NTR_Ａ性爱
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "扭动抬起的屁股乞求插入的样子"
+			CASE 写真詳細_快楽
+				RETURNF "因肛交的快感浑身颤抖的样子"
+			CASE 写真詳細_絶頂
+				RETURNF "尻穴被插入着高潮的样子"
+			CASE 写真詳細_恋人
+				RETURNF "享受着肛交来彼此调情的样子"
+			CASEELSE
+				RETURNF "肛交的样子"
+		ENDSELECT
+	CASE 写真_NTR_接触
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "手挽着手撒娇着身体接触的样子"
+			CASE 写真詳細_恋人
+				RETURNF "如恋人一般身体相互依靠的样子"
+			CASEELSE
+				RETURNF "亲密接触的样子"
+		ENDSELECT
+	CASE 写真_NTR_抱擁
+		SELECTCASE 写真詳細
+			CASE 写真詳細_おねだり
+				; 16文字"--------------------------------"
+				RETURNF "张开双臂撒娇想要拥抱的样子"
+			CASE 写真詳細_恋人
+				RETURNF "彼此相拥交换炽热视线的样子"
+			CASEELSE
+				RETURNF "拥抱的样子"
+		ENDSELECT
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;摄影した写真の内容取得
+;@return 写真内容コード
+@CHOOSE_PHOTO(キャラ番号,部屋番号)
+#FUNCTION
+#DIM キャラ番号
+#DIM 部屋番号
+;訪問者と一緒で、何かしらの行為中であれば寝取られ姿の摄影
+IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者との行為 != 0
+	SELECTCASE FLAG:訪問者との行為
+		CASE NTR_行为_キス
+			RETURNF 写真_NTR_キス
+		CASE NTR_行为_爱抚
+			RETURNF 写真_NTR_爱抚
+		CASE NTR_行为_胸爱抚
+			RETURNF 写真_NTR_胸爱抚
+		CASE NTR_行为_口交
+			RETURNF 写真_NTR_口交
+		CASE NTR_行为_六九式
+			RETURNF 写真_NTR_六九式
+		CASE NTR_行为_素股
+			RETURNF 写真_NTR_素股
+		CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+			RETURNF 写真_NTR_Ｖ性爱
+		CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+			RETURNF 写真_NTR_Ａ性爱
+	ENDSELECT
+ENDIF
+;訪問者と一緒で、住人からのカウンターセクハラの場合
+IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者との行為 == 0
+	SELECTCASE CFLAG:キャラ番号:NTR_CNT行为
+		CASE NTR_CNT_接吻, NTR_CNT_深吻
+			RETURNF 写真_NTR_キス
+		CASE NTR_CNT_揉胸
+			RETURNF 写真_NTR_胸爱抚
+		CASE NTR_CNT_贴近身体, NTR_CNT_耳边吹气, NTR_CNT_揉搓股间
+			RETURNF 写真_NTR_接触
+		CASE NTR_CNT_背面拥抱, NTR_CNT_正面拥抱
+			RETURNF 写真_NTR_抱擁
+	ENDSELECT
+ENDIF
+;訪問者との行為中でなければ通常の摄影
+SELECTCASE 部屋番号
+	CASE GET_PRIVATE_ROOM(キャラ番号)
+		IF CFLAG:(キャラ番号):睡眠
+			RETURNF 写真_寝顔
+		ELSEIF CFLAG:キャラ番号:自慰中
+			RETURNF 写真_自慰
+		ELSEIF RAND(2) == 1
+			RETURNF 写真_着替え
+		ENDIF
+	CASE 位置_红魔馆_正门
+		IF CSVNAME(NO:キャラ番号) == "紅美鈴" && RAND(3) == 1
+			RETURNF 写真_居眠り
+		ENDIF
+	CASE 位置_红魔馆_大图书馆
+		IF RAND(2) == 1
+			RETURNF 写真_読書
+		ENDIF
+	CASE 位置_红魔馆_厨房
+		RETURNF 写真_料理
+	CASE 位置_红魔馆_大浴场
+		RETURNF 写真_入浴
+	CASE 位置_红魔馆_屋外厕所,位置_红魔馆_一楼厕所,位置_红魔馆_二楼厕所
+		RETURNF 写真_トイレ
+	CASEELSE
+		RETURNF 写真_普段
+ENDSELECT
+RETURNF 写真_普段
+
+
+;-------------------------------------------------------------------------------
+;摄影した写真の内容取得
+;@return 写真内容コード
+@CHOOSE_PHOTO_DETAIL(キャラ番号, 部屋番号)
+#FUNCTION
+#DIM キャラ番号
+#DIM 部屋番号
+;訪問者と一緒で、何かしらの行為中でなければ詳細なし
+IF FLAG:訪問者との行為 == 0
+	RETURNF 写真詳細_なし
+ENDIF
+IF CFLAG:キャラ番号:現在位置 != FLAG:访问者当前位置
+	RETURNF 写真詳細_なし
+ENDIF
+
+IF FLAG:訪問者との行為の終了時刻 <= (DATETIME() + 3)
+	RETURNF 写真詳細_絶頂
+ENDIF
+
+IF TCVAR:キャラ番号:快楽強度
+	RETURNF 写真詳細_快楽
+ENDIF
+
+IF 70 < RAND( MAX(1, CFLAG:キャラ番号:性欲))
+	RETURNF 写真詳細_おねだり
+ENDIF
+
+IF NTR_CHK_FAVORABLY(キャラ番号, FAV_寝取られそう)
+	RETURNF 写真詳細_恋人
+ENDIF
+
+RETURNF 写真詳細_なし
+
+
+;-------------------------------------------------------------------------------
+;摄影した写真の内容取得
+;@return 写真内容コード
+@CHOOSE_PHOTO2(キャラ番号,キャラ番号2,部屋番号)
+#FUNCTION
+#DIM キャラ番号
+#DIM キャラ番号2
+#DIM 部屋番号
+#DIM 行為
+
+行為 = CFLAG:キャラ番号:住人同士イベント内容 / 10
+SELECTCASE 行為
+	CASE 住人同士行为_会话
+		RETURNF 写真_住人同士_会话
+	CASE 住人同士行为_お茶
+		RETURNF 写真_住人同士_お茶
+	CASE 住人同士行为_身体接触,住人同士行为_抚摸臀部
+		RETURNF 写真_住人同士_接触
+	CASE 住人同士行为_抱きつく
+		RETURNF 写真_住人同士_抱擁
+	CASE 住人同士行为_接吻
+		RETURNF 写真_住人同士_キス
+	CASE 住人同士行为_阴蒂爱抚,住人同士行为_手指插入
+		RETURNF 写真_住人同士_爱抚
+	CASE 住人同士行为_肛门爱抚
+		RETURNF 写真_住人同士_Ａ爱抚
+	CASE 住人同士行为_胸爱抚
+		RETURNF 写真_住人同士_胸爱抚
+	CASE 住人同士行为_Ｖ性交Ｎ,住人同士行为_Ｖ性交Ｃ,住人同士行为_Ｖ後戯Ｎ,住人同士行为_Ｖ後戯Ｃ
+		RETURNF 写真_住人同士_Ｖ性交
+	CASE 住人同士行为_Ａ性交Ｎ,住人同士行为_Ａ性交Ｃ,住人同士行为_Ａ後戯Ｎ,住人同士行为_Ａ後戯Ｃ
+		RETURNF 写真_住人同士_Ａ性交
+ENDSELECT
+;フェイルセーフ
+RETURNF 写真_住人同士_会话
+
+;-------------------------------------------------------------------------------
+;
+@从写真获取信息(ARG,写真内容)
+#DIM 写真内容
+SELECTCASE 写真内容
+	CASE 写真_普段
+
+	CASE 写真_着替え
+		SIF RAND(100)<20
+			CALL 确认乳头颜色(ARG)
+		SIF RAND(100)<10
+			CALL 确认小穴颜色(ARG)
+	CASE 写真_入浴
+		SIF RAND(100)<50
+			CALL 确认乳头颜色(ARG)
+		SIF RAND(100)<20
+			CALL 确认小穴颜色(ARG)
+	CASE 写真_寝顔
+
+	CASE 写真_料理
+
+	CASE 写真_居眠り
+
+	CASE 写真_読書
+
+	CASE 写真_トイレ
+		SIF RAND(100)<5
+			CALL 确认小穴颜色(ARG)
+	CASE 写真_NTR_キス
+		PRINTFORMW  %CALLNAME:ARG%跟%NTR_NAME(0)%接吻了……
+		EXP:ARG:已知的浮気接吻经验 = !EXP:ARG:已知的浮気接吻经验 ? 1 # 0
+	CASE 写真_NTR_爱抚
+		SIF RAND(100)<30
+			CALL 确认乳头颜色(ARG)
+		SIF RAND(100)<30
+			CALL 确认小穴颜色(ARG)
+	CASE 写真_NTR_胸爱抚
+		SIF RAND(100)<30
+			CALL 确认乳头颜色(ARG)
+	CASE 写真_NTR_口交
+		PRINTFORMW %CALLNAME:ARG%吃过%NTR_NAME(0)%的鸡巴了……
+		EXP:ARG:已知的浮気口淫经验 = !EXP:ARG:已知的浮気口淫经验 ? 1 # 0
+	CASE 写真_NTR_六九式
+		SIF RAND(100)<20
+			CALL 确认小穴颜色(ARG)
+		SIF RAND(100)<20
+			CALL 确认肛门颜色(ARG)
+	CASE 写真_NTR_素股
+		SIF RAND(100)<30
+			CALL 确认小穴颜色(ARG)
+	CASE 写真_NTR_Ｖ性爱
+		SIF RAND(100)<20
+			CALL 确认小穴颜色(ARG)
+	CASE 写真_NTR_Ａ性爱
+		SIF RAND(100)<30
+			CALL 确认小穴颜色(ARG)
+		SIF RAND(100)<10
+			CALL 确认肛门颜色(ARG)
+	CASE 写真_自慰
+		SIF RAND(100)<20
+			CALL 确认乳头颜色(ARG)
+		SIF RAND(100)<20
+			CALL 确认小穴颜色(ARG)
+		SIF RAND(100)<10
+			CALL 确认肛门颜色(ARG)	
+	CASE 写真_NTR_接触
+
+	CASE 写真_NTR_抱擁
+
+	CASE 写真_住人同士_会话
+
+	CASE 写真_住人同士_お茶
+
+	CASE 写真_住人同士_接触
+
+	CASE 写真_住人同士_抱擁
+
+	CASE 写真_住人同士_キス
+
+	CASE 写真_住人同士_爱抚
+
+	CASE 写真_住人同士_Ａ爱抚
+
+	CASE 写真_住人同士_胸爱抚
+
+	CASE 写真_住人同士_Ｖ性交
+
+	CASE 写真_住人同士_Ａ性交
+
+ENDSELECT

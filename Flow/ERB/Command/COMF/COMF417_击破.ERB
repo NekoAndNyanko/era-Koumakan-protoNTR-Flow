@@ -1,0 +1,1802 @@
+﻿;-------------------------------------------------
+;击破
+; バランスとかいい加減なので、適当に修正してね。
+;-------------------------------------------------
+
+;---------------------------------------------
+;コマンド実行
+@COM417
+CALL COM417_Setup(MASTER)
+CALL COM417_Battle(MASTER,RESULT:0,RESULT:1)
+CALL COM417_Cleanup(MASTER,RESULT:0)
+RETURN 0
+
+
+;---------------------------------------------
+;戦闘前準備
+;@return あなた陣営戦力,訪問者陣営戦力
+;分岐にTFLAG:99を使用
+@COM417_Setup(対峙者)
+#DIM 対峙者				; 訪問者に対峙する人物。基本はMASTER
+#DIM あなた陣営戦力
+#DIM 訪問者陣営戦力
+#DIM LOOP_CHR
+
+あなた陣営戦力 = ABL:対峙者:战斗技能 + 1
+PRINTFORML %CALLNAME:対峙者%の戦力:+{あなた陣営戦力}
+;あなたより弱い訪問者は存在しない。いいね？
+IF ABL:MASTER:42 < 5
+	;と言ったな。あれは嘘だ。
+ELSEIF ABL:MASTER:42 <= 15
+	PRINTFORML 要看平时的训练成果吗？
+	PRINTL [0] 就在今日！
+	PRINTL [1] 还不是时候
+	$INPUT_LOOP_BATTELESUPERMODE01
+	INPUT
+	IF RESULT == 0
+		TFLAG:99 = 1
+	ELSEIF RESULT == 1
+
+	ELSE
+		GOTO INPUT_LOOP_BATTELESUPERMODE01
+	ENDIF
+	;猛者共がひしめく幻想郷で生き抜いた、筋肉モリモリマッチョマンの変態(という名の紳士)だ
+ELSE
+	PRINTFORML 已经修炼到极致了、要释放体内的洪荒之力吗？
+	PRINTL [0]封印
+	PRINTL [1]拿出三成实力
+	PRINTL [2]卐解
+	$INPUT_LOOP_BATTELESUPERMODE02
+	INPUT
+	IF RESULT == 0
+
+	ELSEIF RESULT == 1
+		TFLAG:99 = 1
+	ELSEIF RESULT == 2
+		TFLAG:99 = 2
+	ELSE
+		GOTO INPUT_LOOP_BATTELESUPERMODE02
+	ENDIF
+ENDIF
+;本気度の度合いによる戦闘力の分岐
+IF TFLAG:99 == 0
+	訪問者陣営戦力 = あなた陣営戦力 + 3 + RAND:4
+	PRINTFORML %NTR_NAME(0)%の戦力:+{訪問者陣営戦力}
+ELSEIF TFLAG:99 == 1
+	訪問者陣営戦力 = あなた陣営戦力 - 2 + RAND:4
+	PRINTFORML %NTR_NAME(0)%の戦力:+{訪問者陣営戦力}
+ELSEIF TFLAG:99 == 2
+	訪問者陣営戦力 = あなた陣営戦力 - 10 + RAND:4
+	PRINTFORML %NTR_NAME(0)%の戦力:+{訪問者陣営戦力}
+ENDIF
+
+PRINTFORMW %CALLNAME:対峙者%は%NTR_NAME(0)%を追い出すべく、戦闘を開始した！
+FOR LOOP_CHR,0,CHARANUM
+	;同行状態は強制解除(バグ防止)
+	CFLAG:LOOP_CHR:同行 = 0
+	IF LOOP_CHR == 対峙者
+		;自分自身は参戦できない
+	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置 && !CFLAG:LOOP_CHR:睡眠
+		;同じ位置にいれば参戦してくれる
+		SELECTCASE COM417_Position(LOOP_CHR)
+			CASE IS <= -50
+				PRINTFORML %CALLNAME:LOOP_CHR%竭尽全力地对%NTR_NAME(0)%进行了援护(戦力+{ABL:LOOP_CHR:战斗技能})
+				訪問者陣営戦力 += ABL:LOOP_CHR:战斗技能
+			CASE -49 TO -20
+				PRINTFORML %CALLNAME:LOOP_CHR%积极地对%NTR_NAME(0)%进行了援护(戦力+{ABL:LOOP_CHR:战斗技能/2})
+				訪問者陣営戦力 += ABL:LOOP_CHR:战斗技能/2
+			CASE -19 TO -1
+				PRINTFORML %CALLNAME:LOOP_CHR%不动声色地对%NTR_NAME(0)%进行了援护(戦力+{ABL:LOOP_CHR:战斗技能/3})
+				訪問者陣営戦力 += ABL:LOOP_CHR:战斗技能/3
+			CASE 0 TO 19
+				PRINTFORML %CALLNAME:LOOP_CHR%不动声色地对%CALLNAME:対峙者%进行了援护(戦力+{ABL:LOOP_CHR:战斗技能/3})
+				あなた陣営戦力 += ABL:LOOP_CHR:战斗技能/3
+			CASE 20 TO 49
+				PRINTFORML %CALLNAME:LOOP_CHR%积极地对%CALLNAME:対峙者%进行了援护(戦力+{ABL:LOOP_CHR:战斗技能/2})
+				あなた陣営戦力 += ABL:LOOP_CHR:战斗技能/2
+			CASE IS >= 50
+				PRINTFORML %CALLNAME:LOOP_CHR%竭尽全力地对%CALLNAME:対峙者%进行了援护(戦力+{ABL:LOOP_CHR:战斗技能})
+				あなた陣営戦力 += ABL:LOOP_CHR:战斗技能
+			CASEELSE
+				;上記の選択肢ならありえないが一応表示
+				PRINTFORML %CALLNAME:LOOP_CHR%茫然地不知道该帮助哪一边……。
+		ENDSELECT
+	ENDIF
+NEXT
+RETURN あなた陣営戦力,訪問者陣営戦力
+
+
+;---------------------------------------------
+;戦闘中処理 1ターン10分
+;@return 勝った場合1、負けた場合0
+@COM417_Battle(対峙者,あなた陣営戦力,訪問者陣営戦力)
+#DIM 対峙者				; 訪問者に対峙する人物。基本はMASTER
+#DIM あなた陣営戦力
+#DIM 訪問者陣営戦力
+#DIM 続行フラグ
+#DIM ターン番号
+#DIM あなた陣営残存戦力
+#DIM 訪問者陣営残存戦力
+#DIM あなた陣営攻撃力
+#DIM 訪問者陣営攻撃力
+#DIM ダメージ
+続行フラグ = 1
+ターン番号 = 0
+あなた陣営残存戦力 = あなた陣営戦力
+訪問者陣営残存戦力 = 訪問者陣営戦力
+
+WHILE 続行フラグ
+
+	ターン番号++
+	TIME += 10
+
+	PRINTFORMW {ターン番号}ターン目 %CALLNAME:対峙者%側の戦力 {あなた陣営残存戦力} : %NTR_NAME(0)%側の戦力 {訪問者陣営残存戦力}
+
+	PRINTFORMW ピチューン　　・
+	PRINTFORMW 　　　　　　　・
+	PRINTFORMW 　　　　　　　・　　ピチューン
+
+	あなた陣営攻撃力 = あなた陣営残存戦力+RAND:5
+	訪問者陣営攻撃力 = 訪問者陣営残存戦力+RAND:5
+
+	SELECTCASE あなた陣営攻撃力
+		CASE IS < 訪問者陣営攻撃力
+			;判定に敗北
+			ダメージ = SQRT(POWER(訪問者陣営攻撃力,2)-POWER(あなた陣営攻撃力,2))
+			PRINTFORML %CALLNAME:対峙者%側は戦力に{ダメージ}のダメージを受けた！
+			あなた陣営残存戦力 -= ダメージ
+			PRINTFORMW (%CALLNAME:対峙者%の体力-{500*ダメージ/あなた陣営戦力}、气力-{500*ダメージ/あなた陣営戦力})
+			BASE:対峙者:体力 = MAX(BASE:対峙者:体力 - 500*ダメージ/あなた陣営戦力,500)
+			BASE:対峙者:气力 = MAX(BASE:対峙者:气力 - 500*ダメージ/あなた陣営戦力,100)
+		CASE IS > 訪問者陣営攻撃力
+			;判定に勝利
+			ダメージ = SQRT(POWER(あなた陣営攻撃力,2)-POWER(訪問者陣営攻撃力,2))
+			PRINTFORML %NTR_NAME(0)%側の戦力に{ダメージ}のダメージを与えた！
+			訪問者陣営残存戦力 -= ダメージ
+			PRINTFORMW (%CALLNAME:対峙者%の体力-{150*ダメージ/あなた陣営戦力}、气力-{150*ダメージ/あなた陣営戦力})
+			BASE:対峙者:体力 = MAX(BASE:対峙者:体力-150*ダメージ/あなた陣営戦力,500)
+			BASE:対峙者:气力 = MAX(BASE:対峙者:气力-150*ダメージ/あなた陣営戦力,100)
+		CASEELSE
+			PRINTFORML どちらも致命的なダメージは受けていないようだ
+			PRINTFORMW (%CALLNAME:対峙者%の体力-{150*ダメージ/あなた陣営戦力}、气力-{150*ダメージ/あなた陣営戦力})
+			BASE:対峙者:体力 = MAX(BASE:対峙者:体力-150*ダメージ/あなた陣営戦力,500)
+			BASE:対峙者:气力 = MAX(BASE:対峙者:气力-150*ダメージ/あなた陣営戦力,100)
+			;判定に引分
+	ENDSELECT
+
+	;体力500または气力が100以下で負け
+	IF (BASE:対峙者:体力 <= 500) || (BASE:対峙者:气力 <= 100)
+		PRINTFORMW %CALLNAME:対峙者%的身体已经不能动弹了……
+		RETURN 0
+	ENDIF
+
+	;戦力0になったら負け
+	IF あなた陣営残存戦力 < 1
+		PRINTFORMW %CALLNAME:対峙者%好像已经不能战斗了……
+		RETURN 0
+	ENDIF
+
+	;戦力0にしたら勝ち
+	IF 訪問者陣営残存戦力 < 1
+		PRINTFORMW %NTR_NAME(0)%好像已经不能战斗了……
+		RETURN 1
+	ENDIF
+
+	PRINT [0] - 还可以战斗 [1] - 投降…吧……
+	INPUT
+	IF RESULT
+		PRINTFORMW %CALLNAME:対峙者%投降了……
+		RETURN 0
+	ENDIF
+
+WEND
+RETURN 0
+
+
+;---------------------------------------------
+;戦闘後処理
+@COM417_Cleanup(対峙者,戦闘結果)
+#DIM 対峙者				; 訪問者に対峙する人物。基本はMASTER
+#DIM 戦闘結果			; 1:勝利,0:敗北
+
+IF 戦闘結果
+	CALL COM417_Win(対峙者)
+ELSE
+	CALL COM417_Lose(対峙者)
+ENDIF
+RETURN 0
+
+
+;---------------------------------------------
+;キャラクターの立ち位置(敵味方)を決める関数
+;@return 立ち位置(+100～+1であなたの味方、0で中立、-1～-100であなたと敵対）
+@COM417_Position(住人)
+#FUNCTION
+#DIM 住人	;判定するキャラクター番号
+RETURNF LIMIT((100*(CFLAG:住人:好感度-CFLAG:住人:屈服度)/MAX(CFLAG:住人:好感度,1)),-100,100)
+
+
+;---------------------------------------------
+;戦闘勝利時の処理
+@COM417_Win(対峙者)
+#DIM 対峙者				; 訪問者に対峙する人物。基本はMASTER
+#DIM LOOP_CHR
+
+PRINTFORMW %CALLNAME:対峙者%成功将%NTR_NAME(0)%赶走了！
+FLAG:访问者当前位置 = 位置_訪問者宅
+FLAG:訪問者同行フラグ = 0
+CALL NTR_RESET_VISITOR_ACTION(-1)
+FLAG:訪問者との汚れ判定に使用 = 0
+FLAG:訪問者滞在時間カウンタ = 0
+;屈服度減算
+CFLAG:対峙者:屈服度 = MAX(CFLAG:対峙者:屈服度 - 50 - RAND:50, 0)
+EXP:対峙者:战斗经验 ++
+;全開中の全開で戦った場合、好感度低下。屈服が高いorNTR状態の時は好感度が結構下がる上に時間も消費される。でも、この条件を出せる程まで鍛えた分、屈服低下の補正大。
+IF TFLAG:99 == 2
+	FOR LOOP_CHR,0,CHARANUM
+		IF LOOP_CHR == 対峙者
+			;自分自身は評価しない
+		ELSEIF CFLAG:LOOP_CHR:睡眠
+			;寝てる人は無関係
+		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+			PRINTFORML 战斗结束后，%CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%的行为表达了态度、
+			;やり過ぎだよねぇ…と思いつつも、自分を守ってくれた事には一応感謝してる
+			IF TALENT:LOOP_CHR:恋慕
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 1
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 400
+				PRINTFORMW 虽然板起了面孔、但还是好好褒奖了一番。
+				EXP:LOOP_CHR:战斗经验 ++
+			ELSEIF CFLAG:LOOP_CHR:好感度 > CFLAG:LOOP_CHR:屈服度
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 25
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 300
+				PRINTFORMW 责备%CALLNAME:対峙者%是不是做得太过分了。
+				;介抱する時間と送り届ける時間とで、結構持っていかれる
+			ELSEIF TALENT:LOOP_CHR:NTR
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 75
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 200
+				PRINTFORMW 愤怒地瞪了%CALLNAME:対峙者%一眼，然后转身小心翼翼地抱起了%NTR_NAME(0)%、
+				PRINTFORMW 将%NTR_NAME(0)%的手臂搭在自己的肩上、细心扶持着离开了……从始至终再没有看%CALLNAME:対峙者%一眼。
+				TIME += 20
+			ELSEIF CFLAG:LOOP_CHR:好感度 < CFLAG:LOOP_CHR:屈服度
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 50
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 250
+				PRINTFORMW 一边责骂着%CALLNAME:対峙者%做得太过分了，一边扶着%NTR_NAME(0)%离开…
+				TIME += 10
+			ENDIF
+		ENDIF
+		; 好感度、屈服度がマイナスであれば０に補正
+		IF CFLAG:LOOP_CHR:好感度 < 0 
+			CFLAG:LOOP_CHR:好感度 = 0 
+		ENDIF
+		IF CFLAG:LOOP_CHR:屈服度 < 0 
+			CFLAG:LOOP_CHR:屈服度 = 0 
+		ENDIF
+	NEXT
+	;少しだけ本気出した場合、;勝利時に住人の評価がちょっとダウン(恋慕ならわずかだが好感度が上がる)。屈服が高い時は好感度が下がる上に時間も消費される。
+ELSEIF TFLAG:99 == 1
+	FOR LOOP_CHR,0,CHARANUM
+		IF LOOP_CHR == 対峙者
+			;自分自身は評価しない
+		ELSEIF CFLAG:LOOP_CHR:睡眠
+			;寝てる人は無関係
+		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+			PRINTFORM %CALLNAME:LOOP_CHR%对
+			IF TALENT:LOOP_CHR:恋慕
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 + 1
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 250
+				EXP:LOOP_CHR:战斗经验 ++
+				PRINTFORMW %CALLNAME:対峙者%的行为进行了褒奖。
+			ELSEIF CFLAG:LOOP_CHR:好感度 > CFLAG:LOOP_CHR:屈服度
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 10
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 200
+				PRINTFORMW %CALLNAME:対峙者%责备说是不是做得太过分了。
+			ELSE
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 25
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 150
+				PRINTFORMW %CALLNAME:対峙者%的行为十分愤怒，开始照顾遍体鳞伤的%NTR_NAME(0)%。
+				TIME += 5
+			ENDIF
+		ENDIF
+		; 好感度、屈服度がマイナスであれば０に補正
+		IF CFLAG:LOOP_CHR:好感度 < 0 
+			CFLAG:LOOP_CHR:好感度 = 0 
+		ENDIF
+		IF CFLAG:LOOP_CHR:屈服度 < 0 
+			CFLAG:LOOP_CHR:屈服度 = 0 
+		ENDIF
+	NEXT
+	;本気を出していない場合は変化なし
+ELSE
+	;勝利時住人の評価UP、同時にNTR状態の住人の評価ダウン
+	FOR LOOP_CHR,0,CHARANUM
+		IF LOOP_CHR == 対峙者
+			;自分自身は評価しない
+		ELSEIF CFLAG:LOOP_CHR:睡眠
+			;寝てる人は無関係
+		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+			IF CFLAG:LOOP_CHR:好感度 > CFLAG:LOOP_CHR:屈服度
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 + 10
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 100
+				EXP:LOOP_CHR:战斗经验 ++
+				PRINTFORMW %CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%的行为进行了褒奖。
+			ELSE
+				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 - 10
+				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 100
+				PRINTFORMW %CALLNAME:LOOP_CHR%似乎有些依依不舍地注视着%NTR_NAME(0)%的背影。
+			ENDIF
+		ENDIF
+		; 好感度、屈服度がマイナスであれば０に補正
+		IF CFLAG:LOOP_CHR:好感度 < 0 
+			CFLAG:LOOP_CHR:好感度 = 0 
+		ENDIF
+		IF CFLAG:LOOP_CHR:屈服度 < 0 
+			CFLAG:LOOP_CHR:屈服度 = 0 
+		ENDIF
+	NEXT
+ENDIF
+RETURN 0
+
+@主人公战败刻画淫纹
+IF CFLAG:MASTER:淫纹 == 0
+	PRINTFORMW 女孩子可不能这么暴力，这下可不得不惩罚你了。
+	PRINTFORMW %NTR_NAME(0)%拿出散发着魔力的印章
+	PRINTFORMW 准备好接受惩罚吧
+ELSE
+	PRINTFORMW 一次又一次地来战斗啊，但是既然输了，就要接受惩罚。
+	PRINTFORMW %NTR_NAME(0)%拿出散发着魔力的印章
+	PRINTFORMW 应该已经准备好了吧
+ENDIF
+PRINTFORM %CALLNAME:MASTER%的
+IF GETBIT(CFLAG:MASTER:淫纹, 淫纹_右頬)==0
+	;右頬優先。目に見えるから。あとちゅっちゅ防止
+	PRINTFORMW 右颊浮现出了漂亮的淫纹
+	CFLAG:MASTER:淫纹上書回数 ++
+	SETBIT CFLAG:MASTER:淫纹,淫纹_右頬
+ELSEIF  GETBIT(CFLAG:MASTER:淫纹, 淫纹_恥丘)==0
+	PRINTFORMW 恥丘与小腹浮现出了漂亮的淫纹
+	CFLAG:MASTER:淫纹上書回数 ++
+	SETBIT CFLAG:MASTER:淫纹,淫纹_恥丘
+ELSEIF GETBIT(CFLAG:MASTER:淫纹, 淫纹_左尻)==0
+	PRINTFORMW 臀部和脊背浮现出了漂亮的淫纹
+	CFLAG:MASTER:淫纹上書回数 ++
+	SETBIT CFLAG:MASTER:淫纹,淫纹_左尻
+ELSEIF GETBIT(CFLAG:MASTER:淫纹, 淫纹_胸元)==0
+	PRINTFORMW 胸前浮现出了漂亮的淫纹
+	CFLAG:MASTER:淫纹上書回数 ++
+	SETBIT CFLAG:MASTER:淫纹,淫纹_胸元
+ELSEIF GETBIT(CFLAG:MASTER:淫纹, 淫纹_太股)==0
+	;挿入は優先度が低い。訪問者は優しいね。
+	PRINTFORMW 股间浮现出了漂亮的淫纹
+	CFLAG:MASTER:淫纹上書回数 ++
+	SETBIT CFLAG:MASTER:淫纹,淫纹_太股
+ENDIF
+IF CFLAG:MASTER:淫纹上書回数 == 1
+	PRINTFORMW 「你要是集齐了五个淫纹的话，外表会发生变化，内在也会有些许改变」
+	PRINTFORMW 「刻在%CALLNAME:MASTER%身上的这些淫纹，是无论如何都不会消失的。」
+	PRINTFORMW 「所以今后，要么就战胜我，要么就不要再想着与我战斗了。」%NTR_NAME(0)%如此说道…
+ELSEIF CFLAG:MASTER:淫纹 == 31
+	PRINTW 「那么，这就是最后一个了。」
+	PRINTFORMW %NTR_NAME(0)%将最后一个淫纹刻在了%CALLNAME:MASTER%的股间
+	PRINTFORMW %CALLNAME:MASTER%感到身体逐渐变热，脸也因为充血而变得绯红，发出了动听的娇喘声…
+	PRINTFORMW 淫纹的光芒也渐渐散播开来，因为身上的五个部位都被刻上了淫纹，如%NTR_NAME(0)%说的那样，要迎来改变了…
+	CFLAG:MASTER:淫纹身体改造 = 1
+	IF CFLAG:MASTER:肌色 == 0
+		PRINTFORM 原本%CALLNAME:MASTER%
+		CALL 肌色SET(CFLAG:MASTER:肌色)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORM 白皙如雪的肌肤慢慢变成
+		CALL 肌色SET(3)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW %肌色(3)%的了…
+	ELSE
+		PRINTFORM 皮肤的颜色逐渐变成
+		CALL 肌色SET(3)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW 的了…
+	ENDIF
+	BASE:MASTER:日晒度 = 1000
+	CFLAG:MASTER:肌色 = 3
+	CFLAG:MASTER:已知的肌肤颜色 = 3
+	CFLAG:MASTER:髪色 = 85
+	CFLAG:MASTER:目色左 = 4
+	CFLAG:MASTER:目色右 = 4
+	PRINTFORM 头发变成了
+	CALL 汎用色SET(CFLAG:MASTER:髪色)
+	PRINTFORM ■ 
+	RESETCOLOR
+	PRINTFORM %色汎用(CFLAG:MASTER:髪色)%色，眼睛的颜色也变成了魅惑的
+	CALL 汎用色SET(CFLAG:MASTER:目色左)
+	PRINTFORM ■ 
+	RESETCOLOR
+	PRINTFORMW %色汎用(CFLAG:MASTER:目色左)%色…
+	BASE:MASTER:乳头色素 = 600
+	CFLAG:MASTER:乳头颜色 = 5
+	CFLAG:MASTER:已知的乳头颜色 = 5
+	BASE:MASTER:小穴色素 = 600
+	CFLAG:MASTER:小穴颜色 = 5
+	CFLAG:MASTER:已知的小穴颜色 = 5
+	BASE:MASTER:肛门色素 = 600
+	CFLAG:MASTER:肛门颜色 = 5
+	CFLAG:MASTER:已知的肛门颜色 = 5
+	PRINTFORM 乳晕和乳头的颜色也跟着转变成了
+	CALL 秘部颜色SET(CFLAG:MASTER:乳头颜色)
+	PRINTFORM ■ 
+	RESETCOLOR
+	PRINTFORMW %秘部颜色(CFLAG:MASTER:乳头颜色)%的
+	PRINTFORM 小穴和肛门也是，变成
+	CALL 秘部颜色SET(CFLAG:MASTER:小穴颜色)
+	PRINTFORM ■ 
+	RESETCOLOR
+	PRINTFORMW %秘部颜色(CFLAG:MASTER:小穴颜色)%的了…
+	TALENT:MASTER:容易中毒 = 1
+	TALENT:MASTER:立即陷落 = 1
+	TALENT:MASTER:快感应答 = 1
+	TALENT:MASTER:性的兴趣 = 1
+	PRINTFORMW 淫纹还在散发着光亮，可能还有其他内在的改变，但就从外表上来看莫名的有种淫荡的感觉……
+	PRINTFORMW 转变完成的%CALLNAME:MASTER%无力地躺在地上，而%NTR_NAME(0)%微笑着目睹着这一切…
+ELSE
+	;既に押したことがあるとき
+	PRINTFORMW 「又收集到一个淫纹了呢，再接再厉？」%NTR_NAME(0)%笑道…
+ENDIF
+PRINTL
+
+
+
+;---------------------------------------------
+;戦闘敗北時の処理
+@COM417_Lose(対峙者)
+#DIM 対峙者				; 訪問者に対峙する人物。基本はMASTER
+#DIM 奴隷
+#DIM 介入可否			; 他人が口をだせるかどうか(0:出せる,1以上:出せない)
+#DIM LOOP_CHR
+
+PRINTFORMW %CALLNAME:対峙者%被%NTR_NAME(0)%击败了……
+IF 対峙者 == MASTER && HAS_VAGINA(対峙者) && GET_N_WITH_VISITER(0) == 1
+	IF CFLAG:MASTER:淫纹 != 31 && CFLAG:MASTER:淫纹身体改造 == 0
+		CALL 主人公战败刻画淫纹
+		RETURN 0
+	ENDIF
+ENDIF
+;屈服度の高い女あなたが一人で敗北、かつ監禁ONの時の例外処理
+IF 対峙者 == MASTER && HAS_VAGINA(対峙者) && CFLAG:対峙者:屈服度 > 1000 && GET_N_WITH_VISITER(0) == 1 && IS_NTR_IMPRISON_ENABLE()
+	PRINTFORMW %NTR_NAME(0)%将瘫软在地的%CALLNAME:対峙者%抱了起来、带回了家……
+	CFLAG:MASTER:現在位置 = 位置_訪問者宅
+	CFLAG:MASTER:現在位置詳細 = 25
+	FLAG:訪問者同行フラグ = 0
+	FLAG:訪問者宅の施錠状態 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
+	CFLAG:MASTER:NTR訪問者宅監禁状況 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
+	RETURN 0
+ENDIF
+介入可否 = 0
+FOR LOOP_CHR,0,CHARANUM
+	IF LOOP_CHR == 対峙者
+		;自分自身はキツいお仕置きが待っている
+	ELSEIF CFLAG:LOOP_CHR:睡眠
+		;寝てる人は無関係
+		CONTINUE
+	ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_红魔馆_屋外厕所 && CFLAG:対峙者:現在位置 != 位置_红魔馆_屋外厕所
+		;屋外厕所が危険な感じになってきたので脱出
+		IF CFLAG:対峙者:現在位置 == 位置_红魔馆_后院
+			;庭に居たら正門まで逃跑(守衛小屋は鍵の可能性があるので避ける)
+			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_正门
+		ELSE
+			;それ以外の場合は庭へ逃跑
+			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_后院
+		ENDIF
+	ELSEIF !HAS_VAGINA(LOOP_CHR)
+		; 訪問者「オトコはいいや」
+		CONTINUE
+	ELSEIF !NTR_CHK_STRIKE_ZONE(LOOP_CHR)
+		; 訪問者「子供には興味はない」
+		CONTINUE
+	ELSEIF IS_NTR_ATTACK_LOVER_ONLY() && !TALENT:LOOP_CHR:恋慕
+		; 訪問者「他人の恋人を寝取ってこそ価値がある」
+		CONTINUE
+	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置 && !CFLAG:LOOP_CHR:睡眠
+		;あなたに味方した娘にはお仕置きだよねー
+		SELECTCASE COM417_Position(LOOP_CHR)
+			CASE 0 TO 19
+				;さりげなく援護していた場合、軽いお仕置き
+				CALL COM417_Lose_Punishment_Easy(LOOP_CHR)
+				PRINTFORMW %CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%感到失望。
+				CFLAG:LOOP_CHR:好感度 -= MAX(CFLAG:LOOP_CHR:好感度 / 50,100)
+			CASE 20 TO 49
+				;積極的に援護していた場合、普通のお仕置き
+				CALL COM417_Lose_Punishment_Normal(LOOP_CHR)
+				介入可否 += RESULT
+				PRINTFORMW %CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%感到非常失望。
+				CFLAG:LOOP_CHR:好感度 -= MAX(CFLAG:LOOP_CHR:好感度 / 25,250)
+			CASE IS >= 50
+				;全力で援護していた場合、キツいお仕置き
+				CALL COM417_Lose_Punishment_Extra(LOOP_CHR)
+				介入可否 += RESULT
+				PRINTFORMW %CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%感到非常失望。
+				CFLAG:LOOP_CHR:好感度 -= MAX(CFLAG:LOOP_CHR:好感度 / 10,500)
+			CASEELSE
+				;それ以外は大丈夫
+				PRINTFORMW %CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%感到失望。
+				CFLAG:LOOP_CHR:好感度 -= MAX(CFLAG:LOOP_CHR:好感度 / 50,100)
+		ENDSELECT
+	ENDIF
+NEXT
+;他に誰か連れて行かれてたら助けてもらえない
+CALL COM417_Lose_Punishment_Hard(対峙者, 介入可否)
+CALL COM417_Lose_Punishment_Extra_Continue(対峙者)
+RETURN 0
+
+;---------------------------------------------
+;戦闘敗北時の(優しい)お仕置き処理(ぱんつ回収＆跳蛋挿入)
+@COM417_Lose_Punishment_Easy(住人)
+#DIM 住人				; 訪問者に対峙したキャラクター番号
+
+PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%に穿いている下着を脱いで、秘部を晒すように命じた
+IF EQUIP:住人:下半身下着１ == 0 && EQUIP:住人:下半身下着２ == 0
+	;ぱんつはいてない
+	PRINTFORML %CALLNAME:住人%はしばらく黙っていたが、やがて小さな声で下着は穿いていないと返事をした
+	PRINTFORML %NTR_NAME(0)%は意地悪な笑みを浮かべ、見せてみろ、と言った……
+	SOURCE:住人:露出 += 200
+	SOURCE:住人:欲情 += 100 + 200 * ABL:住人:欲望
+	SOURCE:住人:被动 += 100 + 200 * ABL:住人:顺从
+	CALL NTR_ADD_SURRENDER(住人, 1)
+ELSE	;ぱんつはかせたくない
+	PRINTFORM %CALLNAME:住人%はしばらく黙っていたが、やがて
+	IF EQUIP:住人:下半身下着１
+		IF GETBIT(FLAG:匂いフェチ,1) 
+			PRINTFORM %PANTS_DESCRIPTION(EQUIP:住人:下半身下着１)%%IRUINAME_SMELL(EQUIP:住人:下半身下着１)%%PANTSNAME(EQUIP:住人:下半身下着１)%
+		ELSE
+			PRINTFORM %PANTS_DESCRIPTION(EQUIP:住人:下半身下着１)%%PANTSNAME(EQUIP:住人:下半身下着１)%
+		ENDIF
+	ELSEIF EQUIP:住人:下半身下着２
+		IF GETBIT(FLAG:匂いフェチ,1) 
+			PRINTFORM %PANTS_DESCRIPTION(EQUIP:住人:下半身下着２)%%IRUINAME_SMELL(EQUIP:住人:下半身下着２)%%PANTSNAME(EQUIP:住人:下半身下着２)%
+		ELSE
+			PRINTFORM %PANTS_DESCRIPTION(EQUIP:住人:下半身下着２)%%PANTSNAME(EQUIP:住人:下半身下着２)%
+		ENDIF
+	ELSE
+		;発生しないはずだけど一応ね
+		PRINTFORM 下着
+	ENDIF
+	PRINTFORML を脱ぐと、%NTR_NAME(0)%に手渡した……
+	CFLAG:住人:服装_下半身下着２ = 0
+	SOURCE:住人:露出 += 200
+	SOURCE:住人:欲情 += 100 + 200 * ABL:住人:欲望
+	SOURCE:住人:被动 += 100 + 200 * ABL:住人:顺从
+	CALL NTR_ADD_SURRENDER(住人, 1)
+ENDIF
+
+IF HAS_VAGINA(住人)
+	IF TALENT:住人:处女
+		;見るまでわからないからね、仕方がないね
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%の秘唇を押し広げ、处女膜を確認すると、次は处女を奪ってやる、と脅した
+		SOURCE:住人:露出 += 100
+		SOURCE:住人:恐怖 += 500
+		CALL NTR_ADD_SURRENDER(住人, 10)
+	ELSE
+		IF CFLAG:住人:跳蛋挿入 != 0
+			;跳蛋は新しいのに交換しようねー
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%の秘所に押し込まれている跳蛋の電池を取り替えた
+		ELSE
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%の秘所に跳蛋を挿入して固定した
+		ENDIF
+		CFLAG:住人:跳蛋挿入 = 240
+		SOURCE:住人:露出 += 200
+		SOURCE:住人:欲情 += 100 + 200 * ABL:住人:欲望
+		SOURCE:住人:被动 += 100 + 200 * ABL:住人:顺从
+		CALL NTR_ADD_SURRENDER(住人, 3)
+	ENDIF
+	PRINT そのまま
+ENDIF
+IF CFLAG:住人:跳蛋A挿入 != 0
+	;跳蛋は新しいのに交換しようねー
+	PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%のアヌスに押し込まれている跳蛋の電池を取り替えた
+ELSE
+	PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%のアヌスに跳蛋を挿入して固定した
+ENDIF
+CFLAG:住人:跳蛋A挿入 = 240
+SOURCE:住人:露出 += 200
+SOURCE:住人:欲情 += 100 + 200 * ABL:住人:欲望
+SOURCE:住人:被动 += 100 + 200 * ABL:住人:顺从
+CALL NTR_ADD_SURRENDER(住人, 3)
+
+RETURN 0
+;---------------------------------------------
+;戦闘敗北時の(普通の)お仕置き処理(屋外厕所行き)
+;@return 結果(0:助かった,1:屋外厕所行き)
+@COM417_Lose_Punishment_Normal(住人, 介入可否)
+#DIM 住人				; 訪問者に対峙した人物。
+#DIM 介入可否			; 他人が口をだせるかどうか(0:出せる,1:出せない)
+#DIM 介入フラグ			; 他人が口を出したか(1:出した,0:出せない)
+#DIM LOOP_CHR
+
+PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%に、たっぷりと犯してやるから屋外厕所で待て、と命じた。
+
+IF TALENT:住人:处女
+	IF TALENT:住人:自尊心 > 0
+		PRINTFORML %CALLNAME:住人%は屈辱に震えている……
+	ELSE
+		PRINTFORML %CALLNAME:住人%は恐怖で震えている……
+	ENDIF
+	SOURCE:住人:恐怖 += 500
+	CALL NTR_ADD_SURRENDER(住人, 10)
+ELSE
+	PRINTFORML %CALLNAME:住人%は屈辱に唇を噛みしめた……
+	SOURCE:住人:欲情 += 100 + 200 * ABL:住人:欲望
+	SOURCE:住人:被动 += 100 + 200 * ABL:住人:顺从
+ENDIF
+
+介入フラグ = 0
+IF 介入可否 == 0
+	;あなた対応ができなくて詰んだ……仕方ないんであなた抜きループ
+	;流石にやり過ぎ、と言って貰えるかどうかの判定
+	FOR LOOP_CHR,1,CHARANUM
+		IF LOOP_CHR == 住人
+			;自分自身は助けられませんね？
+		ELSEIF CFLAG:LOOP_CHR:睡眠
+			;寝てる人は無関係
+		ELSEIF TALENT:LOOP_CHR:NTR
+			;NTRだと助けてくれません
+		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+			;同じ位置にいるならワンチャンある
+			IF COM417_Position(LOOP_CHR) <20
+				;あなた側にさりげなく援護、程度なら口出しする権利がある
+				;相性補正とか入れてみたいけど、面倒なのでとりあえず単純に。
+				IF 介入フラグ == 0
+					PRINTFORM %CALLNAME:LOOP_CHR%
+				ELSE
+					PRINTFORM と%CALLNAME:LOOP_CHR%
+				ENDIF
+				介入フラグ ++
+			ENDIF
+		ENDIF
+	NEXT
+ENDIF
+IF 介入フラグ > 0
+	;助けて貰えた
+	PRINTFORMW が非難すると、%NTR_NAME(0)%は渋々とあきらめたようだ……
+	CALL COM417_Lose_Punishment_Easy(住人)
+	RETURN 0
+ELSE
+	;助けて貰えなかった
+	IF TALENT:住人:自尊心 > 0
+		PRINTFORMW %CALLNAME:住人%は屈辱に肩を震わせながら、犯されるためだけに屋外厕所へと歩いて行った……
+	ELSE
+		PRINTFORMW %CALLNAME:住人%はうつむいて、犯されるためだけに屋外厕所へと歩いて行った……
+	ENDIF
+	CFLAG:住人:現在位置 = 位置_红魔馆_屋外厕所
+	FLAG:訪問者同行フラグ = 0
+	RETURN 1
+ENDIF
+RETURN 0
+
+
+;---------------------------------------------
+;戦闘敗北時の(厳しい)お仕置き処理(お持ち帰り)
+@COM417_Lose_Punishment_Extra(住人)
+#DIM 住人		; 訪問者に対峙したキャラクター番号
+#DIM 介入フラグ			; 他人が口を出したか(1:出した,0:出せない)
+#DIM LOOP_CHR
+
+IF !IS_NTR_TAKINGOUT_ENABLE()
+	;お持ち帰り禁止なら屋外厕所行き（強制）
+	CALL COM417_Lose_Punishment_Normal(住人,1)
+	RETURN 0
+ENDIF
+
+PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%に、正門で待っているように命じた
+PRINTFORML %CALLNAME:住人%が恐る恐る理由を聞くと、%NTR_NAME(0)%は自宅に連れ帰って可愛がってやるからだ、と答えた
+IF TALENT:住人:处女
+	IF TALENT:住人:自尊心 > 0
+		PRINTFORML %CALLNAME:住人%脸色苍白，绷紧了脸颊勉强挤出了笑容……
+	ELSE
+		PRINTFORML %CALLNAME:住人%几乎吓昏过去……
+	ENDIF
+	SOURCE:住人:恐怖 += 1000
+	CALL NTR_ADD_SURRENDER(住人, 100)
+ELSE
+	PRINTFORML %CALLNAME:住人%看向四种、发出求助……
+	SOURCE:住人:欲情 += 100 + 200 * ABL:住人:欲望
+	SOURCE:住人:被动 += 100 + 200 * ABL:住人:顺从
+ENDIF
+
+;あなた対応ができなくて詰んだ……仕方ないんであなた抜きループ
+;流石にやり過ぎ、と言って貰えるかどうか……？
+介入フラグ = 0
+FOR LOOP_CHR,1,CHARANUM
+	IF LOOP_CHR == 住人
+		;自分自身は助けられませんね？
+	ELSEIF CFLAG:LOOP_CHR:睡眠
+		;寝てる人は無関係
+	ELSEIF TALENT:LOOP_CHR:NTR
+		;NTRだと助けてくれません
+	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+		;同じ位置にいるならワンチャンある
+		IF COM417_Position(LOOP_CHR) <20
+			;あなた側にさりげなく援護、程度なら口出しする権利がある
+			;相性補正とか入れてみたいけど、面倒なのでとりあえず単純に。
+			IF 介入フラグ == 0
+				PRINTFORM %CALLNAME:LOOP_CHR%
+			ELSE
+				PRINTFORM と%CALLNAME:LOOP_CHR%
+			ENDIF
+			介入フラグ ++
+		ENDIF
+	ENDIF
+NEXT
+IF 介入フラグ > 0
+	;助けて貰えたが、屋外厕所へご招待
+	PRINTFORMW 这也难怪、%NTR_NAME(0)%似乎放弃了把%CALLNAME:住人%带回家……
+	CALL COM417_Lose_Punishment_Normal(住人,1)
+	RETURN 1
+ELSE
+
+	IF TALENT:住人:处女
+		;处女守りたい？
+		CALL COM417_Save_the_Virgin(住人,1)
+		IF RESULT == 1
+			RETURN 0
+		ENDIF
+	ENDIF
+
+	;助けて貰えなかった
+	IF TALENT:住人:自尊心 > 0
+		PRINTFORMW %CALLNAME:住人%脸色苍白、默默地在正门前等待%NTR_NAME(0)%……
+	ELSE
+		PRINTFORMW %CALLNAME:住人%抽泣着、乖乖地在正门等待着%NTR_NAME(0)%……
+	ENDIF
+	;現在位置を強制的に開錠
+	FLAG:(300 + FLAG:访问者当前位置) = 0
+	;正門と言いつつそのまま訪問者宅へ移动。本当に正門へ移动させると誤爆拉致があるので
+	CFLAG:住人:現在位置 = 位置_訪問者宅
+	;訪問者はまだやることがあるので後で移动します
+	;FLAG:访问者当前位置 = 位置_訪問者宅
+	CALL NTR_RESET_VISITOR_ACTION(住人)
+	FLAG:訪問者との汚れ判定に使用 = 0
+	FLAG:訪問者滞在時間カウンタ = 0
+	FLAG:訪問者同行フラグ = 0
+	CFLAG:住人:NTR_CNT行为 = 0
+ENDIF
+
+RETURN 0
+
+;---------------------------------------------
+;戦闘敗北時の(厳しい)お仕置き処理(屋外厕所メイン処理)
+@COM417_Lose_Punishment_Hard(住人,介入可否)
+#DIM 住人	;  訪問者に対峙したキャラクター番号
+#DIM 介入可否			; 他人が口をだせるかどうか(0:出せる,1以上:出せない)
+#DIM 介入フラグ			; 他人が口を出したか(1:出した,0:出せない)
+#DIM LOOP_CHR
+
+IF 介入可否 == 0
+	介入フラグ = 0
+	FOR LOOP_CHR,1,CHARANUM
+		IF LOOP_CHR == 住人
+			;自分自身は助けられませんね？
+		ELSEIF CFLAG:LOOP_CHR:睡眠
+			;寝ていると助けてくれません
+		ELSEIF TALENT:LOOP_CHR:NTR
+			;NTRだと助けてくれません
+		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+			;同じ位置にいるならワンチャンある
+			IF COM417_Position(LOOP_CHR) <20
+				;あなた側にさりげなく援護、程度なら口出しする権利がある
+				;相性補正とか入れてみたいけど、面倒なのでとりあえず単純に。
+				IF 介入フラグ == 0
+					PRINTFORM %CALLNAME:MASTER%要被带到室外厕所里的时候、被%CALLNAME:LOOP_CHR%
+				ELSE
+					PRINTFORM %CALLNAME:LOOP_CHR%
+				ENDIF
+				介入フラグ ++
+			ENDIF
+		ENDIF
+	NEXT
+ENDIF
+IF 介入フラグ > 0
+	;助けてもらえた
+	PRINTW 阻止了
+	RETURN 0
+ELSE
+	CFLAG:住人:現在位置 = 位置_红魔馆_屋外厕所
+	FLAG:访问者当前位置 = 位置_红魔馆_屋外厕所
+	FLAG:訪問者滞在時間カウンタ = 0
+	FLAG:訪問者同行フラグ = 0
+	PRINTFORMW %CALLNAME:住人%被%NTR_NAME(0)%带到了室外的厕所里
+	PRINTFORMW 　　　　　　・
+	PRINTFORMW 　　　　　　・
+	PRINTFORMW 　　　　　　・
+	FOR LOOP_CHR,0,CHARANUM
+		IF CFLAG:LOOP_CHR:睡眠
+			;寝てる人は無関係
+		ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_红魔馆_屋外厕所
+			IF TALENT:LOOP_CHR:处女
+				;处女守りたい？
+				CALL COM417_Save_the_Virgin(LOOP_CHR)
+			ELSE
+				RESULT =0
+			ENDIF
+			IF RESULT == 0
+				;;处女菊花厨の時は後ろしか使わない
+				;IF IS_NTR_KEEP_VIRGIN() && TALENT:LOOP_CHR:处女
+				;	CALL COM417_Fucking(LOOP_CHR, 1)
+				;ELSE
+				;	CALL COM417_Fucking(LOOP_CHR, 0)
+				;ENDIF
+				IF TALENT:LOOP_CHR:处女
+					CALL COM417_Fucking(LOOP_CHR, 0)
+				ELSE
+					IF RAND(2) == 0
+						CALL COM417_Fucking(LOOP_CHR, 0)
+					ELSE
+						CALL COM417_Fucking(LOOP_CHR, 1)
+					ENDIF
+				ENDIF
+			ENDIF
+		ENDIF
+	NEXT
+ENDIF
+RETURN 0
+
+
+;---------------------------------------------
+;気が済むまで犯す処理
+@COM417_Fucking(被害者, Ａ限定)
+
+#DIM 被害者
+#DIM Ａ限定
+#DIM 経過時間
+#DIM 連続レイプ確率
+#DIM レイプ選択		; 0:Ｖ 1:Ａ
+#DIM Ｖレイプ回数
+#DIM Ａレイプ回数
+#DIM iLoop
+
+経過時間 = 0		; 経過時間(分)
+連続レイプ確率 = 5	; 連続レイプ確率
+Ｖレイプ回数 = 0	; Ｖレイプ回数
+Ａレイプ回数 = 0	; Ａレイプ回数
+
+;飽きるまで犯す
+WHILE 1
+	;時間経過
+	経過時間 += RAND:5 + 18
+	;犯されるごとに屈服度上昇
+	CALL NTR_ADD_SURRENDER(被害者, (5 + RAND:5))
+	;基本前重視の判定
+	IF RAND:3 
+		レイプ選択 = 0
+	ELSE
+		レイプ選択 = 1
+	ENDIF
+	SIF !HAS_VAGINA(被害者) || Ａ限定
+		レイプ選択 = 1
+	;基本前重視の判定
+	IF 0 == レイプ選択
+		;Ｖレイプ回数増加
+		Ｖレイプ回数 ++
+		CALL COM417_Ntr_Rape_V(被害者)
+	ELSE
+		;Aレイプ回数増加
+		Ａレイプ回数 ++
+		CALL COM417_Ntr_Rape_A(被害者)
+	ENDIF
+
+	;犯し飽きたかどうかの判定
+	SIF RAND:(連続レイプ確率) == 0
+		BREAK
+	連続レイプ確率 = MAX(連続レイプ確率--,2)
+
+
+	CALL ROOM_SMELL_NTR_SEX(被害者)
+WEND
+
+IF Ｖレイプ回数 > 0 && Ａレイプ回数 == 0
+	PRINTFORMW %CALLNAME:被害者%在{経過時間/60}時間{経過時間%60}分钟内、小穴被肆意侵犯了{Ｖレイプ回数}次…
+ELSEIF Ｖレイプ回数 == 0 && Ａレイプ回数 > 0
+	PRINTFORMW %CALLNAME:被害者%在{経過時間/60}時間{経過時間%60}分钟内、肛门被肆意侵犯了{Ａレイプ回数}次…
+ELSEIF Ｖレイプ回数 > 0 && Ａレイプ回数 > 0
+	PRINTFORMW %CALLNAME:被害者%在{経過時間/60}時間{経過時間%60}分钟内，小穴被狠狠侵犯了{Ｖレイプ回数}次、肛门被侵犯了{Ａレイプ回数}次…
+ENDIF
+
+FOR iLoop,0,(経過時間/(Ｖレイプ回数+Ａレイプ回数)*Ｖレイプ回数),5
+	CALL 締り具合変動, 被害者, 3, 0
+NEXT
+FOR iLoop,0,(経過時間/(Ｖレイプ回数+Ａレイプ回数)*Ａレイプ回数),5
+	CALL 締り具合変動, 被害者, 3, 1
+NEXT
+
+;MASTER時の処理
+IF 被害者 == MASTER
+	;MASTERのレイプ回数
+	FLAG:MASTERが犯された回数 += Ｖレイプ回数 + Ａレイプ回数
+ENDIF
+
+;時間経過
+TIME += 経過時間
+RETURN 0
+
+
+;---------------------------------------------
+;犯す処理Ｖ
+@COM417_Ntr_Rape_V(犠牲者)
+#DIM 犠牲者
+
+TEQUIP:犠牲者:Ｖ性爱 = 人物_訪問者
+TCVAR:犠牲者:行為者 = 人物_訪問者
+
+;経験増加
+EXP:犠牲者:Ｖ经验 ++
+EXP:犠牲者:Ｖ性交经验 ++
+
+;訪問者のＰ馬並み以上の時拡張経験+1、受虐狂なら苦痛快乐经验の為の珠追加
+IF 訪問者_Ｐ大きさ == 2
+	EXP:犠牲者:Ｖ扩张经验 += 1
+	PRINTFORML %CALLNAME:犠牲者%的小穴被%NTR_NAME(0)%硬挺的大阴茎扩张了…
+	IF ( TALENT:犠牲者:受虐狂 || ABL:犠牲者:抖Ｍ之气 > 2 ) && EXP:犠牲者:Ｖ扩张经验 < 450
+		CUP:犠牲者:欲情 += 500
+		CUP:犠牲者:苦痛 += 250
+	ELSEIF EXP:犠牲者:Ｖ扩张经验 < 450
+		CUP:犠牲者:苦痛 += 500
+	ENDIF
+ENDIF
+
+;膣内射精される
+TRYCALL 精力取得, 人物_訪問者
+TRYCALL NTR_SAMEN_EXP_PLUS(犠牲者, 0)
+TRYCALL 精子取得, 人物_訪問者, 犠牲者
+
+;簡易絶頂判定
+IF ABL:犠牲者:Ｖ感觉 > RAND:5
+	EXP:犠牲者:Ｖ绝顶经验 ++
+	EXP:犠牲者:绝顶经验 ++
+	;絶頂したらご褒美にもう一回精子取得
+	TRYCALL 精子取得, 人物_訪問者, 犠牲者
+ENDIF
+
+;处女判定
+IF TALENT:犠牲者:处女
+	PRINTFORML %CALLNAME:犠牲者%的处女被%NTR_NAME(0)%的阴茎夺取了・・
+	PRINTFORML ＜%CALLNAME:犠牲者%失去了处女＞
+	CALL LOST_VIRGIN(犠牲者, 人物_訪問者)
+	;破瓜血付与(この後の汚れ判定で)
+	SETBIT FLAG:訪問者との汚れ判定に使用,6
+	CALL NTR_ADD_SURRENDER(犠牲者, (10 + RAND:10))
+ENDIF
+
+;汚れ判定
+;訪問者の精液汚れセット
+CALL EJACULATION_V(犠牲者, 人物_訪問者)
+
+RETURN 0
+
+
+;---------------------------------------------
+;犯す処理Ａ
+@COM417_Ntr_Rape_A(犠牲者)
+#DIM 犠牲者
+
+TEQUIP:犠牲者:Ａ性爱 = 人物_訪問者
+TCVAR:犠牲者:行為者 = 人物_訪問者
+
+;経験増加
+EXP:犠牲者:Ａ经验 ++
+EXP:犠牲者:Ａ性交经验 ++
+
+;訪問者のＰ馬並み以上の時拡張経験+1、受虐狂なら苦痛快乐经验の為の珠追加
+IF 訪問者_Ｐ大きさ == 2
+	EXP:犠牲者:Ａ扩张经验 += 1
+	PRINTFORML %CALLNAME:犠牲者%的肛门被%NTR_NAME(0)%的大阴茎插入而扩张了…
+	IF ( TALENT:犠牲者:受虐狂 || ABL:犠牲者:抖Ｍ之气 > 2 ) && EXP:犠牲者:Ａ扩张经验 < 450
+		CUP:犠牲者:欲情 += 500
+		CUP:犠牲者:苦痛 += 250
+	ELSEIF EXP:犠牲者:Ａ扩张经验 < 450
+		CUP:犠牲者:苦痛 += 500
+	ENDIF
+ENDIF
+
+;簡易絶頂判定
+IF ABL:犠牲者:Ａ感觉 > RAND:5
+	EXP:犠牲者:Ａ绝顶经验 ++
+	EXP:犠牲者:绝顶经验 ++
+	IF HAS_PENIS(犠牲者)
+		;絶頂したらトコロテン
+		SETBIT STAIN:犠牲者:Ｐ,汚れB_精液
+		EXP:犠牲者:射精经验 ++
+	ENDIF
+ENDIF
+
+CALL LOST_VIRGIN_A(犠牲者, 人物_訪問者)
+;汚れ判定
+;訪問者の精液汚れセット
+CALL EJACULATION_A(犠牲者, 人物_訪問者)
+
+RETURN 0
+
+
+;---------------------------------------------
+;戦闘敗北時の(厳しい)お仕置き処理の続き(お持ち帰り)
+@COM417_Lose_Punishment_Extra_Continue(対峙者)
+#DIM 対峙者				; 訪問者に対峙する人物。基本はMASTER(未使用)
+#DIM 持帰人数
+#DIM 奴隷
+#DIM LOOP_CHR
+
+持帰人数 = 0
+奴隷 = 0
+FOR LOOP_CHR,1,CHARANUM
+	IF CFLAG:LOOP_CHR:現在位置 == 位置_訪問者宅
+		奴隷 = LOOP_CHR
+		IF 持帰人数 == 0
+			PRINTFORM %CALLNAME:LOOP_CHR%正在大门口
+		ELSE
+			PRINTFORM %CALLNAME:LOOP_CHR%
+		ENDIF
+		持帰人数++
+	ENDIF
+NEXT
+IF 持帰人数==0
+	;レイプ後にみんな屋外厕所に居て会话始まっちゃうのはアレなので訪問者を庭へ逃がす
+	FLAG:访问者当前位置 = 位置_红魔馆_后院
+	FLAG:訪問者同行フラグ = 0
+	RETURN 0
+ELSE
+	PRINTFORM 等待着%NTR_NAME(0)%……
+	;ここで訪問者も帰る
+	FLAG:访问者当前位置 = 位置_訪問者宅
+	FLAG:訪問者同行フラグ = 0
+	IF 持帰人数 > 1
+		PRINTFORMW %NTR_NAME(0)%带着她们{持帰人数}人、不知去了哪里……
+	ELSE
+		PRINTFORMW %NTR_NAME(0)%带着%CALLNAME:奴隷%、不知去了哪里……
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;---------------------------------------------
+;处女を奪うのだけは許してください！なんでもしますから！
+;基本あなた限定なので、意図的にMASTERを使っています。
+;ちょっと関数長すぎる上に汚いんでリファクタリングしたいですね
+;@return 0:奪ってもいいです, 1:奪わないでください
+@COM417_Save_the_Virgin(犠牲者,持帰フラグ)
+#DIM 犠牲者		; 犠牲者のキャラクター番号
+#DIM 持帰フラグ	; 0:屋外厕所 1:持帰り
+#DIM LOOP_CNT	; ループカウンタ
+#DIM 取得数		; 今回押させる数
+#DIM 取得部位	; 今回押させる場所
+
+IF !TALENT:犠牲者:处女 || CFLAG:MASTER:淫纹身体改造 == 1 || CFLAG:MASTER:淫纹 == 31
+	;非处女は助ける必要は無いね
+	RETURN 0
+ENDIF
+
+IF 犠牲者 == MASTER
+	;自分は助かりません
+	RETURN 0
+ENDIF
+
+PRINTFORML 这样下去%CALLNAME:犠牲者%的处女就要被夺走了……！
+
+PRINT [0] - 请求不要这么做 [1] - 哭着放弃了
+INPUT
+IF RESULT
+	PRINTFORMW %CALLNAME:MASTER%什么也说不出来……
+	RETURN 0
+ENDIF
+
+;淫纹取得部位を取得
+CALL COM417_Get_Pos(犠牲者, 持帰フラグ)
+取得部位 = RESULT
+
+IF 犠牲者 == 人物_帕秋莉
+	;ぱっちぇさん見ただけでわかるねすごいね。だが絶望しかない
+	PRINTFORMW %CALLNAME:犠牲者%看到印章后脸色发白、%NTR_NAME(0)%低声地威胁着、不敢发出声音的%CALLNAME:MASTER%默默看着
+ENDIF
+
+IF 0 == CFLAG:MASTER:淫纹押下回数
+	;淫纹を押したことがないとき
+	IF EXP:MASTER:买春经验
+		PRINTFORMW 印章上的花纹、和从%NTR_NAME(0)%那购买的「便所」钥匙的花纹是一样的……。
+	ENDIF
+	IF TALENT:犠牲者:处女 == 1
+		;純正处女だと……まあ、吼啊。なんとかなるはなるよね
+		PRINTFORMW 有一种讨厌的预感，就算按下了这个，真的能够帮助到%CALLNAME:犠牲者%吗……？
+	ELSE
+		;再生处女だと取り返しがつかない事になります
+		PRINTFORMW 有一种讨厌的预感，如果按下了这个，好像就无法挽回了……。
+	ENDIF
+ELSE
+	;既に押したことがあるとき
+	PRINTFORMW 明白了…只要按下这个印章的话……
+ENDIF
+
+PRINT [0] - 为了守住处女而按下印章 [1] - 不行…做不到……
+INPUT
+IF RESULT
+	IF TALENT:犠牲者:恋慕
+		PRINTFORMW %NTR_NAME(0)%告诉%CALLNAME:犠牲者%说这家伙要把自己的%MSG_RE_LOVER(犠牲者)%的处女让给别人了。
+	ELSE
+		PRINTFORMW %NTR_NAME(0)%对%CALLNAME:犠牲者%说这家伙大概不需要处女吧。
+	ENDIF
+	RETURN 0
+ENDIF
+
+;淫纹を押す
+CALL COM417_Put_Stump(犠牲者, 取得部位)
+PRINTFORMW %NTR_NAME(0)%笑着说，在%CALLNAME:犠牲者%把处女奉献给别人之前，都请好好珍惜她的处女。
+RETURN 1
+
+RETURN 0
+
+;---------------------------------------------
+;淫纹取得部位を取得
+;@return 取得部位
+@COM417_Get_Pos(犠牲者, 持帰フラグ)
+#DIM 犠牲者		; 犠牲者のキャラクター番号
+#DIM 持帰フラグ	; 0:屋外厕所 1:持帰り
+#DIM LOOP_CNT	; ループカウンタ
+#DIM 取得数		; 今回押させる数
+#DIM 取得部位	; 今回押させる場所
+
+IF 0 == CFLAG:MASTER:淫纹押下回数
+	;淫纹を押したことがないとき
+	PRINTFORML %CALLNAME:MASTER%恳求只要不夺取处女、什么都愿意做
+	PRINTFORMW %NTR_NAME(0)%沉吟了一会儿、露出了邪恶的笑容，似乎想到了什么过分的事情……
+	PRINTL
+
+	PRINTFORML %NTR_NAME(0)%玩弄了%CALLNAME:犠牲者%的身体一会儿、从口袋里取出了一个小印章
+ELSE
+	;既に押したことがあるとき
+	PRINTFORML %CALLNAME:MASTER%恳求只要不夺取处女、什么都愿意做
+	PRINTFORMW %NTR_NAME(0)%露出轻薄的笑容、从口袋里取出了熟悉的印章
+ENDIF
+
+取得数 = 0
+取得部位 = 0
+PRINTFORM %CALLNAME:犠牲者%の
+FOR LOOP_CNT,5,0,-1
+	IF (取得数<=持帰フラグ) && (GETBIT(CFLAG:犠牲者:淫纹, 淫纹_右頬)==0); && (ABL:犠牲者:亲密 > LOOP_CNT)
+		;右頬優先。目に見えるから。あとちゅっちゅ防止
+		PRINTFORM %"と"*(取得数>0)+"右頬"%
+		SETBIT 取得部位,淫纹_右頬
+		取得数++
+	ENDIF
+	IF (取得数<=持帰フラグ) && (GETBIT(CFLAG:犠牲者:淫纹, 淫纹_恥丘)==0); && (ABL:犠牲者:Ｃ感觉 > LOOP_CNT)
+		PRINTFORM %"と"*(取得数>0)+"恥丘"%
+		SETBIT 取得部位,淫纹_恥丘
+		取得数++
+	ENDIF
+	IF (取得数<=持帰フラグ) && (GETBIT(CFLAG:犠牲者:淫纹, 淫纹_左尻)==0); && (ABL:犠牲者:Ａ感觉 > LOOP_CNT)
+		PRINTFORM %"と"*(取得数>0)+"左尻"%
+		SETBIT 取得部位,淫纹_左尻
+		取得数++
+	ENDIF
+	IF (取得数<=持帰フラグ) && (GETBIT(CFLAG:犠牲者:淫纹, 淫纹_胸元)==0); && (ABL:犠牲者:Ｂ感觉 > LOOP_CNT)
+		PRINTFORM %"と"*(取得数>0)+"胸元"%
+		SETBIT 取得部位,淫纹_胸元
+		取得数++
+	ENDIF
+	IF (取得数<=持帰フラグ) && (GETBIT(CFLAG:犠牲者:淫纹, 淫纹_太股)==0); && (ABL:犠牲者:Ｖ感觉 > LOOP_CNT)
+		;挿入は優先度が低い。訪問者は優しいね。
+		PRINTFORM %"と"*(取得数>0)+"太腿"%
+		SETBIT 取得部位,淫纹_太股
+		取得数++
+	ENDIF
+	IF 取得数 > 持帰フラグ
+		BREAK
+	ENDIF
+NEXT
+;もしどこにも押さなかったら右頬に押す
+IF 取得数 == 0
+	PRINTFORM %"と"*(取得数>0)+"右頬"%
+	SETBIT 取得部位,淫纹_右頬
+	取得数++
+ENDIF
+
+IF 0 == CFLAG:MASTER:淫纹押下回数
+	;淫纹を押したことがないとき
+	PRINTFORMW 只要按下这个印章的话、不夺取处女也行……这么说了
+ELSE
+	;既に押したことがあるとき
+	PRINTFORMW 只要按下这个印章的话、不夺取处女可以…当然、结果会怎样也是明白的吧……这么说了
+ENDIF
+PRINTL
+
+RETURN 取得部位
+
+;---------------------------------------------
+;淫纹を押す
+;@return 常に1
+@COM417_Put_Stump(犠牲者, 取得部位)
+#DIM 犠牲者		; 犠牲者のキャラクター番号
+#DIM 取得部位	; 今回押させる場所
+#DIM 取得数		; 今回押させる数
+
+取得数 = 0
+PRINTFORM %CALLNAME:MASTER%接受了印章、在%CALLNAME:犠牲者%的
+IF GETBIT(取得部位,淫纹_恥丘)
+	PRINTFORM %"と"*(取得数>0)+"恥丘"%
+	取得数++
+ENDIF
+IF GETBIT(取得部位,淫纹_左尻)
+	PRINTFORM %"と"*(取得数>0)+"左尻"%
+	取得数++
+ENDIF
+IF GETBIT(取得部位,淫纹_胸元)
+	PRINTFORM %"と"*(取得数>0)+"胸元"%
+	取得数++
+ENDIF
+IF GETBIT(取得部位,淫纹_太股)
+	PRINTFORM %"と"*(取得数>0)+"太腿"%
+	取得数++
+ENDIF
+IF GETBIT(取得部位,淫纹_右頬)
+	PRINTFORM %"と"*(取得数>0)+"右頬"%
+	取得数++
+ENDIF
+
+PRINTFORMW 按上去了。
+PRINTFORMW 拿下印章后，按下的地方留下了赤紫色的花纹，给人一种淫靡的感觉。
+PRINTL
+IF 0 == CFLAG:MASTER:淫纹押下回数
+	;淫纹を押したことがないとき
+	PRINTFORML %CALLNAME:MASTER%回头看了看，%NTR_NAME(0)%露出了恶魔般的笑容、
+	PRINTFORMW 那是购买处女的时候按下的淫纹、按下之后%CALLNAME:MASTER%就不能在对%CALLNAME:犠牲者%出手了。
+ELSE
+	;既に押したことがあるとき
+	PRINTFORMW %CALLNAME:MASTER%用自己的手，按下了使自己无法再触碰%CALLNAME:犠牲者%的淫纹。
+ENDIF
+
+IF GETBIT(取得部位,淫纹_恥丘)
+	CALL COM417_Add_Stump(犠牲者, 淫纹_恥丘, "恥丘")
+ENDIF
+IF GETBIT(取得部位,淫纹_左尻)
+	CALL COM417_Add_Stump(犠牲者, 淫纹_左尻, "左尻")
+ENDIF
+IF GETBIT(取得部位,淫纹_胸元)
+	CALL COM417_Add_Stump(犠牲者, 淫纹_胸元, "胸元")
+ENDIF
+IF GETBIT(取得部位,淫纹_太股)
+	CALL COM417_Add_Stump(犠牲者, 淫纹_太股, "太股")
+ENDIF
+IF GETBIT(取得部位,淫纹_右頬)
+	CALL COM417_Add_Stump(犠牲者, 淫纹_右頬, "右頬")
+ENDIF
+
+CFLAG:MASTER:淫纹押下回数 += 取得数
+RETURN 1
+
+;---------------------------------------------
+;淫纹を追加
+;@return 常に1
+@COM417_Add_Stump(犠牲者, 追加部位, 部位名称)
+#DIM 犠牲者
+#DIM 追加部位
+#DIMS 部位名称
+
+IF GETBIT(CFLAG:犠牲者:淫纹, 追加部位)
+	CFLAG:犠牲者:淫纹上書回数 ++
+	PRINTFORML %CALLNAME:犠牲者%的%部位名称%上的淫纹被新的淫纹覆盖
+ELSE
+	PRINTFORML %CALLNAME:犠牲者%的%部位名称%上被刻下了淫纹
+ENDIF
+SETBIT CFLAG:犠牲者:淫纹,追加部位
+RETURN 1
+
+;---------------------------------------------
+;处女が失われた時の処理
+@COM417_Lost_Virgin(被害者,加害者)
+#DIM 被害者	;   奪われたキャラ
+#DIM 加害者	;	奪ったキャラ
+IF CFLAG:被害者:淫纹身体改造 == 1
+	PRINTFORMW %CALLNAME:被害者%已经被淫纹改造过的身体，无论夺去多少次的处女，也是无法恢复原样的啊……
+	RETURN 0
+ENDIF
+
+IF 被害者 == MASTER
+	PRINTFORMW 与其他人的淫纹规则不同，刻在%CALLNAME:MASTER%身上的淫纹就算是失去处女也是无法消失的……
+	RETURN 0
+ENDIF
+IF CFLAG:被害者:淫纹 == 0
+	RETURN 0
+ENDIF
+
+IF 加害者 == MASTER
+	IF TALENT:被害者:处女 == 1
+		PRINTFORML %CALLNAME:被害者%的淫纹再也不会消失了……
+	ELSEIF TALENT:被害者:处女 == 2
+		PRINTFORML 尽管被夺去了处女，但因为是再生处女，所以%CALLNAME:被害者%的淫纹并没有消失，或者说根本就没有消失的可能……
+	ENDIF
+	IF CFLAG:被害者:淫纹 == 31
+		CFLAG:被害者:淫纹身体改造 = 1
+		PRINTFORMW 因为身上的五个部位都被刻上了淫纹
+		PRINTFORMW 被%CALLNAME:MASTER%违反规则夺去处女后，身体发生了改变……
+		IF CFLAG:被害者:肌色 == 0
+			PRINTFORM 原本%CALLNAME:被害者%
+			CALL 肌色SET(CFLAG:被害者:肌色)
+			PRINTFORM ■ 
+			RESETCOLOR
+			PRINTFORM 白皙如雪的肌肤慢慢变成
+			CALL 肌色SET(3)
+			PRINTFORM ■ 
+			RESETCOLOR
+			PRINTFORMW %肌色(3)%的了…
+		ELSE
+			PRINTFORM 皮肤的颜色逐渐变成
+			CALL 肌色SET(3)
+			PRINTFORM ■ 
+			RESETCOLOR
+			PRINTFORMW 的了…
+		ENDIF
+		BASE:被害者:日晒度 = 1000
+		CFLAG:被害者:肌色 = 3
+		CFLAG:被害者:已知的肌肤颜色 = 3
+		CFLAG:被害者:髪色 = 85
+		CFLAG:被害者:目色左 = 4
+		CFLAG:被害者:目色右 = 4
+		PRINTFORM 头发变成了
+		CALL 汎用色SET(CFLAG:被害者:髪色)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORM %色汎用(CFLAG:被害者:髪色)%色，眼睛的颜色也变成了魅惑的
+		CALL 汎用色SET(CFLAG:被害者:目色左)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW %色汎用(CFLAG:被害者:目色左)%色…
+		BASE:被害者:乳头色素 = 600
+		CFLAG:被害者:乳头颜色 = 5
+		CFLAG:被害者:已知的乳头颜色 = 5
+		BASE:被害者:小穴色素 = 600
+		CFLAG:被害者:小穴颜色 = 5
+		CFLAG:被害者:已知的小穴颜色 = 5
+		BASE:被害者:肛门色素 = 600
+		CFLAG:被害者:肛门颜色 = 5
+		CFLAG:被害者:已知的肛门颜色 = 5
+		PRINTFORM 乳晕和乳头的颜色也跟着转变成了
+		CALL 秘部颜色SET(CFLAG:被害者:乳头颜色)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW %秘部颜色(CFLAG:被害者:乳头颜色)%的
+		PRINTFORM 小穴和肛门也是，变成
+		CALL 秘部颜色SET(CFLAG:被害者:小穴颜色)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW %秘部颜色(CFLAG:被害者:小穴颜色)%的了…
+		TALENT:被害者:容易中毒 = 1
+		TALENT:被害者:立即陷落 = 1
+		TALENT:被害者:快感应答 = 1
+		TALENT:被害者:性的兴趣 = 1
+		PRINTFORMW 淫纹还在散发着光亮，可能还有其他内在的改变，但就从外表上来看莫名的有种淫荡的感觉……
+	ENDIF
+	RETURN 0
+ENDIF
+
+IF TALENT:被害者:处女 == 2
+	PRINTW 在这一边...
+	PRINTFORMW 尽管%CALLNAME:被害者%被夺去了处女，但是%CALLNAME:被害者%的淫纹并没有消失……
+	IF CFLAG:被害者:淫纹 == 31
+		CFLAG:被害者:淫纹身体改造 = 1
+		PRINTFORMW 因为身上的五个部位都被刻上了淫纹
+		PRINTFORMW 被夺去处女后，身体发生了改变……
+		IF CFLAG:被害者:肌色 == 0
+			PRINTFORM 原本%CALLNAME:被害者%
+			CALL 肌色SET(CFLAG:被害者:肌色)
+			PRINTFORM ■ 
+			RESETCOLOR
+			PRINTFORM 白皙如雪的肌肤慢慢变成
+			CALL 肌色SET(3)
+			PRINTFORM ■ 
+			RESETCOLOR
+			PRINTFORMW %肌色(3)%的了…
+		ELSE
+			PRINTFORM 皮肤的颜色逐渐变成
+			CALL 肌色SET(3)
+			PRINTFORM ■ 
+			RESETCOLOR
+			PRINTFORMW 的了…
+		ENDIF
+		BASE:被害者:日晒度 = 1000
+		CFLAG:被害者:肌色 = 3
+		CFLAG:被害者:髪色 = 85
+		CFLAG:被害者:目色左 = 4
+		CFLAG:被害者:目色右 = 4
+		PRINTFORM 头发变成了
+		CALL 汎用色SET(CFLAG:被害者:髪色)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORM %色汎用(CFLAG:被害者:髪色)%色，眼睛的颜色也变成了魅惑的
+		CALL 汎用色SET(CFLAG:被害者:目色左)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW %色汎用(CFLAG:被害者:目色左)%色…
+		BASE:被害者:乳头色素 = 600
+		CFLAG:被害者:乳头颜色 = 5
+		BASE:被害者:小穴色素 = 600
+		CFLAG:被害者:小穴颜色 = 5
+		BASE:被害者:肛门色素 = 600
+		CFLAG:被害者:肛门颜色 = 5
+		PRINTFORM 乳晕和乳头的颜色也跟着转变成了
+		CALL 秘部颜色SET(CFLAG:被害者:乳头颜色)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW %秘部颜色(CFLAG:被害者:乳头颜色)%的
+		PRINTFORM 小穴和肛门也是，变成
+		CALL 秘部颜色SET(CFLAG:被害者:小穴颜色)
+		PRINTFORM ■ 
+		RESETCOLOR
+		PRINTFORMW %秘部颜色(CFLAG:被害者:小穴颜色)%的了…
+		TALENT:被害者:容易中毒 = 1
+		TALENT:被害者:立即陷落 = 1
+		TALENT:被害者:快感应答 = 1
+		TALENT:被害者:性的兴趣 = 1
+		PRINTFORMW 淫纹还在散发着光亮，可能还有其他内在的改变，但就从外表上来看莫名的有种淫荡的感觉……
+	ENDIF
+	RETURN 0
+ENDIF
+
+PRINTFORML %CALLNAME:MASTER%以外的人夺去了%CALLNAME:被害者%的处女，淫纹消失得无影无踪了……
+CFLAG:被害者:淫纹 = 0
+
+RETURN 0
+
+@淫纹自慰阻挡(ARG,部位)
+#FUNCTION
+#DIM 部位	; (0:Ｃ,1:Ｖ,2:Ａ,3:Ｂ,4:口)
+IF GETBIT(CFLAG:ARG:淫纹,部位)
+	IF 获取子宫精液填充率(ARG) >= 100
+		RETURNF 0
+	ELSE
+		RETURNF 1
+	ENDIF
+ENDIF
+RETURNF 0
+
+
+;---------------------------------------------
+;紋による接触可否チェック
+;@return 0:触れる 1:触れない
+@COM417_is_Protected(調教者,対象者,部位)
+#DIM 調教者
+#DIM 対象者
+#DIM 部位	; (0:Ｃ,1:Ｖ,2:Ａ,3:Ｂ,4:口)
+#DIMS 部位名
+#DIMS 紋位置
+
+SELECTCASE 部位
+	CASE 淫纹_恥丘
+		部位名 = 阴蒂
+		紋位置 = 恥丘和小腹
+	CASE 淫纹_太股
+		部位名 = 秘唇
+		紋位置 = 太腿
+	CASE 淫纹_左尻
+		部位名 = 尻
+		紋位置 = 臀部和脊背
+	CASE 淫纹_胸元
+		部位名 = 胸
+		紋位置 = 胸元
+	CASE 淫纹_右頬
+		部位名 = 口
+		紋位置 = 右頬
+	CASEELSE
+		RETURN 0
+ENDSELECT
+
+IF GETBIT(CFLAG:対象者:淫纹,部位)
+
+	;充填率
+	CALL COM417_GetFillingRateByPublicSperm(対象者)
+	SELECTCASE (RESULT:1 * RESULT:0)
+		CASE IS >= 200
+			PRINTFORML %CALLNAME:対象者%在%紋位置%上刻下的淫纹，显现出了鲜艳的粉红色……
+			IF CFLAG:対象者:淫纹身体改造 == 1
+				PRINTFORML %CALLNAME:対象者%淫靡的外表加之膨胀的小腹诱惑住了%CALLNAME:調教者%
+				IF 对淫纹的了解 == 2
+					PRINTFORML 鲜艳的粉红色——只有在这种时候才能突破淫纹的阻碍，去品尝有着如此淫靡外表的肉体……
+				ELSEIF 对淫纹的了解 < 2
+					PRINTFORML 子宫里注入了这么多的精液，可以让淫纹失去好几天的效果吧……
+				ENDIF
+			ELSE
+				;満タンならコマンドが実行できる
+				PRINTFORML %CALLNAME:対象者%抚摸着自己被精液撑的鼓起来的小腹、%CALLNAME:調教者%的身子紧跟着贴了上来
+				IF 对淫纹的了解 > 0
+					PRINTFORML 子宫里注入了这么多的精液，可以让淫纹失去好几天的效果吧……
+				ELSE
+					PRINTFORML %CALLNAME:調教者%的行为并没有被淫纹阻挡
+					PRINTFORML 大概是在%CALLNAME:対象者%的子宫被精液填满的时候，淫纹的效果就会消失
+					PRINTFORML 在子宫里注入了这么多的精液，应该可以让淫纹失去好几天的效果吧……
+				ENDIF
+			ENDIF
+			RETURN 0
+		CASE 100 TO 199
+			;満タンならコマンドが実行できる
+			PRINTFORML %CALLNAME:対象者%在%紋位置%上刻下的淫纹，变成粉红色的了……
+			IF CFLAG:対象者:淫纹身体改造 == 1
+				IF 对淫纹的了解 == 1
+					PRINTFORML 在%CALLNAME:調教者%以外的人的精液填满子宫的时候，淫纹的效果就会消失
+					PRINTFORML 但%CALLNAME:調教者%依然没办法触碰%CALLNAME:対象者%……
+					IF 粉红色淫纹无法触碰的问题 == 0
+						粉红色淫纹无法触碰的问题 = 1
+						SIF 对淫纹的了解 > 0
+							PRINTW 再去问问妖精会比较好吧……
+					ENDIF
+				ELSEIF 对淫纹的了解 == 2
+					PRINTFORML 但是因为%CALLNAME:対象者%的身体是经过淫纹改造的…所以就算是变成粉红色也是没办法触碰的……
+					PRINTFORML 得要等到淫纹变成鲜艳的粉红色的时候……
+				ELSEIF 对淫纹的了解 == 0
+					PRINTFORML 但是%CALLNAME:調教者%去触碰%CALLNAME:対象者%的%部位名%的时候，却被无形的墙壁给挡住了
+					PRINTFORML 完全弄不明白的%CALLNAME:調教者%尝试了很长时间，只要是在淫纹的附近，就怎么都无法触碰。
+				ENDIF
+			ELSE
+				IF 对淫纹的了解 > 0
+					PRINTFORML 在%CALLNAME:調教者%以外的人的精液填满子宫的时候，淫纹的效果就会消失
+					PRINTFORML 好久没有触碰过%CALLNAME:対象者%的%CALLNAME:調教者%十分享受地这份触感
+				ELSE
+					PRINTFORML %CALLNAME:調教者%的行为并没有被淫纹阻挡
+					PRINTFORML 大概是在%CALLNAME:対象者%的子宫被精液填满的时候，淫纹的效果就会消失吧
+					PRINTFORML 不管怎么样，好久没有触碰过%CALLNAME:対象者%的%CALLNAME:調教者%十分享受地这份触感
+				ENDIF
+				RETURN 0
+			ENDIF
+		CASE 50 TO 99
+			PRINTFORML %CALLNAME:調教者%想要去触碰%CALLNAME:対象者%的%部位名%，但却被无形的墙壁给挡住了
+			PRINTFORML 可以看到%CALLNAME:対象者%的%紋位置%上被刻下的淫纹变成了赤色……
+		CASE 1 TO 49
+			PRINTFORML %CALLNAME:調教者%想要去触碰%CALLNAME:対象者%的%部位名%，但却被无形的墙壁给挡住了
+			PRINTFORML 可以看到%CALLNAME:対象者%的%紋位置%上被刻下的淫纹变成了赤紫色……
+		CASEELSE
+			IF RESULT:1 == 0 && RESULT:0 > 99
+				IF 对淫纹的了解 > 0
+					IF RESULT:0 > 199
+						PRINTFORML 虽然%CALLNAME:対象者%的子宫被精液注入得腹部都已经鼓起来了，但%紋位置%上的淫纹依然是紫色的。
+						PRINTFORML 这是%CALLNAME:調教者%的精液被注入其中的证据，这样一来就没有办法继续触碰%CALLNAME:対象者%了……
+					ELSE
+						PRINTFORML 虽然%CALLNAME:対象者%的子宫被精液填满，小腹看起来微微膨胀，但%紋位置%上的淫纹依然是紫色的。
+						PRINTFORML 这是%CALLNAME:調教者%的精液被注入其中的证据，这样一来就没有办法继续触碰%CALLNAME:対象者%了……
+					ENDIF
+				ELSE
+					IF RESULT:0 > 199
+						PRINTFORML %CALLNAME:対象者%的腹部膨胀着，时不时会从下面流出少量的白浊液。
+						PRINTFORML %CALLNAME:調教者%想要去触碰%CALLNAME:対象者%的%部位名%，但却被无形的墙壁给挡住了
+					ELSE
+						PRINTFORML %CALLNAME:対象者%的小腹看起来微微膨胀，时不时会从下面流出少量的白浊液。
+						PRINTFORML %CALLNAME:調教者%想要去触碰%CALLNAME:対象者%的%部位名%，但却被无形的墙壁给挡住了
+					ENDIF
+					PRINTFORML 可以看到%CALLNAME:対象者%的%紋位置%上被刻下的淫纹是紫色的……
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:調教者%想要去触碰%CALLNAME:対象者%的%部位名%，但却被无形的墙壁给挡住了
+				PRINTFORML 可以看到%CALLNAME:対象者%的%紋位置%上被刻下的淫纹是紫色的……
+				SIF 对淫纹的了解 == 0
+					PRINTFORML 尝试了很长时间，只要是在淫纹的附近，就怎么都无法触碰。
+			ENDIF
+	ENDSELECT
+	IF 对淫纹的了解 > 0
+		TIME += 2
+	ELSE
+		TIME += 10
+	ENDIF
+	IF 部位 == 淫纹_太股 && TALENT:対象者:处女
+		RETURN 0
+	ENDIF
+	IF CFLAG:対象者:好感度 > 0
+		PRINTFORML %CALLNAME:対象者%似乎对这种无法触碰的事感到不满……
+		;欲情していると反感が伸びる
+		PALAM:対象者:反感 += MIN( PALAM:対象者:欲情/MAX(CFLAG:対象者:好感度,1),对淫纹的了解>0?100#300)
+		;欲情していると好感度も下がる
+		CFLAG:対象者:好感度 = MAX( CFLAG:対象者:好感度 - MIN(PALAM:対象者:欲情 ,对淫纹的了解>0?10#30),0)
+		;上書きしていると効果が２倍に
+		IF CFLAG:対象者:淫纹上書回数
+			PALAM:対象者:反感 += MIN( PALAM:対象者:欲情/MAX(CFLAG:対象者:好感度,1),对淫纹的了解>0?100#300)
+			CFLAG:対象者:好感度 = MAX( CFLAG:対象者:好感度 - MIN(PALAM:対象者:欲情 ,对淫纹的了解>0?10#30),0)
+		ENDIF
+	ELSE
+		PRINTFORML %CALLNAME:対象者%很无奈地看着%CALLNAME:調教者%……
+	ENDIF
+
+	RETURN 1
+ENDIF
+RETURN 0
+
+;---------------------------------------------
+;紋による接触可否チェック(チェックのみ)
+;@return 0:触れる 1:触れない
+@COM417_is_Protected_CheckOnly(調教者,対象者,部位)
+#FUNCTION
+#DIM 調教者
+#DIM 対象者
+#DIM 部位	; (0:Ｃ,1:Ｖ,2:Ａ,3:Ｂ,4:口)
+#DIM LOOP_CHR
+#DIM 精子量
+#DIM 充填率	; (%)
+#DIM DMY
+
+IF !GETBIT(CFLAG:対象者:淫纹,部位)
+	RETURNF 0
+ENDIF
+精子量 = 0
+FOR LOOP_CHR, 0, 301
+	SIF LOOP_CHR == CHARANUM
+		LOOP_CHR = 精子主_スキップ
+	DA:対象者:LOOP_CHR = 0
+	REPEAT 9
+		DA:対象者:LOOP_CHR += TA:対象者:LOOP_CHR:COUNT
+	REND
+	IF DA:対象者:LOOP_CHR > 0
+		IF LOOP_CHR == MASTER
+			RETURNF 1
+		ENDIF
+		精子量 += DA:対象者:LOOP_CHR
+	ENDIF
+NEXT
+
+;暫定措置 子宮内体積が0未満のとき、追加パッチ同様の処理で子宮内体積を設定する
+IF 0 >= CFLAG:対象者:子宮内体積
+	DMY = 子宮内体積設定F(対象者)
+ENDIF
+充填率 = 100*精子量/(CFLAG:対象者:子宮内体積)
+SELECTCASE LIMIT(充填率,0,200)
+	CASE IS >= 200
+		RETURNF 0
+	CASE IS >= 100
+		IF CFLAG:対象者:淫纹身体改造 == 1
+			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
+	CASEELSE
+		RETURNF 1
+ENDSELECT
+
+RETURNF 0
+
+;---------------------------------------------
+;子宮があなた以外の精子で満たされているかチェック
+;@return RESULT:0 子宮が精液で満たされている率（％）
+;@return RESULT:1 あなたの精液が混じっている場合は0
+@COM417_GetFillingRateByPublicSperm(対象者)
+#DIM 対象者
+#DIM LOOP_CHR
+#DIM あなた以外フラグ	; 0:MASTERを含む 1:MASTERを含まない
+#DIM 精子量
+#DIM 人数
+#DIM 充填率		; 子宮が精液で満たされている率（％）
+
+あなた以外フラグ = 1
+精子量 = 0
+人数 = 0
+FOR LOOP_CHR, 0, 301
+	SIF LOOP_CHR == CHARANUM
+		LOOP_CHR = 精子主_スキップ
+
+	;精子量を再計算
+	DA:対象者:LOOP_CHR = 0
+	REPEAT 9
+		DA:対象者:LOOP_CHR += TA:対象者:LOOP_CHR:COUNT
+	REND
+
+	;精子量チェック
+	IF DA:対象者:LOOP_CHR > 0
+		IF LOOP_CHR == MASTER
+			あなた以外フラグ = 0
+		ENDIF
+		精子量 += DA:対象者:LOOP_CHR
+		人数 ++
+	ENDIF
+NEXT
+
+;暫定措置 子宮内体積が0未満のとき、追加パッチと同じ扱いで子宮内体積設定をする
+IF 0 >= CFLAG:対象者:子宮内体積
+	CALL 子宮内体積設定(対象者)
+ENDIF
+充填率 = 100*精子量/(CFLAG:対象者:子宮内体積)
+
+IF CFLAG:MASTER:現在位置 == CFLAG:対象者:現在位置
+	DEBUGPRINTFORM %CALLNAME:対象者%的子宫里面{充填率}％都被
+	IF あなた以外フラグ
+		DEBUGPRINTFORM %CALLNAME:MASTER%以外
+	ELSE
+		DEBUGPRINTFORM 包括%CALLNAME:MASTER%在内
+	ENDIF
+	DEBUGPRINTFORML {人数}人的精液填满。
+ENDIF
+
+RETURN LIMIT(充填率,0,200),あなた以外フラグ
+
+RETURN 0,0
+
+
+;ARG:1 为 1 则有主人公精液填充率为0 否则返回真实填充率
+@获取子宫精液填充率(ARG,ARG:1 = 1)
+#FUNCTION
+#DIM LOOP_CHR
+#DIM あなた以外フラグ	; 0:MASTERを含む 1:MASTERを含まない
+#DIM 精子量
+#DIM 人数
+#DIM 充填率		; 子宮が精液で満たされている率（％）
+
+あなた以外フラグ = 1
+精子量 = 0
+人数 = 0
+FOR LOOP_CHR, 0, 301
+	SIF LOOP_CHR == CHARANUM
+		LOOP_CHR = 精子主_スキップ
+
+	;精子量を再計算
+	DA:ARG:LOOP_CHR = 0
+	REPEAT 9
+		DA:ARG:LOOP_CHR += TA:ARG:LOOP_CHR:COUNT
+	REND
+
+	;精子量チェック
+	IF DA:ARG:LOOP_CHR > 0
+		IF LOOP_CHR == MASTER
+			あなた以外フラグ = 0
+		ENDIF
+		精子量 += DA:ARG:LOOP_CHR
+		人数 ++
+	ENDIF
+NEXT
+
+;暫定措置 子宮内体積が0未満のとき、追加パッチと同じ扱いで子宮内体積設定をする
+IF 0 >= CFLAG:ARG:子宮内体積
+	CFLAG:ARG:子宮内体積 = 子宮内体積設定F(ARG)
+ENDIF
+充填率 = 100*精子量/(CFLAG:ARG:子宮内体積)
+IF ARG:1 == 1
+	RETURNF LIMIT(充填率,0,200)*あなた以外フラグ
+ELSE
+	RETURNF LIMIT(充填率,0,200)
+ENDIF
+
+
+
+
+;---------------------------------------------
+;淫纹による発情処理
+@COM417_add_sexual_desire(人物)
+#DIM 人物	; 対象となる人物
+#DIM 強度	; 追加分の強度。淫纹上書き回数に依存。最大10
+
+IF CFLAG:人物:淫纹
+	強度 = 2*LIMIT(CFLAG:人物:淫纹上書回数, 1, 10)
+	;充填率
+	CALL COM417_GetFillingRateByPublicSperm(人物)
+	SELECTCASE (RESULT:1 * RESULT:0)
+		CASE IS >= 100	; 淫纹がピンク色
+			強度 *= 0
+		CASE 50 TO 99	; 淫纹が赤
+			強度 *= 2
+		CASE 1 TO 49	; 淫纹が赤紫
+			強度 *= 5
+		CASEELSE		; 淫纹が紫
+			強度 *= 10
+	ENDSELECT
+	PALAM:人物:欲情 += 強度
+	CFLAG:人物:性欲 += 強度
+ENDIF
+RETURN 0
+
+;---------------------------------------------
+;淫纹の色取得
+@COM417_GetProstituteMarkColor(人物)
+#FUNCTIONS
+#DIM 人物
+
+IF CFLAG:人物:淫纹
+	SELECTCASE (获取子宫精液填充率(人物))
+		CASE IS >= 200	; 淫纹が鮮やかなピンク色
+			RETURNF "鲜艳的粉红色"
+		CASE IS >= 100	; 淫纹がピンク色
+			RETURNF "粉红色"
+		CASE 50 TO 99	; 淫纹が赤
+			RETURNF "赤色"
+		CASE 1 TO 49	; 淫纹が赤紫
+			RETURNF "赤紫色"
+		CASEELSE		; 淫纹が紫
+			RETURNF "紫色"
+	ENDSELECT
+ELSE
+	RETURNF ""
+ENDIF

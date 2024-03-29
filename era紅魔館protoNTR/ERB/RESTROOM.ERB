@@ -1,0 +1,448 @@
+﻿;-----------------------------------------------------------
+; era紅魔館 お手洗い勝手に拡張パッチ
+;-----------------------------------------------------------
+; 
+; 膀胱総容積は6歳児150ml、7歳児200ml、8歳児250ml、成人なら250〜600ml(平均500ml)。
+; 貴婦人膀胱なら1000〜1200ml、極端な例では4000mlもありえるが、膀胱拡張はとりあえず考慮せず固定値。
+; 就寝時には膀胱が弛緩するため、昼間の1.5倍程度を貯める事ができる
+; 尿意を感じるのは膀胱総容積の80%ぐらいから。尿量が100%を超えた場合には失禁する事にする。
+; 尿が溜まる速度は通常60ml/h(1ml/min)、強い利尿剤を使うと6〜8ml/minに増加。
+; お茶は１杯につき110ml程度と仮定。
+; 処理を簡易にするため、日常の水分摂取量や体内の水分保有量については考慮せず、
+; お茶などを飲んだ場合は「水分過剰摂取量」とし、排出されるまで尿の溜まる速度が2〜3ml/min程度に増加する。
+; 即座に増加するのは不自然だが、数値として見えなければ気が付かない範囲だろう。
+; 時間の処理単位が10分刻みとなる都合が多いため、括約筋の緊張時間については簡略化しても問題ないと判断。
+; 尿意を感じた場合は睡眠中でも起床してトイレへ向かうが、衰弱中は目が覚めないため高確率で失禁する。
+; 「昼間」となる時間を起床から30分後とすることで、起床と同時に失禁する事故は防げる。
+; 尿意が無くとも、基本的に排尿は可能。寝る前にはトイレへ向かい膀胱を空にする。
+; 
+; 直腸総容積は成人なら150〜200ml。一日の便重量は150〜200g。大腸の容積は2000ml程度。
+; 便量は増減させたいので、食物繊維摂取量20g/日を基準にしてコントロール。現代人基準。
+; 計算の単純化のため、便増加量を食物繊維摂取量*6μl/minと仮定する。
+; 普通の人間、つまり咲夜さんなら大腸に120μl/min、１日で172ml溜まる計算。
+; 幻想郷の食生活を考慮するともっと多くてもいいような気もするが、増やす楽しみもあるだろうしこのあたりで。
+; 前回排泄から(5760000/大腸内便量)min以上経過すると便意を感じている状態(直腸に便がある状態)となる。
+; 便意を感じている(直腸に便がある)と、Ａ系コマンドの実行に大きなマイナス補正がかかる。
+; 便意を耐えられるのは(5760000/大腸内便量)min+120分間。便量は増え続けるため、実際２時間ではない。
+; 排便する場合、(MIN(大腸内便量,直腸容量)/1000)mlが排泄され、大腸内便量が減る。面倒臭いんで1ml=1g。
+; 排便可能となる条件は、便意があるか、(大腸内便量>直腸容量)である場合だが、寝る前以外の積極的な排便はしない。
+; こちらは嫌いな人も多そうなので、オプション化できるようにしておきたい。
+; 
+; 便の計算がμl基準となったので、尿もそれに合わせμl基準とする。
+; 
+;-----------------------------------------------------------
+;-----------------------------------------------------------
+;キャラクターの膀胱総容積を取得
+;@param ARG:0 キャラ番号
+;@return 総容積(マイクロリットル)
+@REST_GetBladderCapacity(ARG:0)
+	#FUNCTION
+	VARSET LOCAL
+	;体型は0:普通、-1:小柄体型、-2:幼児体型、-3:小人
+	LOCAL:0 = 500000 + (TALENT:(ARG:0):体型*125000)
+	IF TALENT:(ARG:0):幼稚
+		;幼稚ならさらに１割減
+		LOCAL:0 = LOCAL:0 * 9 / 10
+	ENDIF
+	IF CFLAG:(ARG:0):就寝時間 > CFLAG:(ARG:0):起床時間 || CFLAG:(ARG:0):睡眠 || CFLAG:(ARG:0):衰弱
+		;睡眠中は膀胱の総容積は1.5倍
+		LOCAL:0 = (LOCAL:0*180/120)
+		;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" 睡眠中の"+CALLNAME:(ARG:0)%の膀胱総容積は{LOCAL:0/1000}mlです。
+	ELSEIF TIME_PROGRESS(CFLAG:(ARG:0):起床時間) <= 60
+		;目覚めてから60分以内は多少余裕を持たせておく（自室での休憩が60分であるため起床→休憩で即漏らすため）
+		LOCAL:0 = LIMIT(TCVAR:(ARG:0):膀胱内尿量,LOCAL:0,(LOCAL:0*180/120))
+		;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" 通常時の"+CALLNAME:(ARG:0)%の膀胱総容積は{LOCAL:0/1000}mlです。
+	ENDIF
+RETURNF LOCAL:0
+
+;-----------------------------------------------------------
+;キャラクターの大腸総容積を取得
+;@param ARG:0 キャラ番号
+;@return 総容積(マイクロリットル)
+@REST_GetColonCapacity(ARG:0)
+	#FUNCTION
+	VARSET LOCAL
+	;体型は0:普通、-1:小柄体型、-2:幼児体型、-3:小人
+	LOCAL:0 = 2000000 + (TALENT:(ARG:0):体型*500000)
+	IF TALENT:(ARG:0):幼稚
+		;幼稚ならさらに１割減
+		LOCAL:0 = LOCAL:0*9/10 
+	ENDIF
+	;DEBUGPRINTFORML %CALLNAME:(ARG:0)%の大腸総容積は{LOCAL:0/1000}mlです。
+RETURNF LOCAL:0
+
+;-----------------------------------------------------------
+;キャラクターの直腸総容積を取得
+;@param ARG:0 キャラ番号
+;@return 総容積(マイクロリットル)
+@REST_GetRectalCapacity(ARG:0)
+	#FUNCTION
+	VARSET LOCAL
+	;体型は0:普通、-1:小柄体型、-2:幼児体型、-3:小人
+	LOCAL:0 = 200000 + (TALENT:(ARG:0):体型*50000)
+	IF TALENT:(ARG:0):幼稚
+		;幼稚ならさらに１割減
+		LOCAL:0 = LOCAL:0*9/10 
+	ENDIF
+	;DEBUGPRINTFORML %CALLNAME:(ARG:0)%の直腸総容積は{LOCAL:0/1000}mlです。
+RETURNF LOCAL:0
+
+;-----------------------------------------------------------
+;尿意あるいは便意を取得
+;@return 
+@REST_GetUrge(住人,取得対象=3)
+	#FUNCTION
+	#DIM 住人
+	#DIM 取得対象
+	#DIM RET_VAL		; 戻り値（尿意または便意）
+	#DIM RET_1			; 戻り値（尿意）
+	#DIM RET_2			; 戻り値（便意）
+
+	RET_1 = 0
+	RET_2 = 0
+	SELECTCASE 取得対象
+		CASE 1
+			RET_1 = 100 * TCVAR:住人:膀胱内尿量 / REST_GetBladderCapacity(住人)
+		CASE 2
+			RET_2 = 100 * TCVAR:住人:大腸内便量 / REST_GetColonCapacity(住人)
+		CASE 3
+			RET_1 = 100 * TCVAR:住人:膀胱内尿量 / REST_GetBladderCapacity(住人)
+			RET_2 = 100 * TCVAR:住人:大腸内便量 / REST_GetColonCapacity(住人)
+	ENDSELECT
+	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:住人+"の膀胱は"%{TCVAR:住人:膀胱内尿量}%"μlの尿で"%{RET_1}%"％満たされています。"%
+	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:住人+"の大腸は"%{TCVAR:住人:大腸内便量}%"μlの便で"%{RET_2}%"％満たされています。"%
+	RET_VAL = MAX(RET_1,RET_2)
+RETURNF RET_VAL
+
+;-----------------------------------------------------------
+;トイレに行きたいかどうかチェック
+;@return 0:平気 1:行きたい 2:もうだめ
+@REST_NeedRestroom(住人)
+	#FUNCTION
+	#DIM 住人
+	
+	IF CFLAG:住人:衰弱
+		;衰弱中は行きたいとは思わない
+		RETURNF 0
+	ENDIF
+	IF CFLAG:住人:成長度 == 成長度_乳児
+		;乳児が勝手にトイレに行くのを抑止
+		RETURNF 0
+	ENDIF
+	SELECTCASE REST_GetUrge(住人)
+		CASE IS > 100
+			;DEBUGPRINTFORML {TIME}:%CALLNAME:住人%はとうとう漏らしてしまいました。
+			RETURNF 3
+		CASE IS > 89
+			;DEBUGPRINTFORML {TIME}:%CALLNAME:住人%は今すぐにトイレに行かなければ漏らしてしまいそうです。
+			RETURNF 2
+		CASE IS > 79
+			;DEBUGPRINTFORML {TIME}:%CALLNAME:住人%はそろそろトイレに行かなければと考えています。
+			RETURNF 1
+		CASEELSE
+			;DEBUGPRINTFORML %CALLNAME:住人%はまだトイレに行く必要はありません。
+			RETURNF 0
+	ENDSELECT
+RETURNF 0
+
+;-----------------------------------------------------------
+;膀胱に尿、大腸に便を溜める処理
+;@param ARG:0 キャラ番号
+@REST_PeePoo_Increase(ARG:0)
+	VARSET LOCAL
+	LOCAL:0 = TIME_PROGRESS(TFLAG:300) * (990 + RAND(20))
+	LOCAL:1 = TIME_PROGRESS(TFLAG:300)
+	;尿増加(単位はマイクロリットル)
+	TCVAR:(ARG:0):膀胱内尿量 += LOCAL:0
+	;水分過剰に取ってる場合は更に増加
+	IF TCVAR:(ARG:0):水分過剰摂取量 > 0
+		TCVAR:(ARG:0):膀胱内尿量 += MIN(LOCAL:0,TCVAR:(ARG:0):水分過剰摂取量)
+		TCVAR:(ARG:0):水分過剰摂取量 = MAX(TCVAR:(ARG:0):水分過剰摂取量-LOCAL:0,0)
+	ENDIF
+	;水分過剰が過ぎる場合は更に増加。500ccは飲み過ぎです。
+	IF TCVAR:(ARG:0):水分過剰摂取量 > 500000
+		TCVAR:(ARG:0):膀胱内尿量 += MIN(LOCAL:0,TCVAR:(ARG:0):水分過剰摂取量)
+		TCVAR:(ARG:0):水分過剰摂取量 = MAX(TCVAR:(ARG:0):水分過剰摂取量-LOCAL:0,0)
+	ENDIF
+	;利尿剤効果発揮中は凄い
+	IF TEQUIP:(ARG:0):利尿剤 == 1
+		TCVAR:(ARG:0):膀胱内尿量 += LOCAL:0*5
+	ENDIF
+	IF !GETBIT(FLAG:ぅな設定,2)
+		TCVAR:(ARG:0):膀胱内尿量 = 0
+	ENDIF
+	;便増加
+	TCVAR:(ARG:0):大腸内便量 += TCVAR:(ARG:0):食物繊維摂取量 * 6 * LOCAL:1
+	IF !GETBIT(FLAG:ぅな設定,3)
+		TCVAR:(ARG:0):大腸内便量 = 0
+	ENDIF
+RETURN 0
+
+;-----------------------------------------------------------
+;トイレでの排泄を行う
+;@param ARG:0 キャラ番号
+@REST_UseRestRoom(ARG:0)
+	VARSET LOCAL
+	;排尿は基本的には必ずする
+	LOCAL:0 = TCVAR:(ARG:0):膀胱内尿量
+	TCVAR:(ARG:0):膀胱内尿量 = 0
+	TEQUIP:(ARG:0):利尿剤 = 0
+	;排便は直腸に便があるか、大腸に十分な(直腸容積以上の)便が無いとダメ。
+	IF TCVAR:(ARG:0):大腸内便量 >= REST_GetRectalCapacity(ARG:0)
+		;排便する
+		LOCAL:1 = MIN( TCVAR:(ARG:0):大腸内便量 , REST_GetRectalCapacity(ARG:0) )
+		IF CFLAG:(ARG:0):現在位置 == CFLAG:(MASTER):現在位置 && !CFLAG:MASTER:睡眠
+			TRYCALL LUNA_KOJO("REST_UseRestRoom_Poo",ARG:0,MASTER,LOCAL:0,LOCAL:1)
+		ENDIF
+		;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は、【"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"】で"%{LOCAL:0/1000}%UNICODE(0x3396)+"の尿と"%{LOCAL:1/1000}%UNICODE(0x3396)+"の便を出しました。"%
+	ELSE
+		;排尿のみ
+		IF CFLAG:(ARG:0):現在位置 == CFLAG:(MASTER):現在位置 && !CFLAG:MASTER:睡眠
+			TRYCALL LUNA_KOJO("REST_UseRestRoom_Pee",ARG:0,MASTER,LOCAL:0,LOCAL:1)
+		ENDIF
+		;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は、【"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"】で"%{LOCAL:0/1000}%UNICODE(0x3396)+"の尿を出しました。便は出ませんでした。"%
+	ENDIF
+	TCVAR:(ARG:0):大腸内便量 = MAX(TCVAR:(ARG:0):大腸内便量-LOCAL:1,0)
+RETURN 0
+
+;-----------------------------------------------------------
+;移動系処理
+;@param ARG:0 キャラ番号
+@REST_MovementCheck(ARG:0)
+	VARSET LOCAL
+	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"の膀胱は"%{TCVAR:(ARG:0):膀胱内尿量}%"μlの尿で"%{100 * TCVAR:(ARG:0):膀胱内尿量 / REST_GetBladderCapacity(ARG:0)}%"％満たされています。"%
+	IF REST_NeedRestroom(ARG:0) && REST_IsRestRoom(CFLAG:(ARG:0):現在位置)&& !CFLAG:(ARG:0):うふふ && ARG:0 != MASTER
+		;「あなた」には排泄コマンド実装したので、自動排泄はしない
+		CALL REST_UseRestRoom(ARG:0)
+		IF NEAR_RESTROOM_DOOR(ARG)
+			PRINTFORMW %CALLNAME:ARG%が【%GETPLACENAME(CFLAG:(ARG:0):現在位置)%】に入っていくのが見えました
+		ENDIF
+	ELSEIF REST_GetUrge(ARG:0) >100
+		IF REST_GetUrge(ARG:0,1) >=100
+			CALL REST_PeeAccident(ARG:0)
+		ENDIF
+		IF REST_GetUrge(ARG:0,2) >100
+			CALL REST_PooAccident(ARG:0)
+		ENDIF
+	ENDIF
+RETURN 0
+
+;-----------------------------------------------------------
+;お漏らし処理
+;@param ARG:0 キャラ番号
+@REST_PeeAccident(ARG:0)
+	VARSET LOCAL
+	LOCAL:0 = TCVAR:(ARG:0):膀胱内尿量
+	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は"%{CFLAG:(ARG:0):現在位置}%"でおしっこを漏らしてしまったようです。"%
+	;DEBUGPRINTFORML 足元には{LOCAL:0/1000}%UNICODE(0x3396)%のおしっこが水溜まりを作っています。
+	;あなたと同じ場所にいる時は口上を表示したい系
+	IF CFLAG:(ARG:0):現在位置 == CFLAG:(MASTER):現在位置 && !CFLAG:MASTER:睡眠
+		IF CFLAG:(ARG:0):睡眠
+			SELECTCASE LOCAL:0
+				CASE IS < 10000 ; 10ml未満
+					;10ml程度だと見た目では気がつかない
+				CASE IS < 200000 ; 200ml未満。文章についてはとりあえず適当
+					PRINTFORML 眠っている%CALLNAME:(ARG:0)%の腰のあたりが濡れていく……どうやら漏らしてしまったようだ。
+					PRINTFORML ベッドに小さな染みを作ってもなお、%CALLNAME:(ARG:0)%が起きる様子は無かった。
+				CASEELSE ;大量。文章についてはとりあえず適当
+					PRINTFORML 眠っている%CALLNAME:(ARG:0)%の腰のあたりが濡れていく……どうやら漏らしてしまったようだ。
+					PRINTFORML ベッドに大きな染みを作ってもなお、%CALLNAME:(ARG:0)%が起きる様子は無かった。
+			ENDSELECT
+		ELSE
+			SELECTCASE LOCAL:0
+				CASE IS < 10000 ; 10ml未満
+					PRINTFORML %CALLNAME:(ARG:0)%の顔が羞恥に染まった。なにやら態度がおかしい……。
+				CASE IS < 200000 ; 100ml未満
+					PRINTFORML %CALLNAME:(ARG:0)%の顔が羞恥に染まったかと思うと、太腿を伝って液体がこぼれ落ちた。
+					PRINTFORML どうやら漏らしてしまったらしい……。
+				CASEELSE
+					PRINTFORML %CALLNAME:(ARG:0)%の顔が羞恥に染まったかと思うと、見る間に足元に水溜まりができた。
+					PRINTFORML どうやら漏らしてしまったらしい……。
+			ENDSELECT
+		ENDIF
+	ENDIF
+	TCVAR:(ARG:0):膀胱内尿量 = 0
+	TEQUIP:(ARG:0):利尿剤 = 0
+	EXP:(ARG:0):放尿経験 += 1
+RETURN 0
+
+;-----------------------------------------------------------
+;お漏らし処理（便）
+;@param ARG:0 キャラ番号
+@REST_PooAccident(ARG:0)
+	LOCAL:0 = MIN( TCVAR:(ARG:0):大腸内便量 , REST_GetRectalCapacity(ARG:0) )
+	TCVAR:(ARG:0):大腸内便量 = MAX(TCVAR:(ARG:0):大腸内便量-LOCAL:1,0)
+	;DEBUGPRINTFORML %CALLNAME:(ARG:0)%はうんちを漏らしてしまったようです。
+	;DEBUGPRINTFORML {LOCAL:0/1000}%UNICODE(0x3396)%のうんちでぱんつが盛り上がっています。
+	EXP:(ARG:0):排便経験 += 1
+RETURN 0
+
+;-----------------------------------------------------------
+;就寝時間を取得
+;@param ARG:0 キャラ番号
+;@param ARG:1 取得時間にかける補正(分単位)
+@REST_GetBedTime(ARG:0,ARG:1)
+	#FUNCTION
+	;就寝時間って変数に持ってるわけじゃないのね……。
+RETURNF
+
+;-----------------------------------------------------------
+;	トイレの入り口が見える
+;		1=見える, 0 = 見えない
+;-----------------------------------------------------------
+@NEAR_RESTROOM_DOOR(ARG)
+	#FUNCTION
+	VARSET LOCAL
+	SELECTCASE ARG
+		CASE 場所_屋外トイレ
+			SIF CFLAG:MASTER:現在位置 == 場所_守衛小屋 || CFLAG:MASTER:現在位置 == 場所_庭 || CFLAG:MASTER:現在位置 == 場所_二階廊下
+				LOCAL = 1
+		CASE 場所_1Fトイレ
+			SIF CFLAG:MASTER:現在位置 == 場所_広間
+				LOCAL = 1
+		CASE 場所_2Fトイレ
+			SIF CFLAG:MASTER:現在位置 == 場所_二階廊下 || CFLAG:MASTER:現在位置 == 場所_二階踊り場
+				LOCAL = 1
+	ENDSELECT
+RETURNF LOCAL
+
+;-----------------------------------------------------------
+;該当場所がトイレであるかどうかを確認する
+;@param ARG:0 部屋番号
+;@return 1=1F, 2=2F, 3=屋外, 4=地下室, 5=チルノの家, 6=大妖精の家
+;-----------------------------------------------------------
+@REST_IsRestRoom(ARG)
+	#FUNCTION
+	VARSET LOCAL
+	SELECTCASE ARG
+			;地下室
+		CASE 場所_地下室
+			LOCAL = 4
+			;1Fトイレ
+		CASE 場所_1Fトイレ
+			LOCAL = 1
+			;2Fトイレ
+		CASE 場所_2Fトイレ
+			LOCAL = 2
+			;屋外トイレ
+		CASE 場所_屋外トイレ
+			LOCAL = 3
+			;チルノの家
+		CASE 場所_チルノの家
+			LOCAL = 5
+			;大妖精の家
+		CASE 場所_大妖精の家
+			LOCAL = 6
+	ENDSELECT
+RETURNF LOCAL
+
+;-----------------------------------------------------------
+;	トイレへ移動する
+;		ARG…処理対象キャラ
+;		戻り値…移動先トイレ(22,23,24)
+;-----------------------------------------------------------
+@GO_TO_RESTROOM(ARG)
+	#FUNCTION
+	VARSET LOCAL
+	;各トイレの現在の利用者数
+	FOR LOCAL:1,1,CHARANUM
+		SIF CFLAG:(LOCAL:1):現在位置 == 場所_屋外トイレ
+			LOCAL:2 ++
+		SIF CFLAG:(LOCAL:1):現在位置 == 場所_1Fトイレ
+			LOCAL:3 ++
+		SIF CFLAG:(LOCAL:1):現在位置 == 場所_2Fトイレ
+			LOCAL:4 ++
+	NEXT
+	SELECTCASE ARG
+			;屋外＞1F＞2F 美鈴
+		CASE 1
+			IF LOCAL:2 == 0
+				LOCAL = 場所_屋外トイレ
+			ELSEIF LOCAL:3 < 1
+				LOCAL = 場所_1Fトイレ
+			ELSE
+				LOCAL = 場所_2Fトイレ
+			ENDIF
+			;1F＞屋外＞2F 小悪魔、咲夜、子悪魔
+		CASE 2, 4, 7
+			IF LOCAL:3 < 2
+				LOCAL = 場所_1Fトイレ
+			ELSEIF LOCAL:2 == 0
+				LOCAL = 場所_屋外トイレ
+			ELSE
+				LOCAL = 場所_2Fトイレ
+			ENDIF
+			;1F＞2F＞屋外 パチュリー
+		CASE 3
+			IF LOCAL:3 < 2
+				LOCAL = 場所_1Fトイレ
+			ELSEIF LOCAL:4 == 0
+				LOCAL = 場所_2Fトイレ
+			ELSE
+				LOCAL = 場所_屋外トイレ
+			ENDIF
+			;2F＞1F＞屋外 レミリア
+		CASE 5
+			IF LOCAL:4 == 0
+				LOCAL = 場所_2Fトイレ
+			ELSEIF LOCAL:3 < 1
+				LOCAL = 場所_1Fトイレ
+			ELSE
+				LOCAL = 場所_屋外トイレ
+			ENDIF
+			;地下室 フラン
+		CASE 6
+			LOCAL = 17
+			;自宅＞屋外＞1F＞2F チルノ
+		CASE 8
+			IF CFLAG:(ARG):現在位置 == 19
+				LOCAL = 20
+			ELSEIF LOCAL:2 == 0
+				LOCAL = 場所_屋外トイレ
+			ELSEIF LOCAL:3 < 1
+				LOCAL = 場所_1Fトイレ
+			ELSE
+				LOCAL = 場所_2Fトイレ
+			ENDIF
+			;自宅＞屋外＞1F＞2F 大妖精
+		CASE 9
+			IF CFLAG:(ARG):現在位置 == 19
+				LOCAL = 21
+			ELSEIF LOCAL:2 == 0
+				LOCAL = 場所_屋外トイレ
+			ELSEIF LOCAL:3 < 1
+				LOCAL = 場所_1Fトイレ
+			ELSE
+				LOCAL = 場所_2Fトイレ
+			ENDIF
+			;屋外＞1F＞2F その他
+		CASEELSE
+			IF LOCAL:2 == 0
+				LOCAL = 場所_屋外トイレ
+			ELSEIF LOCAL:3 < 1
+				LOCAL = 場所_1Fトイレ
+			ELSE
+				LOCAL = 場所_2Fトイレ
+			ENDIF
+	ENDSELECT
+	;トイレに向かう出発点記録
+	CFLAG:ARG:910 = CFLAG:ARG:現在位置
+	;トイレに向かった時刻記録
+	TCVAR:ARG:311 = DATETIME()
+RETURNF LOCAL
+
+;-----------------------------------------------------------
+;	トイレからの帰り道
+;		トイレに向かった帰り道である場合、１を返す
+;-----------------------------------------------------------
+@AFTER_REST_ROOM(ARG)
+	#FUNCTION
+	VARSET LOCAL
+	;現在位置がトイレに向かう前に居た場所でなく、かつ、元居た場所が0でない
+	IF CFLAG:ARG:910 != CFLAG:ARG:現在位置 && CFLAG:ARG:910 != 0
+		;トイレに向かってから30分が経過している
+		IF TIME_PROGRESS(TCVAR:ARG:311) >= 30
+			LOCAL = 1
+		ENDIF
+	ENDIF
+RETURNF LOCAL

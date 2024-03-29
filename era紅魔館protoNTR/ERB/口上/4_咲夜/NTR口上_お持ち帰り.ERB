@@ -1,0 +1,2411 @@
+﻿;-------------------------------------------------
+;寝取られパッチ用咲夜口上ファイル：お持ち帰り関係
+;お好きなように埋めまくってください
+;そしてあわよくばうｐしてください
+;いやマジで
+;注意：この口上が呼ばれるのは対象が主人から見える位置に居る状態か
+;　　　筒抜けコマンド(デバグ用)を実行した場合に限ります
+;　　　対象は気づいてない事が前提なので書く際にはご注意を
+;
+;protoNTR版追加要素
+;関数名に「KW」がつく項目はMASTER同席の見せつけコマンド。
+;屈服度が低いうちは訪問者による見せつけ、屈服度が好意度に勝り
+;寝取られそう→寝取られと遷移すると住人がMASTERに見せ付けてきます。
+;
+;CFLAG:持帰分岐
+; 1...Sコース：騎乗位
+; 2...Mコース(犬耳メイド)：後背位
+; 3...種付けコース：正常位
+; 4...着衣和姦コース：対面座位(未実装)
+; 5...結婚式コース：対面座位
+;-------------------------------------------------
+;==================================================
+;訪問者宅から帰ってきた際
+;==================================================
+@NTR_KOJO_K4_0(奴隷)
+	#DIM 奴隷
+
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTDATA
+			DATAFORM いったい何人の男の相手をさせられたのだろう、
+			DATAFORM よほど多くの男の相手を強いられたのだろう、
+			DATAFORM どれほどの精を注がれ、浴びせられたのだろう、
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 全身から性臭を漂わせ、メイド服のあちこちにも白いものがこびりついている。
+			DATAFORM 髪にも、メイド服のあちこちにも白いものがこびりついている。
+			DATAFORM メイド服のあちこちに白いものがこびりつき、濡れた下着から滴るそれが内股をも濡らしている。
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 館の者に・・特に%MSG_LOVER(奴隷)%に見咎められないうちに、彼女は自分の部屋に戻っていった。
+			DATAFORM 館の者に・・誰よりも%MSG_LOVER(奴隷)%の目に止まらないように、彼女は自分の部屋に戻っていった。
+		ENDDATA
+		IF CFLAG:奴隷:前回売春フラグ & 前回売春_初売春
+			PRINTFORML 部屋の扉に鍵をかけた%CALLNAME:奴隷%はベッドに突っ伏した。
+			PRINTFORML 彼女は耐えていた。耐え続けてきたが、もう限界であった。
+			PRINTFORML 「うっ・・ううっ・・うああっ・・！」
+			PRINTFORML ひとしきり泣いた後、彼女はゆっくりと立ち上がり鏡台の前に座る。
+			PRINTFORML 酷い顔だった。こんな顔をお嬢様や愛する人に見せられるはずがない。
+			PRINTFORML す・・と彼女が息を吸った直後、一瞬で彼女は変貌した。
+			PRINTFORML 停止させた時間の中で身なりを整えたのだ。
+			PRINTFORML そこにいたのは泣き崩れていた少女ではなく、普段の%CALLNAME:奴隷%だった。
+			PRINTFORML 「負けるものですか」
+			PRINTFORML 耐えてみせる。屈辱にも、苦痛にも。そしていつか必ず自由を勝ち取る。そう決意した目をしていた。
+			PRINTFORML
+		ENDIF
+
+	;公衆便所
+	ELSEIF TALENT:奴隷:公衆便所
+
+		PRINTDATA
+			DATAFORM いったい何人の男の相手をしてきたたのだろう、
+			DATAFORM よほど多くの男の相手をしてきたたのだろう、
+			DATAFORM どれほどの精を注がれ、浴びせられたのだろう、
+		ENDDATA
+		PRINTDATAL
+			DATAFORM 全身から性臭を漂わせ、メイド服のあちこちにも白いものがこびりついている。
+			DATAFORM 髪にも、メイド服のあちこちにも白いものがこびりついている。
+			DATAFORM メイド服のあちこちに白いものがこびりつき、濡れた下着から滴るそれが内股をも濡らしている。
+		ENDDATA
+
+		IF TALENT:奴隷:恋慕
+			;前回が初売春時の特別メッセージ
+			;長期滞在ONだと若干おかしいけど、そこはパス
+			IF CFLAG:奴隷:前回売春フラグ & 前回売春_初売春
+				PRINTFORML %CALLNAME:奴隷%はあなたの元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				PRINTFORML 「ふふっ、ただいま。今帰ったわ」
+				PRINTFORML 「・・%CALLNAME:MASTER%に大切なお話があるの」
+				PRINTFORML 「言ったわよね？ 私は公衆便所になるって」
+				PRINTFORML 「察しがいいわね？ ええ、昨日、初めてお客様に抱かれたわ。売春デビューって言うのかしら？」
+				IF CFLAG:奴隷:前回売春フラグ & 前回売春_処女喪失
+					PRINTFORML 「お客様に抱かれて・・処女を捧げてきたわ・・ふふっ・・これが私の初体験ね」
+				ENDIF
+				IF CFLAG:奴隷:前回売春フラグ & 前回売春_写真
+					PRINTFORML 「忘れてたわ。素敵なプレゼント」
+					PRINTFORML 咲夜が何か封筒を渡してきた。
+					PRINTFORML 「記念の写真よ。後で見てね」
+				ENDIF
+				IF TALENT:奴隷:浮気公認
+					PRINTFORML 「%CALLNAME:MASTER%の望みどおり・・私はもっともっと寝取られてくるわ」
+					PRINTFORML 「もっともっと多くの人に。もっともっとたくさん・・」
+				ENDIF
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、まだ鈍い痛みがあるのか、普段の瀟洒さに欠ける足取りで部屋に戻っていった。
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%はあなたの元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				CALL NTR_KOJO_K4_0_TalkBack0(奴隷)
+				IF EXP:奴隷:前回浮気人数 > 0
+					IF CFLAG:奴隷:前回売春フラグ & 前回売春_結婚式
+						PRINTFORML 「ええ、%NTR_KARE()%のところから。お客様に抱かれてきたわ」
+						PRINTFORML %CALLNAME:奴隷%は意味ありげな笑みを浮かべた。
+						PRINTFORML 「ふふっ、それだけじゃないの。お客様と、結婚式を挙げてきたのよ」
+						PRINTFORML 「白いドレスを着て、ヴァージンロードを歩いて・・」
+						IF TALENT:奴隷:人妻
+							PRINTFORML 「あなたが贈ってくれた指輪を外して、お客様と指輪を交換したわ」
+						ELSE
+							PRINTFORML 「お客様と指輪を交換したわ」
+						ENDIF
+						PRINTFORML 「そして永遠の愛を誓って、唇を重ねたの・・その後は・・ふふっ、わかるでしょう？」
+						IF CFLAG:奴隷:前回売春フラグ & 前回売春_写真
+							PRINTFORML 咲夜が何か封筒を渡してきた。
+							PRINTFORML 「記念の写真よ。お客様と私の、結婚式の写真。ふふっ」
+						ENDIF
+					ELSE
+						PRINTFORML 「ええ、%NTR_KARE()%のところから。もちろん、あの人だけじゃなくて、お客様にも抱かれてきたわ」
+						PRINTFORML %CALLNAME:奴隷%は妖しく微笑んで、昨日は{EXP:奴隷:前回浮気人数}人の客を相手にしたのだと告げた。
+					ENDIF
+				ELSE
+					;前回浮気人数が0の時は訪問者に抱かれたものとする
+					PRINTFORML 「ええ、%NTR_KARE()%のところから。もちろん、いっぱい抱かれてきたわ」
+				ENDIF
+				IF (STAIN:奴隷:Ｖ & 汚れ_精液)
+					CALL NTR_KOJO_K4_0_TalkSamen(奴隷)
+				ENDIF
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、そこまで汚れながらもなお瀟洒さを感じさせる足取りで部屋に戻っていった。
+			ENDIF
+		ELSE
+			PRINTFORML そこまで汚れながらもなお瀟洒さを感じさせる足取りで部屋に戻っていった。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTDATA
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体はほのかに性臭を漂わせ、
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体からはほのかに性臭が漂い、
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体からは隠しきれぬ性臭が漂い、
+		ENDDATA
+		PRINTDATAL
+			DATAFORM メイド服にもところどころ白いものがこびりついている。
+			DATAFORM 髪にも、メイド服にもところどころ白いものがこびりついている。
+			DATAFORM メイド服にところどころ白いものがこびりつき、同じもので下着が濡れている。
+		ENDDATA
+		IF TALENT:奴隷:恋慕
+			IF TALENT:奴隷:浮気公認 >= 浮気_外泊公認
+				PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%の元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				CALL NTR_KOJO_K4_0_TalkBack0(奴隷)
+				CALL NTR_KOJO_K4_0_TalkBack1(奴隷)
+				IF (STAIN:奴隷:Ｖ & 汚れ_精液)
+					CALL NTR_KOJO_K4_0_TalkSamen(奴隷)
+				ENDIF
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、彼女は瀟洒な足取りで自分の部屋に戻っていった。
+			ELSEIF TALENT:奴隷:浮気公認
+				PRINTFORML %CALLNAME:奴隷%はあなたの元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				CALL NTR_KOJO_K4_0_TalkBack0(奴隷)
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、彼女は瀟洒な足取りで自分の部屋に戻っていった。
+			ELSE
+				PRINTFORML その汚れを隠そうともせず、彼女は瀟洒な足取りで自分の部屋に戻っていった。
+			ENDIF
+		ELSE
+			PRINTFORML その汚れを隠そうともせず、彼女は瀟洒な足取りで自分の部屋に戻っていった。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTDATA
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体はほのかに性臭を漂わせ、
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体からはほのかに性臭が漂い、
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体からは隠しきれぬ性臭が漂い、
+		ENDDATA
+		PRINTDATAL
+			DATAFORM メイド服にもところどころ白いものがこびりついている。
+			DATAFORM 髪にも、メイド服にもところどころ白いものがこびりついている。
+			DATAFORM メイド服にところどころ白いものがこびりつき、同じもので下着が濡れている。
+		ENDDATA
+		IF TALENT:奴隷:恋慕
+			IF TALENT:奴隷:浮気公認 >= 浮気_外泊公認
+				PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%の元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				CALL NTR_KOJO_K4_0_TalkBack0(奴隷)
+				CALL NTR_KOJO_K4_0_TalkBack1(奴隷)
+				IF (STAIN:奴隷:Ｖ & 汚れ_精液)
+					CALL NTR_KOJO_K4_0_TalkSamen(奴隷)
+				ENDIF
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、彼女は自分の部屋に戻っていった。
+			ELSEIF TALENT:奴隷:浮気公認
+				PRINTFORML %CALLNAME:奴隷%はあなたの元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				CALL NTR_KOJO_K4_0_TalkBack0(奴隷)
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、彼女は自分の部屋に戻っていった。
+			ELSE
+				PRINTFORML %MSG_LOVER(奴隷)%に見咎められないうちに、彼女は自分の部屋に戻っていった。
+			ENDIF
+		ELSE
+			PRINTFORML 館の者に見咎められないうちに、彼女は自分の部屋に戻っていった。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+
+		PRINTDATA
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体はほのかに性臭を漂わせ、
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体からはほのかに性臭が漂い、
+			DATAFORM 館に戻った%CALLNAME:奴隷%の身体からは隠しきれぬ性臭が漂い、
+		ENDDATA
+		PRINTDATAL
+			DATAFORM メイド服にもところどころ白いものがこびりついている。
+			DATAFORM 髪にも、メイド服にもところどころ白いものがこびりついている。
+			DATAFORM メイド服にところどころ白いものがこびりつき、同じもので下着が濡れている。
+		ENDDATA
+		IF TALENT:奴隷:恋慕
+			IF TALENT:奴隷:浮気公認 >= 浮気_外泊公認
+				PRINTFORML %CALLNAME:奴隷%はあなたの元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				CALL NTR_KOJO_K4_0_TalkBack0(奴隷)
+				CALL NTR_KOJO_K4_0_TalkBack1(奴隷)
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、彼女は自分の部屋に戻っていった。
+			ELSEIF TALENT:奴隷:浮気公認
+				PRINTFORML %CALLNAME:奴隷%はあなたの元を訪れると、%NTR_NAME(0)%の所から今帰ったのだと告げた。
+				CALL NTR_KOJO_K4_0_TalkBack0(奴隷)
+				PRINTFORML %MSG_LOVER(奴隷)%の耳元でそう囁いたあと、彼女は自分の部屋に戻っていった。
+			ELSE
+				PRINTFORML %MSG_LOVER(奴隷)%に見咎められないようこっそりと、彼女は自分の部屋に戻っていった。
+			ENDIF
+		ELSE
+			PRINTFORML 館の者に見咎められないようこっそりと、彼女は自分の部屋に戻っていった。
+		ENDIF
+
+	ELSE
+		; お持ち帰りは基本屈服度＞好感度なのでここにはこない
+		; 親愛持ちの拉致時？
+		PRINTFORML 館に戻った%CALLNAME:奴隷%の身体はほのかに性臭を漂わせ、メイド服にもところどころ白いものがこびりついている。
+		PRINTFORML 館の者に見咎められないようこっそりと、彼女は自分の部屋に戻っていった。
+	ENDIF
+RETURN 0
+
+; 帰宅時挨拶
+@NTR_KOJO_K4_0_TalkBack0(奴隷)
+	#DIM 奴隷
+
+	PRINTDATAL
+		DATAFORM 「ふふっ、ただいま。今帰ったわ」
+		DATAFORM 「ただいま。今帰ったわ」
+		DATAFORM 「ただいま、今帰ったわ。館のこと、何もなかった？」
+	ENDDATA
+RETURN 0
+
+; 帰宅時挨拶追い打ち
+; 　わざわざ報告してくる状況なので、前提として恋慕かつ浮気公認 == 外泊公認
+@NTR_KOJO_K4_0_TalkBack1(奴隷)
+	#DIM 奴隷
+
+	PRINTDATAL
+		DATAFORM 「ええ、%NTR_KARE()%のところから。もちろん、いっぱい抱かれてきたわ」
+		DATAFORM 「抱かれてきたのかって？ ええ、もちろん」
+		DATAFORM 「何をしてきたかって？ セックス以外何をするのかしら？」
+	ENDDATA
+RETURN 0
+
+; 精液汚れ報告
+; 　わざわざ報告してくる状況なので、前提として恋慕かつ浮気公認
+@NTR_KOJO_K4_0_TalkSamen(奴隷)
+	#DIM 奴隷
+	
+	PRINTFORML 「・・ふふっ、今私のアソコ、ザーメンで汚れているのよ・・%MSG_HEART()%」
+	IF GETBIT(CFLAG:奴隷:娼婦紋, 娼婦紋_右頬)
+		CALL COM417_GetFillingRateByPublicSperm(奴隷)
+		SELECTCASE (RESULT:1 * RESULT:0)
+			CASE IS >= 200	; 娼婦紋が鮮やかなピンク色
+				PRINTFORML 淫らに微笑む%CALLNAME:奴隷%は、頬に刻まれた紋が鮮やかなピンク色に変色している様を見せ付けてきた。
+				PRINTFORML その色は、彼女の子宮が夥しい量の精液で満たされていることを示していた。
+				IF CFLAG:射精者M != 0 && STAIN:口 & 汚れ_精液
+					PRINTFORML 「今ならキスの妨げにもならないわ。もっとも、唇も汚れているけど、ふふっ」
+				ELSE
+					PRINTFORML 「今ならキスの妨げにもならないわ。ふふっ」
+				ENDIF
+			CASE IS >= 100	; 娼婦紋がピンク色
+				PRINTFORML 淫らに微笑む%CALLNAME:奴隷%は、頬に刻まれた紋がピンク色に変色している様を見せ付けてきた。
+				PRINTFORML その色は、彼女の子宮が精液で満たされていることを示していた。
+				IF CFLAG:射精者M != 0 && STAIN:口 & 汚れ_精液
+					PRINTFORML 「今ならキスの妨げにもならないわ。もっとも、唇も汚れているけど、ふふっ」
+				ELSE
+					PRINTFORML 「今ならキスの妨げにもならないわ。ふふっ」
+				ENDIF
+			CASE 50 TO 99	; 娼婦紋が赤
+				PRINTFORML 淫らに微笑む%CALLNAME:奴隷%は、頬に刻まれた紋が赤く変色している様を見せ付けてきた。
+				PRINTFORML その色は、彼女の子宮の半分ほどが精液で満たされていることを示していた。
+				PRINTFORML 「これじゃキスはできないわね」
+			CASE 1 TO 49	; 娼婦紋が赤紫
+				PRINTFORML 淫らに微笑む%CALLNAME:奴隷%の頬に刻まれた紋の色が赤紫色に変わっている。
+				PRINTFORML 「これじゃキスはできないわね」
+			CASEELSE		; 娼婦紋が紫
+				PRINTFORML 淫らに微笑む%CALLNAME:奴隷%の頬に刻まれた紋は紫色のままだ。
+				PRINTFORML 「これじゃキスはできないわね」
+		ENDSELECT
+	ELSE
+		PRINTFORML %CALLNAME:奴隷%は淫らに微笑んだ。
+	ENDIF
+RETURN 0
+	
+;==================================================
+;お持ち帰り
+;==================================================
+;==================================================
+;客情報生成（お持ち帰り時に実行）
+;
+;CFLAG:持帰分岐
+; 1...Sコース：騎乗位
+; 2...Mコース(犬耳メイド)：後背位
+; 3...種付けコース：正常位 ... 妊娠OFF時は抑止
+; 4...着衣和姦コース：対面座位 ... 未実装
+; 5...結婚式コース：対面座位 ... 発生頻度やや低め
+;==================================================
+@NTR_KOJO_K4_MAKE_CLIENT(奴隷)
+	#DIM 奴隷
+	#DIM 頻度, 6
+
+	;親愛なし公衆便所の場合実行
+	IF !TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+	    ;頻度テーブル生成
+		頻度:0 = 3   ; 発生頻度やや高め 
+		頻度:1 = 2 
+		頻度:2 = 2 
+		頻度:3 = (GETBIT(FLAG:26, 5) ? 2 # 0)
+		頻度:4 = 0   ; 未実装 
+		頻度:5 = 1   ; 発生頻度やや低め 
+        ;頻度テーブルから選択
+		CFLAG:奴隷:持帰分岐 = SEL_ARRAY(頻度)
+	ENDIF
+RETURN
+;==================================================
+;訪問者宅へ
+;==================================================
+@NTR_KOJO_K4_10_0(奴隷)
+	#DIM 奴隷
+
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTFORML %CALLNAME:奴隷%はいつもの部屋・・『商品』である彼女が客に『使用される』部屋へと連行された。
+		PRINTFORML 首輪に部屋の壁から伸びた鎖を繋がれ、鍵をかけられる・・この鎖が繋がれているかぎり、彼女は『商品』であることを強いられる。
+		PRINTFORML %ANATA_LOVER(奴隷)%以外の男によって肉体を買われ、唇も、乳房も、尻も、性器も・・膣奥深く、子宮さえも欲しいままに『使用』されてしまうのだ。
+		PRINTFORML %CALLNAME:奴隷%を繋ぎ止めた%NTR_NAME(0)%は部屋を去り、入れ替わりに男が入ってくる。
+
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「いっ、いやああっ！ 助けて、助けて%CALLNAME:MASTER%！！」
+			DATAFORM 「いっ、いやああっ！ 離してっ、離しなさいっ！」
+			DATAFORM 「いやああっ！ は、離してっ！」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%によって縛られたまま%NTR_KARE()%の家へと拉致された。
+		PRINTFORML 地下室の壁に鎖で繋がれた%CALLNAME:奴隷%のメイド服を引き裂き、%NTR_NAME(0)%は下卑た笑いを浮かべた。
+
+	ELSEIF TALENT:奴隷:公衆便所
+
+		PRINTFORML %NTR_NAME(0)%の家を訪れた%CALLNAME:奴隷%はいつもの部屋・・『商品』である彼女が客に『使用される』部屋へと赴いた。
+		PRINTFORML 手早く身支度を整え、今日の『仕事』の準備を始めた。
+		PRINTFORML 彼女の身体を金で買った男に誠心誠意奉仕して尽くすひとときが始まるのだ。
+		CALL NTR_KOJO_K4_GET_ORDER(奴隷)
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		PRINTDATAL
+			DATAFORM 「ああ・・・また・・・%MSG_HEART()%」
+			DATAFORM 「ああ・・・ぞくぞくする・・・%MSG_HEART()%」
+			DATAFORM 「ああん・・・早く・・・%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に首輪をつけられ、鎖に繋がれた。
+		PRINTFORML ご主人様の牝犬奴隷として過ごす甘美な時間・・・その期待に%CALLNAME:奴隷%は打ち震えた。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTDATAL
+			DATAFORM 「ああ・・・また・・・%MSG_HEART()%」
+			DATAFORM 「ああ・・・ぞくぞくする・・・%MSG_HEART()%」
+			DATAFORM 「ああん・・・早く・・・%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に首輪をつけられ、鎖に繋がれた。
+		PRINTFORML ご主人様の牝犬奴隷として過ごす甘美な時間・・・その期待に%CALLNAME:奴隷%は打ち震えた。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:MASTER%への想いよりも、%NTR_NAME(0)%から与えられる快楽の方が%CALLNAME:奴隷%の心の中で大きな存在となってしまっていた。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		SELECTCASE TALENT:奴隷:浮気公認
+			CASE IS >= 浮気_外泊公認
+				PRINTDATAL
+					DATAFORM 「ええ、行きましょう。ふふっ、楽しみね」
+					DATAFORM 「ふふっ、今日はどんな風に可愛がってくれるのかしら？」
+					DATAFORM 「ええ、言う通りにするわ。何でも・・・何度でも」
+				ENDDATA
+				PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%と親しげに腕を組んで歩きながら%NTR_KARE()%の家に同行した。
+				PRINTDATA
+					DATAFORM 外泊してくることは%MSG_LOVER(奴隷)%も承知していることであり、
+					DATAFORM 外泊してくることは%MSG_LOVER(奴隷)%が望んだことであり、
+					DATAFORM 泊まりがけでの浮気は%MSG_LOVER(奴隷)%の望みをかなえるためであり、
+				ENDDATA
+				PRINTDATAL
+					DATAFORM 彼女はもはや後ろめたさを感じてはいなかった。
+					DATAFORM 彼女はためらうことなく%NTR_NAME(0)%に従った。
+					DATAFORM 彼女は迷うどころか自ら%NTR_NAME(0)%に抱きついた。
+				ENDDATA
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%・・帰ったら、聞かせてあげないといけないわね・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・楽しみにしてなさい・・ふふっ・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・あなたの望みどおりにしてあげる・・）
+				ENDDATA
+			CASE IS >= 浮気_浮気公認
+				PRINTDATAL
+					DATAFORM 「ええ、行きましょう」
+					DATAFORM 「ふふっ、今日はどんな風にしてくれるのかしら？」
+					DATAFORM 「ええ、言う通りにするわ」
+				ENDDATA
+				PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%と腕を組んで歩きながら%NTR_KARE()%の家に同行した。
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%・・帰ったら、聞かせてあげないといけないわね・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・楽しみにしてなさい・・ふふっ・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・あなたの望みどおりにしてあげる・・）
+				ENDDATA
+			CASEELSE		; 非公認
+				PRINTDATAL
+					DATAFORM 「だ・・だめ、帰して・・・」
+					DATAFORM 「や・・やっぱり・・だめっ・・ああっ」
+					DATAFORM 「い、いや・・・ひどいこと、しないで・・」
+				ENDDATA
+				PRINTFORML 弱々しく逆らうも%CALLNAME:奴隷%は%NTR_NAME(0)%の家に連れ込まれてしまった。
+				IF TALENT:奴隷:恋慕
+					IF TALENT:奴隷:傷心 && RAND:2
+						IF CFLAG:奴隷:傷心相手1
+							PRINTFORML %CALLNAME:MASTER%と%CALLNAME:(CFLAG:奴隷:傷心相手1)%の行為のイメージが脳裏をよぎる。%CALLNAME:奴隷%の心は揺れていた。
+						ELSE
+							PRINTFORML %CALLNAME:MASTER%の浮気現場のイメージが脳裏をよぎる。%CALLNAME:奴隷%の心は揺れていた。
+						ENDIF
+					ELSE
+						PRINTFORML %CALLNAME:MASTER%への想いと、%NTR_NAME(0)%から与えられる快楽との間で%CALLNAME:奴隷%の心は揺れていた。
+					ENDIF
+				ENDIF
+		ENDSELECT
+
+	ELSE
+
+		SELECTCASE TALENT:奴隷:浮気公認
+			CASE IS >= 浮気_外泊公認
+				PRINTFORML 「・・ええ、行きましょう」
+				PRINTFORML %CALLNAME:奴隷%は大人しく%NTR_NAME(0)%の家に同行した。
+				PRINTFORML 外泊してくると%MSG_LOVER(奴隷)%相手に大見得を切ってしまったせいもあり、%CALLNAME:奴隷%は半ば居直っていた。
+				PRINTFORML （・・%CALLNAME:MASTER%が・・悪いんだから・・）
+			CASE IS >= 浮気_浮気公認
+				PRINTFORML 「・・」
+				PRINTFORML %CALLNAME:奴隷%は大人しく%NTR_NAME(0)%の家に同行した。
+				PRINTFORML （・・%CALLNAME:MASTER%・・本当に・・これでいいの・・）
+			CASEELSE		; 非公認
+				PRINTFORML 「・・」
+				PRINTFORML %CALLNAME:奴隷%は表面上大人しく%NTR_NAME(0)%の家に同行した。
+		ENDSELECT
+
+	ENDIF
+	IF TALENT:奴隷:人妻
+		IF EQUIP:奴隷:アクセサリ == 衣装_アクセサリ_結婚指輪
+			PRINTFORML %CALLNAME:奴隷%の左手の薬指では、結婚指輪が虚しく輝いていた。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%の左手の薬指には、そこにあるはずの結婚指輪がはめられていなかった。
+		ENDIF
+	ENDIF
+
+RETURN 0
+
+;==================================================
+;公衆便所オーダー取得時会話(お持ち帰り)
+;==================================================
+@NTR_KOJO_K4_GET_ORDER(奴隷)
+	#DIM 奴隷
+
+	PRINTFORML 「今日はどのように致しましょうか？」
+	PRINTFORML %NTR_NAME(0)%宅の控え室で、%CALLNAME:奴隷%は今日のオーダーを聞いていた。
+	SELECTCASE CFLAG:奴隷:持帰分岐
+		;Sコース
+		CASE NTR_持帰分岐_Ｓプレイ
+			PRINTFORML 「調教・・ですか？」
+			PRINTFORML 今日の客は%CALLNAME:奴隷%を支配したいのではなくて支配されたいのだという。
+			PRINTFORML 「なるほど・・要は、奉仕の心を躾けて差し上げればよろしいのですね」
+			PRINTFORML 紅魔館のメイド長たる者にとっては手馴れた仕事といえた。
+		;Mコース(犬耳メイド)
+		CASE NTR_持帰分岐_Ｍプレイ
+			PRINTFORML 「これを・・？」
+			PRINTFORML %CALLNAME:奴隷%は用意された衣装を身に着けた。
+			PRINTFORML 衣装と言っても普段のメイド服と大差はないが、ヘッドドレスに犬耳がつき、
+			PRINTFORML ショーツを穿くことは許されず尻尾つきのアナルプラグを挿入させられた。
+			PRINTFORML 「ああ・・犬になればいいのですね・・ワンと言えばいいのでしょうか？」
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %ANATA_LOVER(奴隷)%の知らない場所で、%CALLNAME:奴隷%は名も知らぬ客の牝犬奴隷となっていた。
+			ENDIF
+		;妊娠プレイコース
+		CASE NTR_持帰分岐_種付け
+			PRINTFORML 「特別メニューで妊娠・・ですか？」
+			PRINTFORML 聞けば今日の客は通常の数倍の金を出してまで、彼女を孕ませたいと望んだのだそうだ。
+			PRINTFORML %NTR_NAME(0)%に鎖を引かれプレイルームに入った%CALLNAME:奴隷%は、彼女を買った、いや、彼女の子宮を買った男に対面した。
+			IF TALENT:奴隷:危険日
+				PRINTFORML 「本日は私は危険日・・いえ、『当たり日』です」
+			ELSE
+				PRINTFORML 契約を履行する証明として、%CALLNAME:奴隷%は%NTR_NAME(0)%立会いのもと客の目の前で排卵誘発剤を服用した。
+				TRYCALL 排卵誘発剤追加処理, 奴隷
+				PRINTFORML 「これでは私は、お客様の仔を孕める身体になれました」
+			ENDIF
+			PRINTFORML 「どうかこの私の子宮にお客様の精液を注ぎ込んで、孕ませてくださいませ」
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %ANATA_LOVER(奴隷)%の知らない場所で、%CALLNAME:奴隷%は名も知らぬ客に種付けされようとしていた。
+			ENDIF
+		;結婚式プレイコース
+		CASE NTR_持帰分岐_結婚式
+			PRINTFORML 「結婚式・・ですか？」
+			PRINTFORML 今回の客はウェディングドレス姿の%CALLNAME:奴隷%とセックスしたいのだという。
+			PRINTFORML 「勿論お引き受けしますわ・・ふふ・・一夜限りの花嫁・・お客様への愛をお誓いしますわ%MSG_HEART()%」
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %CALLNAME:奴隷%はあなたという%MSG_LOVER(奴隷)%がありながら、名も知らぬ客と一夜の愛を誓おうとしている。
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%はまさに花嫁のような笑みを浮かべてオーダーを承諾した。
+			ENDIF
+		;その他(通常)
+		CASEELSE
+			PRINTFORML 首輪を身に着けた%CALLNAME:奴隷%は、%NTR_NAME(0)%が手にした鎖に繋がれいつもの部屋へと歩いていた。
+			PRINTFORML 部屋に入った彼女は待っていた男たちの前に跪き、上気しながら挨拶の言葉を口にした。
+			PRINTFORML 「今日も私、%CALLNAME:奴隷%をお買い上げいただきありがとうございます」
+			PRINTFORML 「この卑しい精液便器を、どうかご主人様たちのお情けで満たしてくださいませ」
+			IF TALENT:奴隷:危険日
+				PRINTFORML 「・・ああでも、今日は危険日なのです・・どうか中に出すのは控えめにしてくださいませ・・」
+				PRINTFORML 目の前にかしずく美女を孕ませることができるかもしれないと、客はさらに興奮した。
+			ENDIF
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %ANATA_LOVER(奴隷)%の知らない場所で、%CALLNAME:奴隷%は名も知らぬ客にその美しい肢体を晒していた。
+			ENDIF
+	ENDSELECT
+RETURN 0
+;==================================================
+;訪問者と会話(お持ち帰り)
+;==================================================
+@NTR_KOJO_K4_10_1(奴隷,調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+	
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTFORML 自分の身体を買い上げた『客』に、彼女は三つ指をついて挨拶の言葉を口にする。
+		IF TALENT:奴隷:処女 
+			PRINTFORML 「本日はこの私の処女をお買い上げいただきまして、まことにありがとうございました」
+			PRINTFORML 「お客様に純潔を捧げる夜・・今宵は私とお客様の新婚初夜というわけです」
+			PRINTFORML 「一夜かぎりの花嫁奴隷として、どのようなご奉仕でもさせていただきます」
+			IF TALENT:奴隷:危険日
+				PRINTFORML 「折りしも今日は危険日・・どうか私に、ハネムーン・ベイビーを身篭らせてくださいませ」
+			ELSE
+			ENDIF
+		ELSE
+			PRINTFORML 「本日はこの私をお買い上げいただきまして、まことにありがとうございました」
+			PRINTFORML 「お客様専用の牝犬奴隷として、どのようなご奉仕でもさせていただきます」
+			IF TALENT:奴隷:危険日
+				PRINTFORML 「折りしも今日は危険日・・私を孕ませたいとお思いでしたら、一滴残さず子宮へと注いでくださいませ」
+			ELSE
+			ENDIF
+		ENDIF
+		PRINTFORML %NTR_NAME(0)%に命じられた通りの言葉を紡ぎながら、咲夜の唇は悔しさと悲しみに小さく震えていた。
+
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「い・・いや・・、こ、こないで・・！」
+			DATAFORM 「ち、近寄らないでっ！」
+			DATAFORM 「こ、こんなことで私が屈するとでも・・！」
+		ENDDATA
+		IF 客の人数 > 1
+			PRINTFORML いやらしい笑いを浮かべる男達に危険を感じるが、%CALLNAME:奴隷%は鎖に繋がれ逃げることもできない。
+		ELSE
+			PRINTFORML いやらしい笑いを浮かべる男に危険を感じるが、%CALLNAME:奴隷%は鎖に繋がれ逃げることもできない。
+		ENDIF
+
+	ELSEIF TALENT:奴隷:公衆便所 &&調教者 == 人物_客
+
+		SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+			CASE NTR_持帰分岐_Ｓプレイ
+				PRINTFORML %CALLNAME:奴隷%は正座させた客に奉仕の心について説いている。
+				PRINTFORML 「大切なのは、お仕えする方が何を望んでおられるのかをよく考えること」
+				PRINTFORML %CALLNAME:奴隷%は客と目を合わせ、ゆっくりと言い聞かせる。
+				PRINTFORML 「何を望んでいるのか・・どうされたいのか・・その上でご奉仕するのよ」
+			;Mコース(犬耳メイド)
+			CASE NTR_持帰分岐_Ｍプレイ
+				PRINTFORML %CALLNAME:奴隷%はソファに腰掛けた客の足元に跪き、彼の股間に顔をよせている。
+				PRINTFORML 客は片手に首輪から伸びた鎖を持ち、もう片方の手で%CALLNAME:奴隷%の頭を撫でている。
+				PRINTFORML 「なんなりとお申し付けください。ご主人様」
+				PRINTFORML 客はふざけて、ワンと鳴いてみろと答えた。
+				PRINTFORML 「バウ、ワウ」
+			;妊娠プレイコース
+			CASE NTR_持帰分岐_種付け
+				PRINTFORML %CALLNAME:奴隷%は微笑みながら客を接待している。
+				PRINTFORML なぜ多額の金を出してまで自分を孕ませたかったのか疑問に思わなくもなかったが、それをたずねる事はできなかった。
+				PRINTFORML 彼は『客』であり、%CALLNAME:奴隷%は『商品』なのだから。
+			;結婚式プレイコース
+			CASE NTR_持帰分岐_結婚式
+				PRINTFORML %CALLNAME:奴隷%は純白のウェディングドレスに身を包み、祭壇の前で彼女を買った名も知らぬ男の隣に立っていた。
+				PRINTFORML 教会を模したプレイルームで、神父に扮した%NTR_NAME(0)%が芝居がかった台詞を囁く。
+				PRINTFORML 『汝はこの男を生涯愛し、永遠の契りを結ぶと誓うか』
+				PRINTFORML 「はい。誓います」
+				PRINTFORML 『では指輪の交換を』
+				IF TALENT:奴隷:人妻
+					PRINTFORML 客が%CALLNAME:奴隷%の手をとり、左手の薬指に%CALLNAME:MASTER%が贈った指輪を抜き取る。
+					PRINTFORML そしてその代わりに、自分が用意した指輪を嵌めた。
+					PRINTFORML %CALLNAME:奴隷%の左手の薬指に、%ANATA_LOVER(奴隷)%以外の男によって嵌められた指輪が輝いている。
+				ELSE
+					PRINTFORML 客が%CALLNAME:奴隷%の手をとり、左手の薬指に指輪を嵌めた。
+					PRINTFORML %CALLNAME:奴隷%の左手の薬指に、名も知らぬ男によって嵌められた指輪が輝いている。
+				ENDIF
+			;その他(通常)
+			CASEELSE
+				IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+					PRINTFORML 「この度はこの%CALLNAME:奴隷%の処女をお買い上げいただきまして、まことにありがとうございます」
+					PRINTFORML %CALLNAME:奴隷%は彼女のヴァージンを金で買った男にしなだれかかり、熱のこもった視線を向けた。
+				ELSE
+					PRINTFORML %CALLNAME:奴隷%は微笑みながら客を接待している。
+				ENDIF
+		ENDSELECT
+	;公衆便所ではない売春
+	ELSEIF 調教者 == 人物_客
+
+		PRINTFORML %CALLNAME:奴隷%は微笑みながら客を接待している。
+		IF TALENT:奴隷:恋慕
+			IF TALENT:奴隷:浮気公認
+				PRINTFORML （ふふ・・%CALLNAME:MASTER%が知ったら驚くかしら・・）
+			ELSE
+				PRINTFORML （・・%CALLNAME:MASTER%には・・知られたくないわね・・）
+			ENDIF
+		ELSE
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		PRINTDATAL
+			DATAFORM 「ふふ、似合うかしら？」
+			DATAFORM 「はい・・おおせのままに・・」
+			DATAFORM 「ああ・・ゾクゾクする・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は微笑みながら首に着けられた首輪を指でなぞった
+		IF TALENT:奴隷:恋慕
+			; たぶん死に分岐
+			PRINTFORML それは%ANATA_LOVER(奴隷)%以外の%NTR_OTOKO()%に所有されることの証である首輪だった。
+			PRINTFORML 首輪から伸びた鎖はどこにも繋がれていない。
+			PRINTFORML 壁に繋いだりしなくても、もう%CALLNAME:奴隷%は勝手に逃げ出したりはしないのだから。
+		ELSE
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTDATAL
+			DATAFORM 「ふふ、似合うかしら？」
+			DATAFORM 「はい・・おおせのままに・・」
+			DATAFORM 「ああ・・ゾクゾクする・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は微笑みながら首に着けられた首輪を指でなぞった
+		IF TALENT:奴隷:恋慕
+			PRINTFORML それは%ANATA_LOVER(奴隷)%以外の%NTR_OTOKO()%に所有されることの証である首輪だった。
+			PRINTFORML 首輪から伸びた鎖は壁に繋がれている。
+			IF TALENT:奴隷:浮気公認
+				PRINTFORML （ふふ・・%CALLNAME:MASTER%に、見せてあげたいわね・・）
+			ENDIF
+		ELSE
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		IF TALENT:奴隷:浮気公認
+			PRINTDATAL
+				DATAFORM 「・・あんっ・・もう・・」
+				DATAFORM 「ふふっ・・せっかちね・・」
+				DATAFORM 「ええ・・いいわ・・」
+			ENDDATA
+			PRINTFORML %NTR_NAME(0)%の隣に座って話していた%CALLNAME:奴隷%だが、ふいに抱き寄せられても抵抗しなかった。
+			IF TALENT:奴隷:恋慕 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認
+				PRINTFORML 「ええ、そうね、泊まっていくつもりよ」
+				PRINTFORML %MSG_LOVER(奴隷)%にも知られているという状況が、彼女を大胆にさせていた。
+			ELSE
+			ENDIF
+		ELSE
+			PRINTFORML 「せめて、痕が残らないようにして・・・」
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%にこの事を知られたくなかった。
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%は紅魔館の皆にこの事を知られたくなかった。
+			ENDIF
+			PRINTFORML ある程度の妥協は仕方ないと受け入れ、%NTR_NAME(0)%の隣に座った。
+		ENDIF
+
+	ELSE
+
+		IF TALENT:奴隷:浮気公認
+			PRINTDATAL
+				DATAFORM 「ええ、そうね、ふふっ」
+				DATAFORM 「あら、お上手ですこと」
+				DATAFORM 「どこを見ているのかしら？」
+			ENDDATA
+			PRINTFORML %NTR_NAME(0)%の話に相槌をうち、%CALLNAME:奴隷%は微笑んだ。
+			IF TALENT:奴隷:恋慕 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認
+				PRINTFORML 「泊まっていくのも、悪くはないわね」
+				PRINTFORML %MSG_LOVER(奴隷)%にも知られているという状況が、彼女を大胆にさせていた。
+			ELSE
+			ENDIF
+		ELSE
+			PRINTDATAL
+				DATAFORM 「え、ええ、そうね・・」
+				DATAFORM 「あら、お世辞がお上手ですこと」
+				DATAFORM 「・・どこを見ているのかしら？」
+			ENDDATA
+			PRINTFORML %NTR_NAME(0)%の話に相槌をうちつつも、%CALLNAME:奴隷%はあまり乗り気ではなさそうだ。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%にこの事を知られたくなかった。
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%は紅魔館の皆にこの事を知られたくなかった。
+			ENDIF
+		ENDIF
+
+	ENDIF
+RETURN 0
+
+;==================================================
+;訪問者とキス(お持ち帰り)
+;==================================================
+@NTR_KOJO_K4_10_2(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+	
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTDATAL
+			DATAFORM 「んっ！んむぅ！・・んっ、んっ・・いっ・・んぅ！」
+			DATAFORM 「いっ、い・・んっ、んんっ・・むうっ！」
+			DATAFORM 「んんっ！ ・・んんんっ！」
+		ENDDATA
+		IF 客の人数 > 1
+			PRINTFORML %CALLNAME:奴隷%は男達に押さえこまれ無理矢理に唇を奪われ、舌を絡みあわせられている。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は男に押さえこまれ無理矢理に唇を奪われ、舌を絡みあわせられている。
+		ENDIF
+		PRINTFORML 従順な演技を続けるよう命じられてはいるが、嫌悪感から反射的に嫌と言ってしまいそうになる。
+	
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「んっ！んむぅ！・・んっ、んっ・・いやあっ・・んぅ！」
+			DATAFORM 「いっ、いやよっ・・んっ、んんっ・・むうっ！」
+			DATAFORM 「んんっ！ は、はなして・・んんんっ！」
+		ENDDATA
+		IF 客の人数 > 1
+			PRINTFORML %CALLNAME:奴隷%は男達に押さえこまれ無理矢理に唇を奪われ、舌を絡みあわせられている。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は男に押さえこまれ無理矢理に唇を奪われ、舌を絡みあわせられている。
+		ENDIF
+
+	ELSEIF TALENT:奴隷:公衆便所 && 調教者 == 人物_客
+
+		SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+			CASE NTR_持帰分岐_Ｓプレイ
+				PRINTFORML 「んっ・・ちゅっ・・んぅ・・」
+				PRINTFORML %CALLNAME:奴隷%は客と唇を重ね、彼の欲しいままにさせていたがやがて唇を離した。
+				PRINTFORML 「まだまだね・・おさらいが必要だわ・・ちゅっ・・んっ・・」
+				PRINTFORML %CALLNAME:奴隷%は再び客と唇を重ね、今度は自ら舌を使い欲しいままに相手の口の中を蹂躙した。
+			;Mコース(犬耳メイド)
+			CASE NTR_持帰分岐_Ｍプレイ
+				PRINTFORML 「んっ・・ちゅっ・・れろっ、んちゅっ・・」
+				PRINTFORML %CALLNAME:奴隷%は客にしがみつき、まるで愛犬が飼い主にするかのような舐めるようなキスを続けている。
+			;妊娠プレイコース
+			CASE NTR_持帰分岐_種付け
+				PRINTFORML 「んっ・・ちゅっ・・んぅ・・」
+				PRINTFORML %CALLNAME:奴隷%は客と舌を絡ませている。
+				PRINTFORML 客は%CALLNAME:奴隷%の巧みな舌技に興奮し、すでに十分勃起したものを服越しにぐりぐりと擦り付けてくる。
+				PRINTFORML 「慌てないでくださいませ・・挿れるのも、出すのも、全部・・ナカにしていただかないと困りますわ・・」
+			;結婚式プレイコース
+			CASE NTR_持帰分岐_結婚式
+				PRINTFORML %CALLNAME:奴隷%は純白のウェディングドレスに身を包み、祭壇の前で彼女を買った名も知らぬ男の隣に立っていた。
+				PRINTFORML 教会を模したプレイルームで、神父に扮した%NTR_NAME(0)%が芝居がかった台詞を囁く。
+				PRINTFORML 『それでは誓いの口づけを』
+				PRINTFORML 「はい・・」
+				PRINTFORML %CALLNAME:奴隷%は客の方を向きそっと目を閉じる。
+				PRINTFORML 『新郎』の手が彼女を抱き寄せその唇を奪った。
+				PRINTFORML 「んっ・・ちゅっ・・んぅ・・」
+				PRINTFORML 互いに舌を絡め合い、長い長い『誓いの口づけ』を%CALLNAME:奴隷%は客と交わした。
+			;その他(通常)
+			CASEELSE
+				PRINTFORML 「んっ・・ちゅっ・・んぅ・・」
+				IF 客の人数 > 1
+					PRINTFORML %CALLNAME:奴隷%は客達と舌を絡ませている。
+					PRINTFORML 客達は%CALLNAME:奴隷%の巧みな舌技の虜になっているようだ。
+				ELSE
+					PRINTFORML %CALLNAME:奴隷%は客と舌を絡ませている。
+					PRINTFORML 客は%CALLNAME:奴隷%の巧みな舌技の虜になっているようだ。
+				ENDIF
+		ENDSELECT
+	;公衆便所ではない売春
+	ELSEIF 調教者 == 人物_客
+		PRINTFORML 「んっ・・ちゅっ・・んぅ・・」
+		PRINTFORML %CALLNAME:奴隷%は客と舌を絡ませている。
+		PRINTFORML 客は%CALLNAME:奴隷%の巧みな舌技の虜になっているようだ。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		PRINTFORML 「んっ・・ちゅっ・・んぅ・・」
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%と舌を絡ませ合っている。
+		PRINTFORML %NTR_NAME(0)%の巧みな舌技の虜になっているようだ。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTFORML 「んっ・・ちゅっ・・んぅ・・%MSG_HEART()%」
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%と舌を絡ませ合っている。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME(0)%の巧みな舌技が、僅かに残った%CALLNAME:MASTER%への想いを霞ませてゆく。
+		ELSE 
+			PRINTFORML %NTR_NAME(0)%の巧みな舌技の虜になっているようだ。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTFORML 「んっ・・ちゅっ・・んぅ・・」
+		PRINTFORML %NTR_NAME(0)%に唇を重ねられた%CALLNAME:奴隷%は、うっとりと目を閉じ%NTR_KARE()%の舌を受け入れた。
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML そればかりか、彼女は自ら%NTR_NAME(0)%の背中に腕を回し自ら唇を押し付けてゆく。
+		ENDIF
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME(0)%の巧みな舌技が、%CALLNAME:MASTER%への想いを霞ませてゆく。
+		ELSE 
+			PRINTFORML %NTR_NAME(0)%の巧みな舌技が、%CALLNAME:奴隷%の心をとろけさせてゆく。
+		ENDIF
+
+	ELSE
+
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML 「んっ！・・ん・・んっ・・んっ・・」
+			PRINTFORML %CALLNAME:奴隷%は唇を奪われたが、そのまま%NTR_KARE()%の舌を受け入れた。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %MSG_LOVER(奴隷)%の望むことなのだからと、%NTR_NAME(0)%の巧みな舌技に%CALLNAME:奴隷%は身をゆだねた。
+			ENDIF
+		ELSE
+			PRINTFORML 「んっ！んむぅ・・んっ、んっ・・ん！」
+			PRINTFORML %CALLNAME:奴隷%は唇を奪われたが、そのまま%NTR_KARE()%の舌を受け入れた。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %NTR_NAME(0)%の巧みな舌技が、%CALLNAME:MASTER%への想いを霞ませてゆく。
+			ELSE 
+				PRINTFORML %NTR_NAME(0)%の巧みな舌技が、%CALLNAME:奴隷%の心をとろけさせてゆく。
+			ENDIF
+		ENDIF
+
+	ENDIF
+
+RETURN 0
+
+;==================================================
+;訪問者とシックスナイン(お持ち帰り)
+;==================================================
+@NTR_KOJO_K4_10_3(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTDATAL
+			DATAFORM 「うっ・・うぐっ・・んんっ・・！！」
+			DATAFORM 「ううっ・・い、いやっ・・んぐうっ！」
+			DATAFORM 「んっ・・んむっ・・だ、だめっ・・ああっ！」
+		ENDDATA
+		IF 客の人数 > 1
+			PRINTFORML %CALLNAME:奴隷%は仰向けになった男の上に乗せられ、シックスナイン奉仕を強いられている。
+			PRINTFORML 肉棒で口を犯される%CALLNAME:奴隷%の秘所をその男がしゃぶり、もう一人の男が彼女のアヌスを舐めまわし、さらに指をもぐりこませてくる。
+			PRINTFORML 彼女の意思に反してその瑞々しい肢体は快楽に反応しつつあった。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は男に無理矢理押さえ込まれ口にペニスを捻じ込まれている。
+			PRINTFORML 男は%CALLNAME:奴隷%の口を犯しながら、彼女の濡れた股間にしゃぶりついている。
+			PRINTFORML 彼女の意思に反してその瑞々しい肢体は快楽に反応しつつあった。
+		ENDIF
+	
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「うっ・・うぐっ・・んんっ・・！！」
+			DATAFORM 「ううっ・・い、いやっ・・んぐうっ！」
+			DATAFORM 「んっ・・んむっ・・だ、だめっ・・ああっ！」
+		ENDDATA
+		IF 客の人数 > 1
+			PRINTFORML %CALLNAME:奴隷%は仰向けになった男の上に乗せられ、シックスナイン奉仕を強いられている。
+			PRINTFORML 肉棒で口を犯される%CALLNAME:奴隷%の秘所をその男がしゃぶり、もう一人の男が彼女のアヌスに舌をもぐりこませている。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は男に無理矢理押さえ込まれ口にペニスを捻じ込まれている。
+			PRINTFORML 男は%CALLNAME:奴隷%の口を犯しながら、彼女の濡れた股間にしゃぶりついている。
+		ENDIF
+
+	ELSEIF TALENT:奴隷:公衆便所 && 調教者 == 人物_客
+
+		SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+			CASE NTR_持帰分岐_Ｓプレイ
+				PRINTFORML 「そうよ・・しっかり舐めてご奉仕なさい・・」
+				PRINTFORML %CALLNAME:奴隷%は仰向けになった客の顔の上に腰を下ろし、彼の鼻先にぐりぐりと性器を押し付けた。
+				PRINTFORML 「舐めて、舐めて、とろとろにするのよ・・上手にできたら、ご褒美をあげるわ」
+				PRINTFORML %CALLNAME:奴隷%は手を伸ばし、堅くそそり勃ったペニスを撫であげる。
+				PRINTFORML スカートの中から聞こえるくぐもった声。敏感な突起を吸われた%CALLNAME:奴隷%はそれに呼応するかのように亀頭に舌を滑らせた。
+			;Mコース(犬耳メイド)
+			CASE NTR_持帰分岐_Ｍプレイ
+				PRINTFORML 「んっ・・ちゅく・・ちゅく・・ちゅく・・」
+				PRINTFORML %CALLNAME:奴隷%は仰向けになった客の上に四つん這いに覆いかぶさり、一心不乱にペニスを頬ばってしゃぶっている。
+				PRINTFORML その奉仕に満足したのか客もまた%CALLNAME:奴隷%の股間に顔を埋め、性器から滴る蜜を舐めまわしながら彼女の尻に刺さっている尻尾を前後に動かした。
+			;妊娠プレイコース
+			CASE NTR_持帰分岐_種付け
+				PRINTFORML 「んっ・・ちゅく・・ちゅく・・ちゅく・・」
+				PRINTFORML %CALLNAME:奴隷%は客のペニスを頬張りながら濡れた秘所を相手の顔に擦り付けた。
+				PRINTFORML 「んふ・・決して口には出さないようにお願いしますね・・私を孕ませるなら、ナカに出していただかないといけませんから・・」
+				PRINTFORML そう言いながら、%CALLNAME:奴隷%は客のペニスの根元をきゅっと握りしめて射精を禁じる。
+				PRINTFORML そして焦らすかのように亀頭を念入りに舌で舐め上げ奉仕を続けた。
+			;結婚式プレイコース
+			CASE NTR_持帰分岐_結婚式
+				PRINTFORML %CALLNAME:奴隷%が祭壇の前で仰向けになると、『夫』の手がウェディングドレスをたくし上げた。
+				PRINTFORML 純白のドレスの下にはショーツを身に着けず、純白のガーターベルトとストッキングだけが美しい脚を飾っていた。
+				PRINTFORML 「ああ・・%MSG_HEART()%」
+				PRINTFORML %CALLNAME:奴隷%の上に覆いかぶさった『夫』の唇が彼女の性器を貪る。
+				PRINTFORML そして%CALLNAME:奴隷%もまた『夫』の性器に唇を寄せ、『誓いの口づけ』を行うのだった。
+			;その他(通常)
+			CASEELSE
+				PRINTFORML 「んっ・・ちゅく・・ちゅく・・ちゅく・・」
+				PRINTFORML %CALLNAME:奴隷%は客のペニスを頬張りながら濡れた秘所を相手の顔に擦り付けた。
+				PRINTFORML 感じやすいところをしゃぶられ、%CALLNAME:奴隷%は身震いした。
+				IF 客の人数 > 2
+					PRINTFORML 残り二人の客は%CALLNAME:奴隷%の胸や尻を撫で回したり吸ったりしている。
+				ELSEIF 客の人数 == 2
+					PRINTFORML もう一人の客は%CALLNAME:奴隷%の尻に顔を埋め、アヌスをしゃぶっている。
+				ELSE
+				ENDIF
+		ENDSELECT
+	;公衆便所ではない売春
+	ELSEIF 調教者 == 人物_客
+		PRINTFORML 「んっ・・ちゅく・・ちゅく・・ちゅく・・」
+		PRINTFORML %CALLNAME:奴隷%は客のペニスを頬張りながら濡れた秘所を相手の顔に擦り付けた。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		PRINTFORML 「んっ・・ちゅく・・ちゅく・・ちゅく・・」
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスを頬張りながら濡れた秘所を相手の顔に擦り付けた。
+		PRINTFORML 感じやすいところをしゃぶられ、%CALLNAME:奴隷%は身震いした。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTFORML 「んっ・・ちゅく・・ちゅく・・ちゅく・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME_1_2(奴隷)%のペニスを頬張りながら濡れた秘所を相手の顔に擦り付けた。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスを頬張りながら濡れた秘所を相手の顔に擦り付けた。
+		ENDIF
+		PRINTFORML 感じやすいところをしゃぶられ、%CALLNAME:奴隷%は身震いした。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTFORML 「んっ・・ちゅっ・・んんっ・・んちゅっ・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME_1_2(奴隷)%のペニスを頬張りながら秘所を濡らした。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスを頬張りながら秘所を濡らした。
+		ENDIF
+		PRINTFORML 感じやすいところをしゃぶられ、%CALLNAME:奴隷%は身震いした。
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML %CALLNAME:MASTER%公認のことなのだから、せいぜい楽しもうと考えていた。
+		ELSE
+			PRINTFORML %MSG_LOVER(奴隷)%のいないところで他の%NTR_OTOKO()%の肉棒に唇を捧げることに、%CALLNAME:奴隷%は興奮を覚えていた。
+		ENDIF
+
+	ELSE
+
+		PRINTFORML 「んっ・・ちゅっ・・んんっ・・」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME_1_2(奴隷)%のペニスを頬張りながら秘所を濡らした。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスを頬張りながら秘所を濡らした。
+		ENDIF
+		IF TALENT:奴隷:浮気公認 
+			PRINTFORML %CALLNAME:奴隷%は%MSG_LOVER(奴隷)%の願いなのだからと、%NTR_NAME(0)%に唇と秘所を捧げた。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%は一刻も早くこの屈辱から逃れようと、%NTR_NAME(0)%に唇と秘所を捧げた。
+		ENDIF
+
+	ENDIF
+
+	RETURN 0
+
+;==================================================
+;訪問者と性交(お持ち帰り)
+;==================================================
+@NTR_KOJO_K4_10_4(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+
+	IF 客の人数 > 1
+		;2人以上のとき輪姦。分岐が長くなるので別関数
+		CALL NTR_KOJO_K_10_4_MULTI(奴隷, 調教者, 客の人数)
+	ELSEIF TFLAG:輪姦内容 == 輪姦_1A
+		;アナルセックス分岐
+		CALL NTR_KOJO_K4_10_4_A(奴隷, 調教者, 客の人数)
+	ELSE
+		;通常
+		CALL NTR_KOJO_K4_10_4_V(奴隷, 調教者, 客の人数)
+	ENDIF
+RETURN 0
+
+;訪問者とＶ性交(お持ち帰り)
+@NTR_KOJO_K4_10_4_V(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+			PRINTFORML %CALLNAME:奴隷%の処女を金で買い上げた男が、彼女を床に組み敷く。
+			PRINTFORML 「・・わ・・私の・・初めてを・・お捧げ・・します・・」
+			PRINTFORML %CALLNAME:MASTER%への想いを、%CALLNAME:奴隷%は強引にねじ伏せた。
+			PRINTFORML そんな彼女の純潔を、客のペニスが無残に引き裂いた。
+			PRINTFORML 「・・っ・・あああああああああ！！」
+			PRINTFORML %CALLNAME:奴隷%は悲痛な叫びをあげた。喪われた純潔、%MSG_LOVER(奴隷)%への懺悔・・叫ばなければ、狂ってしまいそうだった。
+		ELSE
+			PRINTDATAL
+				DATAFORM 「あっ・・あっ、ああっ・・！」
+				DATAFORM 「ああっ、お、奥までっ・・！！」
+				DATAFORM 「ああっ！ やあああっ！！」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%は男に組み敷かれ肉棒を突き込まれている。
+		ENDIF
+
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「いやっ・・いやよっ・・！！ ああああっ！！」
+			DATAFORM 「だ、だめっ・・！ いやあああっ！！」
+			DATAFORM 「ああっ！ だめ、だめよっ！ ああああっ！！」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は男に組み敷かれ肉棒を突き込まれている。
+
+	ELSEIF TALENT:奴隷:公衆便所 &&調教者 == 人物_客
+
+		SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+			CASE NTR_持帰分岐_Ｓプレイ
+				PRINTFORML 「そうよ・・もっと突きなさい・・もっと、もっとよ！」
+				PRINTFORML %CALLNAME:奴隷%は仰向けになった客の上に腰を下ろし、彼のペニスで真下から突き上げられている。
+				PRINTFORML 決して自分からは動かず、しかし巧みな締め付けで彼のペニスを支配していた。
+				PRINTFORML 「ふふ・・私がいいというまで出すのは禁止よ・・ああ・・」
+			;Mコース(犬耳メイド)
+			CASE NTR_持帰分岐_Ｍプレイ
+				PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+				PRINTFORML %CALLNAME:奴隷%は四つんばいになって背後から客に突き入れられている。
+				PRINTFORML その姿はまさに犬と呼ぶべきものであった。
+			;妊娠プレイコース
+			CASE NTR_持帰分岐_種付け
+				PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+				PRINTFORML %CALLNAME:奴隷%はベッドに仰向けになり、客と抱き合いながら彼のペニスを受け入れている。
+				PRINTFORML 「そう・・もっと、もっと深く・・奥の奥で、出してくださいませ・・」
+				PRINTFORML 大きく広げた脚を客の背後で絡めてより深く彼と抱きあった。
+			;結婚式プレイコース
+			CASE NTR_持帰分岐_結婚式
+				PRINTFORML 「あっ・・あんっ・・もっと、もっと、深くっ・・」
+				PRINTFORML %CALLNAME:奴隷%は腰掛けた客と向かい合うような姿勢でセックスしている。
+				PRINTFORML しなやかな脚を『夫』の腰に巻きつけ、両腕で『夫』を抱きしめ、耳元で愛を囁かれながら腰を上下に動かしている。
+				PRINTFORML 「ああっ・・はい・・誓います・・貴方様への愛を、誓いますぅぅ%MSG_HEART()%」
+				IF TALENT:奴隷:人妻
+					PRINTFORML %CALLNAME:奴隷%の性器に%ANATA_LOVER(奴隷)%以外の『夫』のペニスが一際深く打ち込まれた。
+				ELSE
+					PRINTFORML %CALLNAME:奴隷%の性器に『夫』のペニスが一際深く打ち込まれた。
+				ENDIF
+			;その他(通常)
+			CASEELSE
+				IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+					PRINTFORML 「はい・・私の初めてを、お捧げします・・」
+					PRINTFORML %CALLNAME:奴隷%は自ら脚を開いて客を誘い、まだ男を知らない処女地に受け入れた。
+				ELSE
+					PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+					PRINTFORML %CALLNAME:奴隷%はソファに腰掛けた客と向かい合うように抱き合い、彼のペニスを受け入れたまま腰を振っている。
+				ENDIF
+		ENDSELECT
+	;公衆便所ではない売春
+	ELSEIF 調教者 == 人物_客
+		IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+			PRINTFORML 「はい・・私の初めてを、お捧げします・・」
+			PRINTFORML %CALLNAME:奴隷%は自ら脚を開いて客を誘い、まだ男を知らない処女地に受け入れた。
+		ELSE
+			PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+			PRINTFORML %CALLNAME:奴隷%はソファに腰掛けた客と向かい合うように抱き合い、彼のペニスを受け入れたまま腰を振っている。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+			PRINTFORML 「はい・・私の初めてを、お捧げします・・」
+			PRINTFORML %CALLNAME:奴隷%は自ら脚を開いて%NTR_NAME(0)%を誘い、まだ男を知らない処女地に受け入れた。
+		ELSE
+			IF HAS_PENIS(MASTER)
+				PRINTFORML 「んうっ・・あっ・・おっきい！・・・%CALLNAME:MASTER%よりおっきいぃぃっ！」
+			ELSE
+				PRINTFORML 「んうっ・・あっ・・おっきいぃぃっ！」
+			ENDIF
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスが膣内を蹂躙する快感に悶えている
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+			IF TALENT:奴隷:恋慕
+				PRINTFORML 「いいわ・・私の初めてを、あげる・・あの人には・・ナイショよ・・」
+				PRINTFORML %CALLNAME:奴隷%は%ANATA_LOVER(奴隷)%への想いも忘れ、彼以外の%NTR_OTOKO()%に処女を捧げてしまった。
+			ELSE
+				PRINTFORML 「いいわ・・私の初めてを、あげる・・」
+				PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(2)%に処女を捧げてしまった。
+			ENDIF
+		;非処女
+		ELSE
+			PRINTFORML 「ああっ・・すごいっ・・おく、奥まで来るぅぅっ！」
+			PRINTFORML %NTR_NAME(0)%が%CALLNAME:奴隷%に突き入れる度に、%CALLNAME:MASTER%への想いが色あせてゆく。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+			IF TALENT:奴隷:恋慕
+				PRINTFORML 「いいわ・・私の初めてを、あげる・・あの人には・・ナイショよ・・」
+				PRINTFORML %CALLNAME:奴隷%は%ANATA_LOVER(奴隷)%以外の%NTR_OTOKO()%に処女を捧げてしまった。
+				IF TALENT:奴隷:浮気公認
+					PRINTFORML %MSG_LOVER(奴隷)%の希望を受け入れてのこととはいえ、%MSG_LOVER(奴隷)%以外の相手に処女を捧げる・・倒錯した悦びを%CALLNAME:奴隷%は感じていた。
+				ENDIF
+			ELSE
+				PRINTFORML 「いいわ・・私の初めてを、あげる・・」
+				PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(2)%に処女を捧げてしまった。
+			ENDIF
+		;非処女
+		ELSE
+			PRINTFORML 「ああっ・・すごいっ・・おく、奥まで来るぅぅっ！」
+			PRINTFORML %NTR_NAME(0)%が%CALLNAME:奴隷%に突き入れる度に、%CALLNAME:MASTER%への想いが色あせてゆく。
+		ENDIF
+
+	ELSE
+
+		IF TALENT:奴隷:浮気公認
+			IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+				IF TALENT:奴隷:恋慕
+					PRINTFORML 「いいわ・・私の初めてを、あげる・・あの人には・・ナイショよ・・」
+					PRINTFORML %CALLNAME:奴隷%は%ANATA_LOVER(奴隷)%以外の%NTR_OTOKO()%に処女を捧げてしまった。
+					IF TALENT:奴隷:浮気公認
+						PRINTFORML %MSG_LOVER(奴隷)%の希望を受け入れてのこととはいえ、%MSG_LOVER(奴隷)%以外の相手に処女を捧げる・・倒錯した悦びを%CALLNAME:奴隷%は感じていた。
+					ENDIF
+				ELSE
+					PRINTFORML 「いいわ・・私の初めてを、あげる・・」
+					PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(2)%に処女を捧げてしまった。
+				ENDIF
+			;非処女
+			ELSE
+				PRINTFORML 「ああっ・・すごいっ・・おく、奥まで来るぅぅっ！」
+				PRINTFORML %NTR_NAME(0)%が%CALLNAME:奴隷%に突き入れる度に、%CALLNAME:MASTER%への想いが色あせてゆく。
+			ENDIF
+			PRINTFORML （%CALLNAME:MASTER%が・・いけないんだから・・）
+		ELSE
+			IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+				IF TALENT:奴隷:恋慕
+					PRINTFORML 「いったぁぁっ！？・・あぁ、初めては・・・%CALLNAME:MASTER%にってぇ・・・」
+					PRINTFORML %CALLNAME:奴隷%は%NTR_NAME_1_2(奴隷)%に処女を奪われ涙を流している
+				ELSE 
+					PRINTFORML 「いったぁぁっ！？・・あぁ、初めてなのに・・こんな・・こんな・・」
+					PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(2)%に処女を奪われ涙を流している
+				ENDIF
+			;非処女
+			ELSE
+				PRINTFORML 「いやぁぁ・・%CALLNAME:MASTER%！・・・%CALLNAME:MASTER%っ！！・・」
+				PRINTFORML %CALLNAME:奴隷%は犯されながら、%CALLNAME:MASTER%の名前を叫んでいる
+			ENDIF
+		ENDIF
+
+	ENDIF
+RETURN 0
+
+
+;訪問者とＡ性交(お持ち帰り)
+@NTR_KOJO_K4_10_4_A(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+	
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTDATAL
+			DATAFORM 「ああっ・・後ろなんかでっ・・！！ ああああっ！！」
+			DATAFORM 「だ、だめっ・・！ 後ろなんて・・ああっ！！」
+			DATAFORM 「ああっ！ だめ、だめよっ！ ああああっ！！」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は男に組み敷かれ肉棒を尻穴に突き込まれている。
+
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「いやっ・・いやよっ・・！！ ああああっ！！」
+			DATAFORM 「だ、だめっ・・！ いやあああっ！！」
+			DATAFORM 「ああっ！ だめ、だめよっ！ ああああっ！！」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は男に組み敷かれ肉棒を尻穴に突き込まれている。
+
+	ELSEIF TALENT:奴隷:公衆便所 &&調教者 == 人物_客
+
+		SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+			CASE NTR_持帰分岐_Ｓプレイ
+				PRINTFORML 「そうよ・・もっと突きなさい・・もっと、もっとよ！」
+				PRINTFORML %CALLNAME:奴隷%は仰向けになった客の上に腰を下ろし、彼のペニスで尻穴を真下から突き上げられている。
+				PRINTFORML 決して自分からは動かず、しかし強烈なな締め付けで彼のペニスを支配していた。
+				PRINTFORML 「ふふ・・私がいいというまで出すのは禁止よ・・ああ・・」
+			;Mコース(犬耳メイド)
+			CASE NTR_持帰分岐_Ｍプレイ
+				PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+				PRINTFORML %CALLNAME:奴隷%は四つんばいになって背後から客に尻穴に突き入れられている。
+				PRINTFORML その姿はまさに犬と呼ぶべきものであった。
+			;妊娠プレイコース
+			CASE NTR_持帰分岐_種付け
+				PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+				PRINTFORML %CALLNAME:奴隷%はベッドに仰向けになり、客と抱き合いながら彼のペニスを尻穴に受け入れている。
+				PRINTFORML 「ああ・・だめよ・・こっちじゃ・・だめ・・」
+				PRINTFORML 大きく広げた脚を客の背後で絡めてより深く彼と抱きあった。
+			;結婚式プレイコース
+			CASE NTR_持帰分岐_結婚式
+				PRINTFORML 「あっ・・あんっ・・もっと、もっと、深くっ・・」
+				PRINTFORML %CALLNAME:奴隷%は腰掛けた客と向かい合うような姿勢でアナルセックスしている。
+				PRINTFORML しなやかな脚を『夫』の腰に巻きつけ、両腕で『夫』を抱きしめ、耳元で愛を囁かれながら腰を上下に動かしている。
+				PRINTFORML 「ああっ・・はい・・誓います・・貴方様への愛を、誓いますぅぅ%MSG_HEART()%」
+				IF TALENT:奴隷:人妻
+					PRINTFORML %CALLNAME:奴隷%の尻穴に%ANATA_LOVER(奴隷)%以外の『夫』のペニスが一際深く打ち込まれた。
+				ELSE
+					PRINTFORML %CALLNAME:奴隷%の尻穴に『夫』のペニスが一際深く打ち込まれた。
+				ENDIF
+			;その他(通常)
+			CASEELSE
+				PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+				PRINTFORML %CALLNAME:奴隷%はソファに腰掛けた客と向かい合うように抱き合い、彼のペニスを尻穴に受け入れたまま腰を振っている。
+		ENDSELECT
+	;公衆便所ではない売春
+	ELSEIF 調教者 == 人物_客
+		PRINTFORML 「あっっ・・・はぁん・・んぅ・・うぁん・・」
+		PRINTFORML %CALLNAME:奴隷%はソファに腰掛けた客と向かい合うように抱き合い、彼のペニスを尻穴に受け入れたまま腰を振っている。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		IF HAS_PENIS(MASTER)
+			PRINTFORML 「んうっ・・あっ・・おっきい！・・・%CALLNAME:MASTER%よりおっきいぃぃっ！」
+		ELSE
+			PRINTFORML 「んうっ・・あっ・・おっきいぃぃっ！」
+		ENDIF
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスが腸内を蹂躙する快感に悶えている
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTFORML 「ああっ・・すごいっ・・おく、奥まで来るぅぅっ！」
+		PRINTFORML %NTR_NAME(0)%が%CALLNAME:奴隷%の腸内に突き入れる度に、残り僅かな%CALLNAME:MASTER%への想いが色あせてゆく。
+		PRINTFORML 「もっと！ もっと突いて！ もっとぉ！」
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTFORML 「ああっ・・すごいっ・・おく、奥まで来るぅぅっ！」
+		PRINTFORML %NTR_NAME(0)%が%CALLNAME:奴隷%の尻穴に突き入れる度に、%CALLNAME:MASTER%への想いが色あせてゆく。
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML 「もっと！ もっと突いて！ もっとぉ！」
+		ENDIF
+
+	ELSE
+
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML 「ああっ・・すごいっ・・おく、奥まで来るぅぅっ！」
+			PRINTFORML %NTR_NAME(0)%が%CALLNAME:奴隷%の尻穴に突き入れる度に、%CALLNAME:MASTER%への想いが色あせてゆく。
+		ELSE
+			PRINTFORML 「いやぁぁ・・%CALLNAME:MASTER%！・・・%CALLNAME:MASTER%っ！！・・」
+			PRINTFORML %CALLNAME:奴隷%は尻穴を犯されながら、%CALLNAME:MASTER%の名前を叫んでいる
+		ENDIF
+
+	ENDIF
+RETURN 0
+
+;==================================================
+;訪問者の射精(お持ち帰り)
+;==================================================
+@NTR_KOJO_K4_10_5(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+
+	IF 客の人数 > 1
+		;2人以上のとき輪姦。分岐が長くなるので別関数
+		CALL NTR_KOJO_K_10_5_MULTI(奴隷, 調教者, 客の人数)
+	ELSEIF TFLAG:輪姦内容 == 輪姦_1A
+		;アナルセックス分岐
+		CALL NTR_KOJO_K4_10_5_A(奴隷, 調教者, 客の人数)
+	ELSE
+		;通常
+		CALL NTR_KOJO_K4_10_5_V(奴隷, 調教者, 客の人数)
+	ENDIF
+RETURN 0
+
+;訪問者のＶ射精(お持ち帰り)
+@NTR_KOJO_K4_10_5_V(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+	#DIMS 悲鳴
+	#DIMS 記号
+
+	IF TALENT:奴隷:公衆便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		記号 = %MSG_HEART()%
+	ELSE
+		記号 = ！
+	ENDIF
+	IF TALENT:奴隷:危険日
+		STRDATA 悲鳴
+			DATAFORM 「ああっ！中に、中にくるうっ・・孕んじゃうううっ%記号%」
+			DATAFORM 「ああっ！中に、中にだしてええっ・・孕ませてええっ%記号%」
+			DATAFORM 「ああっ！出てるっ！ いっぱい出てるぅっ%記号%」
+		ENDDATA
+	ELSE
+		STRDATA 悲鳴
+			DATAFORM 「ああっ！中に、中にくるううっ%記号%」
+			DATAFORM 「ああっ！中に、中にだしてええっ%記号%」
+			DATAFORM 「ああっ！出てるっ！ いっぱい出てるぅっ%記号%」
+		ENDDATA
+	ENDIF
+
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛&& TALENT:奴隷:公衆便所
+
+		PRINTDATAL
+			DATAFORM 「いっ、いやああっ！ 中は、中は許してえええっ！！」
+			DATAFORM 「ぬ、抜いてっ！ 抜いてえええっ！ 嫌あぁぁぁぁ！！」
+			DATAFORM 「だ、駄目ぇっ！ 中には、中には出さないでえええ！！」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷%は演技も忘れ絶叫したが、客は陵辱の仕上げとばかりに彼女の子宮めがけて射精した。
+			DATAFORM 膣内射精を嫌がる%CALLNAME:奴隷%を無理矢理に抑えつけた客は、一際深くペニスを捻じ込むと子宮口に直接注ぐかの勢いで精液を流し込んだ。
+			DATAFORM 気丈な%CALLNAME:奴隷%ではあるがもはや限界であった。愛してもいない男の精液を注がれ、彼女は悲痛な声をあげて泣き叫んだ。
+		ENDDATA
+		IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+			PRINTFORML %ANATA_LOVER(奴隷)%に捧げられるはずだった純潔は無残に散らされた挙句、愛してもいない男の精液で白く白く染め上げられた。
+		ELSE
+			IF TALENT:奴隷:危険日 && RAND:3 == 0
+				PRINTFORML （嫌・・嫌ぁ・・妊娠・・しちゃう・・）
+				PRINTFORML 今日が危険日であることを思い出し%CALLNAME:奴隷%は蒼ざめた。
+			ENDIF
+		ENDIF
+
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「いっ、いやああっ！ 中は、中は許してえええっ！！」
+			DATAFORM 「ぬ、抜いてっ！ 抜いてえええっ！ 嫌あぁぁぁぁ！！」
+			DATAFORM 「だ、駄目ぇっ！ 中には、中には出さないでえええ！！」
+		ENDDATA
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷%はそれだけは嫌だと絶叫したが、客は陵辱の仕上げとばかりに彼女の子宮めがけて射精した。
+			DATAFORM 膣内射精を嫌がる%CALLNAME:奴隷%を無理矢理に抑えつけた客は、一際深くペニスを捻じ込むと子宮口に直接注ぐかの勢いで精液を流し込んだ。
+			DATAFORM 気丈な%CALLNAME:奴隷%ではあるがもはや限界であった。愛してもいない男の精液を注がれ、彼女は悲痛な声をあげて泣き叫んだ。
+		ENDDATA
+		IF TALENT:奴隷:危険日 && RAND:3 == 0
+			PRINTFORML （嫌・・嫌ぁ・・妊娠・・しちゃう・・）
+			PRINTFORML 今日が危険日であることを思い出し%CALLNAME:奴隷%は蒼ざめた。
+		ENDIF
+
+	ELSEIF TALENT:奴隷:公衆便所 && 調教者 == 人物_客
+
+		SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+			CASE NTR_持帰分岐_Ｓプレイ
+				PRINTDATAL
+					DATALIST
+						DATAFORM %CALLNAME:奴隷%に焦らされ続けた客は泣きそうな声で射精させてほしいと懇願した。
+						DATAFORM 「仕方ないわね・・それじゃ、出させてあげるわ・・ほら、中で出しなさい！！」
+						DATAFORM %CALLNAME:奴隷%が命じた瞬間、客は一段と深く彼女に突き入れたところで溜まりに溜まった精液を解き放った。
+						DATAFORM おびただしい量の吐液が%CALLNAME:奴隷%の子宮口に叩きつけられ、彼女のナカを満たしてゆく。
+						DATAFORM 「量だけは立派ね。でも我慢が足りないわ・・次はもっと厳しいわよ？」
+					ENDLIST
+					DATALIST
+						DATAFORM %CALLNAME:奴隷%に焦らされ続けた客は泣きそうな声で射精させてほしいと懇願した。
+						DATAFORM 「まだよ・・まだ耐えなさい！」
+						DATAFORM しかし彼は限界を迎えてしまった。%CALLNAME:奴隷%が腰を深く降ろした瞬間、彼女の奥底に精を放ってしまった。
+						DATAFORM 「この馬鹿！！誰が勝手に出していいと言ったの！！」
+						DATAFORM 男を罵倒する%CALLNAME:奴隷%は、言葉とは裏腹に膣肉を引き締めてさらに多くの精液を搾り取った。
+						DATAFORM 「許しを得てもいないのに、しかも膣内に出すだなんて。これは躾け直しが必要ね？」
+					ENDLIST
+				ENDDATA
+			;Mコース(犬耳メイド)
+			CASE NTR_持帰分岐_Ｍプレイ
+				PRINTDATAL
+					DATALIST
+						DATAFORM 四つん這いの姿勢で突かれ続け、その度に甘い声で鳴き続ける%CALLNAME:奴隷%。
+						DATAFORM 「ああっ！ ください！ この浅ましい牝犬の膣内に、ご主人様のお情けを注いでくださいっ！」
+						DATAFORM その言葉を言い終えた瞬間、客は%CALLNAME:奴隷%の奥の奥にめがけて勢いよく射精した。
+						DATAFORM 熱い迸りで子宮口を焼かれる感覚に、%CALLNAME:奴隷%はあえなく達してしまう。
+						DATAFORM 「あああーーーーっ！！ いいっ！ いいのおっ！ ザーメン、いいのおっ！！」
+					ENDLIST
+					DATALIST
+						DATAFORM 「わんっ、わんっ、きゃうぅぅん%MSG_HEART()%」
+						DATAFORM 客に命じられ、犬の鳴き声をあげながらよがり狂う%CALLNAME:奴隷%。
+						DATAFORM 「ああっ！ いいっ！ いくぅぅ！ きゃああああん！！」
+						DATAFORM 絶頂間際、つい普通に叫んでしまい尻を叩かれる。その瞬間、彼女は達してしまった。
+						DATAFORM びくん、とのけ反ると同時に膣肉が強く強く引き絞られ客のペニスを締め上げ、射精に導く。
+						DATAFORM %CALLNAME:奴隷%の子宮めがけて、夥しい量の白濁が流れ込んでいった。
+					ENDLIST
+				ENDDATA
+			;妊娠プレイコース
+			CASE NTR_持帰分岐_種付け
+				PRINTDATAL
+					DATALIST
+						DATAFORM 「あっあっ・・出してっ、お客様の精子でっ・・孕ませてえぇっ%MSG_HEART()%」
+						DATAFORM %CALLNAME:奴隷%が射精を懇願した瞬間、客が身震いし彼女の奥底で射精した。
+						DATAFORM 二度、三度と震えるたびに放たれた多量の精液が彼女の子宮めがけて流れ込んでゆく。
+						DATAFORM 「ああっ・・もっと・・もっと注いで・・孕ませて・・%MSG_HEART()%
+						DATAFORM 耳元で熱く囁く%CALLNAME:奴隷%の声に、客は再び身震いし彼女を抱きしめた。
+					ENDLIST
+					DATALIST
+						DATAFORM 「ああっ・・出てるっ、お客様の精子がっ・・いっぱいぃっ%MSG_HEART()%」
+						DATAFORM %CALLNAME:奴隷%の絶頂の瞬間、客もまた同時に精を解き放った。
+						DATAFORM どくん、どくんっ、と熱い白濁が%CALLNAME:奴隷%の子宮を満たしてゆく。
+						DATAFORM 「ああ・・まだ・・まだ足りませんわ・・私が孕むまで・・もっと・・もっとぉ・・」
+						DATAFORM たった今注ぎ込まれたばかりの性器を両手で広げ、さらなる射精を求める%CALLNAME:奴隷%の求めに応え、
+						DATAFORM 客はいきり勃つモノをふりかざして彼女に挑みかかった。
+					ENDLIST
+				ENDDATA
+			;結婚式プレイコース
+			CASE NTR_持帰分岐_結婚式
+				PRINTFORML 「あっ・・ああっ・・誓います！ 貴方様への愛を、誓いますぅぅ%MSG_HEART()%」
+				PRINTFORML %CALLNAME:奴隷%は『夫』と対面座位で交わりながら腰を振り、絶頂の瞬間甘い声を上げながら彼の肉棒を引き締めた。
+				PRINTFORML 彼女に応えるかのように『夫』のペニスが脈打ち、%CALLNAME:奴隷%の胎内深くに白濁が注ぎ込まれた。
+				IF TALENT:奴隷:危険日
+					PRINTFORML %CALLNAME:奴隷%は今日が危険日であったことを思い出すと、『夫』の耳元に唇を寄せ熱のこもった声で囁いた。
+					PRINTFORML 「ああ・・危険日なのに中に注がれてしまいました・・もし妊娠したら、ふふ、ハネムーン・ベイビーですわね？」
+					PRINTFORML 「だってこれが私たちの新婚初夜ですもの・・%MSG_HEART()%」
+				ELSE
+					PRINTFORML 「ああ・・誓います・・私、%CALLNAME:奴隷%は貴方様の花嫁です・・%MSG_HEART()%」
+				ENDIF
+				IF TALENT:奴隷:人妻
+					PRINTFORML %CALLNAME:奴隷%は%ANATA_LOVER(奴隷)%以外の『夫』を抱きしめ、愛しげに囁くと唇を重ね舌を互いに絡めあった。
+				ELSE
+					PRINTFORML %CALLNAME:奴隷%は『夫』を抱きしめ、愛しげに囁くと唇を重ね舌を互いに絡めあった。
+				ENDIF
+			;その他(通常)
+			CASEELSE
+				PRINTFORML %悲鳴%
+				;公衆便所で処女の時は処女オークション扱い
+				IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+					PRINTFORML 客のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら彼にしがみついた。
+					PRINTFORML %CALLNAME:奴隷%の処女を買った男は彼女を孕ませることも権利だと言わんばかりに、最後の一滴まで彼女の中に注ぎ込んだ。
+					PRINTFORML 「ああ・・はい・・たった今・・私の処女をお客様にお捧げしましたわ・・」
+					PRINTFORML 客と繋がったまま%CALLNAME:奴隷%は妖しく微笑むと彼を抱き寄せ、濃厚なキスを交わした。
+					IF TALENT:奴隷:危険日
+						PRINTFORML 「ああ・・感じますわ・・熱いのが・・たくさん・・今日は危い日ですのに・・」
+						PRINTFORML その言葉を聞いて、客は彼女が今日危険日であることを思い出した。
+						PRINTFORML 「今宵は私たちの初めての夜・・いわばハネムーンですわね・・ふふっ、ハネムーン・ベイビーを授けていただけます？」
+						PRINTFORML %CALLNAME:奴隷%の囁きに客は奮い立ち、再び彼女に挑みかかった。
+					ELSE
+						PRINTFORML 「ああ・・感じますわ・・熱いのが・・たくさん・・ふふっ、もっと、注いでいただけます？」
+						PRINTFORML %CALLNAME:奴隷%の囁きに客は奮い立ち、再び彼女に挑みかかった。
+					ENDIF
+				ELSE
+					PRINTFORML 客のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+					PRINTFORML %CALLNAME:奴隷%を買った男は彼女を孕ませることも権利だと言わんばかりに、最後の一滴まで彼女の中に注ぎ込んだ。
+				ENDIF
+		ENDSELECT
+	;公衆便所ではない売春
+	ELSEIF 調教者 == 人物_客
+		PRINTFORML %悲鳴%
+		IF TALENT:奴隷:処女 || CFLAG:奴隷:処女喪失中
+			PRINTFORML 客のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら彼にしがみついた。
+			PRINTFORML %CALLNAME:奴隷%の処女を買った男は彼女を孕ませることも権利だと言わんばかりに、最後の一滴まで彼女の中に注ぎ込んだ。
+		ELSE
+			PRINTFORML 客のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+			PRINTFORML %CALLNAME:奴隷%を買った男は彼女を孕ませることも権利だと言わんばかりに、最後の一滴まで彼女の中に注ぎ込んだ。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		IF (NOWEX:奴隷:0+NOWEX:奴隷:1+NOWEX:奴隷:2+NOWEX:奴隷:3)>0
+			;いずれかの絶頂あり
+			PRINTFORML %悲鳴%
+			PRINTFORML %NTR_NAME(0)%のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+			PRINTFORML 膣内からは孕んでもおかしくないほど大量の精液が、どろりと流れ落ちた。
+		ELSE
+			;絶頂なし
+			PRINTFORML 「ああっ・・出てる・・熱いのが、膣内に・・%MSG_HEART()%」
+			PRINTFORML %NTR_NAME(0)%のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声で喘いだ。
+			PRINTFORML 膣内からは孕んでもおかしくないほど大量の精液が、どろりと流れ落ちた。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		IF (NOWEX:奴隷:0+NOWEX:奴隷:1+NOWEX:奴隷:2+NOWEX:奴隷:3)>0
+			;いずれかの絶頂あり
+			PRINTFORML %悲鳴%
+			PRINTFORML %NTR_NAME(0)%のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+			PRINTFORML %NTR_NAME(0)%に耳元で何かを囁かれた%CALLNAME:奴隷%は頬を染め小さな声で答えた。
+			PRINTFORML 「はい・・ご主人様・・」
+		ELSE
+			;絶頂なし
+			PRINTFORML 「ああっ・・出てる・・熱いのが、膣内に・・%MSG_HEART()%」
+			PRINTFORML %NTR_NAME(0)%のペニスが子宮めがけて射精すると、%CALLNAME:奴隷%は淫らな声で喘いだ。
+			PRINTFORML %NTR_NAME(0)%に耳元で何かを囁かれた%CALLNAME:奴隷%は頬を染め小さな声で答えた。
+			PRINTFORML 「はい・・ご主人様・・」
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTFORML %NTR_NAME(0)%は悦がり狂う%CALLNAME:奴隷%の子宮口へ、おびただしい量の濁った白い欲望を放出した。
+		PRINTFORML %悲鳴%
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %ANATA_LOVER(奴隷)%の物ではない精子が、%CALLNAME:奴隷%を孕ませんと染み込んでいった。
+		ELSE
+			PRINTFORML %NTR_NAME(2)%の精子が、%CALLNAME:奴隷%を孕ませんと染み込んでいった。
+		ENDIF
+		PRINTFORML %NTR_NAME(0)%は股間から精液を滴らせる%CALLNAME:奴隷%に自ら脚を開くポーズを取らせ撮影した。
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML （ふふっ・・これを見せたら、%CALLNAME:MASTER%喜んでくれるかしら・・）
+		ENDIF
+
+	ELSE
+
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML %悲鳴%
+			PRINTFORML %NTR_NAME(0)%は絶頂した%CALLNAME:奴隷%の子宮口へ、容赦なくその濁った白い欲望を放出した。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML 「あ・・ああん・・%CALLNAME:MASTER%のじゃない赤ちゃん・・できちゃう・・・」
+			ELSE
+				PRINTFORML 「あ・・ああん・・赤ちゃん・・できちゃう・・・」
+			ENDIF
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%に脚を開かせ、局部から滴る白濁を彼女の笑顔とともに撮影した。
+			PRINTFORML （ふふっ・・これを見せたら、%CALLNAME:MASTER%喜んでくれるかしら・・）
+		ELSE
+			IF TALENT:奴隷:危険日
+				PRINTFORML 「ああっ！だめ、だめよっ！・・今日は、今日だけは駄目なの！！」
+			ELSE
+				PRINTFORML 「ああっ！だめ、だめよっ！」
+			ENDIF
+			PRINTFORML %NTR_NAME(0)%はのけ反る%CALLNAME:奴隷%の子宮口へ、容赦なくその濁った白い欲望を放出した。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML 「あ・・あん・・%CALLNAME:MASTER%のじゃない赤ちゃん・・できちゃう・・・」
+			ELSE
+				PRINTFORML 「あ・・あん・・赤ちゃん・・できちゃう・・・」
+			ENDIF
+			PRINTFORML %NTR_NAME(0)%は放心状態になった%CALLNAME:奴隷%を撮影していた。
+		ENDIF
+
+	ENDIF
+RETURN 0
+
+;訪問者のＡ射精(お持ち帰り)
+@NTR_KOJO_K4_10_5_A(奴隷, 調教者, 客の人数)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIM 客の人数
+	#DIMS 悲鳴
+
+	STRDATA 悲鳴
+		DATA 「ああっ！中に、中にくるううっ！」
+		DATA 「ああっ！あついっ！ あついのぉぉぉ！」
+		DATA 「ああっ！出てるっ！ いっぱい出てるぅっ！」
+	ENDDATA
+
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTFORML 「いっ、いやああっ！ あああああっ！！」
+		PRINTFORML 男は容赦なく%CALLNAME:奴隷%の腸に射精し、彼女を奥底まで穢した。
+
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTFORML 「いっ、いやああっ！ あああああっ！！」
+		PRINTFORML 男は容赦なく%CALLNAME:奴隷%の腸に射精し、彼女を奥底まで穢した。
+
+	ELSEIF TALENT:奴隷:公衆便所 && 調教者 == 人物_客
+
+		SELECTCASE CFLAG:奴隷:持帰分岐
+			;Sコース
+			CASE NTR_持帰分岐_Ｓプレイ
+				PRINTFORML %CALLNAME:奴隷%に焦らされ続けた客は泣きそうな声で射精させてほしいと懇願した。
+				PRINTFORML 「仕方ないわね・・それじゃ、出させてあげるわ・・ほら、私の尻の中で出しなさい！！」
+				PRINTFORML %CALLNAME:奴隷%が命じた瞬間、客は一段と深く彼女に突き入れたところで溜まりに溜まった精液を解き放った。
+				PRINTFORML おびただしい量の吐液が%CALLNAME:奴隷%の腸内に注がれ、腸壁を灼いた。
+				PRINTFORML 「量だけは立派ね。でも我慢が足りないわ・・次はもっと厳しいわよ？」
+			;Mコース(犬耳メイド)
+			CASE NTR_持帰分岐_Ｍプレイ
+				PRINTFORML 四つん這いの姿勢で突かれ続け、その度に甘い声で鳴き続ける%CALLNAME:奴隷%。
+				PRINTFORML 「ああっ！ ください！ この浅ましい牝犬のおしりに、ご主人様のお情けを注いでくださいっ！」
+				PRINTFORML その言葉を言い終えた瞬間、客は%CALLNAME:奴隷%の腸内深く突き込んで勢いよく射精した。
+				PRINTFORML 熱い迸りで腸壁を焼かれる感覚に、%CALLNAME:奴隷%はあえなく達してしまう。
+				PRINTFORML 「あああーーーーっ！！ いいっ！ いいのおっ！ ザーメン、いいのおっ！！」
+			;妊娠プレイコース
+			CASE NTR_持帰分岐_種付け
+				PRINTFORML 「あっあっ・・だめ、だめよ！ おしりじゃ、だめよっ！」
+				PRINTFORML %CALLNAME:奴隷%の制止も届かず、客は彼女の尻穴深く挿入したまま射精してしまった。
+				PRINTFORML 二度、三度と震えるたびに放たれた多量の精液が彼女を孕ませることもなく空しく費やされてゆく。
+				PRINTFORML 「ああっ・・今度こそナカに・・ナカに注いで・・孕ませて・・」
+				PRINTFORML 耳元で熱く囁く%CALLNAME:奴隷%の声に、客は再び身震いし彼女を抱きしめた。
+			;結婚式プレイコース
+			CASE NTR_持帰分岐_結婚式
+				PRINTFORML 「あっ・・ああっ・・誓います！ 貴方様への愛を、誓いますぅぅ%MSG_HEART()%」
+				PRINTFORML %CALLNAME:奴隷%は『夫』と対面座位で交わりながら腰を振り、絶頂の瞬間甘い声を上げながら彼の肉棒を引き締めた。
+				PRINTFORML 彼女に応えるかのように『夫』のペニスが脈打ち、%CALLNAME:奴隷%の腸内深くに白濁が注ぎ込まれた。
+				PRINTFORML 「ああ・・誓います・・私、%CALLNAME:奴隷%は貴方様の花嫁です・・%MSG_HEART()%」
+				IF TALENT:奴隷:人妻
+					PRINTFORML %CALLNAME:奴隷%は%ANATA_LOVER(奴隷)%以外の『夫』を抱きしめ、愛しげに囁くと唇を重ね舌を互いに絡めあった。
+				ELSE
+					PRINTFORML %CALLNAME:奴隷%は『夫』を抱きしめ、愛しげに囁くと唇を重ね舌を互いに絡めあった。
+				ENDIF
+			;その他(通常)
+			CASEELSE
+				PRINTFORML %悲鳴%
+				PRINTFORML 客のペニスが腸内深くで射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+				PRINTFORML %CALLNAME:奴隷%を買った男は二度、三度と身震いし、最後の一滴まで注ぎ込んだ。
+		ENDSELECT
+	;公衆便所ではない売春
+	ELSEIF 調教者 == 人物_客
+		PRINTFORML %悲鳴%
+		PRINTFORML 客のペニスが腸内深くで射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+		PRINTFORML %CALLNAME:奴隷%を買った男は二度、三度と身震いし、最後の一滴まで注ぎ込んだ。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		IF (NOWEX:奴隷:0+NOWEX:奴隷:1+NOWEX:奴隷:2+NOWEX:奴隷:3)>0
+			;いずれかの絶頂あり
+			PRINTFORML %悲鳴%
+			PRINTFORML %NTR_NAME(0)%のペニスが腸内深くで射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+		ELSE
+			;絶頂なし
+			PRINTFORML 「ああっ・・出てる・・熱いのが、お尻に・・%MSG_HEART()%」
+			PRINTFORML %NTR_NAME(0)%のペニスが腸内深くで射精すると、%CALLNAME:奴隷%は淫らな声で喘いだ。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		IF (NOWEX:奴隷:0+NOWEX:奴隷:1+NOWEX:奴隷:2+NOWEX:奴隷:3)>0
+			;いずれかの絶頂あり
+			PRINTFORML %悲鳴%
+			PRINTFORML %NTR_NAME(0)%のペニスが腸内深くで射精すると、%CALLNAME:奴隷%は淫らな声を張り上げながら達した。
+			PRINTFORML %NTR_NAME(0)%に耳元で何かを囁かれた%CALLNAME:奴隷%は頬を染め小さな声で答えた。
+			PRINTFORML 「はい・・ご主人様・・」
+		ELSE
+			;絶頂なし
+			PRINTFORML 「ああっ・・出てる・・熱いのが、お尻に・・！」
+			PRINTFORML %NTR_NAME(0)%のペニスが腸内深くで射精すると、%CALLNAME:奴隷%は淫らな声で喘いだ。
+			PRINTFORML %NTR_NAME(0)%に耳元で何かを囁かれた%CALLNAME:奴隷%は頬を染め小さな声で答えた。
+			PRINTFORML 「はい・・ご主人様・・」
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTFORML %NTR_NAME(0)%は悦がり狂う%CALLNAME:奴隷%の腸内へ、おびただしい量の濁った白い欲望を放出した。
+		PRINTFORML %悲鳴%
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %ANATA_LOVER(奴隷)%の物ではない精子が、%CALLNAME:奴隷%の体内深くに染み込んでゆく。
+		ELSE
+			PRINTFORML %NTR_NAME(2)%の精子が、%CALLNAME:奴隷%の体内深くに染み込んでゆく。
+		ENDIF
+		PRINTFORML %NTR_NAME(0)%は尻穴から精液を滴らせる%CALLNAME:奴隷%に自ら脚を開くポーズを取らせ撮影した。
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML （ふふっ・・これを見せたら、%CALLNAME:MASTER%喜んでくれるかしら・・）
+		ENDIF
+
+	ELSE
+
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML %悲鳴%
+			PRINTFORML %NTR_NAME(0)%は絶頂した%CALLNAME:奴隷%の尻穴へ、容赦なくその濁った白い欲望を放出した。
+			PRINTFORML 「あ・・ああん・・あつぅい・・」
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%に脚を開かせ、尻穴から滴る白濁を彼女の笑顔とともに撮影した。
+			PRINTFORML （ふふっ・・これを見せたら、%CALLNAME:MASTER%喜んでくれるかしら・・）
+		ELSE
+			PRINTFORML 「いやっ！ いやあああああ！！」
+			PRINTFORML %NTR_NAME(0)%はのけ反る%CALLNAME:奴隷%の尻穴へ、容赦なくその濁った白い欲望を放出した。
+			PRINTFORML 「あ・・ああん・・あつぅい・・」
+			PRINTFORML %NTR_NAME(0)%は放心状態になった%CALLNAME:奴隷%を撮影していた。
+		ENDIF
+
+	ENDIF
+RETURN 0
+
+;==================================================
+;訪問者宅滞在継続
+;==================================================
+@NTR_KOJO_K4_10_7(奴隷)
+	#DIM 奴隷
+
+	;親愛かつ公衆便所の場合は売春強要
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTFORML %CALLNAME:奴隷%はいつもの部屋・・『商品』である彼女が客に『使用される』部屋で目覚めた。
+		PRINTFORML 今日もまた、彼女は『商品』であることを強いられる。
+		PRINTFORML %ANATA_LOVER(奴隷)%以外の男によって肉体を買われ、唇も、乳房も、尻も、性器も・・膣奥深く、子宮さえも欲しいままに『使用』されてしまうのだ。
+		PRINTFORML %CALLNAME:奴隷%が身支度を整えたことを確かめた%NTR_NAME(0)%は部屋を去り、入れ替わりに男が入ってくる。
+
+	;親愛のみの場合は拉致監禁強姦
+	ELSEIF TALENT:奴隷:親愛
+
+		PRINTDATAL
+			DATAFORM 「・・助けて%CALLNAME:MASTER%・・」
+			DATAFORM 「・・まだ・・帰らせてもらえないのね・・」
+			DATAFORM 「・・負けるものですか・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%によって監禁された地下室で目覚めた。
+		PRINTFORML 地下室の壁に鎖で繋がれた%CALLNAME:奴隷%は今日もまた、意に沿わぬ相手のとのセックスを強いられるのだ。
+
+	ELSEIF TALENT:奴隷:公衆便所
+
+		PRINTFORML %NTR_NAME(0)%の家で目覚めた%CALLNAME:奴隷%はいつもの部屋・・『商品』である彼女が客に『使用される』部屋へと赴いた。
+		PRINTFORML 手早く身支度を整え、今日の『仕事』の準備を始めた。
+		PRINTFORML 彼女の身体を金で買った男に誠心誠意奉仕して尽くす一日が始まるのだ。
+		CALL NTR_KOJO_K4_GET_ORDER(奴隷)
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		PRINTDATAL
+			DATAFORM 「ああ・・・また・・・%MSG_HEART()%」
+			DATAFORM 「ああ・・・ぞくぞくする・・・%MSG_HEART()%」
+			DATAFORM 「ああん・・・早く・・・%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に首輪をつけられ、鎖に繋がれたまま目覚めた。
+		PRINTFORML 今日もまたご主人様の牝犬奴隷として過ごせる・・・その期待に%CALLNAME:奴隷%は打ち震えた。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTDATAL
+			DATAFORM 「ああ・・・また・・・%MSG_HEART()%」
+			DATAFORM 「ああ・・・ぞくぞくする・・・%MSG_HEART()%」
+			DATAFORM 「ああん・・・早く・・・%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に首輪をつけられ、鎖に繋がれたまま目覚めた。
+		PRINTFORML 今日もまたご主人様の牝犬奴隷として過ごせる・・・その期待に%CALLNAME:奴隷%は打ち震えた。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %CALLNAME:MASTER%への想いよりも、%NTR_NAME(0)%から与えられる快楽の方が%CALLNAME:奴隷%の心の中で大きな存在となってしまっていた。
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		SELECTCASE TALENT:奴隷:浮気公認
+			CASE IS >= 浮気_外泊公認
+				PRINTDATAL
+					DATAFORM 「ええ、始めましょう。ふふっ、楽しみね」
+					DATAFORM 「ふふっ、今日はどんな風に可愛がってくれるのかしら？」
+					DATAFORM 「ええ、言う通りにするわ。何でも・・・何度でも」
+				ENDDATA
+				PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の家で目覚め、%NTR_KARE()%に抱きつきながら艶のある声で囁いた。
+				PRINTDATA
+					DATAFORM 外泊してくることは%MSG_LOVER(奴隷)%も承知していることであり、
+					DATAFORM 外泊してくることは%MSG_LOVER(奴隷)%が望んだことであり、
+					DATAFORM 泊まりがけでの浮気は%MSG_LOVER(奴隷)%の望みをかなえるためであり、
+				ENDDATA
+				PRINTDATAL
+					DATAFORM 彼女はもはや後ろめたさを感じてはいなかった。
+					DATAFORM 彼女はためらうことなく%NTR_NAME(0)%に従った。
+					DATAFORM 彼女は迷うどころか自ら%NTR_NAME(0)%に抱きついた。
+				ENDDATA
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%・・帰ったら、聞かせてあげないといけないわね・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・楽しみにしてなさい・・ふふっ・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・あなたの望みどおりにしてあげる・・）
+				ENDDATA
+			CASE IS >= 浮気_浮気公認
+				PRINTDATAL
+					DATAFORM 「ええ、始めましょう」
+					DATAFORM 「ふふっ、今日はどんな風にしてくれるのかしら？」
+					DATAFORM 「ええ、言う通りにするわ」
+				ENDDATA
+				PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の家で目覚め、%NTR_KARE()%に抱きつきながら期待を込めた声で囁いた。
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%・・帰ったら、聞かせてあげないといけないわね・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・楽しみにしてなさい・・ふふっ・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・あなたの望みどおりにしてあげる・・）
+				ENDDATA
+			CASEELSE		; 非公認
+				PRINTDATAL
+					DATAFORM 「だ・・だめ、帰して・・・」
+					DATAFORM 「や・・やっぱり・・だめっ・・ああっ」
+					DATAFORM 「い、いや・・・ひどいこと、しないで・・」
+				ENDDATA
+				PRINTFORML 弱々しく逆らうも%CALLNAME:奴隷%は%NTR_NAME(0)%の家から帰ることを許されなかった。
+				IF TALENT:奴隷:恋慕
+					IF TALENT:奴隷:傷心 && RAND:2
+						IF CFLAG:奴隷:傷心相手1
+							PRINTFORML %CALLNAME:MASTER%と%CALLNAME:(CFLAG:奴隷:傷心相手1)%の行為のイメージが脳裏をよぎる。%CALLNAME:奴隷%の心は揺れていた。
+						ELSE
+							PRINTFORML %CALLNAME:MASTER%の浮気現場のイメージが脳裏をよぎる。%CALLNAME:奴隷%の心は揺れていた。
+						ENDIF
+					ELSE
+						PRINTFORML %CALLNAME:MASTER%への想いと、%NTR_NAME(0)%から与えられる快楽との間で%CALLNAME:奴隷%の心は揺れていた。
+					ENDIF
+				ENDIF
+		ENDSELECT
+
+	ELSE
+
+		SELECTCASE TALENT:奴隷:浮気公認
+			CASE IS >= 浮気_外泊公認
+				PRINTFORML 「・・ええ、始めましょう」
+				PRINTFORML %NTR_NAME(0)%の家で目覚めた%CALLNAME:奴隷%は大人しく%NTR_KARE()%の腕に身をゆだねた。
+				PRINTFORML 外泊してくると%MSG_LOVER(奴隷)%相手に大見得を切ってしまったせいもあり、%CALLNAME:奴隷%は半ば居直っていた。
+				PRINTFORML （・・%CALLNAME:MASTER%が・・悪いんだから・・）
+			CASE IS >= 浮気_浮気公認
+				PRINTFORML 「・・」
+				PRINTFORML %NTR_NAME(0)%の家で目覚めた%CALLNAME:奴隷%は大人しく%NTR_KARE()%の腕に身をゆだねた。
+				PRINTFORML （・・%CALLNAME:MASTER%・・本当に・・これでいいの・・）
+			CASEELSE		; 非公認
+				PRINTFORML 「・・」
+				PRINTFORML %NTR_NAME(0)%の家で目覚めた%CALLNAME:奴隷%は表面上大人しく%NTR_KARE()%の腕に身をゆだねた。
+				PRINTFORML （・・まだ・・帰らせてもらえないのね・・）
+		ENDSELECT
+
+	ENDIF
+	IF TALENT:奴隷:人妻
+		IF EQUIP:奴隷:アクセサリ == 衣装_アクセサリ_結婚指輪
+			PRINTFORML %CALLNAME:奴隷%の左手の薬指では、結婚指輪が虚しく輝いていた。
+		ELSE
+			PRINTFORML %CALLNAME:奴隷%の左手の薬指には、そこにあるはずの結婚指輪がはめられていなかった。
+		ENDIF
+	ENDIF
+
+RETURN 0
+
+;==================================================
+;朝の奉仕(お持ち帰り)
+;==================================================
+;フェラ奉仕
+@NTR_KOJO_K4_14_0(奴隷)
+	#DIM 奴隷
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%に公衆便所としての作法を躾けた。
+		PRINTFORML 彼女の唇を便器代わりに、白濁した劣情を排泄したのだ。
+		PRINTDATAL
+			DATAFORM 「んっ・・んんんっ！ ・・こく、こく・・」
+			DATAFORM 「うっ、うっ・・ううっ！！ ・・んっ・・こくっ・・」
+			DATAFORM 「んんっ！ んっ！！ ・・こくんっ・・」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスをしゃぶらされ、口内に放たれた白濁を仕方なしに飲み下した。
+		PRINTDATAL
+			DATAFORM （%CALLNAME:MASTER%・・許して・・）
+			DATAFORM （ごめんなさい・・%CALLNAME:MASTER%・・）
+			DATAFORM （%CALLNAME:MASTER%以外の・・だなんて・・）
+		ENDDATA
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		PRINTDATAL
+			DATAFORM 「んっ・・ちゅ・・んんんっ！ ・・こく、こく・・%MSG_HEART()%」
+			DATAFORM 「ちゅっ、ぢゅっ・・うっ！！ ・・んっ・・こくっ・・%MSG_HEART()%」
+			DATAFORM 「んんっ！ んっ！！ ・・こくんっ・・%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスをしゃぶり続け、口内に放たれた白濁を一滴残さず飲み下した。
+		PRINTFORML %NTR_NAME(0)%の肉棒の味、%NTR_KARE()%の精液の臭いに恍惚としていた。
+		PRINTDATAL
+			DATAFORM （ああ・・美味しい・・%MSG_HEART()%）
+			DATAFORM （ああ・・濃くて・・素敵・・%MSG_HEART()%）
+			DATAFORM （ああン・・お口だけじゃ・・物足りない・・%MSG_HEART()%）
+		ENDDATA
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTDATAL
+			DATAFORM 「んっ・・ちゅ・・んんんっ！ ・・こく、こく・・%MSG_HEART()%」
+			DATAFORM 「ちゅっ、ぢゅっ・・うっ！！ ・・んっ・・こくっ・・%MSG_HEART()%」
+			DATAFORM 「んんっ！ んっ！！ ・・こくんっ・・%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスをしゃぶり続け、口内に放たれた白濁を一滴残さず飲み下した。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒にも、%NTR_KARE()%の精液にももはや抵抗は感じていなかった。
+		ELSE
+			PRINTFORML %NTR_NAME(0)%の肉棒の味、%NTR_KARE()%の精液の臭いも甘美なものと感じていた。
+		ENDIF
+		PRINTDATAL
+			DATAFORM （ああ・・美味しい・・%MSG_HEART()%）
+			DATAFORM （ああ・・濃くて・・素敵・・%MSG_HEART()%）
+			DATAFORM （ああン・・お口だけじゃ・・物足りない・・%MSG_HEART()%）
+		ENDDATA
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		PRINTDATAL
+			DATAFORM 「んっ・・ちゅ・・んんんっ！ ・・こく、こく・・♪」
+			DATAFORM 「ちゅっ、ぢゅっ・・うっ！！ ・・んっ・・こくっ・・♪」
+			DATAFORM 「んんっ！ んっ！！ ・・こくんっ・・♪」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスをしゃぶり、口内に放たれた白濁を飲み下した。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒にも、%NTR_KARE()%の精液にももはや抵抗は感じていなかった。
+		ELSE
+			PRINTFORML %NTR_NAME(0)%の肉棒の味、%NTR_KARE()%の精液の臭いも甘美なものと感じていた。
+		ENDIF
+		PRINTDATAL
+			DATAFORM （ああ・・美味しい・・）
+			DATAFORM （ああ・・濃くて・・素敵・・）
+			DATAFORM （ああン・・お口だけじゃ・・物足りない・・）
+		ENDDATA
+
+	ELSE
+
+		IF TALENT:奴隷:処女 
+			PRINTFORML 「んっ・・んんんっ！」
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %NTR_NAME_1_2(奴隷)%に処女を奪われるくらいならと自ら%NTR_KARE()%のペニスに唇を捧げ、口の中に精液を受け入れた。
+				IF TALENT:奴隷:浮気公認
+					PRINTDATAL
+						DATAFORM （・・%CALLNAME:MASTER%が・・いけないのよ・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・これでいいのね・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・喜んでくれるわよね・・）
+					ENDDATA
+				ELSE
+					PRINTDATAL
+						DATAFORM （・・%CALLNAME:MASTER%・・許して・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・ごめんなさい・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・ああ・・）
+					ENDDATA
+				ENDIF
+			ELSE
+				PRINTFORML %CALLNAME:奴隷%は処女を奪われるよりは、と自ら%NTR_NAME(0)%のペニスに唇を捧げ、口の中に精液を注ぎ込まれた。
+				PRINTDATAL
+					DATAFORM （・・苦いだけね・・）
+					DATAFORM （・・苦い・・ええ、苦いだけ・・）
+					DATAFORM （・・慣れないわ・・）
+				ENDDATA
+			ENDIF
+		;非処女
+		ELSE
+			PRINTFORML 「んっ・・んんんっ！ ・・こく、こく・・」
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%のペニスをしゃぶらされ、口内に放たれた白濁を仕方なしに飲み下した。
+			IF TALENT:奴隷:恋慕
+				IF TALENT:奴隷:浮気公認
+					PRINTDATAL
+						DATAFORM （・・%CALLNAME:MASTER%が・・いけないのよ・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・これでいいのね・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・喜んでくれるわよね・・）
+					ENDDATA
+				ELSE
+					PRINTDATAL
+						DATAFORM （・・%CALLNAME:MASTER%・・許して・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・ごめんなさい・・）
+						DATAFORM （・・%CALLNAME:MASTER%・・ああ・・）
+					ENDDATA
+				ENDIF
+			ELSE
+				PRINTDATAL
+					DATAFORM （・・苦いだけね・・）
+					DATAFORM （・・苦い・・ええ、苦いだけ・・）
+					DATAFORM （・・慣れないわ・・）
+				ENDDATA
+			ENDIF
+		ENDIF
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒にも、彼の精液にも抵抗は感じなくなりつつあった。
+		ELSE
+			PRINTFORML %NTR_NAME(0)%の肉棒の味、%NTR_KARE()%の精液の臭いも甘美なものと感じつつあった。
+		ENDIF
+
+	ENDIF
+
+RETURN 0
+
+;アナル奉仕
+@NTR_KOJO_K4_14_1(奴隷)
+	#DIM 奴隷
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%に公衆便所としての作法を躾けた。
+		PRINTFORML 彼女の尻穴を便器代わりに、白濁した劣情を排泄したのだ。
+		PRINTDATAL
+			DATAFORM 「んっ・・んああっ！そ、そんな、おく、に、ああっ！！」
+			DATAFORM 「いっ、いやああっ！ 助けて、助けて%CALLNAME:MASTER%！！」
+			DATAFORM 「いっ、いやああっ！ お、お尻にっ・・あああっ！！」
+		ENDDATA
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%の尻穴深くペニスをねじ込み、征服の証とばかりに精液を解き放った。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		PRINTDATAL
+			DATAFORM 「ああっ・・おしり、おしり、あついのおおおっ%MSG_HEART()%」
+			DATAFORM 「ああっ・・奥に、おしりの奥に出てるぅぅっ%MSG_HEART()%」
+			DATAFORM 「ああっ・・出してっ、おしりで、出してぇぇっ%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は直腸深くねじこまれたペニスによがり狂い、奥の奥に射精されて絶頂した。
+		PRINTFORML %NTR_NAME(0)%の肉棒にすっかり馴染んでしまい、注がれる精液の熱さにすら悦びを感じている。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		PRINTDATAL
+			DATAFORM 「ああっ・・おしり、おしり、あついのおおおっ%MSG_HEART()%」
+			DATAFORM 「ああっ・・奥に、おしりの奥に出てるぅぅっ%MSG_HEART()%」
+			DATAFORM 「ああっ・・出してっ、おしりで、出してぇぇっ%MSG_HEART()%」
+		ENDDATA
+		PRINTFORML %CALLNAME:奴隷%は直腸深くねじこまれたペニスによがり狂い、奥の奥に射精されて絶頂した。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒にすっかり馴染んでしまい、注がれる精液の熱さにすら悦びを感じている。
+			IF RAND:3 == 0
+				PRINTFORML %NTR_NAME(0)%は快楽に屈服した%CALLNAME:奴隷%に%MSG_LOVER(奴隷)%と別れ自分のものになれと囁いた。
+				PRINTDATAL
+					DATAFORM 「はい・・おおせの通りにいたしますぅ・・%MSG_HEART()%」
+					DATAFORM 「ああ・・別れます・・あの人と別れて、%MSG_NTR_SEX_4()%のものになります・・%MSG_HEART()%」
+					DATAFORM 「はい・・別れます・・私は、%MSG_NTR_SEX_4()%の奴隷・・です・・%MSG_HEART()%」
+				ENDDATA
+			ENDIF
+		ELSE
+			PRINTFORML %NTR_NAME(0)%の肉棒にすっかり馴染んでしまい、注がれる精液の熱さにすら悦びを感じている。
+			IF RAND:3 == 0
+				PRINTFORML %NTR_NAME(0)%は快楽に屈服した%CALLNAME:奴隷%に自分のものになれと囁いた。
+				PRINTDATAL
+					DATAFORM 「はい・・おおせの通りにいたしますぅ・・%MSG_HEART()%」
+					DATAFORM 「ああ・・なります・・%MSG_NTR_SEX_4()%のものになります・・%MSG_HEART()%」
+					DATAFORM 「はい・・私は、%MSG_NTR_SEX_4()%の奴隷・・です・・%MSG_HEART()%」
+				ENDDATA
+			ENDIF
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		;処女
+		IF TALENT:奴隷:処女 
+			PRINTDATAL
+				DATAFORM 「こっちがいいのね・・♪」
+				DATAFORM 「ふふ・・処女を奪われてもいいのに・・♪」
+				DATAFORM 「ああ・・焦らすつもり・・？」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に命じられるままアヌスを差し出し、%NTR_KARE()%のペニスを受け入れた。
+			PRINTFORML %NTR_NAME(0)%の堅い肉棒が%CALLNAME:奴隷%の腸を深く深く抉り、征服の証とばかりに精液を解き放った。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒に馴染みつつあり、注がれる精液の熱さに酔いしれていた。
+				IF HAS_PENIS(MASTER)
+					PRINTFORML （・・%CALLNAME:MASTER%より・・すごい・・大きくて・・）
+				ELSE
+					PRINTFORML （・・すごい・・大きくて・・）
+				ENDIF
+			ELSE
+				PRINTFORML %NTR_NAME(0)%の肉棒に馴染みつつあり、注がれる精液の熱さに酔いしれていた。
+			ENDIF
+		;非処女
+		ELSE
+			PRINTDATAL
+				DATAFORM 「ああっ・・おしり、おしり、あついのおおおっ♪」
+				DATAFORM 「ああっ・・奥に、おしりの奥に出てるぅぅっ♪」
+				DATAFORM 「ああっ・・出してっ、おしりで、出してぇぇっ♪」
+			ENDDATA
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%の尻穴深くペニスをねじ込み、征服の証とばかりに精液を解き放った。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒に馴染みつつあり、注がれる精液の熱さに酔いしれていた。
+			ELSE
+				PRINTFORML %NTR_NAME(0)%の肉棒に馴染みつつあり、注がれる精液の熱さに酔いしれていた。
+			ENDIF
+		ENDIF
+
+	ELSE
+		;処女
+		IF TALENT:奴隷:処女 
+			PRINTDATAL
+				DATAFORM 「・・こっちで・・ゆるして・・あっ・・ああっ！」
+				DATAFORM 「ああっ！ お、おしりが・・熱いっ！！」
+				DATAFORM 「ああ・・処女だけは・・許して・・えっ、こ、こっち・・？」
+			ENDDATA
+			PRINTFORML %CALLNAME:奴隷%は処女を奪われるよりは、と自らアヌスを差し出し%NTR_NAME(0)%のペニスを受け入れた。
+			PRINTFORML %NTR_NAME(0)%の堅い肉棒が%CALLNAME:奴隷%の腸を深く深く抉り、征服の証とばかりに精液を解き放った。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %NTR_NAME_1_2(奴隷)%の精液が%CALLNAME:奴隷%の腸に淫らな烙印を刻んでゆく。
+			ELSE
+				PRINTFORML %NTR_NAME(0)%の精液が%CALLNAME:奴隷%の腸に淫らな烙印を刻んでゆく。
+			ENDIF
+		;非処女
+		ELSE
+			PRINTDATAL
+				DATAFORM 「んっ・・んああっ！そ、そんな、おく、に、ああっ！！」
+				DATAFORM 「あああっ！ お、おしりっ・・熱いっ・・！」
+				DATAFORM 「ああっ！　そんなっ、ふか、くっ・・あああっ！」
+			ENDDATA
+			PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%の尻穴深くペニスをねじ込み、征服の証とばかりに精液を解き放った。
+			IF TALENT:奴隷:恋慕
+				PRINTFORML %NTR_NAME_1_2(奴隷)%の精液が%CALLNAME:奴隷%の腸に淫らな烙印を刻んでゆく。
+			ELSE
+				PRINTFORML %NTR_NAME(0)%の精液が%CALLNAME:奴隷%の腸に淫らな烙印を刻んでゆく。
+			ENDIF
+		ENDIF
+		IF TALENT:奴隷:恋慕
+			IF TALENT:奴隷:浮気公認
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%が・・いけないのよ・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・これでいいのね・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・喜んでくれるわよね・・）
+				ENDDATA
+			ELSE
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%・・許して・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・ごめんなさい・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・ああ・・）
+				ENDDATA
+			ENDIF
+		ENDIF
+
+	ENDIF
+
+RETURN 0
+
+;性交奉仕
+@NTR_KOJO_K4_14_2(奴隷)
+	#DIM 奴隷
+	IF TALENT:奴隷:親愛 && TALENT:奴隷:公衆便所
+
+		PRINTFORML %NTR_NAME(0)%は%CALLNAME:奴隷%に公衆便所としての作法を躾けた。
+		PRINTFORML 彼女の性器を便器代わりに、白濁した劣情を排泄したのだ。
+		IF TALENT:奴隷:危険日
+			PRINTDATAL
+				DATAFORM 「いやっ・・そんな、中は、許してええっ・・今日は、今日は駄目なの！！」
+				DATAFORM 「い、嫌ああっ！ 中は、中はだめぇぇっ！　今日だけは、今日だけは許してっ！」
+				DATAFORM 「中は、中は嫌ああっ！　今日は、今日だけは許してっ！」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「いやっ・・そんな、中は、許してええっ！！」
+				DATAFORM 「い、嫌ああっ！ 中は、中はだめぇぇっ！！」
+				DATAFORM 「中は、中は嫌ああっ！！」
+			ENDDATA
+		ENDIF
+		PRINTFORML %NTR_NAME(0)%は組み敷いた%CALLNAME:奴隷%を容赦なく犯し、子宮口めがけて射精した。
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+
+		IF TALENT:奴隷:危険日
+			PRINTDATAL
+				DATAFORM 「ああっ・・きて、ナカにきてっ！ 孕ませてええええ%MSG_HEART()%」
+				DATAFORM 「ああっ・・出して、ナカで出してっ！ 孕ませてええええ%MSG_HEART()%」
+				DATAFORM 「ああんっ・・出てる、ナカで出てるっ！ 孕んじゃうぅぅ%MSG_HEART()%」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「ああっ・・きて、ナカにきてっ%MSG_HEART()%」
+				DATAFORM 「ああっ・・出して、ナカで出してっ%MSG_HEART()%」
+				DATAFORM 「ああんっ・・出てる、ナカで出てるっ%MSG_HEART()%」
+			ENDDATA
+		ENDIF
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の上で腰を振り、熱い白濁を搾り取った。
+		PRINTFORML %NTR_NAME(0)%の肉棒を、%NTR_KARE()%の精液を心から望んでいた。
+		PRINTDATAL
+			DATAFORM （ああん・・いっぱい・・おなか・・いっぱい・・%MSG_HEART()%）
+			DATAFORM （ああ・・いい・・熱いの・・いい・・%MSG_HEART()%）
+			DATAFORM （ああん・・もっと・・もっと、注いで・・%MSG_HEART()%）
+		ENDDATA
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+
+		IF TALENT:奴隷:危険日
+			PRINTDATAL
+				DATAFORM 「ああっ・・きて、ナカにきてっ！ 孕ませてええええ%MSG_HEART()%」
+				DATAFORM 「ああっ・・出して、ナカで出してっ！ 孕ませてええええ%MSG_HEART()%」
+				DATAFORM 「ああんっ・・出てる、ナカで出てるっ！ 孕んじゃうぅぅ%MSG_HEART()%」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「ああっ・・きて、ナカにきてっ%MSG_HEART()%」
+				DATAFORM 「ああっ・・出して、ナカで出してっ%MSG_HEART()%」
+				DATAFORM 「ああんっ・・出てる、ナカで出てるっ%MSG_HEART()%」
+			ENDDATA
+		ENDIF
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の上で腰を振り、熱い白濁を搾り取った。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒にも、%NTR_KARE()%の精液にももはや抵抗は感じていなかった。
+			PRINTDATAL
+				DATAFORM 「ふふっ・・いけない人ね・・%MSG_LOVER(奴隷)%のいるオンナに中出しするなんて・・%MSG_HEART()%」
+				DATAFORM 「ああ・・%MSG_LOVER(奴隷)%のいるオンナに中出しするなんて・・悪いヒト・・%MSG_HEART()%」
+				DATAFORM 「%MSG_LOVER(奴隷)%以外の人に中出しされちゃうなんて・・刺激的・・%MSG_HEART()%」
+			ENDDATA
+			IF RAND:3 == 0
+				PRINTFORML %NTR_NAME(0)%は快楽に屈服した%CALLNAME:奴隷%に%MSG_LOVER(奴隷)%と別れ自分のものになれと囁いた。
+				PRINTDATAL
+					DATAFORM 「はい・・おおせの通りにいたしますぅ・・%MSG_HEART()%」
+					DATAFORM 「ああ・・別れます・・あの人と別れて、%MSG_NTR_SEX_4()%のものになります・・%MSG_HEART()%」
+					DATAFORM 「はい・・別れます・・私は、%MSG_NTR_SEX_4()%の奴隷・・です・・%MSG_HEART()%」
+				ENDDATA
+			ENDIF
+		ELSE
+			PRINTFORML %NTR_NAME(0)%の肉棒にも、%NTR_KARE()%の精液にももはや抵抗は感じていなかった。
+			PRINTDATAL
+				DATAFORM （ああん・・いっぱい・・おなか・・いっぱい・・%MSG_HEART()%）
+				DATAFORM （ああ・・いい・・熱いの・・いい・・%MSG_HEART()%）
+				DATAFORM （ああん・・もっと・・もっと、注いで・・%MSG_HEART()%）
+			ENDDATA
+			IF RAND:3 == 0
+				PRINTFORML %NTR_NAME(0)%は快楽に屈服した%CALLNAME:奴隷%に自分のものになれと囁いた。
+				PRINTDATAL
+					DATAFORM 「はい・・おおせの通りにいたしますぅ・・%MSG_HEART()%」
+					DATAFORM 「ああ・・なります・・%MSG_NTR_SEX_4()%のものになります・・%MSG_HEART()%」
+					DATAFORM 「はい・・私は、%MSG_NTR_SEX_4()%の奴隷・・です・・%MSG_HEART()%」
+				ENDDATA
+			ENDIF
+		ENDIF
+
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+
+		IF TALENT:奴隷:危険日
+			PRINTFORML 「ああっ・・くるっ！あついの、くるっ！ 孕んじゃうぅぅ！！」
+		ELSE
+			PRINTFORML 「ああっ・・くるっ！あついの、くるぅぅぅ！！」
+		ENDIF
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に抱きつきながら腰を振り、膣内深くに精を飲み込んだ。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒に馴染みつつあり、%NTR_KARE()%の精液にも抵抗感は無くなりつつあった。
+			PRINTDATAL
+				DATAFORM 「ふふっ・・いけない人ね・・%MSG_LOVER(奴隷)%のいるオンナに中出しするなんて・・♪」
+				DATAFORM 「ああ・・%MSG_LOVER(奴隷)%のいるオンナに中出しするなんて・・悪いヒト・・♪」
+				DATAFORM 「%MSG_LOVER(奴隷)%以外の人に中出しされちゃうなんて・・刺激的・・♪」
+			ENDDATA
+			IF RAND:4 == 0
+				PRINTFORML %NTR_NAME(0)%は快楽に屈服した%CALLNAME:奴隷%に%MSG_LOVER(奴隷)%と別れ自分のものになれと囁いた。
+				PRINTDATAL
+					DATAFORM 「ふふっ、どうしようかしら・・？」
+					DATAFORM 「考えておくわ・・ふふっ」
+					DATAFORM 「いいかもしれないわね・・ふふ・・」
+				ENDDATA
+			ENDIF
+		ELSE
+			PRINTFORML %NTR_NAME(0)%の肉棒に馴染みつつあり、%NTR_KARE()%の精液にも抵抗感は無くなりつつあった。
+			PRINTDATAL
+				DATAFORM （ああん・・いっぱい・・おなか・・いっぱい・・♪）
+				DATAFORM （ああ・・いい・・熱いの・・いい・・♪）
+				DATAFORM （ああん・・もっと・・もっと、注いで・・♪）
+			ENDDATA
+			IF RAND:4 == 0
+				PRINTFORML %NTR_NAME(0)%は快楽に屈服した%CALLNAME:奴隷%に自分のものになれと囁いた。
+				PRINTDATAL
+					DATAFORM 「ふふっ、どうしようかしら・・？」
+					DATAFORM 「考えておくわ・・ふふっ」
+					DATAFORM 「いいかもしれないわね・・ふふ・・」
+				ENDDATA
+			ENDIF
+		ENDIF
+
+	ELSE
+
+		IF TALENT:奴隷:危険日
+			PRINTDATAL
+				DATAFORM 「ああっ・・だ、だめよ！ 今日は、今日はだめよっ！」
+				DATAFORM 「い、いやっ・・中はだめよ！ 今日は、今日だけはだめっ！」
+				DATAFORM 「だ、だめ！ 今日は、今日は中はだめよっ！」
+			ENDDATA
+		ELSE
+			PRINTDATAL
+				DATAFORM 「ああっ・・だ、だめよ！」
+				DATAFORM 「い、いやっ・・中はだめよ！」
+				DATAFORM 「だ、だめ！ 中はだめよっ！」
+			ENDDATA
+		ENDIF
+		PRINTFORML %NTR_NAME(0)%は組み敷いた%CALLNAME:奴隷%を容赦なく犯し、子宮口めがけて射精した。
+		IF TALENT:奴隷:恋慕
+			PRINTFORML %NTR_NAME_1_2(奴隷)%の肉棒に馴染みつつあり、%NTR_KARE()%の精液にも抵抗感は無くなりつつあった。
+		ELSE
+			PRINTFORML %NTR_NAME(0)%の肉棒に馴染みつつあり、%NTR_KARE()%の精液にも抵抗感は無くなりつつあった。
+		ENDIF
+		IF TALENT:奴隷:恋慕
+			IF TALENT:奴隷:浮気公認
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%が・・いけないのよ・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・これでいいのね・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・喜んでくれるわよね・・）
+				ENDDATA
+			ELSE
+				PRINTDATAL
+					DATAFORM （・・%CALLNAME:MASTER%・・許して・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・ごめんなさい・・）
+					DATAFORM （・・%CALLNAME:MASTER%・・ああ・・）
+				ENDDATA
+			ENDIF
+		ENDIF
+
+	ENDIF
+
+RETURN 0
+
+
+;==================================================
+;売春許諾
+;==================================================
+;淫乱ルート
+@NTR_KOJO_K4_19_1(奴隷)
+	#DIM 奴隷
+	;浮気人数で分岐
+	SELECTCASE EXP:奴隷:浮気人数
+	CASE 0, 1	; 初めての売春
+		PRINTFORML 「他の人と・・？ そうね・・きっと刺激的だわ・・」
+		PRINTFORML 「わかったわ、引き受けるわ・・ふふっ、楽しみね」
+	CASE 2
+		PRINTFORML 「また他の人と・・？ ええ、いいわ・・この前の人も、悪くなかったし・・」
+		PRINTFORML 「え？ お金を取るの？ やだ・・ゾクゾクする・・私を、そんなオンナにしたいの？」
+	CASE 3
+		PRINTFORML 「また他の人と？ ふふっ、そうね、愉しませてもらうわ」
+		PRINTFORML 「この前思ったの。私って、奉仕するのが好きなのね。だから、楽しみだわ」
+		PRINTFORML 「え？ ずいぶん乗り気に見えるって？ そうかもしれないわね。 いっそ商売にって・・ふふっ、考えてみようかしら？」
+	CASE 4		; 公衆便所直前
+		PRINTFORML 「また他の人と寝ればいいのね。ええ、とっても刺激的で、私も楽しいわ」
+		PRINTFORML 「ねぇ。この前の話だけど、考えてみるわ。ええ、『お仕事』のお話」
+		PRINTFORML 「今日のお相手の人が愉しませてくれたら、この話、引き受けるわ」
+	ENDSELECT
+RETURN 0
+
+;浮気公認ルート
+@NTR_KOJO_K4_19_2(奴隷)
+	#DIM 奴隷
+	;浮気人数で分岐
+	SELECTCASE EXP:奴隷:浮気人数
+	CASE 0, 1	; 初めての売春
+		PRINTFORML 「他の人と・・？ きっと刺激的だろうって・・でも・・そんな・・」
+		PRINTFORML 「わかったわ、引き受けるわ・・でも、この話は絶対に内緒よ。特にあの人には」
+	CASE 2
+		PRINTFORML 「また他の人と・・？ ええ・・悪くは、なかったわ・・」
+		PRINTFORML 「え？ お金を取るの？ それって、売春じゃない・・！」
+		PRINTFORML 「アルバイトだから本気じゃないって・・だからって、後ろめたさがなくなるわけじゃないわ」
+		PRINTFORML 「わかったわ、引き受けるわ・・でも、この話は絶対に、絶対に内緒よ。お願い」
+	CASE 3
+		PRINTFORML 「また他の人と？ そんなに、私のことを見せびらかしたいのかしら？」
+		IF TALENT:奴隷:人妻
+			PRINTFORML 「ええ、ＯＫよ・・ふふっ、配偶者にも秘密で・・とっても背徳的ね」
+		ELSE
+			PRINTFORML 「ええ、ＯＫよ・・ふふっ、恋人にも秘密で・・とっても背徳的ね」
+		ENDIF
+		PRINTFORML 「え？ ずいぶん乗り気に見えるって？ そうかしら？ いっそ商売にって・・やめてちょうだい」
+	CASE 4		; 公衆便所直前
+		PRINTFORML 「また他の人と寝ればいいのね。ええ、とっても刺激的で、私も楽しいわ」
+		PRINTFORML （・・あの人も、きっと喜んでくれる）
+		PRINTFORML 「ねぇ。この前の話だけど、考えてみるわ。ええ、『お仕事』のお話」
+		IF TALENT:奴隷:処女 
+			PRINTFORML %CALLNAME:奴隷%はふと何かを思い出したかのように、%NTR_NAME(0)%に向き直った。
+			PRINTFORML 「ところで、いい加減私の初めてを奪ってくれるのかしら？ それともアナル専用の売春婦にでもするつもり？」
+			PRINTFORML %NTR_NAME(0)%は苦笑しながら%CALLNAME:奴隷%の娼婦デビューのために特別な企画を用意していると告げた。
+			PRINTFORML 「企画・・？ オークションですって？ 私の処女を、競りにかけるの！？」
+			PRINTFORML %ANATA_LOVER(奴隷)%ではなく、%NTR_NAME(0)%でもなく、見ず知らずの誰とも知らぬ相手に処女を買われると
+			PRINTFORML 聞かされてさすがの%CALLNAME:奴隷%も驚いたようだ。
+			PRINTFORML 「前々から思っていたけど、本当に悪趣味な人ね。いいわ、その話、乗ってあげる」
+			PRINTFORML （・・あの人・・悔しがってくれるかしら？）
+		ELSE
+			PRINTFORML 「今日のお相手の人が愉しませてくれたら、この話、引き受けるわ」
+		ENDIF
+	ENDSELECT
+RETURN 0
+
+;==================================================
+;処女オークション開始
+;==================================================
+@NTR_KOJO_K4_VA_0(奴隷)
+	#DIM 奴隷
+	IF TALENT:奴隷:親愛
+		PRINTFORML 首輪に繋がれた鎖を引かれてステージ中央に立たされた%CALLNAME:奴隷%は、%NTR_NAME(0)%の目配せを合図にメイド服のスカートをつまみあげて瀟洒に礼をした。
+		PRINTFORML そして命じられたとおりの言葉を口にする。
+		PRINTFORML 「本日は私のためにお集まりいただきまして、まことにありがとうございました」
+		PRINTFORML 「%MSG_LOVER(奴隷)%のいる身でありますが、一身上の都合で娼婦となり皆様にこの身体を買っていただくことになりました」
+		PRINTFORML %CALLNAME:奴隷%は頭を下げたまま、さらにスカートをたくし上げて貞操帯を身に着けた局部を男たちに晒した。
+		PRINTFORML 「どうかこの貞操帯の鍵を・・そして私の処女を、お買い上げくださいませ」
+		PRINTFORML %CALLNAME:奴隷%は集まった男たちの前で、彼女自身の身体を・・そして処女を売り渡すことを公言した。
+		PRINTFORML %MSG_LOVER(奴隷)%持ちである彼女の初体験を買うことができると知った男たちが色めきたっている。
+	ELSE
+		PRINTFORML %NTR_NAME(0)%に目配せされた%CALLNAME:奴隷%はステージ中央へ歩いてゆき、メイド服のスカートをつまみあげて瀟洒に礼をした。
+		PRINTFORML 「本日は私のためにお集まりいただきまして、まことにありがとうございました」
+		PRINTFORML %CALLNAME:奴隷%は頭を下げたまま、さらにスカートをたくし上げて貞操帯を身に着けた局部を男たちに晒した。
+		PRINTFORML 「どうかこの貞操帯の鍵を・・そして私の処女を、お買い上げくださいませ」
+		PRINTFORML %CALLNAME:奴隷%は集まった男たちの前で、彼女自身の処女を売り渡すことを公言した。
+		IF TALENT:奴隷:処女 == 1
+			PRINTFORML 魔法の秘薬で再生したものではない正真正銘の初体験である知った男たちが色めきたっている。
+		ELSE
+			PRINTFORML 名高い美貌のメイド長の処女を買うことができる期待に、男たちは色めきたっている。
+		ENDIF
+		IF TALENT:奴隷:性的魅力 == 1
+			PRINTFORML この場にいる者の多くが彼女のヌード写真や下着のお世話になっている。
+			PRINTFORML その憧れの肢体を、その処女を買うことができるのだ。彼らが興奮するのも当然だろう。
+		ENDIF
+		IF TALENT:奴隷:危険日
+			PRINTFORML そして%CALLNAME:奴隷%はさらなる爆弾を投下する。
+			PRINTFORML 「実は今日は、危ない日なのですわ・・ええ、もちろん、一滴残らず、私の中に注いでくださいませ」
+			PRINTFORML %CALLNAME:奴隷%の処女を奪い、孕ませることができる。男たちが歓声をあげた。
+		ENDIF
+	ENDIF
+RETURN 0
+
+;==================================================
+;処女オークション終了
+;==================================================
+@NTR_KOJO_K4_VA_1(奴隷)
+	#DIM 奴隷
+	IF TALENT:奴隷:親愛
+		PRINTFORML 「お買い上げいただきまして、まことにありがとうございました・・」
+		PRINTFORML 愛しい%MSG_LOVER(奴隷)%に捧げるはずだった純潔を金で買い上げられてしまった%CALLNAME:奴隷%は、
+		PRINTFORML 人目もはばからず泣き出してしまいそうなのを必死でこらえ、客に弱々しく微笑むともう一度力なく礼をした。
+	ELSE
+		PRINTFORML 「お買い上げいただきまして、まことにありがとうございました♪」
+		PRINTFORML %CALLNAME:奴隷%は彼女の処女を競り落とした客に微笑み、もう一度瀟洒な礼をした。
+		IF TALENT:奴隷:処女 == 1
+			PRINTFORML 客が先ほどの言葉は本当かと尋ねると、%CALLNAME:奴隷%は瀟洒に微笑み、こう答えた。
+			PRINTFORML 「それはお客様の持ち物で確かめてくださいませ・・私が本当の処女かどうか・・ふふっ」
+		ELSEIF TALENT:奴隷:危険日
+			PRINTFORML 客が先ほどの言葉は本当かと尋ねると、%CALLNAME:奴隷%は瀟洒に微笑み、こう答えた。
+			PRINTFORML 「勿論ですわ・・私がお客様の仔を孕むかどうか・・ぜひとも試してくださいませ・・ふふっ」
+		ELSE
+		ENDIF
+	ENDIF
+RETURN 0

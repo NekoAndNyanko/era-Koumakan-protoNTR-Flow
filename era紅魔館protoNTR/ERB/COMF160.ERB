@@ -1,0 +1,226 @@
+﻿;-------------------------------------------------
+;膣内観察
+;-------------------------------------------------
+@COM160
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = TARGET
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 45
+DOWNBASE:気力 += 75
+
+SOURCE:達成 = 20
+SOURCE:恐怖 = 120
+SOURCE:液体 = 10
+SOURCE:露出 = 300
+SOURCE:屈従 = 450
+SOURCE:逸脱 = 150
+SOURCE:反感 = 150
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 150
+
+;使用者がサド持ち
+IF TALENT:PLAYER:サド
+	TIMES SOURCE:恐怖 , 1.20
+	TIMES SOURCE:屈従 , 1.20
+	TIMES SOURCE:反感 , 1.20
+	SOURCE:露出 += 300
+ENDIF
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+ENDIF
+
+RETURN 1
+
+
+@CAN_COM160(ARG)
+SKIPDISP ARG
+PRINTL 膣内観察
+;-------------------------------------------------
+;実行できるかの判定
+;-------------------------------------------------
+TFLAG:実行値 = 0
+TFLAG:実行値表示用フラグ = 0
+;すべての命令に共通の要素を考慮
+;(従順が高いと命令に従いやすいなど)
+CALL COM_ORDER
+
+;ABL:欲望
+IF ABL:欲望
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:欲望 * 3
+	PRINT 欲望
+	PRINTV 'LV,ABL:欲望,'(,ABL:欲望 * 3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;ABL:Ｖ感覚
+IF ABL:Ｖ感覚
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:Ｖ感覚 * 2
+	PRINT Ｖ感覚
+	PRINTV 'LV,ABL:Ｖ感覚,'(,ABL:Ｖ感覚 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;ABL:奉仕精神
+IF ABL:奉仕精神
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:奉仕精神 * 4
+	PRINT 奉仕精神
+	PRINTV 'LV,ABL:奉仕精神,'(,ABL:奉仕精神 * 4,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;ABL:露出癖
+IF ABL:8
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:露出癖 * 3
+	PRINT ABLNAME:露出癖
+	PRINTV 'LV,ABL:露出癖,'(,ABL:露出癖 * 3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;ABL:自慰中毒
+IF ABL:自慰中毒
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:自慰中毒 * 3
+	PRINT 自慰中毒
+	PRINTV 'LV,ABL:自慰中毒,'(,ABL:自慰中毒 * 3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+IF MARK:快楽刻印
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += MARK:快楽刻印 * 3
+	PRINT 快楽刻印
+	PRINTV 'LV,MARK:快楽刻印,'(,MARK:快楽刻印 * 3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;PALAM:潤滑（の不足）
+IF PALAM:潤滑 < PALAMLV:3
+	PRINT  - 
+	TFLAG:実行値 -= 5
+	PRINT 潤滑不足
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;PALAM:欲情
+IF GETPALAMLV(PALAM:欲情,5)
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += GETPALAMLV(PALAM:欲情,5) * 3
+	PRINT 欲情
+	PRINTV 'LV,GETPALAMLV(PALAM:欲情,5),'(,GETPALAMLV(PALAM:欲情,5) * 3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;恥じらい
+IF TALENT:羞恥心 > 0
+	PRINT  - 
+	TFLAG:実行値 -= 2
+	PRINT 恥じらい
+	PRINTV '(,2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;快感の否定（淫乱、娼婦で無効）
+IF TALENT:快感応答 < 0 && !TALENT:淫乱
+	PRINT  - 
+	TFLAG:実行値 -= 5
+	PRINT 快感の否定
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;男嫌い（恋慕、親愛で無効）
+IF TALENT:性別嗜好 & 1 && !(HAS_VAGINA(PLAYER)) && ((!TALENT:恋慕) || PLAYER != MASTER)
+	PRINT  - 
+	TFLAG:実行値 -= 12
+	PRINT 男嫌い
+	PRINTV '(,12,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;処女
+IF TALENT:処女 == 1
+	PRINT  - 
+	TFLAG:実行値 -= 20
+	PRINT 処女
+	PRINTV '(,20,')
+	TFLAG:実行値表示用フラグ = 1
+ELSEIF EXP:Ｖ経験 < EXPLV:2
+	PRINT  - 
+	TFLAG:実行値 -= 5
+	PRINT Ｖ経験
+	PRINT 不足
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;調教者がふたなり
+IF GET_SEXNAME(PLAYER) == "ふたなり"
+	PRINT  + 
+	TFLAG:実行値 += 4
+	PRINT ふたなり
+	PRINTV '(,4,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;媚薬
+IF TEQUIP:媚薬
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 6
+	PRINT 媚薬
+	PRINTV '(,6,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;鍵を持っていると実行可能
+IF FLAG:貞操帯鍵購入フラグ == TARGET
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 100
+	PRINT 貞操帯の鍵
+	PRINTV '(,100,')
+	TFLAG:実行値表示用フラグ = 100
+ENDIF	
+
+;'合計を表示(18以上で実行)
+PRINT  = 
+PRINTV TFLAG:実行値
+
+LOCAL = 18
+SIF TFLAG:実行値 < LOCAL
+	PRINT  < 
+SIF TFLAG:実行値 == LOCAL
+	PRINT  = 
+SIF TFLAG:実行値 > LOCAL
+	PRINT  > 
+PRINT 実行値
+PRINTV LOCAL
+
+WAIT
+SKIPDISP 0
+;実行できない
+SIF TFLAG:実行値 < LOCAL
+	RETURN 0
+RETURN 1

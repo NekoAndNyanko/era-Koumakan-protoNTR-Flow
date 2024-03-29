@@ -1,0 +1,391 @@
+﻿;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係
+;コマンド実行時に出力されます
+;--------------------------------------------------
+@KOJO_MESSAGE_COM
+	#DIM 対象
+
+	対象 = NO:TARGET
+	;範囲チェック
+	IF 対象 >= CHARANUM
+		SIF FLAG:情景テキスト設定 > 0
+			CALL TRAIN_MESSAGE
+		RETURN 0
+	ENDIF
+	;口上表示設定チェック
+	IF FLAG:口上テキスト設定 <= 0
+		SIF FLAG:情景テキスト設定 > 0
+			CALL TRAIN_MESSAGE
+		RETURN 0
+	ENDIF
+	;睡眠チェック
+	IF CFLAG:対象:睡眠
+		CALL TRAIN_MESSAGE
+	;ボールギャグ
+	ELSEIF TEQUIP:20 && SELECTCOM != 107 && FLAG:情景テキスト設定 > 0
+		CALL TRAIN_MESSAGE
+	ELSE
+		RESULT = 0
+		RESULTS =
+		IF TFLAG:50
+			TRYCALLLIST
+				FUNC KOJO%RESULTS%_MESSAGE_SCOM_K{対象}_{TFLAG:50}
+				FUNC KOJO%RESULTS%_MESSAGE_SCOM_KU_{TFLAG:50}
+				FUNC TRAIN_MESSAGE
+			ENDFUNC
+		ELSE
+			CALL NTR_LOCK_REACTION_COM(対象)
+			TRYCALLLIST
+				FUNC NTR_KOJO%RESULTS%_MESSAGE_COM_K{対象}_{SELECTCOM}
+				FUNC KOJO%RESULTS%_MESSAGE_COM_K{対象}_{SELECTCOM}
+				FUNC KOJO%RESULTS%_MESSAGE_COM_KU_{SELECTCOM}
+				FUNC TRAIN_MESSAGE
+			ENDFUNC
+		ENDIF
+		;埋めていないところは汎用的な処理が可能
+		IF RESULT
+			CALL NTR_LOCK_REACTION_COM(対象)
+			TRYCALLLIST
+				FUNC NTR_KOJO%RESULTS%_MESSAGE_COM_K{対象}_00
+				FUNC KOJO%RESULTS%_MESSAGE_COM_K{対象}_00
+				FUNC KOJO%RESULTS%_MESSAGE_COM_KU_00
+			ENDFUNC
+		ENDIF
+	ENDIF
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COUNTER関係
+;カウンター実行時に出力されます
+;--------------------------------------------------
+@KOJO_MESSAGE_COUNTER(ARG)
+	#DIM 対象
+	#DIM BK_TARGET		; TARGET保存
+	
+	BK_TARGET = TARGET
+	TARGET = ARG
+	対象 = NO:TARGET
+	;範囲チェック
+	IF 対象 >= CHARANUM
+		SIF FLAG:情景テキスト設定 > 0
+			CALL TRAIN_MESSAGE
+		RETURN 0
+	ENDIF
+	;口上表示設定チェック
+	IF FLAG:口上テキスト設定 <= 0
+		IF FLAG:情景テキスト設定 > 0
+			CALL EVENT_COUNTER_MESSAGE
+		ENDIF
+		TARGET = BK_TARGET
+		RETURN 0
+	ENDIF
+	;ボールギャグチェック
+	IF TEQUIP:ARG:ボールギャグ && FLAG:情景テキスト設定 > 0
+		CALL EVENT_COUNTER_MESSAGE
+		TARGET = BK_TARGET
+	ELSE
+		RESULT = 0
+		RESULTS =
+		TRYCALLLIST
+			FUNC NTR_KOJO%RESULTS%_MESSAGE_COUNTER_K{対象}_{TCVAR:20}
+			FUNC KOJO%RESULTS%_MESSAGE_COUNTER_K{対象}_{TCVAR:20}
+			FUNC KOJO%RESULTS%_MESSAGE_COUNTER_KU_{TCVAR:20}
+			FUNC EVENT_COUNTER_MESSAGE
+		ENDFUNC
+		TARGET = BK_TARGET
+	ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_MESSAGE_PALAMCNG_A
+VARSET LOCAL
+IF FLAG:口上テキスト設定 <= 0
+	SIF FLAG:情景テキスト設定 > 0
+		CALL PALAM_MESSAGE_A
+	RETURN 0
+ENDIF
+FOR LOCAL,0,CHARANUM
+	SIF TARGET:LOCAL < 1
+		CONTINUE
+	;TARGET,TARGET:1,…の順に出力
+	SIF LOCAL > 0 && TARGET:LOCAL == TARGET
+		CONTINUE
+	;口上出力用のフラグがないと飛ばす
+	SIF !TCVAR:(TARGET:LOCAL):50
+		CONTINUE
+	LOCAL:1 = TARGET
+	TARGET = TARGET:LOCAL
+	RESULT = 0
+	RESULTS =
+	;口上の存在判定 and RESULTSに文字列代入
+	TRYCALLFORM KOJO_K{NO:TARGET}
+	IF !RESULT && FLAG:情景テキスト設定 > 0
+		CALL PALAM_MESSAGE_A
+		TARGET = LOCAL:1
+		RETURN 0
+	ENDIF
+	CALL KOJO_MESSAGE_PALAMCNG_A2(LOCAL)
+	SIF !RESULT
+	LOCAL:2 ++
+	TARGET = LOCAL:1
+	;コンドーム口上は対象一人のみ
+	SIF GETBIT(TFLAG:1,0)
+		BREAK
+NEXT
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_MESSAGE_PALAMCNG_B
+IF FLAG:口上テキスト設定 <= 0
+	SIF FLAG:情景テキスト設定 > 0
+		CALL PALAM_MESSAGE_B
+	RETURN 0
+ENDIF
+RESULT = 0
+RESULTS =
+;口上の存在判定 and RESULTSに文字列代入
+TRYCALLFORM KOJO_K{NO:TARGET}
+IF !RESULT && FLAG:情景テキスト設定 > 0
+	CALL PALAM_MESSAGE_B
+	RETURN 0
+ENDIF
+TRYCALLFORM KOJO_MESSAGE_PALAMCNG_B_K{NO:TARGET}
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_MESSAGE_PALAMCNG_C
+IF FLAG:口上テキスト設定 <= 0
+	SIF FLAG:情景テキスト設定 > 0
+		CALL PALAM_MESSAGE_C
+	RETURN 0
+ENDIF
+RESULT = 0
+RESULTS =
+;口上の存在判定 and RESULTSに文字列代入
+TRYCALLFORM KOJO_K{NO:TARGET}
+IF !RESULT && FLAG:情景テキスト設定 > 0
+	CALL PALAM_MESSAGE_C
+	RETURN 0
+ENDIF
+TRYCALLFORM KOJO_MESSAGE_PALAMCNG_C_K{NO:TARGET}
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_MESSAGE_PALAMCNG_D
+IF FLAG:口上テキスト設定 <= 0
+	SIF FLAG:情景テキスト設定 > 0
+		CALL PALAM_MESSAGE_D
+	RETURN 0
+ENDIF
+RESULT = 0
+RESULTS =
+;口上の存在判定 and RESULTSに文字列代入
+TRYCALLFORM KOJO_K{NO:TARGET}
+IF !RESULT && FLAG:情景テキスト設定 > 0
+	CALL PALAM_MESSAGE_D
+	RETURN 0
+ENDIF
+TRYCALLFORM KOJO_MESSAGE_PALAMCNG_D_K{NO:TARGET}
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_MESSAGE_PALAMCNG_E
+IF FLAG:口上テキスト設定 <= 0
+	SIF FLAG:情景テキスト設定 > 0
+		CALL PALAM_MESSAGE_E
+	RETURN 0
+ENDIF
+RESULT = 0
+RESULTS =
+;口上の存在判定 and RESULTSに文字列代入
+TRYCALLFORM KOJO_K{NO:TARGET}
+IF !RESULT && FLAG:情景テキスト設定 > 0
+	CALL PALAM_MESSAGE_E
+	RETURN 0
+ENDIF
+TRYCALLFORM KOJO_MESSAGE_PALAMCNG_E_K{NO:TARGET}
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_MESSAGE_MARKCNG(奴隷)
+#DIM 奴隷
+IF FLAG:情景テキスト設定
+	CALL MARK_MESSAGE(奴隷)
+ENDIF
+IF FLAG:口上テキスト設定
+	TRYCCALLFORM KOJO_MESSAGE_MARKCNG_K{NO:奴隷}(奴隷)
+	CATCH
+		CALL KOJO_MESSAGE_MARKCNG_KU(奴隷)
+	ENDCATCH
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_ENDING関係
+;イベント時の口上、イベント開始時に出力します
+;-------------------------------------------------
+@KOJO_MESSAGE_ENDING
+TRYCALLFORM KOJO_MESSAGE_ENDING_K{NO:TARGET}
+
+;-------------------------------------------------
+;@KOJO_EVENT
+;イベント時の口上、イベント開始時に出力します
+;-------------------------------------------------
+@KOJO_EVENT(ARG,ARG:1,ARG:2,ARG:3)
+;ARG イベント番号(0=屋敷で遭遇した
+;ARG:1 口上主
+;ARG:2〜口上に渡す引数
+LOCAL = TARGET
+TARGET = ARG:1
+IF FLAG:口上テキスト設定 <= 0
+	TRYCALLFORM KOJO_EVENT_{ARG}(ARG:2,ARG:3)
+	TARGET = LOCAL
+	RETURN 0
+ENDIF
+;RESULT = 0
+;RESULTS =
+;TRYCALLFORM KOJO_K{NO:TARGET}
+;IF !RESULT
+;	TRYCALLFORM KOJO_EVENT_{ARG}(ARG:2,ARG:3)
+;	TARGET = LOCAL
+;	RETURN 0
+;ENDIF
+;TRYCALLFORM KOJO%RESULTS%_EVENT_K{NO:TARGET}_{ARG}(ARG:2,ARG:3)
+TRYCALLLIST
+	FUNC KOJO%RESULTS%_EVENT_K{NO:TARGET}_{ARG}(ARG:2,ARG:3)
+	FUNC KOJO%RESULTS%_EVENT_KU_{ARG}(ARG:2,ARG:3)
+	FUNC KOJO_EVENT_{ARG}(ARG:2,ARG:3)
+ENDFUNC
+TARGET = LOCAL
+
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG_A2
+;射精口上出力のギミック
+;-------------------------------------------------
+@KOJO_MESSAGE_PALAMCNG_A2(ARG)
+;ARG Wフェラ等でTARGETならARG=0、二人目ならARG=1
+
+;コンドーム
+IF GETBIT(TCVAR:50,0)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_0(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;イラマチオ
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,23)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_23(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;シックスナイン
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,22)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_22(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;パイズリフェラ
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,21)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_21(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;手淫フェラ
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,20)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_20(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;アナル奉仕
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,9)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_9(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;泡踊り
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,8)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_8(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;足コキ
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,7)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_7(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,6)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_6(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,5)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_5(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,4)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_4(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,3)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_3(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;アナル
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,2)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_2(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+;-------------------------------------------------
+;膣内
+;-------------------------------------------------
+IF GETBIT(TCVAR:50,1)
+	TRYCALLFORM KOJO_MESSAGE_PALAMCNG_A_K{NO:TARGET}_1(ARG)
+	SIF RESULT
+		RETURN RESULT
+ENDIF
+RETURN 0

@@ -1,0 +1,485 @@
+﻿;-------------------------------------------------------------------------------
+
+#DIM 霊夢移动フラグ
+
+#DIMS 依頼内容, 8
+
+#DIMS SAVEDATA 访问者名称
+
+#DIM CONST 移动路线MAX = 13 
+#DIM CHARADATA 移动路线, 移动路线MAX
+
+;-------------------------------------------------------------------------------
+;保存するものは #DIM SAVEDATA
+#DIM SAVEDATA 親別出産数, 305, 305
+
+#DIM SAVEDATA 訪問者_髪の長さ
+#DIM SAVEDATA 訪問者_髪の長さ指定
+#DIM SAVEDATA 訪問者_髪オプション１
+#DIM SAVEDATA 訪問者_髪オプション２
+#DIM SAVEDATA 訪問者_髪原色
+#DIM SAVEDATA 訪問者_髪色
+#DIM SAVEDATA 訪問者_目色右
+#DIM SAVEDATA 訪問者_目色左
+#DIM SAVEDATA 訪問者_目つき
+#DIM SAVEDATA 訪問者_瞳オプション１
+#DIM SAVEDATA 訪問者_瞳オプション２
+#DIM SAVEDATA 訪問者_肌原色
+#DIM SAVEDATA 訪問者_肌色
+
+#DIM SAVEDATA 訪問者_体オプション１
+#DIM SAVEDATA 訪問者_体オプション２
+#DIM SAVEDATA 訪問者_体オプション３
+#DIM SAVEDATA 訪問者_体オプション４
+
+#DIM SAVEDATA 訪問者_Ｖ位置
+#DIM SAVEDATA 訪問者_Ｖオプション１
+#DIM SAVEDATA 訪問者_Ｖオプション２
+#DIM SAVEDATA 訪問者_Ｐ大きさ = 2
+#DIM SAVEDATA 訪問者_Ｐオプション１
+#DIM SAVEDATA 訪問者_Ｐオプション２
+
+;-------------------------------------------------------------------------------
+;読み替えは #DEFINE
+#DEFINE 天候値 TIME:1
+#DEFINE 暦法月 DAY:1
+#DEFINE 暦法日 DAY:2
+#DEFINE 年份记录 DAY:3
+#DEFINE 告白成功済 既成事実&1p0
+
+;-------------------------------------------------------------------------------
+;固定値は #DIM CONST で定義しようね
+#DIM CONST 要睡眠経過時間 = 1200
+#DIM CONST 睡眠可経過時間 = 960
+
+#DIM CONST 時間_1WEEK		= 10080
+#DIM CONST 時間_1DAY		= 1440
+
+;固定の人物コード
+#DIM CONST 開始時人数		= 14
+#DIM CONST 人物_美铃		= 1
+#DIM CONST 人物_小恶魔		= 2
+#DIM CONST 人物_帕秋莉		= 3
+#DIM CONST 人物_咲夜		= 4
+#DIM CONST 人物_蕾米莉亚	= 5
+#DIM CONST 人物_芙兰朵露	= 6
+#DIM CONST 人物_艾丽娅		= 7
+#DIM CONST 人物_琪露诺		= 8
+#DIM CONST 人物_大妖精		= 9
+#DIM CONST 人物_魔理沙		= 10
+#DIM CONST 人物_灵梦		= 11
+#DIM CONST 人物_露米娅		= 12
+#DIM CONST 人物_爱丽丝		= 13
+#DIM CONST 人物_催眠者		= 996
+#DIM CONST 人物_村人		= 997
+#DIM CONST 人物_訪問者		= 998
+#DIM CONST 人物_客			= 999
+#DIM CONST 人物_あなた		= 0
+;CHARANUM最大数 これ以上子供が増えても強制的に里子に出す
+#DIM CONST 人物最大	        = 290
+;精子主コード
+;通常人物コードと同一だが、村人、訪問者、客は異なる
+#DIM CONST 精子主_催眠者		= 297
+#DIM CONST 精子主_村人		= 298
+#DIM CONST 精子主_客		= 299
+#DIM CONST 精子主_訪問者	= 300
+;精子主のループ時にCHARANUM到達時にスキップする先
+#DIM CONST 精子主_スキップ	= 298
+
+; 特殊な衣装コード
+#DIM CONST 衣装_配件_结婚戒指		= 1
+#DIM CONST 衣装_配件_チョーカー	= 100
+#DIM CONST 衣装_配件_项圈			= 101
+#DIM CONST 衣装_下半身下着１_贞操帯		= 100
+
+; 訪問者の气氛
+#DIM CONST NTR_MOOD_会话 = 0
+#DIM CONST NTR_MOOD_キス = 1
+#DIM CONST NTR_MOOD_爱抚 = 2
+#DIM CONST NTR_MOOD_侍奉 = 3
+#DIM CONST NTR_MOOD_性交 = 4
+#DIM CONST NTR_MOOD_同伴 = 5
+
+#DIM CONST NTR_CNT_无行为                 = 0
+#DIM CONST NTR_CNT_诱惑姿势       = 1
+#DIM CONST NTR_CNT_凝视             = 2
+#DIM CONST NTR_CNT_贴近身体         = 3
+#DIM CONST NTR_CNT_耳边吹气             = 4
+#DIM CONST NTR_CNT_接吻                 = 5
+#DIM CONST NTR_CNT_背面拥抱             = 6
+#DIM CONST NTR_CNT_正面拥抱             = 7
+#DIM CONST NTR_CNT_揉胸         = 8
+#DIM CONST NTR_CNT_揉搓股间       = 9
+#DIM CONST NTR_CNT_掀裙子看内裤 = 10
+#DIM CONST NTR_CNT_深吻         = 11
+
+#DIM CONST NTR_行为_なし           = 0
+#DIM CONST NTR_行为_キス           = 1
+#DIM CONST NTR_行为_爱抚           = 2
+#DIM CONST NTR_行为_胸爱抚         = 3
+#DIM CONST NTR_行为_口交     = 4
+#DIM CONST NTR_行为_六九式 = 5
+#DIM CONST NTR_行为_素股           = 6
+#DIM CONST NTR_行为_Ｖ正常位       = 7
+#DIM CONST NTR_行为_Ｖ后背位       = 8
+#DIM CONST NTR_行为_Ｖ骑乘位       = 9
+#DIM CONST NTR_行为_Ｖ対面座位     = 10
+#DIM CONST NTR_行为_Ｖ背面座位     = 11
+#DIM CONST NTR_行为_Ｖ対面立位     = 12
+#DIM CONST NTR_行为_Ｖ背面立位     = 13
+
+#DIM CONST NTR_行为_Ａ正常位       = 14
+#DIM CONST NTR_行为_Ａ后背位       = 15
+#DIM CONST NTR_行为_Ａ骑乘位       = 16
+#DIM CONST NTR_行为_Ａ対面座位     = 17
+#DIM CONST NTR_行为_Ａ背面座位     = 18
+#DIM CONST NTR_行为_Ａ対面立位     = 19
+#DIM CONST NTR_行为_Ａ背面立位     = 20
+
+#DIM CONST 写真_普段               = 1
+#DIM CONST 写真_着替え             = 2
+#DIM CONST 写真_入浴               = 3
+#DIM CONST 写真_寝顔               = 4
+#DIM CONST 写真_料理               = 5
+#DIM CONST 写真_居眠り             = 6
+#DIM CONST 写真_読書               = 7
+#DIM CONST 写真_トイレ             = 8
+#DIM CONST 写真_NTR_キス           = 9
+#DIM CONST 写真_NTR_爱抚           = 10
+#DIM CONST 写真_NTR_胸爱抚         = 11
+#DIM CONST 写真_NTR_口交     = 12
+#DIM CONST 写真_NTR_六九式 = 13
+#DIM CONST 写真_NTR_素股           = 14
+#DIM CONST 写真_NTR_Ｖ性爱     = 15
+#DIM CONST 写真_NTR_Ａ性爱     = 16
+#DIM CONST 写真_自慰               = 17
+#DIM CONST 写真_NTR_接触           = 18		; 住人からの身体摺り寄せ等の亲密な接触
+#DIM CONST 写真_NTR_抱擁           = 19		; 住人からの対面抱擁、背面抱擁
+#DIM CONST 写真_住人同士_会话	   = 100
+#DIM CONST 写真_住人同士_お茶	   = 101
+#DIM CONST 写真_住人同士_接触      = 102
+#DIM CONST 写真_住人同士_抱擁      = 103
+#DIM CONST 写真_住人同士_キス      = 104
+#DIM CONST 写真_住人同士_爱抚      = 105
+#DIM CONST 写真_住人同士_Ａ爱抚    = 106
+#DIM CONST 写真_住人同士_胸爱抚    = 107
+#DIM CONST 写真_住人同士_Ｖ性交    = 108
+#DIM CONST 写真_住人同士_Ａ性交    = 109
+
+#DIM CONST 写真詳細_なし           = 0
+#DIM CONST 写真詳細_おねだり       = 1
+#DIM CONST 写真詳細_快楽           = 2
+#DIM CONST 写真詳細_絶頂           = 3
+#DIM CONST 写真詳細_恋人           = 4
+
+
+
+
+#DIM CONST 催眠_交談 = 1
+#DIM CONST 催眠_接吻 = 2
+#DIM CONST 催眠_泡茶 = 3
+#DIM CONST 催眠_爱抚 = 4
+#DIM CONST 催眠_口交 = 5
+#DIM CONST 催眠_六九式 = 6
+#DIM CONST 催眠_性交A = 8
+#DIM CONST 催眠_性交 = 9
+#DIM CONST 催眠_爱抚村人 = 10
+#DIM CONST 催眠_手淫村人 = 11
+#DIM CONST 催眠_口交村人 = 12
+#DIM CONST 催眠_性交村人 = 13
+
+#DIM CONST 輪姦_1V				   = 0
+#DIM CONST 輪姦_1A				   = 1
+#DIM CONST 輪姦_2MV				   = 2
+#DIM CONST 輪姦_2MA				   = 3
+#DIM CONST 輪姦_2VA				   = 4
+#DIM CONST 輪姦_2VV				   = 10
+#DIM CONST 輪姦_2AA				   = 11
+#DIM CONST 輪姦_3MAV			   = 20
+#DIM CONST 輪姦_0				   = -1
+
+;関数NTR_CHK_FAVORABLY()で使用する訪問者との好感度レベル
+#DIM CONST FAV_催眠完毕			   = 8
+#DIM CONST FAV_催眠寸前		           = 7
+#DIM CONST FAV_寝取り返し寸前	   = 11
+#DIM CONST FAV_寝取り返し中		   = 10
+#DIM CONST FAV_寝取られ			   = 9
+#DIM CONST FAV_寝取られ寸前		   = 8
+#DIM CONST FAV_寝取られそう		   = 7
+#DIM CONST FAV_主人より高い		   = 6
+#DIM CONST FAV_うふふする程度2	   = 5	; NTR和姦向け判定用。通常は使わない。
+#DIM CONST FAV_うふふする程度	   = 4
+#DIM CONST FAV_侍奉する程度		   = 3
+#DIM CONST FAV_体を触らせる程度	   = 2
+#DIM CONST FAV_接吻程度		   = 1
+
+;STAINとビット判定する汚れ
+#DIM CONST 汚れ_なし				= 0 
+#DIM CONST 汚れ_愛液				= 1
+#DIM CONST 汚れ_阴茎				= 2
+#DIM CONST 汚れ_精液				= 4
+#DIM CONST 汚れ_菊花				= 8
+#DIM CONST 汚れ_母乳				= 16
+#DIM CONST 汚れ_粘液				= 32
+#DIM CONST 汚れ_破瓜の血			= 64
+
+#DIM CONST 汚れ_母乳_愛液			= 17
+#DIM CONST 汚れ_母乳_阴茎			= 18
+#DIM CONST 汚れ_母乳_阴茎_愛液	= 19
+
+;STAINとビット判定する汚れ(SETBIT,GETBIT用)
+#DIM CONST 汚れB_愛液				= 0
+#DIM CONST 汚れB_阴茎				= 1
+#DIM CONST 汚れB_精液				= 2
+#DIM CONST 汚れB_菊花				= 3
+#DIM CONST 汚れB_母乳				= 4
+#DIM CONST 汚れB_粘液				= 5
+#DIM CONST 汚れB_破瓜の血			= 6
+
+;STAIN部位(Stain.csvと同一であること)
+#DIM CONST 部位_口 = 0
+#DIM CONST 部位_手 = 1
+#DIM CONST 部位_Ｐ = 2
+#DIM CONST 部位_Ｖ = 3
+#DIM CONST 部位_Ａ = 4
+#DIM CONST 部位_Ｂ = 5
+#DIM CONST 部位_膣内 = 6
+#DIM CONST 部位_腸内 = 7
+
+;住人→あなたのカウンターセクハラ
+#DIM CONST CNT_色っぽい仕草				= 10
+#DIM CONST CNT_見つめる					= 11
+#DIM CONST CNT_体を摺り寄せる			= 12
+#DIM CONST CNT_裙子を捲る			= 13
+#DIM CONST CNT_耳元に息を吹きかける		= 14
+#DIM CONST CNT_抚摸臀部				= 15
+#DIM CONST CNT_囁く						= 16
+#DIM CONST CNT_お尻いじめ				= 21
+#DIM CONST CNT_パンツを脱がす			= 22
+#DIM CONST CNT_パンツ選択				= 23
+#DIM CONST CNT_アイテム装着される		= 24
+#DIM CONST CNT_裙子たくし上げ命令	= 25
+#DIM CONST CNT_贞操帯関連				= 26
+#DIM CONST CNT_飲尿命令					= 27
+#DIM CONST CNT_乳搾り手コキ				= 29
+#DIM CONST CNT_キス						= 30
+#DIM CONST CNT_背面抱擁					= 31
+#DIM CONST CNT_対面抱擁					= 32
+#DIM CONST CNT_胸を揉ませる				= 33
+#DIM CONST CNT_股間をまさぐる			= 34
+#DIM CONST CNT_裙子の中を見せる		= 35
+#DIM CONST CNT_胸を揉む					= 36
+
+#DIM CONST CNT_手淫						= 50
+#DIM CONST CNT_口交				= 51
+#DIM CONST CNT_素股						= 52
+#DIM CONST CNT_乳交					= 53
+#DIM CONST CNT_足交					= 54
+#DIM CONST CNT_肛门爱抚				= 55
+#DIM CONST CNT_舔舐肛门				= 56
+#DIM CONST CNT_指挿入					= 57
+#DIM CONST CNT_胸爱抚					= 58
+#DIM CONST CNT_吮吸乳首					= 59
+#DIM CONST CNT_ディープキス				= 60
+#DIM CONST CNT_强制舔阴				= 70
+#DIM CONST CNT_口交強制			= 71
+#DIM CONST CNT_舔肛侍奉				= 72
+#DIM CONST CNT_ぱふぱふ					= 73
+#DIM CONST CNT_乳合わせ					= 74
+#DIM CONST CNT_タワシ洗い				= 75
+#DIM CONST CNT_正常位挿入される			= 80
+#DIM CONST CNT_骑乘位A挿入される		= 81
+#DIM CONST CNT_后背位A挿入される		= 82
+#DIM CONST CNT_背面座位A挿入される		= 83
+#DIM CONST CNT_骑乘位逆强奸			= 91
+
+;マスターカウンター制御ビット
+;(ビット 0=抚摸臀部不可 1=抱住 2=接吻 3=胸爱抚 4=肛门爱抚 5=阴蒂爱抚 6=指挿入れ)
+#DIM CONST MCC_抚摸臀部不可		= 0 
+#DIM CONST MCC_抱住不可			= 1
+#DIM CONST MCC_接吻不可			= 2
+#DIM CONST MCC_胸爱抚不可			= 3
+#DIM CONST MCC_肛门爱抚不可		= 4
+#DIM CONST MCC_阴蒂爱抚不可			= 5
+#DIM CONST MCC_指挿入れ不可			= 6
+
+;訪問者宅監禁状況フラグ(ビット演算)
+#DIM CONST 訪問者宅_牢屋解錠済 = 1p1
+#DIM CONST 訪問者宅_通路解錠済 = 1p2
+#DIM CONST 訪問者宅_床扉解錠済 = 1p3
+#DIM CONST 訪問者宅_玄関解錠済 = 1p4
+#DIM CONST 訪問者宅_便所使用済 = 1p5
+
+;淫纹ビット番号
+#DIM CONST 淫纹_恥丘				= 0
+#DIM CONST 淫纹_太股				= 1
+#DIM CONST 淫纹_左尻				= 2
+#DIM CONST 淫纹_胸元				= 3
+#DIM CONST 淫纹_右頬				= 4
+
+;浮気公認レベル
+#DIM CONST 浮気_非公認				= 0
+#DIM CONST 浮気_浮気公認			= 1
+#DIM CONST 浮気_诱惑公認			= 2
+#DIM CONST 浮気_性交公認			= 3
+#DIM CONST 浮気_外泊公認			= 4
+#DIM CONST 浮気_人妻公认			= 5
+
+;TFLAG:1で使用する射精箇所ビット番号
+#DIM CONST 射精箇所_避孕套		= 0
+#DIM CONST 射精箇所_膣内			= 1
+#DIM CONST 射精箇所_菊花			= 2 
+#DIM CONST 射精箇所_手淫			= 3
+#DIM CONST 射精箇所_口淫			= 4
+#DIM CONST 射精箇所_乳交		= 5
+#DIM CONST 射精箇所_素股			= 6
+#DIM CONST 射精箇所_足交			= 7 
+#DIM CONST 射精箇所_体表			= 8
+#DIM CONST 射精箇所_舔肛侍奉		= 9
+#DIM CONST 射精箇所_爱抚			= 10
+#DIM CONST 射精箇所_手淫口交		= 20
+#DIM CONST 射精箇所_乳夹口交	= 21
+#DIM CONST 射精箇所_六九式	= 22
+#DIM CONST 射精箇所_强迫口交		= 23
+#DIM CONST 射精箇所_子宮口責め		= 24
+#DIM CONST 射精箇所_授乳手コキ		= 25
+
+;CFLAG:あなた射精フラグで使用される射精箇所ビット番号
+;STAINと対応
+#DIM CONST 被射精箇所_口			= 0
+#DIM CONST 被射精箇所_Ｖ			= 3
+#DIM CONST 被射精箇所_Ａ			= 4
+#DIM CONST 被射精箇所_Ｂ			= 5
+
+;CFLAG:汚れ発覚用の値
+#DIM CONST 汚れ発覚_なし            = 0
+#DIM CONST 汚れ発覚_あり            = 1
+#DIM CONST 汚れ発覚_逃走            = 2
+
+;野外調教用閾値
+#DIM CONST 野外調教閾値_放置プレイ	= 35
+
+;住人同士の交流：行為
+#DIM CONST 住人同士行为_なし		= 0
+#DIM CONST 住人同士行为_会话		= 300
+#DIM CONST 住人同士行为_お茶		= 301
+#DIM CONST 住人同士行为_身体接触 = 302
+#DIM CONST 住人同士行为_抚摸臀部	= 310
+#DIM CONST 住人同士行为_抱きつく	= 311
+#DIM CONST 住人同士行为_接吻	= 312
+#DIM CONST 住人同士行为_胸爱抚		= 313
+#DIM CONST 住人同士行为_肛门爱抚	= 314
+#DIM CONST 住人同士行为_阴蒂爱抚	= 315
+#DIM CONST 住人同士行为_手指插入		= 316
+#DIM CONST 住人同士行为_Ｖ性交Ｎ	= 350
+#DIM CONST 住人同士行为_Ｖ性交Ｃ	= 351
+#DIM CONST 住人同士行为_Ａ性交Ｎ	= 352
+#DIM CONST 住人同士行为_Ａ性交Ｃ	= 353
+#DIM CONST 住人同士行为_Ｖ後戯Ｎ	= 354
+#DIM CONST 住人同士行为_Ｖ後戯Ｃ	= 355
+#DIM CONST 住人同士行为_Ａ後戯Ｎ	= 356
+#DIM CONST 住人同士行为_Ａ後戯Ｃ	= 357
+
+;TA変数用
+;0～7は子宮内精液管理に使用
+;住人同士の処理用
+#DIM CONST TA_好感度	= 9
+;TB変数用
+;0～7は子宮内精液管理に使用
+#DIM CONST TB_客番号	= 9
+#DIM CONST TB_客種別	= 10
+
+;部屋のにおいパッチ
+;FLAG
+#DIM CONST 部屋のにおい_初期FLAG = 500
+#DIM CONST 部屋のにおい_初期FLAG_2 = 550
+#DIM CONST 訪問者の他人のにおい = 600
+;CFLAG
+#DIM CONST 角色的气味_初期CFLAG = 800
+#DIM CONST 角色的气味_自己的气味 = 角色的气味_初期CFLAG + 1
+#DIM CONST 角色的气味_别人的气味_1 = 角色的气味_自己的气味 + 1
+#DIM CONST 角色的气味_别人的气味_2 = 角色的气味_别人的气味_1 + 1
+#DIM CONST 角色的气味_别人的气味_3 = 角色的气味_别人的气味_2 + 1
+#DIM CONST 角色的气味_膣内精液の主 = 角色的气味_别人的气味_3 + 1
+#DIM CONST キャラのにおいの嗅ぎ分け = 角色的气味_膣内精液の主 + 1
+#DIM CONST バグ回避用キャラ最大値 = 45
+;气味类型
+#DIM CONST 气味类型_ゴミ = 1
+#DIM CONST 气味类型_汗 = 2
+#DIM CONST 气味类型_体臭 = 4
+#DIM CONST 气味类型_愛液 = 8
+#DIM CONST 气味类型_精液 = 16
+#DIM CONST 气味类型_食物 = 32
+#DIM CONST 气味类型数最大値 = 6
+;气味类型(ビット用)
+#DIM CONST 气味类型B_ゴミ = 0
+#DIM CONST 气味类型B_汗 = 1
+#DIM CONST 气味类型B_体臭 = 2
+#DIM CONST 气味类型B_愛液 = 3
+#DIM CONST 气味类型B_精液 = 4
+#DIM CONST 气味类型B_食物 = 5
+;においの強さ
+#DIM CONST においの強さ_愛液_ぐっしょり = 25
+#DIM CONST においの強さ_愛液_しっとり = 12
+#DIM CONST においの強さ_無臭 = 0
+#DIM CONST においの強さ_精液_熟成 = 50
+#DIM CONST においの強さ_精液_大量 = 30
+#DIM CONST においの強さ_精液_少量 = 12
+#DIM CONST においの強さ_訪問者の体臭 = 10
+;においの判別
+#DIM CONST においの判別_詳細 = 50
+#DIM CONST においの判別_可能 = 13
+
+
+;移动目的
+#DIM CONST 移动目的_自慰自室	 = 1
+#DIM CONST 移动目的_妊娠自室	 = 2
+#DIM CONST 移动目的_去厕所		 = 3
+#DIM CONST 移动目的_从厕所返回		 = 4
+#DIM CONST 移动目的_NTR逃避		 = 5
+#DIM CONST 移动目的_訪問者		 = 6	; 訪問者の元への移动
+
+;その他
+#DIM CONST 倍_万			= 10000
+
+
+;刻印番号、CSVと二重管理になってしまうが妥協
+#DIM CONST 刻印番号_苦痛刻印     = 0
+#DIM CONST 刻印番号_快乐刻印     = 1
+#DIM CONST 刻印番号_屈服刻印     = 2
+#DIM CONST 刻印番号_反発刻印     = 3
+#DIM CONST 刻印番号_浮気快乐刻印 = 5
+#DIM CONST 刻印番号_浮気屈服刻印 = 6
+
+;成長度
+#DIM CONST 成長度_なし = 0
+#DIM CONST 成長度_乳児 = 1
+#DIM CONST 成長度_幼児 = 2
+#DIM CONST 成長度_成長期 = 3
+#DIM CONST 成長度_成人 = 4
+
+;勃起制限閾値
+#DIM CONST 勃起制限 = 300
+
+;颜色
+#DIM CONST 深灰色 = 0x3c3c3c
+#DIM CONST 黄色 = 0xffff00
+#DIM CONST 红色 = 0xff0000
+#DIM CONST 橘红色 = 0xff4500
+#DIM CONST 橙色 = 0xff7800
+#DIM CONST 绿色 = 0x00ff00
+#DIM CONST 蓝色 = 0x0000ff
+#DIM CONST 青色 = 0x00ffff
+#DIM CONST 品红色 = 0xff00ff
+#DIM CONST 黑色 = 0x1e1e1e
+#DIM CONST 灰色 = 0x808080
+#DIM CONST 白色 = 0xffffff
+#DIM CONST 紫色 = 0x960096
+#DIM CONST 粉红色 = 0xff96c8
+
+;0034新增 訪問者の家にお出かけする理由
+#DIM CONST 出掛理由_でかけない = 0
+#DIM CONST 出掛理由_でかける = 1
+#DIM CONST 出掛理由_外泊公認_時間経過 = 11
+#DIM CONST 出掛理由_外泊公認_あなたのため = 12
+#DIM CONST 出掛理由_外泊公認_訪問者のため = 13

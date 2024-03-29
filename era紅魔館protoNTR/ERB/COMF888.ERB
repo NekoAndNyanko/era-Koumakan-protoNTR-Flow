@@ -1,0 +1,37 @@
+﻿;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+; 一日の終了
+@COM888
+	#DIM 場所番号記憶
+
+	SKIPDISP 1
+
+	;一時退避してあなたを「ここではないどこか」へ
+	場所番号記憶 = CFLAG:MASTER:現在位置
+	CFLAG:MASTER:現在位置  = -1
+	WHILE (TIME_PROGRESS(CFLAG:MASTER:起床時間) < 要睡眠経過時間)
+		CALL CHARA_MOVEMENT ; キャラの移動
+		CALL INHABITANT_DO  ; 住人同士の交流
+		CALL VISITER_DO     ; 訪問者のアクション
+		CALL EVENTCOMEND2   ; コマンド終了後
+		TFLAG:300 = DATETIME()
+		TIME += 30
+	WEND
+	SELECTCASE 場所番号記憶
+		CASE 場所_訪問者宅,場所_売春宿
+			CFLAG:MASTER:現在位置 = 場所番号記憶
+		CASEELSE
+			;初期位置をリセット
+			CFLAG:MASTER:現在位置 = CFLAG:MASTER:開始位置
+	ENDSELECT
+	
+	;訪問者関係のフラグをリセット
+	FLAG:訪問者の現在位置 = 0
+	FLAG:訪問者同行フラグ = 0
+
+	SKIPDISP 0
+
+	BEGIN AFTERTRAIN
+
+@COM_ABLE888
+	RETURN 1
+	

@@ -1,0 +1,397 @@
+﻿;-----------------------------------------------------------
+;
+;	era紅魔館　カメラ設置パッチ
+;
+;	概要
+;	　紅魔館にあれな目的で小型CCDカメラや集音マイクを設置できるようにするパッチ
+;
+;	導入に必要なファイル
+;	　・MAKEFILM.ERB	このファイル
+;	　・FILMMESSAGE.ERB	共通口上ファイル
+;	　・Train.csv		コマンドの追加に必要なファイル
+;	　・Item.csv		アイテムの追加に必要なファイル
+;
+;	追加コマンド
+;	　・450, カメラ設置
+;	　・451, カメラ撤去
+;	　・452, 映像解析
+;
+;	追加アイテム
+;	　・35, CCDカメラ一式
+;	　・36, 小型集音マイク
+;
+;	使用フラグ
+;	　・TFLAG:900	カメラ設置場所
+;	　・TFLAG:901	カメラ撮影時間
+;	　・TFLAG:902	カメラ記録回数	カメラ記録回数(最大20)
+;	　・TFLAG:903	カメラ映像金額
+;	　・TSTR:10	カメラ記録文字列
+;
+;-----------------------------------------------------------
+;-----------------------------------------------------------
+;	撮影処理
+;-----------------------------------------------------------
+@SECRET_CAMERA
+	;既に10回以上記録している場合は抜ける
+	SIF TFLAG:カメラ記録回数 >= 20
+		RETURN
+	VARSET LOCAL
+	VARSET LOCALS
+	FOR LOCAL, 1, CHARANUM
+		SIF CFLAG:LOCAL:現在位置 != TFLAG:カメラ設置場所
+			CONTINUE
+		;誰かがカメラ設置位置にいる場合、その情報を記録
+		;@記録時間:キャラ番号:撮影場所(番号):時間
+		LOCALS = {TFLAG:カメラ記録回数}:{LOCAL}:{CFLAG:LOCAL:現在位置}:{TIME}/
+		IF TFLAG:カメラ記録回数 == 0
+			TSTR:10 = %LOCALS%
+		ELSE
+			TSTR:10 += LOCALS
+		ENDIF
+		LOCAL:1 ++
+		;デバッグ用
+		;printforml 録画：%LOCALS%
+	NEXT
+	;記録回数更新
+	SIF LOCAL:1
+		TFLAG:カメラ記録回数 ++
+
+;-----------------------------------------------------------
+;	カメラ設置情報表示
+;		[400]移動 選択時にカメラの設置場所、設置時間を表示する
+;-----------------------------------------------------------
+@CAMERA_SPOT
+	IF TFLAG:カメラ設置場所 != 0
+		PRINTFORML 
+		PRINTFORML 現在カメラを【%GETPLACENAME(TFLAG:カメラ設置場所)%】に設置しています
+		PRINTFORML (撮影開始から{TIME_PROGRESS(TFLAG:カメラ設置時刻)}分経過)
+	ENDIF
+RETURN 1
+
+;-----------------------------------------------------------
+;	フィルム内容の確認(描写)
+;		引数
+;		・ARGS:撮影内容
+;		返り値
+;		・0 = 内容無し
+;		・1 = 内容あり
+;-----------------------------------------------------------
+@CHEACK_FILM(ARGS)
+	VARSET LOCAL
+	VARSET LOCALS
+	;スロット数取得
+	LOCAL = SLOTNUM(ARGS)
+	;スロットが0なら何も映ってない
+	SIF LOCAL == 0
+		RETURN 0
+	;何かが映っていた
+	FOR LOCAL:1, 0, LOCAL
+		;スロットの切り出し
+		LOCALS = %SLOTSLICE(ARGS, LOCAL:1)%
+		;単価
+		LOCAL:10 += SLOTPRICE(LOCALS)
+		LOCAL:2 = SLOTTIMING(LOCALS)
+		;タイミングが異なっているなら線を引く
+		SIF LOCAL:1 == 0
+			DRAWLINE
+		IF LOCAL:2 != LOCAL:3
+			PRINTFORML が映っていた
+			PRINTFORML 
+			CALL FILM_MESSAGE_T(LOCAL:6, LOCAL:7)
+			LOCAL:6 = 0
+			DRAWLINE
+			LOCAL:5 = 0
+		ENDIF
+		LOCAL:3 = LOCAL:2
+		;出演者取得
+		LOCAL:4 = SLOTACTRESS(LOCALS)
+		;撮影場所取得
+		LOCAL:7 = SLOTPLACE(LOCALS)
+		IF LOCAL:5 == 0
+			PRINTFORM %GETPLACENAME(LOCAL:7)%に仕掛けたカメラには
+		ELSE
+			PRINTFORM と
+		ENDIF
+		PRINTFORM %CALLNAME:(LOCAL:4)%
+		SETBIT LOCAL:6, LOCAL:4
+		LOCAL:5 ++
+	NEXT
+	PRINTFORMW が映っていた
+	CALL FILM_MESSAGE_T(LOCAL:6, LOCAL:7)
+	DRAWLINE 
+	;フィルムの合計金額
+	TFLAG:カメラ映像金額 = LOCAL:10
+RETURN 1
+
+;-----------------------------------------------------------
+;	スロット数の取得
+;		引数
+;		　ARGS:撮影内容
+;		返り値
+;		　スロット数(最大値200)
+;-----------------------------------------------------------
+@SLOTNUM(ARGS)
+	#FUNCTION
+	VARSET LOCAL
+	VARSET LOCALS
+	SPLIT ARGS, "/", LOCALS
+	FOR LOCAL:1, 0, 200
+		LOCAL = STRLENS(LOCALS:(LOCAL:1))
+		SIF LOCAL == 0
+			BREAK
+	NEXT
+RETURNF (LOCAL:1 - 1)
+
+;-----------------------------------------------------------
+;	スロットタイミング取得
+;		スロットの撮影タイミングを取得する
+;		引数
+;		　・ARGS:スロット
+;		返り値
+;		　・撮影タイミング
+;-----------------------------------------------------------
+@SLOTTIMING(ARGS)
+	#FUNCTION
+	VARSET LOCALS
+	;スロットを要素ごとに切り分け
+	SPLIT ARGS, ":", LOCALS
+	LOCAL = TOINT(LOCALS:0)
+RETURNF LOCAL
+
+;-----------------------------------------------------------
+;	スロット出演者取得
+;		スロットの出演者のキャラ番号を求める
+;		引数
+;		　ARGS:スロット
+;		返り値
+;		　キャラ番号
+;-----------------------------------------------------------
+@SLOTACTRESS(ARGS)
+	#FUNCTION
+	VARSET LOCALS
+	LOCAL = 0
+	SPLIT ARGS, ":", LOCALS
+	LOCAL = TOINT(LOCALS:1)
+RETURNF LOCAL
+
+;-----------------------------------------------------------
+;	スロット撮影場所取得
+;		引数
+;		　・ARGS:スロット
+;		返り値
+;		　・撮影場所の番号
+;-----------------------------------------------------------
+@SLOTPLACE(ARGS)
+	#FUNCTION
+	VARSET LOCALS
+	LOCAL = 0
+	SPLIT ARGS, ":", LOCALS
+	LOCAL = TOINT(LOCALS:2)
+RETURNF LOCAL
+
+;-----------------------------------------------------------
+;	スロットの切り出し
+;		引数
+;		　ARGS:撮影内容
+;		　ARG:切り出したいスロットの番号(0-)
+;		返り値
+;		　スロット内容
+;-----------------------------------------------------------
+@SLOTSLICE(ARGS, ARG)
+	#FUNCTIONS
+	VARSET LOCALS
+	SPLIT ARGS, "/", LOCALS
+RETURNF LOCALS:ARG
+
+;-----------------------------------------------------------
+;	スロット単価取得
+;		引数
+;		　・ARGS:スロット
+;		返り値
+;		　単価
+;-----------------------------------------------------------
+@SLOTPRICE(ARGS)
+	#FUNCTION
+	;地位基準≒魔理沙とかが無価値だったのを変更
+	;倍倍ゲームだったのを加算中心に変更、おこづかい程度に減収させる
+	VARSET LOCAL
+	LOCAL = SLOTACTRESS(ARGS)
+	;基本値
+	LOCAL:2 = 30
+	;地位補正(咲夜が500)
+	SIF CFLAG:LOCAL:館内地位 >= 500
+		LOCAL:2 += 10
+	SIF TALENT:LOCAL:魅力
+		LOCAL:2 += 10
+	SIF TALENT:LOCAL:魅惑
+		LOCAL:2 += 10
+	SIF TALENT:LOCAL:謎の魅力
+		LOCAL:2 += 20
+	SIF TALENT:LOCAL:人気
+		LOCAL:2 += 10
+
+	;撮影箇所で重み付け
+	LOCAL:3 = SLOTPLACE(ARGS)
+	SELECTCASE LOCAL:3
+		;ぱんちら補正
+		CASE 場所_広間, 場所_二階踊り場, 場所_二階廊下
+			;BIT(0=スカート, 3=ズボン)
+			IF GETBIT(TEQUIP:LOCAL:0, 0) && !GETBIT(TEQUIP:LOCAL:0, 3)
+				LOCAL:2 += 30
+				;1=ノーパンスカート
+				SIF TEQUIP:LOCAL:0 == 1
+					LOCAL:2 += 30
+			ENDIF
+		;トイレ補正
+		CASE 場所_屋外トイレ, 場所_1Fトイレ, 場所_2Fトイレ
+			LOCAL:2 += 60
+		CASE 場所_地下室
+			LOCAL:2 += 30
+		CASEELSE
+			;補正なし
+	ENDSELECT
+	;お風呂補正、個人宅に二度補正がかからないように
+	IF BATHROOM(LOCAL:3)
+		LOCAL:2 += 80
+	;私室補正
+	ELSEIF CFLAG:LOCAL:開始位置 == LOCAL:3
+		LOCAL:2 += 50
+	ENDIF
+	;集音マイクがある場合は更に1.2倍
+	SIF ITEM:36 >= 1
+		TIMES LOCAL:2, 1.20
+	;スロット最低単価は20
+	SIF LOCAL:2 < 20
+		LOCAL:2 = 20
+RETURNF LOCAL:2
+
+;-----------------------------------------------------------
+;	以下、システム追加に必要な関数
+;-----------------------------------------------------------
+@COM_ABLE450
+	;カメラ設置実行判定
+	SIF !TFLAG:100
+		RETURN 0
+	;一括管理
+	SIF GLOBAL_COMABLE(450)
+		RETURN RESULT
+	;CCDカメラを保有していなければ駄目
+	SIF ITEM:35 == 0
+		RETURN 0
+	;館の外では無理
+	SIF CFLAG:MASTER:現在位置 > 場所番号最大値
+		RETURN 0
+	;既に設置中は無理
+	SIF TFLAG:カメラ設置場所 != 0
+		RETURN 0
+	;誰かが同じ場所にいるときは無理
+	FOR LOCAL, 1, CHARANUM
+		SIF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置
+			RETURN 0
+	NEXT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx, 0:xxx
+@COM_ABLE451
+	;カメラ撤去実行判定
+	SIF !TFLAG:100
+		RETURN 0
+	;一括管理
+	SIF GLOBAL_COMABLE(451)
+		RETURN RESULT
+	;カメラを保有してなければ無理
+	SIF ITEM:35 == 0
+		RETURN 0
+	;館の外では無理
+	SIF CFLAG:MASTER:現在位置 > 場所番号最大値
+		RETURN 0
+	;既に設置していなければ無利
+	SIF TFLAG:カメラ設置場所 == 0
+		RETURN 0
+	;設置場所にいなければ無利
+	SIF CFLAG:MASTER:現在位置 != TFLAG:カメラ設置場所
+		RETURN 0
+	;誰か同じ場所にいると無理
+	FOR LOCAL, 1, CHARANUM
+		SIF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置 && !CFLAG:LOCAL:睡眠
+			RETURN 0
+	NEXT
+	;設置から1時間以上経たないと撤去不可
+	SIF TIME_PROGRESS(TFLAG:カメラ設置時刻) < 60
+		RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx, 0:xxx
+@COM_ABLE452
+	;映像解析実行判定
+	SIF !TFLAG:100
+		RETURN 0
+	;一括管理
+	SIF GLOBAL_COMABLE(452)
+		RETURN RESULT
+	;自室にいないと無理
+	SIF CFLAG:MASTER:現在位置 != CFLAG:MASTER:開始位置
+		RETURN 0
+	;カメラが回収されていないと無理
+	SIF TFLAG:カメラ設置場所 != 0 || TFLAG:カメラ設置時刻 == 0
+		RETURN 0
+	;誰かが部屋にいると無理
+	FOR LOCAL, 1, CHARANUM
+		SIF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置 && !CFLAG:LOCAL:睡眠
+			RETURN 0
+	NEXT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx, 0:xxx
+@MESSAGE_COM450
+	;描写
+	DRAWLINE
+	PRINTFORMW 小型カメラを%GETPLACENAME(TFLAG:カメラ設置場所)%に設置しました
+	PRINTFORML 
+	DRAWLINE
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx, 0:xxx
+@MESSAGE_COM451
+	;描写
+	PRINTFORMW 小型カメラを回収しました
+	PRINTFORML 
+	DRAWLINE
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx, 0:xxx
+@MESSAGE_COM452
+	PRINTFORMW %CALLNAME:MASTER%は回収した小型カメラの映像記録を確認した
+	PRINTFORML
+	;内容描画
+	CALL CHEACK_FILM(TSTR:10)
+	LOCAL:0 = RESULT
+	IF LOCAL:0 == 0
+		PRINTFORMW 回収したカメラには満足な映像は映っていなかった……
+	ELSE
+		PRINTFORMW ……これらの映像は{TFLAG:カメラ映像金額}円で売れそうだ
+		PRINTFORML [0] 売却する  [1] 保存する
+		$INPUT_LOOP_FILM_SELL
+		INPUT
+		IF RESULT == 0
+			PRINTFORMW 映像を売却し${TFLAG:カメラ映像金額}を得ました
+			MONEY += TFLAG:カメラ映像金額
+			;売却金額クリア
+			TFLAG:カメラ映像金額 = 0
+			TSTR:10 = 
+			TFLAG:カメラ記録回数 = 0
+			TFLAG:カメラ設置時刻 = 0
+		ELSEIF RESULT == 1
+			PRINTFORMW 映像を保存しました
+		ELSE
+			GOTO INPUT_LOOP_FILM_SELL
+		ENDIF
+	ENDIF

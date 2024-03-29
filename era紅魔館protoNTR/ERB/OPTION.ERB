@@ -1,0 +1,335 @@
+﻿;オプション設定処理
+@OPTION
+	PRINTL 設定項目を選択してください
+	PRINTL [0] - テキスト設定
+	PRINTL [1] - コマンドフィルタ
+	PRINT [2] - 消耗品の自動購入 
+		PRINTFORML \@ FLAG:1001 ? ON # OFF \@
+	PRINT [3] - 館の情報表示 
+		PRINTFORML \@ FLAG:1002 ? OFF # ON \@
+	PRINTFORML [10] - 寝取られパッチオプション
+	PRINTFORML [11] - ぅなパッチオプション
+	PRINTFORML [12] - キャラクターリセット
+	PRINTFORML [13] - 素質変更について
+	PRINTL
+	PRINTFORML [15] - ズボンなどを穿いている時下着の情報が得られなくなる：\@ GETBIT(FLAG:雑多設定,1) ?ON#OFF\@
+	PRINTFORML [16] - 移動中に紅魔館の住人と遭遇した際に頼まれ事をされるようになる：\@ GETBIT(FLAG:雑多設定,2) ?ON#OFF\@
+	PRINTFORML [17] - 服越しに汚れがわからなくなるようになる：\@ GETBIT(FLAG:汚れ非表示設定,0) ?ON#OFF\@
+	PRINTL
+	PRINTFORML [20] - 住人同士の交流　地位と立場
+	PRINTFORML [21] - 住人が服を毎日交換しなくなる：\@ GETBIT(FLAG:匂いフェチ,1) ?ON#OFF\@
+	PRINTFORML [24] - 催眠パッチ設定：\@ GETBIT(FLAG:催眠設定,1) ?ON#OFF\@
+	PRINTFORML [25] - 住人との交流による好感度の上昇倍率設定：\@ FLAG:好感度倍率 ?{FLAG:好感度倍率/10}.{FLAG:好感度倍率%10}倍#1倍\@
+	PRINTFORML [26] - 屈服度の上昇倍率設定：\@ FLAG:屈服度倍率 ?{FLAG:屈服度倍率/10}.{FLAG:屈服度倍率%10}倍#1倍\@
+	PRINTFORML [27] - 部屋と住人のにおい設定
+	PRINTL
+	PRINTL [100]-戻る
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		CALL OPTION_TEXT_SETTING
+	ELSEIF RESULT == 1
+		CALL OPTION_COMMAND_FILTER
+	ELSEIF RESULT == 2
+		FLAG:1001 = !FLAG:1001
+	ELSEIF RESULT == 3
+		CALL OPTION_HOUSE_INFO
+	ELSEIF RESULT == 10
+		CALL NTR_OPTION
+	ELSEIF RESULT == 11
+		CALL LUNA_OPTION
+	ELSEIF RESULT == 12
+		CALL CHARA_RESET
+		CALL 体詳細設定１
+	ELSEIF RESULT == 13
+		CALL Ability_OPTION	
+	ELSEIF RESULT == 15
+		CALL 下着不可視コンフィング
+	ELSEIF RESULT == 16
+		CALL 従者イベントコンフィング
+	ELSEIF RESULT == 17
+		CALL 汚れ非表示コンフィグ
+	ELSEIF RESULT == 20
+		CALL INHABITANT_SETTINGS
+	ELSEIF RESULT == 21
+		CALL 匂いフェチコンフィグ
+	ELSEIF RESULT == 24
+		CALL 催眠パッチコンフィグ
+	ELSEIF RESULT == 25
+		CALL 好感度倍率コンフィグ
+	ELSEIF RESULT == 26
+		CALL 屈服度倍率コンフィグ
+	ELSEIF RESULT == 27
+		CALL 部屋のにおいコンフィグ
+	ELSEIF RESULT == 100
+		RETURN 0
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	RESTART
+
+;テキスト関連
+@OPTION_TEXT_SETTING
+	PRINTL テキストの設定をしてください
+	PRINT 現在の設定：
+	IF FLAG:情景テキスト設定 == 1 && FLAG:口上テキスト設定 == 2
+		PRINTL 【口上テキスト（常に表示）＋情景テキスト】
+	ELSEIF FLAG:情景テキスト設定 == 1 && FLAG:口上テキスト設定 == -1
+		PRINTL 【情景テキストのみ】
+	ELSEIF FLAG:情景テキスト設定 == 0 && FLAG:口上テキスト設定 == -1
+		PRINTL 【テキストを表示しない】
+	ENDIF
+	PRINTL 　
+	PRINTL [0] - 口上テキスト＋情景テキスト
+	PRINTL [1] - 情景テキストのみ
+	PRINTL [2] - テキストを表示しない
+	PRINTL [100]-戻る
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 100
+		RETURN 0
+	ELSEIF RESULT == 0
+		PRINTL 【口上テキスト＋情景テキスト】に設定しました
+		FLAG:情景テキスト設定 = 1
+		FLAG:口上テキスト設定 = 2
+	ELSEIF RESULT == 1
+		PRINTL 【情景テキストのみ】に設定しました
+		FLAG:情景テキスト設定 = 1
+		FLAG:口上テキスト設定 = -1
+	ELSEIF RESULT == 2
+		PRINTL 【テキストを表示しない】に設定しました
+		FLAG:情景テキスト設定 = 0
+		FLAG:口上テキスト設定 = -1
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+
+	RESTART
+
+;文字列変数に保存してみた
+@OPTION_COMMAND_FILTER
+	VARSET LOCAL
+	FOR COUNT,0,650
+		LOCALS = /{COUNT}/
+		SIF STRCOUNT(SAVESTR:0,LOCALS)
+			LOCAL:COUNT = 1
+	NEXT
+	SIF SAVESTR:0 == ""
+		SAVESTR:0 = /
+	DRAWLINE
+	TFLAG:100 = 1
+	FOR COUNT,0,650
+		LOCALS = /{COUNT}/
+		SIF STRCOUNT(SAVESTR:0,LOCALS)
+			SETCOLOR 色設定_テキスト_備考
+		SIF STRLENS(TRAINNAME:COUNT)
+			PRINTFORMC %TRAINNAME:COUNT%[{COUNT,3}]
+		RESETCOLOR
+	NEXT
+	TFLAG:100 = 0
+	PRINTL 
+	DRAWLINE
+	PRINTL [1000] - 決定 [1001] - リセット
+	PRINTL [1002] - コマンドフィルタの保存 [1003] - コマンドフィルタのロード
+	PRINTL [1010] - SMフィルタ [1011] - Ｖフィルタ
+	INPUT
+	IF RESULT == 1000
+		RETURN 0
+	ELSEIF RESULT == 1001
+		SAVESTR:0 = 
+		RESTART
+	ELSEIF RESULT == 1002
+		$INPUT_LOOP_SAVE
+		LOADGLOBAL
+		FOR LOCAL,0,3
+			PRINTFORM [{LOCAL}] - 
+			IF STRLENS(GLOBALS:(LOCAL * 2 + 1))
+				PRINTFORML [%GLOBALS:(LOCAL * 2 + 1)%]
+			ELSE
+				PRINTL ----------
+			ENDIF
+		NEXT
+		PRINTL [100] - 戻る
+		INPUT
+		LOCAL = RESULT
+		IF RESULT == 100
+			RESTART
+		ELSEIF RESULT < 0 || RESULT > 2
+			GOTO INPUT_LOOP_SAVE
+		ENDIF
+		SIF STRLENS(GLOBALS:(RESULT * 2 + 1))
+			PRINTFORML 【%GLOBALS:(RESULT * 2 + 1)%】 このデータに上書きします
+		PRINTL コマンドフィルタの名前を登録してください
+		INPUTS
+		GLOBALS:(LOCAL * 2 + 1) = %RESULTS%
+		GLOBALS:(LOCAL * 2) = %SAVESTR:0%
+		PRINTFORMW コマンドフィルタ【%GLOBALS:(LOCAL * 2 + 1)%】を登録しました
+		SAVEGLOBAL
+		RESTART
+	ELSEIF RESULT == 1003
+		$INPUT_LOOP_LOAD
+		LOADGLOBAL
+		FOR LOCAL,0,3
+			PRINTFORM [{LOCAL}] - 
+			IF STRLENS(GLOBALS:(LOCAL * 2 + 1))
+				PRINTFORML [%GLOBALS:(LOCAL * 2 + 1)%]
+			ELSE
+				PRINTL ----------
+			ENDIF
+		NEXT
+		PRINTL [100] - 戻る
+		INPUT
+		IF RESULT == 100
+			RESTART
+		ELSEIF RESULT < 0 || RESULT > 2
+			GOTO INPUT_LOOP_LOAD
+		ENDIF
+		PRINTFORMW コマンドフィルタ【%GLOBALS:(RESULT * 2 + 1)%】を読み込みました
+		SAVESTR:0 = %GLOBALS:(RESULT * 2)%
+		RESTART
+	;各種フィルタ
+	ELSEIF RESULT == 1010 || RESULT == 1011
+		FOR COUNT,0,650
+			;SM
+			IF RESULT == 1010
+				SIF (COUNT >= 100 && COUNT < 120) || (COUNT >= 140 && COUNT < 160)
+					LOCAL:COUNT = 1
+			;V
+			ELSEIF RESULT == 1011
+				SIF COUNT == 3 || COUNT == 44 || COUNT == 60 || COUNT == 61 || COUNT == 65 || COUNT == 67 || COUNT == 68 || COUNT == 71 
+					LOCAL:COUNT = 1
+				SIF COUNT == 122|| COUNT == 141 || COUNT == 143 || COUNT == 185 || COUNT == 603 || COUNT == 644
+					LOCAL:COUNT = 1
+			ENDIF
+		NEXT
+	ELSEIF STRLENS(TRAINNAME:RESULT)
+		LOCAL:RESULT = !LOCAL:RESULT
+	ELSE
+		RESTART
+	ENDIF
+	SAVESTR:0 = /
+	FOR COUNT,0,650
+		SIF !LOCAL:COUNT
+			CONTINUE
+		LOCALS = /{COUNT}/
+		SIF !STRCOUNT(SAVESTR:0,LOCALS)
+			SAVESTR:0 = %SAVESTR:0%{COUNT}/
+	NEXT
+	RESTART
+
+@OPTION_HOUSE_INFO
+	PRINTL ゴミの山を見なかった事にできます
+	PRINTL [0] 情報表示ON [1] - OFF
+	INPUT
+	IF RESULT == 0
+		FLAG:1002 = 0
+	ELSE
+		FLAG:1002 = 1
+	ENDIF
+
+
+@Ability_OPTION
+	PRINTL 経験により素質が変化するようにしますか？
+	PRINTL [0] はい [1] いいえ
+	INPUT
+	IF RESULT == 0
+		FLAG:56 = 1
+		PRINTL 素質が変化するようになりました
+	ELSE
+		FLAG:56 = 0
+		PRINTL 素質が変化しないようになりました
+	ENDIF
+
+@下着不可視コンフィング
+	IF GETBIT(FLAG:雑多設定,1)
+		CLEARBIT FLAG:雑多設定,1
+	ELSE
+		SETBIT FLAG:雑多設定,1
+	ENDIF
+
+@従者イベントコンフィング
+	IF GETBIT(FLAG:雑多設定,2)
+		CLEARBIT FLAG:雑多設定,2
+	ELSE
+		SETBIT FLAG:雑多設定,2
+	ENDIF
+
+
+@汚れ非表示コンフィグ
+	IF GETBIT(FLAG:汚れ非表示設定,0)
+		CLEARBIT FLAG:汚れ非表示設定,0
+	ELSE
+		SETBIT FLAG:汚れ非表示設定,0
+	ENDIF
+
+@匂いフェチコンフィグ
+	IF GETBIT(FLAG:匂いフェチ,1)
+		CLEARBIT FLAG:匂いフェチ,1
+	ELSE
+		SETBIT FLAG:匂いフェチ,1
+	ENDIF
+
+@催眠パッチコンフィグ
+	IF GETBIT(FLAG:催眠設定,1)
+		CLEARBIT FLAG:催眠設定,1
+	ELSE
+		SETBIT FLAG:催眠設定,1
+	ENDIF
+
+@好感度倍率コンフィグ
+	PRINTL
+	PRINTFORML 倍率設定（1で0.1倍　MAX 50　0以下でリセット）
+	INPUT
+	
+	IF RESULT > 0
+		FLAG:好感度倍率 = MIN(RESULT, 50)
+	ELSE
+		FLAG:好感度倍率 = 0
+	ENDIF
+
+@屈服度倍率コンフィグ
+	PRINTL
+	PRINTFORML 倍率設定（MAX 50　0未満でリセット）
+	INPUT
+	
+	IF RESULT > 0
+		FLAG:屈服度倍率 = MIN(RESULT, 500)
+	ELSE
+		FLAG:屈服度倍率 = 0
+	ENDIF
+	
+@部屋のにおいコンフィグ
+	$CONFIG_TOP
+	PRINT 現在の状態は 
+	IF GETBIT(FLAG:部屋のにおい_初期FLAG,0) && GETBIT(FLAG:部屋のにおい_初期FLAG,1)
+		PRINT 詳細モード
+	ELSEIF GETBIT(FLAG:部屋のにおい_初期FLAG,0)
+		PRINT 通常モード
+	ELSE
+		PRINT OFF
+	ENDIF
+	PRINTL です
+	PRINTL
+	PRINTL [100] - 通常モード：体のにおいと汗のにおいのみ判別可能
+	PRINTL [101] - 詳細モード：全てのにおいが詳細に判別可能
+	PRINTL [102] -    OFF    ：この機能を使用しません
+	PRINTL
+	PRINTL [999] 戻る
+	
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 100
+		SETBIT FLAG:部屋のにおい_初期FLAG,0
+		CLEARBIT FLAG:部屋のにおい_初期FLAG,1
+	ELSEIF RESULT == 101
+		SETBIT FLAG:部屋のにおい_初期FLAG,0
+		SETBIT FLAG:部屋のにおい_初期FLAG,1
+	ELSEIF RESULT == 102
+		CLEARBIT FLAG:部屋のにおい_初期FLAG,0
+		CLEARBIT FLAG:部屋のにおい_初期FLAG,1
+	ELSEIF RESULT == 999
+		RETURN 0
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	GOTO CONFIG_TOP

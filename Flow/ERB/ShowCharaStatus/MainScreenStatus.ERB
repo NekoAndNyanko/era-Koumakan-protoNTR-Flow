@@ -1,0 +1,1469 @@
+﻿;显示主界面的信息栏
+;-------------------------------------------------------------------------------
+;起床中の基本情報（時間、HPMP、各種パラメータなど）を表示する
+@SHOW_STATUS
+VARSET LOCAL
+TFLAG:100 = TFLAG:101
+SIF TFLAG:101 == 1
+	TFLAG:100 = 0
+SIF TFLAG:101
+	TFLAG:101 --
+SIF TFLAG:COMABLE管理 == 2
+	CALL SHOW_TOUCH
+SIF GETBIT(FLAG:雑多設定,2)
+	CALL 従者E_進展
+;-------------------------------------------------
+;料理の時間経過
+;-------------------------------------------------
+SIF FLAG:料理 > 0
+	CALL CEACK_COOKING
+;-------------------------------------------------
+;キャラの态度
+;-------------------------------------------------
+CALL CHARA_ATTITUDE
+;-------------------------------------------------
+;時間経過、キャラの移动
+;-------------------------------------------------
+IF TFLAG:195
+	;TFLAGを戻す
+	TFLAG:195 = 0
+ELSE
+	CALL CHARA_MOVEMENT
+	IF TCVAR:MASTER:130 >= 1
+		LOCAL:1 = IN_ROOM("MIN", CFLAG:MASTER:現在位置, "CFLAG", GETNUM(CFLAG, "亲密程度"), 1)
+		LOCAL:2 = CFLAG:(LOCAL:1):6
+		IF LOCAL:2 <= 0 && LOCAL:1 > 0 && CFLAG:(LOCAL:1):現在位置 != CFLAG:(LOCAL:1):前ターン位置 && !CFLAG:(LOCAL:1):睡眠
+			PRINTFORMW %CALLNAME:(LOCAL:1)%が入ってきたことにより空気が変わってしまった…
+			FOR LOCAL, 0, CHARANUM
+				SIF CFLAG:LOCAL:同室 && CFLAG:LOCAL:亲密程度 >= 1 && !CFLAG:LOCAL:睡眠
+					CALL KOJO_EVENT(8, LOCAL, LOCAL:1)
+			NEXT
+		ENDIF
+	ENDIF
+	VARSET LOCAL
+	CALL INHABITANT_DO		; 住人同士の交流
+	CALL VISITER_DO			; 訪問者のアクション
+ENDIF
+TFLAG:300 = DATETIME()
+CFLAG:MASTER:睡眠 = 0
+;調教ターゲット＆亲密程度設定
+;CALL INFO_SetTarget
+;MASTERと同室フラグ
+FOR LOCAL,1,CHARANUM
+	IF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置
+		CALL 确认肌肤颜色(LOCAL)
+		CALL INFO_确认对象状态(LOCAL)
+		;下半身下着が見える状態ならフラグ取得
+		SIF GETBIT(FLAG:雑多設定,1) && !EQUIP:LOCAL:下半身上着１ && !EQUIP:LOCAL:下半身上着２ && !EQUIP:LOCAL:裙子 && !EQUIP:LOCAL:赛车服 && !EQUIP:LOCAL:连衣裙 && !EQUIP:LOCAL:着物
+			CFLAG:LOCAL:ぱんつ確認 = 1
+		;同室じゃなく(遭遇発生時)、睡眠状態でなければ発生
+		IF !CFLAG:LOCAL:同室 && !CFLAG:LOCAL:睡眠
+			;外出宣言判定
+			CALL GoOut_SeeYou(LOCAL, 0)
+			IF RESULT:0 > 0
+				;出かけたので処理中断
+				CONTINUE
+			ENDIF
+			;遭遇口上と情事発覚口上
+			CALL AFFAIR_DISCLOSURE(LOCAL, 0)
+			;恋慕じゃない場合に合鍵を回収される
+			CALL INFO_CheckMyRoom(LOCAL)
+			CFLAG:LOCAL:同室 = 1
+		ENDIF
+	ELSE
+		;相手からこちらが見えていて、相手かこちらかが移动したかこちらが押し倒した
+		;SIF CAN_MOVE(CFLAG:LOCAL:現在位置, CFLAG:MASTER:現在位置) == 2 && (CFLAG:MASTER:前ターン位置 != CFLAG:MASTER:現在位置 || CFLAG:LOCAL:前ターン位置 != CFLAG:LOCAL:現在位置 || TRAINNAME:PREVCOM == "推到") && !CFLAG:LOCAL:睡眠
+		SIF CAN_MOVE(CFLAG:LOCAL:現在位置, CFLAG:MASTER:現在位置) == 2 && (CFLAG:MASTER:前ターン位置 != CFLAG:MASTER:現在位置 || CFLAG:LOCAL:前ターン位置 != CFLAG:LOCAL:現在位置 || PREVCOM == 350) && !CFLAG:LOCAL:睡眠
+			CALL AFFAIR_DISCLOSURE(LOCAL, 1)
+		CFLAG:LOCAL:同室 = 0
+	ENDIF
+NEXT
+;調教ターゲット＆亲密程度設定
+CALL INFO_SetTarget
+;ウフフ終了TEQUIP処理
+FOR LOCAL,0,CHARANUM
+	IF !CFLAG:LOCAL:うふふ || CFLAG:LOCAL:現在位置 != CFLAG:LOCAL:前ターン位置
+		CALL CLOTHES_RESET(LOCAL)
+		CALL CLOTHES_SETTING_TRAIN(LOCAL)
+		FOR LOCAL:1,10,150
+			;利尿剂は排泄するまで続く
+			SIF LOCAL:1 == 27
+				CONTINUE
+			TEQUIP:LOCAL:(LOCAL:1) = 0
+		NEXT
+		IF TFLAG:COMABLE管理 < 2
+			BASE:LOCAL:射精 = 0
+			TCVAR:LOCAL:イきそう = 0
+		ENDIF
+	ENDIF
+	IF 存在浴室(CFLAG:LOCAL:現在位置)
+		EQUIP:LOCAL:0 = 0
+		IF CFLAG:LOCAL:うふふ || TCVAR:LOCAL:130 > 2
+			TEQUIP:(LOCAL):浴场PLAY = 1
+		ELSE
+			TEQUIP:(LOCAL):浴场PLAY = 0
+		ENDIF
+		CALL CLOTHES_SETTING_TRAIN(LOCAL)
+	ELSE
+		TEQUIP:(LOCAL):浴场PLAY = 0
+	ENDIF
+	IF OPENPLACE(CFLAG:LOCAL:現在位置)
+		IF CFLAG:LOCAL:うふふ == 1
+			TEQUIP:(LOCAL):野外PLAY = OPENPLACE(CFLAG:LOCAL:現在位置)
+		ELSE
+			TEQUIP:(LOCAL):野外PLAY = 0
+		ENDIF
+	ELSE
+		TEQUIP:(LOCAL):野外PLAY = 0
+	ENDIF
+NEXT
+;-------------------------------------------------
+;情報表示
+;-------------------------------------------------
+DRAWLINE
+;現在時刻と睡眠可否の表示
+CALL INFO_PrintCurrentTime(MASTER)
+;現在位置と汚れ状態の表示
+CALL INFO_PrintCurrentPosition(MASTER)
+;-------------------------------------------------
+;TARGET情報とモード切り替え
+;-------------------------------------------------
+CALL INFO_SetTrainMode
+;特殊プレイ状況を表示する
+CALL SHOW_EQUIP_2
+;HP、MP、勃起、精力のバーを表示する
+CALL INFO_PrintHPMPBar(TARGET,MASTER)
+;ターゲットがいるなら气氛と理性の表示
+IF TARGET > 0
+	CALL INFO_绘制对象配件(TARGET)
+	CALL INFO_PrintTargetCloth(TARGET)
+	CALL INFO_PrintTargetMood(TARGET)
+	CALL INFO_PrintTargetReason(TARGET)
+	CALL INFO_PrintTargetFeeling(TARGET)
+	CALL INFO_PrintPalams(TARGET)
+ENDIF
+;●マスター状態呼び出し
+PRINTFORML %"自身状态："+SHOW_EQUIP_3(MASTER)%
+CALL INFO_PrintPalams(MASTER)
+IF TFLAG:COMABLE管理 == 2 || TFLAG:COMABLE管理 == 3
+	;うふふ中
+	DRAWLINE
+	CALL SHOW_EQUIP_1
+ENDIF
+;数值输出结束，图像区域开始
+PRINT -- 
+PRINTBUTTON  "[人物图像]", 816
+SIF FLAG:AA表示
+	PRINTBUTTON  "[图像设置]", 3100
+IF CFLAG:うふふ
+	IF FLAG:图像_插图显示
+		PRINTBUTTON  "[打开动画]", 817
+		PRINT [动画重复次数:
+		PRINTBUTTON "＜", 818
+		PRINTFORM {FLAG:图像_动画}
+		PRINTBUTTON "＞", 819
+		PRINT ]
+	ELSE
+		SETCOLOR C_L_GRAY
+		PRINTBUTTON  "[关闭动画]", 817
+		RESETCOLOR
+	ENDIF
+ENDIF
+PRINTL  ---------
+IF FLAG:AA表示
+	CALL PRINT_TARGET_IMAGE(TARGET)
+	SIF FLAG:图像_立绘类型
+		PRINTL
+ENDIF
+PRINTL
+;分割线，图像区域完
+CUSTOMDRAWLINE =
+IF TFLAG:COMABLE管理 == 3 || TFLAG:COMABLE管理 == 4
+	;カウンター
+	FOR LOCAL,1,CHARANUM
+		SIF TARGET:LOCAL <= 0
+			CONTINUE
+		CALL EVENT_COUNTER(TARGET:LOCAL,LOCAL)
+		CALL EVENT_COUNTER_POSE(TARGET:LOCAL,LOCAL)
+	NEXT
+	CALL EVENT_COUNTER_COMBINATION
+	FOR LOCAL,1,CHARANUM
+		SIF TARGET:LOCAL <= 0
+			CONTINUE
+		CALL EVENT_COUNTER_SOURCE(TARGET:LOCAL,LOCAL)
+	NEXT
+	FOR LOCAL,1,CHARANUM
+		SIF TARGET:LOCAL <= 0
+			CONTINUE
+		IF TCVAR:(TARGET:LOCAL):20
+			CALL KOJO_MESSAGE_COUNTER(TARGET:LOCAL)
+			DRAWLINE
+		ENDIF
+	NEXT
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;汚れを表示する
+;@return 1:xxx,0:xxx
+@STAIN_INFO
+#DIM 汚れ非表示
+#DIM 筒抜け
+
+汚れ非表示 = GETBIT(FLAG:汚れ非表示設定,0)
+筒抜け = GETBIT(FLAG:ＮＴＲパッチ設定,32) 
+;主人の汚れ
+PRINTFORML 【%CALLNAME:MASTER%の汚れ】
+REPEAT 8
+	SIF COUNT == 2 && !(HAS_PENIS(MASTER))
+		CONTINUE
+	SIF COUNT == 3 && !(HAS_VAGINA(MASTER))
+		CONTINUE
+	SIF COUNT == 5 && !(HAS_VAGINA(MASTER))
+		CONTINUE
+	SIF COUNT == 6 && !(HAS_VAGINA(MASTER))
+		CONTINUE
+	IF COUNT == 0
+		PRINT 　口：
+	ELSEIF COUNT == 1
+		PRINT 　手：
+	ELSEIF COUNT == 2
+		PRINT 　Ｐ：
+	ELSEIF COUNT == 3
+		PRINT 　Ｖ：
+	ELSEIF COUNT == 4
+		PRINT 　Ａ：
+	ELSEIF COUNT == 5
+		PRINT 　Ｂ：
+	ELSEIF COUNT == 6
+		PRINT 　膣内：
+	ELSEIF COUNT == 7
+		PRINT 　腸内：
+	ENDIF
+	SIF STAIN:MASTER:COUNT & 汚れ_愛液
+		PRINT <愛液>
+	SIF STAIN:MASTER:COUNT & 汚れ_阴茎
+		PRINT <阴茎>
+	SIF STAIN:MASTER:COUNT & 汚れ_精液
+		PRINT <精液>
+	SIF STAIN:MASTER:COUNT & 汚れ_菊花
+		PRINT <菊花>
+	SIF STAIN:MASTER:COUNT & 汚れ_母乳
+		PRINT <母乳>
+	SIF STAIN:MASTER:COUNT & 汚れ_粘液
+		PRINT <粘液>
+	SIF STAIN:MASTER:COUNT & 汚れ_破瓜の血
+		PRINT <破瓜の血>
+	IF COUNT == 3 && CFLAG:MASTER:跳蛋挿入 != 0
+		PRINT [跳蛋挿入中]
+	ELSEIF COUNT == 4 && CFLAG:MASTER:跳蛋A挿入 != 0
+		PRINT [跳蛋挿入中]
+	ENDIF
+	PRINTL 
+REND
+PRINTL 
+IF TARGET > 0
+	;对象の汚れ
+	PRINTFORML 【%CALLNAME:TARGET%の汚れ】
+	REPEAT 8
+		SIF COUNT == 2 && !(HAS_PENIS(TARGET))
+			CONTINUE
+		SIF COUNT == 3 && !(HAS_VAGINA(TARGET))
+			CONTINUE
+		SIF COUNT == 5 && !(HAS_VAGINA(TARGET))
+			CONTINUE
+		SIF COUNT == 6 && !(HAS_VAGINA(TARGET))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 2 && !(筒抜け || TEQUIP:TARGET:0 == 0 || TEQUIP:TARGET:2 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 3 && !(筒抜け || TEQUIP:TARGET:0 == 0 || TEQUIP:TARGET:2 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 4 && !(筒抜け || TEQUIP:TARGET:0 == 0 || TEQUIP:TARGET:2 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 5 && !(筒抜け || TEQUIP:TARGET:1 == 0 || TEQUIP:TARGET:3 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 6 && !(筒抜け || (TEQUIP:TARGET:50 == MASTER && CFLAG:TARGET:うふふ == 1)))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 7 && !(筒抜け || (TEQUIP:TARGET:51 == MASTER && CFLAG:TARGET:うふふ == 1)))
+			CONTINUE
+		IF COUNT == 0
+			PRINT 　口：
+		ELSEIF COUNT == 1
+			PRINT 　手：
+		ELSEIF COUNT == 2
+			PRINT 　Ｐ：
+		ELSEIF COUNT == 3
+			PRINT 　Ｖ：
+		ELSEIF COUNT == 4
+			PRINT 　Ａ：
+		ELSEIF COUNT == 5
+			PRINT 　Ｂ：
+		ELSEIF COUNT == 6
+			PRINT 　膣内：
+		ELSEIF COUNT == 7
+			PRINT 　腸内：
+		ENDIF
+		SIF STAIN:COUNT & 汚れ_愛液
+			PRINT <愛液>
+		SIF STAIN:COUNT & 汚れ_阴茎
+			PRINT <阴茎>
+		SIF STAIN:COUNT & 汚れ_精液
+			PRINT <精液>
+		SIF STAIN:COUNT & 汚れ_菊花
+			PRINT <菊花>
+		SIF STAIN:COUNT & 汚れ_母乳
+			PRINT <母乳>
+		SIF STAIN:COUNT & 汚れ_粘液
+			PRINT <粘液>
+		SIF STAIN:COUNT & 汚れ_破瓜の血
+			PRINT <破瓜の血>
+		IF COUNT == 3 && CFLAG:跳蛋挿入 != 0
+			PRINT [跳蛋挿入中]
+		ELSEIF COUNT == 4 && CFLAG:跳蛋A挿入 != 0
+			PRINT [跳蛋挿入中]
+		ENDIF
+		PRINTL 
+	REND
+	PRINTL 
+ENDIF
+;助手の汚れ
+IF ASSI > 0
+	PRINTFORML 【%CALLNAME:ASSI%の汚れ】
+	REPEAT 8
+		SIF ASSI < 0
+			BREAK
+		SIF COUNT == 2 && !(HAS_PENIS(ASSI))
+			CONTINUE
+		SIF COUNT == 3 && !(HAS_VAGINA(ASSI))
+			CONTINUE
+		SIF COUNT == 5 && !(HAS_VAGINA(ASSI))
+			CONTINUE
+		SIF COUNT == 6 && !(HAS_VAGINA(ASSI))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 2 && !(筒抜け || TEQUIP:ASSI:0 == 0 || TEQUIP:ASSI:2 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 3 && !(筒抜け || TEQUIP:ASSI:0 == 0 || TEQUIP:ASSI:2 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 4 && !(筒抜け || TEQUIP:ASSI:0 == 0 || TEQUIP:ASSI:2 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 5 && !(筒抜け || TEQUIP:ASSI:1 == 0 || TEQUIP:ASSI:3 == 1))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 6 && !(筒抜け || (TEQUIP:ASSI:50 == MASTER && CFLAG:ASSI:うふふ == 1)))
+			CONTINUE
+		SIF (汚れ非表示 && COUNT == 7 && !(筒抜け || (TEQUIP:ASSI:51 == MASTER && CFLAG:ASSI:うふふ == 1)))
+			CONTINUE
+		IF COUNT == 0
+			PRINT 　口：
+		ELSEIF COUNT == 1
+			PRINT 　手：
+		ELSEIF COUNT == 2
+			PRINT 　Ｐ：
+		ELSEIF COUNT == 3
+			PRINT 　Ｖ：
+		ELSEIF COUNT == 4
+			PRINT 　Ａ：
+		ELSEIF COUNT == 5
+			PRINT 　Ｂ：
+		ELSEIF COUNT == 6
+			PRINT 　膣内：
+		ELSEIF COUNT == 7
+			PRINT 　腸内：
+		ENDIF
+		SIF STAIN:ASSI:COUNT & 汚れ_愛液
+			PRINT <愛液>
+		SIF STAIN:ASSI:COUNT & 汚れ_阴茎
+			PRINT <阴茎>
+		SIF STAIN:ASSI:COUNT & 汚れ_精液
+			PRINT <精液>
+		SIF STAIN:ASSI:COUNT & 汚れ_菊花
+			PRINT <菊花>
+		SIF STAIN:ASSI:COUNT & 汚れ_母乳
+			PRINT <母乳>
+		SIF STAIN:ASSI:COUNT & 汚れ_粘液
+			PRINT <粘液>
+		SIF STAIN:ASSI:COUNT & 汚れ_破瓜の血
+			PRINT <破瓜の血>
+		PRINTL 
+	REND
+ENDIF
+WAIT
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@SAVEINFO
+PUTFORM {DAY}日目
+
+;-------------------------------------------------------------------------------
+;状況の表示
+;調教対象には使わない、特殊な着脱式の道具を追加した場合はここに追加をしてください
+;（場所変更、マスターや助手が使用する道具等）
+;@return 1:xxx,0:xxx
+@SHOW_EQUIP_2
+SIF TEQUIP:28
+	PRINTFORM [录像摄影中(テープ残量{TEQUIP:28}]
+IF TEQUIP:野外PLAY == 2
+	PRINT  [野外PLAY中]
+ELSEIF TEQUIP:野外PLAY == 1
+	PRINT  [館内露出プレイ中]
+ENDIF
+SIF TEQUIP:30 == 1
+	PRINT  [羞耻PLAY中]
+SIF TEQUIP:浴场PLAY
+	PRINT  [浴场PLAY中]
+SIF TEQUIP:33
+	PRINT  [新妻PLAY中]
+PRINTL 
+
+;-------------------------------------------------------------------------------
+;使用中の道具を表示する
+;一度使用したら解除するまで止まらない道具や調教を
+;追加した場合はここに追加をしてください
+;@return 1:xxx,0:xxx
+@SHOW_EQUIP_1
+IF TEQUIP:11 || TEQUIP:13 || TEQUIP:14 || TEQUIP:15 || TEQUIP:16 || TEQUIP:17 || TEQUIP:18 || TEQUIP:19 || TEQUIP:20 || TEQUIP:21 || TEQUIP:22 || TEQUIP:23 || TEQUIP:24 || TEQUIP:26 || TEQUIP:27 || TEQUIP:32 || TEQUIP:34 || TEQUIP:36 || TEQUIP:膣镜
+	PRINTFORM 使用中(%NAME:TARGET%) 
+	SIF TEQUIP:26
+		PRINT [媚药効果発揮中]
+	SIF TEQUIP:27
+		PRINT [利尿剂効果発揮中]
+	SIF TEQUIP:11
+		PRINT [阴蒂夹]
+	SIF TEQUIP:12
+		PRINT [飞机杯]
+	SIF TEQUIP:13
+		PRINT [振动棒]
+	SIF TEQUIP:14
+		PRINT [肛门振动棒]
+	SIF TEQUIP:15
+		PRINT [肛珠]
+	SIF TEQUIP:16
+		PRINT [乳头夹]
+	SIF TEQUIP:17
+		PRINT [搾乳机]
+	SIF TEQUIP:18
+		PRINT [眼罩]
+	SIF TEQUIP:19
+		PRINT [绳で緊縛]
+	SIF TEQUIP:20
+		PRINT [口球]
+	SIF TEQUIP:21
+		PRINT [灌肠＋菊花プラグ]
+	SIF TEQUIP:22
+		PRINT [扩张气球]
+	SIF TEQUIP:23
+		PRINT [肛门电极]
+	SIF TEQUIP:24
+		PRINT [乳房電極装着中]
+	SIF TEQUIP:32
+		PRINT [淋浴]
+	SIF TEQUIP:膣镜
+		PRINT [膣镜]
+ENDIF
+;ココより↑にTEQUIPに登録したものを書き込む
+PRINTL  
+
+;-------------------------------------------------------------------------------
+;任意に着脱できない装備品の表示部分
+;@param ARG:0 キャラクター番号
+;@return 1:xxx,0:xxx
+@SHOW_EQUIP_3(ARG:0)
+#FUNCTIONS
+LOCALS:0 = %""%
+SIF CFLAG:(ARG:0):跳蛋挿入
+	LOCALS:0 = %LOCALS:0+"跳蛋挿入中  "%
+SIF CFLAG:(ARG:0):跳蛋A挿入
+	LOCALS:0 = %LOCALS:0+"菊花跳蛋挿入中  "%
+RETURNF LOCALS:0
+
+;-------------------------------------------------------------------------------
+;パラメーターを表示する
+;@param ARG:0 表示するキャラクター番号
+@SHOW_INFO_PALAM(ARG:0)
+VARSET LOCAL
+FOR LOCAL,0,100
+	SIF !STRLENS(PALAMNAME:LOCAL)
+		CONTINUE
+	PRINTFORM  %PALAMNAME:LOCAL%Lv{GETPALAMLV(PALAM:(ARG:0):LOCAL,15),2}[
+	IF GETPALAMLV(PALAM:(ARG:0):LOCAL,15) >= 15
+		PRINT ********
+	ELSE
+		;現在のPALAMLV
+		LOCAL:1 = PALAMLV:(GETPALAMLV(PALAM:(ARG:0):LOCAL,15) + 1) - PALAMLV:(GETPALAMLV(PALAM:(ARG:0):LOCAL,15))
+		FOR LOCAL:10,0,8
+			IF PALAM:(ARG:0):LOCAL - PALAMLV:(GETPALAMLV(PALAM:(ARG:0):LOCAL,15)) > LOCAL:1 * LOCAL:10 / 8
+				PRINT *
+			ELSE
+				PRINT .
+			ENDIF
+		NEXT
+	ENDIF
+	PRINT ]
+	LOCAL:1 = PALAM:(ARG:0):LOCAL
+	LOCAL:2 = 0
+	;これだけ特殊
+	IF LOCAL == 9 && LOCAL:1 >= 20000
+		PRINTFORM %"摩擦 0",6% 
+	ELSE
+		;桁合わせ
+		FOR LOCAL:10,0,10
+			IF LOCAL:1 > 999999
+				LOCAL:1 /= 1000
+				LOCAL:2 ++
+			ENDIF
+		NEXT
+		PRINTFORM {LOCAL:1,6}
+		SELECTCASE LOCAL:2
+			CASE 0
+				PRINT  
+			CASE 1
+				PRINT k
+			CASE 2
+				PRINT M
+			CASE 3
+				PRINT G
+			CASE 4
+				PRINT T
+			CASE 5
+				PRINT P
+		ENDSELECT
+	ENDIF
+	LOCAL:3 ++
+	SIF LOCAL:3 % PRINTCPERLINE() == 0
+		PRINTL 
+NEXT
+PRINTL
+RETURN 0
+
+;-------------------------------------------------
+;関数名:SORT_CFLAG
+;CFLAG:ARGの昇順でRESULT:1にキャラ番号を代入する
+;ARG CFLAGの番号
+@SORT_CFLAG(ARG)
+VARSET LOCAL
+VARSET RESULT
+FOR LOCAL:10,1,CHARANUM
+	LOCAL:1 = 0
+	FOR LOCAL,1,CHARANUM
+		SIF MATCH(RESULT,LOCAL)
+			CONTINUE
+		IF CFLAG:LOCAL:ARG >= LOCAL:1
+			LOCAL:1 = CFLAG:LOCAL:ARG
+			LOCAL:2 = LOCAL
+		ENDIF
+	NEXT
+	RESULT:(LOCAL:10) = LOCAL:2
+NEXT
+
+;-------------------------------------------------------------------------------
+;キャラの态度(亲密程度)を決定する。
+;基本的に「そのキャラがどれくらい積極的に行動してくるか」を示すもの。
+;強度 0:身体接触まで ,1:軽いセクハラしてくる ,2:セクハラしてくる ,3+:押し倒してくる
+;@return 0
+@CHARA_ATTITUDE
+#DIM 亲密程度上限
+#DIM 好感度基准值
+#DIM 暂定值
+#DIM 对象
+;0:ループ用キャラ番号、1:馴れ合い基準値、2:最大馴れ合いランク制限
+VARSET 对象
+FOR 对象,1,CHARANUM
+	;このタイミングで全員の好感度マイナスを０に補正
+	CFLAG:对象:好感度 = MAX(0,CFLAG:对象:好感度)
+	;同時に全員の屈服度マイナスを０に補正
+	CFLAG:对象:屈服度 = MAX(0,CFLAG:对象:屈服度)
+	;好感度補正、基準は0
+	好感度基准值 = 0
+	好感度基准值 += TALENT:对象:恋慕 * 10                             ;恋慕(10)
+	好感度基准值 += GET_MARK_LEVEL(对象,刻印番号_屈服刻印,MASTER) * 3 ;屈服刻印(LV×3)
+	好感度基准值 += GET_MARK_LEVEL(对象,刻印番号_快乐刻印,MASTER) * 3 ;快乐刻印(LV×3)
+	好感度基准值 += MIN(ABL:对象:亲密 * 10, 50)                       ;亲密(LV×10、最大50)
+	好感度基准值 += MIN(ABL:对象:欲望 * 10, 50)                       ;欲望(LV×10、最大50)
+	好感度基准值 += GETPALAMLV(PALAM:对象:欲情,5) * 5                 ;欲情(LV×5)
+	好感度基准值 += GETPALAMLV(PALAM:对象:好意,5) * 5                 ;好意(LV×5)
+	好感度基准值 += BASE:对象:气氛 / 50                             ;气氛(最大30)
+	好感度基准值 += (1000 - BASE:对象:理性) / 30                      ;理性の低さ(最大33)
+	; 好感度基准值 += 5*GETBIT(CFLAG:对象:既成事実,1)                   ;既成事実:うふふ(5)、うふふはセクハラしやすさには影響しない。
+	好感度基准值 += 5*CFLAG:对象:和主角已做爱
+
+	;基本的に亲密程度の上限は1
+	亲密程度上限 = 1
+	;亲密程度上限 += GETBIT(CFLAG:对象:既成事実,0) ;既成事実:告白がある場合は最大ランク+1
+	亲密程度上限 += TALENT:对象:恋人
+	亲密程度上限 += (TALENT:对象:淫乱 > 0)        ;淫乱/娼婦なら積極的にセクハラしてくる。上限ランクが増える。
+
+	;弱みを握っていないなら欲情補正(0.5～1.0倍)
+	好感度基准值 = 好感度基准值 * (5000 + MIN(PALAM:对象:欲情,5000)) / 10000
+
+	IF CFLAG:对象:怒意 || CFLAG:对象:睡眠
+		;怒意 or 睡眠なら最大ランクは０
+		亲密程度上限 = 0
+	ENDIF
+
+	;馴れ合い基準値50(一線超えない場合60)毎に仮ランク１、NTRがある場合は仮ランクが減る
+	;NTRでも、我慢できなくなれば的な表現。
+	暂定值 = MAX( 好感度基准值 / (50+TALENT:对象:难以越过的界线*10) - (TALENT:对象:NTR) , 0 )
+	;最大ランクまでに切り詰める
+	CFLAG:对象:亲密程度 = MIN( 暂定值 , 亲密程度上限 )
+	;DEBUGPRINTFORML %CALLNAME:对象+"(CFLAG:亲密程度"%{CFLAG:对象:亲密程度}%")"%
+NEXT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;情事の発覚
+@AFFAIR_DISCLOSURE(ARG, ARG:1)
+;ARG 入室してきたキャラの番号　ARG:1 0なら同室、1なら覗き
+VARSET LOCAL
+LOCAL:1 = IN_ROOM("MAX", CFLAG:MASTER:現在位置, "CFLAG", GETNUM(CFLAG, "うふふ"), 1)
+IF (LOCAL:1 && CFLAG:(LOCAL:1):うふふ) || CFLAG:MASTER:うふふ == 3
+	IF ARG:1 == 1 && 天候(天候値) == "云雾" && OPENPLACE(CFLAG:MASTER:現在位置) == 2
+	ELSEIF ARG:1 == 1 && 天候(天候値) == "白夜"
+	ELSE
+		DRAWLINE
+		PRINTFORM %CALLNAME:ARG%に
+		IF  CFLAG:MASTER:うふふ == 3
+			PRINTFORMW %CALLNAME:PLAYER%の情事を見られてしまった！
+		ELSE
+			PRINTFORMW %CALLNAME:(LOCAL:1)%との情事を見られてしまった！
+			;伤心判定
+			SIF TALENT:ARG:恋慕 && !TALENT:ARG:亲爱 && !TALENT:ARG:淫乱 && !TALENT:ARG:NTR
+				LOCAL:4 = 1
+		ENDIF
+		IF LOCAL:4 == 1
+			CALL 素質伤心取得, ARG
+		ELSEIF !GETBIT(CFLAG:ARG:MASTERの弱味 , 1)
+			PRINTFORMW %CALLNAME:ARG%に弱みを握られた
+		ENDIF
+		IF CFLAG:ARG:亲密程度 < 2
+			IF !ARG:1
+				;見た人
+				CALL KOJO_EVENT(1,ARG,LOCAL:1)
+				;見られた人（最も地位の高いTARGETで代表）
+				CALL KOJO_EVENT(2,LOCAL:1,ARG)
+			ENDIF
+			CALL TOUCH_SET(0,0,0,1)
+			DRAWLINE
+			LOCAL:2 = 1
+			;謹慎処分とか弱味とかの処理を入れる予定
+		ELSEIF !ARG:1
+			PRINTFORMW %CALLNAME:ARG%は負けじと%CALLNAME:MASTER%に体を摺り寄せてきた
+			CFLAG:ARG:うふふ = CFLAG:(LOCAL:1):うふふ
+			;見た人
+			CALL KOJO_EVENT(3,ARG,LOCAL:1)
+			;見られた人（最も地位の高いTARGETで代表）
+			CALL KOJO_EVENT(4,LOCAL:1,ARG)
+			DRAWLINE
+			RETURN 0
+		ENDIF
+		SIF !LOCAL:4 && !GETBIT(CFLAG:ARG:MASTERの弱味 , 1)
+			SETBIT CFLAG:ARG:MASTERの弱味 ,1
+	ENDIF
+ENDIF
+IF LOCAL:2
+	FOR LOCAL,0,CHARANUM
+		CFLAG:LOCAL:うふふ = 0
+	NEXT
+	RETURN 1
+ENDIF
+;通常遭遇
+;こちらからも見える位置にいる、もしくは同室
+IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:ARG:現在位置) == 2)
+	;さっきから居るのは分かっていたか否か
+	IF CFLAG:ARG:前ターン位置 == CFLAG:ARG:現在位置
+		CALL 自慰中断, ARG
+		IF CAN_MOVE(CFLAG:MASTER:前ターン位置, CFLAG:ARG:現在位置) == 2
+			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:現在位置)+"に居る"%
+			SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
+				PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
+			SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
+				PRINTFORML %CALLNAME:ARG+"は半裸の下半身を晒け出している…"%
+			SIF TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
+				PRINTFORML %CALLNAME:ARG+"は服を着ていない…"%
+			CALL INFO_PrintPortrayal(ARG)
+		ELSE
+			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:現在位置)+"に居た"%
+			SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
+				PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
+			SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
+				PRINTFORML %CALLNAME:ARG+"は半裸の下半身を晒け出している…"%
+			SIF TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
+				PRINTFORML %CALLNAME:ARG+"は服を着ていない…"%
+			CALL INFO_PrintPortrayal(ARG)
+		ENDIF
+		WAIT
+		LOCAL:3 = 1
+		;さっきから居るのは分かってて相手が移动した場合は別の場所で表示が出る
+	ELSEIF CAN_MOVE(CFLAG:MASTER:前ターン位置, CFLAG:ARG:前ターン位置) < 2 && CFLAG:ARG:前ターン位置 != CFLAG:MASTER:前ターン位置
+		PRINTFORMW %CALLNAME:ARG%が%GETPLACENAME(CFLAG:ARG:現在位置)%に来た
+		SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
+			PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
+		SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
+			PRINTFORML %CALLNAME:ARG+"は半裸の下半身を晒け出している…"%
+		SIF TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
+			PRINTFORML %CALLNAME:ARG+"は服を着ていない…"%
+		LOCAL:3 = 2
+	ENDIF
+	IF !ARG:1 && LOCAL:3
+		IF CFLAG:ARG:情事目撃 && CFLAG:(CFLAG:ARG:情事目撃):現在位置 != CFLAG:ARG:現在位置
+			PRINTFORMW %CALLNAME:ARG%に先の%CALLNAME:(CFLAG:ARG:情事目撃)%との一件について問い詰められた…
+			CALL KOJO_EVENT(0, ARG, 2)
+			CFLAG:ARG:情事目撃 = 0
+		ELSE
+			CALL KOJO_EVENT(0, ARG, LOCAL:3 - 1)
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------------------------------------
+;料理鮮度チェック
+@CEACK_COOKING
+IF TIME_PROGRESS(TCVAR:PLAYER:305) > 720
+	PRINTFORMW %GETDISHNAME(FLAG:料理)%はとてもじゃないが食べられない！
+	PRINTL
+	PRINTFORMW %CALLNAME:PLAYER%は%GETDISHNAME(FLAG:料理)%を廃棄した
+	FLAG:料理 = 0
+	TCVAR:PLAYER:305 = 0
+	TCVAR:PLAYER:306 = 0
+ELSEIF TIME_PROGRESS(TCVAR:PLAYER:305) > 360 && TCVAR:PLAYER:306 < 2
+	PRINTFORMW %GETDISHNAME(FLAG:料理)%から嫌な臭いがしてきた…
+	TCVAR:PLAYER:306 = 2
+ELSEIF TIME_PROGRESS(TCVAR:PLAYER:305) > 60 && TCVAR:PLAYER:306 < 1 && GETDISHMENU(FLAG:料理 % 1000) != "甜点"
+	PRINTFORMW %GETDISHNAME(FLAG:料理)%は冷えてしまった…
+	TCVAR:PLAYER:306 = 1
+ENDIF
+
+;-------------------------------------------------------------------------------
+;日数および時間を表示する
+;@param ARG:0 キャラクターの番号
+@INFO_PrintCurrentTime(ARG:0)
+;24時を回っていたら日付を進める
+IF TIME > 1440
+	DAY ++
+	TIME -= 1440
+	CALL 日付変更
+	CALL 日間気温設定
+ENDIF
+PRINTFORM %日付_月(暦法月)%{暦法日}日[%TOSTR(DAY)+"日目]("+GET_DAY()+") "+TOSTR(TIME/60,"00")+"時"+TOSTR(TIME%60,"00")+"分"%
+IF 6<=TIME/60 && TIME/60<=18
+	;06時から18時までは昼間
+	SETCOLOR 色設定_日時_昼間
+	PRINTFORM %UNICODE(0x2600)%
+ELSE
+	;18時から06時までは夜間
+	SETCOLOR 色設定_日時_夜間
+	PRINTFORM %UNICODE(0x262A)%
+ENDIF
+RESETCOLOR
+PRINTFORM （%天候(天候値)%）{FLAG:60}℃
+IF DATETIME() - CFLAG:(ARG:0):起床時間 >= 要睡眠経過時間
+	;起床から16時間経過していれば[要睡眠]
+	SETCOLOR 色設定_状態_要睡眠
+	PRINTFORM %"[要睡眠]"%
+ELSEIF DATETIME() - CFLAG:(ARG:0):起床時間 >= 睡眠可経過時間
+	;起床から12時間経過していれば[睡眠可]
+	SETCOLOR 色設定_状態_睡眠可
+	PRINTFORM %"[睡眠可]"%
+ENDIF
+CALL INFO_PrintRestroom(ARG:0)
+PRINTFORML 
+RESETCOLOR
+RETURN
+
+;-------------------------------------------------------------------------------
+;現在位置情報を表示する
+;@param ARG:0 キャラクターの番号
+@INFO_PrintCurrentPosition(ARG:0)
+TRYCCALLFORM %"GETPLACENAME_"+TOSTR(CFLAG:(ARG:0):現在位置)%, ARG:0
+	PRINTFORM %"現在位置:"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"("+RESULTS:0+")  "%
+CATCH
+	PRINTFORM %"現在位置:"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"  "%
+ENDCATCH
+IF FLAG:ゴミ表示OFF
+	;ゴミ表示OFF
+ELSEIF TFLAG:COMABLE管理 == 2
+	;ウフフ中は気が散るので表示させない
+ELSE
+	;部屋番号+100が汚れ状態
+	PRINTFORM %"清潔度:"%
+	SELECTCASE FLAG:(100+CFLAG:(ARG:0):現在位置)
+		CASE IS < 100
+			SETCOLOR 色設定_清潔度１
+			PRINTFORM %"最高"%
+		CASE IS < 500
+			SETCOLOR 色設定_清潔度２
+			PRINTFORM %"高"%
+		CASE IS < 1000
+			SETCOLOR 色設定_清潔度３
+			PRINTFORM %"较高"%
+		CASE IS < 2000
+			SETCOLOR 色設定_清潔度４
+			PRINTFORM %"中"%
+		CASE IS < 3500
+			SETCOLOR 色設定_清潔度５
+			PRINTFORM %"较低"%
+		CASE IS < 5000
+			SETCOLOR 色設定_清潔度６
+			PRINTFORM %"低"%
+		CASEELSE
+			SETCOLOR 色設定_清潔度７
+			PRINTFORM %"垃圾之山"%
+	ENDSELECT
+	RESETCOLOR
+ENDIF
+;PRINTFORML %"現在位置:"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+" "+LOCALS:0%
+PRINTL
+IF FLAG:部屋のにおい_初期FLAG
+	CALL ROOM_SMELL
+	IF ROOM_SMELL_VALUE(FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG)) > ROOM_SMELL_VALUE(FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG_2))
+		LOCAL:10 = FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG)
+	ELSE
+		LOCAL:10 = FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG_2)
+	ENDIF
+	IF ROOM_SMELL_WHOSE_NAME(LOCAL:10) == "無臭"
+		PRINTFORML 没什么气味
+	ELSEIF GETBIT(ROOM_SMELL_BIT(LOCAL:10), 气味类型B_ゴミ)
+		PRINTFORML %ROOM_SMELL_KINDS(LOCAL:10)%的气味
+	ELSE
+		IF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + ROOM_SMELL_WHOSE(LOCAL:10)) >= においの判別_詳細
+			IF ROOM_SMELL_WHOSE(LOCAL:10) == 人物_あなた
+				PRINT 自己
+			ELSE
+				PRINTFORM %ROOM_SMELL_WHOSE_NAME(LOCAL:10)%
+			ENDIF
+			PRINTFORM 身上
+			IF ROOM_SMELL_VALUE(LOCAL:10) >= 50
+				PRINT 有强烈的
+			ELSEIF ROOM_SMELL_VALUE(LOCAL:10) >= 20
+				PRINT 有
+			ELSE
+				PRINT 有些微的
+			ENDIF
+			PRINTFORML %ROOM_SMELL_KINDS(LOCAL:10)%的气味
+		ELSEIF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + ROOM_SMELL_WHOSE(LOCAL:10)) >= においの判別_可能 || ROOM_SMELL_WHOSE(LOCAL:10) == 人物_あなた
+			IF ROOM_SMELL_VALUE(LOCAL:10) >= 50
+				PRINT 有强烈的
+			ELSEIF ROOM_SMELL_VALUE(LOCAL:10) >= 20
+				PRINT 有
+			ELSE
+				PRINT 有些微的
+			ENDIF
+			IF ROOM_SMELL_WHOSE(LOCAL:10) == 人物_あなた
+				PRINT 自己
+			ELSE
+				PRINTFORM %ROOM_SMELL_WHOSE_NAME(LOCAL:10)%
+			ENDIF
+			PRINTL 的气味
+		ELSE
+			IF ROOM_SMELL_VALUE(LOCAL:10) >= 50
+				PRINT 有强烈的
+			ELSEIF ROOM_SMELL_VALUE(LOCAL:10) >= 20
+				PRINT 有
+			ELSE
+				PRINT 有些微的
+			ENDIF
+			PRINTL 不知道是谁的气味
+		ENDIF
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;体力、气力を表示する
+;@param ARG:0 犠牲者のキャラクター番号
+;@param ARG:1 調教者のキャラクター番号
+@INFO_PrintHPMPBar(ARG:0,ARG:1)
+;犠牲者の体力
+IF ARG:0 != ARG:1
+	PRINTFORM %"体力("+CALLNAME:(ARG:0)+")",20,LEFT%
+	;数值 最大数值 字符1 字符2 颜色1 颜色2 长度
+	CALL 数据条绘制(BASE:(ARG:0):体力,MAXBASE:(ARG:0):体力,"▥","▥",粉红色,深灰色,16)
+	PRINTFORM %"("%{BASE:(ARG:0):体力,4}%"/"%{MAXBASE:(ARG:0):体力,4}%")   "%
+ENDIF
+;調教者の体力
+PRINTFORM %"体力("+CALLNAME:(ARG:1)+")",16,LEFT%
+CALL 数据条绘制(BASE:(ARG:1):体力,MAXBASE:(ARG:1):体力,"▥","▥",粉红色,深灰色,16)
+PRINTFORML %"("%{BASE:(ARG:1):体力,4}%"/"%{MAXBASE:(ARG:1):体力,4}%")"%
+;犠牲者の气力
+IF ARG:0 != ARG:1
+	PRINTFORM %"气力("+CALLNAME:(ARG:0)+")",20,LEFT%
+	CALL 数据条绘制(BASE:(ARG:0):气力,MAXBASE:(ARG:0):气力,"▥","▥",黄色,深灰色,16)
+	PRINTFORM %"("%{BASE:(ARG:0):气力,4}%"/"%{MAXBASE:(ARG:0):气力,4}%")   "%
+ENDIF
+;調教者の气力
+PRINTFORM %"气力("+CALLNAME:(ARG:1)+")",16,LEFT%
+CALL 数据条绘制(BASE:(ARG:1):气力,MAXBASE:(ARG:1):气力,"▥","▥",黄色,深灰色,16)
+PRINTFORML %"("%{BASE:(ARG:1):气力,4}%"/"%{MAXBASE:(ARG:1):气力,4}%")"%
+;犠牲者の勃起力
+IF ARG:0 != ARG:1
+	IF HAS_PENIS(ARG:0)
+		PRINTFORM %"勃起("+CALLNAME:(ARG:0)+")",20,LEFT%
+		CALL 数据条绘制(BASE:(ARG:0):勃起, 1000 ,"▥","▥",橘红色,深灰色,16)
+		PRINTFORM %"("%{MIN(BASE:(ARG:0):勃起,1000),4}%"/"%{1000}%")   "%
+	ELSE
+		;ちんこ無い場合は空白
+		PRINTFORM %"",52%
+	ENDIF
+ENDIF
+;調教者の勃起力
+IF HAS_PENIS(MASTER)
+	PRINTFORM %"勃起("+CALLNAME:(ARG:1)+")",16,LEFT%
+	CALL 数据条绘制(BASE:(ARG:1):勃起, 1000 ,"▥","▥",橘红色,深灰色,16)
+	PRINTFORML %"("%{MIN(BASE:(ARG:1):勃起,1000),4}%"/"%{1000}%")"%
+ELSEIF ARG:0 != ARG:1
+	;犠牲者がいる場合、空白が出力されているため改行が必要になる
+	PRINTFORML 
+ENDIF
+;犠牲者の精力
+IF TARGET > 0
+	IF HAS_PENIS(TARGET) && TALENT:TARGET:157 == 0
+		PRINTFORM %"精力("+CALLNAME:(ARG:0)+")",20,LEFT%
+		CALL 数据条绘制(BASE:(ARG:0):精力,MAXBASE:(ARG:0):精力,"▥","▥",青色,深灰色,16)
+		PRINTFORM %"("%{BASE:(ARG:0):精力,4}%"/"%{MAXBASE:(ARG:0):精力,4}%")   "%
+	ELSEIF HAS_PENIS(TARGET) && TALENT:TARGET:157 == 1
+		PRINTFORM %"精力("+CALLNAME:(ARG:0)+")",20,LEFT%
+		CALL 数据条绘制(BASE:(ARG:1):精力,MAXBASE:(ARG:1):精力,"▥","▥",青色,深灰色,16)
+		PRINTFORM %"(無限精液)"%
+	ELSE
+		;ちんこ無い場合は空白
+		PRINTFORM %"",52%
+	ENDIF
+ENDIF
+;調教者の精力
+IF HAS_PENIS(MASTER) && TALENT:MASTER:157 == 0
+	PRINTFORM %"精力("+CALLNAME:(ARG:1)+")",16,LEFT%
+	CALL 数据条绘制(BASE:(ARG:1):精力,MAXBASE:(ARG:1):精力,"▥","▥",青色,深灰色,16)
+	PRINTFORML %"("%{BASE:(ARG:1):精力,4}%"/"%{MAXBASE:(ARG:1):精力,4}%")"%
+ELSEIF HAS_PENIS(MASTER) && TALENT:MASTER:157 == 1
+	PRINTFORM %"精力("+CALLNAME:(ARG:1)+")",16,LEFT%
+	CALL 数据条绘制(BASE:(ARG:1):精力,MAXBASE:(ARG:1):精力,"▥","▥",青色,深灰色,16)
+	PRINTFORML %"(無限精液)"%
+ELSEIF ARG:0 != ARG:1
+	;犠牲者がいる場合、空白が出力されているため改行が必要になる
+	PRINTFORML 
+ENDIF
+IF TFLAG:COMABLE管理 == 2 || TFLAG:COMABLE管理 == 3 || CFLAG:MASTER:うふふ == 3
+	;うふふ中 or ？ or 自慰中 なら、射精と母乳を表示
+	;犠牲者の射精
+	IF TARGET > 0
+		IF HAS_PENIS(TARGET)
+			MAXBASE:TARGET:射精 = 5000 + 5000*(!TALENT:TARGET:精力旺盛)
+			PRINTFORM %"射精("+CALLNAME:TARGET+")",20,LEFT%
+			CALL 数据条绘制(BASE:TARGET:射精,MAXBASE:TARGET:射精,"▥","▥",白色,深灰色,16)
+			IF TCVAR:TARGET:イきそう
+				PRINTFORM %"(！限 界！)"%
+			ELSE
+				PRINTFORM %"("%%TOSTR(100*BASE:TARGET:射精/MAXBASE:TARGET:射精),8,RIGHT%%"%)   "%
+			ENDIF
+		ELSE
+			;ちんこ無い場合は空白
+			PRINTFORM %"",52%
+		ENDIF
+	ENDIF
+	;調教者の射精
+	IF HAS_PENIS(MASTER)
+		MAXBASE:MASTER:射精 = 5000 + 5000*(!TALENT:MASTER:精力旺盛)
+		PRINTFORM %"射精("+CALLNAME:MASTER+")",16,LEFT%
+		CALL 数据条绘制(BASE:MASTER:射精,MAXBASE:MASTER:射精,"▥","▥",白色,深灰色,16)
+		IF TCVAR:MASTER:イきそう
+			PRINTFORML %"(！限 界！)"%
+		ELSE
+			PRINTFORML %"("%%TOSTR(100*BASE:MASTER:射精/MAXBASE:MASTER:射精),8,RIGHT%%"%)"%
+		ENDIF
+	ELSEIF ARG:0 != ARG:1
+		;犠牲者がいる場合、空白が出力されているため改行が必要になる
+		PRINTFORML 
+	ENDIF
+	;犠牲者の母乳
+	IF TARGET > 0
+		IF TALENT:TARGET:泌乳体质
+			MAXBASE:TARGET:母乳 = 5000+5000*(!TALENT:TARGET:淫乳)
+			PRINTFORM %"母乳("+CALLNAME:TARGET+")",20,LEFT%
+			CALL 数据条绘制(BASE:TARGET:母乳,MAXBASE:TARGET:母乳,"▥","▥",白色,深灰色,16)
+		ELSE
+			;泌乳体质で無い場合は空白
+			PRINTFORM %"",52%
+		ENDIF
+	ENDIF
+	;調教者の母乳
+	IF TALENT:MASTER:泌乳体质
+		MAXBASE:MASTER:母乳 = 5000+5000*(!TALENT:MASTER:淫乳)
+		PRINTFORM %"母乳("+CALLNAME:MASTER+")",16,LEFT%
+		CALL 数据条绘制(BASE:MASTER:母乳,MAXBASE:MASTER:母乳,"▥","▥",白色,深灰色,16)
+		PRINTFORML %"("%%TOSTR(100*BASE:MASTER:母乳/MAXBASE:MASTER:母乳),7%%"％)"%
+	ELSEIF ARG:0 != ARG:1
+		;犠牲者がいる場合、空白が出力されているため改行が必要になる
+		PRINTFORML 
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;調教ターゲットを選択する。
+;部屋内における各キャラの亲密程度についても設定。
+;@param ARG:0 未使用
+@INFO_SetTarget(ARG:0)
+;ターゲットを初期化
+VARSET TARGET
+;CFLAG:館内地位(310)でソート
+CALL SORT_CFLAG(310)
+; LOCAL 0:ループ用、1:キャラ番号、2:ターゲット数、3:起きてるキャラの最小亲密程度
+VARSET LOCAL
+LOCAL:3 = 99
+TCVAR:MASTER:亲密程度=0
+;現在位置が同じキャラを取得し、ターゲット候補一覧に追加
+FOR LOCAL:0,1,CHARANUM
+	;先ほど取得した館内地位順でキャラ番号を取得
+	LOCAL:1 = RESULT:(LOCAL:0)
+	IF CFLAG:(LOCAL:1):現在位置 == CFLAG:MASTER:現在位置
+		;同じ位置にいるのなら、(寝ていたとしても)ターゲット候補に追加
+		LOCAL:2++
+		TARGET:(LOCAL:2) = LOCAL:1
+		;ターゲットが未定だったら、とりあえず仮ターゲットとする
+		IF TARGET:0 == 0
+			TARGET:0 = LOCAL:1
+		ENDIF
+		;前回のターゲットがいるなら、(寝ていたとしても)それを最優先でターゲットにする。
+		IF LOCAL:1 == TFLAG:現在のTARGET
+			TARGET:0 = LOCAL:1
+		ENDIF
+		;亲密程度は、同室中の上位キャラの亲密程度以下に制限される。偉い人の前ではうふふできない。
+		TCVAR:(LOCAL:1):亲密程度 = MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
+		IF !CFLAG:(LOCAL:1):睡眠
+			;起きてるキャラの最小亲密程度を取得
+			LOCAL:3 = MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
+			TCVAR:MASTER:亲密程度 = MAX(CFLAG:(LOCAL:1):亲密程度,0)
+		ENDIF
+	ENDIF
+	;DEBUGPRINTFORML %CALLNAME:(LOCAL:1)+"の亲密程度:"%{TCVAR:(LOCAL:1):亲密程度}
+NEXT
+;DEBUGPRINTFORML %CALLNAME:MASTER+"の亲密程度:"%{TCVAR:MASTER:亲密程度}
+;現在のターゲットを更新
+TFLAG:現在のTARGET = TARGET:0
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;うふふモードの切り替えなど
+;とりあえず関数に切り出しただけの状態なんでさらにリファクタリング必要
+;@param ARG:0 未使用
+@INFO_SetTrainMode(ARG:0)
+#DIM 对象
+#DIM 同室人数
+#DIM POS_NOW		; MASTERの現在位置
+#DIM LOOP_CHR
+#DIM 告白判定値
+
+对象 = TARGET:0
+POS_NOW = CFLAG:MASTER:現在位置
+IF 对象 && !CFLAG:对象:睡眠
+	;MASTERの位置から見て他の部屋にだれかいるかどうか
+	同室人数 = 0
+	FOR LOOP_CHR,1,CHARANUM
+		SIF CFLAG:LOOP_CHR:現在位置 == POS_NOW
+			CONTINUE
+		SIF CAN_MOVE(POS_NOW, CFLAG:LOOP_CHR:現在位置) == 2
+			同室人数 ++
+	NEXT
+	IF CFLAG:对象:うふふ == 1
+		;うふふ(1)時
+		TFLAG:COMABLE管理 = 2
+	ELSEIF CFLAG:对象:うふふ == 2
+		;押し倒し(2)時
+		TFLAG:COMABLE管理 = 3
+	ELSEIF TCVAR:MASTER:亲密程度 > 2 && !同室人数 && BASE:对象:满足*2 < MAXBASE:对象:满足 && !OPENPLACE(POS_NOW) && POS_NOW != FLAG:访问者当前位置 && !TALENT:NTR && CHK_350_STAIN_SEMEN(对象) && CFLAG:对象:性欲 > 25 && COM417_is_Protected_CheckOnly(MASTER,对象,淫纹_太股) == 0
+		;あなたの亲密程度が3以上で、対象が满足状態でなく、密室で、訪問者がいなく、NTRでもない場合は押し倒される
+		;如果集齐了淫纹 只能在淫纹失效时逆推
+		;オープンスペース（正門、広間、庭、二階踊り場、廊下）では押し倒されない
+		;精液汚れによる押し倒し可否で失敗すると押し倒されない
+		IF TFLAG:COMABLE管理 != 3
+			PRINTL
+			PRINTFORMW %CALLNAME:MASTER%は押し倒された！
+			CALL KOJO_EVENT(12, TARGET)
+		ENDIF
+		FOR LOOP_CHR,1,CHARANUM
+			CFLAG:(TARGET:LOOP_CHR):うふふ = 2
+		NEXT
+		CFLAG:MASTER:うふふ = 2
+		TFLAG:COMABLE管理 = 3
+		;ELSEIF GET_TARGETNUM() < 2 && TCVAR:MASTER:130 && !GETBIT(CFLAG:既成事実 , 0) && !CFLAG:睡眠 && BASE:MASTER:气力 > 0
+	ELSEIF GET_TARGETNUM() < 2 && TCVAR:MASTER:130 && !TALENT:恋人 && !CFLAG:睡眠 && BASE:MASTER:气力 > 0
+		TFLAG:COMABLE管理 = 1
+		告白判定値 = 0
+		告白判定値 += GET_MARK_LEVEL(对象,刻印番号_屈服刻印,MASTER) * 3 ;あなたが付けた屈服刻印のLV×3
+		告白判定値 += GET_MARK_LEVEL(对象,刻印番号_快乐刻印,MASTER) * 3 ;あなたが付けた快乐刻印のLV×3
+		告白判定値 += MIN(ABL:亲密 * 10, 50)                            ;亲密×10、最大50
+		告白判定値 += MIN(ABL:欲望 * 10, 50)                            ;欲望×10、最大50
+		告白判定値 += GETPALAMLV(PALAM:欲情, 5) * 5                     ;好意レベル×5
+		告白判定値 += GETPALAMLV(PALAM:好意, 5) * 5                     ;好意レベル×5
+		告白判定値 += BASE:气氛 / 50                                  ;气氛による増加:0～30
+		告白判定値 += (1000 - BASE:理性) / 30                           ;理性による増加:0～33
+		;NTR時告白してこない
+		IF 告白判定値 > 180 + TALENT:难以越过的界线 * 20
+			PRINTFORMW %CALLNAME:TARGET%向%CALLNAME:MASTER%诉说了自己的恋情・・・・・・
+			PRINTFORMW %CALLNAME:MASTER%红着脸接受了%CALLNAME:TARGET%的告白……
+			TALENT:TARGET:恋人 = 1
+		ENDIF
+	ELSE
+		TFLAG:COMABLE管理 = 1
+	ENDIF
+ELSE
+	TFLAG:COMABLE管理 = 0
+ENDIF
+;同じ場所にいるキャラクターを表示
+;0:ループ用キャラクター番号、1:同じ場所にいる人数
+同室人数 = 0
+PRINTFORM %"在场的人:"%
+;访问者
+IF FLAG:访问者当前位置 == POS_NOW
+	IF 同室人数
+		PRINTFORM %"、"%
+	ENDIF
+	PRINTFORM %NTR_NAME(0)%
+	SIF FLAG:訪問者同行フラグ
+		PRINT (同行中)
+	同室人数++
+ENDIF
+;同じ場所にいる他のキャラクターを表示
+FOR LOOP_CHR,1,CHARANUM
+	IF CFLAG:LOOP_CHR:現在位置 == POS_NOW
+		IF 同室人数
+			PRINT 、
+		ENDIF
+		IF CFLAG:LOOP_CHR:睡眠
+			SETCOLOR 色設定_状態_睡眠中
+			LOCALS = (睡眠中)
+		ELSEIF CFLAG:LOOP_CHR:同行
+			SETCOLOR 色設定_状態_同行中
+			LOCALS = (同行中)
+		ELSE
+			LOCALS = 
+		ENDIF
+		PRINTBUTTON CALLNAME:LOOP_CHR+LOCALS, 700 + LOOP_CHR
+		RESETCOLOR
+		同室人数++
+	ENDIF
+NEXT
+PRINTL
+PRINTL
+IF 对象 > 0
+	PRINTFORM %NAME:对象+"(好感度:"%{CFLAG:2}%"　"%
+	SIF !FLAG:真实模式
+		PRINTFORM 屈服度:{CFLAG:21}
+	PRINT )
+	IF CFLAG:对象:怒意
+		SETCOLOR 色設定_状態_激おこ
+		PRINTFORM %"怒"%
+		RESETCOLOR
+	ELSE
+		PRINTFORM %"怒意:"%%"！" * (BASE:怒意/200)%
+	ENDIF
+	PRINTL
+	SIF !FLAG:真实模式
+		PRINTFORM 性欲:{CFLAG:对象:性欲}
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;自室のチェックを行う
+;@param ARG:0 チェックするキャラクター
+@INFO_CheckMyRoom(ARG:0)
+;非恋慕状態で、子供じゃない場合
+IF !TALENT:(ARG:0):恋慕 && (NO:(ARG:0)!=148 && NO:(ARG:0)!=149)
+	;あなたの私室が、自分の私室に設定されている
+	IF CFLAG:MASTER:開始位置 == GET_PRIVATE_ROOM(ARG:0)
+		PRINTL 
+		PRINTFORML %CALLNAME:(ARG:0)%说，从今天开始，%CALLNAME:MASTER%就要回自己的房间睡了
+		TRYCALLLIST
+			FUNC NTR_MESSAGE_COM_K{ARG:0}_104_1_3
+			FUNC NTR_MESSAGE_COM_K_104_1_3(ARG:0)
+		ENDFUNC
+		CFLAG:MASTER:開始位置 = 15
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;气氛を表示
+;@param ARG:0 キャラクターの番号
+;@return 1:xxx,0:xxx
+@INFO_PrintTargetMood(ARG:0)
+PRINTFORM %"气氛:"%
+IF BASE:(ARG:0):气氛 == MAXBASE:(ARG:0):气氛
+	;最大だったらピンク色
+	SETCOLOR 色設定_状態_発情中
+ENDIF
+PRINTFORML %UNICODE(0x2764)*LIMIT(BASE:(ARG:0):气氛/200,0,5)+UNICODE(0x2715)*(5-LIMIT(BASE:(ARG:0):气氛/200,0,5))%
+RESETCOLOR
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;理性を表示
+;@param ARG:0 キャラクターの番号
+;@return 1:xxx,0:xxx
+@INFO_PrintTargetReason(ARG:0)
+PRINTFORM %"理性:"%
+IF BASE:(ARG:0):理性 < 100
+	;100以下なら黄色
+	SETCOLOR 色設定_状態_理性的
+ENDIF
+PRINTFORML %"★"*(MAX(BASE:(ARG:0):理性/200,1))%
+RESETCOLOR
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;满足度を表示
+;@param ARG:0 キャラクターの番号
+;@return 1:xxx,0:xxx
+@INFO_PrintTargetFeeling(ARG:0)
+PRINTFORM 满足:
+;数值 最大数值 字符1 字符2 颜色1 颜色2 长度
+CALL 数据条绘制(BASE:(ARG:0):满足,MAXBASE:(ARG:0):满足,"♥","×",粉红色,品红色,10)
+PRINTFORML ({BASE:(ARG:0):满足,4}/{MAXBASE:(ARG:0):满足,4})
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;パラメーターを表示する
+;@param ARG:0 表示するキャラクター番号
+@INFO_PrintPalams(对象)
+#DIM 对象
+#DIM ParamNo
+#DIM ParamLv
+#DIM NextSource
+#DIM DispCount
+DispCount = 0
+FOR ParamNo, 0, 101
+	;パラメータ名が無いものは処理しない
+	IF !STRLENS(PALAMNAME:ParamNo)
+		CONTINUE
+	ENDIF
+	;何度も使うので現在のPALAMLVを保持
+	ParamLv = GETPALAMLV(PALAM:对象:ParamNo,15)
+	;パラメータ名と現在のレベルを表示
+	PRINTFORM %" "+PALAMNAME:ParamNo + "Lv"%{ParamLv,2}
+	PRINTFORM %"["%
+	;PALAMLVが15以上なら上限扱い
+	IF ParamLv >= 15
+		PRINT ********
+	ELSE
+		;次のレベルまでどれくらいかを表示(0x00BB使いたいなあ。≫の半角サイズ)
+		PRINTFORM %UNICODE(0x002A)*LIMIT(  8 * (PALAM:对象:ParamNo - PALAMLV:ParamLv) / (PALAMLV:(ParamLv+1) - PALAMLV:ParamLv), 0, 8)%
+		PRINTFORM %UNICODE(0x002E)*LIMIT(8-8 * (PALAM:对象:ParamNo - PALAMLV:ParamLv) / (PALAMLV:(ParamLv+1) - PALAMLV:ParamLv), 0, 8)%
+	ENDIF
+	PRINTFORM %"]"%
+	IF LOCAL:0 == 9 && PALAM:对象:ParamNo >= 20000
+		;润滑(9)が十分にある場合だけ特殊表示
+		PRINTFORM %"摩擦 0 "%
+	ELSE
+		;それ以外はSI接頭語を付けて表示
+		PRINTFORM %INFO_ToSIPrefixed(PALAM:对象:ParamNo),7%
+	ENDIF
+	DispCount++
+	SIF DispCount % PRINTCPERLINE() == 0
+		PRINTL 
+NEXT
+PRINTL
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;数値に対して「整数部3桁+少数部2桁+SI接頭語」を返す。
+;@return 1:xxx,0:xxx
+@INFO_ToSIPrefixed(ARG:0)
+#FUNCTIONS
+;Int64の最大値は9,223,372,036,854,775,807であるため、対応はエクサまでで良い。
+SELECTCASE ARG:0
+	CASE IS >= 1000000000000000000
+		RETURNF TOSTR(ARG:0,"###,,,,,,.00E")
+	CASE IS >= 1000000000000000
+		RETURNF TOSTR(ARG:0,"###,,,,,.00P")
+	CASE IS >= 1000000000000
+		RETURNF TOSTR(ARG:0,"###,,,,.00T")
+	CASE IS >= 1000000000
+		RETURNF TOSTR(ARG:0,"###,,,.00G")
+	CASE IS >= 1000000
+		RETURNF TOSTR(ARG:0,"###,,.00M")
+	CASE IS >= 1000
+		RETURNF TOSTR(ARG:0,"###,.00k")
+	CASEELSE
+		RETURNF TOSTR(ARG:0,"##0    ")
+ENDSELECT
+RETURNF ""
+
+;-------------------------------------------------------------------------------
+;尿意および便意を表示する表示
+;@param ARG:0 キャラクターの番号
+@INFO_PrintRestroom(ARG:0)
+SELECTCASE REST_NeedRestroom(ARG:0)
+	CASE 1
+		SETCOLOR 色設定_状態_注意
+		PRINTFORM %"[尿意]"%
+	CASE 2
+		SETCOLOR 色設定_状態_警告
+		PRINTFORM %"[尿意]"%
+ENDSELECT
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;対象の衣服の状態を表示
+;@param ARG キャラクターの番号
+@INFO_PrintTargetCloth(对象)
+#DIM 对象
+#DIM 服番号
+#DIM 着衣数
+着衣数 = 0
+PRINTFORM 服装(%CALLNAME:对象%)：
+IF !EQUIP:对象:衣服着用
+	PRINTFORM %"[全裸]"%
+ELSE
+	FOR 服番号,1,20
+
+		SELECTCASE 服番号
+			CASE GETNUM(EQUIP,"下半身下着１")
+				IF (对象 != MASTER) && Unknown下着(对象, 服番号)
+					PRINTFORM %"[？下着？]"%
+					着衣数++
+					CONTINUE
+				ENDIF
+			CASE GETNUM(EQUIP,"下半身下着２")
+				IF (对象 != MASTER) && Unknown下着(对象, 服番号)
+					PRINTFORM %""%
+					着衣数++
+					CONTINUE
+				ENDIF
+			CASEELSE
+		ENDSELECT
+
+		IF EQUIP:对象:服番号
+			IF GETBIT(FLAG:匂いフェチ,1) 
+				PRINTFORM %"["+IRUINAME_SMELL(EQUIP:对象:服番号)+CLOTHNAME(服番号,EQUIP:对象:服番号)+"]"%
+			ELSE
+				PRINTFORM %"["+CLOTHNAME(服番号,EQUIP:对象:服番号)+"]"%
+			ENDIF
+			着衣数++
+		ENDIF
+	NEXT
+	IF 着衣数 == 0
+		PRINTFORM %"[全裸]"%
+	ENDIF
+ENDIF
+;最後に１回だけ改行
+PRINTL
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;対象の描写を表示
+@INFO_PrintPortrayal(对象)
+#DIM 对象
+#DIMS 描写文章
+描写文章 = %""%
+IF GETBIT(CFLAG:对象:淫纹, 淫纹_右頬)
+	IF 描写文章 != ""
+		描写文章 = %描写文章+"、"%
+	ENDIF
+	CALL COM417_GetFillingRateByPublicSperm(对象)
+	SELECTCASE RESULT:1 * RESULT:0
+		CASE IS >= 200
+			描写文章 = %描写文章+"脸颊上看到了鲜艳的粉红色的娼妇纹"%
+		CASE 100 TO 199
+			描写文章 = %描写文章+"脸颊上看到了粉红色的娼妇纹"%
+		CASE 50 TO 99
+			描写文章 = %描写文章+"脸颊上看到了赤色的娼妇纹"%
+		CASE 1 TO 49
+			描写文章 = %描写文章+"脸颊上看到了赤紫色的娼妇纹"%
+		CASEELSE
+			描写文章 = %描写文章+"脸颊上看到了紫色的娼妇纹"%
+	ENDSELECT
+ENDIF
+IF TALENT:对象:泌乳体质 && BASE:对象:母乳 > MAXBASE:对象:母乳
+	IF 描写文章 != ""
+		描写文章 = %描写文章+"、"%
+	ENDIF
+	SELECTCASE TALENT:对象:胸部尺寸
+		CASE IS > 0
+			描写文章 = %描写文章+"丰满的乳房被母乳涨得鼓起"%
+		CASE IS == 0
+			描写文章 = %描写文章+"乳房被母乳涨得鼓起"%
+		CASE IS < 0
+			描写文章 = %描写文章+"精致的乳房被母乳涨得鼓起"%
+		CASEELSE
+	ENDSELECT
+ENDIF
+IF 描写文章 != ""
+	描写文章 = %CALLNAME:对象+"の"+描写文章+"る"%
+ENDIF
+PRINTFORML %描写文章%
+RETURN 0
+
+@下着可见判定(ARG)
+#FUNCTION
+RETURNF !EQUIP:ARG:下半身上着１ && !EQUIP:ARG:下半身上着２ && !EQUIP:ARG:裙子 && !EQUIP:ARG:赛车服 && (!EQUIP:ARG:连衣裙||EQUIP:ARG:连衣裙 == 4 ) && !EQUIP:ARG:着物
+
+@乳头可见判定(ARG)
+#FUNCTION
+RETURNF (!EQUIP:ARG:上半身上着２||EQUIP:ARG:上半身上着２ == 14||EQUIP:ARG:上半身上着２==22 ) && !EQUIP:ARG:上半身上着１ && !EQUIP:ARG:上半身下着１ && (!EQUIP:ARG:上半身下着２||!EQUIP:ARG:上半身下着２ == 4 ) && (!EQUIP:ARG:连衣裙||EQUIP:ARG:连衣裙 == 4 )
+
+@INFO_绘制对象配件(ARG)
+#DIM 下着不可见
+下着不可见 = GETBIT(FLAG:雑多設定,1)
+IF 下着不可见
+	IF 下着可见判定(ARG)
+		IF !EQUIP:ARG:下半身下着２ && CFLAG:ARG:肛塞
+			SETCOLOR 红色
+			PRINTFORM [{CFLAG:ARG:肛塞}cm肛塞]装备！  
+			RESETCOLOR
+		ENDIF
+		IF !EQUIP:ARG:下半身下着２ && CFLAG:ARG:膣塞
+			SETCOLOR 红色
+			PRINTFORM [{CFLAG:ARG:膣塞}cm膣塞]装备！  
+			RESETCOLOR
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:ARG:肛塞
+		SETCOLOR 红色
+		PRINTFORM [{CFLAG:ARG:肛塞}cm肛塞]装备！  
+		RESETCOLOR
+	ENDIF
+	IF CFLAG:ARG:膣塞
+		SETCOLOR 红色
+		PRINTFORM [{CFLAG:ARG:膣塞}cm膣塞]装备！  
+		RESETCOLOR
+	ENDIF
+ENDIF
+IF CFLAG:ARG:口塞
+	SETCOLOR 红色
+	PRINTFORM [%口塞类型名称(ARG)%]装备！  
+	RESETCOLOR
+ENDIF
+IF CFLAG:ARG:眼罩
+	SETCOLOR 红色
+	PRINTFORM [眼罩]装备！  
+	RESETCOLOR
+ENDIF
+PRINTL
+
+
+
+
+@INFO_确认对象状态(ARG)
+IF 下着可见判定(ARG)
+	IF !EQUIP:ARG:下半身下着２
+		CALL 确认小穴颜色(ARG)
+		CALL 确认小穴松弛度(ARG)
+		IF RAND(100) < 50
+			CALL 确认肛门颜色(ARG)
+			CALL 确认肛门松弛度(ARG)
+		ENDIF
+	ENDIF
+ENDIF
+IF 乳头可见判定(ARG)
+	CALL 确认乳头颜色(ARG)
+	CALL 确认乳头大小(ARG)
+ENDIF
+
+
+
+
+
+
+
+
+

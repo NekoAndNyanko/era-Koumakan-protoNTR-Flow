@@ -1,0 +1,104 @@
+﻿;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会話コマンド(拡張版) - キスしてほしい 実行判定
+; @return 0 コマンドの実行不可, 1 コマンドの実行可能
+@COM460_11_ENABLE(奴隷)
+	#DIM 奴隷
+	RESULTS:0 = %"[11]-キスしてほしい"%
+	IF CFLAG:奴隷:屈服度 > 200
+		RETURN 1
+	ELSEIF TALENT:奴隷:浮気な唇
+		RETURN 1
+	ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会話コマンド(拡張版) - キスしてほしい
+; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_11(奴隷)
+	#DIM 奴隷
+	#DIM SKIPDISP退避
+	CALL COM460_11_ENABLE
+	IF RESULT:0 == 0
+		RETURN 0
+	ENDIF
+	;SKIPDISPが既に設定されているかもしれないので退避して後で復帰
+	SKIPDISP退避 = ISSKIP()
+	IF !NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+		SKIPDISP 1
+	ENDIF
+	PRINTFORML %CALLNAME:奴隷+"がキスをねだると、"+NTR_NAME(0)+"は優しいのと激しいのと、どちらがいいか訊いてきた"%
+	PRINTFORML %"[0]-優しく"%
+	PRINTFORML %"[1]-激しく"%
+	PRINTFORML %"[2]-"+NTR_NAME(0)+"の好きなように"%
+	$COM460_11_INPUT_LOOP
+	IF 奴隷 == MASTER
+		;対象が「あなた」の場合だけ入力を要求する
+		INPUT
+	ELSE
+		RESULT:0 = RAND:3
+		;CLEARLINEでチラチラするかもしれないけどまあ妥協
+		PRINTFORML %"("+CALLNAME:奴隷+"は "+TOSTR(RESULT:0)+" を選択しました)"%
+	ENDIF
+	TRYCALLFORM COM460_11_%TOSTR(RESULT:0,"00")%
+	IF RESULT:0 == 1
+		TIME += 5
+		EXP:奴隷:会話経験 ++
+	ELSE
+		CLEARLINE 1
+		GOTO COM460_11_INPUT_LOOP
+	ENDIF
+	SKIPDISP SKIPDISP退避
+	RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会話コマンド(拡張版) - キスしてほしい - 優しく
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_11_00(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM %"優しくして欲しいと伝えると、"+NTR_NAME(0)+"は"+CALLNAME:奴隷+"を抱き寄せて唇を重ねた……"%
+	ENDDATA
+	; 手抜き。そのうち修正。
+	CALL VISITOR_TAKEOUT_10_02(奴隷)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会話コマンド(拡張版) - キスしてほしい - 激しく
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_11_01(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM %"激しくして欲しいと伝えると、"+NTR_NAME(0)+"は"+CALLNAME:奴隷+"を抱き寄せて唇を重ねた……"%
+	ENDDATA
+	; 手抜き。そのうち修正。
+	CALL VISITOR_TAKEOUT_10_02(奴隷)
+	CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+	CALL ORGASM_ADD(奴隷,人物_訪問者)
+	RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会話コマンド(拡張版) - キスしてほしい - 好きなように
+; @return ; @return 0 コマンドの実行に失敗, 1 コマンドの実行に成功
+@COM460_11_02(奴隷)
+	#DIM 奴隷
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML %NTR_NAME(0)+"は"+CALLNAME:奴隷+"を抱き寄せて唇を重ねた……"%
+			; 手抜き。そのうち修正。
+			CALL VISITOR_TAKEOUT_10_02(奴隷)
+			CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+			CALL ORGASM_ADD(奴隷,人物_訪問者)
+		CASEELSE
+			PRINTFORML %NTR_NAME(0)+"は"+CALLNAME:奴隷+"を抱き寄せて唇を重ねた……"%
+			; 手抜き。そのうち修正。
+			CALL VISITOR_TAKEOUT_10_02(奴隷)
+			CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+			CALL ORGASM_ADD(奴隷,人物_訪問者)
+	ENDSELECT
+	RETURN 1
+RETURN 0

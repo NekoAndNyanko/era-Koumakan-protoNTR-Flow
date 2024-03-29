@@ -1,0 +1,17 @@
+﻿;==============================================================================
+@EVENT_WC_COUNTER_COMBINATION
+VARSET LOCAL
+;つくりかけ
+;LOCAL:100〜
+FOR LOCAL,1,CHARANUM
+	SIF TARGET:LOCAL <= 0
+		CONTINUE
+	SIF TCVAR:(TARGET:LOCAL):20
+		LOCAL:(100 + TCVAR:(TARGET:LOCAL):20) ++
+NEXT
+
+
+
+
+@WC_COUNTER_RESET
+

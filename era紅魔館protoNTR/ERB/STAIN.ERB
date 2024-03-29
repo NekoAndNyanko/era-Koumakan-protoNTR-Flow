@@ -1,0 +1,300 @@
+﻿; STAIN.ERB
+;	汚れ関係の関数
+;
+
+;ペニスとの接触による汚れ移動
+@STAIN_MOVE_BY_PENIS(部位, 被害者, 加害者)
+	#DIM 部位
+	#DIM 被害者
+	#DIM 加害者
+	;ペニスへの汚れ追加
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			;何もしない
+		CASE 人物_訪問者
+			SIF 部位 == 部位_Ｖ
+				SETBIT FLAG:訪問者との汚れ判定に使用, 汚れB_愛液
+			SIF 部位 == 部位_Ａ
+				SETBIT FLAG:訪問者との汚れ判定に使用, 汚れB_アナル
+		CASE IS < CHARANUM
+			SIF 部位 == 部位_Ｖ
+				SETBIT STAIN:加害者:Ｐ, 汚れB_愛液
+			SIF 部位 == 部位_Ａ
+				SETBIT STAIN:加害者:Ｐ, 汚れB_アナル
+		CASEELSE
+			;何もしない
+	ENDSELECT
+	IF TALENT:被害者:処女 && (部位 == 部位_Ｖ || 部位 == 部位_膣内)
+		;処女であれば破瓜
+		SETBIT STAIN:被害者:部位,汚れB_破瓜の血
+	ENDIF
+	;ペニスからの汚れ移動
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			SETBIT STAIN:被害者:部位,汚れB_ペニス
+		CASE 人物_訪問者
+			SIF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_愛液)
+				SETBIT STAIN:被害者:部位,汚れB_愛液
+			SETBIT STAIN:被害者:部位,汚れB_ペニス
+			SIF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_精液)
+				SETBIT STAIN:被害者:部位,汚れB_精液
+			SIF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_アナル)
+				SETBIT STAIN:被害者:部位,汚れB_アナル
+			SIF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_破瓜の血)
+				SETBIT STAIN:被害者:部位,汚れB_破瓜の血
+		CASE IS < CHARANUM
+			SIF GETBIT(STAIN:加害者:Ｐ,汚れB_愛液)
+				SETBIT STAIN:被害者:部位,汚れB_愛液
+			SETBIT STAIN:被害者:部位,汚れB_ペニス
+			SIF GETBIT(STAIN:加害者:Ｐ,汚れB_精液)
+				SETBIT STAIN:被害者:部位,汚れB_精液
+			SIF GETBIT(STAIN:加害者:Ｐ,汚れB_アナル)
+				SETBIT STAIN:被害者:部位,汚れB_アナル
+			SIF GETBIT(STAIN:加害者:Ｐ,汚れB_破瓜の血)
+				SETBIT STAIN:被害者:部位,汚れB_破瓜の血
+		CASEELSE
+	ENDSELECT
+	;フェラチオによるペニス清掃
+	IF 部位 == 部位_口
+		SELECTCASE 加害者
+			CASE 人物_客, 人物_村人
+				;何もしない
+			CASE 人物_訪問者
+				FLAG:訪問者との汚れ判定に使用 = 汚れ_ペニス
+			CASE IS < CHARANUM
+				STAIN:加害者:Ｐ = 汚れ_ペニス
+			CASEELSE
+				;何もしない
+		ENDSELECT
+	ENDIF
+RETURN 0
+
+;手コキによる汚れ追加
+;屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@STAIN_ADD_SEMEN_HAND(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			SETBIT STAIN:被害者:手, 汚れB_ペニス
+			SETBIT STAIN:被害者:手, 汚れB_精液
+		CASE 人物_訪問者
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_ペニス
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_精液
+			SETBIT STAIN:被害者:手, 汚れB_ペニス
+			SETBIT STAIN:被害者:手, 汚れB_精液
+		CASE IS < CHARANUM
+			SETBIT STAIN:加害者:Ｐ, 汚れB_ペニス
+			SETBIT STAIN:加害者:Ｐ, 汚れB_精液
+			SETBIT STAIN:被害者:手, 汚れB_ペニス
+			SETBIT STAIN:被害者:手, 汚れB_精液
+		CASEELSE
+			;何もしない
+	ENDSELECT
+RETURN 0
+
+;パイズリによる汚れ追加
+;屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@STAIN_ADD_SEMEN_B(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			SETBIT STAIN:被害者:Ｂ, 汚れB_ペニス
+			SETBIT STAIN:被害者:Ｂ, 汚れB_精液
+		CASE 人物_訪問者
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_ペニス
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_精液
+			SETBIT STAIN:被害者:Ｂ, 汚れB_ペニス
+			SETBIT STAIN:被害者:Ｂ, 汚れB_精液
+		CASE IS < CHARANUM
+			SETBIT STAIN:加害者:Ｐ, 汚れB_ペニス
+			SETBIT STAIN:加害者:Ｐ, 汚れB_精液
+			SETBIT STAIN:被害者:Ｂ, 汚れB_ペニス
+			SETBIT STAIN:被害者:Ｂ, 汚れB_精液
+			IF MASTER == 加害者
+				SETBIT CFLAG:被害者:あなた射精フラグ,被射精箇所_Ｂ
+			ENDIF
+		CASEELSE
+			;何もしない
+	ENDSELECT
+	;汚れ継続開始
+	CFLAG:被害者:汚れ継続時間 = 120
+RETURN 0
+
+;素股による汚れ追加
+;屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@STAIN_ADD_SEMEN_Sumata(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			SETBIT STAIN:被害者:Ｖ, 汚れB_ペニス
+			SETBIT STAIN:被害者:Ｖ, 汚れB_精液
+		CASE 人物_訪問者
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_ペニス
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_精液
+			SETBIT STAIN:被害者:Ｖ, 汚れB_ペニス
+			SETBIT STAIN:被害者:Ｖ, 汚れB_精液
+		CASE IS < CHARANUM
+			SETBIT STAIN:加害者:Ｐ, 汚れB_ペニス
+			SETBIT STAIN:加害者:Ｐ, 汚れB_精液
+			SETBIT STAIN:被害者:Ｖ, 汚れB_ペニス
+			SETBIT STAIN:被害者:Ｖ, 汚れB_精液
+		CASEELSE
+			;何もしない
+	ENDSELECT
+	;汚れ継続開始
+	CFLAG:被害者:汚れ継続時間 = 120
+RETURN 0
+
+;口内射精による汚れ追加
+;屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+;フェラチオによるペニス清掃扱いで加害者に精液汚れは残らないものとする。
+@STAIN_ADD_SEMEN_M(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			;客の時は被害者への汚れ追加のみ
+			SETBIT STAIN:被害者:口,汚れB_ペニス
+			SETBIT STAIN:被害者:口,汚れB_精液
+		CASE 人物_訪問者
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_ペニス
+			;SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_精液
+			SETBIT STAIN:被害者:口,汚れB_ペニス
+			SETBIT STAIN:被害者:口,汚れB_精液
+		CASE IS < CHARANUM
+			SETBIT STAIN:加害者:Ｐ, 汚れB_ペニス
+			;SETBIT STAIN:加害者:Ｐ, 汚れB_精液
+			SETBIT STAIN:被害者:口,汚れB_ペニス
+			SETBIT STAIN:被害者:口,汚れB_精液
+			IF MASTER == 加害者
+				SETBIT CFLAG:被害者:あなた射精フラグ,被射精箇所_口
+			ENDIF
+		CASEELSE
+	ENDSELECT
+RETURN 0
+
+;膣内射精による汚れ追加
+;Ｐ⇔Ｖ間の汚れ移動も行う。
+;屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@STAIN_ADD_SEMEN_V(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			;客の時は被害者への汚れ追加のみ
+			SETBIT STAIN:被害者:Ｖ,汚れB_ペニス
+			SETBIT STAIN:被害者:膣内,汚れB_ペニス
+			SETBIT STAIN:被害者:Ｖ,汚れB_精液
+			SETBIT STAIN:被害者:膣内,汚れB_精液
+			IF TALENT:被害者:処女
+				SETBIT STAIN:被害者:Ｖ,汚れB_破瓜の血
+				SETBIT STAIN:被害者:膣内,汚れB_破瓜の血
+			ENDIF
+		CASE 人物_訪問者
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_愛液
+			IF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_愛液)
+				SETBIT STAIN:被害者:Ｖ,汚れB_愛液
+				SETBIT STAIN:被害者:膣内,汚れB_愛液
+			ENDIF
+			SETBIT STAIN:被害者:Ｖ,汚れB_ペニス
+			SETBIT STAIN:被害者:膣内,汚れB_ペニス
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_精液
+			SETBIT STAIN:被害者:Ｖ,汚れB_精液
+			SETBIT STAIN:被害者:膣内,汚れB_精液
+			IF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_アナル)
+				SETBIT STAIN:被害者:Ｖ,汚れB_アナル
+				SETBIT STAIN:被害者:膣内,汚れB_アナル
+			ENDIF
+			IF TALENT:被害者:処女
+				SETBIT STAIN:被害者:Ｖ,汚れB_破瓜の血
+				SETBIT STAIN:被害者:膣内,汚れB_破瓜の血
+				SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_破瓜の血
+				SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_ペニス
+			ENDIF
+		CASE IS < CHARANUM
+			SETBIT STAIN:被害者:Ｖ,汚れB_愛液
+			SETBIT STAIN:被害者:膣内,汚れB_愛液
+			SETBIT STAIN:加害者:Ｐ,汚れB_愛液
+			SETBIT STAIN:被害者:Ｖ,汚れB_ペニス
+			SETBIT STAIN:被害者:膣内,汚れB_ペニス
+			SETBIT STAIN:被害者:Ｖ,汚れB_精液
+			SETBIT STAIN:被害者:膣内,汚れB_精液
+			SETBIT STAIN:加害者:Ｐ,汚れB_精液
+			IF GETBIT(STAIN:加害者:Ｐ,汚れB_アナル)
+				SETBIT STAIN:被害者:Ｖ,汚れB_アナル
+				SETBIT STAIN:被害者:膣内,汚れB_アナル
+			ENDIF
+
+			IF TALENT:被害者:処女
+				SETBIT STAIN:被害者:Ｖ,汚れB_破瓜の血
+				SETBIT STAIN:被害者:膣内,汚れB_破瓜の血
+				SETBIT STAIN:加害者:Ｐ,汚れB_破瓜の血
+			ENDIF
+			IF MASTER == 加害者
+				SETBIT CFLAG:被害者:あなた射精フラグ,被射精箇所_Ｖ
+			ENDIF
+		CASEELSE
+			;何もしない
+	ENDSELECT
+	;汚れ継続開始
+	CFLAG:被害者:汚れ継続時間 = 120
+RETURN 0
+
+;腸内射精による汚れ追加
+;Ｐ⇔Ａ間の汚れ移動も行う。
+;屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@STAIN_ADD_SEMEN_A(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			;客の時は被害者への汚れ追加のみ
+			SETBIT STAIN:被害者:Ａ,汚れB_ペニス
+			SETBIT STAIN:被害者:腸内,汚れB_ペニス
+			SETBIT STAIN:被害者:Ａ,汚れB_精液
+			SETBIT STAIN:被害者:腸内,汚れB_精液
+		CASE 人物_訪問者
+			IF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_愛液)
+				SETBIT STAIN:被害者:Ａ,汚れB_愛液
+				SETBIT STAIN:被害者:腸内,汚れB_愛液
+			ENDIF
+			SETBIT STAIN:被害者:Ａ,汚れB_ペニス
+			SETBIT STAIN:被害者:腸内,汚れB_ペニス
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_精液
+			SETBIT STAIN:被害者:Ａ,汚れB_精液
+			SETBIT STAIN:被害者:腸内,汚れB_精液
+			SETBIT FLAG:訪問者との汚れ判定に使用,汚れB_アナル
+			IF GETBIT(FLAG:訪問者との汚れ判定に使用,汚れB_破瓜の血)
+				SETBIT STAIN:被害者:Ａ,汚れB_破瓜の血
+				SETBIT STAIN:被害者:膣内,汚れB_破瓜の血
+			ENDIF
+		CASE IS < CHARANUM
+			IF GETBIT(STAIN:加害者:Ｐ,汚れB_愛液)
+				SETBIT STAIN:被害者:Ａ,汚れB_愛液
+				SETBIT STAIN:被害者:膣内,汚れB_愛液
+			ENDIF
+			SETBIT STAIN:被害者:Ａ,汚れB_ペニス
+			SETBIT STAIN:被害者:膣内,汚れB_ペニス
+			SETBIT STAIN:被害者:Ａ,汚れB_精液
+			SETBIT STAIN:被害者:膣内,汚れB_精液
+			SETBIT STAIN:加害者:Ｐ,汚れB_精液
+			SETBIT STAIN:被害者:Ａ,汚れB_アナル
+			SETBIT STAIN:被害者:腸内,汚れB_アナル
+			SETBIT STAIN:加害者:Ｐ,汚れB_アナル
+			IF GETBIT(STAIN:加害者:Ｐ,汚れB_破瓜の血)
+				SETBIT STAIN:被害者:Ａ,汚れB_破瓜の血
+				SETBIT STAIN:被害者:腸内,汚れB_破瓜の血
+			ENDIF
+			IF MASTER == 加害者
+				SETBIT CFLAG:被害者:あなた射精フラグ,被射精箇所_Ａ
+			ENDIF
+		CASEELSE
+			;何もしない
+	ENDSELECT
+	;汚れ継続開始
+	CFLAG:被害者:汚れ継続時間 = 120
+RETURN 0
+

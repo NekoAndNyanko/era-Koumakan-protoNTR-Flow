@@ -1,0 +1,49 @@
+﻿;-------------------------------------------------
+;貞操帯を外してもらう
+;-------------------------------------------------
+;あなたが着用させられている貞操帯を外してもらう
+;
+;
+;-------------------------------------------------
+@COM419
+	#DIM 装着者
+	IF CFLAG:MASTER:ペニス用貞操帯装着者 == 人物_訪問者
+		PRINTFORML %CALLNAME:MASTER%は%NTR_NAME(0)%に、貞操帯を外してくれと頼んだ。
+		IF TIME_PROGRESS(CFLAG:MASTER:ペニス用貞操帯着用) < 時間_1WEEK
+			;７日経過していない
+			PRINTFORML %NTR_NAME(0)%は、いつ着けたのか覚えていないのなら、今日から数え直せと言い離れていった……
+			;立場をわからされる事で屈服度が増加
+			SOURCE:MASTER:受動 += 100 + 200 * ABL:MASTER:従順
+			CALL NTR_ADD_SURRENDER(MASTER, (20 + RAND:20))
+			;着用日をリセット
+			CFLAG:MASTER:ペニス用貞操帯着用 = TIME_PROGRESS(0)
+		ELSE
+			;７日我慢できた
+			PRINTFORML %NTR_NAME(0)%はそろそろ許してやると言い、%CALLNAME:MASTER%の貞操帯を取り外した。
+			;ペニス用貞操帯解除
+			CALL DISMOUNT_P_CHASTITY_BELT(MASTER)
+			SOURCE:MASTER:受動 += 100 + 200 * ABL:MASTER:従順
+		ENDIF
+	ELSE
+		装着者 = CFLAG:MASTER:ペニス用貞操帯装着者
+		PRINTFORML %CALLNAME:MASTER%は%CALLNAME:装着者%に、貞操帯を外してくれと頼んだ。
+		IF TIME_PROGRESS(CFLAG:MASTER:ペニス用貞操帯着用) < 時間_1DAY
+			;１日経過していない
+			PRINTFORML %CALLNAME:装着者%は、いつ着けたのか覚えていないのなら、今日から数え直せと言い離れていった……
+			;立場をわからされる事で屈服度が増加
+			SOURCE:MASTER:受動 += 100 + 200 * ABL:MASTER:従順
+			CALL NTR_ADD_SURRENDER(MASTER, (20 + RAND:20))
+			;着用日をリセット
+			CFLAG:MASTER:ペニス用貞操帯着用 = TIME_PROGRESS(0)
+		ELSE
+			;１日我慢できた
+			PRINTFORML %CALLNAME:装着者%はそろそろ許してやると言い、%CALLNAME:MASTER%の貞操帯を取り外した。
+			;ペニス用貞操帯解除
+			CALL DISMOUNT_P_CHASTITY_BELT(MASTER)
+			SOURCE:MASTER:受動 += 100 + 200 * ABL:MASTER:従順
+		ENDIF
+	ENDIF
+	
+RETURN 1
+
+

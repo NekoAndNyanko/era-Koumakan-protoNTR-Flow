@@ -1,0 +1,1401 @@
+﻿;;美鈴の、対肉便器関連口上
+;;
+;;---------------------------------------------------------------
+@WC_DescriptiveStyle_K1
+;;地の文の方向性を設定
+;;WC_応答分類
+;;	,==0：（なし）
+;;	,==1：応答分類_虐待	;;地の文分類、虐待・怒りをぶつける・痛い
+;;	,==2：応答分類_冷淡	;;地の文分類、冷たく見下す系
+;;	,==3：応答分類_快虐	;;地の文分類、虐めて楽しむ・痛すぎない
+;;	,==4：応答分類_性戯	;;地の文分類、セクハラそのもの・性的悪戯
+;;	,==5：応答分類_誘惑	;;地の文分類、色香でからかう系
+;;	,==6：応答分類_愛玩	;;地の文分類、可愛がる・ペット、お気に入りの道具
+;;	,==7：応答分類_同情	;;地の文分類、そのまんま同情
+;;	,==8：応答分類_子供	;;地の文分類、無邪気な子供系
+
+	IF MARK:人物_美鈴:反発刻印 == 3																;;反発刻印３→冷淡
+		CFLAG:人物_美鈴:WC_応答分類 = 2
+	ELSEIF TALENT:MASTER:NTR && (TALENT:人物_美鈴:恋慕 || TALENT:人物_美鈴:管理人)				;;あなたがＮＴＲた＆恋慕／管理人→同情
+		CFLAG:人物_美鈴:WC_応答分類 = 7
+	ELSEIF TALENT:人物_美鈴:恋慕																;;恋慕→愛玩
+		CFLAG:人物_美鈴:WC_応答分類 = 6
+	ELSEIF TALENT:人物_美鈴:管理人																;;管理人→愛玩
+		CFLAG:人物_美鈴:WC_応答分類 = 6
+	ELSEIF CFLAG:人物_美鈴:好感度 >= 500														;;高好感度→誘惑
+		CFLAG:人物_美鈴:WC_応答分類 = 5
+	ELSE																						;;通常→誘惑
+		CFLAG:人物_美鈴:WC_応答分類 = 5
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_com350_K1	;;「押し倒す」のときの汎用
+	IF TALENT:TARGET:恋慕 || TALENT:TARGET:管理人
+		IF TALENT:MASTER:NTR
+			PRINTFORML 「くすっ……やっぱり、私が良いですか？　私も、%CALLNAME:MASTER%が……」
+		ELSE
+			PRINTFORML 「ふふふ、しょうがないですねぇ」
+			PRINTFORML 「でも……求められるのって、嬉しいですね♪」
+		ENDIF
+	ELSEIF CFLAG:TARGET:好感度 >= 500
+		PRINTFORML 「も〜っ、しょうがないんですから……」
+		PRINTFORML 「まぁ……たまには、いいですかね？」
+	ELSE
+		PRINTFORML 「こらこら。%CALLNAME:MASTER%のお仕事は、こういうことじゃないでしょ？」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_NTRrevelation_0_K1(ARG)	;;管理人による、あなたＮＴＲ発覚メッセージ_第一声
+;;ARG=TCVAR:20
+	SELECTCASE ARG
+		CASE 13,25
+			PRINTFORML 「……なんですか、それ？」
+		CASE 21
+			PRINTFORML 「……なんですか、これ？」
+		CASEELSE
+			;;TEQUIPがいくら考えても分からないので、力技で処理
+			;;貞操帯を、見て取れない衣服着用
+			IF EQUIP:MASTER:下半身上着１ != 0 || EQUIP:MASTER:下半身上着２ != 0 || EQUIP:MASTER:スカート != 0 || EQUIP:MASTER:ワンピース != 0 || EQUIP:MASTER:着物 != 0
+				PRINTFORML 「……なんですか、これ？」
+			ELSE
+				PRINTFORML 「……なんですか、それ？」
+			ENDIF
+	ENDSELECT
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_NTRrevelation_1_K1	;;管理人による、あなたＮＴＲ発覚メッセージ
+	IF NTR_CHK_FAVORABLY(TARGET, FAV_主人より高い)
+		PRINTFORML 「%NTR_KARE()%が……？　%CALLNAME:MASTER%を……？」
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_うふふする程度)
+		PRINTFORML 「あの%NTR_OTOKO()%が……？　%CALLNAME:MASTER%を……？」
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_奉仕する程度)
+		PRINTFORML 「あの%NTR_OTOKO()%が……？　%CALLNAME:MASTER%を……？」
+	ELSE
+		PRINTFORML 「ああ……時々訪ねてくる、あの人ですか……」
+	ENDIF
+	PRINTFORMW 「…………」
+	;;恋慕だと、問答無用で取り返しにかかる（自身が公衆便所だろうがNTRだろうが）
+	IF TALENT:TARGET:恋慕
+		IF TALENT:TARGET:NTR
+			PRINTFORML 「はぁ……やっぱり、無理ですね。ちょっと、我慢できそうにないです」
+			PRINTFORML 「%NTR_KARE()%が……あの人が望むなら……って、そう考えて我慢しようかとも思ったんですけどねぇ……」
+			PRINTFORML 「%CALLNAME:MASTER%のことだけは、我慢できません」
+		ELSE
+			PRINTFORML 「ふざけた話ですね、余所者風情が……！」
+			PRINTFORML 「そりゃ、%CALLNAME_K1(人物_美鈴, 人物_レミリア)%なんかが言うのなら、私も考えなくはないですけど……」
+			PRINTFORML 「いえ、誰が相手でも無理かも知れませんね……きっと、我慢できない……」
+		ENDIF
+		PRINTFORML 「%CALLNAME:MASTER%は、私のものなんですから……！　そうでしょう？」
+		PRINTFORMW %CALLNAME:TARGET%はどこか思い詰めたような眼差しで、%CALLNAME:MASTER%のことを正面から見つめてきた。
+		PRINTFORML 「とりあえずは、私に任せてくれませんか？　きっと、なんとかしてみせますから」
+	;;公衆便所だと、同じ立場として管理人放棄
+	ELSEIF TALENT:TARGET:公衆便所
+		PRINTFORML 「あは……あははは、そっかぁ……%CALLNAME:MASTER%も、ですか……これは、参りましたねぇ」
+		PRINTFORMW 苦笑か、自嘲か……%CALLNAME:TARGET%は、複雑な笑みを浮かべながら、自身に着けられている貞操帯を%CALLNAME:MASTER%に見せた。
+		PRINTFORML 「……ね？　実は、私もなんです。%NTR_KARE()%に……あの人に、すっかり躾けられちゃって……」
+		PRINTFORML 「このとおり、もう%CALLNAME:MASTER%と似たようなものになっちゃいました」
+		PRINTFORML 「同じ立場の私が、管理人っていうのも変ですよね？　この際、返上させてもらいます」
+		PRINTFORML 「あ、%CALLNAME_K1(人物_美鈴, 人物_レミリア)%には、私の方から言っておきますから」
+		PRINTFORML 「それにしても……ふふふ、もしかしたら、この先……同じ場所で、同じようなことをさせられるかもしれませんね♪」
+	;;NTRか、屈服度が一定以上で好感度より屈服度の方が高いと、恋のライバル的に管理人放棄
+	ELSEIF TALENT:TARGET:NTR || (CFLAG:TARGET:屈服度 > CFLAG:TARGET:好感度 && CFLAG:TARGET:屈服度 > 4000)
+		PRINTFORML 「%CALLNAME:MASTER%って、紅魔館の所有物ですよね？　なのに、%NTR_KARE()%と……」
+		PRINTFORML 「困りものですねぇ……%CALLNAME:MASTER%も、%NTR_KARE()%も」
+		PRINTFORML 「便器なんかで発散しなくても、ちゃんと私が相手してあげるって言うのに」
+		PRINTFORMW 一人の女としての表情で、%CALLNAME:TARGET%は%CALLNAME:MASTER%のことを睨み付ける。
+		PRINTFORML 「これからは、気をつけさせてもらいますよ？」
+		PRINTFORML 「%NTR_KARE()%が、%CALLNAME:MASTER%なんかに夢中になるなんて、私としては黙っていられませんから」
+		PRINTFORML 「うん、%CALLNAME:MASTER%にあまり構ってもいられないですね。%NTR_KARE()%の相手で忙しくなりそうですし♪」
+		PRINTFORML 「管理人は、他の人に委せます。%CALLNAME_K1(人物_美鈴, 人物_レミリア)%には、私から言っておきますから」
+	;;それ以外、取り返しにかかる
+	ELSE
+		PRINTFORML 「これ……あの%NTR_OTOKO()%に無理矢理着けられたんですか？」
+		IF CFLAG:MASTER:WC_訪問者受け入れ具合 <= 3
+			PRINTFORML %CALLNAME:TARGET%の声が、いつもより優しいものに感じられた。
+			PRINTFORMW 目の前が滲み、涙が粒を成し、頬を伝い落ち始めるのを感じながら、%CALLNAME:MASTER%は小さく頷く。
+		ELSEIF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 4
+			PRINTFORML どう答えればいいのか、%CALLNAME:MASTER%は迷っていた。
+			PRINTFORML 自分は結局のところ、あの%NTR_OTOKO()%を受け入れたのではないだろうか？
+			PRINTFORMW だが%CALLNAME:MASTER%が答えを口にする前に、%CALLNAME:TARGET%はその沈黙を肯定と受け取ったようだ。
+		ENDIF
+		PRINTFORML 「大丈夫です！　とりあえずは、私に任せてみてください」
+		PRINTFORML 「きっと、なんとかしてみせますから」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_NTRregain_0_K1	;;管理人による、ＮＴＲあなた奪還
+	PRINTFORML 「%CALLNAME:MASTER%〜♪　こ〜れ、なんだと思いますかぁ？」
+	PRINTFORML %CALLNAME:TARGET%が、%CALLNAME:MASTER%に小さな鍵を差し出して見せた。
+	PRINTFORMW どうやら、%NTR_NAME(0)%によって施錠されている%CALLNAME:MASTER%の貞操帯のもののようだ。
+	PRINTFORML 「%CALLNAME:MASTER%を苦しめてる、貞操帯の鍵です。……ね？　なんとかしちゃえましたよ？」
+	PRINTFORM 「ほら、外してあげるから
+	;;ボディースーツ／スク水／レオタード／袴ズボン／スパッツ／半ズボン／ブルマ／裳
+	IF EQUIP:MASTER:ボディースーツ != 0 || EQUIP:MASTER:レオタード != 0 || EQUIP:MASTER:下半身上着１ != 0 || EQUIP:MASTER:下半身上着２ != 0 || EQUIP:MASTER:スカート == 5
+		PRINTFORML 一度脱いでください」
+	;;スカートかワンピース
+	ELSEIF (EQUIP:MASTER:スカート >= 1 && EQUIP:MASTER:スカート <= 4) || EQUIP:MASTER:ワンピース == 1
+		PRINTFORML スカートを捲ってもらえますか？」
+	;;チャイナ服／着物
+	ELSEIF EQUIP:MASTER:ワンピース == 2 || EQUIP:MASTER:着物 == 1
+		PRINTFORML 裾を捲ってもらえますか？」
+	ELSE
+		PRINTFORML 楽にしてください」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_NTRregain_1_answer0_K1		;;管理人による、ＮＴＲあなた奪還・[0] 感謝する
+	PRINTFORML 「あはは、大袈裟ですよぉ。%CALLNAME:MASTER%の管理人として、当然のことですから」
+	SIF TALENT:TARGET:恋慕
+		PRINTFORML 「そ・れ・に〜♪　%CALLNAME:MASTER%を、他人の好きにさせるわけにはいかないですからねぇ」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_NTRregain_1_answer1_1_K1		;;管理人による、ＮＴＲあなた奪還・[1] 戸惑う・訪問者受け入れ具合が高い
+	PRINTFORML 「ん？　どうかしましたか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_NTRregain_1_answer1_2_K1		;;管理人による、ＮＴＲあなた奪還・[1] 戸惑う・訪問者受け入れ具合が低い
+	PRINTFORML 「あっ、あれこれ難しく考えちゃってますか？　駄目ですよぉ、気にしちゃ♪」
+	PRINTFORML 「私は、%CALLNAME:MASTER%の管理人なんですから。これも、私の役目の内です」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_NTRregain_2_K1		;;管理人による、ＮＴＲあなた奪還・完了
+	PRINTFORML 「はい、これでよし！　もう、あの人の言いなりになっちゃ、駄目ですからね？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_caretaker_K1	;;管理人宣言
+;;	PRINTFORML 「」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER10_K1	;;色っぽい仕草
+;;	PRINTFORML 「」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER12_K1	;;体を摺り寄せる
+;;	PRINTFORML 「」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER15_K1	;;尻を撫でる
+;;	PRINTFORML 「」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER16_K1	;;囁く
+;;	PRINTFORML 「」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER21_1_com301or413_K1	;;お尻いじめ・お茶を淹れるか料理を作る
+	IF TALENT:TARGET:恋慕 || TALENT:TARGET:管理人
+		PRINTDATA
+			DATAFORM 「だっ、大丈夫！？　……ですね？　
+			DATAFORM 「！？　……ふぅ。
+			DATAFORM 「あっ……！？　……ぶなかったぁ。
+		ENDDATA
+		PRINTDATA
+			DATAFORM 驚かせないでくださいよ、もうっ……
+			DATAFORM こっちがビックリしちゃいましたよ、まったく……
+			DATAFORM 迂闊に触ると、どうなるかわかりませんねぇ
+		ENDDATA
+		PRINTFORML 」
+		PRINTDATA
+			DATAFORM 「ちょっと敏感すぎますよ？　
+			DATAFORM 「で〜もぉ……それが良いんですよねぇ。
+			DATAFORM 「それでも、可愛がりたくなっちゃうんですよね……
+		ENDDATA
+		PRINTDATA
+			DATAFORM 「%CALLNAME:MASTER%の、か・ら・だ%UNICODE(0x2764)% は♪
+			DATAFORM 「こんなに反応してくれちゃうか〜ら♪
+			DATAFORM 「ほぉら♪　ほらほらほらぁ%UNICODE(0x2764)%
+		ENDDATA
+		PRINTFORML 」
+	ELSE
+		PRINTDATA
+			DATAFORM 「わわっ……！　
+			DATAFORM 「……！？　ふぅ……
+			DATAFORM 「大丈夫ですか？　
+		ENDDATA
+		PRINTDATA
+			DATAFORM も〜、危ないなぁ。
+			DATAFORM 悪気は、なかったんですよ？
+			DATAFORM ちゃんと注意しないと……
+		ENDDATA
+		PRINTFORML 」
+		PRINTDATA
+			DATAFORM 「それにしても……そ〜んなに敏感な体
+			DATAFORM 「でも……エッチなことなら素直に反応しちゃう体
+			DATAFORM 「ほ〜んと、いやらしいことに大喜びしちゃう体
+		ENDDATA
+		PRINTDATA
+			DATAFORM だと、日常生活も大変でしょう？　くすくす
+			DATAFORM だから、いけない……って、思いませんか？
+			DATAFORM をしてるんですねぇ。ふふふ
+		ENDDATA
+		PRINTFORML 」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER21_1_comOther_K1	;;お尻いじめ・それ以外のコマンド
+	IF TALENT:TARGET:恋慕 || TALENT:TARGET:管理人
+		;;休憩
+		IF SELECTCOM == 403
+			PRINTFORML 「今、手が空いているのなら……いいですよね？」
+		;;戦闘訓練
+		ELSEIF SELECTCOM == 411
+			PRINTDATA
+				DATAFORM 「今の動きは良かったですよ。でも、
+				DATAFORM 「う〜ん、まだまだですね。
+				DATAFORM 「もう一頑張り、してみましょうか。
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 体裁きをもう一工夫すれば、もっと良くなりますから」
+				DATAFORM ちょっと体が硬いんじゃないですか？」
+				DATAFORM 無駄な力が入っているから、無駄が多いんです」
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 「ほら、腰を軸にして、こう……」
+				DATAFORM 「体を楽に、リラックスさせて……」
+				DATAFORM 「エッチの時みたいに、相手の動きをよく見て、感じて……」
+			ENDDATA
+		;;着替える
+		ELSEIF SELECTCOM == 430
+			PRINTFORML 「あれ？　着替えだったんですか？　目の前で脱ぎ始めるから、てっきり……」
+			PRINTFORML 「あっ、どうせ脱いじゃうんですから、こ・の・ま・ま%UNICODE(0x2764)% ……とか、どうですか？」
+			PRINTFORML 「くすくす……」
+		;;掃除か勉強か食事か食事をふるまう
+		ELSEIF SELECTCOM == 410 || SELECTCOM == 412 || SELECTCOM == 414 || SELECTCOM == 415
+			;;掃除
+			IF SELECTCOM == 410
+				PRINTFORML 「真面目にお仕事してるみたいですねぇ、偉い偉い♪」
+			;;勉強
+			ELSEIF SELECTCOM == 412
+				PRINTFORML 「真面目にお勉強ですか？　ふふ、感心感心♪」
+			;;食事か食事をふるまう
+			ELSEIF SELECTCOM == 414 || SELECTCOM == 415
+				PRINTFORML 「食事のお礼を、しなくちゃ行けませんよねぇ%UNICODE(0x2764)%」
+			ENDIF
+			PRINTDATA
+				DATAFORM 「褒めてあげますねぇ。
+				DATAFORM 「ご褒美ですよ♪　
+				DATAFORM 「いい子いい子。ふふ……
+			ENDDATA
+			PRINTDATAL
+				DATAFORM ほぉら、なでなで……なで%UNICODE(0x2764)%」
+				DATAFORM %CALLNAME:MASTER%には、こういうのが一番ですよね？」
+			ENDDATA
+		ENDIF
+		IF ABL:MASTER:Ａ感覚 >= 2
+			IF RAND:2 == 0
+				PRINTDATA
+					DATAFORM 「ふふっ……こんなに熱くして。
+					DATAFORM 「もうヒクヒクさせてますね。
+					DATAFORM 「撫でただけで、スイッチ入りました？　
+				ENDDATA
+				PRINTDATAL
+					DATAFORM いいんですよぉ、気持ちよくなっちゃっても♪」
+					DATAFORM 沢山してあげますから、しっかり感じてくださいね」
+					DATAFORM 本当に、素直で可愛いんだから%UNICODE(0x2764)%」
+				ENDDATA
+			ELSE
+				PRINTDATAL
+					DATAFORM 「%CALLNAME:MASTER%だって、ここを可愛がられるのは好きでしょう？」
+					DATAFORM 「本当、エッチな体……こっちでもそんなに感じちゃうんだから」
+				ENDDATA
+			ENDIF
+		ELSE
+			IF RAND:2 == 0
+				PRINTDATA
+					DATAFORM 「はいはい、怖くないですよぉ。
+					DATAFORM 「痛くなんてしませんから、安心して。
+					DATAFORM 「ちゃんと可愛がってあげますから。
+				ENDDATA
+				PRINTFORML ほぉら、力を抜いて……」
+			ELSE
+				PRINTDATAL
+					DATAFORM 「%CALLNAME:MASTER%だって、優しく可愛がられるのは好きでしょう？」
+					DATAFORM 「きっと、ここでも感じちゃうようになれますよ、%CALLNAME:MASTER%なら」
+					DATAFORM 「%CALLNAME:MASTER%の体の、隅から隅まで、ちゃんと知っておきたいんです」
+				ENDDATA
+			ENDIF
+		ENDIF
+	ELSE
+		;;休憩
+		IF SELECTCOM == 403
+			IF CFLAG:TARGET:好感度 >= 500
+				PRINTFORML 「触り心地のいい%CALLNAME:MASTER%の体が、恋しくなっちゃって♪」
+			ELSE
+				PRINTFORML 「もちろん、このエッチな体に用があるんですよ♪」
+			ENDIF
+		;;食事をふるまう
+		ELSEIF SELECTCOM == 415
+			IF CFLAG:TARGET:好感度 >= 500
+				PRINTFORML 「ん〜……ごはんよりも、こっちの方が美味しそうですねぇ♪」
+			ELSE
+				PRINTFORML 「食べながら、さすがに行儀悪いですかねぇ？」
+			ENDIF
+		;;その他
+		ELSE
+			PRINTFORML 「あ、気にせず続けてください」
+		ENDIF
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER22_0_K1	;;パンツを脱す・最初の一言
+	SELECTCASE CFLAG:TARGET:WC_応答分類
+		CASE 1,2		;;虐待／冷淡
+			PRINTFORML 「下着、脱いでください」
+		CASE 6,7		;;愛玩／同情
+			PRINTFORML 「今、履いている下着、くれませんか？　大事にしますから……ね？」
+		CASEELSE		;;快虐／性戯／誘惑／子供
+			PRINTFORML 「ね〜え〜……今履いてるパンツ、くれませんか？」
+	ENDSELECT
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER22_1_K1	;;パンツを脱す・もらったリアクション
+	IF TALENT:TARGET:恋慕 || TALENT:TARGET:管理人
+		PRINTFORML 「あはっ、ありがとうございます♪　大事にしますからねぇ、ふふふ♪」
+	ELSE
+		PRINTFORML 「偉いですねぇ。こんなことでも、ちゃんと言うとおりにしちゃうんですから。偉い偉い♪」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER23_0_com430_K1	;;パンツ選択・穿く前・「着替える」
+	PRINTFORML 「う〜ん……こっちも可愛いと思うんですけど、どうですか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER23_0_comOther_K1	;;パンツ選択・穿く前・女の子の部屋
+	PRINTFORML 「いくらなんでも、ノーパンは無防備すぎですからねぇ。……はい、どうぞ」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER23_1_K1	;;パンツ選択・穿いた後
+	IF EQUIP:TARGET:下半身下着２ != 0 && (TALENT:TARGET:恋慕 || TALENT:TARGET:管理人)		;;ぱんつはいてて、恋慕or管理人
+		PRINTFORML 「それ、今私が穿いてるのと、同じデザインなんですよ」
+		PRINTFORML 「ふふふ……」
+		PRINTFORMW 耳元に口を寄せて、そっと囁きかけてくる%CALLNAME:TARGET%の仕草に、%CALLNAME:MASTER%の鼓動がドキリと跳ねた。
+	ELSE
+		;;着替える
+		IF SELECTCOM == 430
+			PRINTFORML 下着を身につけたところで%CALLNAME:MASTER%は着替えの手を止めると、確認してもらうために%CALLNAME:TARGET%に向き直る。
+			PRINTFORML %CALLNAME:TARGET%は%CALLNAME:MASTER%の上から下まで、ざっと眺めてから、一つ頷いた。
+		ELSE
+			PRINTFORML 「どんな感じか、見せてもらえますか？」
+			PRINTFORML 求めに応じて%CALLNAME:MASTER%が裾をまくり上げて下着を露わにすると、%CALLNAME:TARGET%はしげしげと眺めてから、一つ頷いた。
+		ENDIF
+		PRINTFORML 「うん♪　よく似合ってますよ」
+		PRINTFORMW 明るく微笑みながら言う%CALLNAME:TARGET%に深く頭を下げると、%CALLNAME:MASTER%は衣服を整えた。
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_0_setting_SELF_K1	;;アイテム装着される・着けてる・本人が着けた
+	PRINTFORML 「あのオモチャ、どんな感じですか？」
+	IF CFLAG:MASTER:WC_道具Ｂ装着者 == TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 == TARGET
+		PRINTFORM 「乳首とクリを同時に気持ちよくされて、
+	ELSEIF CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET && CFLAG:MASTER:WC_道具Ａ装着者 == TARGET
+		PRINTFORM 「前と後ろを同時に気持ちよくされて、
+	ELSE
+		PRINTFORM 「もしかして夢中になっちゃって、
+	ENDIF
+	PRINTDATA
+		DATAFORM お仕事もままならない
+		DATAFORM なにも手につかない
+		DATAFORM 何度もイッちゃった
+	ENDDATA
+	PRINTFORML ……とか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_0_setting_OTHER_K1	;;アイテム装着される・着けてる・他の人が着けた
+	PRINTFORML 「どうしたんですか？　モジモジしてぇ」
+	SIF TALENT:TARGET:管理人
+		PRINTFORML 「発情しちゃったのなら、管理人の私に遠慮無く言っていいんですよ？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_0_1stCAP_K1	;;アイテム装着される・つけてない・初見・ニプルorクリキャップ・見た反応
+	;;どっちか知ってる
+	IF GETBIT(CFLAG:TARGET:WC_道具既知フラグ,3) || GETBIT(CFLAG:TARGET:WC_道具既知フラグ,2)
+		PRINTFORML 「このオモチャ……よく似たのを、もう持っていますよね？」
+	ELSE
+		PRINTFORML 「あれ？　これって、なんですか？」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_1_1stCAP_K1	;;アイテム装着される・つけてない・初見・ニプルorクリキャップ・着けてあげる
+	;;どっちか知ってる
+	IF GETBIT(CFLAG:TARGET:WC_道具既知フラグ,3) || GETBIT(CFLAG:TARGET:WC_道具既知フラグ,2)
+		PRINTFORM 「せっかく
+		IF !HAS_PENIS(MASTER)
+			;;今回はクリキャップ
+			IF (ITEM:2 != 0 || NOITEM != 0) && !GETBIT(CFLAG:TARGET:WC_道具既知フラグ,2)
+				PRINTFORM クリ用も
+			;;今回はニプルキャップ
+			ELSE
+				PRINTFORM 乳首用も
+			ENDIF
+		ELSE
+			PRINTFORM 新しいのを
+		ENDIF
+		PRINTFORML 準備したんですから、着けたいですよね？」
+		;;全裸
+		IF !EQUIP:MASTER:0
+			PRINTFORML 「じゃあ、私が着けてあげますね♪」
+		ELSE
+			PRINTFORML 「さぁ、脱いでください。私が着けてあげますから♪」
+		ENDIF
+	ELSE
+		PRINTFORML 「へ〜……じゃあ、試してみましょうか？　%CALLNAME:MASTER%の体で♪」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_0_1stROTOR_K1	;;アイテム装着される・つけてない・初見・ローター・見た反応
+	PRINTFORML 「あれ〜？　これって、確か……」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_1_1stROTOR_K1	;;アイテム装着される・つけてない・初見・ローター・着けてあげる
+	PRINTFORML 「こっそり一人で楽しむつもりだったのかもしれませんけど……」
+	PRINTFORML 「どうせなら、私の見てる前で使って見せてくれませんか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_0_1stVIB_K1	;;アイテム装着される・つけてない・初見・バイブorアナルバイブ・なんか無い？
+	PRINTFORML 「また、新しいオモチャを入手してたりしませんか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_1_1stVIB_K1	;;アイテム装着される・つけてない・初見・バイブorアナルバイブ・着けてあげる
+	;;どっちか知ってる
+	IF GETBIT(CFLAG:TARGET:WC_道具既知フラグ,4) || GETBIT(CFLAG:TARGET:WC_道具既知フラグ,5)
+		;;今回はバイブ（オトコじゃない＆処女じゃない）
+		IF HAS_VAGINA(MASTER) && !TALENT:MASTER:処女 && (ITEM:4 != 0 || NOITEM != 0) && !GETBIT(CFLAG:TARGET:WC_道具既知フラグ,4)
+			PRINTFORM 「これは、前の方に入れるん
+		;;今回はアナルバイブ
+		ELSEIF (ITEM:5 != 0 || NOITEM != 0) && !GETBIT(CFLAG:TARGET:WC_道具既知フラグ,5)
+			PRINTFORM 「うわ〜……これって、お尻用
+		ENDIF
+		PRINTFORML ですか？　
+		;;今回はバイブ（オトコじゃない＆処女じゃない）
+		IF HAS_VAGINA(MASTER) && !TALENT:MASTER:処女 && (ITEM:4 != 0 || NOITEM != 0) && !GETBIT(CFLAG:TARGET:WC_道具既知フラグ,4)
+			PRINTFORML 結構、凶悪な形ですけど……」
+		;;今回はアナルバイブ
+		ELSEIF (ITEM:5 != 0 || NOITEM != 0) && !GETBIT(CFLAG:TARGET:WC_道具既知フラグ,5)
+			PRINTFORML こんなのもあるんですねぇ……」
+		ENDIF
+		PRINTFORML 「それじゃ、これを入れてあげることにしましょうか」
+	ELSE
+		PRINTFORML 「くすくすっ……そんなに、気持ちいいことをして欲しかったんですか？」
+		PRINTFORML 「いいですよぉ、私が入れてあげます♪」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_0_KNOWNs_K1	;;アイテム装着される・つけてない・既知or新たに入手してない・着ける？
+	PRINTFORMW 「また、気持ちい〜いオモチャ、着けてあげましょうか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_1_KNOWNs_plural_K1	;;アイテム装着される・つけてない・既知or新たに入手してない・コレに決めた（複数
+	PRINTFORML 「この辺を使って、いっぺんに気持ちよくなってもらいましょうか♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_1_KNOWNs_single_K1	;;アイテム装着される・つけてない・既知or新たに入手してない・コレに決めた（一つ
+	PRINTFORML 「こ・れ♪　好きですよねぇ、%CALLNAME:MASTER%」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_1_setting_K1	;;アイテム装着される・着けてる・確認中
+	;;本人が複数着けた
+	IF (CFLAG:MASTER:WC_道具Ｂ装着者 == TARGET && (CFLAG:MASTER:WC_道具Ｃ装着者 == TARGET || CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET || CFLAG:MASTER:WC_道具Ａ装着者 == TARGET)) || (CFLAG:MASTER:WC_道具Ｃ装着者 == TARGET && (CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET || CFLAG:MASTER:WC_道具Ａ装着者 == TARGET)) || (CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET && CFLAG:MASTER:WC_道具Ａ装着者 == TARGET)
+		PRINTFORML 「こっちも……良い感じみたいですねぇ？」
+	;;他の人に、なにか着けられた
+	ELSEIF (CFLAG:MASTER:WC_道具Ｂ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｂ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+		PRINTFORML 「あれ〜？　こっちのエッチなオモチャは、どうしたんですかぁ？」
+	ELSEIF PALAM:MASTER:潤滑 > PALAMLV:3
+		PRINTFORML 「あ〜あ〜、もうぐしょ濡れじゃないですか」
+	ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+		PRINTFORML 「くすっ、とろとろ溢れてきてますねぇ」
+	ELSE
+		PRINTFORML 「ん〜……まだ早かったですか？　それとも、もう慣れちゃったとか？」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_2_setting_K1	;;アイテム装着される・着けてる・どうしよう？
+	;;他の誰かがなんか着けた
+	IF (CFLAG:MASTER:WC_道具Ｂ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｂ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+		PRINTFORM 「
+		IF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_レミリア || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_レミリア || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_レミリア || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_レミリア
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_レミリア)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_咲夜 || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_咲夜 || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_咲夜 || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_咲夜
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_咲夜)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_パチュリー || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_パチュリー || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_パチュリー || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_パチュリー
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_パチュリー)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_フラン || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_フラン || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_フラン || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_フラン
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_フラン)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_小悪魔 || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_小悪魔 || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_小悪魔 || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_小悪魔
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_小悪魔)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_霊夢 || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_霊夢 || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_霊夢 || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_霊夢
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_霊夢)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_魔理沙 || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_魔理沙 || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_魔理沙 || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_魔理沙
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_魔理沙)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_子悪魔 || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_子悪魔 || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_子悪魔 || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_子悪魔
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_子悪魔)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_チルノ || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_チルノ || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_チルノ || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_チルノ
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_チルノ)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_大妖精 || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_大妖精 || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_大妖精 || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_大妖精
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_大妖精)%
+		ELSEIF CFLAG:MASTER:WC_道具Ｂ装着者 == 人物_ルーミア || CFLAG:MASTER:WC_道具Ｃ装着者 == 人物_ルーミア || CFLAG:MASTER:WC_道具Ｖ装着者 == 人物_ルーミア || CFLAG:MASTER:WC_道具Ａ装着者 == 人物_ルーミア
+			PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_ルーミア)%
+		ENDIF
+		IF CFLAG:MASTER:WC_道具Ｂ装着者 != CFLAG:MASTER:WC_道具Ｃ装着者 || CFLAG:MASTER:WC_道具Ｂ装着者 != CFLAG:MASTER:WC_道具Ｖ装着者 || CFLAG:MASTER:WC_道具Ｂ装着者 != CFLAG:MASTER:WC_道具Ａ装着者 || CFLAG:MASTER:WC_道具Ｃ装着者 != CFLAG:MASTER:WC_道具Ｖ装着者 || CFLAG:MASTER:WC_道具Ｃ装着者 != CFLAG:MASTER:WC_道具Ａ装着者 || CFLAG:MASTER:WC_道具Ｖ装着者 != CFLAG:MASTER:WC_道具Ａ装着者
+			PRINTFORM 達
+		ENDIF
+		PRINTFORML が、ですか……」
+	ENDIF
+	IF TALENT:TARGET:管理人
+		IF (CFLAG:MASTER:WC_道具Ｂ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｂ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+			PRINTFORMW 「やっぱり、他の人まかせは良くないですよね？　%CALLNAME:MASTER%の管理人としては♪」
+		ELSEIF CFLAG:MASTER:WC_ニプルキャップ装着 == 1 || CFLAG:MASTER:WC_クリキャップ装着 == 1 || CFLAG:MASTER:WC_バイブ装着 == 1 || CFLAG:MASTER:WC_アナルバイブ装着 == 1 || CFLAG:MASTER:WC_ローターＣ装着 == 1 || CFLAG:MASTER:WC_ローターＶ装着 == 1 || CFLAG:MASTER:WC_ローターＡ装着 == 1
+			PRINTFORM 「止まっちゃってるのは、外してあげることにしましょうか
+			IF CFLAG:MASTER:WC_ニプルキャップ装着 > 1 || CFLAG:MASTER:WC_クリキャップ装着 > 1 || CFLAG:MASTER:WC_バイブ装着 > 1 || CFLAG:MASTER:WC_アナルバイブ装着 > 1 || CFLAG:MASTER:WC_ローターＣ装着 > 1 || CFLAG:MASTER:WC_ローターＶ装着 > 1 || CFLAG:MASTER:WC_ローターＡ装着 > 1
+				PRINTFORML 」
+				PRINTFORMW 「でも、まだ動いてるのは、補給して延長戦ですよ♪」
+			ELSE
+				PRINTFORMW 」
+			ENDIF
+		ELSE
+			PRINTFORMW 「まだ動いてますし……ついでに補給しちゃいましょうか♪」
+		ENDIF
+	ELSE
+		;;本人が着けたのが止まってる
+		IF (CFLAG:MASTER:WC_道具Ｂ装着者 == TARGET && CFLAG:MASTER:WC_ニプルキャップ装着 == 1) || (CFLAG:MASTER:WC_道具Ｃ装着者 == TARGET && CFLAG:MASTER:WC_クリキャップ装着 == 1) || (CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET && CFLAG:MASTER:WC_バイブ装着 == 1) || (CFLAG:MASTER:WC_道具Ａ装着者 == TARGET && CFLAG:MASTER:WC_アナルバイブ装着 == 1) || (CFLAG:MASTER:WC_道具Ｃ装着者 == TARGET && CFLAG:MASTER:WC_ローターＣ装着 == 1) || (CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET && CFLAG:MASTER:WC_ローターＶ装着 == 1) || (CFLAG:MASTER:WC_道具Ａ装着者 == TARGET && CFLAG:MASTER:WC_ローターＡ装着 == 1)
+			;;他の誰かがなんか着けた
+			IF (CFLAG:MASTER:WC_道具Ｂ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｂ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+				;;他の人が着けたのが止まってる
+				IF (CFLAG:MASTER:WC_道具Ｂ装着者 != TARGET && CFLAG:MASTER:WC_ニプルキャップ装着 == 1) || (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_クリキャップ装着 == 1) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_バイブ装着 == 1) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_アナルバイブ装着 == 1) || (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_ローターＣ装着 == 1) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_ローターＶ装着 == 1) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_ローターＡ装着 == 1)
+					PRINTFORM 「止まっちゃってますけど、一応
+				ELSE
+					PRINTFORM 「まだ動いてますし、
+				ENDIF
+				PRINTFORML このままにしておいた方が良いですかね？」
+				PRINTFORMW 「とりあえず、これは私が着けてあげたんですから、外すのも私がやって問題ないですよね？」
+			ELSE
+				PRINTFORMW 「もう止まっちゃってますし、外してあげることにしましょうか」
+			ENDIF
+		;;つけてない／他の誰かがなんか着けた
+		ELSEIF (CFLAG:MASTER:WC_道具Ｂ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｂ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+			PRINTFORMW 「それじゃ、私からも……こっちにプレゼントです」
+		ENDIF
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_3_setting_REset_K1	;;アイテム装着される・着けてる・電池補給
+	PRINTFORML 「電池、持ってますか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_4_setting_REset_K1	;;アイテム装着される・着けてる・再装着完了
+	PRINTFORML 「出来上がり♪　っと。改めて、頑張ってくださいね？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_4_setting_OUT_K1	;;アイテム装着される・着けてる・外し終わり
+	PRINTFORML 「はいっ、お疲れ様でした♪　お返ししますから、補充しておいて下さいね？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER24_5_nothing_setOK_K1	;;アイテム装着される・着けてない・装着完了
+	PRINTFORML 「はいっ、出来ました♪　しばらく、そのままでお仕事を頑張ってくださいね？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_setITEMs_look_K1	;;スカートたくし上げ命令・アイテム着けてる・初見
+	PRINTFORMW 「あれぇ？　どうしたんですか、このエッチなオモチャ」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_stopITEMs_check_ChastityBelt_K1	;;スカートたくし上げ命令・アイテム止まってる・貞操帯つけてる
+	PRINTFORML 「そろそろ、あのオモチャも動かなくなってるんじゃないですか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_stopITEMs_check_looking_K1	;;スカートたくし上げ命令・アイテム止まってる・貞操帯なし
+	PRINTFORMW 「あれ？　これ、動いてませんよ？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_1_stopITEMs_OUT_K1	;;スカートたくし上げ命令・アイテム止まってる・外し終わり
+	PRINTFORM 「はい、お返ししますね。
+	IF CFLAG:MASTER:WC_道具Ｃ装着者 == TARGET || CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET || CFLAG:MASTER:WC_道具Ａ装着者 == TARGET
+		PRINTFORML 良ければ、また着けてあげますよ？　ふふふ……」
+	ELSE
+		PRINTFORML ちゃんと動くようにしておいて方が良いと思いますよ？」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_moveITEMs_check_K1	;;スカートたくし上げ命令・アイテム動いてる・確認
+	;;貞操帯
+	IF EQUIP:MASTER:下半身下着１ == 100
+			PRINTFORMW 「今もこの中で、エッチなオモチャが%CALLNAME:MASTER%を責め立ててるんですよね？」
+	ELSE
+		PRINTFORM 「ふふっ、ちゃんと着けてくれてるんですね。偉い偉い♪
+		IF (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+			PRINTFORML 」
+			PRINTFORMW 「でも……なんか、増えてませんか？」
+		ELSE
+			PRINTFORMW 」
+		ENDIF
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_1_moveITEMs_look_K1	;;スカートたくし上げ命令・アイテム動いてる・観察中
+	IF PALAM:MASTER:潤滑 > PALAMLV:3
+		PRINTFORM 「すっかり、ぐしょ濡れですねぇ。
+	ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+		PRINTFORM 「じわ〜っと、濡れてきてますか？　ふふ……
+	ELSE
+		PRINTFORM 「どうしたんですかぁ？　ひくひく震えて……
+	ENDIF
+	PRINTFORML そんなに、ソレが気に入ったんですか？」
+	IF (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+		PRINTFORML 「今度、私にも着けさせてくださいね？　ふふふ♪」
+	ELSE
+		PRINTFORML 「ゆっくり、楽しんでくださいね？　止まったら、外してあげますから」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_VirginReservation_GET_K1	;;スカートたくし上げ命令・処女予約関連・予約済み
+	IF CFLAG:MASTER:WC_予約奪取 == TARGET
+		PRINTFORML 「ちゃ〜んと、%CALLNAME:(CFLAG:MASTER:WC_処女予約)%に許可は頂きましたからね♪」
+	ENDIF
+	PRINTFORML 「%CALLNAME:MASTER%の初めては、私のモノですからね？」
+	PRINTFORML 「その時まで、大事にしてなきゃダメですよ？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_VirginReservation_REQUEST_K1	;;スカートたくし上げ命令・処女予約関連・要求
+	PRINTFORML 「綺麗……まだ処女なんですね」
+	PRINTFORML 「どうでしょう？　大事な大事な、その初めてを……私にくれませんか？」
+	PRINTFORMW 「どうですかね？　ちゃんと優しく愛してあげますよ？　いいでしょう？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_1_VirginReservation_SEIZE_K1(ARG)	;;スカートたくし上げ命令・処女予約関連・予約ずみ
+;;ARG=先約のキャラナンバー
+#DIM 先約者
+	先約者 = ARG
+	IF TALENT:TARGET:管理人 && CFLAG:TARGET:好感度 >= CFLAG:先約者:好感度
+		IF 先約者 >= 3 && 先約者 <= 6
+			PRINTFORM 「う〜〜〜ん……
+		ELSE
+			PRINTFORM 「
+		ENDIF
+		PRINTFORML %CALLNAME_K1(人物_美鈴, 先約者)%と、約束しちゃったんですか……」
+		PRINTFORML 「わかりましたっ！　私が、なんとか話を付けてきましょう」
+		PRINTFORML 「%CALLNAME_K1(人物_美鈴, 先約者)%がＯＫしてくれたら、%CALLNAME:MASTER%の初めては私のものですからね？」
+	ELSE
+		PRINTFORML 「そうですか……先約があるのなら、仕方ないですね」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_1_VirginReservation_OK_K1	;;スカートたくし上げ命令・処女予約関連・[0] 従う
+	PRINTFORML 「本当ですか？　約束ですよ？」
+	PRINTFORML 「うふふ、楽しみが一つ出来ちゃいました♪」
+	PRINTFORML 「どんなふうに、奪ってあげちゃいましょうかねぇ？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_2_VirginReservation_GET_K1	;;スカートたくし上げ命令・処女予約関連・[0] 従う・予約成功
+	PRINTFORML 「ふふ……じゃあ、それも私の方で考えておきますね」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_1_VirginReservation_NG_K1(ARG)	;;スカートたくし上げ命令・処女予約関連・[1] なんとか断る
+;;ARG=言い訳対象
+#DIM 言い訳対象
+	言い訳対象 = ARG
+	IF TALENT:TARGET:恋慕 || TALENT:TARGET:管理人 || CFLAG:TARGET:好感度 >= CFLAG:言い訳対象:好感度
+		IF 言い訳対象 >= 3 && 言い訳対象 <= 6
+			PRINTFORML 「うっ……！　%CALLNAME_K1(人物_美鈴, 言い訳対象)%に……？」
+			PRINTFORM 「でっ、
+		ELSE
+			PRINTFORML 「%CALLNAME_K1(人物_美鈴, 言い訳対象)%に……ですか？」
+			PRINTFORM 「
+		ENDIF
+		PRINTFORM でも、
+		IF TALENT:TARGET:管理人
+			PRINTFORM %CALLNAME:MASTER%の管理人は私ですし、
+			IF TALENT:TARGET:恋慕
+				PRINTFORML 私と%CALLNAME:MASTER%は、愛し、愛される間柄……ですよね？」
+			ELSE
+				PRINTFORML 私にこそ権利も、そして義務だってあると思うんですっ！」
+			ENDIF
+		ELSE
+			PRINTFORML 私ほど%CALLNAME:MASTER%のことを構ってあげてる人は、いないと思いますよ？」
+		ENDIF
+		PRINTFORM 「それに……大きな声じゃ言えませんけど、%CALLNAME_K1(人物_美鈴, 言い訳対象)%
+		IF 言い訳対象 <= 5
+			PRINTFORML と比べたら、私の方が圧倒的に優しいです。間違いなく」
+			PRINTFORML 「%CALLNAME:MASTER%だって、優しく可愛がられた方が嬉しいでしょう？」
+		ELSE
+			PRINTFORML よりも、私の方が上手ですよ。きっと」
+			PRINTFORML 「%CALLNAME:MASTER%だって初めては、上手な人に気持ちよくして欲しいでしょう？」
+		ENDIF
+		PRINTFORML 「そう思いますよね？　私の方が良いですよね？　ね？　ね？」
+		PRINTFORML 「私に決めちゃいましょう！　はい、決まり♪」
+	ELSE
+		PRINTFORML 「あ〜……やっぱりそう気軽には、くれませんか。そりゃそうですよねぇ」
+		PRINTFORML 「でも、モタモタしてたら、強引に奪っちゃうかもしれませんよ？」
+	ENDIF
+RETURN
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_ChastityBelt_look_K1	;;スカートたくし上げ命令・他・自分が着けた貞操帯を見る
+	PRINTFORML 「やっぱり、窮屈ですか、それ？　ふふふ♪」
+	PRINTFORML 「でも、%CALLNAME:MASTER%のソコも、私が管理しちゃうんですから%UNICODE(0x2764)%」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER25_0_otherPANTS_look_K1	;;スカートたくし上げ命令・他・パンツ見る
+	;;貞操帯を他の人が付けた
+	IF EQUIP:MASTER:下半身下着１ == 100 && CFLAG:MASTER:WC_あなたに貞操帯を着けた人 != TARGET
+		PRINTFORML 「これ、%CALLNAME_K1(人物_美鈴, (CFLAG:MASTER:WC_あなたに貞操帯を着けた人))%が着けたんですか？」
+		PRINTFORML 「ふ〜む……なんというか……良いご趣味ですよね、うん」
+	;;はいてない
+	ELSEIF !EQUIP:MASTER:下半身下着１ && !EQUIP:MASTER:下半身下着２
+		PRINTFORM 「下着を穿かずに過ごすって、興奮
+		IF PALAM:MASTER:潤滑 > PALAMLV:3
+			PRINTFORML するみたいですねぇ」
+			PRINTFORML 「次から次に、溢れ出してますよぉ」
+		ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+			PRINTFORML するみたいですねぇ」
+			PRINTFORML 「濡れてきちゃってますよ？　ふふふ……」
+		ELSE
+			PRINTFORML 「しますか？」
+			PRINTFORML 「私だったら、不安で仕方ないですけどねぇ」
+		ENDIF
+	;;オトコ
+	ELSEIF !HAS_VAGINA(MASTER)
+		;;男物
+		IF EQUIP:MASTER:下半身下着２ >= 101 && EQUIP:MASTER:下半身下着２ <= 103
+			PRINTFORML 「ああ、下着はちゃんとしたのを穿いてるんですね」
+		;;女物
+		ELSE
+			PRINTFORML 「下着まで、女の子のを使ってるんですか」
+			;;エロ系・丸見え
+			IF EQUIP:MASTER:下半身下着２ >= 42 && EQUIP:MASTER:下半身下着２ <= 44
+				PRINTFORML 「しかも、こんなエッチなのを……くすくす」
+			ENDIF
+		ENDIF
+	ELSEIF CFLAG:MASTER:WC_パンツを選んだ人 == TARGET
+		PRINTFORML 「ふふっ、ちゃんと私が選んだのを穿いててくれてるんですね♪」
+		IF PALAM:MASTER:潤滑 > PALAMLV:3
+			PRINTFORML 「でも、こんなにぐしょぐしょに濡らしちゃってるんじゃ、また換えた方が良いかも……」
+			PRINTFORML 「次は、どんなのがいいですかねぇ？」
+		ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+			PRINTFORML 「ちょっと濡れてます？」
+			PRINTFORML 「ふふっ……もしかして、私のことを思って、濡らしちゃった……とか？」
+		ENDIF
+	;;男物
+	ELSEIF EQUIP:MASTER:下半身下着２ >= 101 && EQUIP:MASTER:下半身下着２ <= 103
+		PRINTFORML 「なんで、男物を穿いてるんですか……？」
+		PRINTFORML 「どうせなら、もっと可愛いのを穿けばいいのに」
+	;;幼児／子供系
+	ELSEIF EQUIP:MASTER:下半身下着２ <= 18
+		PRINTFORML 「ずいぶんと、可愛らしいものをはいてるんですねぇ……くすっ」
+	;;エロ系・すけすけ
+	ELSEIF EQUIP:MASTER:下半身下着２ == 29 || EQUIP:MASTER:下半身下着２ == 30 || (EQUIP:MASTER:下半身下着２ >= 45 && EQUIP:MASTER:下半身下着２ <= 47)
+		PRINTFORML 「こんなスケスケのを穿いちゃって……いやらしいんですね」
+		IF PALAM:MASTER:潤滑 > PALAMLV:3
+			PRINTFORML 「その上、ぐしょ濡れにしちゃって、余計に透けてますよ？」
+		ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+			PRINTFORML 「濡らしちゃってますから、余計に透けてますし……ふふ」
+		ENDIF
+	;;エロ系・丸見え
+	ELSEIF EQUIP:MASTER:下半身下着２ >= 42 && EQUIP:MASTER:下半身下着２ <= 44
+		PRINTFORML 「うわぁ、これ下着ですか？　丸見えですけど……」
+		IF PALAM:MASTER:潤滑 > PALAMLV:3
+			PRINTFORM 「とろとろ溢れさせて……
+		ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+			PRINTFORM 「濡れてきてますし……
+		ELSE
+			PRINTFORM 「
+		ENDIF
+			PRINTFORML これじゃ、穿いてないより興奮しちゃうんじゃないですか？」
+	;;エロ系・その他
+	ELSEIF EQUIP:MASTER:下半身下着２ == 22 || EQUIP:MASTER:下半身下着２ == 23 || (EQUIP:MASTER:下半身下着２ >= 31 && EQUIP:MASTER:下半身下着２ <= 41)
+		PRINTFORML 「こんなエッチな下着を穿いちゃってぇ」
+		IF PALAM:MASTER:潤滑 > PALAMLV:3
+			PRINTFORML 「しかも、ぐしょぐしょに濡らして……そんなに興奮してるんですか？」
+		ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+			PRINTFORML 「しかも、濡らしてるし……これを穿いてるだけで、エッチな気分になっちゃってるんでしょ？」
+		ELSE
+			PRINTFORML 「こんなの穿いてたら、それだけで興奮しちゃうんじゃないですか？」
+		ENDIF
+	;;他
+	ELSE
+		IF PALAM:MASTER:潤滑 > PALAMLV:3
+			PRINTFORML 「うわぁ、ぐしょ濡れじゃないですか」
+			PRINTFORML 「これじゃ、すぐに下着を換えなくちゃならないですよ？」
+			PRINTFORML 「普通は……ですけどね」
+		ELSEIF PALAM:MASTER:潤滑 > PALAMLV:1
+			PRINTFORML 「あれ？　濡らしちゃってますね」
+		ENDIF
+		PRINTFORML 「命令されて、下着を見せるのって……どうですか？」
+		PRINTFORML 「やっぱり、屈辱的ですか？　それとも、興奮しちゃうとか？」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_0_change_K1	;;貞操帯関連・着けてる・管理人の交代など
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORML 「ふ〜ん……これが、%CALLNAME_K1(人物_美鈴, CFLAG:MASTER:WC_あなたに貞操帯を着けた人)%に着けてもらった貞操帯ね？」
+;;	PRINTFORM 「%CALLNAME_K1(人物_美鈴, CFLAG:MASTER:WC_あなたに貞操帯を着けた人)%から、鍵を
+;;	IF CFLAG:MASTER:WC_あなたに貞操帯を着けた人 >= 3 && CFLAG:MASTER:WC_あなたに貞操帯を着けた人 <= 6
+;;		PRINTFORM いただい
+;;	ELSE
+;;		PRINTFORM もらっ
+;;	ENDIF
+;;	PRINTFORML たから、今からこれも、私が管理するわよ？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_0_inTOILET_K1	;;貞操帯関連・着けてる・トイレにて
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORM 「そうね。丁度トイレ
+;;	IF CFLAG:MASTER:現在位置 == 場所_地下室
+;;		PRINTFORM もあ
+;;	ELSE
+;;		PRINTFORM にい
+;;	ENDIF
+;;	PRINTFORML ることだし、済ませておいたら？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_1_inTOILET_K1	;;貞操帯関連・着けてる・トイレにて・終了
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORML 「終わったようね。それじゃ、着け直すわよ」
+;;	;;なんか着けてて動いてる
+;;	IF CFLAG:MASTER:WC_ニプルキャップ装着 > 1 || CFLAG:MASTER:WC_クリキャップ装着 > 1 || CFLAG:MASTER:WC_バイブ装着 > 1 || CFLAG:MASTER:WC_アナルバイブ装着 > 1 || CFLAG:MASTER:WC_ローターＣ装着 > 1 || CFLAG:MASTER:WC_ローターＶ装着 > 1 || CFLAG:MASTER:WC_ローターＡ装着 > 1
+;;		PRINTFORML 「そうそう。ついでに、オモチャの電池も交換しておいたから」
+;;	;;なんか着けてて止まってる
+;;	ELSEIF CFLAG:MASTER:WC_ニプルキャップ装着 == 1 || CFLAG:MASTER:WC_クリキャップ装着 == 1 || CFLAG:MASTER:WC_バイブ装着 == 1 || CFLAG:MASTER:WC_アナルバイブ装着 == 1 || CFLAG:MASTER:WC_ローターＣ装着 == 1 || CFLAG:MASTER:WC_ローターＶ装着 == 1 || CFLAG:MASTER:WC_ローターＡ装着 == 1
+;;		PRINTFORML 「そうそう。このオモチャ、もう止まっていたわ。これは返すわね」
+;;		PRINTFORML 「ふふ……お疲れ様」
+;;	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_0_inBATHROOM_K1	;;貞操帯関連・着けてる・大浴場にて
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORML 「そうだったわね。それは、私が脱がせてあげなくちゃいけないんだったわ」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_1_inBATHROOM_itemOUT_K1	;;貞操帯関連・着けてる・大浴場にて・アイテム付けてたら、外す
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORML 「このオモチャも、着けたままお湯につかったら、壊れちゃうかもしれないし」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_2_inBATHROOM_K1	;;貞操帯関連・着けてる・大浴場にて・体洗い
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORML 「ちゃんとお手入れをしないと、かぶれたりするのよ」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_0_ReSET_K1	;;貞操帯関連・着けてない・着けたことあり
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORML 「私としたことが、前に外したときにそのままにして、着け直すのを忘れていたでしょう？」
+;;	PRINTFORML 「だから……はい」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_0_newSET_K1	;;貞操帯関連・着けてない・初着けられ
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	;;なんか着けてる
+;;	IF CFLAG:MASTER:WC_道具Ｃ装着者 == TARGET || CFLAG:MASTER:WC_道具Ｖ装着者 == TARGET || CFLAG:MASTER:WC_道具Ａ装着者 == TARGET
+;;		PRINTFORML 「あ……オモチャを着けてたのよね……う〜ん」
+;;		PRINTFORML 「まぁ、いいわ。一度、外しておきましょう」
+;;	;;なんか着けられた
+;;	ELSEIF (CFLAG:MASTER:WC_道具Ｃ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｃ装着者 != 0) || (CFLAG:MASTER:WC_道具Ｖ装着者 != TARGET && CFLAG:MASTER:WC_道具Ｖ装着者 != 0) || (CFLAG:MASTER:WC_道具Ａ装着者 != TARGET && CFLAG:MASTER:WC_道具Ａ装着者 != 0)
+;;		PRINTFORML 「あら……こんなの、着けられてたの？　……う〜ん」
+;;		PRINTFORML 「まぁ、いいわよね。とりあえず、外しちゃうわよ？」
+;;	ENDIF
+;;	PRINTFORML 「%CALLNAME:MASTER%を文字通り管理するためにね、良いものを用意したの♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER26_1_newSET_K1	;;貞操帯関連・着けてない・最終確認
+;;
+;;これ、咲夜さんのまま
+;;後で直す……orz
+;;
+;;	PRINTFORML 「素直に穿いたわね……ふふふ」
+;;	PRINTFORML 「一応、確認してあげるけど……鍵、かけちゃうわよ？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER27_0_K1(ARG)	;;飲尿命令・最初の一言
+;;ARG=恥ずかしがるかどうか
+#DIM 恥ずかし系
+	恥ずかし系 = ARG
+
+	IF 恥ずかし系 == 1
+		PRINTFORML 「あ、あの……ちょっと、失礼しますね」
+	ELSE
+		PRINTFORML 「あのぉ……トイレに行きたくなったんですけど……」
+		PRINTFORML 「ど……どうしましょうか？」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER27_1_ashamed_K1	;;飲尿命令・恥ずかし系
+	PRINTFORMW 「いっ、いいですよ！　遠慮します！　私は、そのっ……普通の、トイレで……」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER27_2_ashamed_K1	;;飲尿命令・恥ずかし系・結局する
+	PRINTFORML 「それじゃ……えっと、お願い……しましょうかねぇ」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER27_3_ashamed_K1	;;飲尿命令・恥ずかし系・見るな！
+	PRINTFORML 「……もうっ！　あっち向いててくださいっ！」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER27_1_unashamedly_K1	;;飲尿命令・平然と
+	PRINTFORML 「あ、あははは……そ、それじゃ……お願いします」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER27_4_K1	;;飲尿命令・排尿直前
+	;;好感度が高いと、密着させる
+	IF CFLAG:TARGET:好感度 >= 500
+		IF HAS_PENIS(TARGET)
+			PRINTFORML 「はぁ〜……%CALLNAME:MASTER%のお口の中……いい気持ち♪」
+			PRINTFORML 「って、トイレを済ませなきゃですよね。ふふ……出しますよ？」
+		ELSE
+			PRINTFORML 「ん……そうやって、ピッタリと……あ、で……出ますよ……」
+		ENDIF
+		PRINTFORMW 「んっ……ふぁ……！」
+	ELSE
+		PRINTFORML 「んっ……で、出そう……かも……あっ、で……出ちゃう……！」
+		PRINTFORMW 「んん……！」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER27_5_K1	;;飲尿命令・後始末強制
+	PRINTFORML 「最後まで、ちゃんとお口で……優しく、綺麗にしてください」
+	PRINTFORML 「んんっ！　ぁ、あ……そ、そう……ぅん、上手……ですよ……」
+	IF HAS_PENIS(TARGET)
+		PRINTFORML 「ぁん！　ん……それ、いい……もっと、そこを……舐めてください……ああっ……」
+	;;非処女だと、中まで舐めさせる
+	ELSEIF !TALENT:TARGET:処女 && HAS_VAGINA(TARGET)
+		PRINTFORML 「もっと、中ぁ……内側もぉ……うんっ、そうやって……あっ、舌、入れてぇ……」
+	;;Ｃ感覚が高いと、丁寧に舐めさせる
+	ELSEIF ABL:TARGET:Ｃ感覚 >= 2
+		PRINTFORML 「んっ！　そ、そこ……クリを、もっと……ああっ、もっと、念入りにぃ……」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER41_0_K1	;;強制絶頂・Ｐ・最初の一言
+	PRINTFORML 「さぁ、遠慮しないで。このまま、た〜くさん出しちゃいましょう」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER41_1_K1	;;強制絶頂・Ｐ・連続責め開始
+	PRINTFORML 「ちょっと気脈を弄ってあげれば、このとおり♪　ふふっ、何回イッちゃうか、楽しみですねぇ」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER41_2_K1(ARG)	;;強制絶頂・Ｐ・連続責め開始
+;;ARG=絶頂回数
+#DIM 絶頂回数
+	絶頂回数 = ARG
+
+	IF 絶頂回数 >= 5
+		PRINTFORML 「うわぁ〜♪　予想していた以上に、たっぷり出してくれましたねぇ」
+		PRINTFORML 「凄い量ですよ、ほぉら%UNICODE(0x2764)%」
+	ELSEIF 絶頂回数 >= 3
+		PRINTFORML 「ふふふ、いっぱい出ちゃいましたねぇ」
+		PRINTFORML 「ほら、こんなに♪」
+	ELSE
+		PRINTFORML 「ん〜、こんなものですか？　私も、まだまだってことでしょうか」
+		PRINTFORML 「たとえ%CALLNAME:MASTER%が空っぽでも、そこからさらに絞り出せるくらいじゃないと……」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER41_3_kiss_K1	;;強制絶頂・Ｐ・ゴムの精液口移し
+	PRINTFORMW 「ふふ……どうですか？　自分の味は」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER41_3_gulp_K1	;;強制絶頂・Ｐ・ゴムの精液ごっくん
+	PRINTFORMW 「ごちそうさまでした♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER42_0_K1	;;強制絶頂・Ｖ・最初の一言
+	PRINTFORML 「わかりますよね、ここ。ここに、気持ちを集中させてください」
+	PRINTFORMW 「そう……いいですよ。それじゃ……いきますよぉ？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER43_0_K1	;;強制絶頂・Ａ・最初の一言
+	PRINTFORMW 「さ〜あ、%CALLNAME:MASTER%が大好きなお尻を、た〜っぷりかき回してあげますからねぇ♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER44_0_K1	;;強制絶頂・Ｃ・最初の一言
+	PRINTFORMW 「敏感なここを弄られたら、すぐにイッちゃうんですよねぇ、%CALLNAME:MASTER%は」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER45_0_K1	;;強制絶頂・Ｂ・最初の一言
+	PRINTFORML 「こんなに硬くしちゃって……ふふふ♪」
+	PRINTFORML 「%CALLNAME:MASTER%なら、乳首だけでもイケちゃいますよね？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER45_1_K1	;;強制絶頂・Ｂ・連続責め開始
+	IF TALENT:MASTER:母乳体質
+		PRINTFORML 「ミルクが出てきてますねぇ」
+		PRINTFORML 「詰まっちゃうと大変ですから、思いっきりイッて、派手に吹き出しちゃいましょうか♪」
+	ELSE
+		PRINTFORML 「イキそうなんですね？　いいですよぉ、思いっきりイッちゃってください♪」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER45_2_milk_K1	;;強制絶頂・Ｂ・母乳体質でミルク飲み
+	PRINTFORML 「ごちそうさまでした♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_ForcedOrgasm_CVA_1_K1	;;強制絶頂・ＣＶＡ・連続責め開始
+	PRINTFORML 「まだ、終わりじゃないですよ？」
+	PRINTFORML 「%CALLNAME:MASTER%の、ここ……まだまだイキたがってますから♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_0_only_K1	;;処女献上・二人きり・最初の一言
+	IF TALENT:TARGET:恋慕 || TALENT:TARGET:管理人
+		PRINTFORML 「二人きり……ですね」
+		PRINTFORMW そう言われて、%CALLNAME:MASTER%は小首を傾げた。
+		IF CFLAG:MASTER:現在位置 == 場所_チルノの家 || CFLAG:MASTER:現在位置 == 場所_大妖精の家
+			PRINTFORML ここは他人様の家であり、出かけている家主がいつ戻ってくるかもしれない。
+			PRINTFORM もちろん、少なくとも今現在
+		ELSE
+			PRINTFORML 紅魔館には、今この瞬間も皆様がいつものように暮らしているはずだし、揃って長期外出の予定なども聞いていない。
+			PRINTFORM ただ、少なくともこの部屋
+		ENDIF
+		PRINTFORM に限って言えば、%CALLNAME:TARGET%と%CALLNAME:MASTER%の二人だけだから、間違っているとも言えない。
+		PRINTFORMW 曖昧に頷き、「それがどうしたのでしょうか」と%CALLNAME:MASTER%が不思議そうに訪ねると、%CALLNAME:TARGET%は機嫌を損ねたらしく頬を膨らませた。
+		PRINTFORML 「なんでわからないんですかねぇ……もうっ。約束したじゃないですか」
+	ELSE
+		PRINTFORML 「ちょうど二人きりになれてることですし……約束のモノをいただいちゃっても、いいですか？」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_1_only_penis_K1	;;処女献上・二人きり・しようや……・ちんこ有り
+	PRINTFORML 「%CALLNAME:MASTER%の初めて……私にくれるって、約束しましたよね？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_1_only_sprout_K1	;;処女献上・二人きり・しようや……・ちんこ生やした（恋慕or管理人）
+	PRINTFORML 「どうですか？　我ながら、なかなか立派なモノが生えちゃったと思うんですけど……」
+	PRINTFORML 「%CALLNAME_K1(人物_美鈴, 人物_パチュリー)%に相談したら、用意してくださったんですよ♪」
+	PRINTFORMW 「あっ……やっぱり、恥ずかしいですね。じっと見られるのは……あははは……」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_0_withOther_K1	;;処女献上・他にいる・最初の一言
+	PRINTFORML 「%CALLNAME:MASTER%の初めては、私にくれるって約束でしたよね？」
+	PRINTFORML 「今から、もらっちゃっても良いですか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_1_withOther_K1	;;処女献上・他にいる・見られてもＯＫ
+	PRINTFORML 「私は、構いませんよ？」
+	PRINTFORM 「%CALLNAME:MASTER%の処女喪失の瞬間を、
+	IF GETBIT(CFLAG:WC_同席者,5)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_レミリア)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,4)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_咲夜)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,6)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_フラン)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,3)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_パチュリー)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,2)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_小悪魔)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,11)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_霊夢)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,10)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_魔理沙)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,7)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_子悪魔)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,8)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_チルノ)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,9)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_大妖精)%
+	ELSEIF GETBIT(CFLAG:WC_同席者,12)
+		PRINTFORM %CALLNAME_K1(人物_美鈴, 人物_ルーミア)%
+	ELSEIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+		IF NTR_CHK_FAVORABLY(TARGET, FAV_主人より高い)
+			PRINTFORM %NTR_KARE()%
+		ELSE
+			PRINTFORM あの人
+		ENDIF
+	ENDIF
+	SIF GET_TARGETNUM() > 2
+		PRINTFORM 達
+	PRINTFORMW にも見てもらいましょうよ♪　ね？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_2_withOther_sprout_K1	;;処女献上・他にいる・生やした
+	PRINTFORML 「わかります……よね？　こ・れ%UNICODE(0x2764)%」
+	PRINTFORML 「%CALLNAME_K1(人物_美鈴, 人物_パチュリー)%が、お薬を用意してくれて……こういう効果があったんですねぇ」
+	PRINTFORM 「これで、ちゃんと犯してあげますよ♪」
+	IF GETBIT(CFLAG:WC_同席者,3)
+		PRINTFORML 
+		PRINTFORML 「%CALLNAME_K1(人物_美鈴, 人物_パチュリー)%も、ご自分が用意したお薬の効果に興味があるでしょうから」
+		PRINTFORMW 「その意味でも、見学していただいたほうがいいですよね？」
+	ELSE
+		PRINTFORMW 
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_2_item_K1	;;処女献上・アイテムで
+	PRINTFORML 「わざわざ、こんなモノを用意していたんですか」
+	PRINTFORMW 「これで、いただいちゃえばいいんですね？　ふふふ、いいですよぉ♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_3_CAMERA_K1	;;処女献上・ついでにカメラ撮影
+	PRINTFORML 「記念に写真も撮って
+	IF GET_TARGETNUM() > 1
+		PRINTFORML もらいましょうか♪」
+	ELSE
+		PRINTFORML おきましょうか♪」
+	ENDIF
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_4_CAMERA_Vopen_K1	;;処女献上・秘貝開帳撮影
+	PRINTFORML 「まだ綺麗な状態も、写真に残しておきましょうか♪」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_5_insert_K1	;;処女献上・挿入完了
+	PRINTFORMW 「ちゃんと入りましたね……どうですか、初めての感想は？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_6_item_K1	;;処女献上・アイテムで・今日はここまで
+	PRINTFORMW 「ふぅ……今回は、ここまでにしておきましょうか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_7_penis_K1	;;処女献上・ちんこで・イキそう
+	IF !EXP:TARGET:射精経験
+		PRINTFORML 「ああっ……！？　ひっ、んっ！　こ、これ……ぅあ！　も、もしかして、これ……ああっ！」
+		PRINTFORM 「だっ、だめ……！　イクっ……！　出ちゃう……！　
+	ELSE
+		PRINTFORML 「いっ、イキますよ……？　もっ、もう……もう、イク……っ！」
+		PRINTFORM 「あっ……
+	ENDIF
+	PRINTFORML こ、このまま……んっ！　このまま、出しちゃっても……いっ、いいですか……！？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER40_8_penis_K1	;;処女献上・ちんこで・お掃除フェラで再勃起
+	PRINTFORML 「も〜っ♪　そんなに熱心に舐められたら、またしたくなっちゃうじゃないですか%UNICODE(0x2764)%」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_sexualDesire_0_K1(ARG)	;;性欲処理・最初の一言
+;;ARG=挿入穴選択 1:A 2:V
+#DIM 挿入穴選択
+	挿入穴選択 = ARG
+
+	PRINTFORMW 「我慢できなくなっちゃったんですけど……相手してもらえますか？」
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_sexualDesire_1_K1(ARG)	;;性欲処理・挿入した感想
+;;ARG=挿入穴選択 1:A 2:V
+#DIM 挿入穴選択
+	挿入穴選択 = ARG
+
+	SELECTCASE WC_VA_FITTING(人物_美鈴,MASTER,挿入穴選択)
+		CASE IS >= 4	;;きっつい
+			PRINTFORML 「うあっ……！　きっつい……けど、んっ！　あっ、これじゃ、すぐに……あんっ」
+		CASE 3			;;ちょっと狭い
+			PRINTFORML 「んんっ……！　ちょ、ちょっと、狭いですけど……あっ、そ、それが、また……%UNICODE(0x2764)%」
+		CASE 2			;;いい締め付け
+			PRINTFORML 「あっ！　あぁ……き、気持ちいい%UNICODE(0x2764)%　熱くて、柔らかいのが締め付けて来て……んっ、んっ……」
+		CASE 1			;;すんなり
+			PRINTFORML 「あ、あっ……ああ……あっつい、ぬるぬるがぁ……こ、擦れて……んっ、気持ちいいですよ……ふふふ」
+		CASEELSE		;;かなり緩い
+			PRINTFORML 「はぁぁ……気持ちいい……暖かくて、柔らかくて……あっ、思いっきり、動きたくなっちゃいますよ……」
+	ENDSELECT
+RETURN
+
+
+;-----------------------------
+@KOJO_WC_COUNTER_sexualDesire_2_K1	;;性欲処理・絶頂直前
+	PRINTFORML 「ぅあ……あっ！　いっ、イキますよ……！　なか……中に、出しちゃいますよ……！」
+RETURN
+
+

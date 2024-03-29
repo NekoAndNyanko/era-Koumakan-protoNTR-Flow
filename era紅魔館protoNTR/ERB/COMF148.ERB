@@ -1,0 +1,167 @@
+﻿;-------------------------------------------------
+;アナル電極
+;ハードな調教コマンド、レベル4
+;-------------------------------------------------
+@COM148
+
+	TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_左尻)
+	SIF RESULT
+		RETURN 0
+
+	;着脱の処理
+	TEQUIP:アナル電極 = !TEQUIP:アナル電極
+	;-------------------------------------------------
+	;COM別FLAGの設定
+	;-------------------------------------------------
+	;行為者
+	TCVAR:116 = PLAYER
+	;-------------------------------------------------
+	;ソース追加処理
+	;-------------------------------------------------
+	;消費体力、気力
+	DOWNBASE:体力 += 300
+	DOWNBASE:気力 += 450
+
+	SOURCE:快Ａ = 500
+	SOURCE:苦痛 = 1500
+	SOURCE:露出 = 300
+	SOURCE:屈従 = 800
+	SOURCE:逸脱 = 1200
+	SOURCE:反感 = 1200
+
+	;-------------------------------------------------
+	;特殊ソース処理
+	;-------------------------------------------------
+	;抑圧、抵抗持ちには、抑鬱ソース追加
+	SIF TALENT:自己愛 < 0 || TALENT:抵抗
+		SOURCE:鬱屈 += 1200
+
+	;フィストなどのAへの大きな苦痛は先に処理しておく
+	;EXP:Ａ経験をみる
+	IF EXP:Ａ経験 < EXPLV:1
+		TIMES SOURCE:苦痛 , 3.00
+		TIMES SOURCE:反感 , 4.00
+	ELSEIF EXP:Ａ経験 < EXPLV:2
+		TIMES SOURCE:苦痛 , 2.50
+		TIMES SOURCE:反感 , 3.50
+	ELSEIF EXP:Ａ経験 < EXPLV:3
+		TIMES SOURCE:苦痛 , 2.40
+		TIMES SOURCE:反感 , 3.00
+	ELSEIF EXP:Ａ経験 < EXPLV:4
+		TIMES SOURCE:苦痛 , 2.00
+		TIMES SOURCE:反感 , 2.50
+	ELSEIF EXP:Ａ経験 < EXPLV:5
+		TIMES SOURCE:苦痛 , 1.80
+		TIMES SOURCE:反感 , 2.00
+	ELSEIF EXP:Ａ経験 >= EXPLV:5
+		TIMES SOURCE:苦痛 , 1.60
+		TIMES SOURCE:反感 , 1.50
+	ENDIF
+
+	;PALAM:潤滑をみる
+	IF PALAM:潤滑 < PALAMLV:1
+		TIMES SOURCE:苦痛 , 3.00
+		TIMES SOURCE:反感 , 2.00
+	ELSEIF PALAM:潤滑 < PALAMLV:2
+		TIMES SOURCE:苦痛 , 2.50
+		TIMES SOURCE:反感 , 1.50
+	ELSEIF PALAM:潤滑 < PALAMLV:3
+		TIMES SOURCE:苦痛 , 2.00
+		TIMES SOURCE:反感 , 1.20
+	ELSEIF PALAM:潤滑 < PALAMLV:4
+		TIMES SOURCE:苦痛 , 1.50
+	ELSEIF PALAM:潤滑 >= PALAMLV:4
+		TIMES SOURCE:苦痛 , 1.00
+	ENDIF
+
+	;-------------------------------------------------
+	;経験の処理
+	;-------------------------------------------------
+	;Ａ経験
+	EXP:Ａ経験 += 4
+
+	SIF !GETBIT (CFLAG:3,8)
+		EXP:異常経験 += 1
+
+	;同性愛　レズなら戻り値1ゲイなら戻り値2
+	IF HETEROSEX(TARGET,PLAYER)
+		EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+		EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+	ENDIF
+
+RETURN 1
+;-------------------------------------------------
+;装着継続の処理
+;-------------------------------------------------
+@EQUIP_COM148(ARG)
+	#DIM 苦痛増分
+	#DIM 反感増分
+	;アナル電極
+
+	PRINTL ＜アナル電極挿入中＞
+
+	DOWNBASE:ARG:体力 += 200
+	DOWNBASE:ARG:気力 += 250
+
+	SOURCE:ARG:快Ａ += 250
+	SOURCE:ARG:屈従 += 400
+	SOURCE:ARG:逸脱 += 600
+
+
+	;-------------------------------------------------
+	;特殊ソース処理
+	;-------------------------------------------------
+	;抑圧、抵抗持ちには、抑鬱ソース追加
+	SIF TALENT:ARG:自己愛 < 0 || TALENT:ARG:抵抗
+		SOURCE:ARG:鬱屈 += 600
+
+	;フィストなどのAへの大きな苦痛は先に処理しておく
+	;EXP:Ａ経験をみる
+	苦痛増分 = 750
+	反感増分 = 600
+	IF EXP:ARG:Ａ経験 < EXPLV:1
+		TIMES 苦痛増分 , 3.00
+		TIMES 反感増分 , 4.00
+	ELSEIF EXP:ARG:Ａ経験 < EXPLV:2
+		TIMES 苦痛増分 , 2.50
+		TIMES 反感増分 , 3.50
+	ELSEIF EXP:ARG:Ａ経験 < EXPLV:3
+		TIMES 苦痛増分 , 2.40
+		TIMES 反感増分 , 3.00
+	ELSEIF EXP:ARG:Ａ経験 < EXPLV:4
+		TIMES 苦痛増分 , 2.00
+		TIMES 反感増分 , 2.50
+	ELSEIF EXP:ARG:Ａ経験 < EXPLV:5
+		TIMES 苦痛増分 , 1.80
+		TIMES 反感増分 , 2.00
+	ELSEIF EXP:ARG:Ａ経験 >= EXPLV:5
+		TIMES 苦痛増分 , 1.60
+		TIMES 反感増分 , 1.50
+	ENDIF
+
+	;PALAM:潤滑をみる
+	IF PALAM:ARG:潤滑 < PALAMLV:1
+		TIMES 苦痛増分 , 3.00
+		TIMES 反感増分 , 2.00
+	ELSEIF PALAM:ARG:潤滑 < PALAMLV:2
+		TIMES 苦痛増分 , 2.50
+		TIMES 反感増分 , 1.50
+	ELSEIF PALAM:ARG:潤滑 < PALAMLV:3
+		TIMES 苦痛増分 , 2.00
+		TIMES 反感増分 , 1.20
+	ELSEIF PALAM:ARG:潤滑 < PALAMLV:4
+		TIMES 苦痛増分 , 1.50
+	ELSEIF PALAM:ARG:潤滑 >= PALAMLV:4
+		TIMES 苦痛増分 , 1.00
+	ENDIF
+	SOURCE:ARG:苦痛 += 苦痛増分
+	SOURCE:ARG:反感 += 反感増分
+
+	;-------------------------------------------------
+	;経験の処理
+	;-------------------------------------------------
+	;Ａ経験
+	EXP:ARG:Ａ経験 += 1
+
+RETURN 1
+

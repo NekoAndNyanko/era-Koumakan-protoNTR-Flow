@@ -1,0 +1,260 @@
+﻿;-------------------------------------------------------------------------------
+;１日の開始時の処理
+@EVENTTRAIN
+	#PRI
+	#DIM キャラ番号
+	#DIM LOOP_FLG
+	VARSET TARGET
+	;各種数値の初期化
+	FOR キャラ番号,0,CHARANUM
+		;BASEの初期化
+		CALL BEFORETRAIN_ResetBases(キャラ番号)
+		;CFLAGの初期化
+		CFLAG:キャラ番号:勃起度 = 0
+		CFLAG:キャラ番号:あなた射精フラグ = 0
+		CFLAG:キャラ番号:汚れ発覚 = 汚れ発覚_なし
+		CFLAG:キャラ番号:汚れ継続時間 = 0
+		;TCVARSの初期化
+		CALL BEFORETRAIN_ResetTCVars(キャラ番号)
+		;性交フラグ
+		TEQUIP:キャラ番号:Ｖセックス = -1
+		TEQUIP:キャラ番号:Ａセックス = -1
+		;射精処理用文字列変数
+		CSTR:キャラ番号:10 = /
+		CSTR:キャラ番号:11 = /
+		;移動ルート初期化
+		CALLF RESET_ROUTE(キャラ番号, 1)
+			
+	NEXT
+	
+	
+	;催眠で出て行ったまま帰ってこない人の救済措置
+	FOR キャラ番号, 1, CHARANUM
+		IF CFLAG:キャラ番号:現在位置 == 場所_人間の里 || CFLAG:キャラ番号:現在位置 == 場所_民家
+			CFLAG:キャラ番号:現在位置 = 場所_正門
+			PRINTFORMW %CALLNAME:キャラ番号%がどこかから帰ってきたようだ
+		ENDIF
+	NEXT
+	SIF SAVESTR:10 == ""
+		SAVESTR:10 = /
+	;料理
+	FLAG:料理 = 0
+	;時間
+	IF TIME > CFLAG:MASTER:通常起床時間
+		DAY ++
+		TIME -= 1440
+		CALL 日付変更
+		CALL 日間気温設定
+	ENDIF
+	CALL 天候状態
+	;30分毎に館内のキャラを移動させる
+	LOOP_FLG = 1
+	WHILE LOOP_FLG
+		IF TIME + 30 < CFLAG:MASTER:通常起床時間
+			TFLAG:300 = DATETIME()
+			TIME += 30
+			CALL CHARA_MOVEMENT
+		ELSE
+			FOR キャラ番号,0,CHARANUM
+				;現在位置の保存
+				CFLAG:キャラ番号:前ターン位置 = CFLAG:キャラ番号:現在位置
+			NEXT
+			TIME =  CFLAG:MASTER:通常起床時間
+			TFLAG:300 = DATETIME()
+			CALL CHARA_MOVEMENT
+			BREAK
+		ENDIF
+	WEND
+	CALL GOODMORNING
+	IF RAND:10 && CFLAG:MASTER:現在位置 != 場所_訪問者宅
+		FLAG:侵入者の現在位置 = 場所_正門
+		PRINTFORMW 館に侵入者があったようだ！
+	ELSE
+		FLAG:侵入者の現在位置 = 0
+	ENDIF
+	;霊夢の移動可能判定
+	IF 霊夢移動フラグ == 0
+		霊夢移動フラグ = MAX(10 - ( CFLAG:人物_霊夢:好感度 > 0 ? CFLAG:人物_霊夢:好感度 / 300 # 0) - ( CFLAG:人物_霊夢:屈服度 > 0 ? CFLAG:人物_霊夢:屈服度 / 300 # 0), 0)
+		;元の場所へ戻す
+		SIF CFLAG:人物_霊夢:現在位置 <= 場所番号最大値
+			CFLAG:人物_霊夢:現在位置 = CFLAG:人物_霊夢:開始位置
+		;PRINTFORMW テスト 霊夢移動OFF {霊夢移動フラグ}
+	ELSE
+		;PRINTFORMW テスト 霊夢移動ON1 {霊夢移動フラグ}
+		IF RAND(1, 11) > 霊夢移動フラグ
+			;霊夢移動可能
+			霊夢移動フラグ = 0
+			;PRINTFORMW テスト 霊夢移動ON2 {霊夢移動フラグ} CLEAR
+		ELSE
+			霊夢移動フラグ --
+			;PRINTFORMW テスト 霊夢移動ON3 {霊夢移動フラグ} NOT
+		ENDIF
+	ENDIF
+	
+	TRYCALL 子供訪問_1
+	;NTR関連フラグの日毎クリア
+	CALL NTR_CLEAR_FLG
+	CALL VISITER_APPEARANCE
+	;起床時間の記録
+	CFLAG:MASTER:起床時間 = DATETIME()
+	;体力気力の回復
+	BASE:MASTER:体力 += MAXBASE:MASTER:体力 * (CFLAG:MASTER:起床時間 - CFLAG:MASTER:就寝時間 ) / 2 * (480 -120 * TALENT:MASTER:回復速度)
+	BASE:MASTER:気力 += MAXBASE:MASTER:気力 * (CFLAG:MASTER:起床時間 - CFLAG:MASTER:就寝時間 ) / (480 -120 * TALENT:MASTER:回復速度)
+	BASE:MASTER:体力 = MIN(MAXBASE:MASTER:体力,BASE:MASTER:体力)
+	BASE:MASTER:気力 = MIN(MAXBASE:MASTER:気力,BASE:MASTER:気力)
+	BASE:MASTER:勃起 = MIN(1000 * BASE:MASTER:体力 / MAXBASE:MASTER:体力,1500)
+	;勃起ペナルティ判定
+	CALL SOJI_SexHara_ErectPunishment(MASTER)
+	;調教者は誰か
+	IF ASSIPLAY == 0
+		PLAYER = MASTER
+	ELSE
+		PLAYER = ASSI
+	ENDIF
+	;MASTER寝間着変更(ここを通る時は睡眠フラグが立っているので一度0にして着替えてからフラグを戻す)
+	CFLAG:MASTER:睡眠 = 0
+	CALL CLOTHES_SETTING(MASTER,1)
+	;女やふたなりでない時服装によって[女装]を与える
+	IF HAS_VAGINA(MASTER) == 0 && ( EQUIP:MASTER:スカート && ( EQUIP:MASTER:上半身上着１ || EQUIP:MASTER:上半身上着２ ) || EQUIP:MASTER:ワンピース && !EQUIP:MASTER:下半身上着１ )
+		TALENT:MASTER:女装 = 1
+	;[女装]を持っていてスカート、ワンピース、上半身上着を着ていない、またはワンピースを着ているが下半身上着を履いている(チャイナ服+ズボン)とき[女装]を消す
+	ELSEIF TALENT:MASTER:女装 && ( ( !EQUIP:MASTER:スカート || !EQUIP:MASTER:ワンピース || !EQUIP:MASTER:上半身上着１ || !EQUIP:MASTER:上半身上着２ ) || ( EQUIP:MASTER:ワンピース && EQUIP:MASTER:下半身上着１ ) )
+		TALENT:MASTER:女装 = 0
+	ENDIF
+	CFLAG:MASTER:睡眠 = 1
+	;気になる場所到達判定のクリア
+	IF FLAG:1832 >= 0
+		FLAG:1832 = 0
+	ENDIF
+
+
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@BEFORETRAIN_ResetBases(キャラ番号)
+	#DIM キャラ番号
+
+	;CSVの記述ミスがあった場合のフォロー
+	IF MAXBASE:キャラ番号:理性 == 0
+		MAXBASE:キャラ番号:理性 = 1000
+	ENDIF
+	IF MAXBASE:キャラ番号:精力 == 0
+		MAXBASE:キャラ番号:精力 = 1000
+	ENDIF
+	;MAXBASE:??:射精が初期化されていない場合のフォロー
+	IF HAS_PENIS(キャラ番号)
+        IF MAXBASE:キャラ番号:射精 == 0
+			MAXBASE:キャラ番号:射精 = 10000
+			;PRINTFORML -> {MAXBASE:キャラ番号:射精}
+		ENDIF
+	ENDIF
+
+	;射精、勃起、ムード、理性、怒り
+	BASE:キャラ番号:射精 = 0
+	BASE:キャラ番号:ムード = 0
+	BASE:キャラ番号:理性 = MAXBASE:キャラ番号:理性
+	BASE:キャラ番号:怒り = 0
+	BASE:キャラ番号:勃起 = 0
+	BASE:キャラ番号:満足 = 0
+	BASE:(キャラ番号):精力 = 0
+	IF HAS_PENIS(キャラ番号)
+		MAXBASE:キャラ番号:精力 = LIMIT(MAXBASE:キャラ番号:精力,200,1000)
+		BASE:キャラ番号:精力 = MAXBASE:キャラ番号:精力
+	ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@BEFORETRAIN_ResetCFlags(ARG:0)
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@BEFORETRAIN_ResetTCVars(キャラ番号)
+	#DIM キャラ番号
+	#DIM LOOP_I
+	;経験表示用
+	FOR LOOP_I,0,100
+		TCVAR:キャラ番号:(400 + LOOP_I) = EXP:キャラ番号:(LOOP_I)
+	NEXT
+	TCVAR:キャラ番号:100 = -1
+	TCVAR:キャラ番号:101 = -1
+	;中出し表示用フラグ
+	TCVAR:キャラ番号:103 = -1
+	TCVAR:キャラ番号:105 = -1
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;起床処理
+;@return 1:xxx,0:xxx
+@GOODMORNING
+	#DIM LOOP_CHR
+	#DIM LOOP_I
+	TARGET = 0
+	FOR LOOP_CHR,1,CHARANUM
+		;ぱんつ確認フラグをOFF
+		CFLAG:LOOP_CHR:ぱんつ確認 = 0
+		SIF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置
+			TARGET = LOOP_CHR
+		CALL SANTA(LOOP_CHR)
+	NEXT
+	IF TARGET
+		IF CFLAG:TARGET:睡眠
+			PRINTFORMW %CALLNAME:MASTER%が目覚めると隣ではまだ%CALLNAME:TARGET%がすやすやと眠っていた
+			PRINTFORMW %CALLNAME:MASTER%は%CALLNAME:TARGET%を起こさないようにベッドを抜け出し一日の準備を始めた
+		ELSE
+			IF TALENT:恋慕
+				PRINTFORMW %CALLNAME:MASTER%が目覚めると%CALLNAME:TARGET%と目があった
+				PRINTFORMW しばらく%CALLNAME:TARGET%と視線をかわしてからベッドを抜け出し一日の準備を始めた
+			ELSE
+				PRINTFORMW %CALLNAME:MASTER%が目覚めると%CALLNAME:TARGET%と目があった
+				IF 親子関係(MASTER, TARGET)
+					PRINTFORMW %CALLNAME:MASTER%は我が子と目覚めの挨拶を交わすと、ベッドを抜け出し一日の準備を始めた
+				ELSE
+					PRINTFORMW なぜ%CALLNAME:TARGET%が部屋にいるのだろうと不審に思いながらもベッドを抜け出し一日の準備を始めた
+				ENDIF
+			ENDIF
+			CALL KOJO_EVENT(6, TARGET, 1)
+		ENDIF
+	ELSEIF CFLAG:MASTER:現在位置 == 場所_人間の里周辺 && HAS_VAGINA(MASTER) && !(TALENT:公衆便所 == 1 && EQUIP:MASTER:下半身下着２ == 0 && EQUIP:MASTER:下半身下着１ == 1)
+		PRINTFORMW 人間の里で気絶するように眠ってしまった%CALLNAME:MASTER%が目覚めるとそこは寝てしまう直前まで見ていた景色ではなかった
+		PRINTFORMW どうやら寝ている間に目立たない物陰に運ばれたようだ
+		PRINTFORMW 漂う生臭さを不審に思い体を起こすと%CALLNAME:MASTER%は全身精液塗れになっていた
+		PRINTFORMW %CALLNAME:MASTER%は輪姦された事を悟り、涙を浮かべながら身なりを整えた
+		TEQUIP:MASTER:Ｖセックス = 人物_客
+		FOR LOOP_I,1,(RAND:20 + 10)
+			IF RAND:2
+				EXP:MASTER:Ｖ経験 ++
+				EXP:MASTER:Ｖ性交経験 ++
+				IF ABL:MASTER:Ｖ感覚 > RAND:5
+					EXP:MASTER:Ｖ絶頂経験 ++
+					EXP:MASTER:絶頂経験 ++
+				ENDIF
+				CALL EJACULATION_V(MASTER, 人物_客)
+				IF TALENT:MASTER:処女
+					CALL LOST_VIRGIN(MASTER, 人物_客)
+				ENDIF
+				;V感覚が高いと絶頂経験加算（強絶頂扱い）
+				;CALL NTR_V_EXP_PLUS(MASTER)
+			ELSEIF !RAND:3
+				EXP:MASTER:精液経験 ++
+				EXP:MASTER:手淫経験 ++
+				CALL STAIN_ADD_SEMEN_HAND(MASTER, 人物_客)
+			ELSEIF RAND:2
+				EXP:MASTER:精液経験 ++
+				EXP:MASTER:口淫経験 ++
+				CALL STAIN_ADD_SEMEN_M(MASTER, 人物_客)
+			ELSE
+				EXP:MASTER:精液経験 ++
+				EXP:MASTER:パイズリ経験 ++
+				IF ABL:MASTER:Ｂ感覚 > RAND:5
+					EXP:MASTER:Ｂ絶頂経験 ++
+					EXP:MASTER:絶頂経験 ++
+				ENDIF
+				CALL STAIN_ADD_SEMEN_B(MASTER, 人物_客)
+			ENDIF
+		NEXT
+	ENDIF

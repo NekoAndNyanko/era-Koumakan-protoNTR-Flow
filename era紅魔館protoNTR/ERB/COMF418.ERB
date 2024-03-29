@@ -1,0 +1,161 @@
+﻿;-------------------------------------------------
+;鍵を購入する
+;-------------------------------------------------
+;公衆便所になった住人の貞操帯の鍵を購入するコマンド
+;
+;
+;-------------------------------------------------
+@COM418
+;購入対象選択
+	#DIM 奴隷
+	#DIM 鍵基本価格
+	#DIM 鍵特別価格
+	#DIM 父親
+
+
+	SELECTCASE EXP:MASTER:買春経験
+		CASE 0
+			PRINTFORML %NTR_NAME(0)%は小さな鍵をちらつかせ、%CALLNAME:MASTER%にも『便所』を使わせてやろうか？と笑った。
+		CASEELSE
+			PRINTFORML %CALLNAME:MASTER%が鍵を求めると、%NTR_NAME(0)%はウチの『便所』が気に入ったようだな、と笑った。
+	ENDSELECT
+	
+	FOR 奴隷,1,CHARANUM
+		IF TALENT:奴隷:公衆便所
+			鍵基本価格 = NTR_COST_UNLOCK(奴隷)
+			鍵特別価格 = NTR_COST_UNLOCK_SP(奴隷,鍵基本価格)
+			SELECTCASE 鍵基本価格
+				CASE IS >= 4000
+					PRINTFORML %"["+TOSTR(奴隷,"000")+"]-高級便所『"+CALLNAME:奴隷+"』(4時間、$" + TOSTR(鍵基本価格) + ")"%
+				CASE IS >= 2000
+					PRINTFORML %"["+TOSTR(奴隷,"000")+"]-中級便所『"+CALLNAME:奴隷+"』(4時間、$" + TOSTR(鍵基本価格) + ")"%
+				CASE IS >= 1000
+					PRINTFORML %"["+TOSTR(奴隷,"000")+"]-低級便所『"+CALLNAME:奴隷+"』(4時間、$" + TOSTR(鍵基本価格) + ")"%
+				CASEELSE
+					PRINTFORML %"["+TOSTR(奴隷,"000")+"]-格安便所『"+CALLNAME:奴隷+"』(4時間、$" + TOSTR(鍵基本価格) + ")"%
+			ENDSELECT
+		ENDIF
+	NEXT
+	PRINTFORML [999] - やっぱりやめる
+
+	$INPUT_LOOP
+	INPUT
+	SIF 999 == RESULT
+		RETURN 1
+	SIF RESULT <= 0 || CHARANUM <= RESULT
+		GOTO INPUT_LOOP
+	SIF !TALENT:RESULT:公衆便所
+		GOTO INPUT_LOOP
+	奴隷 = RESULT
+
+	;購入金額
+	鍵基本価格 = NTR_COST_UNLOCK(奴隷)
+	鍵特別価格 = NTR_COST_UNLOCK_SP(奴隷,鍵基本価格)
+	IF 鍵基本価格 < 鍵特別価格
+		PRINTFORML %"鍵を購入しようとすると、" + NTR_NAME(0) + "は"+CALLNAME:奴隷+"が"+CALLNAME:MASTER+"の"+MSG_RE_LOVER(奴隷)+"であることを思い出し、"%
+		PRINTFORML %"『特別価格』で鍵を売ってやろう、と新たな値段を提示した。"%
+		SELECTCASE 鍵基本価格
+			CASE IS >= 4000
+				PRINTFORML %"高級便所『"+CALLNAME:奴隷+"』(4時間、通常価格 $" + TOSTR(鍵基本価格) + " → 特別価格 $" + TOSTR(鍵特別価格) + ")"%
+			CASE IS >= 2000
+				PRINTFORML %"中級便所『"+CALLNAME:奴隷+"』(4時間、通常価格 $" + TOSTR(鍵基本価格) + " → 特別価格 $" + TOSTR(鍵特別価格) + ")"%
+			CASE IS >= 1000
+				PRINTFORML %"低級便所『"+CALLNAME:奴隷+"』(4時間、通常価格 $" + TOSTR(鍵基本価格) + " → 特別価格 $" + TOSTR(鍵特別価格) + ")"%
+			CASEELSE
+				PRINTFORML %"格安便所『"+CALLNAME:奴隷+"』(4時間、通常価格 $" + TOSTR(鍵基本価格) + " → 特別価格 $" + TOSTR(鍵特別価格) + ")"%
+		ENDSELECT
+
+		$INPUT_LOOP_SP
+		PRINTFORML %"[1] - 『特別価格』で鍵を購入する"%
+		PRINTFORML %"[2] - 『特別価格』に文句を言う"%
+		PRINTFORML %"[0] - 鍵を買うのをやめる"%
+		INPUT
+		IF 2 == RESULT
+			CALL COM418_Estimates(奴隷)
+			GOTO INPUT_LOOP_SP
+		ELSEIF 1 == RESULT
+			;なにもなし
+		ELSEIF 0 == RESULT
+			PRINTFORML %CALLNAME:MASTER + "が鍵を買うのをやめると言うと、"+NTR_NAME(0) + "はそれなら便所の『" + CALLNAME:奴隷 + "』は他に貸し出そうと言い、"+ CALLNAME:奴隷 + "を連れてどこかへ行ってしまった……。"%
+			CALL GoOut_SeeYou_900(奴隷,1)
+			RETURN 1
+		ELSE
+			GOTO INPUT_LOOP_SP
+		ENDIF
+	ENDIF
+	IF MONEY < 鍵特別価格
+		PRINTFORMW お金が足りません。
+		GOTO INPUT_LOOP
+	ENDIF
+	;商品の説明
+
+	IF TALENT:奴隷:浮気公認
+		PRINTFORML %"『便所』の代金を支払おうとすると、" + NTR_NAME(0) + "に他の男にたっぷり抱かれた"+MSG_RE_LOVER(奴隷)+"の具合を確認したくなったのか？と冷やかされた。"%
+	ENDIF
+
+	IF TALENT:奴隷:妊娠
+		; 妊娠している場合は半額
+		PRINTFORML %NTR_NAME(0)+"は鍵を手渡すと、『"+CALLNAME:奴隷+"』は妊娠しているから、値段を下げているのだと教えてくれた。"%
+		父親 = CFLAG:奴隷:にんっしんっ - 1
+		; 恋慕状態の奴隷が妊娠して、父親がMASTERでない時。1/3の確率で表示。
+		IF TALENT:奴隷:恋慕 && 父親 != MASTER && 0 == RAND:3
+			PRINTFORML %NTR_NAME(0)+"は" + MSG_RE_LOVER(奴隷) + "を他の男に孕まされたのはどんな気分だ？と嫌な笑みを浮かべた。"%
+		ELSE
+			PRINTFORML %MSG_RE_LOVER(奴隷) + "とは言え、妊婦相手にあまり手荒なことをするな、と付け加えた。"%
+		ENDIF
+	ELSEIF TALENT:奴隷:危険日
+		; 妊娠していなくて危険日の場合は5割増
+		PRINTFORML %NTR_NAME(0)+"は鍵を手渡すと、『"+CALLNAME:奴隷+"』は危険日だから、妊娠する可能性があるぞと教えてくれた。"%
+	ELSEIF BASE:奴隷:Ｖ緩さ > 700 || BASE:奴隷:Ａ緩さ > 700
+		IF BASE:奴隷:Ｖ緩さ > 700 && BASE:奴隷:Ａ緩さ > 700
+			PRINTFORML %NTR_NAME(0)+"は鍵を手渡すと、『"+CALLNAME:奴隷+"』はどちらの穴も緩いので、口を使わせた方がいいと教えてくれた。"%
+		ELSEIF BASE:奴隷:Ａ緩さ > 700
+			PRINTFORML %NTR_NAME(0)+"は鍵を手渡すと、『"+CALLNAME:奴隷+"』は尻穴が緩いので、膣を使った方がいいと教えてくれた。"%
+		ELSEIF BASE:奴隷:Ｖ緩さ > 700
+			PRINTFORML %NTR_NAME(0)+"は鍵を手渡すと、『"+CALLNAME:奴隷+"』は膣が緩いので、尻穴を使った方がいいと教えてくれた。"%
+		ENDIF
+
+		IF BASE:奴隷:Ｖ緩さ > 700 || BASE:奴隷:Ａ緩さ > 700
+			;緩さを指摘された場合
+			PRINTFORML %CALLNAME:MASTER + "が微妙な顔をしていると、" + NTR_NAME(0)+"は" + MSG_RE_LOVER(奴隷)+"だったな、どの穴でも好きに使ってゆっくり楽しんでくれ、と嫌な笑みを浮かべた。"%
+		ENDIF
+	ELSEIF TALENT:奴隷:恋慕
+		PRINTFORML %NTR_NAME(0)+"は鍵を手渡すと、"+MSG_RE_LOVER(奴隷)+"の身体を金で買う気分はどんなものだ？と嫌な笑みを浮かべた。"%
+	ENDIF
+
+
+
+	PRINTFORMW %"……公衆便所『"+CALLNAME:奴隷+"』の貞操帯の鍵を購入した。"%
+
+	EXP:MASTER:買春経験++
+	MONEY -= 鍵特別価格
+	;鍵購入
+	FLAG:貞操帯鍵購入フラグ = 奴隷
+	CFLAG:奴隷:NTR鍵購入回数++
+	;鍵購入カウンタ
+	FLAG:貞操帯鍵有効カウンタ = TIME_PROGRESS() + 4*60
+	;住人の反応等
+	FOR 奴隷,1,CHARANUM
+		;鍵購入反応フラグ初期化
+		CFLAG:奴隷:NTR貞操帯反応 = 1
+	NEXT
+
+RETURN 1
+
+@COM418_Estimates(奴隷)
+	#DIM 奴隷
+	PRINTFORML %"『特別価格』なのにどうして値段が高くなるのかと問い詰めると、"%
+	IF TALENT:奴隷:人妻 || TALENT:奴隷:恋慕
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML %NTR_NAME(0)+ "は" + CALLNAME:MASTER + "が" + CALLNAME:奴隷 + "の浮気を公認している事を指摘し、"%
+			PRINTFORML %MSG_RE_LOVER(奴隷) + "が他の男に抱かれる事に興奮するような、変態専用の『特別価格』だ、と説明した。"%
+		ELSE
+			PRINTFORML %NTR_NAME(0)+ "は" + CALLNAME:奴隷 + "が" + CALLNAME:MASTER + "の" + MSG_RE_LOVER(奴隷) + "である事を指摘し、"%
+			PRINTFORML %"他の男に抱かせたいのなら、買わなくても構わないんだぞとニヤニヤした。"%
+		ENDIF
+	ELSE
+		PRINTFORML %CALLNAME:MASTER + "が商売を邪魔した分、値段を上げているのだと説明した。"%
+	ENDIF
+RETURN 1
+
+

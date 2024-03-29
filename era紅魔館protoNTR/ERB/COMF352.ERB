@@ -1,0 +1,25 @@
+﻿;告白する
+@COM352
+;公衆便所時、好意度が低いと失敗
+IF TALENT:公衆便所 && 700 > CFLAG:好感度
+	TFLAG:コマンド成功度 = 成功度_失敗
+	RETURN 1
+ENDIF
+;NTR時、好意度が低いと失敗
+IF TALENT:NTR && 500 > CFLAG:好感度
+	TFLAG:コマンド成功度 = 成功度_失敗
+	RETURN 1
+ENDIF
+LOCAL = MARK:屈服刻印 * 3 + MARK:快楽刻印 * 3 + MIN(ABL:親密 * 10, 50) + MIN(ABL:欲望 * 10,50) + GETPALAMLV(PALAM:欲情,5) * 5 + GETPALAMLV(PALAM:好意,5) * 5 + BASE:ムード / 50 + (1000 - BASE:理性) / 30
+IF  LOCAL > 100 + TALENT:一線越えない * 20
+	TFLAG:コマンド成功度 = 成功度_成功
+ELSE
+	TFLAG:コマンド成功度 = 成功度_失敗
+ENDIF
+IF TFLAG:コマンド成功度 == 成功度_成功
+	SOURCE:歓楽 = 1000
+	SOURCE:受動 = 500 + 100 * ABL:従順
+	SOURCE:征服 = 500 + 100 * ABL:サドっ気
+ENDIF
+RETURN 1
+

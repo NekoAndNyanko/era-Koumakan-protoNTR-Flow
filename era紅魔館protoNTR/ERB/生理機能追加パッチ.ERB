@@ -1,0 +1,170 @@
+﻿
+
+;妊娠系新規作成======================================
+;使用フラグ
+;CFLAG:351 卵子生存日数 (1=排卵 2=受精不可)
+;CFLAG:352 生理周期フラグ　（10〜15で“危険日”付与）
+
+;TALENT:危険日
+
+
+;====================================================
+;SHOP.ERB〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+
+
+;AFTERTRA.ERB〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+
+@妊娠確定時の追加処理, ARG
+;妊娠が確定したのでいらないフラグをリセット
+CFLAG:ARG:卵子生存日数 = 0
+CFLAG:ARG:生理周期 = 0
+TALENT:ARG:危険日 = 0
+
+
+;生理関連---------------------------------
+@生理周期, ARG
+TRYCALL 生理周期DEBUG, ARG
+
+
+;男(ふたなり以外)はスキップ
+SIF TALENT:ARG:性別 == 2
+	RETURN 0
+	
+;娘が成長期未満で生理処理が機能していたらここでリセット
+IF NO:ARG == 149 && CFLAG:ARG:75 < 3 && (TALENT:ARG:危険日 || CFLAG:ARG:生理周期 || CFLAG:ARG:卵子生存日数)
+	TALENT:ARG:危険日 = 0
+	CFLAG:ARG:生理周期 = 0
+	CFLAG:ARG:卵子生存日数 = 0
+ENDIF
+
+;ピル使用判定リセット
+CFLAG:ARG:ピル使用 = 0
+
+
+;娘の場合成長期から生理開始
+SIF NO:ARG == 149 && CFLAG:ARG:75 < 3
+	RETURN 0
+
+;妊娠しているならスキップ
+SIF TALENT:ARG:妊娠
+	RETURN 0
+
+;生理日数経過
+CFLAG:ARG:生理周期 ++
+
+;危険日以外ならたまに長引く
+IF !TALENT:ARG:危険日 && !CFLAG:ARG:卵子生存日数
+	SIF RAND:20 == 0
+		CFLAG:ARG:生理周期 --
+ENDIF
+
+;生理フラグ10で危険日付与
+IF CFLAG:ARG:生理周期 == 10
+	TALENT:ARG:危険日 = 1
+;生理フラグ15で生理フラグ、危険日、排卵フラグリセット
+ELSEIF CFLAG:ARG:生理周期 >= 15
+	CFLAG:ARG:生理周期 = 0
+	CFLAG:ARG:卵子生存日数 = 0
+ENDIF
+
+;危険日の何時の日かに排卵
+IF TALENT:ARG:危険日 && CFLAG:ARG:卵子生存日数 == 0
+	;30%の確率で排卵日に
+	IF RAND:100 < 30
+		CFLAG:ARG:卵子生存日数 ++
+	;生理フラグ14(危険日の最終日)までに排卵日が来なかった場合は確実に排卵日となる
+	ELSEIF CFLAG:ARG:生理周期 == 14
+		CFLAG:ARG:卵子生存日数 ++
+	ENDIF
+;排卵後1日経過で卵子が受精不可となり素質[危険日]消去
+ELSEIF CFLAG:ARG:卵子生存日数 == 1
+	TALENT:ARG:危険日 = 0
+	CFLAG:ARG:卵子生存日数 ++
+ENDIF
+
+
+TRYCALL 生理周期DEBUG, ARG
+
+;SHOP_ITEM.ERB〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+;排卵誘発剤---------------------
+@排卵誘発剤追加処理, ARG
+TRYCALL 生理周期DEBUG, ARG
+
+;排卵日処理
+TALENT:ARG:危険日 = 1
+CFLAG:ARG:卵子生存日数 = 1
+CFLAG:ARG:生理周期 = 12
+	
+TRYCALL 生理周期DEBUG, ARG
+
+
+;SHOP2.ERB〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+@簡易追加情報, ARG
+
+IF TALENT:ARG:性別 == 3
+	LOCALS = ふ
+ELSEIF TALENT:ARG:性別 == 2
+	LOCALS = ♂
+ELSE
+	LOCALS = ♀
+ENDIF
+IF TALENT:ARG:妊娠
+	LOCALS:1 = 孕
+ELSEIF CFLAG:ARG:卵子生存日数 == 1
+	LOCALS:1 = 排
+ELSEIF TALENT:ARG:危険日
+	LOCALS:1 = 危
+ELSE
+	LOCALS:1 = 　
+ENDIF
+IF TALENT:ARG:処女 && (TALENT:ARG:性別 >= 2 && !TALENT:ARG:童貞)
+	LOCALS:2 = 処貞
+ELSEIF TALENT:ARG:処女
+	LOCALS:2 = 処　
+;ELSEIF TALENT:ARG:性別 >= 2 && !TALENT:ARG:童貞
+ELSEIF IS_DOUTEI(ARG)
+	LOCALS:2 = 　貞
+ELSE
+	LOCALS:2 = 　　
+ENDIF
+IF TALENT:ARG:恋慕
+	LOCALS:3 = 恋
+ELSE
+	LOCALS:3 = 　
+ENDIF
+IF TALENT:ARG:淫乱 == 1
+	LOCALS:4 = 淫
+ELSEIF TALENT:ARG:淫乱 == 2
+	LOCALS:4 = 娼
+ELSE
+	LOCALS:4 = 　
+ENDIF
+IF TALENT:ARG:NTR
+	LOCALS:5 = Ｎ
+ELSE
+	LOCALS:5 = 　
+ENDIF
+IF TALENT:ARG:公衆便所
+	LOCALS:6 = 便
+ELSE
+	LOCALS:6 = 　
+ENDIF
+IF TALENT:ARG:浮気な唇
+	LOCALS:7 = 唇
+ELSE
+	LOCALS:7 = 　
+ENDIF
+IF TALENT:ARG:浮気な蜜壷
+	LOCALS:8 = 壷
+ELSE
+	LOCALS:8 = 　
+ENDIF
+IF TALENT:ARG:浮気な尻穴
+	LOCALS:9 = 尻
+ELSE
+	LOCALS:9 = 　
+ENDIF
+
+PRINTFORM  "%LOCALS%%LOCALS:1%%LOCALS:2%%LOCALS:3%%LOCALS:4%%LOCALS:5%%LOCALS:6%%LOCALS:7%%LOCALS:8%%LOCALS:9%" 
+
+

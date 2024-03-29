@@ -1,0 +1,138 @@
+﻿;────────────────────────────────────
+;調教終了の処理
+;────────────────────────────────────
+@EVENTEND
+	#LATER
+	#DIM LOOP_CHR
+
+	PRINTL 一日が終わりました
+	CALL INHABITANT_FRIENDSHIP_DAYEND
+	FLAG:訪問者同行フラグ = 0
+	SIF STRLENS(TSTR:1)
+		CALL SELL_VIDEO
+	TRYCALL 精子処理_生存日数振り分け
+	TRYCALL 妊娠処理変更パッチ
+	TRYCALL PREGNACY_S_ANNOUNCEMENT
+	TRYCALL 子供訪問_2
+	FLAG:1840 = 0
+
+	FOR LOOP_CHR, 0, CHARANUM
+		TRYCALL 生理周期, LOOP_CHR
+		;うふふ強制解除
+		CFLAG:LOOP_CHR:うふふ = 0
+	NEXT
+
+	;睡眠フラグ
+	CFLAG:MASTER:睡眠 = 1
+
+	;何の珠を得られたか
+	FOR LOOP_CHR,0,CHARANUM
+		CALL JUEL_CHECK(LOOP_CHR)
+		CALL DENIAL_CHECK(LOOP_CHR)
+	NEXT
+	BEGIN ABLUP
+
+
+
+@JUEL_CHECK(奴隷)
+	#DIM 奴隷
+	#DIM 珠獲得
+	#DIM LOOP_I
+	FOR LOOP_I,0,100
+		IF PALAM:奴隷:LOOP_I < PALAMLV:1
+			珠獲得 = 0
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:1*3
+			珠獲得 = 1
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:2
+			珠獲得 = 2
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:2*3
+			珠獲得 = 10
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:3
+			珠獲得 = 20
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:3*2
+			珠獲得 = 100
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:4
+			珠獲得 = 200
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:5
+			珠獲得 = 1000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:6
+			珠獲得 = 2000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:7
+			珠獲得 = 3000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:8
+			珠獲得 = 5000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:9
+			珠獲得 = 8000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:10
+			珠獲得 = 12000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:11
+			珠獲得 = 25000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:12
+			珠獲得 = 40000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:13
+			珠獲得 = 60000
+		ELSEIF PALAM:奴隷:LOOP_I < PALAMLV:14
+			珠獲得 = 100000
+		ELSE
+			珠獲得 = 150000
+		ENDIF
+		;快感系
+		IF LOOP_I >= 0 && LOOP_I < 9
+			GOTJUEL:奴隷:LOOP_I = 珠獲得 + EX:奴隷:LOOP_I * 1000
+		;その他
+		ELSEIF LOOP_I < 30
+			GOTJUEL:奴隷:LOOP_I = 珠獲得
+		;否定の珠
+		ELSEIF LOOP_I == 30 || LOOP_I == 31 || LOOP_I == 32
+			GOTJUEL:奴隷:100 += 珠獲得
+		ENDIF
+	NEXT
+	JUEL:奴隷:100 += GOTJUEL:奴隷:100
+	FOR LOOP_I,0,100
+		SIF !STRLENS(PALAMNAME:LOOP_I)
+			CONTINUE
+		SIF LOOP_I != 9 &&LOOP_I != 30 && LOOP_I != 31 && LOOP_I != 32
+			JUEL:奴隷:LOOP_I += GOTJUEL:奴隷:LOOP_I
+	NEXT
+
+@DENIAL_CHECK(奴隷)
+	#DIM 奴隷
+	#DIM 増減値
+	#DIM 珠種別
+	SIF JUEL:奴隷:100 == 0
+		RETURN 0
+	WHILE 1
+		SIF !JUEL:奴隷:否定 || (!JUEL:奴隷:恭順 && !JUEL:奴隷:欲情 && !JUEL:奴隷:屈服)
+			BREAK
+		増減値 = JUEL:奴隷:否定 == 1 ? 1 # JUEL:奴隷:否定 / 2
+		;JUEL:10〜12で消費
+		珠種別 = RAND:3 + 10
+		SIF 増減値 > JUEL:奴隷:珠種別
+			増減値 = JUEL:奴隷:珠種別
+		JUEL:奴隷:否定 -= 増減値
+		JUEL:奴隷:珠種別 -= 増減値
+	WEND
+	WHILE 1
+		SIF !JUEL:奴隷:否定 || (!JUEL:奴隷:恥情 && !JUEL:奴隷:苦痛 && !JUEL:奴隷:恐怖 && !JUEL:奴隷:好意 && !JUEL:奴隷:優越)
+			BREAK
+		増減値 = JUEL:奴隷:否定 == 1 ? 1 # JUEL:奴隷:否定 / 2
+		;JUEL:14〜16で消費
+		珠種別 = RAND:5
+		SELECTCASE 珠種別
+			CASE 0
+				珠種別 = 14
+			CASE 1
+				珠種別 = 15
+			CASE 2
+				珠種別 = 16
+			CASE 3
+				珠種別 = 20
+			CASE 4
+				珠種別 = 21
+		ENDSELECT
+		SIF 増減値 > JUEL:奴隷:珠種別
+			増減値 = JUEL:奴隷:珠種別
+		JUEL:奴隷:否定 -= 増減値
+		JUEL:奴隷:珠種別 -= 増減値
+	WEND
+

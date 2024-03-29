@@ -1,0 +1,150 @@
+﻿; EJACULATION.ERB
+;	射精関係の関数
+;
+
+;口内射精
+;好感度、屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@EJACULATION_M(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	#DIM 精液経験増量
+
+	CFLAG:被害者:射精者M = 加害者
+	TRYCALL 精力取得, 加害者
+	;Vと違い被害者側の精子取得はない
+	;TRYCALL 精子取得, 加害者, 被害者
+	;精液経験
+	精液経験増量 = MAX(TFLAG:精子量 / 100, 1)
+	EXP:被害者:精液経験 += 精液経験増量
+	EXP:被害者:精飲経験 += 精液経験増量
+	;相手により分岐のある処理
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			IF 被害者 != MASTER && !TALENT:被害者:親愛
+				EXP:被害者:浮気精液経験 += 精液経験増量
+				EXP:被害者:浮気精飲経験 += 精液経験増量
+			ENDIF
+		CASE 人物_訪問者
+			IF 被害者 != MASTER && !TALENT:被害者:親愛
+				EXP:被害者:浮気精液経験 += 精液経験増量
+				EXP:被害者:浮気精飲経験 += 精液経験増量
+			ENDIF
+		CASE IS < CHARANUM
+			EXP:加害者:射精経験 ++
+			EXP:加害者:Ｃ経験 ++
+			IF ABL:加害者:Ｃ感覚 > RAND:5
+				EXP:加害者:Ｃ絶頂経験 ++
+				EXP:加害者:絶頂経験 ++
+			ENDIF
+			IF MASTER == 加害者
+				SETBIT CFLAG:被害者:あなた射精フラグ,被射精箇所_口
+			ENDIF
+		CASEELSE
+			;何もしない
+	ENDSELECT
+
+	;射精に伴う汚れ追加
+	CALL STAIN_ADD_SEMEN_M(被害者, 加害者)
+RETURN 0
+
+;膣内射精
+;好感度、屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@EJACULATION_V(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	#DIM 精液経験増量
+
+	TEQUIP:被害者:Ｖセックス = 加害者
+	CFLAG:被害者:射精者V = 加害者
+	TRYCALL 精力取得, 加害者
+	TRYCALL 精子取得, 加害者, 被害者
+	CFLAG:被害者:精液残留中 = 40
+	;精液経験
+	精液経験増量 = MAX(TFLAG:精子量 / 100, 1)
+	EXP:被害者:精液経験 += 精液経験増量
+	;中出しフラグ
+	TCVAR:被害者:102 = 2
+	TCVAR:被害者:103 = 加害者
+	;相手により分岐のある処理
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			IF 被害者 != MASTER && !TALENT:被害者:親愛
+				EXP:被害者:浮気精液経験 += 精液経験増量
+			ENDIF
+			IF TALENT:被害者:処女
+			ENDIF
+		CASE 人物_訪問者
+			IF 被害者 != MASTER && !TALENT:被害者:親愛
+				EXP:被害者:浮気精液経験 += 精液経験増量
+			ENDIF
+			IF TALENT:被害者:処女
+			ENDIF
+		CASE IS < CHARANUM
+			EXP:加害者:射精経験 ++
+			EXP:加害者:Ｃ経験 ++
+			IF ABL:加害者:Ｃ感覚 > RAND:5
+				EXP:加害者:Ｃ絶頂経験 ++
+				EXP:加害者:絶頂経験 ++
+			ENDIF
+			IF TALENT:被害者:処女
+			ENDIF
+			IF MASTER == 加害者
+				SETBIT CFLAG:被害者:あなた射精フラグ,被射精箇所_Ｖ
+			ENDIF
+		CASEELSE
+			;何もしない
+	ENDSELECT
+	;射精に伴う汚れ追加
+	CALL STAIN_ADD_SEMEN_V(被害者, 加害者)
+RETURN 0
+
+;腸内射精
+;好感度、屈服度等の管理は行わない。この関数を呼び出す処理で行うこと。
+@EJACULATION_A(被害者, 加害者)
+	#DIM 被害者
+	#DIM 加害者
+	#DIM 精液経験増量
+
+	TEQUIP:被害者:Ａセックス = 加害者
+	CFLAG:被害者:射精者A = 加害者
+	TRYCALL 精力取得, 加害者
+	;Vと違い被害者側の精子取得はない
+	;TRYCALL 精子取得, 加害者, 被害者
+	;精液経験
+	精液経験増量 = MAX(TFLAG:精子量 / 100, 1)
+	EXP:被害者:精液経験 += 精液経験増量
+	;中出しフラグ
+	TCVAR:被害者:104 = 2
+	TCVAR:被害者:105 = 加害者
+	;相手により分岐のある処理
+	SELECTCASE 加害者
+		CASE 人物_客, 人物_村人
+			IF 被害者 != MASTER && !TALENT:被害者:親愛
+				EXP:被害者:浮気精液経験 += 精液経験増量
+			ENDIF
+			IF TALENT:被害者:処女
+			ENDIF
+		CASE 人物_訪問者
+			IF 被害者 != MASTER && !TALENT:被害者:親愛
+				EXP:被害者:浮気精液経験 += 精液経験増量
+			ENDIF
+			IF TALENT:被害者:処女
+			ENDIF
+		CASE IS < CHARANUM
+			EXP:加害者:射精経験 ++
+			EXP:加害者:Ｃ経験 ++
+			IF ABL:加害者:Ｃ感覚 > RAND:5
+				EXP:加害者:Ｃ絶頂経験 ++
+				EXP:加害者:絶頂経験 ++
+			ENDIF
+			IF TALENT:被害者:処女
+			ENDIF
+			IF MASTER == 加害者
+				SETBIT CFLAG:被害者:あなた射精フラグ,被射精箇所_Ａ
+			ENDIF
+		CASEELSE
+			;何もしない
+	ENDSELECT
+	;射精に伴う汚れ追加
+	CALL STAIN_ADD_SEMEN_A(被害者, 加害者)
+RETURN 0

@@ -1,0 +1,186 @@
+;-------------------------------------------------------------------------------
+;訪問者の行為開始
+@VISITER_FRIENDSHIP_START(对象, 密室度)
+#DIM 对象
+#DIM 密室度
+#DIM 访问者行为
+访问者行为 = FLAG:訪問者の气氛
+; お持ち帰りフラグがない場合、气氛Lv5は抑制する。;副作用が怖いのでローカル変数で。
+IF IS_NTR_TAKINGOUT_ENABLE() == 0
+	访问者行为 = MIN(访问者行为, NTR_MOOD_性交)
+ELSE
+	访问者行为 = MIN(访问者行为, NTR_MOOD_同伴)
+ENDIF
+;浮気公認状態で見せつけることにしていた場合、見せつけるために結構な確率で持ち帰りを防いでくれる
+IF (TALENT:对象:浮気公認 == 浮気_性交公認) && ( 100 < RAND:(CFLAG:对象:好感度) )
+	访问者行为 = MIN(访问者行为, NTR_MOOD_性交)
+ENDIF
+IF CFLAG:对象:自慰中 && !TALENT:对象:被访问者抓到把柄 && !CFLAG:对象:睡眠
+	;被发现自慰而被握住把柄
+	CALL NTR_GET_WEAKNESS_1(对象)
+ENDIF
+SELECTCASE 访问者行为
+	CASE NTR_MOOD_会话
+		$SELECT_CASE_ELSE
+			; 行動選択→会话
+		IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 && !CFLAG:对象:睡眠
+				;会话（主人同席）
+			CALL NTR_MESSAGE_1_1(对象)
+			CALL NTR_RESET_VISITOR_ACTION(对象)
+			TRYCALLLIST
+				FUNC NTR_KOJO_KW{CFLAG:对象:口上パターン}_1(对象)
+				FUNC NTR_KOJO_KW_1(对象)
+			ENDFUNC
+		ELSEIF NTR_CHK_VISIBLE(FLAG:访问者当前位置) && !CFLAG:对象:睡眠
+				;会话（主人不在）
+			CALL NTR_MESSAGE_1_0(对象)
+			CALL NTR_RESET_VISITOR_ACTION(对象)
+			SIF FLAG:口上颜色
+				CALL KOJO_COLOR(对象)
+			TRYCALLLIST 
+				FUNC NTR_KOJO_K{CFLAG:对象:口上パターン}_1(对象)
+				FUNC NTR_KOJO_K_1(对象)
+			ENDFUNC
+			RESETCOLOR
+		ENDIF
+		CALL NTR_COUNTER(对象)
+	CASE NTR_MOOD_キス
+			; 行動選択→キス
+		CALL NTR_KISS(对象)
+		CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
+	CASE NTR_MOOD_爱抚
+			; 行動選択→爱抚
+			;前回住人がNTRカウンターで胸を揉ませていた場合胸爱抚
+		IF CFLAG:对象:NTR_CNT行为 == NTR_CNT_揉胸
+			CALL NTR_BUST_PET(对象)
+				;前回住人がNTRカウンターで裙子の中身を見せていた場合爱抚
+		ELSEIF CFLAG:对象:NTR_CNT行为 == NTR_CNT_掀裙子看内裤
+			CALL NTR_PET(对象)
+				;その他
+		ELSE
+			IF RAND:2 == 0
+					;爱抚
+				CALL NTR_PET(对象)
+			ELSE
+					;胸爱抚
+				CALL NTR_BUST_PET(对象)
+			ENDIF
+		ENDIF
+		CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
+	CASE NTR_MOOD_侍奉
+			; 行動選択→侍奉
+		IF 密室度 != 3  && CFLAG:对象:現在位置 != 位置_红魔馆_仓库
+			CALL VISITOR_GOWITH_ROOM(对象)
+		ENDIF
+			;前回住人がNTRカウンターで股間をまさぐっていた場合口交
+		IF CFLAG:对象:NTR_CNT行为 == NTR_CNT_揉搓股间
+			CALL NTR_FELLATIO(对象)
+				;前回住人がNTRカウンターでディープキスした場合口交か69
+		ELSEIF CFLAG:对象:NTR_CNT行为 == NTR_CNT_深吻
+			IF RAND:2
+				CALL NTR_FELLATIO(对象)
+			ELSE
+				CALL NTR_69(对象)
+			ENDIF
+				;その他
+		ELSE
+			IF RAND:3 == 0
+				CALL NTR_FELLATIO(对象)
+			ELSEIF RAND:2 == 1
+				CALL NTR_69(对象)
+			ELSE
+				CALL NTR_THUG(对象)
+			ENDIF
+		ENDIF
+		CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
+	CASE NTR_MOOD_性交
+			; 行動選択→性交(お持ち帰り抑制時も)に成功
+		IF 密室度 != 3  && CFLAG:对象:現在位置 != 位置_红魔馆_仓库
+			CALL VISITOR_GOWITH_ROOM(对象)
+		ENDIF
+		IF IS_NTR_KEEP_VIRGIN() && TALENT:对象:处女
+				;处女菊花厨の時は菊花貫通の閾値が低い
+			IF EXP:对象:Ａ经验 > 20
+				CALL NTR_A_SEX(对象, 密室度)
+			ELSE
+					;条件を満たしていない時は69で我慢
+				CALL NTR_69(对象)
+			ENDIF
+		ELSEIF RAND(3) == 0
+			IF EXP:对象:Ａ经验 + EXP:对象:浮気Ａ经验 > 20
+				CALL NTR_A_SEX(对象, 密室度)
+			ELSE
+				CALL NTR_69(对象)
+			ENDIF
+		ELSE
+			CALL NTR_SEX(对象, 密室度)
+		ENDIF
+		CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
+	CASE NTR_MOOD_同伴
+			; 行動選択→お持ち帰り
+			;好感度が"あなた"より高ければお持ち帰り
+		CALL VISITER_TAKINGOUT(对象)
+	CASEELSE
+		GOTO SELECT_CASE_ELSE
+ENDSELECT
+
+;-------------------------------------------------------------------------------
+;訪問者の行為継続
+@VISITER_FRIENDSHIP_CONT(对象, 密室度)
+#DIM 对象
+#DIM 密室度
+CALL VISITER_FRIENDSHIP_TIMEPLUS(对象)
+CALL NTR_SIMPLE_FULFIL(对象)
+SELECTCASE FLAG:訪問者との行為
+	CASE NTR_行为_キス
+		CALL NTR_KISS(对象)
+	CASE NTR_行为_爱抚
+		CALL NTR_PET(对象)
+	CASE NTR_行为_胸爱抚
+		CALL NTR_BUST_PET(对象)
+	CASE NTR_行为_口交
+		CALL NTR_FELLATIO(对象)
+	CASE NTR_行为_六九式
+		CALL NTR_69(对象)
+	CASE NTR_行为_素股
+		CALL NTR_THUG(对象)
+	CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+		CALL NTR_SEX(对象, 密室度)
+	CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+		CALL NTR_A_SEX(对象, 密室度)
+ENDSELECT
+CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
+
+;-------------------------------------------------------------------------------
+;訪問者の行為終了
+@VISITER_FRIENDSHIP_FINISH(对象)
+#DIM 对象
+#DIM CNT执行		;1:カウンターセクハラ実行 0:実行しない
+CNT执行 = 0
+CALL VISITER_FRIENDSHIP_TIMEPLUS(对象)
+CALL ORGASM_ADD(对象,人物_訪問者)
+CALL NTR_SIMPLE_FULFIL(对象)
+SELECTCASE FLAG:訪問者との行為
+	CASE NTR_行为_キス
+		CALL NTR_KISS_FINISH(对象)
+		CNT执行 = 1
+	CASE NTR_行为_爱抚
+		CALL NTR_PET_FINISH(对象)
+	CASE NTR_行为_胸爱抚
+		CALL NTR_BUST_PET_FINISH(对象)
+	CASE NTR_行为_口交
+		CALL NTR_FELLATIO_FINISH(对象)
+	CASE NTR_行为_六九式
+		CALL NTR_69_FINISH(对象)
+	CASE NTR_行为_素股
+		CALL NTR_THUG_FINISH(对象)
+	CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面立位
+		CALL NTR_SEX_FINISH(对象)
+	CASE NTR_行为_Ａ正常位 TO NTR_行为_Ａ背面立位
+		CALL NTR_A_SEX_FINISH(对象)
+ENDSELECT
+CALL NTR_RESET_VISITOR_ACTION(对象)
+CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
+IF CNT执行 == 1
+	CALL NTR_COUNTER(对象)
+	ENDIF

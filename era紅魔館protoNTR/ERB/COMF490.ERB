@@ -1,0 +1,119 @@
+﻿;-------------------------------------------------------------------------------
+;外出する - 実行可否判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM_ABLE490
+	;;肉便器の屈服レイプで、押さえ込まれたら移動不可
+	SIF CFLAG:MASTER:WC_屈服レイプ押さえ込み
+		RETURN 0
+	;訪問者宅では不可
+	SIF CFLAG:MASTER:現在位置 == 場所_訪問者宅
+		RETURN 0
+	;一括管理分
+	IF !TFLAG:100
+		RETURN 0
+	ELSEIF GLOBAL_COMABLE(490)
+		RETURN RESULT
+	ELSEIF CFLAG:MASTER:うふふ == 2
+		RETURN 0
+	ELSE
+		;同行(デート)はしばらくお預けで
+		FOR LOCAL,1,CHARANUM
+			IF CFLAG:(TARGET:LOCAL):同行
+				RETURN 0
+			ENDIF
+		NEXT
+		RETURN 1
+	ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;外出する
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM490
+#DIM 奴隷
+	CALL COM_ABLE490()
+	IF !RESULT:0
+		RETURN 0
+	ENDIF
+	PRINTFORML %"さて、どこへ行こうか……？"%
+	PRINTFORM %"[ 0]やっぱりやめる",22,LEFT%
+	SIF CFLAG:MASTER:現在位置 != 場所_紅魔館周辺
+		PRINTFORM %"["+TOSTR(場所_紅魔館周辺)+"]"+GETPLACENAME(場所_紅魔館周辺),22,LEFT%
+	SIF CFLAG:MASTER:現在位置 != 場所_人間の里周辺
+		PRINTFORM %"["+TOSTR(場所_人間の里周辺)+"]"+GETPLACENAME(場所_人間の里周辺),22,LEFT%
+	SIF CFLAG:MASTER:現在位置 != 場所_博麗神社 && TALENT:人物_霊夢:恋慕 && CFLAG:MASTER:開始位置 == 場所_博麗神社
+		PRINTFORM %"["+TOSTR(場所_博麗神社)+"]"+GETPLACENAME(場所_博麗神社),22,LEFT%
+	SIF CFLAG:MASTER:現在位置 > 場所番号最大値
+		PRINTFORM %"["+TOSTR(場所_正門)+"]紅魔館へ戻る",22,LEFT%
+	SIF TALENT:MASTER:NTR
+		PRINTFORM %"["+TOSTR(場所_訪問者宅)+"]訪問者の家に行く",22,LEFT%
+	$COM490_INPUT_LOOP
+	INPUT
+	;移動部分の距離計算とか面倒なのでそのうち直します
+	SELECTCASE RESULT:0
+		CASE 0
+			RETURN 0
+		CASE 場所_正門
+			TIME:0 += 30
+			CFLAG:MASTER:現在位置 = 場所_正門
+			RETURN 1
+		CASE 場所_紅魔館周辺
+			TIME:0 += 30
+			CFLAG:MASTER:現在位置 = 場所_紅魔館周辺
+			RETURN 1
+		CASE 場所_人間の里周辺
+			TIME:0 += 30
+			CFLAG:MASTER:現在位置 = 場所_人間の里周辺
+			;;肉便器追加処理
+			SELECTCASE CFLAG:MASTER:WC_訪問者の今回セクハラ
+				CASE 41 TO 45		;;人里系
+					SIF FLAG:訪問者の現在位置 == 場所_人間の里 || FLAG:訪問者の現在位置 == 場所_人間の里周辺
+						CALL WC_SexHara_SOURCE(CFLAG:MASTER:WC_訪問者の今回セクハラ)
+			ENDSELECT
+			RETURN 1
+		CASE 場所_博麗神社
+			IF TALENT:人物_霊夢:恋慕 && CFLAG:MASTER:開始位置 == 場所_博麗神社
+				TIME:0 += 170
+				CFLAG:MASTER:現在位置 = 場所_博麗神社
+				RETURN 1
+			ENDIF
+		CASE 場所_訪問者宅
+			CFLAG:MASTER:現在位置 = 場所_訪問者宅
+			CFLAG:MASTER:現在位置詳細 = 1
+			TIME:0 += 60
+			;訪問者同行中は訪問者も一緒に来る
+			IF FLAG:訪問者同行フラグ
+				FLAG:訪問者の現在位置 = 場所_訪問者宅
+				PRINTFORMW %CALLNAME:PLAYER%は%NTR_NAME(0)%の手を引き、%NTR_NAME(0)%の家に行こうと誘った。
+				PRINTFORMW %NTR_NAME(0)%は苦笑しながらも、承諾し二人で腕を組みながら%NTR_NAME(0)%の家へと向かった……。
+			ELSE
+				PRINTFORMW %CALLNAME:PLAYER%は%NTR_NAME(0)%に会いたくなり、%NTR_NAME(0)%の家へ向かった。
+				IF FLAG:訪問者の現在位置 == 場所_訪問者宅
+					IF RAND:2 == 0
+						PRINTFORMW %NTR_NAME(0)%は進んでやってきた%CALLNAME:PLAYER%に驚き、しかし快く家へ招き入れた。
+					ELSE
+						PRINTFORMW %NTR_NAME(0)%は進んでやってきた%CALLNAME:PLAYER%に満足げな笑顔を浮かべ、家に入るように命令した。
+					ENDIF
+				ELSE
+					PRINTFORMW が……残念ながら%NTR_NAME(0)%は留守のようだ。
+				ENDIF
+			ENDIF
+			;バグ可能性があるので全部解錠
+			FLAG:訪問者宅の施錠状態  |= 訪問者宅_玄関解錠済
+			CFLAG:奴隷:NTR訪問者宅監禁状況 |= 訪問者宅_玄関解錠済
+			FLAG:訪問者宅の施錠状態  |= 訪問者宅_牢屋解錠済
+			CFLAG:奴隷:NTR訪問者宅監禁状況 |= 訪問者宅_牢屋解錠済
+			FLAG:訪問者宅の施錠状態  |= 訪問者宅_通路解錠済
+			CFLAG:奴隷:NTR訪問者宅監禁状況 |= 訪問者宅_通路解錠済
+			FLAG:訪問者宅の施錠状態  |= 訪問者宅_床扉解錠済
+			CFLAG:奴隷:NTR訪問者宅監禁状況 |= 訪問者宅_床扉解錠済
+			;訪問者同行フラグは解除
+			FLAG:訪問者同行フラグ = 0
+		CASEELSE
+			CLEARLINE 1
+			GOTO COM490_INPUT_LOOP
+	ENDSELECT
+
+RETURN 0

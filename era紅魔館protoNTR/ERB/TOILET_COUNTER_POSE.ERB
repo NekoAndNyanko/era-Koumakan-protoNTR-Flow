@@ -1,0 +1,131 @@
+﻿;==============================================================================
+@EVENT_WC_COUNTER_POSE(ARG,ARG:1)
+VARSET LOCAL
+SIF TCVAR:ARG:30 > 1
+	RETURN 0
+SELECTCASE TCVAR:ARG:20
+	;キス
+	CASE 30
+		TFLAG:60 ++
+	;胸を揉ませる
+	CASE 33
+		TFLAG:61 ++
+	;股間をまさぐる
+	CASE 34
+		TFLAG:62 ++
+	;胸を揉む
+	CASE 36
+		TFLAG:65 ++
+	;手淫
+	CASE 50
+		TFLAG:62 ++
+	;フェラチオ
+	CASE 51
+		TFLAG:62 ++
+	;素股
+	CASE 52
+		TFLAG:62 ++
+	;パイズリ
+	CASE 53
+		TFLAG:62 ++
+	;足コキ
+	CASE 54
+		TFLAG:62 ++
+	;アナル愛撫
+	CASE 55
+		TFLAG:64 ++
+	;アナル舐め
+	CASE 56
+		TFLAG:64 ++
+	;指挿入
+	CASE 57
+		TFLAG:63 ++
+	;胸愛撫
+	CASE 58
+		TFLAG:65 ++
+	;乳首吸い
+	CASE 59
+		TFLAG:65 ++
+	;ディープキス
+	CASE 60
+		TFLAG:60 ++
+	;クンニ強制
+	CASE 70
+		TFLAG:60 ++
+	;フェラチオ強制
+	CASE 71
+		TFLAG:60 ++
+	;アナル奉仕
+	CASE 72
+		TFLAG:60 ++
+	;ぱふぱふ
+	CASE 73
+		TFLAG:60 ++
+	;乳合わせ
+	CASE 74
+		TFLAG:65 ++
+	;タワシ洗い
+	CASE 75
+		TFLAG:61 ++
+	;挿入される
+	CASE 80
+		TFLAG:63 ++
+	;騎乗位アナル
+	CASE 81
+		TFLAG:64 ++
+	;後背位アナル
+	CASE 82
+		TFLAG:64 ++
+	;背面座位アナル
+	CASE 83
+		TFLAG:64 ++
+	;騎乗位(逆レイプ）
+	CASE 91
+		TFLAG:62 ++
+ENDSELECT
+;69体勢
+SELECTCASE TCVAR:ARG:20
+	CASE 50
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	;フェラチオ
+	CASE 51
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	;パイズリ
+	CASE 53
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	;アナル愛撫
+	CASE 55
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	;指挿入
+	CASE 57
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	;クンニ強制
+	CASE 70
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	;フェラチオ強制
+	CASE 71
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	;アナル奉仕
+	CASE 72
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,2)
+	CASEELSE
+		CALL EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,0)
+ENDSELECT
+
+;引数1 対象のキャラ番号 2 行動順 3 シックスナイン移行への確率
+@EVENT_WC_COUNTER_POSE_69(ARG,ARG:1,ARG:2)
+IF ARG:2 == 0
+	TEQUIP:ARG:シックスナイン = 0
+	RETURN 0
+ENDIF
+IF TEQUIP:ARG:シックスナイン
+	TFLAG:60 ++
+	RETURN 0
+ENDIF
+SIF TFLAG:60
+	RETURN 0
+IF RAND:(ARG:2) == 0
+	TEQUIP:ARG:シックスナイン = 1
+	TCVAR:ARG:27 = 1
+ENDIF
+

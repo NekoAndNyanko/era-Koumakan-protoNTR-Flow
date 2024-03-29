@@ -1,0 +1,321 @@
+﻿;-------------------------------------------------
+;料理を作る
+;-------------------------------------------------
+@COM413
+CALL COOKING_MENU
+SIF !RESULT
+	RETURN 0
+
+IF HAS_VAGINA(MASTER)
+	CALL NTR_MASTER_COOKING_SEX
+	IF !RESULT
+		FLAG:料理 = 0
+		RETURN 0
+	ENDIF
+ENDIF
+
+IF TARGET > 0 && !CFLAG:睡眠
+	IF TARGET && ABL:親密 * 500 + ABL:従順 * 500 + ABL:料理技能 * 1000 > CFLAG:館内地位 - CFLAG:MASTER:館内地位
+		TFLAG:コマンド成功度 = 成功度_大成功
+		EXP:料理経験 ++
+		EXP:奉仕快楽経験 ++
+	ELSE
+		TFLAG:コマンド成功度 = 成功度_成功
+	ENDIF
+	;固定で獲得するソース
+	SOURCE:歓楽 = 200
+
+	;ABL:従順をみる
+	IF ABL:従順 <= 1
+		SOURCE:歓楽 += (ABL:従順 * 60)
+	ELSEIF ABL:従順 <= 3
+		SOURCE:歓楽 += 200 + (ABL:従順 * 60)
+	ELSEIF ABL:従順 <= 5
+		SOURCE:歓楽 += 500 + (ABL:従順 * 60)
+	ELSEIF ABL:従順 <= 8
+		SOURCE:歓楽 += 750 + (ABL:従順 * 75)
+	ELSEIF ABL:従順 <= 11
+		SOURCE:歓楽 += 1000 + (ABL:従順 * 75)
+	ELSE
+		SOURCE:歓楽 += 2000 + (ABL:従順 * 30)
+	ENDIF
+
+	;好感度をみる
+	IF CFLAG:好感度 <= 500
+		SOURCE:歓楽 += CFLAG:2
+	ELSEIF CFLAG:好感度 <= 5000
+		SOURCE:歓楽 += 500 + (CFLAG:好感度 - 500) / 3
+	ELSE
+		SOURCE:歓楽 += 2000 + (CFLAG:好感度 - 5000) / 5
+	ENDIF
+	SIF SOURCE:歓楽 < 0
+		SOURCE:歓楽 = 0
+ENDIF
+
+TCVAR:PLAYER:305 = DATETIME()
+RETURN 1
+
+@COOKING_MENU
+#DIM PAGE
+#DIMS MENUNAME
+
+PRINTL 何を作りますか？
+PRINTL
+DRAWLINE
+PRINTL
+PRINTL 移動場所選択
+PRINTL
+;おしながき
+LOCAL:1 = 0
+FOR LOCAL, 1+(PAGE*30), 31+(PAGE*30)
+	IF GETDISHNAME(LOCAL) != ""
+		PRINT 　　
+		PRINTBUTTON @"%"[" + GETDISHNAME(LOCAL) + "]", 20%", LOCAL
+		LOCAL:1 ++
+		SIF LOCAL:1 % 3 == 0
+			PRINTL
+	ENDIF
+NEXT
+PRINTL
+DRAWLINE
+;メニュージャンルの表示
+FOR LOCAL, 0, 3
+	PRINT 　
+	;現在のジャンルを橙色で表示
+	SIF PAGE == LOCAL
+		SETCOLOR 0XFF8000
+	SELECTCASE LOCAL
+		CASE 0
+			LOCALS = 軽食
+		CASE 1
+			LOCALS = 主食
+		CASE 2
+			LOCALS = デザート
+	ENDSELECT
+	PRINT 　　
+	PRINTBUTTON @"[%LOCALS%]", -(LOCAL+1)
+	RESETCOLOR
+NEXT
+PRINTL
+DRAWLINE
+PRINTBUTTON "[やっぱりやめた]", -100
+PRINTL
+PRINTL
+INPUT
+
+SELECTCASE RESULT
+	CASE -100
+		RETURN 0
+	;ページ変更
+	CASE -3 TO -1
+		PAGE = ABS(RESULT)-1
+
+	CASEELSE
+		IF GETDISHNAME(RESULT) != ""
+			IF GETDISHMENU(RESULT) == "主食" && ABL:MASTER:料理技能 < 2
+				PRINTFORMW 主食を作るには料理技能が2以上必要です
+				RESTART
+			ELSEIF GETDISHMENU(RESULT) == "デザート" && ABL:MASTER:料理技能 < 3
+				PRINTFORMW デザートを作るには料理技能が3以上必要です
+				RESTART
+			ENDIF
+			
+			PRINTFORMW %GETDISHNAME(RESULT)%を作りました
+			FLAG:料理 = RESULT
+			TFLAG:194 = PAGE + 1
+			IF TFLAG:194 == 1
+				DOWNBASE:MASTER:体力 = 25
+				DOWNBASE:MASTER:気力 = 100
+				EXP:MASTER:料理経験 += 2
+				TIME += 30
+			ELSEIF TFLAG:194 == 2
+				DOWNBASE:MASTER:体力 = 50
+				DOWNBASE:MASTER:気力 = 200
+				EXP:MASTER:料理経験 += 4
+				TIME += 60
+			ELSEIF TFLAG:194 == 3
+				DOWNBASE:MASTER:体力 = 100
+				DOWNBASE:MASTER:気力 = 100
+				EXP:MASTER:料理経験 += 6
+				TIME += 90
+			ENDIF
+			;傍に誰もいないなら混ぜ込み発生
+			SIF TARGET == MASTER
+				CALL MIX_MENU
+			
+			RETURN 1
+		ENDIF
+ENDSELECT
+
+RESTART
+
+
+@MIX_MENU
+PRINTL 何か混ぜますか？
+PRINTL [0] - いいえ
+PRINTL [1] - はい
+$INPUT_LOOP
+INPUT
+IF RESULT == 1
+	CALL MIX_SELCT
+	RETURN 1
+ELSEIF RESULT == 0
+	RETURN 0
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+@MIX_SELCT
+PRINTL 何を混ぜようか…
+SIF HAS_PENIS(MASTER)
+	PRINTL [1] - 精子
+SIF HAS_VAGINA(MASTER)
+	PRINTL [2] - 愛液
+SIF TALENT:MASTER:母乳体質
+	PRINTL [3] - 母乳
+SIF ITEM:41 != 0
+	PRINTL [4] - 媚薬
+SIF ITEM:42 != 0
+	PRINTL [5] - 利尿剤
+SIF TALENT:MASTER:調合知識
+	PRINTL [6] - 睡眠薬
+PRINTL [100] - やっぱりやめた
+$INPUT_LOOP
+INPUT
+	IF RESULT == 1 && HAS_PENIS(MASTER)
+		PRINTFORML %CALLNAME:PLAYER%は作った%GETDISHNAME(FLAG:料理)%に向かってペニスを扱きたてた
+		PRINTFORML %GETDISHNAME(FLAG:料理)%に%CALLNAME:PLAYER%の放った精液が降りかかった…
+		DOWNBASE:MASTER:体力 += 100
+		DOWNBASE:MASTER:気力 += 150
+		;精力25%カット
+		TIMES BASE:MASTER:精力, 0.75
+		BASE:MASTER:勃起 = 300
+		EXP:MASTER:自慰経験 ++
+		EXP:MASTER:射精経験 ++
+		;隠し味取得
+		FLAG:料理 += 1000
+		RETURN 1
+	ELSEIF RESULT == 2 && HAS_VAGINA(MASTER)
+		PRINTFORML %CALLNAME:PLAYER%は自身の身体を慰めながら作った%GETDISHNAME(FLAG:料理)%を股の下にくるようにした 
+		PRINTFORML %GETDISHNAME(FLAG:料理)%に%CALLNAME:PLAYER%の秘所から垂れた愛液がかかった…
+		DOWNBASE:MASTER:体力 += 40
+		DOWNBASE:MASTER:気力 += 80
+		EXP:MASTER:自慰経験 ++
+		FLAG:料理 += 2000
+		RETURN 1
+	ELSEIF RESULT == 3 && TALENT:MASTER:母乳体質
+		PRINTFORML %CALLNAME:PLAYER%は胸を曝け出すと、自身で胸を絞り出した
+		PRINTFORML %GETDISHNAME(FLAG:料理)%に%CALLNAME:PLAYER%の母乳がかけられた…
+		DOWNBASE:MASTER:体力 += 40
+		DOWNBASE:MASTER:気力 += 80
+		EXP:MASTER:噴乳経験 ++
+		FLAG:料理 += 3000
+		RETURN 1
+	ELSEIF RESULT == 4 && ITEM:媚薬 != 0
+		PRINTFORML %CALLNAME:PLAYER%は懐から媚薬を出すと、%GETDISHNAME(FLAG:料理)%に混ぜた…
+		ITEM:41 -= 1
+		FLAG:料理 += 4000
+		RETURN 1
+	ELSEIF RESULT == 5 && ITEM:利尿剤 != 0
+		PRINTFORML %CALLNAME:PLAYER%は懐から利尿剤を出すと、%GETDISHNAME(FLAG:料理)%に混ぜた…
+		ITEM:42 -= 1
+		FLAG:料理 += 5000
+		RETURN 1
+	ELSEIF RESULT == 6 && TALENT:MASTER:調合知識
+		PRINTFORML %CALLNAME:PLAYER%は懐から睡眠薬を出すと、%GETDISHNAME(FLAG:料理)%に混ぜた…
+		FLAG:料理 += 6000
+		RETURN 1
+	ELSEIF RESULT == 100
+		RETURN 0
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+
+
+;混ぜ物の効果(COM414,COM415)
+@DISHMIX_RESULT, ARG
+
+;睡眠薬
+IF FLAG:料理 > 6000
+	SIF ARG != MASTER
+		CFLAG:ARG:睡眠深度 = -1
+;利尿剤
+ELSEIF FLAG:料理 > 5000
+	TEQUIP:ARG:利尿剤 = 1
+;媚薬
+ELSEIF FLAG:料理 > 4000
+	CFLAG:ARG:性欲 += RAND(20, 31)
+;母乳
+ELSEIF FLAG:料理 > 3000
+	
+;愛液
+ELSEIF FLAG:料理 > 2000
+	
+;精液
+ELSEIF FLAG:料理 > 1000
+	EXP:ARG:精飲経験 ++
+ENDIF
+
+
+;混ぜ物の地の文(EVENT_MESSAGE_COM)
+@DISHMIX_RESULT_KOJO
+
+;睡眠薬
+IF FLAG:料理 > 6000
+	
+;利尿剤
+ELSEIF FLAG:料理 > 5000
+	
+;媚薬
+ELSEIF FLAG:料理 > 4000
+	
+;母乳
+ELSEIF FLAG:料理 > 3000
+	
+;愛液
+ELSEIF FLAG:料理 > 2000
+	
+;精液
+ELSEIF FLAG:料理 > 1000
+	
+ENDIF
+
+;COM414,415の成功率
+@DISH_COM_SUCCESS_RATE
+
+;成功率
+IF GETDISHMENU(FLAG:料理 % 1000) == "軽食"
+	;MIN50 MAX100
+	LOCAL = 50 + (ABL:MASTER:料理技能 * 10)
+ELSEIF GETDISHMENU(FLAG:料理 % 1000) == "主食"
+	;MIN64 MAX100
+	LOCAL = 40 + (ABL:MASTER:料理技能 * 12)
+ELSEIF GETDISHMENU(FLAG:料理 % 1000) == "デザート"
+	;MIN65 MAX100
+	LOCAL = 25 + (ABL:MASTER:料理技能 * 15)
+ENDIF
+;保存状態による成功値減少
+IF TCVAR:MASTER:306 == 2
+	TIMES LOCAL, 0.35
+ELSEIF TCVAR:MASTER:306 == 1
+	TIMES LOCAL, 0.75
+ENDIF
+
+;成否判定
+IF RAND:100 < LOCAL
+	;話術技能により大成功発生 MIN0 MAX30
+	IF RAND:100 < (ABL:MASTER:話術技能 * 3)
+		EXP:MASTER:会話経験 ++
+		RETURN 1
+	ELSEIF LOCAL >= LOCAL:1
+		RETURN 0
+	ENDIF
+ELSE
+	;失敗
+	RETURN -1
+ENDIF
+
+
+
+
+

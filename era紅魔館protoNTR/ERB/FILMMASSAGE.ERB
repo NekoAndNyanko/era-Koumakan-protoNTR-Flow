@@ -1,0 +1,76 @@
+﻿;-----------------------------------------------------------
+;	カメラ設置共通口上ファイル
+;		映像確認をした際に表示される口上(描画)
+;		ここから各口上ごとに実装された口上に飛ぶ
+;-----------------------------------------------------------
+
+;-----------------------------------------------------------
+;	映像確認の一番上の口上
+;		ARG:0 = 登場人物(ビット)
+;		ARG:1 = 撮影場所
+;-----------------------------------------------------------
+@FILM_MESSAGE_T(ARG:0, ARG:1)
+	VARSET LOCAL
+	VARSET TARGET
+
+	;地位が高い順に呼び出す
+	CALL SORT_CFLAG(310)
+	FOR LOCAL, 1, CHARANUM
+		LOCAL:1 = RESULT:LOCAL
+		IF GETBIT(ARG:0, RESULT:LOCAL)
+			TRYCCALLFORM KOJO_MESSAGE_SECRET_CAMERA_K{LOCAL:1}(ARG:0, ARG:1)
+			CATCH
+				;汎用
+				LOCALS = %CALLNAME:(LOCAL:1)%
+				LOCALS:1 = %GETPLACENAME(ARG:1)%
+
+				SELECTCASE ARG:1
+					CASE 場所_広間, 場所_二階踊り場, 場所_二階廊下
+						PRINTFORML %LOCALS%が%LOCALS:1%を通り過ぎて行った……
+						;BIT(0=スカート, 3=ズボン)
+						IF GETBIT(TEQUIP:(LOCAL:1):0, 0) && !GETBIT(TEQUIP:(LOCAL:1):0, 3)
+							LOCAL:10 = RAND:100
+							IF LOCAL:10 < 10
+								PRINTFORML 床付近に設置したカメラが、傍を通った%LOCALS%のスカートの中をばっちり映していた
+								;1=ノーパンスカート
+								IF TEQUIP:(LOCAL:1):0 == 1
+									PRINTFORML なんと%LOCALS%はノーパンだった……
+									PRINTFORML 何もつけていない%LOCALS%の下半身がカメラにしっかりと収められている……
+								ELSE
+									PRINTFORML %LOCALS%の%PANTS_DESCRIPTION(EQUIP:(LOCAL:1):下半身下着２)%%PANTSNAME(EQUIP:(LOCAL:1):下半身下着２)%がしっかりと映し出されている……
+								ENDIF
+							ELSEIF LOCAL:10 < 30
+								SIF TEQUIP:(LOCAL:1):0 == 1
+									PRINTFORMW 一瞬だけ覗いた%LOCALS%のスカートの中には何も履いていなかったように見えた……
+							ENDIF
+						ELSE
+							PRINTFORML %LOCALS%の%PANTSNAME(EQUIP:(LOCAL:1):下半身下着２)%がちらりと映っていた……
+						ENDIF
+					CASE 場所_大浴場
+						PRINTFORML %LOCALS:1%を訪れた%LOCALS%の姿が映っている……
+						PRINTFORML 脱衣所各所に仕掛けたカメラと浴場に仕掛けたカメラとが、%LOCALS%の脱衣シーンや入浴シーン、
+						PRINTFORML そして生まれたままの姿の%LOCALS%をしっかりと映していた……
+					CASE 場所_屋外トイレ, 場所_1Fトイレ, 場所_2Fトイレ
+						PRINTFORML %LOCALS:1%を訪れた%LOCALS%の姿が映っている……
+						LOCAL:1 = RAND:3
+						IF LOCAL:1 == 0 && !RAND:8
+							PRINTFORML %LOCALS%の脱糞の瞬間が映されていた……
+						ELSEIF LOCAL:1 == 1 && !RAND:4
+							PRINTFORML %LOCALS%の放尿シーンが映されていた……
+						ELSE
+							PRINTFORML %LOCALS%の足元が映っている……
+						ENDIF
+					CASEELSE
+						LOCAL:1 = RAND:3
+						IF LOCAL:1 == 0 
+							PRINTFORML %LOCALS:1%を訪れた%LOCALS%の姿が映っている……
+						ELSEIF LOCAL:1 == 1
+							PRINTFORML %LOCALS%が%LOCALS:1%で時間を潰す姿が映っている……
+						ELSE
+							PRINTFORML %LOCALS%が%LOCALS:1%を通り過ぎていった……
+						ENDIF
+				ENDSELECT
+				WAIT
+			ENDCATCH
+		ENDIF
+	NEXT

@@ -1,0 +1,130 @@
+﻿@EVENT_COUNTER_POSE(ARG,ARG:1)
+VARSET LOCAL
+SIF TCVAR:ARG:30 > 1
+	RETURN 0
+SELECTCASE TCVAR:ARG:20
+	;キス
+	CASE CNT_キス
+		TFLAG:60 ++
+	;胸を揉ませる
+	CASE CNT_胸を揉ませる
+		TFLAG:61 ++
+	;股間をまさぐる
+	CASE CNT_股間をまさぐる
+		TFLAG:62 ++
+	;胸を揉む
+	CASE CNT_胸を揉む
+		TFLAG:65 ++
+	;手淫
+	CASE CNT_手淫
+		TFLAG:62 ++
+	;フェラチオ
+	CASE CNT_フェラチオ
+		TFLAG:62 ++
+	;素股
+	CASE CNT_素股
+		TFLAG:62 ++
+	;パイズリ
+	CASE CNT_パイズリ
+		TFLAG:62 ++
+	;足コキ
+	CASE CNT_足コキ
+		TFLAG:62 ++
+	;アナル愛撫
+	CASE CNT_アナル愛撫
+		TFLAG:64 ++
+	;アナル舐め
+	CASE CNT_アナル舐め
+		TFLAG:64 ++
+	;指挿入
+	CASE CNT_指挿入
+		TFLAG:63 ++
+	;胸愛撫
+	CASE CNT_胸愛撫
+		TFLAG:65 ++
+	;乳首吸い
+	CASE CNT_乳首吸い
+		TFLAG:65 ++
+	;ディープキス
+	CASE CNT_ディープキス
+		TFLAG:60 ++
+	;クンニ強制
+	CASE CNT_クンニ強制
+		TFLAG:60 ++
+	;フェラチオ強制
+	CASE CNT_フェラチオ強制
+		TFLAG:60 ++
+	;アナル奉仕
+	CASE CNT_アナル奉仕
+		TFLAG:60 ++
+	;ぱふぱふ
+	CASE CNT_ぱふぱふ
+		TFLAG:60 ++
+	;乳合わせ
+	CASE CNT_乳合わせ
+		TFLAG:65 ++
+	;タワシ洗い
+	CASE CNT_タワシ洗い
+		TFLAG:61 ++
+	;挿入される
+	CASE CNT_正常位挿入される
+		TFLAG:63 ++
+	;騎乗位アナル
+	CASE CNT_騎乗位A挿入される
+		TFLAG:64 ++
+	;後背位アナル
+	CASE CNT_後背位A挿入される
+		TFLAG:64 ++
+	;背面座位アナル
+	CASE CNT_背面座位A挿入される
+		TFLAG:64 ++
+	;騎乗位(逆レイプ）
+	CASE CNT_騎乗位逆レイプ
+		TFLAG:62 ++
+ENDSELECT
+;69体勢
+SELECTCASE TCVAR:ARG:20
+	;手淫
+	CASE CNT_手淫
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	;フェラチオ
+	CASE CNT_フェラチオ
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	;パイズリ
+	CASE CNT_パイズリ
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	;アナル愛撫
+	CASE CNT_アナル愛撫
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	;指挿入
+	CASE CNT_指挿入
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	;クンニ強制
+	CASE CNT_クンニ強制
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	;フェラチオ強制
+	CASE CNT_フェラチオ強制
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	;アナル奉仕
+	CASE CNT_アナル奉仕
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,2)
+	CASEELSE
+		CALL EVENT_COUNTER_POSE_69(ARG,ARG:1,0)
+ENDSELECT
+
+;引数1 対象のキャラ番号 2 行動順 3 シックスナイン移行への確率
+@EVENT_COUNTER_POSE_69(ARG,ARG:1,ARG:2)
+IF ARG:2 == 0
+	TEQUIP:ARG:シックスナイン = 0
+	RETURN 0
+ENDIF
+IF TEQUIP:ARG:シックスナイン
+	TFLAG:60 ++
+	RETURN 0
+ENDIF
+SIF TFLAG:60
+	RETURN 0
+IF RAND:(ARG:2) == 0
+	TEQUIP:ARG:シックスナイン = 1
+	TCVAR:ARG:27 = 1
+ENDIF

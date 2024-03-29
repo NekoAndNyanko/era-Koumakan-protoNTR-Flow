@@ -1,0 +1,14 @@
+@SAFE_NEXT_POS(nowPos, targetPos)
+#FUNCTION
+#DIM nowPos
+#DIM targetPos
+
+SIF nowPos > 場所番号最大値 || nowPos <= 0
+	RETURNF -1
+SIF targetPos > 場所番号最大値 || targetPos <= 0
+	RETURNF -1
+IF CAN_MOVE(nowPos, targetPos)
+	RETURNF CAN_MOVE(nowPos, targetPos)
+ELSE
+	RETURNF 前置目的地计算(nowPos, targetPos)
+ENDIF

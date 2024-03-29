@@ -1,0 +1,1151 @@
+﻿;-------------------------------------------------
+;着替える
+;-------------------------------------------------
+@COM430
+	#DIM  着替え対象
+	#DIMS 変更前下着名
+	LOCAL:1 = 0
+	;お着替え対象が何人いるか
+	FOR 着替え対象,1,CHARANUM
+		IF CFLAG:着替え対象:同室 && TALENT:着替え対象:恋慕
+			LOCAL:1 ++
+		ENDIF
+	NEXT
+	PRINTFORML %"服を着替える事ができます"%
+	;対象があなた以外にもいる場合選択させる
+	IF LOCAL:1 >= 1
+		PRINTFORML %"誰のお着替えをしますか?"%
+		;着替え対象を探す
+		PRINTFORML %"[0] - "+CALLNAME:(MASTER)%
+		FOR 着替え対象,1,CHARANUM
+			IF CFLAG:着替え対象:同室 && TALENT:着替え対象:恋慕
+				PRINTFORML %"["+TOSTR(着替え対象)+"] - "+CALLNAME:着替え対象%
+			ENDIF
+		NEXT
+		PRINTFORML %"[999] - 戻る"%
+		;入力ループ
+		DO
+			INPUT
+			着替え対象 = RESULT
+			SELECTCASE 着替え対象
+				CASE MASTER
+					CALL CLOTHES_CHOOSE(MASTER)
+					;女やふたなりでない時服装によって[女装]を与える
+					IF HAS_VAGINA(MASTER) == 0 && ( EQUIP:MASTER:スカート && ( EQUIP:MASTER:上半身上着１ || EQUIP:MASTER:上半身上着２ ) || EQUIP:MASTER:ワンピース && !EQUIP:MASTER:下半身上着１ )
+						TALENT:MASTER:女装 = 1
+					;[女装]を持っていてスカート、ワンピース、上半身上着を着ていない、またはワンピースを着ているが下半身上着を履いている(チャイナ服+ズボン)とき[女装]を消す
+					ELSEIF TALENT:MASTER:女装 && ( ( !EQUIP:MASTER:スカート || !EQUIP:MASTER:ワンピース || !EQUIP:MASTER:上半身上着１ || !EQUIP:MASTER:上半身上着２ ) || ( EQUIP:MASTER:ワンピース && EQUIP:MASTER:下半身上着１ ) )
+						TALENT:MASTER:女装 = 0
+					ENDIF
+					RETURN 1
+				CASE 0 TO (CHARANUM-1)
+				;有効な範囲内の入力
+					IF CFLAG:着替え対象:同室 && TALENT:着替え対象:恋慕
+						変更前下着名 = 下着名１_２(着替え対象)
+						CALL CLOTHES_CHOOSE(着替え対象)
+						SIF 変更前下着名 != 下着名１_２(着替え対象)
+							CFLAG:着替え対象:ぱんつ確認 = 3
+						RETURN 1
+					ENDIF
+				CASE 999
+					RETURN 0
+				CASEELSE
+			ENDSELECT
+			CLEARLINE 1
+		LOOP 1
+	ELSE
+		;誰もいないならそのままあなたの服装変え
+		CALL CLOTHES_CHOOSE(MASTER)
+		;女やふたなりでない時服装によって[女装]を与える
+		IF HAS_VAGINA(MASTER) == 0 && ( EQUIP:MASTER:スカート && ( EQUIP:MASTER:上半身上着１ || EQUIP:MASTER:上半身上着２ ) || EQUIP:MASTER:ワンピース && !EQUIP:MASTER:下半身上着１ )
+			TALENT:MASTER:女装 = 1
+		;[女装]を持っていてスカート、ワンピース、上半身上着を着ていない、またはワンピースを着ているが下半身上着を履いている(チャイナ服+ズボン)とき[女装]を消す
+		ELSEIF TALENT:MASTER:女装 && ( ( !EQUIP:MASTER:スカート || !EQUIP:MASTER:ワンピース || !EQUIP:MASTER:上半身上着１ || !EQUIP:MASTER:上半身上着２ ) || ( EQUIP:MASTER:ワンピース && EQUIP:MASTER:下半身上着１ ) )
+			TALENT:MASTER:女装 = 0
+		ENDIF
+	ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		;CALL PRINT_STATE_CLOTH(奴隷)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"[   ] - アクセサリ     ："+CLOTHNAME(GETNUM(EQUIP,"アクセサリ")    ,EQUIP:奴隷:アクセサリ)+"(変更不可)"%
+		PRINTFORML %"[  0] - 帽子           ："+CLOTHNAME(GETNUM(EQUIP,"帽子")          ,EQUIP:奴隷:帽子)%
+		PRINTFORML %"[  1] - 靴             ："+CLOTHNAME(GETNUM(EQUIP,"靴")            ,EQUIP:奴隷:靴  )%
+		PRINTFORML %"[  2] - 脚             ："+CLOTHNAME(GETNUM(EQUIP,"靴下")          ,EQUIP:奴隷:靴下)%
+		PRINTFORML %"[  3] - 手             ："+CLOTHNAME(GETNUM(EQUIP,"手")            ,EQUIP:奴隷:手)%
+		PRINTFORML %"[  4] - 下半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"下半身下着１")  ,EQUIP:奴隷:下半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身下着２"),EQUIP:奴隷:下半身下着２)%
+		PRINTFORML %"[  5] - 下半身         ："+CLOTHNAME(GETNUM(EQUIP,"下半身上着１")  ,EQUIP:奴隷:下半身上着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身上着２"),EQUIP:奴隷:下半身上着２)+CLOTHNAME(GETNUM(EQUIP,"スカート"),EQUIP:奴隷:スカート)%
+		PRINTFORML %"[  6] - 上半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"上半身下着１")  ,EQUIP:奴隷:上半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"上半身下着２"),EQUIP:奴隷:上半身下着２)%
+		PRINTFORML %"[  7] - 上半身         ："+CLOTHNAME(GETNUM(EQUIP,"上半身上着１")  ,EQUIP:奴隷:上半身上着１)  +CLOTHNAME(GETNUM(EQUIP,"上半身上着２"),EQUIP:奴隷:上半身上着２)%
+		PRINTFORML %"[  8] - 全身上着       ："+CLOTHNAME(GETNUM(EQUIP,"ボディースーツ"),EQUIP:奴隷:ボディースーツ)+CLOTHNAME(GETNUM(EQUIP,"ワンピース")  ,EQUIP:奴隷:ワンピース)+CLOTHNAME(GETNUM(EQUIP,"着物"),EQUIP:奴隷:着物)+CLOTHNAME(GETNUM(EQUIP,"レオタード"),EQUIP:奴隷:レオタード)%
+		PRINTFORML %"[  9] - プリセット     "%
+		PRINTFORML %"[ 10] - コスプレ       "%
+		PRINTFORML %"[ 11] - すべて脱ぐ     "%
+		PRINTFORML %"[100] - これで決定     "%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Head(奴隷)
+			CASE 1
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Foot(奴隷)
+			CASE 2
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Leg(奴隷)
+			CASE 3
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Hand(奴隷)
+			CASE 4
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Knickers(奴隷)
+			CASE 5
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Botoms(奴隷)
+			CASE 6
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Bra(奴隷)
+			CASE 7
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Tops(奴隷)
+			CASE 8
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Suit(奴隷)
+			CASE 9
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Preset(奴隷)
+			CASE 10
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Cosplay(奴隷)
+			CASE 11
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_Preset_NUDE(奴隷)
+			CASE 100
+				RETURN 0
+		ENDSELECT
+		;EQUIPからCFLAGへセーブ
+		CALL CLOTHES_Save(奴隷)
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Head(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        帽子           ："+CLOTHNAME(GETNUM(EQUIP,"帽子")          ,EQUIP:奴隷:帽子)%
+		PRINTFORML %"□ 帽子 □---------------------------------------------------------------------"%
+		PRINTFORML %"[  0] - 脱ぐ"%
+		PRINTFORML %"[  1] - 帽子"%
+		PRINTFORML %"[  2] - ヘッドドレス"%
+		PRINTFORML %"[  3] - リボン"%
+		PRINTFORML %"[  4] - 猫耳"%
+		PRINTFORML %"[  5] - うさ耳"%
+		PRINTFORML %"[  6] - 犬耳"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0,1,2,3,4,5,6
+				EQUIP:奴隷:帽子 = RESULT
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Foot(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        靴             ："+CLOTHNAME(GETNUM(EQUIP,"靴")            ,EQUIP:奴隷:靴  )%
+		PRINTFORML %"□ 靴 □-----------------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - 靴"%
+		PRINTFORML %"[2] - 草履"%
+		PRINTFORML %"[3] - ブーツ"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0,1,2,3
+				EQUIP:奴隷:靴 = RESULT
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Hand(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        手             ："+CLOTHNAME(GETNUM(EQUIP,"手")            ,EQUIP:奴隷:手)%
+		PRINTFORML %"□ 手 □-----------------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - 軍手"%
+		PRINTFORML %"[2] - ゴム手袋"%
+		PRINTFORML %"[3] - 白手袋"%
+		PRINTFORML %"[4] - 革手袋"%
+		PRINTFORML %"[5] - 指貫グローブ"%
+		PRINTFORML %"[6] - オペラグローブ"%
+		PRINTFORML %"[7] - 忍篭手"%
+		PRINTFORML %"[8] - ミトン"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0,1,2,3,4,5,6,7,8
+				EQUIP:奴隷:手 = RESULT
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Leg(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        脚             ："+CLOTHNAME(GETNUM(EQUIP,"靴下")          ,EQUIP:奴隷:靴下)%
+		PRINTFORML %"□ 脚 □-----------------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - 靴下"%
+		PRINTFORML %"[2] - ハイソックス"%
+		PRINTFORML %"[3] - ニーソックス"%
+		PRINTFORML %"[4] - ストッキング"%
+		PRINTFORML %"[5] - 足袋"%
+		PRINTFORML %"[6] - ガーターストッキング"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0,1,2,3,4,5,6
+				EQUIP:奴隷:靴下 = RESULT
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Tops(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        上半身         ："+CLOTHNAME(GETNUM(EQUIP,"上半身上着１")  ,EQUIP:奴隷:上半身上着１)  +CLOTHNAME(GETNUM(EQUIP,"上半身上着２"),EQUIP:奴隷:上半身上着２)%
+		PRINTFORML %"□ 上半身 □-------------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - 上着"%
+		PRINTFORML %"[2] - ブラウス"%
+		PRINTFORML %"[3] - セーラー服"%
+		PRINTFORML %"[4] - ブレザー"%
+		PRINTFORML %"[5] - ワイシャツ"%
+		PRINTFORML %"[6] - 学ラン"%
+		PRINTFORML %"[7] - 白装束"%
+		PRINTFORML %"[8] - 巫女服"%
+		PRINTFORML %"[9] - 縦セタ"%
+		PRINTFORML %"[10] - コート"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 1
+				EQUIP:奴隷:上半身上着１ = 1
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 2
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 1
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 3
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 2
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 4
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 3
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 5
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 4
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 6
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 5
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 7
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 6
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 8
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 10
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 9
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 11
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 10
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 13
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Botoms(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        下半身         ："+CLOTHNAME(GETNUM(EQUIP,"下半身上着１")  ,EQUIP:奴隷:下半身上着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身上着２"),EQUIP:奴隷:下半身上着２)+CLOTHNAME(GETNUM(EQUIP,"スカート"),EQUIP:奴隷:スカート)%
+		PRINTFORML %"□ 下半身 □-------------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - ズボン型"%
+		PRINTFORML %"[2] - スカート型"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 1
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Botoms_Pants(奴隷)
+			CASE 2
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Botoms_Skirt(奴隷)
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Botoms_Pants(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        下半身         ："+CLOTHNAME(GETNUM(EQUIP,"下半身上着１")  ,EQUIP:奴隷:下半身上着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身上着２"),EQUIP:奴隷:下半身上着２)+CLOTHNAME(GETNUM(EQUIP,"スカート"),EQUIP:奴隷:スカート)%
+		PRINTFORML %"□ 下半身(ズボン型) □---------------------------------------------------------"%
+		PRINTFORML %"[0] - ズボン"%
+		PRINTFORML %"[1] - 半ズボン"%
+		PRINTFORML %"[2] - スパッツ"%
+		PRINTFORML %"[3] - ブルマ"%
+		PRINTFORML %"[4] - 袴"%
+		PRINTFORML %"[5] - ホットパンツ"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:下半身上着１ = 1
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 1
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 1
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 2
+				EQUIP:奴隷:下半身上着１ = 2
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 3
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 2
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 4
+				EQUIP:奴隷:下半身上着１ = 3
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 5
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 3
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Botoms_Skirt(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        下半身         ："+CLOTHNAME(GETNUM(EQUIP,"下半身上着１")  ,EQUIP:奴隷:下半身上着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身上着２"),EQUIP:奴隷:下半身上着２)+CLOTHNAME(GETNUM(EQUIP,"スカート"),EQUIP:奴隷:スカート)%
+		PRINTFORML %"□ 下半身(スカート型) □-------------------------------------------------------"%
+		PRINTFORML %"[0] - ミニスカート"%
+		PRINTFORML %"[1] - スカート"%
+		PRINTFORML %"[2] - ロングスカート"%
+		PRINTFORML %"[3] - タイトスカート"%
+		PRINTFORML %"[4] - 裳"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 1
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 1
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 2
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 2
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 3
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 3
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 4
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 4
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:スカート = 5
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Knickers(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        下半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"下半身下着１")  ,EQUIP:奴隷:下半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身下着２"),EQUIP:奴隷:下半身下着２)%
+		IF TALENT:奴隷:公衆便所
+			IF (奴隷 == MASTER) || (奴隷 != FLAG:貞操帯鍵購入フラグ)
+				PRINTFORMW %"貞操帯の鍵を持っていないので、下着を替える事はできません"%
+				RETURN 0
+			ENDIF
+		ENDIF
+		PRINTFORML %"□ 下半身下着 □---------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - 男物"%
+		PRINTFORML %"[2] - 女物"%
+		PRINTFORML %"[3] - その他"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 0
+			CASE 1
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Knickers_Gentle(奴隷)
+			CASE 2
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Knickers_Ladies(奴隷)
+			CASE 3
+				CLEARLINE (LINECOUNT - 描画行数)
+				CALL CLOTHES_CHOOSE_Knickers_Other(奴隷)
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Knickers_Gentle(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        下半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"下半身下着１")  ,EQUIP:奴隷:下半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身下着２"),EQUIP:奴隷:下半身下着２)%
+		PRINTFORML %"□ 下半身下着(男性用) □-------------------------------------------------------"%
+		PRINTFORML %"[0] - トランクス"%
+		PRINTFORML %"[1] - ブリーフ"%
+		PRINTFORML %"[2] - ボクサーパンツ"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 101
+			CASE 1
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 102
+			CASE 2
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 103
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Knickers_Ladies(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        下半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"下半身下着１")  ,EQUIP:奴隷:下半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身下着２"),EQUIP:奴隷:下半身下着２)%
+		PRINTFORML %"□ 下半身下着(女性用) □-------------------------------------------------------"%
+		PRINTFORML %"[0] - 今日のパンティ (ランダムに選ばれます)"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				CALL CLOTHES_Change_Knickers(奴隷)
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Knickers_Other(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        下半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"下半身下着１")  ,EQUIP:奴隷:下半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身下着２"),EQUIP:奴隷:下半身下着２)%
+		PRINTFORML %"□ 下半身下着(その他) □-------------------------------------------------------"%
+		PRINTFORML %"[0] - 貞操帯"%
+		PRINTFORML %"[1] - 絆創膏"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:下半身下着１ = 100
+				EQUIP:奴隷:下半身下着２ = 0
+			CASE 1
+				EQUIP:奴隷:下半身下着１ = 2
+				EQUIP:奴隷:下半身下着２ = 0
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Bra(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
+		PRINTFORML %"        上半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"上半身下着１")  ,EQUIP:奴隷:上半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"上半身下着２"),EQUIP:奴隷:上半身下着２)%
+		PRINTFORML %"□ 上半身下着 □---------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - ブラジャー"%
+		PRINTFORML %"[2] - スポーツブラ"%
+		PRINTFORML %"[3] - ヌーブラ"%
+		PRINTFORML %"[4] - トップレスブラ"%
+		PRINTFORML %"[5] - サラシ"%
+		PRINTFORML %"[6] - インナー"%
+		PRINTFORML %"[7] - ニプレス"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 0
+			CASE 1
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 1
+			CASE 2
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 2
+			CASE 3
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 3
+			CASE 4
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 4
+			CASE 5
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 5
+			CASE 6
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 8
+			CASE 7
+				EQUIP:奴隷:上半身下着１ = 2
+				EQUIP:奴隷:上半身下着２ = 0
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Suit(奴隷)
+	#DIM 奴隷
+	#DIM 描画行数
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ 全身上着 □-----------------------------------------------------------------"%
+		PRINTFORML %"[0] - 脱ぐ"%
+		PRINTFORML %"[1] - ボディースーツ"%
+		PRINTFORML %"[2] - ワンピース"%
+		PRINTFORML %"[3] - チャイナ服"%
+		PRINTFORML %"[4] - 着物"%
+		PRINTFORML %"[5] - スクール水着"%
+		PRINTFORML %"[6] - レオタード"%
+		PRINTFORML %"[7] - スリングショット"%
+		PRINTFORML %"[8] - 競泳水着"%
+		PRINTFORML %"[9] - レースクイーン"%
+		IF TALENT:MASTER:禁断の知識
+			PRINTFORML %"[99] - 触手服"%
+		ENDIF
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				;脱ぐ
+				;EQUIP:奴隷:下半身下着１ = 0
+				;EQUIP:奴隷:下半身下着２ = 0
+				;EQUIP:奴隷:上半身下着１ = 0
+				;EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 1
+				;ボディースーツは下着はそのまま
+				;EQUIP:奴隷:下半身下着１ = 0
+				;EQUIP:奴隷:下半身下着２ = 0
+				;EQUIP:奴隷:上半身下着１ = 0
+				;EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 1
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 2
+				;ワンピースは下着はそのまま
+				;EQUIP:奴隷:下半身下着１ = 0
+				;EQUIP:奴隷:下半身下着２ = 0
+				;EQUIP:奴隷:上半身下着１ = 0
+				;EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 1
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 3
+				;チャイナは下着、ズボンはそのまま
+				;EQUIP:奴隷:下半身下着１ = 0
+				;EQUIP:奴隷:下半身下着２ = 0
+				;EQUIP:奴隷:上半身下着１ = 0
+				;EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				;EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 2
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 0
+			CASE 4
+				;着物は下着はそのまま
+				;EQUIP:奴隷:下半身下着１ = 0
+				;EQUIP:奴隷:下半身下着２ = 0
+				;EQUIP:奴隷:上半身下着１ = 0
+				;EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 1
+				EQUIP:奴隷:レオタード = 0
+			CASE 5
+				;スクール水着は上半身下着だけそのまま
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 0
+				;EQUIP:奴隷:上半身下着１ = 0
+				;EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 1
+			CASE 6
+				;レオタードを着る場合は一旦全部脱ぐ
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 0
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 2
+			CASE 7
+				;スリングショットを着る場合は一旦全部脱ぐ
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 0
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 4
+			CASE 8
+				;競泳水着を着る場合は一旦全部脱ぐ
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 0
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 6
+			CASE 9
+				;レースクイーンを着る場合は一旦全部脱ぐ
+				EQUIP:奴隷:下半身下着１ = 0
+				EQUIP:奴隷:下半身下着２ = 0
+				EQUIP:奴隷:上半身下着１ = 0
+				EQUIP:奴隷:上半身下着２ = 0
+				EQUIP:奴隷:スカート = 0
+				EQUIP:奴隷:下半身上着１ = 0
+				EQUIP:奴隷:下半身上着２ = 0
+				EQUIP:奴隷:上半身上着１ = 0
+				EQUIP:奴隷:上半身上着２ = 0
+				EQUIP:奴隷:ボディースーツ = 0
+				EQUIP:奴隷:ワンピース = 0
+				EQUIP:奴隷:着物 = 0
+				EQUIP:奴隷:レオタード = 7
+			CASE 99
+				;触手服には禁断の知識が必要、
+				IF TALENT:MASTER:禁断の知識
+					EQUIP:奴隷:下半身下着１ = 0
+					EQUIP:奴隷:下半身下着２ = 0
+					EQUIP:奴隷:上半身下着１ = 0
+					EQUIP:奴隷:上半身下着２ = 0
+					EQUIP:奴隷:スカート = 0
+					EQUIP:奴隷:下半身上着１ = 0
+					EQUIP:奴隷:下半身上着２ = 0
+					EQUIP:奴隷:上半身上着１ = 0
+					EQUIP:奴隷:上半身上着２ = 0
+					EQUIP:奴隷:ボディースーツ = 0
+					EQUIP:奴隷:ワンピース = 0
+					EQUIP:奴隷:着物 = 0
+					EQUIP:奴隷:レオタード = 5
+				ENDIF
+			CASE 100
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Preset(奴隷)
+	#DIM  奴隷
+	#DIM  描画行数
+	#DIM  選択プリセット
+	#DIM  選択服装パターン
+	#DIMS 選択プリセット名
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ プリセット □---------------------------------------------------------------"%
+		PRINTFORML %"[0] - 男装セット"%
+		PRINTFORML %"[1] - 女装セット"%
+		PRINTFORML %"[2] - 紳士セット"%
+		PRINTFORML %"[3] - メイドセット"%
+		PRINTFORML %"[4] - 美鈴セット"%
+		PRINTFORML %"[5] - 小悪魔セット"%
+		PRINTFORML %"[6] - パチュリーセット"%
+		PRINTFORML %"[7] - 咲夜セット"%
+		PRINTFORML %"[8] - レミリアセット"%
+		PRINTFORML %"[9] - フランセット"%
+		PRINTFORML %"[91] - 私服セット に着替える"%
+		PRINTFORML %"[92] - 私服セット を登録する"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		選択プリセット = RESULT
+		SELECTCASE 選択プリセット
+			CASE 0
+				CALL CLOTHES_Preset_MALE(奴隷)
+				選択プリセット名 = %"男装セット"%
+				選択服装パターン = 1
+			CASE 1
+				CALL CLOTHES_Preset_FEMALE(奴隷)
+				選択プリセット名 = %"女装セット"%
+				選択服装パターン = 2
+			CASE 2
+				CALL CLOTHES_Preset_jentle(奴隷)
+				選択プリセット名 = %"紳士セット"%
+				選択服装パターン = 3
+			CASE 3
+				CALL CLOTHES_Preset_MAID(奴隷)
+				選択プリセット名 = %"メイドセット"%
+				選択服装パターン = 4
+			CASE 4
+				CALL CLOTHES_Preset_1(奴隷)
+				選択プリセット名 = %"美鈴セット"%
+				選択服装パターン = 101
+			CASE 5
+				CALL CLOTHES_Preset_2(奴隷)
+				選択プリセット名 = %"小悪魔セット"%
+				選択服装パターン = 102
+			CASE 6
+				CALL CLOTHES_Preset_3(奴隷)
+				選択プリセット名 = %"パチュリーセット"%
+				選択服装パターン = 103
+			CASE 7
+				CALL CLOTHES_Preset_4(奴隷)
+				選択プリセット名 = %"咲夜セット"%
+				選択服装パターン = 104
+			CASE 8
+				CALL CLOTHES_Preset_5(奴隷)
+				選択プリセット名 = %"レミリアセット"%
+				選択服装パターン = 105
+			CASE 9
+				CALL CLOTHES_Preset_6(奴隷)
+				選択プリセット名 = %"フランセット"%
+				選択服装パターン = 106
+			CASE 91
+				CALL CLOTHES_Preset_CUSTOM(奴隷)
+				選択プリセット名 = %"私服セット"%
+				選択服装パターン = 100
+			CASE 92
+				CALL CLOTHES_Preset_CUSTOM_Save(奴隷)
+				選択プリセット名 = %"私服セット"%
+				選択服装パターン = 100
+			CASE 100
+				RETURN 0
+			CASEELSE
+				選択プリセット = 0
+		ENDSELECT
+	LOOP (選択プリセット == 0)
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"普段着を"+選択プリセット名+"に変更しますか？（起床時に自動的に着替えます）"%
+		PRINTFORML %"[0] - はい"%
+		PRINTFORML %"[1] - いいえ"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				CFLAG:奴隷:服装パターン = 選択服装パターン
+				RETURN 0
+			CASE 1
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CLOTHES_CHOOSE_Cosplay(奴隷)
+	#DIM  奴隷
+	#DIM  描画行数
+	#DIM  選択プリセット
+	#DIMS 選択プリセット名
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"□ コスプレ □-----------------------------------------------------------------"%
+		PRINTFORML %"[0] - ビキニ"%
+		PRINTFORML %"[1] - マイクロビキニ"%
+		PRINTFORML %"[2] - くのいち"%
+		PRINTFORML %"[3] - バニー"%
+		PRINTFORML %"[4] - チアガール"%
+		PRINTFORML %"[5] - 女騎士"%
+		PRINTFORML %"[6] - 博麗の巫女"%
+		PRINTFORML %"[7] - 軍服"%
+		PRINTFORML %"[8] - ボンデージ"%
+		PRINTFORML %"[9] - ナース"%
+		PRINTFORML %"[10] - 裸エプロン"%
+		PRINTFORML %"[11] - 婦警"%
+		PRINTFORML %"[12] - 魔法少女"%
+		PRINTFORML %"[13] - 牛娘"%
+		PRINTFORML %"[14] - サンタ"%
+		PRINTFORML %"[15] - リンコス"%
+		PRINTFORML %"[16] - シスター"%
+		PRINTFORML %"[17] - 園児服"%
+		PRINTFORML %"[18] - レースクイーン"%
+		PRINTFORML %"[19] - 制服"%
+		PRINTFORML %"[20] - 人妻"%
+		PRINTFORML %"[21] - 魔女"%
+		PRINTFORML %"[100] - 戻る"%
+		INPUT
+		選択プリセット = RESULT
+		SELECTCASE 選択プリセット
+			CASE 0
+				CALL CLOTHES_Preset_Bikini(奴隷)
+				選択プリセット名 = %"ビキニ"%
+			CASE 1
+				CALL CLOTHES_Preset_micro(奴隷)
+				選択プリセット名 = %"マイクロビキニ"%
+			CASE 2
+				CALL CLOTHES_Preset_ninja(奴隷)
+				選択プリセット名 = %"くのいち"%
+			CASE 3
+				CALL CLOTHES_Preset_bunny(奴隷)
+				選択プリセット名 = %"バニー"%
+			CASE 4
+				CALL CLOTHES_Preset_chia(奴隷)
+				選択プリセット名 = %"チアガール"%
+			CASE 5
+				CALL CLOTHES_Preset_knight(奴隷)
+				選択プリセット名 = %"女騎士"%
+			CASE 6
+				CALL CLOTHES_Preset_reimu(奴隷)
+				選択プリセット名 = %"博麗の巫女"%
+			CASE 7
+				CALL CLOTHES_Preset_army(奴隷)
+				選択プリセット名 = %"軍服"%
+			CASE 8
+				CALL CLOTHES_Preset_bontage(奴隷)
+				選択プリセット名 = %"ボンデージ"%
+			CASE 9
+				CALL CLOTHES_Preset_nurse(奴隷)
+				選択プリセット名 = %"ナース"%
+			CASE 10
+				CALL CLOTHES_Preset_hadaepu(奴隷)
+				選択プリセット名 = %"裸エプロン"%
+			CASE 11
+				CALL CLOTHES_Preset_police(奴隷)
+				選択プリセット名 = %"婦警"%
+			CASE 12
+				CALL CLOTHES_Preset_Magica(奴隷)
+				選択プリセット名 = %"魔法少女"%
+			CASE 13
+				CALL CLOTHES_Preset_cow(奴隷)
+				選択プリセット名 = %"牛娘"%
+			CASE 14
+				CALL CLOTHES_Preset_santa(奴隷)
+				選択プリセット名 = %"サンタ"%
+			CASE 15
+				CALL CLOTHES_Preset_ringcos(奴隷)
+				選択プリセット名 = %"リンコス"%
+			CASE 16
+				CALL CLOTHES_Preset_sister(奴隷)
+				選択プリセット名 = %"シスター"%
+			CASE 17
+				CALL CLOTHES_Preset_child(奴隷)
+				選択プリセット名 = %"園児服"%
+			CASE 18
+				CALL CLOTHES_Preset_race(奴隷)
+				選択プリセット名 = %"レースクイーン"%
+			CASE 19
+				CALL CLOTHES_Preset_sera(奴隷)
+				選択プリセット名 = %"制服"%
+			CASE 20
+				CALL CLOTHES_Preset_wife(奴隷)
+				選択プリセット名 = %"人妻"%
+			CASE 21
+				CALL CLOTHES_Preset_witch(奴隷)
+				選択プリセット名 = %"魔女"%
+			CASE 100
+				RETURN 0
+			CASEELSE
+				選択プリセット = 0
+		ENDSELECT
+	LOOP (選択プリセット == 0)
+	描画行数 = LINECOUNT
+	DO
+		CLEARLINE (LINECOUNT - 描画行数)
+		PRINTFORML %"普段着を"+選択プリセット名+"に変更しますか？（起床時に自動的に着替えます）"%
+		PRINTFORML %"[0] - はい"%
+		PRINTFORML %"[1] - いいえ"%
+		INPUT
+		SELECTCASE RESULT
+			CASE 0
+				CFLAG:奴隷:服装パターン = 200
+				RETURN 0
+			CASE 1
+				RETURN 0
+		ENDSELECT
+	LOOP 1
+RETURN 0

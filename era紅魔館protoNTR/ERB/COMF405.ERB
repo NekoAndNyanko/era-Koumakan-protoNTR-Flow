@@ -1,0 +1,119 @@
+﻿;-------------------------------------------------
+;においを嗅ぐ
+;-------------------------------------------------
+@COM405
+	#DIM 対象
+	#DIM LOOP_CHR
+	#DIM BK_SELCOM
+
+	IF (GETBIT(ROOM_SMELL_BIT(FLAG:(部屋のにおい_初期FLAG + CFLAG:MASTER:現在位置)), においの種類B_ゴミ) || GETBIT(ROOM_SMELL_BIT(FLAG:(部屋のにおい_初期FLAG_2 + CFLAG:MASTER:現在位置)), においの種類B_ゴミ))
+		PRINTFORML 部屋からゴミのにおいがする…
+		PRINTFORMW においを嗅ぐ前に部屋の掃除と換気をしよう
+		RETURN 0
+	ENDIF
+	
+	PRINTL 誰のにおいを嗅ぎますか？
+	;対象を探す
+	FOR LOOP_CHR, 0, MIN(CHARANUM, バグ回避用キャラ最大値)
+		SIF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置
+			PRINTFORML %"["+TOSTR(LOOP_CHR)+"] - "+CALLNAME:(LOOP_CHR)%
+	NEXT
+	SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+		PRINTFORML [998] - %NTR_NAME(0)%
+	PRINTFORML [999] %"やめる"%
+	
+	$INPUT_LOOP
+	INPUT
+	IF RESULT < 0
+		GOTO INPUT_LOOP
+	ELSEIF  RESULT == 998
+		LOCAL:10 = ROOM_SMELL_WHOSE(FLAG:訪問者の他人のにおい)
+		SIF LOCAL:10 >= CHARANUM
+			LOCAL:10 = バグ回避用キャラ最大値
+		;CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + バグ回避用キャラ最大値) = 50
+		CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + バグ回避用キャラ最大値)++
+		PRINTFORM %NTR_NAME(0)%からは
+		IF ROOM_SMELL_WHOSE_NAME(FLAG:訪問者の他人のにおい) == "無臭"
+			PRINTW 何のにおいもしない
+		ELSEIF GETBIT(ROOM_SMELL_BIT(FLAG:訪問者の他人のにおい), においの種類B_ゴミ)
+			PRINTW ゴミのにおいがする
+		ELSEIF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + LOCAL:10) >= においの判別_詳細
+			IF GETBIT(FLAG:部屋のにおい_初期FLAG, 1)
+				PRINTFORMW %ROOM_SMELL_WHOSE_NAME(FLAG:訪問者の他人のにおい)%の%ROOM_SMELL_KINDS(FLAG:訪問者の他人のにおい)%のにおいがする
+			ELSE
+				IF GETBIT(ROOM_SMELL_BIT(FLAG:訪問者の他人のにおい), においの種類B_精液) || GETBIT(ROOM_SMELL_BIT(FLAG:訪問者の他人のにおい), においの種類B_愛液)
+					PRINTFORMW 誰かの%ROOM_SMELL_KINDS(FLAG:訪問者の他人のにおい)%のにおいがする
+				ELSE
+					PRINTFORMW %ROOM_SMELL_WHOSE_NAME(FLAG:訪問者の他人のにおい)%の%ROOM_SMELL_KINDS(FLAG:訪問者の他人のにおい)%のにおいがする
+				ENDIF
+			ENDIF
+		ELSEIF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + LOCAL:10) >= においの判別_可能 || LOCAL:10 == ROOM_SMELL_WHOSE(FLAG:訪問者の他人のにおい)
+			PRINTFORMW %ROOM_SMELL_WHOSE_NAME(FLAG:訪問者の他人のにおい)%のにおいがする
+		ELSE
+			PRINTFORMW 誰かのにおいがする
+		ENDIF
+	ELSEIF RESULT < CHARANUM && RESULT < バグ回避用キャラ最大値
+		LOCAL:10 = ROOM_SMELL_WHOSE(ROOM_SMELL_CHARA_MOST(RESULT))
+		SIF LOCAL:10 >= CHARANUM
+			LOCAL:10 = バグ回避用キャラ最大値
+		CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + LOCAL:10)++
+		IF RESULT == 人物_あなた
+			PRINT 自分
+		ELSE
+			PRINTFORM %CALLNAME:RESULT%
+		ENDIF
+		PRINT からは
+		IF ROOM_SMELL_WHOSE_NAME(ROOM_SMELL_CHARA_MOST(RESULT)) == "無臭"
+			PRINTW 何のにおいもしない
+		ELSEIF GETBIT(ROOM_SMELL_BIT(ROOM_SMELL_CHARA_MOST(RESULT)), においの種類B_ゴミ)
+			PRINTW ゴミのにおいがする
+		ELSEIF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + LOCAL:10) >= においの判別_詳細
+			IF GETBIT(FLAG:部屋のにおい_初期FLAG, 1)
+				PRINTFORMW %ROOM_SMELL_WHOSE_NAME(ROOM_SMELL_CHARA_MOST(RESULT))%の%ROOM_SMELL_KINDS(ROOM_SMELL_CHARA_MOST(RESULT))%のにおいがする
+			ELSE
+				IF GETBIT(ROOM_SMELL_BIT(ROOM_SMELL_CHARA_MOST(RESULT)), においの種類B_精液) || GETBIT(ROOM_SMELL_BIT(ROOM_SMELL_CHARA_MOST(RESULT)), においの種類B_愛液)
+					IF RESULT == 人物_あなた
+						PRINTFORM %ROOM_SMELL_WHOSE_NAME(ROOM_SMELL_CHARA_MOST(RESULT))%
+					ELSE
+						PRINT 誰か
+					ENDIF
+					PRINTFORMW の%ROOM_SMELL_KINDS(ROOM_SMELL_CHARA_MOST(RESULT))%のにおいがする
+				ELSE
+					PRINTFORMW %ROOM_SMELL_WHOSE_NAME(ROOM_SMELL_CHARA_MOST(RESULT))%の%ROOM_SMELL_KINDS(ROOM_SMELL_CHARA_MOST(RESULT))%のにおいがする
+				ENDIF
+			ENDIF
+		ELSEIF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + LOCAL:10) >= においの判別_可能 || LOCAL:10 == ROOM_SMELL_WHOSE(ROOM_SMELL_CHARA_MOST(RESULT))
+			PRINTFORMW %ROOM_SMELL_WHOSE_NAME(ROOM_SMELL_CHARA_MOST(RESULT))%のにおいがする
+		ELSE
+			PRINTFORMW 誰かのにおいがする
+		ENDIF
+	ELSEIF RESULT == 999
+		RETURN 0
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+
+;同一コマンド連続実行を回避させないための処理
+BK_SELCOM = SELECTCOM
+SELECTCOM = 405
+
+;SOURCEまでを回さないのでここで口上を表示させる
+IF TEQUIP:ボールギャグ && SELECTCOM != 106 && FLAG:情景テキスト設定 > 0
+	SELECTCOM = BK_SELCOM
+	RETURN 1
+ELSE
+	RESULT = 0
+	RESULTS =
+	;口上の存在判定 and RESULTSに文字列代入
+	TRYCALLFORM KOJO_K{対象}
+	IF !RESULT && FLAG:情景テキスト設定 > 0
+		SELECTCOM = BK_SELCOM
+		RETURN 1
+	ENDIF
+	RESULT = 0
+	TRYCALLFORM KOJO%RESULTS%_MESSAGE_COM_K{対象}_405
+ENDIF
+
+TIME += 1
+SELECTCOM = BK_SELCOM
+RETURN 1

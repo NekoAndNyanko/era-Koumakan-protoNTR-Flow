@@ -1,0 +1,23 @@
+﻿;-------------------------------------------------
+;訪問者と別行動する
+;-------------------------------------------------
+@COM465
+PRINTFORM 案内し終わったのでここで一旦分かれようと言うと、
+IF FLAG:訪問者のお気に入り == 0
+    PRINTFORMW %NTR_NAME(0)%はもう少し一緒に居たいと言ってきた
+    PRINTL [0] 頷く　[1] 断る
+    $INPUT_COM465_0
+    INPUT
+    IF RESULT == 0
+        PRINTFORMW %CALLNAME:MASTER%はもう少し一緒に居る事にした
+        FLAG:訪問者同行フラグ = DATETIME() + 60
+    ELSEIF RESULT == 1
+        PRINTFORMW %CALLNAME:MASTER%が断ると%NTR_NAME(0)%は少し残念そうにしていた
+        FLAG:訪問者同行フラグ = 0
+    ELSE
+        GOTO INPUT_COM465_0
+    ENDIF
+ELSE
+    PRINTFORMW %NTR_NAME(0)%は承諾し、%CALLNAME:MASTER%と別行動を取る事にした
+    FLAG:訪問者同行フラグ = 0
+ENDIF

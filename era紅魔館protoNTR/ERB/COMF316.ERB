@@ -1,0 +1,92 @@
+﻿;指挿入れ
+@COM316
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_太股)
+SIF RESULT
+	RETURN 0
+
+TRYCALL NTR_UNLOCK_CHASTITY_BELT(TARGET)
+IF !RESULT
+	DRAWLINE
+	PRINTFORML %CALLNAME:MASTER%は手を伸ばして%CALLNAME:TARGET%の膣口に指を挿れようとしたが、
+	PRINTFORML %CALLNAME:TARGET%が身に着けた貞操帯に阻まれて触れることができなかった。
+
+	IF CFLAG:TARGET:好感度 > 0
+		PRINTFORML %CALLNAME:TARGET%は触れて貰えない事に不満を感じているようだ……
+		;欲情していると反感が伸びる
+		PALAM:TARGET:反感 += MIN( PALAM:TARGET:欲情/MAX(CFLAG:TARGET:好感度,1),300)
+		;欲情していると好感度も下がる
+		CFLAG:TARGET:好感度 = MAX( CFLAG:TARGET:好感度 - MIN(PALAM:TARGET:欲情 ,30),0)
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%はつまらなさそうに%CALLNAME:MASTER%を見た……
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;破瓜抑制
+TFLAG:2 = 1
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 30
+DOWNBASE:気力 += 80
+
+IF !TALENT:処女
+	SOURCE:快Ｖ = 120
+	SOURCE:情愛 = 150
+	SOURCE:苦痛 = 250
+	SOURCE:欲情 = 200
+	SOURCE:露出 = 120
+	SOURCE:逸脱 = 150
+	SOURCE:反感 = 200
+;V経験が0の時はV経験を伴わない物に派生
+;Vの珠は入らないが、快Vが高いと慣らしてあるため処女喪失時に影響
+ELSE
+	SOURCE:快Ｖ = 60
+	SOURCE:情愛 = 150
+	SOURCE:苦痛 = 250
+	SOURCE:欲情 = 200
+	SOURCE:露出 = 120
+	SOURCE:逸脱 = 300
+	SOURCE:反感 = 400
+	CALL 締り具合変動, TARGET, 1, 0
+ENDIF
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+IF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 20
+	;処女
+	SIF TALENT:処女
+		SOURCE:鬱屈 += 10
+ENDIF
+;Vへの苦痛
+CALL PAIN_CHECK_V(TARGET)
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;奴隷の膣内⇔調教者の指の汚れが移動
+	STAIN:膣内 |= STAIN:PLAYER:手
+	STAIN:PLAYER:手 |= STAIN:膣内
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:レズ経験 += 3
+	EXP:MASTER:レズ経験 += 3
+ENDIF
+
+TIME += 10
+
+RETURN 1
+

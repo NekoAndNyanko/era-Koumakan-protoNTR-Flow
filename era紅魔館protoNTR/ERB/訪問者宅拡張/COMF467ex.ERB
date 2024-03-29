@@ -1,0 +1,79 @@
+﻿;-------------------------------------------------
+;訪問者と添い寝
+;-------------------------------------------------
+@COM467
+#DIM 添い寝種類
+#DIM 奴隷
+#DIM 回数
+#DIM 行為時間
+#DIM 累計時間
+;;─────────────────────
+		SELECTCASE RAND:2
+			CASE 1
+				添い寝種類 = 1	;;腕枕
+			CASEELSE
+				添い寝種類 = 2	;;抱っこ
+		ENDSELECT
+;;─────────────────────
+
+
+
+PRINTFORMW %CALLNAME:奴隷+"は"+NTR_NAME(0)+"に添い寝を申し出た。"%
+PRINTFORMW %NTR_NAME(0)+"はその申し出に優しく微笑み、ベッドで手招きをしてくる。"%
+IF BASE:MASTER:体力 <= 1000
+	PRINTFORMW %"招かれるままに"+CALLNAME:奴隷+"がベッドに入る……と急に"+NTR_NAME(0)+"が押し倒してきた"%
+	PRINTFORMW %"『まだまだ元気みたいだから寝れるまで犯してやる』"%
+	PRINTFORMW %"そう言って"+CALLNAME:奴隷+"の返事も待たず、服を引き剥がして獣のように"+CALLNAME:奴隷+"を犯し始めた……"%
+	回数 = 0
+	累計時間 = 0
+	IF TALENT:MASTER:処女 || !HAS_VAGINA(MASTER)
+		回数 = 0
+		累計時間 = 0
+		DO
+			回数++
+			行為時間 = 11 + RAND:10
+			CALL NTR_Play_A_1(奴隷,人物_訪問者,1,行為時間)
+			CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+			CALL ORGASM_ADD(奴隷,人物_訪問者)
+			累計時間 += 行為時間
+			TIME += 行為時間
+		LOOP BASE:奴隷:体力 > 0
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷+"は"+TOSTR(累計時間)+"分かけて"+TOSTR(回数)+"回尻穴を犯された"%
+		ENDDATA
+	ELSE
+		DO
+			回数++
+			行為時間 = 11 + RAND:10
+			CALL NTR_Play_V_1(奴隷,人物_訪問者,1,行為時間)
+			CALL NTR_SOURCE_CHECK(奴隷,人物_訪問者)
+			CALL ORGASM_ADD(奴隷,人物_訪問者)
+			累計時間 += 行為時間
+			TIME += 行為時間
+		LOOP BASE:奴隷:体力 > 0
+		PRINTDATAL
+			DATAFORM %CALLNAME:奴隷+"は"+TOSTR(累計時間)+"分かけて"+TOSTR(回数)+"回性器を犯された"%
+		ENDDATA
+	ENDIF
+ELSE
+	SELECTCASE 添い寝種類
+	CASE 1	;;腕枕
+		PRINTFORMW %"招かれるままにベッドに入ると、"+NTR_NAME(0)+"が腕を枕にするように差し出してきた。"%
+	CASEELSE	;;抱っこ
+		PRINTFORMW %"招かれるままベッドに入ると、"+NTR_NAME(0)+"が"+CALLNAME:奴隷+"を優しく抱きしめてきた。"%
+	ENDSELECT
+	PRINTFORM %"それに甘え、"+CALLNAME:奴隷+"は"%
+	SELECTCASE 添い寝種類
+	CASE 1	;;腕枕
+		PRINTFORMW %"腕に擦りつくように頭を寄せる"%
+	CASEELSE	;;抱っこ
+		PRINTFORMW %"腕に包まれながらぎゅっと抱きしめ返す"%
+	ENDSELECT
+	PRINTFORMW %NTR_NAME(0)+"はそんな"+CALLNAME:奴隷+"を見て、更に甘やかすように頭を撫でてくれた。"%
+	PRINTFORMW %"優しく心地いい行為に、"+CALLNAME:奴隷+"の瞼は自然と下がっていく……。"%
+ENDIF
+CFLAG:MASTER:WC_訪問者セクハラ屈服上昇値 += WC_SURRENDER(MASTER, 1)
+CFLAG:MASTER:睡眠 = 1
+CFLAG:MASTER:就寝時間 = DATETIME()
+BEGIN AFTERTRAIN
+RETURN 1

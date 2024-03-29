@@ -1,0 +1,134 @@
+@SYSTEM_TITLE
+LOADGLOBAL
+RESULT = GLOBAL
+SAVEGLOBAL
+LOADGLOBAL
+REDRAW 0
+CLEARLINE 1
+RESULT  = 1
+LOCAL:2 = LINECOUNT
+DO
+	FOR LOCAL:1, 0, 126
+		CLEARLINE LINECOUNT - LOCAL:2
+		$START
+		ALIGNMENT CENTER
+		CUSTOMDRAWLINE ━
+		PRINTL
+		PRINTFORML era紅魔館protoNTR Flow
+		;GameBase内的版本，前两位在前，后两位算小数
+		PRINTFORML Ver{GAMEBASE_VERSION/100}.{GAMEBASE_VERSION%100}
+		PRINTFORML 【　原作　】　　　　　　　寝の人(2013－2019)
+		PRINTFORML 【Flow分支】　不懒散的大猫猫　不悠闲的古关忧
+		PRINTFORML 　　　　　　　不怕猫的苦力怕　不翻案的小狐狸
+		PRINTFORML （2013--2024）
+		;显示GameBase内的“追加情报”
+		;PRINTFORML %GAMEBASE_INFO%
+		PRINTFORML
+		PRINTFORML ※这是利用调教SLG制作工具Erakanon、Emuera进行二次改编、发布的程序。
+		CUSTOMDRAWLINE ━
+		PRINTFORML [0] 新的开始
+		PRINTFORML [1] 读取存档
+		PRINTFORML [2] 版本信息与更新履历
+		ALIGNMENT LEFT
+		INPUT
+		CUSTOMDRAWLINE ━
+		SELECTCASE RESULT
+			CASE 0
+				RESETDATA
+				ADDCHARA 0
+				BEGIN FIRST
+			CASE 1
+				LOADGAME
+			CASE 2
+				CALL VERSION_INFO
+				GOTO START
+		ENDSELECT
+		GOTO START
+	NEXT
+LOOP RESULT
+REDRAW 1
+
+@VERSION_INFO
+$VERSION_INFO
+PRINTFORML [0] 更新履历
+PRINTFORML [1] 原始版本信息
+PRINTFORML [2] 返回主页
+INPUT
+SELECTCASE RESULT
+	CASE 0
+		PRINTFORML 超级猫猫的更新履历------------------------------------------------------------------------------最旧
+		PRINTFORML Ver0.038.1----------------------------------------------------------------------------------23.07.20
+		PRINTFORML 1.修改了能力显示样式与eraTW近似，重写了输出函数
+		PRINTFORML 2.重写了部分NTR经验的处理方式
+		PRINTFORML 3.由于重写过多，移除了对真实模式的支持
+		PRINTFORML Ver0.038.2----------------------------------------------------------------------------------23.07.28
+		PRINTFORML 1.翻译了部分NTR报幕文本（口上前输出的几句话）
+		PRINTFORML 2.重写了身体信息页面，以eraTW样式为排版参考
+		PRINTFORML 3.重写了白天访问者各行为的经验处理（在地图上移动时的NTR行为经验）
+		PRINTFORML 4.翻译了拍照指令取得的照片
+		PRINTFORML 5.一部分旧翻译（看起来像机翻？）的修正
+		PRINTFORML Ver0.038.3----------------------------------------------------------------------------------23.08.18
+		PRINTFORML 1.调整了清洁度的设计，现在部分角色可以自动清扫经过的地方
+		PRINTFORML 2.调整了根据清洁度获取金钱的数值，大幅上调（？）收入
+		PRINTFORML 3.考虑把用来测试通用口上的子恶魔改成和主角一样的佣人（女仆）设定
+		PRINTFORML Ver0.038.4----------------------------------------------------------------------------------23.09.08
+		PRINTFORML 1.增加了与访问者做爱（本番）的第一次口上框架，可以做是否处女差分
+		PRINTFORML %"	"%详见ERB/口上/firstTime.ERB底部
+		PRINTFORML 2.子恶魔改为艾丽娅，设定为比玩家更早就在红魔馆的女仆
+		PRINTFORML 3.用艾丽娅测试第一次性行为的口上，运行良好，但写剧情好麻烦
+		PRINTFORML 4.现在可以分角色显示口上颜色
+		PRINTFORML Ver0.038.4.1--------------------------------------------------------------------------------23.09.15
+		PRINTFORML 1.修改了@NTR_CHK_FAVORABLY中对各个阶段的条件判断
+		PRINTFORML %"	"%但是角色的进展难以拿捏，如果是完成品的话或许还可以操作
+		PRINTFORML %"	"%现在就只是单纯地调高了每个阶段的屈服度要求
+		PRINTFORML 2.修改了好感度吸收的实现方式，确保与屈服度增加值一致，毕竟它好歹叫吸收嘛
+		PRINTFORML %"	"%但明明调用时屈服度上升很少，却总有很多对话一下加几十的情况，原因不明
+		PRINTFORML 3.艾丽娅与访问者对话口上
+		PRINTFORML Ver0.038.4.2--------------------------------------------------------------------------------23.10.14
+		PRINTFORML 1.与访问者的气氛行为（NTR_CNT行为）口上化，可分角色定义
+		PRINTFORML %"	"%口上格式为%"@NTR_CNT_{角色编号}_{行为编号}(角色编号)"%
+		PRINTFORML %"	"%通用口上详见ERB/口上/U_通用/NTR_CNT.ERB，可仿造之以创作其他角色口上
+		PRINTFORML 2.重写角色内裤穿着设定
+		PRINTFORML %"	"%新增：@NTR_PANTS
+		PRINTFORML %"	"%废弃：@PANTS_TODAY、@PANTS_TODAY_ADULT
+		PRINTFORML %"	"%优化代码冗余并改设定为即使开始穿着色情内裤也会有1/3概率穿着普通内裤
+		PRINTFORML Ver0.038.4.3--------------------------------------------------------------------------------24.01.21
+		PRINTFORML 1.修改@MSG_SLIT中的文字描述
+		PRINTFORML 2.从eraAM借用@TEXTR
+		PRINTFORML 3.艾丽娅的正常位非NTR口上
+		PRINTFORML %"	"%微调自eraTW的映姬口上，仅用作测试，这东西原版自带的口上结构居然是错误的，所以找了点内容测试
+		PRINTFORML Ver0.038.4.4--------------------------------------------------------------------------------24.02.20
+		PRINTFORML 1.根据【环月幽灵魔改V0.2.32】版本调整了访问者的移动逻辑
+		PRINTFORML 2.调整目录结构和方法层次
+		PRINTFORML 超级猫猫的更新履历-------------------------------------------------------------------------------END
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORML <---------------------------------------------Flow版本--------------------------------------------->
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORML Flow版本更新履历--------------------------------------------------------------------------------最旧
+		PRINTFORML Alpha0.1------------------------------------------------------------------------------------24.xx.xx
+		PRINTFORML ◎ 新增与调整
+		PRINTFORML >> 1.移植了eraTW的地图绘制功能，并重置了部分地图。
+		PRINTFORML    2.重置了偷窥系统，支持角色、场景差分的口上。
+		PRINTFORML    3.支持自定义访问者名字
+		PRINTFORML    4.改用黑体，并根据黑体优化了相关图形的显示
+		PRINTFORML ◎ 移除与废弃
+		PRINTFORML >> 1.彻底移除WC系内容（肉便器、管理人）
+		PRINTFORML    2.彻底移除男用贞操带、部分移除女用贞操带
+		PRINTFORML    3.彻底移除野外调教内容
+		PRINTFORML    4.彻底移除睡奸内容
+		PRINTFORML    5.部分移除卖春情节（好难删啊）
+		PRINTFORMW Flow版本更新履历--------------------------------------------------------------------------------最新
+		GOTO VERSION_INFO
+	CASE 1
+		PRINTFORML 原始版本信息--------------------------------------------------------------------------------------■
+		PRINTFORML 【パチュロダ（推测源）】初始本体　：era紅魔館protoNTR 0.37
+		PRINTFORML 【　　　未知来源　　　】半成品汉化：era紅魔館protoNTR0037甜艮菜汉化版
+		PRINTFORML 【　论坛：下陷の深渊　】算法调整　：红茶丸真实模式修复+微调1.04
+		PRINTFORML 以上是本游戏开发所依据的原始版本，后续开发中如有参考原作新版本或其它分支的，可详见于更新日志。
+		PRINTFORMW 原始版本信息--------------------------------------------------------------------------------------■
+		GOTO VERSION_INFO
+	CASE 2
+		RETURN
+ENDSELECT

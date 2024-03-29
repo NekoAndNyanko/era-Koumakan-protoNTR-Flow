@@ -1,0 +1,104 @@
+﻿@COM311
+;抱き付く
+LOCAL = RAND:110
+LOCAL:1 = 90 + GET_SUCCESS_RATE() / 5
+SIF LOCAL:1 > 109
+	LOCAL:1 = 109
+IF LOCAL <= 9
+	;10％で大成功
+	TFLAG:コマンド成功度 = 成功度_大成功
+ELSEIF LOCAL >= LOCAL:1
+	;10〜1％で失敗
+	TFLAG:コマンド成功度 = 成功度_失敗
+ELSE
+	;残りは成功
+	TFLAG:コマンド成功度 = 成功度_成功
+ENDIF
+;先制発生時は失敗しない
+SIF TFLAG:COMABLE管理 == 3
+	TFLAG:コマンド成功度 = MAX(TFLAG:コマンド成功度,成功度_成功)
+
+DOWNBASE:気力 += 100
+DOWNBASE:MASTER:気力 += 50
+
+;固定で獲得するソース
+SOURCE:歓楽 = 120
+SOURCE:情愛 = 160
+SOURCE:露出 = 55
+SOURCE:反感 = 250
+
+;ABL:親密をみる
+IF ABL:親密 <= 1
+	SOURCE:情愛 += (ABL:親密 * 30)
+ELSEIF ABL:親密 <= 3
+	SOURCE:情愛 += 200 + (ABL:親密 * 30)
+ELSEIF ABL:親密 <= 5
+	SOURCE:情愛 += 400 + (ABL:親密 * 30)
+ELSEIF ABL:親密 <= 8
+	SOURCE:情愛 += 600 + (ABL:親密 * 40)
+	SOURCE:露出 += 200 + (ABL:欲望 * 15)
+ELSEIF ABL:親密 <= 11
+	SOURCE:情愛 += 800 + (ABL:親密 * 40)
+	SOURCE:露出 += 300 + (ABL:欲望 * 15)
+ELSE
+	SOURCE:情愛 += 1800 + (ABL:親密 * 20)
+	SOURCE:露出 += 700 + (ABL:欲望 * 10)
+ENDIF
+
+;好感度をみる
+IF CFLAG:好感度 <= 500
+	SOURCE:恭順 = CFLAG:好感度 / 5
+ELSEIF CFLAG:好感度 <= 5000
+	SOURCE:恭順 = 100 + CFLAG:好感度 / 20
+ELSE
+	SOURCE:恭順 = 350 + CFLAG:好感度 / 100
+ENDIF
+SIF SOURCE:恭順 < 0
+	SOURCE:恭順 = 0
+
+LOCAL = 0
+;好感度が低いと好感度低下
+IF CFLAG:好感度 <= 50
+	LOCAL -= 3
+ELSEIF CFLAG:好感度 <= 100
+	LOCAL -= 2
+ELSEIF CFLAG:好感度 <= 250
+	LOCAL -= 1
+ENDIF
+
+
+SOURCE:受動 = 120 + 240 * ABL:従順
+SOURCE:征服 = 120 + 240 * ABL:サドっ気
+
+;好感度変化
+TFLAG:97 += LOCAL
+
+IF TFLAG:コマンド成功度 == 成功度_失敗
+	TIMES SOURCE:歓楽 , 0.10
+	TIMES SOURCE:情愛 , 0.50
+	TIMES SOURCE:征服 , 0.50
+	TIMES SOURCE:受動 , 0.50
+	TIMES SOURCE:露出 , 0.40
+ELSEIF TFLAG:コマンド成功度 == 成功度_成功
+	TIMES SOURCE:歓楽 , 1.00
+	TIMES SOURCE:情愛 , 1.00
+	TIMES SOURCE:征服 , 1.00
+	TIMES SOURCE:受動 , 1.00
+	TIMES SOURCE:露出 , 0.90
+ELSE
+	TIMES SOURCE:歓楽 , 2.00
+	TIMES SOURCE:情愛 , 2.00
+	TIMES SOURCE:征服 , 2.00
+	TIMES SOURCE:受動 , 2.00
+	TIMES SOURCE:露出 , 1.80
+ENDIF
+TIME += 10
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 2
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 2
+ENDIF
+
+RETURN 1
+

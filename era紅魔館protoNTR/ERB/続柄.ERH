@@ -1,0 +1,71 @@
+﻿;--------------------------------------------------------------------
+;続柄の表示
+
+#DIM CONST 尊属探索_上限		= 6
+#DIM CONST 卑属探索_上限		= 8
+#DIM CONST 傍系探索_上限		= 1
+#DIM CONST 続柄_尊属_父			= 0
+#DIM CONST 続柄_尊属_母			= 10
+#DIM CONST 続柄_卑属			= 20
+#DIM CONST 続柄_傍系			= 30
+#DIM CONST 続柄_傍系尊属		= 40
+#DIM CONST 続柄_傍系卑属		= 50
+#DIM CONST 続柄_本人				= 0
+#DIM CONST 続柄_父					= 1
+#DIM CONST 続柄_祖父				= 2
+#DIM CONST 続柄_曽祖父				= 3
+#DIM CONST 続柄_高祖父				= 4
+#DIM CONST 続柄_高祖父母の父		= 5
+#DIM CONST 続柄_高祖父母の祖父		= 6
+#DIM CONST 続柄_高祖父母の曽祖父	= 7
+#DIM CONST 続柄_高祖父母の高祖父	= 8
+#DIM CONST 続柄_九世の祖			= 9
+#DIM CONST 続柄_十世の祖			= 10
+#DIM CONST 続柄_母					= 11
+#DIM CONST 続柄_祖母				= 12
+#DIM CONST 続柄_曽祖母				= 13
+#DIM CONST 続柄_高祖母				= 14
+#DIM CONST 続柄_高祖父母の母		= 15
+#DIM CONST 続柄_高祖父母の祖母		= 16
+#DIM CONST 続柄_高祖父母の曽祖母	= 17
+#DIM CONST 続柄_高祖父母の高祖母	= 18
+#DIM CONST 続柄_九世の祖母			= 19
+#DIM CONST 続柄_十世の祖母			= 20
+#DIM CONST 続柄_子					= 21
+#DIM CONST 続柄_孫					= 22
+#DIM CONST 続柄_曽孫				= 23
+#DIM CONST 続柄_玄孫				= 24
+#DIM CONST 続柄_来孫				= 25
+#DIM CONST 続柄_昆孫				= 26
+#DIM CONST 続柄_仍孫				= 27
+#DIM CONST 続柄_雲孫				= 28
+#DIM CONST 続柄_雲孫の子			= 29
+#DIM CONST 続柄_雲孫の孫			= 30
+#DIM CONST 続柄_兄姉				= 31
+#DIM CONST 続柄_弟妹				= 32
+#DIM CONST 続柄_従兄姉				= 33
+#DIM CONST 続柄_従弟妹				= 34
+#DIM CONST 続柄_再従兄姉			= 35
+#DIM CONST 続柄_再従弟妹			= 36
+#DIM CONST 続柄_三従兄姉			= 37
+#DIM CONST 続柄_三従弟妹			= 38
+#DIM CONST 続柄_四従兄姉			= 39
+#DIM CONST 続柄_四従弟妹			= 40
+#DIM CONST 続柄_伯父母				= 41
+#DIM CONST 続柄_叔父母				= 42
+#DIM CONST 続柄_甥姪				= 51
+#DIM CONST 続柄_祖先				= 続柄_尊属_父 + 尊属探索_上限 + 1
+#DIM CONST 続柄_子孫				= 続柄_卑属 + 卑属探索_上限 + 1
+#DEFINE 間柄_実父		CFLAG:当人:父親
+#DEFINE 間柄_実母		CFLAG:当人:母親
+#DEFINE 間柄_相手父		CFLAG:相手:父親
+#DEFINE 間柄_相手母		CFLAG:相手:母親
+#DEFINE 間柄_父方祖父	CFLAG:(間柄_実父):父親
+#DEFINE 間柄_父方祖母	CFLAG:(間柄_実父):母親
+#DEFINE 間柄_母方祖父	CFLAG:(間柄_実母):父親
+#DEFINE 間柄_母方祖母	CFLAG:(間柄_実母):母親
+#DEFINE 間柄_相手父方祖父	CFLAG:(間柄_相手父):父親
+#DEFINE 間柄_相手父方祖母	CFLAG:(間柄_相手父):母親
+#DEFINE 間柄_相手母方祖父	CFLAG:(間柄_相手母):父親
+#DEFINE 間柄_相手母方祖母	CFLAG:(間柄_相手母):母親
+

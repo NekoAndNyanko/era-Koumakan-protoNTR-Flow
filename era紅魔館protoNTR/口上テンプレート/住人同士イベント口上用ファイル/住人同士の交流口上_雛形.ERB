@@ -1,0 +1,7586 @@
+﻿;-------------------------------------------------------------------------------
+;住人同士口上ファイル雛形
+;LOCAL:0	受け攻めの判定(0=受け, 1=攻め)
+;LOCAL:1	自分のキャラ番号
+;LOCAL:2	相手のキャラ番号
+;LOCAL:3	どの部分の口上か
+;地の文→攻め側セリフ→受け側セリフの順で表示されます
+;
+;性交関連から色んなパターンを分けていったらとんでもない量になってしまいました
+;特に裸と着衣で文章を変える必要がない場合などは
+;CASE 350,351と書けば同じ文章を表示できます
+;口上作者さんのお好きなように
+;
+;参考：
+;	CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2)でLOCAL:1からLOCAL:2に対する好感度が参照できます
+;-------------------------------------------------------------------------------
+@INHABITANT_FRIENDSHIP_KOJO_KX_0(LOCAL:0,LOCAL:1,LOCAL:2,LOCAL:3)
+	SELECTCASE CFLAG:(LOCAL:1):住人同士イベント内容/10
+		
+		;会話
+		CASE 300
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;お茶
+		CASE 301
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;スキンシップ
+		CASE 302
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;尻を撫でる
+		CASE 310
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;抱きつく
+		CASE 311
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;キス
+		CASE 312
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;胸愛撫
+		CASE 313
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;アナル愛撫
+		CASE 314
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;クリ愛撫
+		CASE 315
+			;攻め側
+			IF LOCAL:0
+				;相手がペニス持ちの場合はペニス愛撫
+				IF HAS_PENIS(LOCAL:2)
+					;開始
+					IF LOCAL:3 == 0
+						PRINTFORML 
+					;途中
+					ELSEIF LOCAL:3 == 1
+						PRINTFORML 
+					;中断
+					ELSEIF LOCAL:3 == 2
+						PRINTFORML 
+					;終了
+					ELSE
+						PRINTFORML 
+					ENDIF
+				;ない場合はクリ愛撫
+				ELSE
+					;開始
+					IF LOCAL:3 == 0
+						PRINTFORML 
+					;途中
+					ELSEIF LOCAL:3 == 1
+						PRINTFORML 
+					;終了
+					ELSE
+						PRINTFORML 
+					ENDIF
+				ENDIF
+			;受け側
+			ELSE
+				;自分がペニス持ちの場合はペニス愛撫される
+				IF HAS_PENIS(LOCAL:2)
+					;開始
+					IF LOCAL:3 == 0
+						PRINTFORML 
+					;途中
+					ELSEIF LOCAL:3 == 1
+						PRINTFORML 
+					;中断
+					ELSEIF LOCAL:3 == 2
+						PRINTFORML 
+					;終了
+					ELSE
+						PRINTFORML 
+					ENDIF
+				;ない場合はクリ愛撫
+				ELSE
+					;開始
+					IF LOCAL:3 == 0
+						PRINTFORML 
+					;途中
+					ELSEIF LOCAL:3 == 1
+						PRINTFORML 
+					;中断
+					ELSEIF LOCAL:3 == 2
+						PRINTFORML 
+					;終了
+					ELSE
+						PRINTFORML 
+					ENDIF
+				ENDIF
+			ENDIF
+			
+		
+		;指挿れ
+		CASE 316
+			;攻め側
+			IF LOCAL:0
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;中断
+				ELSEIF LOCAL:3 == 2
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			;受け側
+			ELSE
+				;開始
+				IF LOCAL:3 == 0
+					PRINTFORML 
+				;途中
+				ELSEIF LOCAL:3 == 1
+					PRINTFORML 
+				;終了
+				ELSE
+					PRINTFORML 
+				ENDIF
+			ENDIF
+		
+		;性交(裸)
+		CASE 350
+			;大浴場(床)
+			IF CFLAG:(LOCAL:1):現在位置 == 場所_大浴場
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分のの好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;ベッドのある部屋
+			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分のの好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		
+		;性交(着衣)
+		CASE 351
+			;ベッドのある部屋
+			IF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分のの好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		
+		;アナル性交(裸)
+		CASE 352
+			;大浴場(床)
+			IF CFLAG:(LOCAL:1):現在位置 == 場所_大浴場
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分のの好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;ベッドのある部屋
+			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分のの好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		
+		;アナル性交(着衣)
+		CASE 353
+			;ベッドのある部屋
+			IF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分のの好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;射精中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;射精後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;射精後に挿入したままイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;射精後にペニスを抜いてイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;射精後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;開始
+							IF LOCAL:3 == 0
+								PRINTFORML 
+							;途中
+							ELSEIF LOCAL:3 == 1
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								;まだ周りを気にする余裕がある時間
+								IF CFLAG:(LOCAL:1):住人同士イベント終了時間 - 5 > DATETIME()
+									PRINTFORML 
+								;盛り上がってきてもうすぐ…という時間
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 > DATETIME()
+									PRINTFORML 
+								;絶頂中〜余韻まで(入ってくるまで気づかない)
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベント終了時間 + 5 >= DATETIME()
+									PRINTFORML 
+								;終わってから十分な時間が経過(周りに気づく余裕がある)
+								ELSE
+									PRINTFORML 
+								ENDIF
+							;終了
+							ELSE
+								;絶頂後も続行
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;絶頂後にイチャイチャタイムに移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1 || CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;絶頂後に終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		
+		;後戯(イチャイチャタイム)(性交(裸)から移行)
+		CASE 354
+			;大浴場(床)
+			IF CFLAG:(LOCAL:1):現在位置 == 場所_大浴場
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;ベッドのある部屋
+			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			ELSE
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		
+		;後戯(イチャイチャタイム)(性交(着衣)から移行)
+		CASE 355
+			;大浴場(床)
+			IF CFLAG:(LOCAL:1):現在位置 == 場所_大浴場
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;ベッドのある部屋
+			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			ELSE
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		
+		;後戯(イチャイチャタイム)(アナル性交(裸)から移行)
+		CASE 356
+			;大浴場(床)
+			IF CFLAG:(LOCAL:1):現在位置 == 場所_大浴場
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;ベッドのある部屋
+			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			ELSE
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		
+		;後戯(イチャイチャタイム)(アナル性交(着衣)から移行)
+		CASE 357
+			;大浴場(床)
+			IF CFLAG:(LOCAL:1):現在位置 == 場所_大浴場
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;ベッドのある部屋
+			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			ELSE
+				;攻め側
+				IF LOCAL:0
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;相手の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:2):(604 - 1 + LOCAL:1) >= CFLAG:(LOCAL:2):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				;受け側
+				ELSE
+					;自分がペニス持ちの場合相手に挿入
+					IF HAS_PENIS(LOCAL:1)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;相手がペニス持ちの場合自分に挿入(押し倒して騎乗位みたいな)
+					ELSEIF HAS_PENIS(LOCAL:2)
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;挿入したまま膣内に擦りつける
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;さっき抜いたので体に擦りつける
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								ENDIF
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び性交開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 2
+									PRINTFORML 
+								;アナル性交に移行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 3
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					;どちらも持っていない場合貝合わせ
+					ELSE
+						;自分の好感度が十分にある(和姦)
+						IF CFLAG:(LOCAL:1):(604 - 1 + LOCAL:2) >= CFLAG:(LOCAL:1):体を許す好感度
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						;好感度不足(強姦)
+						ELSE
+							;途中
+							IF LOCAL:3 == 1
+								;キスしながら時折腰を揺らす
+								PRINTFORML 
+							;中断
+							ELSEIF LOCAL:3 == 2
+								PRINTFORML 
+							;終了
+							ELSE
+								;再び貝合わせ開始
+								IF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 0
+									PRINTFORML 
+								;イチャイチャタイム続行
+								ELSEIF CFLAG:(LOCAL:1):住人同士イベントシチュエーション == 1
+									PRINTFORML 
+								;行為終了
+								ELSE
+									PRINTFORML 
+								ENDIF
+							ENDIF
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+	ENDSELECT
+RETURN 0
+
+
+
+
+

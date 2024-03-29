@@ -1,0 +1,132 @@
+﻿;-------------------------------------------------
+;アナルビーズ
+;道具使用コマンド、レベル3
+;-------------------------------------------------
+@COM46
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_左尻)
+SIF RESULT
+	RETURN 0
+
+;着脱の処理
+TEQUIP:アナルビーズ = !TEQUIP:アナルビーズ
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 60
+DOWNBASE:気力 += 150
+
+SOURCE:快Ａ = 150
+SOURCE:苦痛 = 200
+SOURCE:露出 = 50
+SOURCE:屈従 = 50
+SOURCE:逸脱 = 60
+SOURCE:反感 = 80
+CALL 締り具合変動, TARGET, 2, 1
+
+;装着時は快Aは下がる
+SIF TEQUIP:アナルビーズ
+	TIMES SOURCE:快Ａ , 0.80
+
+;外す時は快Aは上がる
+SIF !TEQUIP:アナルビーズ
+	TIMES SOURCE:快Ａ , 3.00
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 70
+
+;Aへの苦痛は先に処理しておく
+CALL PAIN_CHECK_A(TARGET)
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+STAIN:腸内 |= STAIN:Ａ
+STAIN:Ａ |= STAIN:腸内
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+SIF !TEQUIP:アナルビーズ
+	EXP:Ａ経験 += 2
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 1
+ENDIF
+
+EXP:PLAYER:道具使用経験 ++
+
+RETURN 1
+;-------------------------------------------------
+;装着継続の処理
+;-------------------------------------------------
+@EQUIP_COM46(ARG)
+;アナルビーズ挿入中
+
+PRINTL ＜アナルビーズ挿入中＞
+
+DOWNBASE:ARG:体力 += 60
+DOWNBASE:ARG:気力 += 150
+
+SOURCE:ARG:快Ａ += 75
+SOURCE:ARG:露出 += 25
+SOURCE:ARG:屈従 += 25
+SOURCE:ARG:逸脱 += 25
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:ARG:自己愛 < 0 || TALENT:ARG:抵抗
+	SOURCE:ARG:鬱屈 += 35
+
+;Aへの苦痛は先に処理しておく
+;EXP:Ａ経験をみる
+LOCAL = 100
+LOCAL:1 = 25
+IF EXP:ARG:Ａ経験 < EXPLV:1
+	TIMES LOCAL , 3.00
+	TIMES LOCAL:1 , 3.00
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:2
+	TIMES LOCAL , 1.20
+	TIMES LOCAL:1 , 2.00
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:3
+	TIMES LOCAL , 0.80
+	TIMES LOCAL:1 , 1.50
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:4
+	TIMES LOCAL , 0.60
+	TIMES LOCAL:1 , 1.20
+ELSEIF EXP:ARG:Ａ経験 < EXPLV:5
+	TIMES LOCAL , 0.40
+ELSEIF EXP:ARG:Ａ経験 >= EXPLV:5
+	TIMES LOCAL , 0.20
+ENDIF
+
+;PALAM:潤滑をみる
+IF PALAM:ARG:潤滑 < PALAMLV:1
+	TIMES LOCAL , 1.20
+	TIMES LOCAL:1 , 2.00
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:2
+	TIMES LOCAL , 1.00
+	TIMES LOCAL:1 , 1.50
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:3
+	TIMES LOCAL , 0.60
+ELSEIF PALAM:ARG:潤滑 < PALAMLV:4
+	TIMES LOCAL , 0.30
+ELSEIF PALAM:ARG:潤滑 >= PALAMLV:4
+	TIMES LOCAL , 0.20
+ENDIF
+SOURCE:ARG:苦痛 += LOCAL
+SOURCE:ARG:反感 += LOCAL:1
+
+RETURN 1

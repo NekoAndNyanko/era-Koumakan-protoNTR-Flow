@@ -1,0 +1,170 @@
+﻿;-------------------------------------------------
+;助手を犯す
+;特殊コマンド
+;-------------------------------------------------
+@COM185
+PRINTL 助手を犯す
+;-------------------------------------------------
+;実行判定処理
+;-------------------------------------------------
+TFLAG:実行値 = 0
+TFLAG:実行値表示用フラグ = 0
+
+;すべての命令に共通の要素を考慮
+;(従順が高いと命令に従いやすいなど)
+CALL COM_ORDER
+
+;ABL:欲望
+IF ABL:欲望
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:欲望 * 2
+	PRINT 欲望
+	PRINTV 'LV,ABL:欲望,'(,ABL:欲望 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+IF MARK:快楽刻印
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += MARK:快楽刻印 * 2
+	PRINT 快楽刻印
+	PRINTV 'LV,MARK:快楽刻印,'(,MARK:快楽刻印 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;PALAM:欲情
+IF GETPALAMLV(PALAM:欲情,5)
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += GETPALAMLV(PALAM:欲情,5) * 2
+	PRINT 欲情
+	PRINTV 'LV,GETPALAMLV(PALAM:欲情,5),'(,GETPALAMLV(PALAM:欲情,5) * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;助手のABL:露出癖
+IF ABL:ASSI:露出癖
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:ASSI:露出癖 * 2
+	PRINT 助手の露出癖
+	PRINTV 'LV,ABL:ASSI:露出癖,'(,ABL:ASSI:露出癖 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;助手が恋慕
+IF TALENT:ASSI:恋慕 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 10
+	PRINT 助手が恋慕
+	PRINTV '(,10,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;助手が親愛
+IF TALENT:ASSI:恋慕 > 1 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 15
+	PRINT 助手が親愛
+	PRINTV '(,15,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;助手が処女
+IF TALENT:ASSI:処女 == 1
+	PRINT  - 
+	TFLAG:実行値 -= 50
+	PRINT 助手が処女
+	PRINTV '(,50,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;合計を表示(40以上で実行)
+PRINT  = 
+PRINTV TFLAG:実行値
+
+LOCAL = 40
+SIF TFLAG:実行値 < LOCAL
+	PRINT  < 
+SIF TFLAG:実行値 == LOCAL
+	PRINT  = 
+SIF TFLAG:実行値 > LOCAL
+	PRINT  > 
+PRINT 実行値
+PRINTV LOCAL
+
+WAIT
+
+;実行できない
+SIF TFLAG:実行値 < LOCAL
+	RETURN 0
+
+
+;-------------------------------------------------
+;実行決定
+;-------------------------------------------------
+STR:0 = 助手を犯す
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+;TCVAR:0 射精対象フラグ（ビット0=TARGET 1=PLAYER 2=MASTER 3=ASSI）
+;TCVAR:1 予備射精対象フラグ（ビットを使いたくない人用、CFLAG:100に翻訳されます）	（1=TARGET 2=PLAYER 3=MASTER 4=ASSI 5=TARGET+ASSI 6=MASTER+ASSI）
+;TCVAR:2 射精箇所フラグ（-1=コンドーム 1=膣内 2=アナル 3=手淫 4=口淫 5=パイズリ 6=素股 7=足コキ 8=体表 9=アナル奉仕 10=道具 11=触手）
+
+SETBIT TCVAR:MASTER:0, 3
+TCVAR:MASTER:2 = 1
+;強度
+TCVAR:MASTER:4 = 1500
+
+TEQUIP:ASSI:Ｖセックス = MASTER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 0
+DOWNBASE:気力 += 250
+
+SOURCE:情愛 = 200
+SOURCE:液体 = 100
+SOURCE:屈従 = 1500
+SOURCE:逸脱 = 700
+SOURCE:反感 = 700
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 700
+
+;助手が処女喪失をした場合、屈服と逸脱を増加
+IF TALENT:ASSI:処女 == 1
+	TIMES SOURCE:逸脱 , 20.00
+	TIMES SOURCE:屈従 , 3.00
+ENDIF
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;射精に関係なく行われる処理はここから
+IF HAS_PENIS(MASTER)
+	;主人のＰ⇔助手のＶの汚れが移動
+	STAIN:MASTER:Ｐ |= STAIN:ASSI:Ｖ
+	STAIN:ASSI:Ｖ |= STAIN:MASTER:Ｐ
+ENDIF
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;助手のＶ経験
+EXP:ASSI:Ｖ経験 += 1
+
+;助手のレズ経験;同性愛　レズなら戻り値1ゲイなら戻り値2
+SIF HETEROSEX(ASSI,MASTER) == 1
+	EXP:ASSI:レズ経験 += 10
+
+RETURN 1

@@ -1,0 +1,172 @@
+﻿;-------------------------------------------------
+;フランドール口上NTR対応ラッパ口上
+;
+;NTRに対応していない咲夜口上に、NTR独自の分岐を追加するためのラッパ口上。
+;たとえばコマンド311の時に KOJO_MESSAGE_COM_K6_311 が実行される場合、
+;NTR_KOJO_MESSAGE_COM_K6_311があればそちらが優先される。
+;さらにNTR_KOJO_MESSAGE_COM_K6_311 の中で、NTR固有の分岐がすべて条件が
+;叶わなかったとき、通常の(非NTR対応の) KOJO_MESSAGE_COM_K6_311 を実行できる。
+;-------------------------------------------------
+;※※※※※※他者による修正、加筆、改変についての但し書き※※※※※※
+;前提としてオリジナル作者以外が手を入れる場合は、オリジナル作者の許可を求めること
+;オリジナル作者とコンタクトが取れない場合には以下の但し書きに従ってUPできるかどうか判断してください。
+
+;◎修正（誤字、脱字、条件分岐等ERB構文のバグ修正、本体のバージョンアップ、ダウン対応など）
+;（　許可　）※どちらかを選択してください
+;
+;◎加筆（未記入箇所、ランダム分岐、条件分岐等の増補）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎改変（オリジナル作者によって書かれた部分に対しての上書き、消去を含む）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎製作中などの理由で時限を設ける
+;（　年　月　日）まで上記の一切を認めない
+;
+;記　　寝の人
+;追記　
+;基本的に作者の意思を確認出来ない場合、加筆改変は可能ということにします
+
+;==================================================
+;312,キスする
+;==================================================
+@NTR_KOJO_MESSAGE_COM_K6_312
+	IF TFLAG:コマンド成功度 == 成功度_成功
+		CALL TRAIN_MESSAGE
+	ENDIF
+	CALL NTR_KOJO_MESSAGE_COM_K6_312_1
+	IF 1 == RESULT
+		; 戻り値が1であれば、非NTR対応口上を実行
+		TRYCALL KOJO_MESSAGE_COM_K6_312_1
+	ENDIF
+RETURN RESULT
+
+@NTR_KOJO_MESSAGE_COM_K6_312_1
+	#DIM 奴隷
+	#DIM RET_VAL
+
+	奴隷 = 人物_フラン
+	RET_VAL = 0
+
+	;唇の汚れで拒否された時
+	IF TFLAG:コマンド成功度 == 成功度_失敗NTR
+		IF TALENT:奴隷:浮気公認
+			PRINTFORML 「ん〜〜？ キスしたいの？ やめたほうがいいと思うな」
+			PRINTFORML 唇が汚れていることを理由にキスを拒まれてしまった。
+			PRINTFORML 「ね、お茶入れてよ。そしたら、キスできるよ？」
+			PRINTFORML %CALLNAME:奴隷%は唇を清めるためにお茶を欲しがっているようだ。
+		ELSE
+			PRINTFORML 「だ、だめっ！」
+			PRINTFORML 理由はわからないが唇が触れる前に拒絶されてしまった。
+			PRINTFORML 「ね、お茶入れてよ。いいかな？」
+			PRINTFORML %CALLNAME:奴隷%はお茶を欲しがっているようだ。
+		ENDIF
+	;失敗時
+	ELSEIF TFLAG:コマンド成功度 == 成功度_失敗
+	;成功時
+		IF TALENT:TARGET:恋慕
+			PRINTDATAL
+				DATAFORM 「・・キャッ・・あ、ごめんね、びっくりしちゃった」
+				DATAFORM 「・・やんっ・・あ、大丈夫？」
+				DATAFORM 「・・やっ・・あ・・ご、ごめんね？」
+			ENDDATA
+			PRINTFORML 反射的に突き飛ばしてしまった%CALLNAME:MASTER%の顔を、心配そうに覗き込んでいる。
+		ELSE
+			PRINTDATAL
+				DATAFORM 「・・な、なにするのっ！」
+				DATAFORM 「・・やんっ！！」
+				DATAFORM 「・・きゃっ！」
+			ENDDATA
+			PRINTFORML 拒絶され、突き飛ばされてしまった。
+		ENDIF
+	ELSE
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+			;唇が精液で汚れていたとき
+			IF CFLAG:射精者M != 0 && STAIN:口 & 汚れ_精液
+				PRINTFORML %CALLNAME:奴隷%とくちづけした%CALLNAME:MASTER%は彼女の唾液の味に違和感を覚え唇を離した。
+				PRINTFORML 「・・あ、苦かった？ ごめんね・・ふふっ」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中)
+				PRINTDATAL
+					DATAFORM 「・・うん・・あの人には内緒だよ・・ん・・」
+					DATAFORM 「・・イケナイことしてるみたい・・ふふっ・・」
+					DATAFORM 「・・うん、黙っててあげる」
+				ENDDATA
+				PRINTFORML %CALLNAME:TARGET%は誘惑するような視線で%CALLNAME:MASTER%を見つめた。
+			;好意度低いと冷たい
+			ELSE
+				PRINTDATAL
+					DATAFORM 「んっ・・やめて・・怒られちゃうから」
+					DATAFORM 「んっ・・だめ・・だめなの」
+					DATAFORM 「んっ・・もう・・だめなのに・・」
+				ENDDATA
+				PRINTFORML %CALLNAME:TARGET%は拒否こそしなかったが、冷ややかな目で%CALLNAME:MASTER%を睨みつけた。
+			ENDIF
+		ELSEIF ABL:欲望 >= 5
+			;互いに激しく
+			PRINTDATAL
+				DATAFORM 「んっ・・んんっ・・くちゅっ・・」
+				DATAFORM 「ちゅっ・・ぢゅっ・・ちゅぱっ・・」
+				DATAFORM 「ん・・れる・・れろっ・・」
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 互いの唇と舌を貪り合い、その味を堪能した。
+				DATAFORM %CALLNAME:TARGET%の口の中に送り込んだ舌でその歯のひとつひとつを舐め上げた。鋭い牙さえも。
+				DATAFORM %CALLNAME:TARGET%の口の中に送り込んだ舌から唾液を流し込むと、白い咽がこくりと鳴った。
+			ENDDATA
+			IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(TARGET, FAV_寝取られそう)
+				PRINTDATAL
+					DATAFORM 「・・ねぇ、これだけ？」
+					DATAFORM 「・・もっと・・したいな・・」
+					DATAFORM 「・・ふふっ、%CALLNAME:TARGET%のこと、もっと欲しいよね？」
+				ENDDATA
+				PRINTFORML %CALLNAME:MASTER%を見つめる%CALLNAME:TARGET%の視線に、飢えたような熱を感じる。
+			ELSE
+				PRINTDATAL
+					DATAFORM 「あん・・もっと奥まで舐めていいよぉ・・」
+					DATAFORM 「んふ・・上手だね、%CALLNAME:MASTER%・・もっと、欲しくなっちゃう」
+					DATAFORM 「うん・・もっと・・もっとして・・」
+				ENDDATA
+			ENDIF
+		ELSEIF ABL:親密 >= 5
+			;親しく求め合うように
+			PRINTDATAL
+				DATAFORM 「ん・・ちゅっ・・」
+				DATAFORM 「ちゅっ・・ちゅぷ・・」
+				DATAFORM 「ん・・んん・・」
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 互いに唇を寄せ合い、少しだけ舌をそよがせた。
+				DATAFORM 小さな身体を抱き寄せ唇を重ね続けた。
+				DATAFORM 唇を離すと、%CALLNAME:TARGET%は真っ赤になって%CALLNAME:MASTER%を見つめている。
+			ENDDATA
+			IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(TARGET, FAV_寝取られそう)
+				PRINTDATAL
+					DATAFORM 「くすっ・・そうだよね。こうでなくちゃ」
+					DATAFORM 「ん・・そうだよ。もっとキスしてほしいな」
+					DATAFORM 「うん・・もっと、したいな」
+				ENDDATA
+				PRINTFORML %CALLNAME:MASTER%を見つめる%CALLNAME:TARGET%の視線に、飢えたような熱を感じる。
+			ELSE
+				PRINTDATAL
+					DATAFORM 「あ・・これだけ？もっとしてくれるよね？」
+					DATAFORM 「ん・・うん、もっと、していいよ・・」
+					DATAFORM 「うん・・%CALLNAME:MASTER%・・だいすき・・」
+				ENDDATA
+			ENDIF
+		ELSE
+			;不意打ちで
+			PRINTFORML 「んっ・・！？」
+			PRINTDATAL
+				DATAFORM 不意を突かれたのか、唇を奪われた%CALLNAME:TARGET%はきょとんとした後、一拍置いて真っ赤になった。
+				DATAFORM 唇を重ねられ、%CALLNAME:TARGET%は驚きの表情を浮かべている。
+				DATAFORM 唇を離すと、%CALLNAME:TARGET%はしばらく息を止めていたが、ようやく声を出した。
+			ENDDATA
+			PRINTDATAL
+				DATAFORM 「・・ごあいさつのキスなら、ほっぺでいいんだよ？」
+				DATAFORM 「・・び、びっくりしたぁ」
+				DATAFORM 「・・えっ・・今のって・・？」
+			ENDDATA
+		ENDIF
+	ENDIF
+RETURN RET_VAL
+

@@ -1,0 +1,726 @@
+﻿;------------------------------------------------- 
+;非NTRチルノ口上
+;非NTRといってもprotoNTR向けなので、NTR関連のフラグも意識して実装。
+;恋慕状態とNTR状態のギャップを書けたらいいなというのが個人的な希望。
+;
+;チルノは浮気はあまり積極的ではないという方向で。
+;訪問者との関係は脅迫に屈する方向？
+;-------------------------------------------------
+;※※※※※※他者による修正、加筆、改変についての但し書き※※※※※※
+;前提としてオリジナル作者以外が手を入れる場合は、オリジナル作者の許可を求めること
+;オリジナル作者とコンタクトが取れない場合には以下の但し書きに従ってUPできるかどうか判断してください。
+
+;◎修正（誤字、脱字、条件分岐等ERB構文のバグ修正、本体のバージョンアップ、ダウン対応など）
+;（　許可　）※どちらかを選択してください
+;
+;◎加筆（未記入箇所、ランダム分岐、条件分岐等の増補）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎改変（オリジナル作者によって書かれた部分に対しての上書き、消去を含む）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎製作中などの理由で時限を設ける
+;（　年　月　日）まで上記の一切を認めない
+;
+;記　　寝の人
+;追記　
+;基本的に作者の意思を確認出来ない場合、加筆改変は可能ということにします
+
+;==================================================
+;300ex - 浮気について話す 
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_01(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	PRINTFORML 「それで・・%CALLNAME:MASTER%はどうしたいのさ？」
+RETURN 0
+
+;==================================================
+;300ex - 浮気について話す - 許せない
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_01_01(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		;寝取られ寸前ならもう手遅れ
+		PRINTFORML 「そんな事言ってももう手遅れだよーーだっ」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		;寝取られそうなぐらいなら、しぶしぶ頭を下げる
+		PRINTFORML 「・・むぅ・・わかった・・」
+	ELSE
+		;それ以外なら泣いて謝る
+		PRINTFORML 「ご・・ごめんね・・あたい・・あたい・・」
+	ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気について話す - 許せる
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_01_02(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		;寝取られ寸前
+		PRINTFORML 「いいの？ やったぁ！！」
+		PRINTFORML 「ねぇねぇ、こんど%CALLNAME:MASTER%がウワキする方になってみない？」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		;寝取られそうなら、別れ話と思い少し不安を感じる
+		PRINTFORML 「い、いいの？ ホントに？」
+		PRINTFORML 「ま、まさか%CALLNAME:MASTER%、あたいのことがキライになったんじゃないよね？」
+	ELSE
+		;それ以外なら自分のしたことを悔いる
+		PRINTFORML 「い・・いいの・・？ あたい・・」
+	ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気について話す - 寝取られたい
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_01_03(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+		;寝取られ寸前なら
+		PRINTFORML 「いいの？ やったぁ！！」
+		PRINTFORML 「あたい、もっとエッチなことしてくるね！」
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		;寝取られそうなら
+		PRINTFORML 「いいの？ やったぁ！！」
+	ELSE
+		;それ以外なら
+		PRINTFORML 「な、何言ってるの！？ おかしいよそんなの！」
+	ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_02(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	;最後にセックスした日時で分岐。その中でさらに好感度、屈服度で分岐
+	IF TALENT:奴隷:妊娠
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「赤ちゃん産まれるまではエッチはおあずけなんだってさ。つまんなーい」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「赤ちゃん産まれるまではエッチはおあずけなんだってさ」
+		ELSE
+			PRINTFORML 「赤ちゃん産まれるまではエッチなことしないんだって」
+		ENDIF
+	ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) == (DATETIME()/(24*60))
+		;同じ日にセックスしてたら
+		SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+			CASE IS > (DATETIME() - 1*01*60) ;１時間以内
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「たった今あの人とエッチしたばかりだよ♪」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「たった今エッチしたばかりだよ！」
+				ELSE
+					PRINTFORML 「・・たった今・・エッチしたばかり・・」
+				ENDIF
+			CASE IS > (DATETIME() - 1*04*60) ;４時間以内
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「さっきあの人とエッチしたばかりだよ♪」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「さっきエッチしたばかりだよ！」
+				ELSE
+					PRINTFORML 「・・さっき・・エッチしたばかり・・」
+				ENDIF
+			CASEELSE
+				PRINTFORML 今日もセックスしたのだと答えた。
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「今日もあの人とエッチしたんだよ♪」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「今日もあの人とエッチしたんだよ！」
+				ELSE
+					PRINTFORML 「・・今日も・・あの人と・・エッチなこと・・した・・」
+				ENDIF
+		ENDSELECT
+	ELSE
+		SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+			CASE IS > (DATETIME() - 1*01*60) ;１時間以内
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「たった今あの人とエッチしたばかりだよ♪」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「たった今エッチしたばかりだよ！」
+				ELSE
+					PRINTFORML 「・・たった今・・エッチしたばかり・・」
+				ENDIF
+			CASE IS > (DATETIME() - 1*08*60) ;８時間以内
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「さっきあの人とエッチしたばかりだよ♪」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「さっきエッチしたばかりだよ！」
+				ELSE
+					PRINTFORML 「・・さっき・・エッチしたばかり・・」
+				ENDIF
+			CASE IS > (DATETIME() - 1*24*60) ;１日以内
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「昨日もあの人とエッチしたんだよ♪」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「昨日もあの人とエッチしたんだよ！」
+				ELSE
+					PRINTFORML 「・・昨日も・・あの人と・・エッチなこと・・した・・」
+				ENDIF
+			CASE IS > (DATETIME() - 3*24*60) ;２日以内
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「昨日はあの人とエッチしてないんだよ。つまんなーい」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「昨日はあの人とエッチしてないんだよ」
+				ELSE
+					PRINTFORML 「昨日はあの人とエッチしてないよ」
+				ENDIF
+			CASEELSE
+				IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					PRINTFORML 「ずいぶんあの人とエッチしてないなぁ。つまんなーい」
+				ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					PRINTFORML 「ずいぶんあの人とエッチしてないなぁ」
+				ELSE
+					PRINTFORML 「・・ずいぶんあの人とエッチしてないよ」
+				ENDIF
+		ENDSELECT
+	ENDIF
+	;膣が訪問者の精液で汚れている場合の分岐
+	;チルノは開放的ではないので省略
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について - やっぱりやだ
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_02_01(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	IF TALENT:奴隷:公衆便所 && TALENT:奴隷:親愛
+		PRINTFORML 「あたいだってあんなことしたくないよ！ だけど、だけど、あいつが・・」
+	ELSEIF TALENT:奴隷:公衆便所 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認
+		PRINTFORML 「ええっ！？ なにそれ！？」
+		PRINTFORML 「%CALLNAME:MASTER%が何を言っても、あの人ともみんなともエッチは止めないからね！！」
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 「だいいち、あの人とセックスしてもいいって言ったのは%CALLNAME:MASTER%じゃんか！！」
+		ENDIF
+	;快楽刻印浮気快楽刻印で分岐。その中でさらに好感度、屈服度で分岐
+	ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+		;快楽を覚えてしまっている場合０にはならない
+		TALENT:奴隷:浮気公認 = 1
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「ええっ！？ なにそれ！？」
+			PRINTFORML 「だってだって、%CALLNAME:調教者%とエッチしてもぜんぜんキモチよくならないもん！」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「ええっ！？ なにそれ！？」
+			PRINTFORML 「だってだって、%CALLNAME:調教者%とエッチしてもキモチよくならないもん！」
+		ELSE
+			PRINTFORML 「ええっ！？ なにそれ！？」
+			PRINTFORML 「・・だって、%CALLNAME:調教者%とエッチしてもキモチよくならないもん・・」
+		ENDIF
+	ELSE
+		;快楽を覚えていない場合０になる
+		TALENT:奴隷:浮気公認 = 0
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「ええっ！？ なにそれ！？」
+			PRINTFORML 「う〜〜、そこまで言うなら・・」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「ええっ！？ なにそれ！？」
+			PRINTFORML 「う〜〜、そこまで言うなら・・うん、わかった・・」
+		ELSE
+			PRINTFORML 「うん、%CALLNAME:MASTER%が言うならそうする！」
+		ENDIF
+	ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について - いまのままでいい
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_02_02(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	IF TALENT:奴隷:公衆便所 && TALENT:奴隷:親愛
+		PRINTFORML 「・・どーしてそんなこと言うの？」
+	; すでに公衆便所
+	ELSEIF TALENT:奴隷:公衆便所
+		PRINTFORML 「今のままでいいの？ 本当？ 本当に？」
+	;快楽刻印浮気快楽刻印で分岐。その中でさらに好感度、屈服度で分岐
+	ELSEIF CHK_NTR_SATISFACTORY(奴隷) 
+		IF TALENT:奴隷:浮気公認 < MARK:奴隷:浮気快楽刻印
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「今のままでいいの？ もっとスゴイことしてきてもいいのに」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「今のままでいいの？ う〜ん、ちょっとザンネン」
+			ELSE
+				PRINTFORML 「今のままでいいの？ ・・ちょっとザンネン」
+			ENDIF
+		ELSE
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「今のままでいいの？ だったらそうするね！」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「今のままでいいの？ だったらそうするね」
+			ELSE
+				PRINTFORML 「今のままでいいの？」
+			ENDIF
+		ENDIF
+	ELSE
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「本当にいいの！？ やったぁ！」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+			PRINTFORML 「本当にいいの！？」
+		ELSE
+			PRINTFORML 「本当にいいの・・？」
+		ENDIF
+	ENDIF
+RETURN 0
+
+;==================================================
+;300ex - 浮気公認について - もっと寝取られたい
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_10_02_03(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+
+	IF TALENT:奴隷:公衆便所 && TALENT:奴隷:親愛
+		PRINTFORML 「・・どーして、どーしてそんなこと言うの？」
+	ENDIF
+	;浮気公認Lvで分岐。その中でさらに好感度、屈服度で分岐できればよし
+	SELECTCASE TALENT:奴隷:浮気公認
+		CASE 浮気_浮気公認 ;最低１からスタートなので発生しないはず
+				PRINTFORML 「うん、わかった！」
+		CASE 浮気_誘惑公認
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「やったぁ！ だったら、あたい・・%CALLNAME:調教者%の目の前で%NTR_KARE()%をユーワクしてみる♪」
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「やったぁ！ だったら・・%CALLNAME:調教者%の目の前で%NTR_KARE()%をユーワクしてみる！」
+			ELSE
+				PRINTFORML 「・・だったら・・%CALLNAME:調教者%の前で%NTR_KARE()%をユーワクしてみる・・」
+			ENDIF
+		CASE 浮気_性交公認
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				IF TALENT:奴隷:処女
+					PRINTFORML 「やったぁ！ だったら、あの人に抱かれる所を見せたげる♪・・ジャマなんてしないよね？」
+					PRINTFORML 「あたいのハジメテも、あの人に捧げちゃうんだ♪ いいよね？ ね？」
+				ELSE
+					; 非処女
+					PRINTFORML 「やったぁ！ だったら、あの人に抱かれる所を見せたげる♪・・ジャマなんてしないよね？」
+				ENDIF
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				IF TALENT:奴隷:処女
+					PRINTFORML 「やったぁ！ だったら、あの人に抱かれる所を見せたげる！」
+					PRINTFORML 「あたいのハジメテも、きっとあの人に奪われちゃうよ？」
+				ELSE
+					; 非処女
+					PRINTFORML 「やったぁ！ だったら、あの人に抱かれる所を見せたげる！」
+				ENDIF
+			ELSE
+				IF TALENT:奴隷:処女
+					PRINTFORML 「・・だ、だったら・・あの人に抱かれる所を見せたげる・・」
+					PRINTFORML 「あたいのハジメテ、あの人に奪われちゃうかもしれないよ・・？」
+				ELSE
+					; 非処女
+					PRINTFORML 「・・だ、だったら・・あの人に抱かれる所を見せたげる・・」
+				ENDIF
+			ENDIF
+		CASE 浮気_外泊公認
+			; すでに公衆便所
+			IF TALENT:奴隷:公衆便所
+				IF TALENT:奴隷:親愛
+					PRINTFORML 「・・いままでどーり、あの人の家にお泊りしてくるね・・」
+					PRINTFORML 「・・いっぱいエッチ・・してくるよ。あの人とも、お客様とも・・」
+				ELSE
+					PRINTFORML 「やったぁ！ いままでどーり、あの人の家にお泊りしてくるね♪」
+					PRINTFORML 「いっぱいエッチするんだ！ あの人とも、お客様とも！」
+				ENDIF
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				IF TALENT:奴隷:処女
+					PRINTFORML 「やったぁ！ だったら、今度あの人の家にお泊りしてくるね♪」
+					PRINTFORML 「あたいのハジメテも、あの人に捧げちゃうんだ♪ いいよね？ ね？」
+				ELSE
+					; 非処女
+					PRINTFORML 「やったぁ！ だったら、今度あの人の家にお泊りしてくるね♪」
+				ENDIF
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				IF TALENT:奴隷:処女
+					PRINTFORML 「やったぁ！ だったら、今度あの人の家にお泊りしてくるね！」
+					PRINTFORML 「あたいのハジメテも、きっとあの人に奪われちゃうよ？」
+				ELSE
+					; 非処女
+					PRINTFORML 「やったぁ！ だったら、今度あの人の家にお泊りしてくるね！」
+				ENDIF
+			ELSE
+				IF TALENT:奴隷:処女
+					PRINTFORML 「・・だ、だったら、今度あの人の家にお泊りしてくる・・」
+					PRINTFORML 「あたいのハジメテ、あの人に奪われちゃうかもしれないよ・・？」
+				ELSE
+					; 非処女
+					PRINTFORML 「・・だ、だったら、今度あの人の家にお泊りしてくる・・」
+				ENDIF
+			ENDIF
+		CASEELSE ;５以上
+			PRINTFORML 「こうなったら、あたいあの人の家に住む！！」
+	ENDSELECT
+RETURN 0
+
+;==================================================
+;300ex - 売春について - 売春人数
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_13_01(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+
+	PRINTFORM 「これまでにエッチした人の数・・？ 
+	SELECTCASE EXP:奴隷:浮気人数-1
+		CASE IS <= 5
+			PRINTFORML ふふん、片手で数えられるくらいだよ！」
+		CASE IS <= 10
+			PRINTFORML ふふん、両手で数えられるくらいだよ！」
+		CASE IS <= 20
+			PRINTFORML えーと・・両手でも数えられないよ！」
+		CASEELSE
+			PRINTFORML えーと、たくさん！」
+	ENDSELECT
+	IF TALENT:奴隷:恋慕 && TALENT:奴隷:浮気公認 >= 浮気_外泊公認 && !TALENT:奴隷:親愛 
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+			PRINTFORML 「もっともっとたくさんの人とエッチしたいな」
+			PRINTFORML 「そうすれば%CALLNAME:MASTER%、よろこんでくれるんだよね？」
+		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+			PRINTFORML 「もっともっとたくさんの人とエッチしないといけないよね？」
+			PRINTFORML 「だって%CALLNAME:MASTER%がそう言ったんだもん！」
+		ELSE
+			PRINTFORML 「もっとたくさんの人とエッチしないといけないよね？」
+			PRINTFORML 「だって%CALLNAME:MASTER%がそう言ったんだもん！」
+		ENDIF
+	ELSEIF TALENT:奴隷:淫乱
+		PRINTFORML 「もっともっとたくさんの人とエッチしたいな」
+		PRINTFORML 「アソコがじんじんするの」
+	ENDIF
+RETURN 0
+
+
+;==================================================
+;300ex - 売春について - 鍵の有無、恋慕
+;==================================================
+@KOJO_MESSAGE_COM_K8_300_13_02(奴隷, 調教者)
+	#DIM 奴隷
+	#DIM 調教者
+	#DIMS 関係
+
+	;恋慕、鍵の有無で分岐
+	IF TALENT:奴隷:恋慕
+		IF TALENT:奴隷:人妻
+			関係 = %"フーフ"%
+		ELSE
+			関係 = %"コイビト"%
+		ENDIF
+		IF FLAG:貞操帯鍵購入フラグ == 奴隷
+			PRINTFORML 「これってあたいの貞操帯の鍵だよね？ %関係%だから独占したいの？ うれしいな！」
+		ELSE
+			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+				PRINTFORML 「ごめんね・・あたいたち%関係%だけど、貞操帯の鍵がないとエッチしちゃいけないの」
+				PRINTFORML 「鍵さえあれば、誰とだってエッチするけどね？」
+				PRINTFORML %CALLNAME:奴隷%は貞操帯を見せつけながら%CALLNAME:MASTER%にささやいた。
+			ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+				PRINTFORML 「ごめんね・・あたいたち%関係%だけど、貞操帯の鍵がないとエッチしちゃいけないの」
+				PRINTFORML %CALLNAME:奴隷%は貞操帯を手で撫でながら%CALLNAME:MASTER%にささやいた。
+			ELSE
+				PRINTFORML 「ごめんね・・あたいたち%関係%だけど、貞操帯の鍵がないとエッチしちゃいけないの」
+				PRINTFORML %CALLNAME:奴隷%は辛そうに%CALLNAME:MASTER%にささやいた。
+			ENDIF
+		ENDIF
+	ELSE
+		IF FLAG:貞操帯鍵購入フラグ == 奴隷
+			PRINTFORML 「あたいのことを買ってくれたんだ？ あたいとエッチしたいの？ うん、いいよ？」
+		ELSE
+			PRINTFORML 「ごめんね・・この貞操帯の鍵がないとエッチしちゃいけないの」
+		ENDIF
+	ENDIF
+RETURN 0
+
+
+;==================================================
+;カウンター：乳搾り手コキ
+;==================================================
+;たしかふたなりの時はこないはず（弱気
+@KOJO_MESSAGE_COUNTER_K8_29_0
+	PRINTFORML 「ねぇ%CALLNAME:MASTER%、後ろを向いて、壁に手をついてよ！」
+RETURN 1
+
+@KOJO_MESSAGE_COUNTER_K8_29_1
+	#DIM 奴隷
+	奴隷 = 人物_チルノ
+	IF CFLAG:PLAYER:ローターA挿入 != 0
+		;あなたがアナルにローター挿入時分岐
+		PRINTFORML %CALLNAME:奴隷%は%CALLNAME:PLAYER%がアヌスにローターを挿入していることに気付いて喜んだ。
+		IF CFLAG:PLAYER:ローター挿入者 == 奴隷
+			PRINTFORML 「あ…言いつけどおりにしてくれてるんだ！」
+		ELSE
+			PRINTFORML 「あ…誰の言いつけなんだろ？ でも、ちょうどいいね！」
+		ENDIF
+		PRINTL
+	ELSEIF EQUIP:PLAYER:下半身下着１ == 0 && EQUIP:PLAYER:下半身下着２ == 0
+		;あなたがノーパンの時分岐
+		PRINTFORML %CALLNAME:奴隷%は%CALLNAME:PLAYER%が下着を身に着けていないことに気付いて喜んだ。
+		PRINTFORML 「あ…はいてないだなんて、ちょうどいいね！」
+		PRINTL
+	ENDIF
+RETURN 1
+
+@KOJO_MESSAGE_COUNTER_K8_29_2
+	IF CFLAG:PLAYER:ローターA挿入 != 0
+		PRINTFORML 「わーい出た出たぁ！ ローターってキモチいいんだね！」
+	ELSE
+		PRINTFORML 「わーい出た出たぁ！ お尻もキモチいいんだね！」
+	ENDIF
+RETURN 1
+
+@KOJO_MESSAGE_COUNTER_K8_29_3
+	SELECTCASE BASE:PLAYER:精力
+		CASE IS == 0
+			;全部搾り取った
+			PRINTFORML 「もうおしまいなの？ もっと出させてあげたいのに！」
+		CASE IS < MAXBASE:PLAYER:精力 /2
+			;大半搾り取った
+			PRINTFORML 「いっぱい出たね？ でもまだまだ元気だよ？」
+		CASEELSE
+			;少し搾り取った
+			PRINTFORML 「たっぷり出たね？ でももっともっと出せるよね？」
+	ENDSELECT
+RETURN 1
+
+;==================================================
+;押し倒し中に貞操帯の期限切れになった時の口上(公衆便所専用)
+;==================================================
+@NTR_MESSAGE_COM_K8_350_0_3(奴隷)
+	#DIM 奴隷
+	;公衆便所
+	IF TALENT:奴隷:公衆便所
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 「ごめんね、時間切れみたい。%CALLNAME:MASTER%とエッチできて、楽しかったよ」
+			PRINTFORML 「コイビトなんだし、もっともっとエッチしたいな」
+		ELSE
+			PRINTFORML 「ごめんね、時間切れみたい。楽しかった？」
+			PRINTFORML 「また今度ね？」
+		ENDIF
+	ELSE
+		IF TALENT:奴隷:恋慕
+			PRINTFORML 「・・・いいよ、もういいんだよ。鍵なんて無くても、これからは%CALLNAME:MASTER%だけの%CALLNAME:奴隷%だよ？」
+		ELSE
+			PRINTFORML 「もう、鍵なんて必要ないんだよね？」
+		ENDIF
+	ENDIF
+RETURN 0
+
+;==================================================
+;463,訪問者を誘う→あなたを連れて逃走
+;==================================================
+@KOJO_MESSAGE_COM_K8_463_0(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM 「だめだよ、%CALLNAME:MASTER%！」
+		DATAFORM 「%CALLNAME:MASTER%！こっち！」
+		DATAFORM 「いいからこっち！！」
+	ENDDATA
+RETURN 0
+
+;==================================================
+;463,訪問者を誘う→一人で逃走
+;==================================================
+@KOJO_MESSAGE_COM_K8_463_1(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM 「や、やだよっ」
+		DATAFORM 「や、やだあ！」
+		DATAFORM 「そんなの嫌だよっ！」
+	ENDDATA
+RETURN 0
+
+;==================================================
+;463,訪問者を誘う→3P持ちかけ
+;==================================================
+@KOJO_MESSAGE_COM_K8_463_2(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM 「ねぇ二人で遊ぶの？ あたいも混ざっていいよね？」
+		DATAFORM 「二人だけで遊ぶなんてずっるーい！」
+		DATAFORM 「このあたい抜きで遊ぶなんて許さないよ！」
+	ENDDATA
+RETURN 0
+
+;==================================================
+;463,訪問者を誘う→3P持ちかけ→承諾時
+;==================================================
+@KOJO_MESSAGE_COM_K8_463_3(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM 「えへへっ、早く行こうよ！」
+		DATAFORM 「ね、ナニして遊ぶの？」
+		DATAFORM 「で、どこで遊ぶの？」
+	ENDDATA
+RETURN 0
+
+;==================================================
+;463,訪問者を誘う→3P持ちかけ→拒否時
+;==================================================
+@KOJO_MESSAGE_COM_K8_463_4(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM 「えーーっ、どうして？ やだやだ！」
+		DATAFORM 「この次は呼んでね！絶対だよ！」
+		DATAFORM 「つまんなーーい！！」
+	ENDDATA
+RETURN 0
+
+;==================================================
+;463,訪問者を誘う→あなたを牽制
+;==================================================
+@KOJO_MESSAGE_COM_K8_463_5(奴隷)
+	#DIM 奴隷
+	PRINTDATAL
+		DATAFORM 「ね、聞いてよ！」
+		DATAFORM 「でさでさ！今度ね！」
+		DATAFORM 「ねぇねぇ、遊んでよぉ」
+	ENDDATA
+RETURN 0
+
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、[親愛][公衆便所]
+;-------------------------------------------
+@KOJO_MESSAGE_K8_SeeYou_900_0(奴隷,同伴)
+	#DIM 奴隷
+	#DIM 同伴
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、[公衆便所]
+;-------------------------------------------
+@KOJO_MESSAGE_K8_SeeYou_900_1(奴隷,同伴)
+	#DIM 奴隷
+	#DIM 同伴
+	CALL KOJO_MESSAGE_K8_SeeYou_900_2(奴隷,同伴)
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_寝取られ
+;-------------------------------------------
+@KOJO_MESSAGE_K8_SeeYou_900_2(奴隷,同伴)
+	#DIM 奴隷
+	#DIM 同伴
+	CALL KOJO_MESSAGE_K8_SeeYou_900_3(奴隷,同伴)
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_寝取られ寸前
+;-------------------------------------------
+@KOJO_MESSAGE_K8_SeeYou_900_3(奴隷,同伴)
+	#DIM 奴隷
+	#DIM 同伴
+
+	IF 同伴
+		PRINTFORML 「あっ、%CALLNAME:MASTER%、あたい、この人のおうちにお泊りしてくるね！」
+		PRINTFORML 「え？ もちろん、朝までこの人とエッチしてくるよ♪」
+	ELSE
+		PRINTFORML 「あっ、%CALLNAME:MASTER%、あたい、あの人のおうちにお泊りしてくるね！」
+		PRINTFORML 「え？ もちろん、朝まであの人とエッチしてくるよ♪」
+	ENDIF
+
+	PRINTFORML 「だって、アソコが熱いんだもん♪」
+
+	IF 同伴
+		PRINTFORML 「それじゃ、早く行こうよ！」
+	ELSE
+		PRINTFORML 「それじゃ、行ってくるね！」
+	ENDIF
+
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_寝取られそう
+;-------------------------------------------
+@KOJO_MESSAGE_K8_SeeYou_900_4(奴隷,同伴)
+	#DIM 奴隷
+	#DIM 同伴
+
+	IF 同伴
+		PRINTFORML 「あっ、%CALLNAME:MASTER%、あたい、この人のおうちにお泊りしてくるね！」
+		PRINTFORML 「え？ もちろん、朝までこの人とエッチしてくるよ♪」
+	ELSE
+		PRINTFORML 「あっ、%CALLNAME:MASTER%、あたい、あの人のおうちにお泊りしてくるね！」
+		PRINTFORML 「え？ もちろん、朝まであの人とエッチしてくるよ♪」
+	ENDIF
+
+
+	IF 同伴
+		PRINTFORML 「それじゃ、早く行こうよ！」
+	ELSE
+		PRINTFORML 「それじゃ、行ってくるね！」
+	ENDIF
+
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認、FAV_主人より高い
+;-------------------------------------------
+@KOJO_MESSAGE_K8_SeeYou_900_5(奴隷,同伴)
+	#DIM 奴隷
+	#DIM 同伴
+
+	IF 同伴
+		PRINTFORML 「ここにいたんだ、%CALLNAME:MASTER%、あたい、この人のおうちにお泊りしてくるね！」
+		PRINTFORML 「え？ もちろん、朝までこの人とエッチしてくるよ♪」
+	ELSE
+		PRINTFORML 「ここにいたんだ、%CALLNAME:MASTER%、あたい、あの人のおうちにお泊りしてくるね！」
+		PRINTFORML 「え？ もちろん、朝まであの人とエッチしてくるよ♪」
+	ENDIF
+
+	IF 同伴
+		PRINTFORML 「それじゃ、早く行こうよ！」
+	ELSE
+		PRINTFORML 「それじゃ、行ってくるね！」
+	ENDIF
+
+RETURN 0
+
+;-------------------------------------------
+;訪問者の家におでかけするときの挨拶
+;	前提条件	浮気公認Lv >= 浮気_外泊公認
+;-------------------------------------------
+@KOJO_MESSAGE_K8_SeeYou_900_9(奴隷,同伴)
+	#DIM 奴隷
+	#DIM 同伴
+	
+	IF 同伴
+		PRINTFORML 「ここにいたんだ、%CALLNAME:MASTER%、あたい、この人のおうちにお泊りしてくるね！」
+	ELSE
+		PRINTFORML 「ここにいたんだ、%CALLNAME:MASTER%、あたい、あの人のおうちにお泊りしてくるね！」
+	ENDIF
+	
+	
+	IF 同伴
+		PRINTFORML 「それじゃ、早く行こうよ！」
+	ELSE
+		PRINTFORML 「それじゃ、行ってくるね！」
+	ENDIF
+
+RETURN 0
+
+;-------------------------------------------
+;チルノが他の人を呼ぶときの例外処理関数
+;-------------------------------------------
+@CALLNAME_K8(奴隷, 対象)
+	#FUNCTIONS
+	#DIM 奴隷
+	#DIM 対象
+	#DIMS 呼称
+
+	呼称 = %CALLNAME:対象%
+	IF CALLNAME:奴隷 == "チルノ"
+		IF CALLNAME:対象 == "大妖精"
+			呼称 = 大ちゃん
+		ELSE
+		ENDIF
+	ELSE
+		; 名称変更時はデフォルトのまま
+	ENDIF
+RETURNF 呼称

@@ -1,0 +1,204 @@
+﻿;-------------------------------------------------
+;二穴挿し
+;セックス系派生コマンド
+;-------------------------------------------------
+@COM71
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_太股)
+SIF RESULT
+	RETURN 0
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_左尻)
+SIF RESULT
+	RETURN 0
+
+
+VARSET LOCAL
+LOCAL:1 = MASTER_POSE(6,1,1)
+LOCAL:2 = MASTER_POSE(7,1,1)
+IF LOCAL:1
+	LOCAL = LOCAL:1
+ELSEIF LOCAL:2
+	LOCAL = LOCAL:2
+ENDIF
+;LOCAL 二穴挿しされる人
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = LOCAL
+TCVAR:LOCAL:116 = LOCAL
+;-------------------------------------------------
+;挿入部位管理
+;-------------------------------------------------
+;TCVAR:2 射精箇所フラグ（-1=コンドーム 1=膣内 2=アナル 3=手淫 4=口淫 5=パイズリ 6=素股 7=足コキ 8=体表 9=アナル奉仕 10=道具 11=触手）
+
+;MASTERがA,TARGETがV挿入
+IF LOCAL == LOCAL:2
+	LOCALS = {LOCAL}/
+	CSTR:10 += LOCALS
+	TCVAR:2 = 1
+	;強度
+	TCVAR:4 = 1500
+
+	LOCALS = {LOCAL}/
+	CSTR:MASTER:10 += LOCALS
+	TCVAR:MASTER:2 = 2
+	;強度
+	TCVAR:MASTER:4 = 2500
+;MASTERがV,TARGETがA挿入
+ELSE
+	LOCALS = {LOCAL}/
+	CSTR:MASTER:10 += LOCALS
+	TCVAR:MASTER:2 = 1
+	;強度
+	TCVAR:MASTER:4 = 1500
+
+	LOCALS = {LOCAL}/
+	CSTR:10 += LOCALS
+	TCVAR:2 = 2
+	;強度
+	TCVAR:4 = 2500
+ENDIF
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 40
+DOWNBASE:気力 += 220
+
+SOURCE:快Ｃ = 400
+SOURCE:性行動 = 500
+SOURCE:屈従 = 1000
+SOURCE:逸脱 = 500
+SOURCE:反感 = 500
+
+DOWNBASE:LOCAL:体力 += 160
+DOWNBASE:LOCAL:気力 += 350
+
+SOURCE:LOCAL:快Ｖ = 400
+SOURCE:LOCAL:快Ａ = 400
+SOURCE:LOCAL:情愛 = 300
+SOURCE:LOCAL:性行動 = 300
+SOURCE:LOCAL:苦痛 = 1300
+SOURCE:LOCAL:屈従 = 500
+SOURCE:LOCAL:逸脱 = 500
+SOURCE:LOCAL:反感 = 500
+
+CALL 締り具合変動, LOCAL, 3, 0
+CALL 締り具合変動, LOCAL, 3, 1
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 500
+SIF TALENT:LOCAL:自己愛 < 0 || TALENT:LOCAL:抵抗
+	SOURCE:LOCAL:鬱屈 += 500
+
+;貞操観念持ちで恋慕、親愛持ち以外には常に反発のソースを追加する（セックス系のみ）
+SIF TALENT:LOCAL:貞操 && !TALENT:LOCAL:恋慕
+	SOURCE:LOCAL:反感 += 1000
+
+;処女だった場合は、苦痛のソースと反発のソースを追加する
+IF TALENT:LOCAL:処女 == 1
+	SOURCE:LOCAL:苦痛 += 5500
+	SOURCE:LOCAL:反感 += 3000
+ENDIF
+
+;再生処女だった場合は、苦痛のソースと反発のソースを追加する
+IF TALENT:LOCAL:処女 == 2
+	SOURCE:LOCAL:苦痛 += 3500
+	SOURCE:LOCAL:反感 += 1000
+ENDIF
+;Vへの苦痛は先に処理しておく
+CALL PAIN_CHECK_V(LOCAL)
+;Aへの苦痛は先に処理しておく
+CALL PAIN_CHECK_A(LOCAL)
+
+;-------------------------------------------------
+;処女喪失処理
+;-------------------------------------------------
+IF LOCAL == LOCAL:1
+	;MASTERがV,TARGETがA挿入
+	TEQUIP:LOCAL:Ｖセックス = MASTER
+	TEQUIP:LOCAL:Ａセックス = TARGET
+	CALL LOST_VIRGIN(LOCAL, MASTER)
+	CALL LOST_VIRGIN_A(LOCAL, TARGET)
+ELSE
+	;MASTERがA,TARGETがV挿入
+	TEQUIP:LOCAL:Ｖセックス = TARGET
+	TEQUIP:LOCAL:Ａセックス = MASTER
+	CALL LOST_VIRGIN(LOCAL, TARGET)
+	CALL LOST_VIRGIN_A(LOCAL, MASTER)
+ENDIF
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;MASTERがV,TARGETがA挿入
+IF LOCAL == LOCAL:1
+	;膣内に破瓜の血の汚れを付加
+	SIF TALENT:LOCAL:処女
+		STAIN:LOCAL:膣内 |= 汚れ_破瓜の血
+	;LOCALの膣内⇔主人のＰの汚れが移動
+	IF HAS_PENIS(MASTER)
+		STAIN:MASTER:Ｐ |= STAIN:LOCAL:膣内
+		STAIN:MASTER:Ｐ |= STAIN:LOCAL:Ｖ
+		STAIN:LOCAL:膣内 |= STAIN:MASTER:Ｐ
+		STAIN:LOCAL:Ｖ |= STAIN:MASTER:Ｐ
+	ENDIF
+	;LOCALのＡ⇔TARGETのＰの汚れが移動
+	IF HAS_PENIS(TARGET)
+		STAIN:Ｐ |= STAIN:LOCAL:腸内
+		STAIN:Ｐ |= STAIN:LOCAL:Ａ
+		STAIN:LOCAL:腸内 |= STAIN:Ｐ
+		STAIN:LOCAL:Ａ |= STAIN:Ｐ
+	ENDIF
+ELSE
+	;膣内に破瓜の血の汚れを付加
+	SIF TALENT:LOCAL:処女
+		STAIN:LOCAL:膣内 |= 汚れ_破瓜の血
+	;LOCALの膣内⇔TARGETのＰの汚れが移動
+	IF HAS_PENIS(MASTER)
+		STAIN:Ｐ |= STAIN:LOCAL:膣内
+		STAIN:Ｐ |= STAIN:LOCAL:Ｖ
+		STAIN:LOCAL:膣内 |= STAIN:Ｐ
+		STAIN:LOCAL:Ｖ |= STAIN:Ｐ
+	ENDIF
+	;LOCALのＡ⇔MASTERのＰの汚れが移動
+	IF HAS_PENIS(TARGET)
+		STAIN:MASTER:Ｐ |= STAIN:LOCAL:腸内
+		STAIN:MASTER:Ｐ |= STAIN:LOCAL:Ａ
+		STAIN:LOCAL:腸内 |= STAIN:MASTER:Ｐ
+		STAIN:LOCAL:Ａ |= STAIN:MASTER:Ｐ
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:LOCAL:Ａ経験 ++
+
+EXP:LOCAL:Ｖ性交経験 ++
+EXP:LOCAL:Ａ性交経験 ++
+
+;異常経験
+IF TALENT:LOCAL:処女 && !GETBIT(CFLAG:3,9)
+	EXP:LOCAL:異常経験 += 2
+	SETBIT CFLAG:LOCAL:異常経験,9
+ENDIF
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+ENDIF
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(LOCAL,PLAYER)
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+	EXP:LOCAL:(50 + HETEROSEX(TARGET,PLAYER)) += 3
+ENDIF
+IF HETEROSEX(TARGET,LOCAL)
+	EXP:(50 + HETEROSEX(TARGET,LOCAL)) += 3
+	EXP:LOCAL:(50 + HETEROSEX(TARGET,LOCAL)) += 3
+ENDIF
+RETURN 1

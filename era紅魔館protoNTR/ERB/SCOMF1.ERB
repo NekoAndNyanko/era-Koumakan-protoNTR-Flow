@@ -1,0 +1,332 @@
+﻿;-------------------------------------------------
+;シックスナイン
+;愛撫・奉仕系派生コマンド
+;-------------------------------------------------
+@SCOM1
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_恥丘)
+SIF RESULT
+	RETURN 0
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_右頬)
+SIF RESULT
+	RETURN 0
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:PLAYER:行為者 = TARGET
+TCVAR:TARGET:行為者 = PLAYER
+;TCVAR:2 射精箇所フラグ（-1=コンドーム 1=膣内 2=アナル 3=手淫 4=口淫 5=パイズリ 6=素股 7=足コキ 8=体表 9=アナル奉仕 10=道具 11=触手）
+
+LOCALS = {TARGET}/
+CSTR:PLAYER:10 += LOCALS
+TCVAR:PLAYER:2 = 4
+;強度
+TCVAR:PLAYER:4 = 1500
+
+LOCALS = {PLAYER}/
+CSTR:TARGET:10 += LOCALS
+TCVAR:TARGET:2 = 4
+;強度
+TCVAR:TARGET:4 = 1500
+;奉仕快楽
+TFLAG:30 = 1
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 20
+DOWNBASE:気力 += 160
+
+SOURCE:快Ｃ = 100
+SOURCE:情愛 = 100
+SOURCE:性行動 = 450
+SOURCE:達成 = 200
+SOURCE:液体 = 80
+SOURCE:露出 = 100
+SOURCE:屈従 = 800
+SOURCE:逸脱 = 600
+SOURCE:反感 = 600
+IF HAS_PENIS(PLAYER)
+	LOCAL = GET_STAINCOUNT(PLAYER, 部位_Ｐ, TARGET)
+ELSE
+	LOCAL = GET_STAINCOUNT(PLAYER, 部位_Ｖ, TARGET)
+ENDIF
+;上のほうで計算した汚れデータ
+SOURCE:不潔 = LOCAL * 80 + 50
+IF SELECTCOM == 3
+	;破瓜抑制
+	TFLAG:2 = 1
+	IF !TALENT:処女
+		SOURCE:快Ｖ += 120
+		SOURCE:苦痛 += 15
+		SOURCE:露出 += 10
+		SOURCE:逸脱 += 20
+		SOURCE:反感 += 20
+	;V経験が0の時はV経験を伴わない物に派生
+	;Vの珠は入らないが、快Vが高いと慣らしてあるため処女喪失時に影響
+	ELSE
+		SOURCE:快Ｖ += 60
+		SOURCE:苦痛 += 10
+		SOURCE:露出 += 30
+		SOURCE:逸脱 += 30
+		SOURCE:反感 += 30
+	ENDIF
+	;Vへの苦痛
+	CALL PAIN_CHECK_V(TARGET)
+	;-------------------------------------------------
+	;汚れの処理
+	;-------------------------------------------------
+	;奴隷の膣内⇔調教者の指の汚れが移動
+		STAIN:膣内 |= STAIN:PLAYER:手
+		STAIN:PLAYER:手 |= STAIN:膣内
+ELSEIF SELECTCOM == 5
+	SOURCE:快Ａ += 100
+	SOURCE:苦痛 += 100
+	SOURCE:屈従 += 100
+	SOURCE:逸脱 += 80
+	SOURCE:反感 += 60
+
+	;Aへの苦痛は先に処理しておく
+	CALL PAIN_CHECK_A(TARGET)
+	;-------------------------------------------------
+	;汚れの処理
+	;-------------------------------------------------
+	;奴隷のＡ⇔調教者の指の汚れが移動
+	STAIN:PLAYER:手 |= STAIN:Ａ
+	STAIN:PLAYER:手 |= STAIN:腸内
+	STAIN:Ａ |= STAIN:PLAYER:手
+	STAIN:腸内 |= STAIN:PLAYER:手
+ENDIF
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 800
+
+;舌を使う調教では、調教者の舌使いによって、快感のソース増加
+SIF TALENT:PLAYER:舌使い
+	TIMES SOURCE:快Ｃ , 1.50
+
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;奴隷の口⇔調教者のＶの汚れが移動（半人半妖、ふたなり、オトコはペニス）
+IF HAS_PENIS(PLAYER)
+	STAIN:口 |= STAIN:PLAYER:Ｐ
+	STAIN:PLAYER:Ｐ |= STAIN:口
+ELSE
+	STAIN:口 |= STAIN:PLAYER:Ｖ
+	STAIN:PLAYER:Ｖ |= STAIN:口
+ENDIF
+;奴隷のＶ⇔調教者の口の汚れが移動（半人半妖、ふたなり、オトコはペニス）
+IF HAS_PENIS(TARGET)
+	STAIN:Ｐ |= STAIN:PLAYER:口
+	STAIN:PLAYER:口 |= STAIN:Ｐ
+ELSE
+	STAIN:Ｖ |= STAIN:PLAYER:口
+	STAIN:PLAYER:口 |= STAIN:Ｖ
+ENDIF
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+EXP:口淫経験 ++
+EXP:PLAYER:口淫経験 ++
+
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 8
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 8
+ENDIF
+
+;愛情経験
+SIF TALENT:恋慕 && ASSIPLAY == 0
+	EXP:愛情経験 += 1
+
+;奴隷が猫舌持ちの場合は、調教者に嗜虐快楽経験を追加
+SIF TALENT:TARGET:猫舌
+	EXP:嗜虐快楽経験 += 1
+
+;調教者が猫舌持ちの場合は、調教者に嗜虐快楽経験を追加
+SIF TALENT:PLAYER:猫舌
+	EXP:PLAYER:嗜虐快楽経験 += 1
+
+;精液汚れ
+SIF STAIN:PLAYER:Ｐ & 汚れ_精液
+	EXP:精飲経験 ++
+
+RETURN 1
+
+@CAN_SCOM1(ARG)
+SKIPDISP ARG
+PRINTL シックスナイン
+;-------------------------------------------------
+;実行判定処理
+;-------------------------------------------------
+TFLAG:実行値 = 0
+TFLAG:実行値表示用フラグ = 0
+
+;すべての命令に共通の要素を考慮
+;(従順が高いと命令に従いやすいなど)
+CALL COM_ORDER
+
+;ABL:欲望
+IF ABL:欲望
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:欲望 * 2
+	PRINT 欲望
+	PRINTV 'LV,ABL:欲望,'(,ABL:欲望 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;ABL:奉仕精神
+IF ABL:奉仕精神
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:奉仕精神 * 4
+	PRINT 奉仕精神
+	PRINTV 'LV,ABL:奉仕精神,'(,ABL:奉仕精神 * 4,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+IF MARK:快楽刻印
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += MARK:1 * 2
+	PRINT 快楽刻印
+	PRINTV 'LV,MARK:快楽刻印,'(,MARK:快楽刻印 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;PALAM:欲情
+IF GETPALAMLV(PALAM:欲情,5)
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += GETPALAMLV(PALAM:欲情,5) * 2
+	PRINT 欲情
+	PRINTV 'LV,GETPALAMLV(PALAM:欲情,5),'(,GETPALAMLV(PALAM:欲情,5) * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;恥じらい
+IF TALENT:羞恥心 > 0
+	PRINT  - 
+	TFLAG:実行値 -= 3
+	PRINT 恥じらい
+	PRINTV '(,3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;汚臭鈍感
+IF TALENT:汚臭耐性 > 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 3
+	PRINT 汚臭鈍感
+	PRINTV '(,3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;汚臭敏感
+IF TALENT:汚臭耐性 < 0
+	PRINT  - 
+	TFLAG:実行値 -= 3
+	PRINT 汚臭敏感
+	PRINTV '(,3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;献身的
+IF TALENT:献身的
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 6
+	PRINT 献身的
+	PRINTV '(,6,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;快感に素直
+IF TALENT:快感応答 > 0 
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 3
+	PRINT 快感に素直
+	PRINTV '(,3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;快感の否定（淫乱、娼婦で無効）
+IF TALENT:快感応答 < 0 && !TALENT:淫乱
+	PRINT  - 
+	TFLAG:実行値 -= 3
+	PRINT 快感の否定
+	PRINTV '(,3,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;恋慕
+IF TALENT:恋慕 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 5
+	PRINT 恋慕
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+;親愛
+IF TALENT:恋慕 > 1 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 4
+	PRINT 親愛
+	PRINTV '(,4,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;媚薬
+IF TEQUIP:媚薬
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 8
+	PRINT 媚薬
+	PRINTV '(,8,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+IF HAS_PENIS(PLAYER)
+	LOCAL = GET_STAINCOUNT(PLAYER, 部位_Ｐ, TARGET)
+ELSE
+	LOCAL = GET_STAINCOUNT(PLAYER, 部位_Ｖ, TARGET)
+ENDIF
+;汚れあり
+IF LOCAL
+	PRINT  - 
+	TFLAG:実行値 -= LOCAL
+	PRINT 汚れあり
+	;汚臭鈍感
+	IF TALENT:汚臭耐性 > 0
+		PRINT 、汚臭鈍感
+	ELSEIF TALENT:汚臭耐性 < 0
+		PRINT 、汚臭敏感
+	ENDIF
+	PRINTV '(,LOCAL,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;合計を表示(33以上で実行)
+PRINT  = 
+PRINTV TFLAG:実行値
+
+LOCAL = 33
+SIF TFLAG:実行値 < LOCAL
+	PRINT  < 
+SIF TFLAG:実行値 == LOCAL
+	PRINT  = 
+SIF TFLAG:実行値 > LOCAL
+	PRINT  > 
+PRINT 実行値
+PRINTV LOCAL
+
+WAIT
+SKIPDISP 0
+;実行できない
+SIF TFLAG:実行値 < LOCAL
+	RETURN 0
+RETURN 1

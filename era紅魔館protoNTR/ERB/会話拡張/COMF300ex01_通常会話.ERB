@@ -1,0 +1,161 @@
+﻿;-------------------------------------------------------------------------------
+;会話コマンド(拡張版) - 通常会話 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM300_01_ENABLE
+	RESULTS:0 = %"[ 1]-他愛も無い雑談"%
+	;常に実行可能だが別枠で処理してあるので実行不可扱いしておく
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;会話コマンド(拡張版) - 通常会話
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM300_01
+	;-----------------------------------------------------------------------------
+	;会話累積値が閾値を超えると失敗
+	IF TCVAR:会話不能 && !TALENT:恋慕
+		PRINTFORML %CALLNAME:TARGET%に話しかけようとしたが言葉が見つからない
+		PRINTW あたりに気まずい空気が流れた…
+		TIME += 10
+		LOSEBASE:気力 += 100
+		DOWNBASE:MASTER:気力 += 100
+		TFLAG:コマンド成功度 = -1
+		RETURN 0
+	ENDIF
+	;-----------------------------------------------------------------------------
+	;NTR覗きバレしていると失敗
+	IF CFLAG:覗き発覚回数 > 0 && CFLAG:覗き発覚時行為 > 0
+		;覗きバレ指摘メッセージ
+		CALL NTR_MESSAGE_300_NG_PEEP(TARGET)
+		TIME += 10
+		LOSEBASE:気力 += 100
+		DOWNBASE:MASTER:気力 += 100
+		TFLAG:コマンド成功度 = -1
+		;一度この会話が発生するとフラグをクリア
+		CFLAG:覗き発覚回数 = 0 
+		CFLAG:覗き発覚時行為 = 0
+		RETURN 0
+	ENDIF
+	;-----------------------------------------------------------------------------
+	;寝取られ寸前、寝取られそうな時稀に失敗
+	LOCAL = 0
+	IF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ)
+		;寝取られの時は却って失敗しない。無関心？
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られ寸前)
+		SIF RAND:2 == 0
+			LOCAL = 1
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_寝取られそう)
+		SIF RAND:3 == 0
+			LOCAL = 1
+	ELSEIF NTR_CHK_FAVORABLY(TARGET, FAV_主人より高い)
+		SIF RAND:4 == 0
+			LOCAL = 1
+	ENDIF
+	IF LOCAL
+		PRINTFORML %CALLNAME:TARGET%に話しかけたがどこかうわの空のようだ。
+		PRINTFORML %CALLNAME:TARGET%は他のことを考えていたと言って%CALLNAME:MASTER%から視線を逸らせた。
+		PRINTW あたりに気まずい空気が流れた…
+		TIME += 10
+		LOSEBASE:気力 += 100
+		DOWNBASE:MASTER:気力 += 100
+		TFLAG:コマンド成功度 = -1
+		RETURN 0
+	ENDIF
+	;-----------------------------------------------------------------------------
+	;会話の成否判定
+	LOCAL = RAND:100
+	LOCAL:1 = 90 + GET_SUCCESS_RATE() / 5
+	SIF LOCAL:1 > 99
+		LOCAL:1 = 99
+	IF LOCAL <= 9
+		;10％で大成功
+		TFLAG:コマンド成功度 = 1
+		EXP:MASTER:会話経験 ++
+	ELSEIF LOCAL >= LOCAL:1
+		;10〜1％で失敗
+		TFLAG:コマンド成功度 = -1
+	ELSE
+		;残りは成功
+		TFLAG:コマンド成功度 = 0
+	ENDIF
+	;先制発生時は失敗しない
+	SIF TCVAR:20
+		TFLAG:コマンド成功度 = MAX(TFLAG:コマンド成功度,0)
+	;-----------------------------------------------------------------------------
+	;会話の結果によるソース変動
+	DOWNBASE:気力 += 10
+	DOWNBASE:MASTER:気力 += 10
+	;固定で獲得するソース
+	SOURCE:歓楽 = 200
+	;ABL:親密をみる
+	IF ABL:親密 <= 1
+		SOURCE:歓楽 += (ABL:従順 * 60)
+	ELSEIF ABL:親密 <= 3
+		SOURCE:歓楽 += 200 + (ABL:従順 * 60)
+	ELSEIF ABL:親密 <= 5
+		SOURCE:歓楽 += 500 + (ABL:従順 * 60)
+	ELSEIF ABL:親密 <= 8
+		SOURCE:歓楽 += 750 + (ABL:従順 * 75)
+	ELSEIF ABL:親密 <= 11
+		SOURCE:歓楽 += 1000 + (ABL:従順 * 75)
+	ELSE
+		SOURCE:歓楽 += 2000 + (ABL:従順 * 30)
+	ENDIF
+	;好感度をみる
+	IF CFLAG:好感度 <= 500
+		SOURCE:歓楽 += CFLAG:2
+	ELSEIF CFLAG:好感度 <= 5000
+		SOURCE:歓楽 += 500 + (CFLAG:好感度 - 500) / 3
+	ELSE
+		SOURCE:歓楽 += 2000 + (CFLAG:好感度 - 5000) / 5
+	ENDIF
+	SIF SOURCE:歓楽 < 0
+		SOURCE:歓楽 = 0
+	SOURCE:受動 = 100 + 100 * ABL:従順
+	SOURCE:征服 = 100 + 100 * ABL:サドっ気
+	IF TFLAG:コマンド成功度 == -1
+		TIMES SOURCE:歓楽 , 0.10
+		TIMES SOURCE:征服 , 0.50
+		TIMES SOURCE:受動 , 0.50
+	ELSEIF TFLAG:コマンド成功度 == 0
+		TIMES SOURCE:歓楽 , 1.00
+		TIMES SOURCE:征服 , 1.00
+		TIMES SOURCE:受動 , 1.00
+	ELSE
+		TIMES SOURCE:歓楽 , 2.00
+		TIMES SOURCE:征服 , 2.00
+		TIMES SOURCE:受動 , 2.00
+	ENDIF
+	SELECTCASE ABL:MASTER:話術技能
+		CASE 0
+			TIMES SOURCE:歓楽 , 0.20
+			TIMES SOURCE:征服 , 0.20
+			TIMES SOURCE:受動 , 0.20
+		CASE 1
+			TIMES SOURCE:歓楽 , 0.40
+			TIMES SOURCE:征服 , 0.40
+			TIMES SOURCE:受動 , 0.40
+		CASE 2
+			TIMES SOURCE:歓楽 , 0.70
+			TIMES SOURCE:征服 , 0.70
+			TIMES SOURCE:受動 , 0.70
+		CASE 3
+			TIMES SOURCE:歓楽 , 1.00
+			TIMES SOURCE:征服 , 1.00
+			TIMES SOURCE:受動 , 1.00
+		CASE 4
+			TIMES SOURCE:歓楽 , 1.50
+			TIMES SOURCE:征服 , 1.50
+			TIMES SOURCE:受動 , 1.50
+		CASEELSE
+			TIMES SOURCE:歓楽 , 2.00
+			TIMES SOURCE:征服 , 2.00
+			TIMES SOURCE:受動 , 2.00
+	ENDSELECT
+	;会話累積値
+	TCVAR:会話累積値 += 200 / (3 + ABL:MASTER:話術技能)
+	TIME += 10
+	EXP:MASTER:会話経験 ++
+RETURN 1
+RETURN 0

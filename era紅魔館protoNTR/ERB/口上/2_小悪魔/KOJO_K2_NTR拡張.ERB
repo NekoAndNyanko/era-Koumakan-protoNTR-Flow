@@ -1,0 +1,218 @@
+﻿;-------------------------------------------------
+;小悪魔口上NTR対応ラッパ口上
+;
+;NTRに対応していない咲夜口上に、NTR独自の分岐を追加するためのラッパ口上。
+;たとえばコマンド311の時に KOJO_MESSAGE_COM_K2_311 が実行される場合、
+;NTR_KOJO_MESSAGE_COM_K2_311があればそちらが優先される。
+;さらにNTR_KOJO_MESSAGE_COM_K2_311 の中で、NTR固有の分岐がすべて条件が
+;叶わなかったとき、通常の(非NTR対応の) KOJO_MESSAGE_COM_K2_311 を実行できる。
+;-------------------------------------------------
+;※※※※※※他者による修正、加筆、改変についての但し書き※※※※※※
+;前提としてオリジナル作者以外が手を入れる場合は、オリジナル作者の許可を求めること
+;オリジナル作者とコンタクトが取れない場合には以下の但し書きに従ってUPできるかどうか判断してください。
+
+;◎修正（誤字、脱字、条件分岐等ERB構文のバグ修正、本体のバージョンアップ、ダウン対応など）
+;（　許可　）※どちらかを選択してください
+;
+;◎加筆（未記入箇所、ランダム分岐、条件分岐等の増補）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎改変（オリジナル作者によって書かれた部分に対しての上書き、消去を含む）
+;（　別人版と明記するなら可　）※どちらかを選択してください
+;
+;◎製作中などの理由で時限を設ける
+;（　年　月　日）まで上記の一切を認めない
+;
+;記　　寝の人
+;追記　
+;基本的に作者の意思を確認出来ない場合、加筆改変は可能ということにします
+
+;==================================================
+;60,正常位NTR拒否判定
+;==================================================
+@CHK_CANCEL_COM60_K2(奴隷)
+	#DIM RET_VAL
+	#DIM 奴隷
+
+	CALL CHK_CANCEL_COM6X_K2(奴隷)
+	RET_VAL = RESULT
+
+RETURN RET_VAL
+
+
+;==================================================
+;61,後背位NTR拒否判定
+;==================================================
+@CHK_CANCEL_COM61_K2(奴隷)
+	#DIM RET_VAL
+	#DIM 奴隷
+
+	CALL CHK_CANCEL_COM6X_K2(奴隷)
+	RET_VAL = RESULT
+
+RETURN RET_VAL
+
+
+;==================================================
+;64,逆レイプNTR拒否判定
+;==================================================
+@CHK_CANCEL_COM64_K2(奴隷)
+	#DIM RET_VAL
+	#DIM 奴隷
+
+	CALL CHK_CANCEL_COM6X_K2(奴隷)
+	RET_VAL = RESULT
+
+RETURN RET_VAL
+
+;==================================================
+;65,騎乗位NTR拒否判定
+;==================================================
+@CHK_CANCEL_COM65_K2(奴隷)
+	#DIM RET_VAL
+	#DIM 奴隷
+
+	CALL CHK_CANCEL_COM6X_K2(奴隷)
+	RET_VAL = RESULT
+
+RETURN RET_VAL
+
+
+;==================================================
+;67,対面座位NTR拒否判定
+;==================================================
+@CHK_CANCEL_COM67_K2(奴隷)
+	#DIM RET_VAL
+	#DIM 奴隷
+
+	CALL CHK_CANCEL_COM6X_K2(奴隷)
+	RET_VAL = RESULT
+
+RETURN RET_VAL
+
+
+;==================================================
+;68,背面座位NTR拒否判定
+;==================================================
+@CHK_CANCEL_COM68_K2(奴隷)
+	#DIM RET_VAL
+	#DIM 奴隷
+
+	CALL CHK_CANCEL_COM6X_K2(奴隷)
+	RET_VAL = RESULT
+
+RETURN RET_VAL
+
+;==================================================
+;6X,本番NTR拒否判定
+;==================================================
+@CHK_CANCEL_COM6X_K2(奴隷)
+	#DIM 奴隷
+	#DIM RET_VAL
+
+	RET_VAL = 1
+
+	;PRINTL !!! CHK_CANCEL_COM6X_K2
+	IF TALENT:奴隷:公衆便所 && TALENT:奴隷:親愛
+		;PRINTL !!! CHK_CANCEL_COM6X_K2 1
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+		;PRINTL !!! CHK_CANCEL_COM6X_K2 2
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+		;PRINTL !!! CHK_CANCEL_COM6X_K2 3
+		IF TALENT:奴隷:処女
+			; 寝取られ寸前、寝取られそうだと処女喪失拒否
+			IF TALENT:奴隷:浮気公認 >= 浮気_浮気公認
+				PRINTFORML 「あははっ、駄目ですよぉ？ 初めては%MSG_ANATA_SEX_2()%ではなくて%NTR_KARE()%に捧げる予定なんです♪」
+				PRINTFORML %CALLNAME:奴隷%を抱こうとしたが拒否されてしまった。
+				PRINTFORML 「私が他の人と浮気してもいいだなんて言ったのは%MSG_ANATA_SEX_2()%でしたよね？」
+			ELSE
+				PRINTFORML 「ああんっ、まだ駄目ですぅ」
+				PRINTFORML %CALLNAME:奴隷%を抱こうとしたがやんわりと躱されてしまった。
+			ENDIF
+			CFLAG:奴隷:NTR性交拒否 = NTR_性交拒否_処女喪失拒否
+			RET_VAL = 0
+		ELSE
+			; 寝取られ寸前、寝取られそうだとセックス拒否
+			IF TALENT:奴隷:浮気公認 >= 浮気_浮気公認
+				PRINTFORML 「あははっ、駄目ですぅ。%MSG_ANATA_SEX_2()%とセックスしては駄目って、%NTR_KARE()%に言われてるんですぅ」
+				PRINTFORML %CALLNAME:奴隷%を抱こうとしたが拒否されてしまった。
+				PRINTFORML 「私が他の人と浮気してもいいだなんて言ったのは%MSG_ANATA_SEX_2()%でしたよね？」
+			ELSE
+				PRINTFORML 「ああん、ごめんなさい、そんな気分じゃないんですぅ」
+				PRINTFORML %CALLNAME:奴隷%を抱こうとしたがやんわりと躱されてしまった。
+			ENDIF
+			CFLAG:奴隷:NTR性交拒否 = NTR_性交拒否_性交拒否
+			RET_VAL = 0
+		ENDIF
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+		;PRINTL !!! CHK_CANCEL_COM60_K2 4
+		IF TALENT:奴隷:処女
+			; 主人より高いと処女喪失拒否
+			IF TALENT:奴隷:浮気公認 >= 浮気_浮気公認
+				PRINTFORML 「あははっ、駄目ですよぉ？ 初めては%MSG_ANATA_SEX_2()%ではなくて%NTR_KARE()%に捧げる予定なんです♪」
+				PRINTFORML %CALLNAME:奴隷%を抱こうとしたが拒否されてしまった。
+				PRINTFORML 「私が他の人と浮気してもいいだなんて言ったのは%MSG_ANATA_SEX_2()%でしたよね？」
+			ELSE
+				PRINTFORML 「ああんっ、まだ駄目ですぅ」
+				PRINTFORML %CALLNAME:奴隷%を抱こうとしたがやんわりと躱されてしまった。
+			ENDIF
+			CFLAG:奴隷:NTR性交拒否 = NTR_性交拒否_処女喪失拒否
+			RET_VAL = 0
+		ELSE
+			; 主人より高いと生本番拒否
+			IF !TEQUIP:MASTER:コンドーム
+				IF TALENT:奴隷:浮気公認 >= 浮気_浮気公認
+					PRINTFORML 「あははっ、駄目ですぅ。%MSG_ANATA_SEX_2()%と生でセックスしては駄目って、%NTR_KARE()%の言いつけなんですぅ」
+					PRINTFORML %CALLNAME:奴隷%を抱こうとしたが拒否されてしまった。
+    				PRINTFORML 「私が他の人と浮気してもいいだなんて言ったのは%MSG_ANATA_SEX_2()%でしたよね？」
+				ELSE
+					PRINTFORML 「ええと、ごめんなさい、ゴムを着けてくれたら，ＯＫですぅ」
+					PRINTFORML %CALLNAME:奴隷%を抱こうとしたがやんわりと躱されてしまった。
+				ENDIF
+				CFLAG:奴隷:NTR性交拒否 = NTR_性交拒否_生本番拒否
+				RET_VAL = 0
+			ENDIF
+		ENDIF	
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度2)
+		;PRINTL !!! CHK_CANCEL_COM60_K2 5
+		IF TALENT:奴隷:処女
+			; うふふする程度2だと確率で処女喪失拒否
+			IF RAND:2
+				IF TALENT:奴隷:浮気公認 >= 浮気_浮気公認
+    				PRINTFORML 「あははっ、駄目ですよぉ？ 初めては%MSG_ANATA_SEX_2()%ではなくて%NTR_KARE()%に捧げる予定なんです♪」
+					PRINTFORML %CALLNAME:奴隷%を抱こうとしたが拒否されてしまった。
+    				PRINTFORML 「私が他の人と浮気してもいいだなんて言ったのは%MSG_ANATA_SEX_2()%でしたよね？」
+				ELSE
+					PRINTFORML 「あははっ、まだ駄目ですぅ」
+					PRINTFORML %CALLNAME:奴隷%を抱こうとしたがやんわりと躱されてしまった。
+				ENDIF
+				CFLAG:奴隷:NTR性交拒否 = NTR_性交拒否_処女喪失拒否
+				RET_VAL = 0
+			ENDIF
+		ELSE
+			; うふふする程度2だと確率で生本番拒否
+			IF RAND:2
+				IF !TEQUIP:MASTER:コンドーム
+					IF TALENT:奴隷:浮気公認 >= 浮気_浮気公認
+    					PRINTFORML 「あははっ、駄目ですぅ。%MSG_ANATA_SEX_2()%と生でセックスしては駄目って、%NTR_KARE()%の言いつけなんですぅ」
+						PRINTFORML %CALLNAME:奴隷%を抱こうとしたが拒否されてしまった。
+        				PRINTFORML 「私が他の人と浮気してもいいだなんて言ったのは%MSG_ANATA_SEX_2()%でしたよね？」
+					ELSE
+    					PRINTFORML 「ええと、ごめんなさい、ゴムを着けてくれたら，ＯＫですぅ」
+						PRINTFORML %CALLNAME:奴隷%を抱こうとしたがやんわりと躱されてしまった。
+					ENDIF
+					CFLAG:奴隷:NTR性交拒否 = NTR_性交拒否_生本番拒否
+					RET_VAL = 0
+				ENDIF
+			ENDIF
+		ENDIF	
+	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_奉仕する程度)
+		;PRINTL !!! CHK_CANCEL_COM60_K2 6
+	ELSE
+		;PRINTL !!! CHK_CANCEL_COM60_K2 7
+	ENDIF
+
+;PRINTFORML !!! CHK_CANCEL_COM60_K2 99 RET:{RET_VAL}
+
+RETURN RET_VAL
+

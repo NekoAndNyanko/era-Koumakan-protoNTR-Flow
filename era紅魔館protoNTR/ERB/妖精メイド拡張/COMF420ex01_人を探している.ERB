@@ -1,0 +1,98 @@
+﻿;-------------------------------------------------------------------------------
+;妖精メイドと話す(拡張版) - 人を探している 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM420_01_ENABLE
+	RESULTS:0 = %"[ 1]-人を探している"%
+	;常に実行可能
+	RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;妖精メイドと話す(拡張版) - 人を探している
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM420_01
+	#DIM キャラ番号
+	#DIMS ボタン文字列
+	PRINTFORML %"妖精メイド「誰をお探しですか？」"%
+	DRAWLINE
+	PRINTFORML %"名前           場所(クリックで移動)   好感度 屈服度 各種フラグ等   活動時間"%
+	DRAWLINE
+	;全員分ループ
+	FOR キャラ番号,1,CHARANUM
+		PRINTFORM %CALLNAME:キャラ番号,15,LEFT%
+		ボタン文字列 = %GETPLACENAME(CFLAG:キャラ番号:現在位置)%
+		PRINTBUTTON "["+ボタン文字列+"]", CFLAG:キャラ番号:現在位置
+		PRINTFORM %" "*MAX(0,(20-STRLENS(ボタン文字列)))%
+		PRINTFORM %TOSTR(CFLAG:キャラ番号:好感度,"#####0"),7%
+		PRINTFORM %TOSTR(CFLAG:キャラ番号:屈服度,"#####0"),7%
+		SETCOLOR 色設定_状態_恋慕
+		PRINTFORM %"恋慕"*(TALENT:キャラ番号:恋慕>0),5%
+		SETCOLOR 色設定_状態_ＮＴＲ
+		PRINTFORM %"NTR "*(TALENT:キャラ番号:NTR>0),5%
+		SETCOLOR 色設定_状態_睡眠中
+		PRINTFORM %"睡眠"*(CFLAG:キャラ番号:睡眠>0),5%
+		RESETCOLOR
+		PRINTFORM %" "+CHARA_KATUDOU(キャラ番号)%
+		PRINTL
+	NEXT
+	;キャラ以外
+	IF FLAG:侵入者の現在位置
+		PRINTFORM %"こいし",15,LEFT%
+		ボタン文字列 = %GETPLACENAME(FLAG:侵入者の現在位置)%
+		PRINTBUTTON "["+ボタン文字列+"]", FLAG:侵入者の現在位置
+		PRINTFORM %" "*MAX(0,(20-STRLENS(LOCALS)))%
+		PRINTFORML %""%
+	ENDIF
+	DRAWLINE
+	PRINTBUTTON "[確認終了]", 0
+	$COM420_01_INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		RETURN 1
+	ELSEIF RESULT > 0 &&  RESULT <= 場所番号最大値
+		NEXTCOM = GETNUM(TRAINNAME, "移動")
+		TFLAG:195 = RESULT
+		CALLF FARMOVE(MASTER, CFLAG:MASTER:現在位置, RESULT)
+	ELSE
+		CLEARLINE 1
+		GOTO COM420_01_INPUT_LOOP
+	ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;キャラの活動時間を返す(仮
+;そのうちキャラ別ファイルに移行
+;@return 活動時間を示す文字列
+@CHARA_KATUDOU(キャラ番号)
+	#FUNCTIONS
+	#DIM キャラ番号
+	SELECTCASE キャラ番号
+		CASE 人物_美鈴
+			RETURNF " 6時〜13時、14時〜22時"
+		CASE 人物_小悪魔
+			RETURNF "10時〜26時(翌日2時)"
+		CASE 人物_パチュリー
+			RETURNF "10時〜26時(翌日2時)"
+		CASE 人物_咲夜
+			RETURNF " 7時〜28時(翌日4時)"
+		CASE 人物_レミリア
+			RETURNF "18時〜30時(翌日6時)"
+		CASE 人物_フラン
+			RETURNF "18時〜30時(翌日6時)"
+		CASE 人物_子悪魔
+			RETURNF " 9時〜27時(翌日3時)"
+		CASE 人物_チルノ
+			RETURNF " 6時〜21時"
+		CASE 人物_大妖精
+			RETURNF " 6時〜21時"
+		CASE 人物_魔理沙
+			RETURNF " 6時〜21時"
+		CASE 人物_霊夢
+			RETURNF " 5時〜22時"
+		CASE 人物_ルーミア
+			RETURNF " 9時〜29時(翌日5時)"
+		CASE 人物_アリス
+			RETURNF " 6時〜22時"
+	ENDSELECT

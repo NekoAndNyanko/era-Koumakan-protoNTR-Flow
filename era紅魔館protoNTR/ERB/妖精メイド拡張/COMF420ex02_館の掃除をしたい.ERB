@@ -1,0 +1,87 @@
+﻿;-------------------------------------------------------------------------------
+;妖精メイドと話す(拡張版) - 館の掃除をしたい 実行判定
+; RETURN 0 コマンドの実行不可
+; RETURN 1 コマンドの実行可能
+@COM420_02_ENABLE
+	RESULTS:0 = %"[ 2]-館の掃除をしたい"%
+	;常に実行可能
+	RETURN 1
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;妖精メイドと話す(拡張版) - 館の掃除をしたい
+; RETURN 0 コマンドの実行に失敗
+; RETURN 1 コマンドの実行に成功
+@COM420_02
+	#DIM  場所番号
+	#DIMS 場所名称
+	PRINTFORML %"妖精メイド「現在はこんな感じですね」"%
+	DRAWLINE
+	PRINTFORML %"場所名                  清潔度    場所名                  清潔度"%
+	DRAWLINE
+	FOR 場所番号,1,場所番号最大値+1
+		IF 場所番号 == 場所_あなた私室
+			場所名称 = %CALLNAME:MASTER%私室
+		ELSE
+			場所名称 = %GETPLACENAME(場所番号)%
+		ENDIF
+		PRINTBUTTON "["+場所名称+"]", 場所番号
+		PRINTFORM %" "*(20-STRLENS(場所名称))%
+		PRINTFORM %SEIKETU(場所番号),8,RIGHT%%"    "%
+		RESETCOLOR
+		IF 場所番号 % 2 == 0
+			PRINTL
+		ENDIF
+	NEXT
+	PRINTL
+	DRAWLINE
+	PRINTBUTTON "[確認終了]", 0
+	$COM420_02_INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		RETURN 1
+	ELSEIF RESULT > 0 &&  RESULT <= 場所番号最大値
+		;目的地がテラスならレミリア私室が閉まっている且つ合鍵を持っていないと進めない
+		IF RESULT == 場所_3Fテラス && FLAG:(300 + 場所_レミリア私室) && !HAS_DUPLICATE_KEY(場所_レミリア私室)
+			PRINTW レミリア私室を通れない為、移動できません
+			CLEARLINE 2
+			GOTO COM420_02_INPUT_LOOP
+		ENDIF
+		NEXTCOM = GETNUM(TRAINNAME, "移動")
+		TFLAG:195 = RESULT
+		CALLF FARMOVE(MASTER, CFLAG:MASTER:現在位置, RESULT)
+	ELSE
+		CLEARLINE 1
+		GOTO COM420_02_INPUT_LOOP
+	ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;指定された部屋の清潔度を返す
+;@return 清潔度の表示文字列
+@SEIKETU(場所番号)
+	#FUNCTIONS
+	#DIM 場所番号
+	SELECTCASE FLAG:(100 + 場所番号)
+		CASE IS < 100
+			SETCOLOR 色設定_清潔度１
+			RETURNF "    最高"
+		CASE IS < 500
+			SETCOLOR 色設定_清潔度２
+			RETURNF "      高"
+		CASE IS < 1000
+			SETCOLOR 色設定_清潔度３
+			RETURNF "  やや高"
+		CASE IS < 2000
+			SETCOLOR 色設定_清潔度４
+			RETURNF "      中"
+		CASE IS < 3500
+			SETCOLOR 色設定_清潔度５
+			RETURNF "  やや低"
+		CASE IS < 5000
+			SETCOLOR 色設定_清潔度６
+			RETURNF "      低"
+		CASEELSE
+			SETCOLOR 色設定_清潔度７
+			RETURNF "ゴミの山"
+	ENDSELECT

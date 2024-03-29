@@ -1,0 +1,102 @@
+﻿;-------------------------------------------------
+;愛撫
+;愛撫系コマンド　レベル2
+;-------------------------------------------------
+@COM0
+
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_恥丘)
+SIF RESULT
+	RETURN 0
+TRYCALL COM417_is_Protected(PLAYER,TARGET,娼婦紋_胸元)
+SIF RESULT
+	RETURN 0
+
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = PLAYER
+
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 5
+DOWNBASE:気力 += 50
+
+SOURCE:快Ｃ = 80
+SOURCE:快Ｂ = 80
+SOURCE:情愛 = 50
+SOURCE:性行動 = 60
+SOURCE:露出 = 20
+SOURCE:不潔 = 30
+SOURCE:逸脱 = 20
+SOURCE:反感 = 20
+
+;舌を使う調教では、調教者の舌使いによって、快感のソース増加
+IF TALENT:PLAYER:舌使い
+	TIMES SOURCE:快Ｃ , 1.50
+	TIMES SOURCE:快Ｂ , 1.50
+	TIMES SOURCE:情愛 , 1.50
+ENDIF
+;猫舌は減少
+IF TALENT:PLAYER:猫舌
+	TIMES SOURCE:快Ｃ , 0.75
+	TIMES SOURCE:快Ｂ , 0.75
+	TIMES SOURCE:情愛 , 0.75
+ENDIF
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 20
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+IF (FIRSTTIME(TOSTR(312),1) || FIRSTTIME(TOSTR(20),1)) || (MASTER_POSE(4,4) != TARGET && MASTER_POSE(0,4)) || (STAIN:口 >= 2 && (STAIN:口 != 16 && STAIN:口 != 17) && ASSIPLAY == 0 && TALENT:MASTER:汚臭耐性 < 2) || TEQUIP:20
+;奴隷の口の汚れがあるときキスはない（愛液と母乳よごれはＯＫ、汚れ無視か助手調教時は問題なし）
+;ボールギャグ使用中もなし
+	SOURCE:不潔 = 0
+	SOURCE:情愛 /= 4
+	SOURCE:液体 /= 2
+ELSE
+	;キス経験
+	EXP:キス経験 ++
+	EXP:PLAYER:キス経験 ++
+	;汚臭鈍感
+	SIF TALENT:汚臭耐性 > 0
+		SOURCE:不潔 /= 4
+	;汚臭敏感
+	SIF TALENT:汚臭耐性 < 0
+		SOURCE:不潔 *= 3
+	;プライド高い
+	SIF TALENT:プライド > 0
+		SOURCE:不潔 *= 2
+	IF STAIN:PLAYER:口
+	;主人の口の汚れがあると不潔150%
+		SOURCE:不潔 *= 3
+		SOURCE:不潔 /= 2
+	ENDIF
+	;奴隷の口⇔調教者の口の汚れが移動
+	STAIN:口 |= STAIN:PLAYER:口
+	STAIN:PLAYER:口 |= STAIN:口
+ENDIF
+
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+IF HETEROSEX(TARGET,PLAYER)
+	EXP:(50 + HETEROSEX(TARGET,PLAYER)) += 5
+	EXP:PLAYER:(50 + HETEROSEX(TARGET,PLAYER)) += 5
+ENDIF
+
+;調教者が猫舌持ちの場合は、調教者に嗜虐快楽経験を追加
+SIF TALENT:PLAYER:猫舌
+	EXP:PLAYER:嗜虐快楽経験 += 1
+;手淫経験
+EXP:PLAYER:手淫経験 ++
+
+RETURN 1

@@ -1,0 +1,302 @@
+﻿;-------------------------------------------------------------------------------
+;進入者ステータス設定
+@MAN_SET
+    ; FAILSAFE
+    SIF FLAG:訪問者のお気に入り >= CHARANUM
+        FLAG:訪問者のお気に入り = 999
+    SIF FLAG:訪問者の嫌いな相手 >= CHARANUM
+        FLAG:訪問者の嫌いな相手 = 999
+    PRINTL 設定する項目を選択してください
+    PRINTFORM [ 1] お気に入りのキャラ　
+    SETCOLOR 色設定_テキスト_備考
+    PRINT :
+    IF FLAG:訪問者のお気に入り == 999
+        SETCOLOR 色設定_設定_無効化
+        PRINTL - 無し -
+    ELSE
+        SETCOLOR 色設定_設定_肯定的
+        IF FLAG:ランダム_訪問者のお気に入り == 0
+            PRINTFORML  %CALLNAME:(FLAG:訪問者のお気に入り)%
+        ELSE
+            PRINTFORML  ランダム
+        ENDIF
+    ENDIF
+    RESETCOLOR
+
+    PRINTFORM [ 2] 嫌いなキャラ　　　　
+    SETCOLOR 色設定_テキスト_備考
+    PRINT :
+    IF FLAG:訪問者の嫌いな相手 == 999
+        SETCOLOR 色設定_設定_無効化
+        PRINTL - 無し -
+    ELSE
+        SETCOLOR 0xBBAADD
+        IF FLAG:ランダム_訪問者の嫌いな相手 == 0
+            PRINTFORML  %CALLNAME:(FLAG:訪問者の嫌いな相手)%
+        ELSE
+            PRINTFORML  ランダム
+        ENDIF
+    ENDIF
+    RESETCOLOR
+
+    PRINTFORM [ 3] ストライクゾーン下限
+    SETCOLOR 色設定_設定_肯定的
+    PRINT :
+    SELECTCASE FLAG:訪問者のストライクゾーン下限
+        CASE 1
+            PRINTFORML  乳児
+        CASE 2
+            PRINTFORML  幼児
+        CASE 3
+            PRINTFORML  思春期
+        CASE 4
+            PRINTFORML  成人
+        CASEELSE
+            ;デフォルト値
+            FLAG:訪問者のストライクゾーン下限 = 0
+            PRINTFORML  乳児
+    ENDSELECT
+    RESETCOLOR
+
+    PRINTFORM [10] 気になる場所　　　　
+    SETCOLOR 色設定_テキスト_備考
+    PRINT :
+    IF FLAG:訪問者の気になる場所 == 0
+        SETCOLOR 色設定_設定_無効化
+        PRINTL - 無し -
+    ELSE
+        SETCOLOR 色設定_設定_肯定的
+        IF FLAG:ランダム_訪問者の気になる場所 == 0
+            PRINTFORML  %GETPLACENAME(FLAG:訪問者の気になる場所)%
+        ELSE
+            PRINTFORML  ランダム
+        ENDIF
+    ENDIF
+    RESETCOLOR
+    PRINT [11] 気になる場所周辺へ留まる（2階から外へ降りた場合などは無効）
+    SETCOLOR 色設定_テキスト_備考
+    PRINT :
+    IF !GETBIT(FLAG:雑多設定, 4)
+        SETCOLOR 色設定_設定_無効化
+        PRINTL - Off -
+    ELSE
+        SETCOLOR 色設定_設定_肯定的
+        PRINTL - On -
+    ENDIF
+    RESETCOLOR
+    
+    PRINTFORM [12] お気に入りの場所　　
+    SETCOLOR 色設定_テキスト_備考
+    PRINT :
+    IF FLAG:訪問者のお気に入りの場所 == 0
+        SETCOLOR 色設定_設定_無効化
+        PRINTL - 無し -
+    ELSE
+        SETCOLOR 色設定_設定_肯定的
+        IF FLAG:ランダム_訪問者のお気に入りの場所 == 0
+            PRINTFORML  %GETPLACENAME(FLAG:訪問者のお気に入りの場所)%
+        ELSE
+            PRINTFORML  ランダム
+        ENDIF
+    ENDIF
+    RESETCOLOR
+
+    PRINT [20] 訪問者の外見要素を追加
+    SETCOLOR 色設定_テキスト_備考
+    PRINT :
+
+    IF !GETBIT(FLAG:雑多設定, 3)
+        SETCOLOR 色設定_設定_無効化
+        PRINTL - Off -
+    ELSE
+        SETCOLOR 色設定_設定_肯定的
+        PRINTL - On -
+    ENDIF
+    RESETCOLOR
+
+    IF !GETBIT(FLAG:雑多設定, 3)
+        SETCOLOR 色設定_設定_無効化
+        PRINTL [-] 訪問者の外見設定
+    ELSE
+        PRINTL [21] 訪問者の外見設定
+    ENDIF
+    RESETCOLOR
+    PRINTL [100] 戻る
+
+    $INPUT_LOOP
+    INPUT
+    IF RESULT == 1
+        PRINTL 以下より選択してください
+        FOR LOCAL, 0, CHARANUM
+            SIF LOCAL == FLAG:訪問者の嫌いな相手
+                SETCOLOR 色設定_テキスト_備考
+            PRINTFORM [{LOCAL, 3}]%CALLNAME:LOCAL, 16, LEFT%
+            SETCOLOR 色設定_テキスト_無効
+            PRINTFORML (屈服度:{CFLAG:LOCAL:21, 5})
+            RESETCOLOR
+        NEXT
+        ;050番は流石に使わないと思うので使わせてもらいます
+        PRINTL [998] ランダム
+        PRINTL [999] 選択しない
+        $INPUT_LOOP1
+        INPUT
+        IF RESULT >= 0 && RESULT < CHARANUM && RESULT != FLAG:訪問者の嫌いな相手
+            FLAG:訪問者のお気に入り = RESULT
+            ;手動で選んだのでランダム表示もクリア
+            FLAG:ランダム_訪問者のお気に入り = 0
+            PRINTFORMW %CALLNAME:RESULT%を%NTR_NAME(0)%のお気に入りに設定しました
+            PRINTL 
+        ELSEIF RESULT == 998
+            ;被ってたらやり直しループの起点
+            $INPUT_LOOP1_1
+            FLAG:訪問者のお気に入り = RAND:CHARANUM
+            ;嫌いなキャラと被ってないかチェック　被ってたらやり直し
+            IF FLAG:訪問者のお気に入り != FLAG:訪問者の嫌いな相手
+                ;被ってなかったのでランダム表示ON
+                FLAG:ランダム_訪問者のお気に入り = 1
+            ELSE
+                ;被ってたのでやり直し
+                GOTO INPUT_LOOP1_1
+            ENDIF
+        ELSEIF RESULT == 999
+            FLAG:訪問者のお気に入り = 999
+            ;なしにしたのでランダム表示もクリア
+            FLAG:ランダム_訪問者のお気に入り = 0
+        ELSE
+            GOTO INPUT_LOOP1
+        ENDIF
+    ELSEIF RESULT == 2
+        PRINTL 以下より選択してください
+        FOR LOCAL, 0, CHARANUM
+            SIF LOCAL == FLAG:訪問者の嫌いな相手
+                SETCOLOR 色設定_テキスト_備考
+            PRINTFORM [{LOCAL, 3}]%CALLNAME:LOCAL, 16, LEFT%
+            SETCOLOR 色設定_テキスト_無効
+            PRINTFORML (屈服度:{CFLAG:LOCAL:21, 5})
+            RESETCOLOR
+        NEXT
+        ;050番は流石に使わないと思うので使わせてもらいます
+        PRINTL [998] ランダム
+        PRINTL [999] 選択しない
+        $INPUT_LOOP2
+        INPUT
+        IF RESULT >= 0 && RESULT < CHARANUM && RESULT != FLAG:訪問者のお気に入り
+            FLAG:訪問者の嫌いな相手 = RESULT
+            ;手動で選んだのでランダム表示もクリア
+            FLAG:ランダム_訪問者の嫌いな相手 = 0
+            SIF FLAG:訪問者の嫌いな相手 == FLAG:訪問者のお気に入り
+                FLAG:訪問者のお気に入り = 0
+            PRINTFORMW %CALLNAME:RESULT%を%NTR_NAME(0)%の嫌いなキャラに設定しました
+            PRINTL 
+        ELSEIF RESULT == 998
+            ;被ってたらやり直しループの起点
+            $INPUT_LOOP2_1
+            FLAG:訪問者の嫌いな相手 = RAND:CHARANUM
+            ;お気に入りキャラと被ってないかチェック　被ってたらやり直し
+            IF FLAG:訪問者の嫌いな相手 != FLAG:訪問者のお気に入り
+                ;被ってなかったのでランダム表示ON
+                FLAG:ランダム_訪問者の嫌いな相手 = 1
+            ELSE
+                ;被ってたのでやり直し
+                GOTO INPUT_LOOP2_1
+            ENDIF
+        ELSEIF RESULT == 999
+            FLAG:訪問者の嫌いな相手 = 999
+            ;なしにしたのでランダム表示もクリア
+            FLAG:ランダム_訪問者の嫌いな相手 = 0
+        ELSE
+            GOTO INPUT_LOOP2
+        ENDIF
+    ELSEIF RESULT == 3
+        PRINTL 訪問者のストライクゾーン下限を選択してください
+        PRINTFORML [1] 乳児
+        PRINTFORML [2] 幼児
+        PRINTFORML [3] 思春期
+        PRINTFORML [4] 成人
+        $INPUT_LOOP3
+        INPUT
+        IF RESULT >= 1 && RESULT <= 4
+            FLAG:訪問者のストライクゾーン下限 = RESULT
+        ELSE
+            GOTO INPUT_LOOP3
+        ENDIF
+    ELSEIF RESULT == 10
+        PRINTL 少し気になり足が向いてしまう場所を選択してください
+        PRINTFORML （%CALLNAME:MASTER%がお気に入りのキャラになっている場合は機能しません）
+        FOR LOCAL, 1, MAXROOM()
+            PRINTFORML [{LOCAL, 2}]%GETPLACENAME(LOCAL)%
+        NEXT
+        ;050番は流石に使わないと思うので使わせてもらいます
+        PRINTL [998] ランダム
+        PRINTL [999] 選択しない
+        $INPUT_LOOP10
+        INPUT
+        IF RESULT > 0 && RESULT < MAXROOM()
+            FLAG:訪問者の気になる場所 = RESULT
+            ;手動で選んだのでランダム表示もクリア
+            FLAG:ランダム_訪問者の気になる場所 = 0
+            PRINTFORMW %GETPLACENAME(RESULT)%を%NTR_NAME(0)%の気になる場所に設定しました
+            PRINTL 
+        ELSEIF RESULT == 998
+            FLAG:訪問者の気になる場所 = RAND:MAXROOM()
+            ;ランダム表示ON
+            FLAG:ランダム_訪問者の気になる場所 = 1
+        ELSEIF RESULT == 999
+            FLAG:訪問者の気になる場所 = 0
+            ;なしにしたのでランダム表示もクリア
+            FLAG:ランダム_訪問者の気になる場所 = 0
+        ELSE
+            GOTO INPUT_LOOP10
+        ENDIF
+    ELSEIF RESULT == 12
+        PRINTL 対象と一緒にいたくなる場所を選択してください
+        FOR LOCAL, 1, MAXROOM()
+            PRINTFORML [{LOCAL, 2}]%GETPLACENAME(LOCAL)%
+        NEXT
+        ;050番は流石に使わないと思うので使わせてもらいます
+        PRINTL [998] ランダム
+        PRINTL [999] 選択しない
+        $INPUT_LOOP12
+        INPUT
+        IF RESULT > 0 && RESULT < MAXROOM()
+            FLAG:訪問者のお気に入りの場所 = RESULT
+            ;手動で選んだのでランダム表示もクリア
+            FLAG:ランダム_訪問者のお気に入りの場所 = 0
+            PRINTFORMW %GETPLACENAME(RESULT)%をお気に入りの場所に設定しました
+            PRINTL 
+        ELSEIF RESULT == 998
+            FLAG:訪問者のお気に入りの場所 = RAND:MAXROOM()
+            ;ランダム表示ON
+            FLAG:ランダム_訪問者のお気に入りの場所 = 1
+        ELSEIF RESULT == 999
+            FLAG:訪問者のお気に入りの場所 = 0
+            ;なしにしたのでランダム表示もクリア
+            FLAG:ランダム_訪問者のお気に入りの場所 = 0
+        ELSE
+            GOTO INPUT_LOOP12
+        ENDIF
+        
+        ;訪問者を気になる場所周辺に留まらせるか
+        ELSEIF RESULT == 11
+        IF !GETBIT(FLAG:雑多設定, 4)
+            SETBIT FLAG:雑多設定, 4
+        ELSE
+            CLEARBIT FLAG:雑多設定, 4
+        ENDIF
+
+    ELSEIF RESULT == 20
+        IF !GETBIT(FLAG:雑多設定, 3)
+            SETBIT FLAG:雑多設定, 3
+        ELSE
+            CLEARBIT FLAG:雑多設定, 3
+        ENDIF
+    ELSEIF RESULT == 21 && GETBIT(FLAG:雑多設定, 3)
+        CALL 体詳細設定訪問者
+    ELSEIF RESULT == 100
+        RETURN
+    ELSE
+        GOTO INPUT_LOOP
+    ENDIF
+
+    RESTART
+

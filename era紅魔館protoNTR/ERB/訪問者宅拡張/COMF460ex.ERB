@@ -1,0 +1,47 @@
+﻿;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会話コマンド(拡張版)
+; @return 0:コマンドの実行に失敗,1:コマンドの実行に成功
+; MASTER/TARGET/PLAYER/ASSIに影響されず呼び出したいので、中身は関数に切り出す
+@COM460
+	CALL COMMAND460(MASTER)
+RETURN RESULT:0
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会話コマンド(拡張版)
+; @return 0:コマンドの実行に失敗,1:コマンドの実行に成功
+@COMMAND460(奴隷)
+	#DIM 奴隷
+	#DIMS コマンド,100
+	#DIM コマンド数 = 0
+	コマンド数 = 0
+	FOR LOCAL:0,0,100
+		TRYCCALLFORM %"COM460_"+TOSTR(LOCAL:0,"00")+"_ENABLE"%, 奴隷
+			IF RESULT:0
+				コマンド:コマンド数 = %RESULTS:0%
+				コマンド数++
+			ENDIF
+		CATCH
+		ENDCATCH
+	NEXT
+	
+	IF CFLAG:奴隷:現在位置詳細 > 20
+		PRINTFORML %CALLNAME:奴隷+"が大きな声を出すと、やがて"+NTR_NAME(0)+"が降りてきた。"%
+	ENDIF
+	IF (コマンド数 > 0)
+		PRINTFORML %"何について話そうか……？"%
+		FOR LOCAL,0,コマンド数
+			PRINTFORML %コマンド:LOCAL%
+		NEXT
+		$COM460_INPUT_LOOP
+		INPUT
+		TRYCCALLFORM COM460_%TOSTR(RESULT:0,"00")%
+			RETURN RESULT:0
+		CATCH
+			CLEARLINE 1
+			GOTO COM460_INPUT_LOOP
+		ENDCATCH
+	ELSE
+		CALL COM460_01
+		RETURN RESULT:0
+	ENDIF
+RETURN 0

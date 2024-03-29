@@ -1,0 +1,515 @@
+﻿;-------------------------------------------------------------------------------
+;NTRパッチ関係オプション設定モジュール
+;
+;設定関数と設定状態の取得関数群
+;-------------------------------------------------------------------------------
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@NTR_OPTION
+	SETBIT FLAG:ＮＴＲパッチ設定,0
+	$INPUT_LOOP_NTR_OPTION_TOP
+	PRINTFORML 
+	PRINTFORML 寝取られパッチのオプション設定をします
+	PRINTFORML [1] - %NTR_NAME(0)%の好感度吸収 \@ GETBIT(FLAG:ＮＴＲパッチ設定,1) ? ON # OFF \@
+	;PRINTFORML [2] - [恋慕] 等の素質消去 \@ GETBIT(FLAG:ＮＴＲパッチ設定,2) ? ON # OFF \@
+	PRINTFORML [3] - %NTR_NAME(0)%宅の長期滞在 \@ GETBIT(FLAG:ＮＴＲパッチ設定,3) ? ON # OFF \@
+	PRINTFORML [4] - 監禁モード \@ GETBIT(FLAG:ＮＴＲパッチ設定,4) ? ON # OFF \@
+	PRINTFORML [5] - 妊娠の有無 \@ GETBIT(FLAG:ＮＴＲパッチ設定,5) ? ON # OFF \@
+	PRINTFORML [6] - お持ち帰りの有無 \@ GETBIT(FLAG:ＮＴＲパッチ設定,6) ? ON # OFF \@
+	PRINTFORML [7] - %NTR_NAME(0)%の有無 \@ GETBIT(FLAG:ＮＴＲパッチ設定,7) ? ON # OFF \@
+	PRINTFORML [8] - NTR野外調教の有無 \@ GETBIT(FLAG:ＮＴＲパッチ設定,8) ? ON # OFF \@
+	PRINTFORML [9] - NTR睡姦の有無 \@ GETBIT(FLAG:ＮＴＲパッチ設定,9) ? ON # OFF \@
+	PRINTFORML [24] - 恋慕限定NTR \@ GETBIT(FLAG:ＮＴＲパッチ設定,24) ? ON # OFF \@
+	PRINTFORML [25] - 処女アナル調教 \@ GETBIT(FLAG:ＮＴＲパッチ設定,25) ? ON # OFF \@
+	PRINTFORML [26] - 親愛持ち戦闘敗北で公衆便所即行 \@ GETBIT(FLAG:ＮＴＲパッチ設定,26) ? ON # OFF \@
+	PRINTFORML [27] - NTR和姦モード \@ GETBIT(FLAG:ＮＴＲパッチ設定,27) ? ON # OFF \@
+	PRINTFORML [30] - 浮気発覚回避逃避 \@ GETBIT(FLAG:ＮＴＲパッチ設定,30) ? ON # OFF \@
+	PRINTFORML [31] - 訪問者居場所筒抜け \@ GETBIT(FLAG:ＮＴＲパッチ設定,31) ? ON # OFF \@
+	PRINTFORML [32] - 筒抜けモード \@ GETBIT(FLAG:ＮＴＲパッチ設定,32) ? ON # OFF \@
+	PRINTFORML [100] - 戻る
+	$INPUT_LOOP_NTR_OPTION
+	INPUT
+	IF RESULT == 1
+		PRINTFORML %NTR_NAME(0)%に好感度を吸い取られるようにしますか？(いいえの場合は減少無し)
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_1
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,1
+			PRINTFORMW 好感度が吸収されるようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,1
+			PRINTFORMW 好感度は吸収されません
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_1
+		ENDIF
+	ELSEIF RESULT == 2
+		PRINTFORML [恋慕] 等の素質消去を有効にしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_2
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,2
+			PRINTFORMW 素質が消去されるようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,2
+			PRINTFORMW 素質は消去されません
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_2
+		ENDIF
+	ELSEIF RESULT == 3
+		PRINTFORML 住民の長期滞在を有効にしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_3
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,3
+			PRINTFORMW 長期滞在を有効にしました
+			PRINTFORML 
+			$INPUT_LOOP_NTR_OPTION_3_0
+			FOR LOCAL,1,CHARANUM
+				PRINTFORML [{LOCAL,3}] - %CALLNAME:LOCAL% {NTR_GET_STAYOUT_MAXIMUM(LOCAL)}日
+			NEXT
+			PRINTFORML [999] - 戻る
+			$INPUT_LOOP_NTR_OPTION_3_1
+			INPUT
+			IF 0 < RESULT && RESULT <= CHARANUM
+				LOCAL = RESULT
+				PRINTFORML 最大何日間滞在しますか？(0以下は翌朝帰り, 最大7日)
+				INPUT
+				CALL NTR_SET_STAYOUT_MAXIMUM(LOCAL,LIMIT(RESULT,0,7))
+				GOTO INPUT_LOOP_NTR_OPTION_3_0
+			ELSEIF RESULT == 999
+				GOTO INPUT_LOOP_NTR_OPTION_TOP
+			ELSE
+				GOTO INPUT_LOOP_NTR_OPTION_3_1
+			ENDIF
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,3
+			PRINTFORMW 長期滞在を無効にしました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_3
+		ENDIF
+	ELSEIF RESULT == 4
+		PRINTFORML "%CALLNAME:MASTER%"お持ち帰り時に監禁されるようにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_4
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,4
+			PRINTFORMW 監禁されるようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,4
+			PRINTFORMW 監禁されないようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_4
+		ENDIF
+	ELSEIF RESULT == 5
+		PRINTFORML %NTR_NAME(0)%の精液で妊娠するようにしますか？(妊娠パッチ導入時のみ動作)
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_5
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,5
+			PRINTFORMW 妊娠するようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,5
+			PRINTFORMW 妊娠しないようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_5
+		ENDIF
+	ELSEIF RESULT == 6
+		PRINTFORML %NTR_NAME(0)%による住人のお持ち帰りを許可しますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_6
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,6
+			PRINTFORMW お持ち帰りするようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,6
+			PRINTFORMW お持ち帰りしないようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_6
+		ENDIF
+	ELSEIF RESULT == 7
+		PRINTFORML %NTR_NAME(0)%が来るようにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_7
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,7
+			PRINTFORMW %NTR_NAME(0)%が来訪するようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,7
+			PRINTFORMW %NTR_NAME(0)%が来訪しないようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_7
+		ENDIF
+	ELSEIF RESULT == 8
+		PRINTFORML 訪問者による野外調教を許可しますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_8
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,8
+			PRINTFORMW 訪問者による住人への野外調教を許可しました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,8
+			PRINTFORMW 訪問者による住人への野外調教を禁止しました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_8
+		ENDIF
+	ELSEIF RESULT == 9
+		PRINTFORML 訪問者による睡姦を許可しますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_9
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,9
+			PRINTFORMW 訪問者による住人への睡姦を許可しました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,9
+			PRINTFORMW 訪問者による住人への睡姦を禁止しました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_9
+		ENDIF
+	ELSEIF RESULT == 24
+		PRINTFORML 恋慕付きの住人のみをNTR対象としますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_24
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,24
+			PRINTFORMW %NTR_NAME(0)%が恋慕付きの住人のみを口説くようになりました
+			PRINTFORMW （NTR済みの住人も口説かれます）
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,24
+			PRINTFORMW %NTR_NAME(0)%が恋慕付きの住人に限らず口説くようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_24
+		ENDIF
+	ELSEIF RESULT == 25
+		PRINTFORML %NTR_NAME(0)%が住人の処女を奪わないようにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_25
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,25
+			PRINTFORMW %NTR_NAME(0)%が住人の処女を奪わないようになりました。
+			PRINTFORMW （公衆便所時の客は遠慮はしません）
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,25
+			PRINTFORMW %NTR_NAME(0)%が住人処女を奪うようになりました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_25
+		ENDIF
+	;親愛持ち戦闘敗北で公衆便所即行
+	ELSEIF RESULT == 26
+		PRINTFORML 訪問者との戦闘に敗北したとき、親愛持ちの住人が即座に公衆便所になるようにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_26
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,26
+			PRINTFORMW 訪問者との戦闘に敗北したとき、親愛持ちの住人が即座に公衆便所になるようになりました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,26
+			PRINTFORMW 訪問者との戦闘に敗北したとき、親愛持ちの住人が即座に公衆便所にならないようになりました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_26
+		ENDIF
+	;NTR和姦
+	ELSEIF RESULT == 27
+		PRINTFORML 訪問者が住人を無理矢理襲わないようにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_27
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,27
+			PRINTFORML 訪問者が住人を無理矢理襲わないようになりました。
+			PRINTFORMW (野外調教、睡姦OFFの設定を推奨します)
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,27
+			PRINTFORMW 訪問者が住人を無理矢理襲うようになりました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_27
+		ENDIF
+	;浮気発覚回避逃避
+	ELSEIF RESULT == 30
+		PRINTFORML 住人が浮気発覚を恐れて逃げるようにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_30
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,30
+			PRINTFORMW 住人が逃げるようになりました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,30
+			PRINTFORMW 住人が逃げないようになりました。
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_30
+		ENDIF
+	;訪問者居場所筒抜け
+	ELSEIF RESULT == 31
+		PRINTFORML %NTR_NAME(0)%の居場所を筒抜けにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_31
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,31
+			PRINTFORMW %NTR_NAME(0)%の居場所が筒抜けになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,31
+			PRINTFORMW %NTR_NAME(0)%の居場所が見えないようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_31
+		ENDIF
+	;筒抜けモード
+	ELSEIF RESULT == 32
+		PRINTFORML %NTR_NAME(0)%の行動を筒抜けにしますか？
+		PRINTFORML [0] はい
+		PRINTFORML [1] いいえ
+		$INPUT_LOOP_NTR_OPTION_32
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,32
+			PRINTFORMW %NTR_NAME(0)%の行動が筒抜けになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,32
+			PRINTFORMW %NTR_NAME(0)%の行動が見えないようになりました
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_32
+		ENDIF
+	ELSEIF RESULT == 100
+		RETURN 0
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION
+	ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;好感度吸収オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_DRAIN_LOVE
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,1)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;素質吸収オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_DRAIN_TALENT
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,2)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;長期滞在オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_LONG_STAY
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,3)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;監禁オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_IMPRISON_ENABLE
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,4)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;妊娠オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_PREGNANCY_ENABLE
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,5)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;お持ち帰りオプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_TAKINGOUT_ENABLE
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,6)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;訪問者来訪オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_VISITOR_COME
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,7)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;訪問者野外調教オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_EXHIBITION
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,8)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;訪問者睡姦オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_SLEEP_RAPE
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,9)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;恋慕つき住人のみ口説くオプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_ATTACK_LOVER_ONLY
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,24)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;処女保存オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_KEEP_VIRGIN
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,25)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;親愛住人の戦闘敗北時公衆便所即行
+;　戻り値:0:OFF 1:ON
+@IS_NTR_DROP_LOVER_WC
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,26)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;NTR和姦モード
+;　戻り値:0:OFF 1:ON
+@IS_NTR_SOFT
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,27)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+
+;-------------------------------------------------------------------------------
+;浮気発覚回避逃避オプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_ESCAPE
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,30)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;場所筒抜けオプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_SHOW_POS
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,31)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+
+;-------------------------------------------------------------------------------
+;筒抜けオプション設定状態
+;　戻り値:0:OFF 1:ON
+@IS_NTR_SHOW_ALL
+	#FUNCTION
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+

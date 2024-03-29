@@ -1,0 +1,45 @@
+﻿
+#DIM CONST 色設定_清潔度１      = 0x39E639
+#DIM CONST 色設定_清潔度２      = 0x8EF13C
+#DIM CONST 色設定_清潔度３      = 0xB9F73E
+#DIM CONST 色設定_清潔度４      = 0xFFAD40
+#DIM CONST 色設定_清潔度５      = 0xFF9640
+#DIM CONST 色設定_清潔度６      = 0xFF7640
+#DIM CONST 色設定_清潔度７      = 0xFF4040
+
+#DIM CONST 色設定_日時_昼間     = 0xFF9640
+#DIM CONST 色設定_日時_夜間     = 0xFFFF40
+
+#DIM CONST 色設定_状態_注意     = 0xFFFF40
+#DIM CONST 色設定_状態_警告     = 0xFF4040
+#DIM CONST 色設定_状態_睡眠可   = 0xFFFF40
+#DIM CONST 色設定_状態_要睡眠   = 0xFF4040
+#DIM CONST 色設定_状態_睡眠中   = 0x996AD6
+#DIM CONST 色設定_状態_同行中   = 0xE667AF
+#DIM CONST 色設定_状態_激おこ   = 0xFF4040
+#DIM CONST 色設定_状態_発情中   = 0xF13C73
+#DIM CONST 色設定_状態_理性的   = 0xFFFF40
+#DIM CONST 色設定_状態_恋慕     = 0xE667AF
+#DIM CONST 色設定_状態_ＮＴＲ   = 0xE6399B
+
+#DIM CONST 色設定_設定_肯定的   = 0xDDBBAA
+#DIM CONST 色設定_設定_否定的   = 0xBBAADD
+#DIM CONST 色設定_設定_無効化   = 0x999999
+
+#DIM CONST 色設定_テキスト_陥落 = 0xE6399B
+#DIM CONST 色設定_テキスト_備考 = 0x666666
+#DIM CONST 色設定_テキスト_無効 = 0x999999
+#DIM CONST 色設定_テキスト_有効 = 0xDDBBBB
+
+#DIM CONST 色設定_コマンド_派生 = 0xF9B0B0
+#DIM CONST 色設定_コマンド_新規 = 0xAABCE6
+#DIM CONST 色設定_コマンド_無効 = 0x666666
+
+#DIM CONST 色設定_マップ_自分   = 0x00FF00
+#DIM CONST 色設定_マップ_他人   = 0x00FFFF
+#DIM CONST 色設定_マップ_恋人   = 0xFF9696
+#DIM CONST 色設定_マップ_愛撫   = 0xFFFF48
+#DIM CONST 色設定_マップ_性交   = 0xFF0000
+#DIM CONST 色設定_マップ_会話   = 0x0000FF
+
+#DIM CONST 色設定_兄弟_自分     = 0xFFFF00

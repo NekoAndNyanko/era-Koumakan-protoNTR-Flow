@@ -1,0 +1,211 @@
+﻿;-------------------------------------------------
+;助手を犯させる
+;助手によるコマンド、及びレズプレイ、レベル4
+;-------------------------------------------------
+@COM122
+PRINTL 助手を犯させる
+;-------------------------------------------------
+;実行判定処理
+;-------------------------------------------------
+TFLAG:実行値 = 0
+TFLAG:実行値表示用フラグ = 0
+
+;すべての命令に共通の要素を考慮
+;(従順が高いと命令に従いやすいなど)
+CALL COM_ORDER
+
+;ABL:欲望
+IF ABL:欲望
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:欲望 * 2
+	PRINT 欲望
+	PRINTV 'LV,ABL:欲望,'(,ABL:欲望 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;ABL:奉仕精神
+IF ABL:奉仕精神
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += ABL:奉仕精神 * 4
+	PRINT 奉仕精神
+	PRINTV 'LV,ABL:奉仕精神,'(,ABL:奉仕精神 * 4,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+IF MARK:快楽刻印
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += MARK:快楽刻印 * 2
+	PRINT 快楽刻印
+	PRINTV 'LV,MARK:快楽刻印,'(,MARK:快楽刻印 * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;PALAM:欲情
+IF GETPALAMLV(PALAM:欲情,5)
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += GETPALAMLV(PALAM:欲情,5) * 2
+	PRINT 欲情
+	PRINTV 'LV,GETPALAMLV(PALAM:欲情,5),'(,GETPALAMLV(PALAM:欲情,5) * 2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;恥じらい
+IF TALENT:羞恥心 > 0
+	PRINT  - 
+	TFLAG:実行値 -= 1
+	PRINT 恥じらい
+	PRINTV '(,1,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;献身的
+IF TALENT:献身的
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 6
+	PRINT 献身的
+	PRINTV '(,6,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;快感に素直
+IF TALENT:快感応答 > 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 2
+	PRINT 快感に素直
+	PRINTV '(,2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;快感の否定（淫乱、娼婦で無効）
+IF TALENT:快感応答 < 0 && !TALENT:淫乱
+	PRINT  - 
+	TFLAG:実行値 -= 2
+	PRINT 快感の否定
+	PRINTV '(,2,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+;淫乱
+IF TALENT:淫乱 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 5
+	PRINT 淫乱
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+;娼婦
+IF TALENT:淫乱 > 1 && ASSIPLAY == 0
+	SIF TFLAG:実行値表示用フラグ
+		PRINT  + 
+	TFLAG:実行値 += 5
+	PRINT 娼婦
+	PRINTV '(,5,')
+	TFLAG:実行値表示用フラグ = 5
+ENDIF
+
+;助手が処女
+IF TALENT:PLAYER:処女
+	PRINT  - 
+	TFLAG:実行値 -= 15
+	PRINT 助手が処女
+	PRINTV '(,15,')
+	TFLAG:実行値表示用フラグ = 1
+ENDIF
+
+;合計を表示(40以上で実行)
+PRINT  = 
+PRINTV TFLAG:実行値
+
+LOCAL = 40
+SIF TFLAG:実行値 < LOCAL
+	PRINT  < 
+SIF TFLAG:実行値 == LOCAL
+	PRINT  = 
+SIF TFLAG:実行値 > LOCAL
+	PRINT  > 
+PRINT 実行値
+PRINTV LOCAL
+
+WAIT
+
+;実行できない
+SIF TFLAG:実行値 < LOCAL
+	RETURN 0
+
+;-------------------------------------------------
+;実行決定
+;-------------------------------------------------
+STR:0 = 助手を犯させる
+;-------------------------------------------------
+;COM別FLAGの設定
+;-------------------------------------------------
+;行為者
+TCVAR:116 = TARGET
+;TCVAR:0 射精対象フラグ（ビット0=TARGET 1=PLAYER 2=MASTER 3=ASSI）
+;TCVAR:1 予備射精対象フラグ（ビットを使いたくない人用、CFLAG:100に翻訳されます）	（1=TARGET 2=PLAYER 3=MASTER 4=ASSI 5=TARGET+ASSI 6=MASTER+ASSI）
+;TCVAR:2 射精箇所フラグ（-1=コンドーム 1=膣内 2=アナル 3=手淫 4=口淫 5=パイズリ 6=素股 7=足コキ 8=体表 9=アナル奉仕 10=道具 11=触手）
+
+SETBIT TCVAR:TARGET:0, 3
+TCVAR:TARGET:2 = 1
+;強度
+TCVAR:TARGET:4 = 2000
+
+TEQUIP:ASSI:Ｖセックス = TARGET
+;-------------------------------------------------
+;ソース追加処理
+;-------------------------------------------------
+;消費体力、気力
+DOWNBASE:体力 += 50
+DOWNBASE:気力 += 150
+
+SOURCE:快Ｃ = 400
+SOURCE:性行動 = 500
+SOURCE:達成 = 400
+SOURCE:屈従 = 700
+SOURCE:逸脱 = 500
+SOURCE:反感 = 500
+
+
+;-------------------------------------------------
+;特殊ソース処理
+;-------------------------------------------------
+;抑圧、抵抗持ちには、抑鬱ソース追加
+SIF TALENT:自己愛 < 0 || TALENT:抵抗
+	SOURCE:鬱屈 += 500
+
+;助手が処女の場合、屈服逸脱が倍化し、従順が2になる。ただし一度きり
+IF TALENT:PLAYER:処女 == 1
+	TIMES SOURCE:屈従 , 5.00
+	TIMES SOURCE:逸脱 , 3.00
+	
+	CALL LOST_VIRGIN(PLAYER, TARGET)
+	IF !GETBIT(CFLAG:3,4)
+		;異常経験追加（一回きり）
+		EXP:異常経験 += 1
+		SETBIT CFLAG:異常経験,4
+	ENDIF
+	IF ABL:従順 < 2
+		PRINTFORML そして%ABLNAME:0%が2になった
+		ABL:従順 = 2
+	ENDIF
+ENDIF
+EXP:ASSI:Ｖ経験 += 1
+;-------------------------------------------------
+;汚れの処理
+;-------------------------------------------------
+;射精に関係なく行われる処理はここから
+IF HAS_PENIS(TARGET)
+	;奴隷のＰ⇔調教者のＶの汚れが移動
+	STAIN:Ｐ |= STAIN:PLAYER:Ｖ
+	STAIN:PLAYER:Ｖ |= STAIN:Ｐ
+ENDIF
+
+;-------------------------------------------------
+;経験の処理
+;-------------------------------------------------
+;同性愛　レズなら戻り値1ゲイなら戻り値2
+SIF HETEROSEX(TARGET,ASSI)
+	EXP:(50 + HETEROSEX(TARGET,ASSI)) += 10
+
+RETURN 1
+
