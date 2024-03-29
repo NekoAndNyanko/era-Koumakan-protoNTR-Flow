@@ -135,9 +135,9 @@ IF TALENT:奴隷:妊娠
 	ELSE
 		PRINTFORML 「因为现在身体是这种状况、孩子出生之前要靠你多照顾了」
 	ENDIF
-ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) == (DATETIME()/(24*60))
+ELSEIF (CFLAG:奴隷:与访问者最后做爱的时间/(24*60)) == (DATETIME()/(24*60))
 	;同じ日にセックスしてたら
-	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+	SELECTCASE CFLAG:奴隷:与访问者最后做爱的时间
 		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
 			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 				PRINTFORML 「唔哼哼、刚才和%NTR_NAME(4)%抱了一下而已」
@@ -167,7 +167,7 @@ ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) =
 	CALL KOJO_MESSAGE_COM_K4_300_10_02LV(奴隷, 調教者)
 	RSLT_LV = RESULT
 ELSE
-	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+	SELECTCASE CFLAG:奴隷:与访问者最后做爱的时间
 		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
 			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 				PRINTFORML 「唔哼哼、刚刚和%NTR_NAME(4)%抱了一会」

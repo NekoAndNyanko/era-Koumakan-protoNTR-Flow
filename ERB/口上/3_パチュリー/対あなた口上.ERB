@@ -112,9 +112,9 @@ IF TALENT:奴隷:妊娠
 	ELSE
 		PRINTFORML 「今こんな身体だから、子供が産まれるまではお預けなのよ」
 	ENDIF
-ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) == (DATETIME()/(24*60))
+ELSEIF (CFLAG:奴隷:与访问者最后做爱的时间/(24*60)) == (DATETIME()/(24*60))
 	;同じ日にセックスしてたら
-	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+	SELECTCASE CFLAG:奴隷:与访问者最后做爱的时间
 		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
 			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 				PRINTFORML 「ふふ、たった今あの人に抱いてもらったばかりよ」
@@ -142,7 +142,7 @@ ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) =
 			ENDIF
 	ENDSELECT
 ELSE
-	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+	SELECTCASE CFLAG:奴隷:与访问者最后做爱的时间
 		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
 			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 				PRINTFORML 「ふふ、たった今あの人に抱いてもらったばかりよ」

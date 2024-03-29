@@ -56,7 +56,7 @@ IF TALENT:奴隷:浮気公認 > 3
 	IF TALENT:奴隷:浮気公認 == 5
 		放置時間 = DATETIME() - CFLAG:奴隷:访问者之妻归来时间
 	ELSE
-		放置時間 = DATETIME() - MAX(CFLAG:奴隷:NTR訪問者と最後にセックスした日時,CFLAG:奴隷:NTR他の男と最後にセックスした日時)
+		放置時間 = DATETIME() - CFLAG:奴隷:与访问者最后做爱的时间
 	ENDIF
 	IF 訪問者用補正値 < あなた用補正値
 		;好感度が高い時はあなたを喜ばせるために
@@ -69,7 +69,7 @@ IF TALENT:奴隷:浮気公認 > 3
 		休暇終了理由 = 出掛理由_外泊公認_時間経過 ; 11
 	ENDIF
 ELSEIF CFLAG:奴隷:屈服度/2 > CFLAG:奴隷:好感度
-	放置時間 = DATETIME() - MAX(CFLAG:奴隷:NTR訪問者と最後にセックスした日時,CFLAG:奴隷:NTR他の男と最後にセックスした日時)
+	放置時間 = DATETIME() - CFLAG:奴隷:与访问者最后做爱的时间
 
 	IF 訪問者用補正値 < あなた用補正値
 		;好感度が高い時はあなたを喜ばせるために

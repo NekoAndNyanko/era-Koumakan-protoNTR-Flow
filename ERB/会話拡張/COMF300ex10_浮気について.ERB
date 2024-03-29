@@ -321,9 +321,9 @@ PRINTL
 PRINTFORM %CALLNAME:調教者+"问起跟"+NTR_NAME(0)+"的关系怎么样、"%
 IF TALENT:奴隷:妊娠
 	PRINTFORML %"在孩子出生之前都会这样呆在家里吧。"%
-ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) == (DATETIME()/(24*60))
+ELSEIF (CFLAG:奴隷:与访问者最后做爱的时间/(24*60)) == (DATETIME()/(24*60))
 	;同じ日にセックスしてたら
-	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+	SELECTCASE CFLAG:奴隷:与访问者最后做爱的时间
 		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
 			PRINTFORML %"刚刚做完吧这样的回答道。"%
 		CASE IS > (DATETIME() - 1*04*60) ;４時間以内
@@ -332,7 +332,7 @@ ELSEIF (CFLAG:奴隷:NTR訪問者と最後にセックスした日時/(24*60)) =
 			PRINTFORML %"今天做过了这样的回答道。"%
 	ENDSELECT
 ELSE
-	SELECTCASE CFLAG:奴隷:NTR訪問者と最後にセックスした日時
+	SELECTCASE CFLAG:奴隷:与访问者最后做爱的时间
 		CASE IS > (DATETIME() - 1*01*60) ;１時間以内
 			PRINTFORML %"刚刚做完吧这样的回答道。"%
 		CASE IS > (DATETIME() - 1*08*60) ;８時間以内

@@ -50,9 +50,9 @@ IF FLAG:パッチ初期設定フラグ <= 2
 ENDIF
 
 IF FLAG:パッチ初期設定フラグ <= 3
-	;子宮内体積設定(男も一応含む)
+	;子宫内体积設定(男も一応含む)
 	FOR LOCAL, 0, CHARANUM
-		CALL 子宮内体積設定(LOCAL)
+		CALL 子宫内体积設定(LOCAL)
 	NEXT
 	FLAG:パッチ初期設定フラグ  = 4
 ENDIF

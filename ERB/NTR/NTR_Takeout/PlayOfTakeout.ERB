@@ -899,10 +899,7 @@ IF 射精
 	CALL EJACULATION_A(奴隷, 調教者)
 	CFLAG:奴隷:持帰Ａ射精回数 += 1
 ENDIF
-IF 調教者==人物_訪問者
-	CFLAG:奴隷:NTR訪問者と最後にセックスした日時 = DATETIME()
-ENDIF
-CFLAG:奴隷:NTR他の男と最後にセックスした日時 = DATETIME()
+CFLAG:奴隷:与访问者最后做爱的时间 = DATETIME()
 RETURN 0
 
 ;-------------------------------------------------------------------------------
@@ -949,9 +946,6 @@ IF 射精
 	CALL EJACULATION_V(奴隷, 調教者)
 	CFLAG:奴隷:持帰Ｖ射精回数 += 1
 ENDIF
-IF 調教者==人物_訪問者
-	CFLAG:奴隷:NTR訪問者と最後にセックスした日時 = DATETIME()
-ENDIF
-CFLAG:奴隷:NTR他の男と最後にセックスした日時 = DATETIME()
+CFLAG:奴隷:与访问者最后做爱的时间 = DATETIME()
 
 RETURN 0
