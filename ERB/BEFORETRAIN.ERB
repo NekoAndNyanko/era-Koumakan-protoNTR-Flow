@@ -104,14 +104,6 @@ IF FLAG:ランダム_訪問者のお気に入りの場所 > 7
 ELSE 
 	FLAG:ランダム_訪問者のお気に入りの場所 += RAND:2
 ENDIF
-[SKIPSTART]
-IF RAND:10 && CFLAG:MASTER:現在位置 != 位置_訪問者宅
-	FLAG:侵入者の現在位置 = 位置_红魔馆_正门
-	PRINTFORMW 馆里好像有入侵者进来了！
-ELSE
-	FLAG:侵入者の現在位置 = 0
-ENDIF
-[SKIPEND]
 ;霊夢の移动可能判定
 IF 霊夢移动フラグ == 0
 	霊夢移动フラグ = MAX(10 - ( CFLAG:人物_灵梦:好感度 > 0 ? CFLAG:人物_灵梦:好感度 / 300 # 0) - ( CFLAG:人物_灵梦:屈服度 > 0 ? CFLAG:人物_灵梦:屈服度 / 300 # 0), 0)

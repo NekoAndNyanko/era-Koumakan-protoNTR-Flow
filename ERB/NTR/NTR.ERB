@@ -178,14 +178,6 @@ FOR LOOP_CHR,1,CHARANUM
 		CFLAG:LOOP_CHR:当前長期滞在日数 += 1
 		CALL NTR_RESET_VISITOR_ACTION(LOOP_CHR)
 		FLAG:訪問者との汚れ判定に使用 = 0
-		;口上呼び出しの前に口上の特殊な客情報生成があれば実行
-		SIF FLAG:口上颜色
-			CALL KOJO_COLOR(LOOP_CHR)
-		TRYCALLLIST
-			FUNC NTR_KOJO_K{CFLAG:LOOP_CHR:297}_MAKE_CLIENT(LOOP_CHR)
-			FUNC NTR_KOJO_K_MAKE_CLIENT(LOOP_CHR)
-		ENDFUNC
-		RESETCOLOR
 		IF NTR_CHK_VISIBLE(CFLAG:LOOP_CHR:現在位置)
 			SIF FLAG:口上颜色
 				CALL KOJO_COLOR(LOOP_CHR)
@@ -411,8 +403,7 @@ RETURN
 #DIM 同席人数		;MASTER含め訪問者と同じ部屋に居る人数
 #DIM 密室度			;0:堂々 1:普通 2:個室 3:私室
 #DIM 气氛上限値
-#DIM お持ち帰り		;0:无 1:有
-; #DIM 气氛值记录	;我也不知道为啥FLAG会莫名其妙归零，总之先这样吧
+#DIM 带回家里		;0:无 1:有
 
 同席人数 = GET_N_WITH_VISITER(1)
 IF 同席人数 == 2 && CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
@@ -425,18 +416,18 @@ ELSEIF 同席人数 > 1
 	; ハーレム判定に失敗しているので、多人数ならリセット
 	CALL NTR_RESET_VISITOR_ACTION(奴隷)
 ENDIF
-;デバッグ用
-;PRINTFORML 
-;PRINTFORML 气氛    ：{FLAG:訪問者の气氛}
-;PRINTFORML 終了時間  ：{FLAG:訪問者との行為の終了時刻}
-;PRINTFORML 行為      ：{FLAG:訪問者との行為}
-;PRINTFORML カウンター：{CFLAG:奴隷:NTR_CNT行为}
-;PRINTFORML 
+[IF_DEBUG]
+PRINTFORML 
+PRINTFORML FLAG:訪問者の气氛：{FLAG:訪問者の气氛}
+PRINTFORML FLAG:訪問者との行為の終了時刻：{FLAG:訪問者との行為の終了時刻}
+PRINTFORML FLAG:訪問者との行為：{FLAG:訪問者との行為}
+PRINTFORML CFLAG:{奴隷}:NTR_CNT行为：{CFLAG:奴隷:NTR_CNT行为}
+PRINTFORML 
+[ENDIF]
 密室度 = GET_ROOM_SECURITY(FLAG:访问者当前位置)
 IF FLAG:訪問者の气氛 == 0
 	CALL JUDGE_VISITOR_MOOD_MAX(奴隷, 密室度, 同席人数)
 	气氛上限値 = RESULT
-	;气氛上限値 = MAX(1, 气氛上限値)
 	;NTRカウンター実行時それに応じる
 	IF CFLAG:奴隷:NTR_CNT行为 && CFLAG:奴隷:にんっしんっ == 0
 		CALL NTR_COUNTER_COUNTER(奴隷, 气氛上限値)
@@ -459,6 +450,9 @@ IF FLAG:訪問者の气氛 == 0
 		ENDIF
 	ENDIF
 ENDIF
+;----------------------------------------------------------------------------------------------------
+;锁门或反锁
+;----------------------------------------------------------------------------------------------------
 ;好感度が高く、私室に居る場合は施錠
 IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && 密室度 >= 3 && IS_CAN_LOCK(FLAG:访问者当前位置)
 	IF TALENT:奴隷:浮気公認 >= 浮気_性交公認
@@ -488,39 +482,39 @@ IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && 密室度 >= 3 && IS_CAN_L
 		ENDIF
 	ENDIF
 ENDIF
+;----------------------------------------------------------------------------------------------------
+;条件未满则重置行为（阻止进行）
+;----------------------------------------------------------------------------------------------------
 IF CFLAG:奴隷:屈服度 < 100 || DAY < 2
 	; さほど親しくなければリセット
 	CALL NTR_RESET_VISITOR_ACTION(奴隷)
 ENDIF
-; 气氛值记录 = FLAG:訪問者の气氛
-お持ち帰り = 0
-; お持ち帰り判定。お持ち帰り有効かつ睡眠中でない場合のみ
-IF 同席人数 == 1 && IS_NTR_TAKINGOUT_ENABLE() && CFLAG:奴隷:NTR野外調教 == 0 && !CFLAG:奴隷:睡眠
-	;亲爱持ちを連れ去る
-	IF TALENT:奴隷:亲爱 && BASE:奴隷:体力 < 700
-		PRINTFORMW 对倔强的%CALLNAME:奴隷%感到恼火的%NTR_NAME(0)%，将%CALLNAME:奴隷%绑了起来，带走了・・・
-		CALL VISITER_TAKINGOUT(奴隷)
-		お持ち帰り = 1
-	ENDIF
+;----------------------------------------------------------------------------------------------------
+;判断是否被带回访问者家
+;----------------------------------------------------------------------------------------------------
+带回家里 = 0
+IF 同席人数 == 1 && IS_NTR_TAKINGOUT_ENABLE() && !CFLAG:奴隷:睡眠
 	;二人きりで寝取り返し寸前の時、1/2でバレて再教育
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) && RAND:2
 		PRINTFORMW %NTR_NAME(0)%从%CALLNAME:奴隷%的态度看出，有必要用更强烈的快乐让%CALLNAME:奴隷%屈服。
 		CFLAG:奴隷:再教育フラグ = 1
 		CALL VISITER_TAKINGOUT(奴隷)
-		お持ち帰り = 1
-		;お持ち帰り条件を満たしている（二人きり＆光明正大地した場所＆キス許容以上の气氛）
+		带回家里 = 1
+		;带回家里条件を満たしている（二人きり＆光明正大地した場所＆キス許容以上の气氛）
 		;会话の場合は、通常の分岐側に移动したよ。
 	ELSEIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && 密室度 == 0 && FLAG:訪問者の气氛 > 0 
-		;好感度が"あなた"より高ければお持ち帰り
+		;好感度が"あなた"より高ければ带回家里
 		CALL VISITER_TAKINGOUT(奴隷)
-		お持ち帰り = 1
+		带回家里 = 1
 	ENDIF
 ENDIF
+;----------------------------------------------------------------------------------------------------
+;访问者行为中或行为未开始
+;----------------------------------------------------------------------------------------------------
 ;その他の状態で行動中か行動が未決定(終了時間が0なら未決定とする)
-IF 0 == お持ち帰り
+IF !带回家里
 	;訪問者が待機（行動終了状態）の場合。
 	IF FLAG:訪問者との行為の終了時刻 == 0
-		; FLAG:訪問者の气氛 = 气氛值记录
 		CALL VISITER_FRIENDSHIP_START(奴隷, 密室度)
 		;訪問者が行動中（行動終了時刻に満たない）の場合。
 	ELSEIF FLAG:訪問者との行為の終了時刻 > DATETIME()
@@ -531,6 +525,9 @@ IF 0 == お持ち帰り
 	ENDIF
 ENDIF
 TRYCALL NTRPRINT_VISITOR_STATE
+;----------------------------------------------------------------------------------------------------
+;玩家不在场时检查快乐经验（不知道有什么用）
+;----------------------------------------------------------------------------------------------------
 ;あなたが訪問者の行為対象者と同じ場所にいない時に限り実行
 SIF CFLAG:MASTER:現在位置 != CFLAG:奴隷:現在位置
 	CALL EXP_GOT_CHECK(奴隷)
@@ -1367,11 +1364,7 @@ RETURNF 0
 #DIM 相手
 #DIM 相手番号
 #DIMS 相手文字列
-IF 相手 == 人物_客 || 相手 == 人物_村人
-	相手文字列 = %TOSTR(相手)+"-"+TOSTR(TB:奴隷:相手番号:TB_客番号,"000")%
-ELSE
-	相手文字列 = %TOSTR(相手)%
-ENDIF
+相手文字列 = %TOSTR(相手)%
 SIF CSTR:奴隷:セックスした相手 == ""
 	CSTR:奴隷:セックスした相手 = /
 LOCALS = %"/"+相手文字列+"/"%

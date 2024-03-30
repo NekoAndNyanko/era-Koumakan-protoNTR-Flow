@@ -289,9 +289,6 @@ SIF ARG:1 && CFLAG:MASTER:現在位置 == ARG
 ;訪問者
 SIF ARG:2 && FLAG:访问者当前位置 == ARG
 	LOCAL:1 ++
-;侵入者（こいし）
-SIF ARG:3 && FLAG:侵入者の現在位置 == ARG
-	LOCAL:1 ++
 
 RETURNF LOCAL:1
 [SKIPEND]

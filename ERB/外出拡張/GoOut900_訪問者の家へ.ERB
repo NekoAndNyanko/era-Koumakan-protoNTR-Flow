@@ -193,11 +193,6 @@ ENDIF
 PRINTL
 ;お持ち帰り時初期化処理
 CALL INIT_TAKINGOUT(奴隷)
-;口上呼び出しの前に口上の特殊な客情報生成があれば実行
-TRYCALLLIST
-	FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_MAKE_CLIENT(奴隷)
-	FUNC NTR_KOJO_K_MAKE_CLIENT(奴隷)
-ENDFUNC
 ;口上呼び出し、現在の口上は訪問者宅描写が混じっているので訪問者宅を前提とする
 IF NTR_CHK_VISIBLE(位置_訪問者宅)
 	TRYCALLLIST

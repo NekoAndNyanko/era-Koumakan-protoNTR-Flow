@@ -819,21 +819,7 @@ RETURN
 
 相手名称 = NTR_NAME(0)
 相手番号 = 人物_訪問者
-;野外調教中で相手が村人
-IF CFLAG:奴隷:NTR野外調教 && CFLAG:奴隷:村人
-	相手名称 = %"村人"%
-	相手_彼 = %"彼"%
-	相手番号 = 人物_村人
-	;売春中であれば相手は「客」
-ELSEIF FLAG:访问者当前位置 == 位置_訪問者宅 && CFLAG:奴隷:客人数 >= 1
-	相手名称 = %"客"%
-	相手_彼 = %"彼"%
-	相手番号 = 人物_客
-ELSE
-	相手名称 = %NTR_NAME(0)%
-	相手_彼 = %NTR_NAME(4)%
-	相手番号 = 人物_訪問者
-ENDIF
+相手_彼 = %NTR_NAME(4)%
 IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
 	IF ノーパン != 0
 		PRINTFORML 『笨蛋…』满溢的精液从小穴滴落下来、%相手名称%有些生气地指出了那件事
@@ -844,15 +830,7 @@ IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
 			PRINTFORML 注意到有精液正顺着%CALLNAME:奴隷%滑嫩的大腿滴落，%相手名称%有些生气地指出了那件事
 		ENDIF
 	ENDIF
-	IF CFLAG:奴隷:NTR野外調教 && CFLAG:奴隷:村人
-		IF ABL:奴隷:露出癖 >= 5
-			PRINTW 羞耻化作潮红爬上了脸颊的同时，%CALLNAME:奴隷%出人意料地张开了大腿、将溢出着精液的小穴暴露出来、以便%相手名称%能看得一清二楚……眼睛里似乎还有着莫名的兴奋。
-		ELSEIF ABL:奴隷:露出癖 >= 3
-			PRINTW %CALLNAME:奴隷%双颊滚烫泛红、羞涩地移开了视线。
-		ELSE
-			PRINTW %CALLNAME:奴隷%羞耻地低下了头、移开了视线。
-		ENDIF
-	ELSEIF TALENT:奴隷:NTR
+	IF TALENT:奴隷:NTR
 		IF CFLAG:奴隷:射精者V == 相手番号
 			PRINTFORMW %CALLNAME:奴隷%阴道内渐渐发起来痒来，带着期待被再次注入的心情、向%相手名称%献出了身体。
 		ELSE

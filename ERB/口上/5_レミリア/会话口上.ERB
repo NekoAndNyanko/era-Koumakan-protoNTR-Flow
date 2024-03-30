@@ -250,7 +250,7 @@ RETURN 0
 @KOJO_K5_COM300_20_2_1
 IF TALENT:无知
 	PRINTFORMW 「妖精找男人玩啊……」
-	IF EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:经验人数 || EXP:手淫经验 || EXP:口淫经验
+	IF EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:手淫经验 || EXP:口淫经验
 		PRINTFORMW %CALLNAME:TARGET%红着脸
 		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
 			PRINTFORMW 「男人的话，我也做过呢……」
@@ -278,7 +278,6 @@ IF TALENT:无知
 				PRINTFORMW 「单纯想舔一舔那个的话…就被要求含着呢……」
 				EXP:已知的手淫经验 = EXP:口淫经验 ? 1 # 0
 			ENDIF
-			EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
 		ELSEIF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
 			PRINTFORMW %CALLNAME:TARGET%抱了上来……
 			PRINTFORMW 「要像妖精一样行动吗~~…」
@@ -288,7 +287,7 @@ IF TALENT:无知
 	ENDIF
 ELSE
 	IF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
-		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:经验人数 || EXP:手淫经验 || EXP:口淫经验)
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:手淫经验 || EXP:口淫经验)
 			PRINTFORMW %CALLNAME:TARGET%红着脸
 			PRINTFORMW 「跟男人做那些事的体验也是很不错的呢~~……」
 			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:接吻经验
@@ -315,7 +314,6 @@ ELSE
 				PRINTFORMW 「太大的话…含在嘴里还是有点幸苦的……」
 				EXP:已知的手淫经验 = EXP:口淫经验 ? 1 # 0
 			ENDIF
-			EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
 		ELSE
 			PRINTFORMW %CALLNAME:TARGET%抱了上来……
 			PRINTFORMW 「要我找男人吗~~…」
@@ -329,7 +327,6 @@ ELSE
 		EXP:已知的Ｍ经验 = EXP:Ｍ经验 ? 1 # 0
 		EXP:已知的手淫经验 = EXP:手淫经验 ? 1 # 0
 		EXP:已知的口淫经验 = EXP:口淫经验 ? 1 # 0
-		EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
 		IF EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验
 			PRINTFORMW 「跟%NTR_NAME(0)%做的话更加不错呢~~~」
 			PRINTFORMW 跟%NTR_NAME(0)%做了吗……
@@ -360,7 +357,7 @@ ELSE
 		ENDIF
 	ELSE
 		PRINTFORMW 「妖精的色情故事啊……找男人呀……」
-		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:经验人数 || EXP:手淫经验 || EXP:口淫经验)
+		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:Ｃ经验 || EXP:Ｂ经验 || EXP:Ｍ经验 || EXP:接吻经验 || EXP:手淫经验 || EXP:口淫经验)
 			PRINTFORMW 「记得我也做过的呢……」
 			PRINTFORMW %CALLNAME:TARGET%稍微说了一点自己的事
 			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:接吻经验
@@ -387,7 +384,6 @@ ELSE
 				PRINTFORMW 「太大的话…含在嘴里还是有点幸苦的……」
 				EXP:已知的手淫经验 = EXP:口淫经验 ? 1 # 0
 			ENDIF
-			EXP:已知的经验人数 = EXP:经验人数 ? 1 # 0
 			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
 				PRINTFORMW 「跟%NTR_NAME(0)%做的话更加不错呢~~~」
 				PRINTFORMW 跟%NTR_NAME(0)%做了吗……
@@ -436,10 +432,6 @@ IF RESULT == 0
 		EXP:已知的Ｍ经验 = EXP:Ｍ经验
 		EXP:已知的手淫经验 = EXP:手淫经验
 		EXP:已知的口淫经验 = EXP:口淫经验
-		IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && EXP:经验人数 > 1
-			PRINTFORMW 「至今已经跟{EXP:经验人数}个人做过了呢~~」
-			EXP:已知的经验人数 = EXP:经验人数
-		ENDIF
 		IF EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验
 			PRINTFORMW 「重点可是跟%NTR_NAME(0)%在一起的时候呢！听清楚了~~！」
 			PRINTFORMW %NTR_NAME(0)%……
@@ -487,16 +479,6 @@ IF RESULT == 0
 					EXP:已知的手淫经验 = EXP:手淫经验 ? 1 # 0
 				SIF EXP:已知的口淫经验 < 1
 					EXP:已知的口淫经验 = EXP:口淫经验 ? 1 # 0
-			ENDIF
-			IF RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0
-				IF TALENT:恋慕 || TALENT:亲爱 || TALENT:人妻 || TALENT:恋人
-					IF EXP:经验人数 >= EXP:已知的经验人数
-						PRINTFORMW 「至今跟多少人做过？……当然还是那个数啊…真是的……」
-						PRINTFORMW {EXP:已知的经验人数}个吗……
-					ENDIF
-				ELSEIF EXP:经验人数
-					PRINTFORMW 「至今跟多少人做过？…嗯……{EXP:经验人数}个人来着……」
-				ENDIF
 			ENDIF
 			;如果是爱人，是不会自己说出来的
 			IF !TALENT:恋慕 && !TALENT:亲爱 && !TALENT:人妻 && !TALENT:恋人 && RAND(10 / (ABL:PLAYER:话术技能>0 ? ABL:PLAYER:话术技能 # 1)) == 0 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
@@ -558,10 +540,6 @@ IF RESULT == 0
 				SIF EXP:浮気口淫经验
 					PRINTFORMW 『只有含着我的肉棒的样子才最可爱呢~~~……』
 				PRINTFORMW …可恶……
-				IF EXP:经验人数 > 2
-					PRINTFORMW 『顺便一提啊~~%CALLNAME:TARGET%现在的经验人数至少有{EXP:经验人数}人呐~~~』
-					EXP:已知的经验人数 = EXP:经验人数
-				ENDIF
 				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
 				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
 				EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验
@@ -597,10 +575,6 @@ IF RESULT == 0
 				SIF EXP:浮気口淫经验
 					PRINTFORMW 『只有含着我的肉棒的样子才最可爱呢~~~……』
 				PRINTFORMW …可恶……
-				IF EXP:经验人数 > 2
-					PRINTFORMW 『顺便一提啊~~%CALLNAME:TARGET%现在的经验人数至少有{EXP:经验人数}人呐~~~』
-					EXP:已知的经验人数 = EXP:经验人数
-				ENDIF
 				EXP:已知的浮気Ｃ经验 = EXP:浮気Ｃ经验
 				EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
 				EXP:已知的浮気Ｍ经验 = EXP:浮気Ｍ经验

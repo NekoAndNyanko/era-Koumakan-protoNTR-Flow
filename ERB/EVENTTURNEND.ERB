@@ -4,7 +4,6 @@
 @EVENTTURNEND
 #DIM LOOP_CHR
 
-FLAG:侵入者の現在位置 = 0
 ;-------------------------------------------------------------------------------
 
 FOR LOOP_CHR,1,CHARANUM
@@ -17,7 +16,7 @@ FOR LOOP_CHR,1,CHARANUM
 	CALL CHK_FALL_IN_LOVE(LOOP_CHR)
 	;---------------------------------------------------------------------------
 	;亲爱獲得判定
-	CALL CHK_LOVING_KINDNESS_GET(LOOP_CHR)
+	;CALL CHK_LOVING_KINDNESS_GET(LOOP_CHR)
 	;-------------------------------------------------------------------------------
 	;性的魅力獲得判定
 	CALL CHK_SEX_APPEAL_GET(LOOP_CHR)
@@ -410,129 +409,149 @@ RETURN 0
 
 ;-------------------------------------------------------------------------------
 ;肉体改造
-@CHK_BODY_STATE_CHANGE(奴隷)
-#DIM 奴隷
+@CHK_BODY_STATE_CHANGE(对象)
+#DIM 对象
 
 IF FLAG:素質変動onoff == 1
-	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 50 && ABL:奴隷:Ｃ感觉 >=3 && TALENT:奴隷:Ｃ感度 == -1
-		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的阴蒂记住了快乐的感觉，逐渐开花的阴蒂变得不再那么迟钝
-		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(101,-1)%]
-		TALENT:奴隷:Ｃ感度 = 0
+	IF EXP:对象:Ｃ绝顶经验+EXP:对象:浮気Ｃ绝顶经验 >= 50 && ABL:对象:Ｃ感觉 >=3 && TALENT:对象:Ｃ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:对象%不断被刺激的阴蒂记住了快乐的感觉，逐渐开花的阴蒂变得不再那么迟钝
+		PRINTFORML %CALLNAME:对象%失去了[%GET_TALENTNAME(101,-1)%]
+		TALENT:对象:Ｃ感度 = 0
 	ENDIF
 
-	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 50 && ABL:奴隷:Ｂ感觉 >=3 && TALENT:奴隷:Ｂ感度 == -1
-		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的胸部记住了快乐的感觉，逐渐觉醒的乳房变得不再那么迟钝
-		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(104,-1)%]
-		TALENT:奴隷:Ｂ感度 = 0
+	IF EXP:对象:Ｂ绝顶经验+EXP:对象:浮気Ｂ绝顶经验 >= 50 && ABL:对象:Ｂ感觉 >=3 && TALENT:对象:Ｂ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:对象%不断被刺激的胸部记住了快乐的感觉，逐渐觉醒的乳房变得不再那么迟钝
+		PRINTFORML %CALLNAME:对象%失去了[%GET_TALENTNAME(104,-1)%]
+		TALENT:对象:Ｂ感度 = 0
 	ENDIF
 
-	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 50 && ABL:奴隷:Ｖ感觉 >=3 && TALENT:奴隷:Ｖ感度 == -1
-		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的膣腔记住了快乐的感觉，原本迟钝的蜜穴开始苏醒
-		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(102,-1)%]
-		TALENT:奴隷:Ｖ感度 = 0
+	IF EXP:对象:Ｖ绝顶经验+EXP:对象:浮気Ｖ绝顶经验 >= 50 && ABL:对象:Ｖ感觉 >=3 && TALENT:对象:Ｖ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:对象%不断被刺激的膣腔记住了快乐的感觉，原本迟钝的蜜穴开始苏醒
+		PRINTFORML %CALLNAME:对象%失去了[%GET_TALENTNAME(102,-1)%]
+		TALENT:对象:Ｖ感度 = 0
 	ENDIF
 
-	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 50 && ABL:奴隷:Ａ感觉 >=3 && TALENT:奴隷:Ａ感度 == -1
-		PRINTFORML 在一次次绝顶中，%CALLNAME:奴隷%不断被刺激的肛门记住了快乐的感觉，原本迟钝的尻穴逐渐苏醒
-		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(103,-1)%]
-		TALENT:奴隷:Ａ感度 = 0
+	IF EXP:对象:Ａ绝顶经验+EXP:对象:浮気Ａ绝顶经验 >= 50 && ABL:对象:Ａ感觉 >=3 && TALENT:对象:Ａ感度 == -1
+		PRINTFORML 在一次次绝顶中，%CALLNAME:对象%不断被刺激的肛门记住了快乐的感觉，原本迟钝的尻穴逐渐苏醒
+		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(103,-1)%]
+		TALENT:对象:Ａ感度 = 0
 	ENDIF
-	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 100 && ABL:奴隷:Ｃ感觉 >=5 && TALENT:奴隷:Ｃ感度 == 0
-		PRINTFORML 因%CALLNAME:奴隷%在爱抚中不断地感受着绝顶的快乐，两腿间饱满的珍珠开始慢慢绽放
-		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(101,1)%]
-		TALENT:奴隷:Ｃ感度 = 1
-	ENDIF
-
-	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 100 && ABL:奴隷:Ｂ感觉 >=5 && TALENT:奴隷:Ｂ感度 == 0
-		PRINTFORML %CALLNAME:奴隷%在爱抚中不断地感受着绝顶的快乐，胸前两颗雌性的象征开始逐渐成熟
-		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(104,1)%]
-		TALENT:奴隷:Ｂ感度 = 1
+	IF EXP:对象:Ｃ绝顶经验+EXP:对象:浮気Ｃ绝顶经验 >= 100 && ABL:对象:Ｃ感觉 >=5 && TALENT:对象:Ｃ感度 == 0
+		PRINTFORML 因%CALLNAME:对象%在爱抚中不断地感受着绝顶的快乐，两腿间饱满的珍珠开始慢慢绽放
+		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(101,1)%]
+		TALENT:对象:Ｃ感度 = 1
 	ENDIF
 
-	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 100 && ABL:奴隷:Ｖ感觉 >=5 && TALENT:奴隷:Ｖ感度 == 0
-		PRINTFORML %CALLNAME:奴隷%在交合中不断地感受着绝顶的快乐，两腿间美丽的花朵开始盛开
-		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(102,1)%]
-		TALENT:奴隷:Ｖ感度 = 1
+	IF EXP:对象:Ｂ绝顶经验+EXP:对象:浮気Ｂ绝顶经验 >= 100 && ABL:对象:Ｂ感觉 >=5 && TALENT:对象:Ｂ感度 == 0
+		PRINTFORML %CALLNAME:对象%在爱抚中不断地感受着绝顶的快乐，胸前两颗雌性的象征开始逐渐成熟
+		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(104,1)%]
+		TALENT:对象:Ｂ感度 = 1
 	ENDIF
 
-	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 100 && ABL:奴隷:Ａ感觉 >=5 && TALENT:奴隷:Ａ感度 == 0
-		PRINTFORML %CALLNAME:奴隷%在交合中不断地感受着绝顶的快乐，后方的庭院盛开着性的美丽
-		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(103,1)%]
-		TALENT:奴隷:Ａ感度 = 1
+	IF EXP:对象:Ｖ绝顶经验+EXP:对象:浮気Ｖ绝顶经验 >= 100 && ABL:对象:Ｖ感觉 >=5 && TALENT:对象:Ｖ感度 == 0
+		PRINTFORML %CALLNAME:对象%在交合中不断地感受着绝顶的快乐，两腿间美丽的花朵开始盛开
+		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(102,1)%]
+		TALENT:对象:Ｖ感度 = 1
 	ENDIF
 
-	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 500 && ABL:奴隷:Ｃ感觉 >=7 && TALENT:奴隷:Ｃ感度 == 1
-		PRINTFORML 经过长时间的开发，%CALLNAME:奴隷%两腿间的珍珠娇嫩欲滴，贪求快感的阴蒂仿佛过敏，几乎轻轻一触就让人浑身酥软
-		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(101,1)%]变成了[%GET_TALENTNAME(101,2)%]
-		TALENT:奴隷:Ｃ感度 = 2
+	IF EXP:对象:Ａ绝顶经验+EXP:对象:浮気Ａ绝顶经验 >= 100 && ABL:对象:Ａ感觉 >=5 && TALENT:对象:Ａ感度 == 0
+		PRINTFORML %CALLNAME:对象%在交合中不断地感受着绝顶的快乐，后方的庭院盛开着性的美丽
+		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(103,1)%]
+		TALENT:对象:Ａ感度 = 1
 	ENDIF
 
-	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 500 && ABL:奴隷:Ｂ感觉 >=7 && TALENT:奴隷:Ｂ感度 == 1
-		PRINTFORML 经过长时间的开发，%CALLNAME:奴隷%胸前的两颗果实完全成熟，贪求快感的乳房仿佛过敏，几乎轻轻一触就让人浑身酥软
-		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(104,1)%]变成了[%GET_TALENTNAME(104,2)%]
-		TALENT:奴隷:Ｂ感度 = 2
+	IF EXP:对象:Ｃ绝顶经验+EXP:对象:浮気Ｃ绝顶经验 >= 500 && ABL:对象:Ｃ感觉 >=7 && TALENT:对象:Ｃ感度 == 1
+		PRINTFORML 经过长时间的开发，%CALLNAME:对象%两腿间的珍珠娇嫩欲滴，贪求快感的阴蒂仿佛过敏，几乎轻轻一触就让人浑身酥软
+		PRINTFORML %CALLNAME:对象%的[%GET_TALENTNAME(101,1)%]变成了[%GET_TALENTNAME(101,2)%]
+		TALENT:对象:Ｃ感度 = 2
 	ENDIF
 
-	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 500 && ABL:奴隷:Ｖ感觉 >=7 && TALENT:奴隷:Ｖ感度 == 1
-		PRINTFORML 经过长久的灌溉，%CALLNAME:奴隷%两腿间的花朵娇艳地盛开，蜜穴深处为贪求快乐而一张一合的花瓣分外妖娆，显示着属于女人的真正魅力
-		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(102,1)%]变成了[%GET_TALENTNAME(102,2)%]
-		TALENT:奴隷:Ｖ感度 = 2
+	IF EXP:对象:Ｂ绝顶经验+EXP:对象:浮気Ｂ绝顶经验 >= 500 && ABL:对象:Ｂ感觉 >=7 && TALENT:对象:Ｂ感度 == 1
+		PRINTFORML 经过长时间的开发，%CALLNAME:对象%胸前的两颗果实完全成熟，贪求快感的乳房仿佛过敏，几乎轻轻一触就让人浑身酥软
+		PRINTFORML %CALLNAME:对象%的[%GET_TALENTNAME(104,1)%]变成了[%GET_TALENTNAME(104,2)%]
+		TALENT:对象:Ｂ感度 = 2
 	ENDIF
 
-	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 500 && ABL:奴隷:Ａ感觉 >=7 && TALENT:奴隷:Ａ感度 == 1
-		PRINTFORML 经过长久的灌溉，%CALLNAME:奴隷%股间的庭院动情地绽放，湿润的内壁如呼吸般蠕动着快乐的吐息，彰显着第二性器诱人的魅力
-		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(103,1)%]变成了[%GET_TALENTNAME(103,2)%]
-		TALENT:奴隷:Ａ感度 = 2
+	IF EXP:对象:Ｖ绝顶经验+EXP:对象:浮気Ｖ绝顶经验 >= 500 && ABL:对象:Ｖ感觉 >=7 && TALENT:对象:Ｖ感度 == 1
+		PRINTFORML 经过长久的灌溉，%CALLNAME:对象%两腿间的花朵娇艳地盛开，蜜穴深处为贪求快乐而一张一合的花瓣分外妖娆，显示着属于女人的真正魅力
+		PRINTFORML %CALLNAME:对象%的[%GET_TALENTNAME(102,1)%]变成了[%GET_TALENTNAME(102,2)%]
+		TALENT:对象:Ｖ感度 = 2
 	ENDIF
-	;快感应答
-	IF TALENT:奴隷:快感应答 < 1 && TALENT:奴隷:Ｃ感度 == 1 && TALENT:奴隷:Ｂ感度 == 1 && TALENT:奴隷:Ｖ感度 == 1 && TALENT:奴隷:Ａ感度 == 1 && EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 100 && EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 100 && EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 100 && EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 100
-		IF TALENT:奴隷:快感应答 < 0
-			PRINTFORML %CALLNAME:奴隷%不断地绝顶，内心在快感不断的冲刷之下，已经不再反抗快感。
-			PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(70,-1)%]，获得了[%GET_TALENTNAME(70,1)%]
+
+	IF EXP:对象:Ａ绝顶经验+EXP:对象:浮気Ａ绝顶经验 >= 500 && ABL:对象:Ａ感觉 >=7 && TALENT:对象:Ａ感度 == 1
+		PRINTFORML 经过长久的灌溉，%CALLNAME:对象%股间的庭院动情地绽放，湿润的内壁如呼吸般蠕动着快乐的吐息，彰显着第二性器诱人的魅力
+		PRINTFORML %CALLNAME:对象%的[%GET_TALENTNAME(103,1)%]变成了[%GET_TALENTNAME(103,2)%]
+		TALENT:对象:Ａ感度 = 2
+	ENDIF
+
+;----------------------------------------------------------------------------------------------------
+;快感应答
+;----------------------------------------------------------------------------------------------------
+
+	IF TALENT:对象:快感应答 < 1 && TALENT:对象:Ｃ感度 == 1 && TALENT:对象:Ｂ感度 == 1 && TALENT:对象:Ｖ感度 == 1 && TALENT:对象:Ａ感度 == 1 && EXP:对象:Ｃ绝顶经验+EXP:对象:浮気Ｃ绝顶经验 >= 100 && EXP:对象:Ｂ绝顶经验+EXP:对象:浮気Ｂ绝顶经验 >= 100 && EXP:对象:Ｖ绝顶经验+EXP:对象:浮気Ｖ绝顶经验 >= 100 && EXP:对象:Ａ绝顶经验+EXP:对象:浮気Ａ绝顶经验 >= 100
+		IF TALENT:对象:快感应答 < 0
+			PRINTFORML %CALLNAME:对象%不断地绝顶，内心在快感不断的冲刷之下，已经不再反抗快感。
+			PRINTFORML %CALLNAME:对象%失去了[%GET_TALENTNAME(70,-1)%]，获得了[%GET_TALENTNAME(70,1)%]
 		ELSE
-			PRINTFORML %CALLNAME:奴隷%不断地绝顶，内心在快感不断的冲刷之下，渴望着更多快乐。
-			PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(70,1)%]
+			PRINTFORML %CALLNAME:对象%不断地绝顶，内心在快感不断的冲刷之下，渴望着更多快乐。
+			PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(70,1)%]
 		ENDIF
-		TALENT:奴隷:快感应答 = 1
+		TALENT:对象:快感应答 = 1
 	ENDIF
 
-	IF TALENT:奴隷:阴道深度 == 0 && EXP:奴隷:浮気Ｖ扩张经验 >=50 && ABL:奴隷:Ｖ感觉 >= 3
-		PRINTFORML 在一段时间的调教下，深处被%NTR_NAME(0)%的超规格肉棒无数次冲刺的%CALLNAME:奴隷%，身体本能地为接纳更强大的雄性而发生着改变，即使在睡梦中都能感到小腹深处的异样。
-		PRINTFORML %CALLNAME:奴隷%获得了[%GET_TALENTNAME(108,1)%]
-		TALENT:奴隷:阴道深度 = 1
+;----------------------------------------------------------------------------------------------------
+;小穴改造
+;----------------------------------------------------------------------------------------------------
+;发展顺序（括号内为阴道深度）：小穴穹隆后移（1）->小穴时常拉伸（2）->永久性穹隆后移（2）->小穴收缩自如（3）
+
+	IF CFLAG:对象:阴道深度 == 0 && TALENT:对象:小穴穹隆后移 == 0 && EXP:对象:浮気Ｖ性交经验 >= 100 && ABL:对象:Ｖ感觉 >= 3
+		PRINTFORML 在一段时间的调教下，深处被%NTR_NAME(0)%的超规格肉棒无数次冲刺的%CALLNAME:对象%，身体本能地为接纳更强大的雄性而发生着改变，即使在睡梦中都能感到小腹深处的异样。
+		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(108,1)%]
+		CFLAG:对象:阴道深度 = 1
+		TALENT:对象:小穴穹隆后移 = 1
 	ENDIF
 
-	IF TALENT:奴隷:阴道深度 == 1 && EXP:奴隷:浮気Ｖ扩张经验 >=150 && ABL:奴隷:Ｖ感觉 >= 5
-		PRINTFORML 与自身意志无关，在快乐的冲刷下%CALLNAME:奴隷%的身体不断地主动契合着%NTR_NAME(0)%，为接纳%NTR_NAME(0)%而向内延展的小穴即使在不做爱时也不会恢复原状。
-		PRINTFORML %CALLNAME:奴隷%的[%GET_TALENTNAME(108,1)%]变成了[%GET_TALENTNAME(108,2)%]
-		TALENT:奴隷:阴道深度 = 2
+	IF CFLAG:对象:阴道深度 != 0 && TALENT:对象:小穴扩张状态 == 1 && TALENT:对象:小穴穹隆后移 == 1 && EXP:对象:浮気Ｖ性交经验 >= 200 && ABL:对象:Ｖ感觉 >= 5
+		PRINTFORML 随着时间的推移，%NTR_NAME(0)%用无尽的快乐一次次地巩固着%CALLNAME:对象%身体发生的改变，已经后移的穹隆被身体当做正常状态永久地固定在小腹深处。
+		PRINTFORML %CALLNAME:对象%的[%GET_TALENTNAME(108,1)%]变成了[%GET_TALENTNAME(108,2)%]
+		CFLAG:对象:阴道深度 = 2
+		TALENT:对象:小穴穹隆后移 = 2
 	ENDIF
-	IF TALENT:奴隷:阴道深度 == 2 && EXP:奴隷:浮気Ｖ扩张经验 >=200 && ABL:奴隷:Ｖ感觉 >= 7 && TALENT:奴隷:NTR
-		PRINTFORML 配合着%NTR_NAME(0)%的调教，%CALLNAME:奴隷%被完全开发完成的小穴如同工艺品一般完美，收缩自如的肉壁造就了世间仅有的名器。
-		PRINTFORML %CALLNAME:奴隷%双腿之间的缝隙，收缩时宛如处女般紧致，而扩张时却连荡妇都要自愧不如。玩弄女人的老手都看不出她无数的经验，单纯的男人都会认为她是纯情的少女。
-		PRINTFORML %CALLNAME:奴隷%失去了[%GET_TALENTNAME(108,2)%]，获得了[%GET_TALENTNAME(108,3)%]
-		TALENT:奴隷:阴道深度 = 3
+
+	IF CFLAG:对象:阴道深度 != 0 && TALENT:对象:小穴扩张状态 == 0 && TALENT:对象:小穴穹隆后移 == 1 && EXP:对象:浮気Ｖ扩张经验 >= 150 && ABL:对象:Ｖ感觉 >= 5
+		PRINTFORML 与自身意志无关，在快乐的冲刷下%CALLNAME:对象%的身体不断地主动契合着%NTR_NAME(0)%，为接纳%NTR_NAME(0)%而向内延展的小穴即使在不做爱时也不会恢复原状。
+		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(109,1)%]
+		CFLAG:对象:阴道深度 = 2
+		TALENT:对象:小穴扩张状态 = 1
+	ENDIF
+
+	IF CFLAG:对象:阴道深度 == 2 && TALENT:对象:小穴扩张状态 == 1 && TALENT:对象:小穴穹隆后移 == 2 && EXP:对象:浮気Ｖ扩张经验 >= 200 && ABL:对象:Ｖ感觉 >= 7 && TALENT:对象:NTR
+		PRINTFORML 配合着%NTR_NAME(0)%的调教，%CALLNAME:对象%被完全开发完成的小穴如同工艺品一般完美，收缩自如的肉壁造就了世间仅有的名器。
+		PRINTFORML %CALLNAME:对象%双腿之间的缝隙，收缩时宛如处女般紧致，而扩张时却连荡妇都要自愧不如。玩弄女人的老手都看不出她无数的经验，单纯的男人都会认为她是纯情的少女。
+		PRINTFORML %CALLNAME:对象%失去了[%GET_TALENTNAME(109,1)%]，获得了[%GET_TALENTNAME(109,2)%]
+		CFLAG:对象:阴道深度 = 3
+		TALENT:对象:小穴扩张状态 = 2
 	ENDIF
 
 [SKIPSTART]
-	IF EXP:奴隷:Ｃ绝顶经验+EXP:奴隷:浮気Ｃ绝顶经验 >= 1000 && EXP:奴隷:Ｃ经验+EXP:奴隷:浮気Ｃ经验 >= 10000  && TALENT:奴隷:Ｃ感度 == 2
-		PRINTFORML %CALLNAME:奴隷%的阴蒂使用得太过度的样子，似乎已经没有任何感觉了…
-		TALENT:奴隷:Ｃ感度 = -2
+	IF EXP:对象:Ｃ绝顶经验+EXP:对象:浮気Ｃ绝顶经验 >= 1000 && EXP:对象:Ｃ经验+EXP:对象:浮気Ｃ经验 >= 10000  && TALENT:对象:Ｃ感度 == 2
+		PRINTFORML %CALLNAME:对象%的阴蒂使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:对象:Ｃ感度 = -2
 	ENDIF
 
-	IF EXP:奴隷:Ｂ绝顶经验+EXP:奴隷:浮気Ｂ绝顶经验 >= 1000 && EXP:奴隷:Ｂ经验+EXP:奴隷:浮気Ｂ经验 >= 10000 && TALENT:奴隷:Ｂ感度 == 2
-		PRINTFORML %CALLNAME:奴隷%的乳头使用得太过度的样子，似乎已经没有任何感觉了…
-		TALENT:奴隷:Ｂ感度 = -2
+	IF EXP:对象:Ｂ绝顶经验+EXP:对象:浮気Ｂ绝顶经验 >= 1000 && EXP:对象:Ｂ经验+EXP:对象:浮気Ｂ经验 >= 10000 && TALENT:对象:Ｂ感度 == 2
+		PRINTFORML %CALLNAME:对象%的乳头使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:对象:Ｂ感度 = -2
 	ENDIF
 
-	IF EXP:奴隷:Ｖ绝顶经验+EXP:奴隷:浮気Ｖ绝顶经验 >= 1000 && EXP:奴隷:Ｖ经验+EXP:奴隷:浮気Ｖ经验 >= 10000 && TALENT:奴隷:Ｖ感度 == 2
-		PRINTFORML %CALLNAME:奴隷%的膣道使用得太过度的样子，似乎已经没有任何感觉了…
-		TALENT:奴隷:Ｖ感度 = -2
+	IF EXP:对象:Ｖ绝顶经验+EXP:对象:浮気Ｖ绝顶经验 >= 1000 && EXP:对象:Ｖ经验+EXP:对象:浮気Ｖ经验 >= 10000 && TALENT:对象:Ｖ感度 == 2
+		PRINTFORML %CALLNAME:对象%的膣道使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:对象:Ｖ感度 = -2
 	ENDIF
 
-	IF EXP:奴隷:Ａ绝顶经验+EXP:奴隷:浮気Ａ绝顶经验 >= 1000 && EXP:奴隷:Ａ经验+EXP:奴隷:浮気Ａ经验 >= 10000 && TALENT:奴隷:Ａ感度 == 2
-		PRINTFORML %CALLNAME:奴隷%的肛门使用得太过度的样子，似乎已经没有任何感觉了…
-		TALENT:奴隷:Ａ感度 = -2
+	IF EXP:对象:Ａ绝顶经验+EXP:对象:浮気Ａ绝顶经验 >= 1000 && EXP:对象:Ａ经验+EXP:对象:浮気Ａ经验 >= 10000 && TALENT:对象:Ａ感度 == 2
+		PRINTFORML %CALLNAME:对象%的肛门使用得太过度的样子，似乎已经没有任何感觉了…
+		TALENT:对象:Ａ感度 = -2
 	ENDIF
 [SKIPEND]
 

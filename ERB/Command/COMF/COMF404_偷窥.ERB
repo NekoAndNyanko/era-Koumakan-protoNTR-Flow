@@ -143,14 +143,6 @@ FOR 登録番号, 1, CHARANUM
 		CALL 确认肌肤颜色(登録番号)
 	ENDIF
 NEXT
-IF FLAG:侵入者の現在位置 == targetArea
-	IF 見付けた人数
-		見付けたキャラ説明 += " 、 恋恋"
-	ELSE
-		見付けたキャラ説明 += "恋恋"
-	ENDIF
-	見付けた人数++
-ENDIF
 IF FLAG:访问者当前位置 == targetArea
 	IF 見付けた人数
 		見付けたキャラ説明 += " 、 " + NTR_NAME(0)
@@ -539,15 +531,6 @@ IF FLG_LOOKED == 0
 	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, FLAG:访问者当前位置)
 	IF RSLT_CHK != -1 && RAND:2
 		CALL LOOK_PANCHIRA(MASTER, 人物_訪問者, CFLAG:MASTER:現在位置, RSLT_CHK)
-		FLG_LOOKED = 1
-	ENDIF
-ENDIF
-;こいしチェック
-IF FLG_LOOKED == 0
-	;パンチラを窥视ことのできる場所にいるかチェック
-	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, FLAG:侵入者の現在位置)
-	IF RSLT_CHK != -1 && RAND:2
-		CALL LOOK_PANCHIRA(MASTER, 997, CFLAG:MASTER:現在位置, RSLT_CHK)
 		FLG_LOOKED = 1
 	ENDIF
 ENDIF

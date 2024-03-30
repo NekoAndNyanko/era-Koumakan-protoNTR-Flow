@@ -386,8 +386,6 @@
 #DIM CONST TA_好感度	= 9
 ;TB変数用
 ;0～7は子宮内精液管理に使用
-#DIM CONST TB_客番号	= 9
-#DIM CONST TB_客種別	= 10
 
 ;部屋のにおいパッチ
 ;FLAG

@@ -7,78 +7,59 @@
 ;-------------------------------------------------------------------------------
 ;-------------------------------------------------------------------------------
 ;お持ち帰り最中
-@VISITER_TAKINGOUT(奴隷)
-#DIM 奴隷
+@VISITER_TAKINGOUT(对象)
+#DIM 对象
 #DIM LOOP_I
 #DIM 移动路线循环
-#DIM 移动目撃フラグ
+#DIM 移动时经过玩家
+;----------------------------------------------------------------------------------------------------
+;去访问者家的路线处理
+;----------------------------------------------------------------------------------------------------
 ;現在位置から紅魔館玄関への移动経路を算出
-CALLF FARMOVE(奴隷,CFLAG:奴隷:現在位置,位置_红魔馆_正门)
-移动目撃フラグ = 0
+CALLF FARMOVE(对象,CFLAG:对象:現在位置,位置_红魔馆_正门)
+移动时经过玩家 = 0
 FOR 移动路线循环,0,移动路线MAX
-	IF (0 == 移动路线:奴隷:移动路线循环)
+	IF (0 == 移动路线:对象:移动路线循环)
 		BREAK
 	ENDIF
-	IF NTR_CHK_VISIBLE( 移动路线:奴隷:移动路线循环 )
-		移动目撃フラグ = 1
+	IF NTR_CHK_VISIBLE( 移动路线:对象:移动路线循环 )
+		移动时经过玩家 = 1
 	ENDIF
 NEXT
 ;移动経路算出に使った移动路线を消去しておく
-CALLF RESET_ROUTE(奴隷,1)
+CALLF RESET_ROUTE(对象,1)
 ;お持ち帰り時初期化処理
-CALL INIT_TAKINGOUT(奴隷)
-[SKIPSTART]
-IF FLAG:Flow版本
-[SKIPEND]
-IF NTR_CHK_VISIBLE(位置_訪問者宅)
+CALL INIT_TAKINGOUT(对象)
+;----------------------------------------------------------------------------------------------------
+;去访问者的家口上部分
+;----------------------------------------------------------------------------------------------------
+PRINTFORML 【事件】%CALLNAME:对象%和%NTR_NAME(0)%一起去了某个地方……
+SIF FLAG:口上颜色
+	CALL KOJO_COLOR(对象)
+IF 移动时经过玩家
+	;玩家看到角色与访问者走在一起的情况
 	TRYCALLLIST
-		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_10_0(奴隷)
-		FUNC NTR_KOJO_K_10_0(奴隷)
+		FUNC NTR_ROOM_K{对象}_GOTO_SEEN(对象)
+		FUNC NTR_ROOM_KU_GOTO_SEEN(对象)
+	ENDFUNC
+ELSE
+	;没有与玩家相遇的情况
+	TRYCALLLIST
+		FUNC NTR_ROOM_K{对象}_GOTO(对象)
+		FUNC NTR_ROOM_KU_GOTO(对象)
 	ENDFUNC
 ENDIF
-;todo 角色和访问者回家
-; IF 移动目撃フラグ
-; ;看到角色与访问者走在一起的情况
-; 	TRYCALLLIST
-; 		FUNC 目击专用口上
-; 		FUNC 目击通用口上
-; 	ENDFUNC
-; ;角色进入访问者家之后的口上
-; 	IF NTR_CHK_VISIBLE(位置_訪問者宅)
-; 		TRYCALLLIST
-; 			FUNC 专用口上
-; 			FUNC 通用口上
-; 		ENDFUNC
-; 	ENDIF
-; ELSE
-; 	IF NTR_CHK_VISIBLE(位置_訪問者宅)
-; 		TRYCALLLIST
-; 			FUNC 专用口上
-; 			FUNC 通用口上
-; 		ENDFUNC
-; 	ENDIF
-; ENDIF
-[SKIPSTART]
-ELSE
-	IF 移动目撃フラグ
-		PRINTFORMW %CALLNAME:奴隷%被%NTR_NAME(0)%带去了某个地方
-		;口上呼び出しの前に口上の特殊な客情報生成があれば実行
-			TRYCALLLIST
-				FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_MAKE_CLIENT(奴隷)
-				FUNC NTR_KOJO_K_MAKE_CLIENT(奴隷)
-			ENDFUNC
-		;口上呼び出し、現在の口上は訪問者宅描写が混じっているので訪問者宅を前提とする
-			IF NTR_CHK_VISIBLE(位置_訪問者宅)
-				TRYCALLLIST
-					FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_10_0(奴隷)
-					FUNC NTR_KOJO_K_10_0(奴隷)
-				ENDFUNC
-			ENDIF
-		ENDIF
-	ENDIF
+;角色进入访问者家之后的口上
+IF NTR_CHK_VISIBLE(位置_訪問者宅)
+	TRYCALLLIST
+		FUNC NTR_ROOM_K{对象}_GOTO_AFTER(对象)
+		FUNC NTR_ROOM_KU_GOTO_AFTER(对象)
+	ENDFUNC
 ENDIF
-[SKIPEND]
-CALL NTR_RESET_VISITOR_ACTION(奴隷)
+RESETCOLOR
+;----------------------------------------------------------------------------------------------------
+;重置角色和访问者的行为以便开展后续在访问者家中的行为
+CALL NTR_RESET_VISITOR_ACTION(对象)
 RETURN 0
 
 ;お持ち帰り時初期化処理
@@ -87,14 +68,7 @@ RETURN 0
 #DIM 奴隷
 #DIM LOOP_I
 
-;客情報クリア
 CFLAG:奴隷:持帰分岐 = 0
-CFLAG:奴隷:客人数 = -1
-CFLAG:奴隷:客人数加算フラグ = 0
-FOR LOOP_I,0,10
-	TB:奴隷:LOOP_I:TB_客番号 = -1
-	TB:奴隷:LOOP_I:TB_客種別 = -1
-NEXT
 ;同行解除
 CFLAG:奴隷:同行 = 0
 ;うふふ解除
@@ -114,86 +88,18 @@ FLAG:訪問者との汚れ判定に使用 = 0
 FLAG:訪問者滞在時間カウンタ = 0
 CFLAG:奴隷:NTR_CNT行为 = NTR_CNT_无行为
 EXP:奴隷:前回浮気人数 = 0
-CFLAG:奴隷:前回売春フラグ = 0
 CFLAG:奴隷:持帰時处女 = TALENT:奴隷:处女
 CFLAG:奴隷:持帰Ｖ射精回数 = 0
 CFLAG:奴隷:持帰Ａ射精回数 = 0
 RETURN 0
 
-[SKIPSTART]
-;-------------------------------------------------------------------------------
-;处女奴隷競売イベント
-@NTR_VIRGIN_AUCTION(奴隷)
-	#DIM 奴隷
-	#DIM 金額
-	PRINTFORMW :
-	PRINTFORMW :
-	PRINTFORMW %CALLNAME:奴隷%被带去了妓院，押到了许多男人的面前。
-	PRINTFORMW 然后，%NTR_NAME(0)%宣布要拍卖%CALLNAME:奴隷%的处女。
-	TRYCALLLIST
-		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_VA_0(奴隷)
-		FUNC NTR_KOJO_K_VA_0(奴隷)
-	ENDFUNC
-	IF TALENT:奴隷:处女 == 1
-		金額 = NTR_COST_UNLOCK(奴隷, 0) * 40
-	ELSE
-		金額 = NTR_COST_UNLOCK(奴隷, 0) * 20
-	ENDIF
-	PRINTFORMW 「{金額}！」
-	金額 += NTR_COST_UNLOCK(奴隷, 0) * 2
-	PRINTFORMW 「{金額}！」
-	金額 += NTR_COST_UNLOCK(奴隷, 0) * 3
-	PRINTFORMW 「{金額}だ！」
-	PRINTFORMW :
-	PRINTFORMW :
-	金額 += NTR_COST_UNLOCK(奴隷, 0) * RAND:4 + 1000
-	PRINTFORMW 最终、%CALLNAME:奴隷%的处女以${金額}成交了。
-	IF TALENT:奴隷:恋慕
-		PRINTFORM 身为%MSG_LOVER(奴隷)%的%CALLNAME:MASTER%毫不知情、
-	ELSE
-	ENDIF
-	PRINTFORMW %CALLNAME:奴隷%的处女、被以${金額}卖给了不知名的客人。
-	TRYCALLLIST
-		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_VA_1(奴隷)
-		FUNC NTR_KOJO_K_VA_1(奴隷)
-	ENDFUNC
-RETURN 0
-
-;-------------------------------------------------------------------------------
-;客情報生成
-@MAKE_CLIENT(奴隷, 客の人数)
-#DIM 奴隷
-#DIM 客の人数
-#DIM 客番号
-#DIM 客の種類
-#DIM LOOP_I
-;客の人数保存
-CFLAG:奴隷:客人数 = 客の人数
-客の種類 = 10
-客番号 = RAND(客の種類)
-;重複しないように設定する
-FOR LOOP_I,0,客の人数
-	TB:奴隷:LOOP_I:TB_客番号 = 客番号
-	; 種別は1～6 将来はキャラ口上の特殊ケースにも対応させたい
-	TB:奴隷:LOOP_I:TB_客種別 = RAND(6)
-	;次の客番号生成
-	客番号 += RAND(50)+1
-	IF 客番号 >= 客の種類
-		客番号 -= 客の種類
-	ENDIF
-NEXT
-RETURN 0
-[SKIPEND]
-
-;-------------------------------------------------------------------------------
-;	お持ち帰り後処理
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------
+;在访问者家中的行为
+;----------------------------------------------------------------------------------------------------
 ;お持ち帰り後
 @VISITER_TAKEOUT(奴隷)
 #DIM 奴隷
 #DIM 調教者
-#DIM DYNAMIC 客の人数
 #DIM DYNAMIC プレイ時間
 #DIM DYNAMIC 浮気快楽強度
 #DIM 气氛上限値 = 50
@@ -236,27 +142,9 @@ IF BASE:奴隷:体力 < 100 && プレイ内容 == 5
 	;休息したらプレイ内容のリセット、性欲減退
 	プレイ内容 = 0
 	CFLAG:奴隷:性欲 /= 2
-[SKIPSTART]
-	IF FLAG:Flow版本
-[SKIPEND]
 	CFLAG:奴隷:访问者宅气氛 /= 2
-[SKIPSTART]
-	ELSE
-		;貸切でなければ客も入れ替え、气氛も減らす
-		IF CFLAG:奴隷:持帰分岐 == 0 && RAND(10) == 0
-			;十分之一的几率
-			CFLAG:奴隷:客人数 = -1
-			CFLAG:奴隷:访问者宅气氛 = 5
-		ELSE
-			CFLAG:奴隷:访问者宅气氛 /= 2
-		ENDIF
-	ENDIF
-[SKIPEND]
 	RETURN 0
 ENDIF
-[SKIPSTART]
-IF !FLAG:Flow版本
-[SKIPEND]
 IF FLAG:访问者当前位置 == 位置_訪問者宅
 	調教者 = 人物_訪問者
 ELSE
@@ -264,92 +152,6 @@ ELSE
 		PRINTFORML %NTR_NAME(0)%不在家，也没有客人来，%CALLNAME:奴隷%无所事事。
 	RETURN 0
 ENDIF
-[SKIPSTART]
-ELSE
-	IF CFLAG:奴隷:客人数 != -1
-		;客がいる場合継続
-		客の人数 = CFLAG:奴隷:客人数
-	ELSEIF CFLAG:奴隷:再教育フラグ == 1 && FLAG:访问者当前位置 == 位置_訪問者宅
-		;再教育モード
-		客の人数 = 0
-		CFLAG:奴隷:访问者宅气氛 = 50
-	ELSEIF TALENT:奴隷:亲爱
-		;屈服しない亲爱持ちを輪姦する
-		客の人数 = LIMIT(RAND:(4+TALENT:奴隷:淫乱),2,3)
-	ELSEIF TALENT:奴隷:淫乱 && CFLAG:奴隷:客人数 == -1
-		;淫乱なら5%の確率で他の男に抱かせる
-		IF (RAND:20 == 0)
-			IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-				PRINTFORMW %NTR_NAME(0)+"打算让"+CALLNAME:奴隷+"和其他人做爱……"%
-				IF TALENT:奴隷:恋慕
-					PRINTFORML %CALLNAME:奴隷%虽然已经有%MSG_LOVER(奴隷)%、但却没什么迟疑地接受了那个要求。
-				ELSE
-					PRINTFORML %CALLNAME:奴隷%接受了这个要求。
-				ENDIF
-				TRYCALLLIST
-					FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_19_1(奴隷)
-					FUNC NTR_KOJO_K_19_1(奴隷)
-				ENDFUNC
-				PRINTL
-			ENDIF
-			客の人数 = 1
-			;CFLAG:奴隷:客人数 = -1
-		ENDIF
-	ELSEIF CFLAG:奴隷:屈服度 > 5000 && TALENT:奴隷:浮気公認 >= 4 && CFLAG:奴隷:客人数 == -1
-		;屈服度>5000かつ浮気公認が4LV以上あれば、5%の確率で他の男に抱かせる
-		IF (RAND:20 == 0)
-			IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-				PRINTFORML %NTR_NAME(0)+"打算让"+CALLNAME:奴隷+"和其他人做爱……"%
-				IF TALENT:奴隷:恋慕
-					PRINTFORML %CALLNAME:奴隷%虽然已经有了%MSG_LOVER(奴隷)%、却没什么迟疑地就接受了那个要求。
-				ELSE
-					PRINTFORML %CALLNAME:奴隷%接受了这个要求。
-				ENDIF
-				TRYCALLLIST
-					FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_19_2(奴隷)
-					FUNC NTR_KOJO_K_19_2(奴隷)
-				ENDFUNC
-				PRINTL
-			ENDIF
-			客の人数 = 1
-			;CFLAG:奴隷:客人数 = -1
-		ENDIF
-	ENDIF
-	;处女菊花厨の時は4Pはなし
-	IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女
-		IF (客の人数 > 2)
-			客の人数 = 2
-		ENDIF
-	ENDIF
-	[IF_DEBUG]
-	SETCOLOR 黄色
-	PRINTFORML %CALLNAME:奴隷%的客人数:{客の人数}
-	RESETCOLOR
-	[ENDIF]
-	;客がいれば調教者は客(999)、いなければ訪問者(998)
-	IF (客の人数 > 0)
-		調教者 = 人物_客
-		IF -1 == CFLAG:奴隷:客人数
-			;客人数未定義であれば客情報生成
-			CALL MAKE_CLIENT(奴隷, 客の人数)
-			;客入れ替え時会话からスタートするように。
-			CFLAG:奴隷:访问者宅气氛 = 5
-			CFLAG:奴隷:客人数加算フラグ = 1
-		ELSE
-			;客人数定義済みであればそちらを使用
-			客の人数 = CFLAG:奴隷:客人数
-		ENDIF
-	ELSE
-		IF FLAG:访问者当前位置 == 位置_訪問者宅
-			調教者 = 人物_訪問者
-		ELSE
-			SIF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-				PRINTFORML %NTR_NAME(0)%不在家，也没有客人来，%CALLNAME:奴隷%无所事事。
-			RETURN 0
-		ENDIF
-	ENDIF
-ENDIF
-[SKIPEND]
 ;气氛が悪い時は帰る
 IF CFLAG:奴隷:访问者宅气氛 < 0 && TALENT:奴隷:浮気公認 < 5
 	;PRINTW 气氛不好回来了
@@ -408,163 +210,6 @@ ELSE
 	ENDIF
 	;プレイ時間により屈服度が増加
 	CALL NTR_ADD_SURRENDER(奴隷, MAX(プレイ時間/2,0))
-[SKIPSTART]
-	IF !FALG:Flow版本
-		SELECTCASE 客の人数
-			CASE 1
-			;处女保存処理
-				IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女
-					TFLAG:輪姦内容 = 輪姦_1A
-				ELSE
-				;一人であれば必ずＶ（持帰分岐時の都合でＶ以外とは合わない）、１人で３部位相手にするのでプレイ時間は1/3。
-					TFLAG:輪姦内容 = 輪姦_1V
-				ENDIF
-			;口上(地の文)呼び出し
-				IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-					CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-				ENDIF
-				CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-				CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-				SELECTCASE CFLAG:奴隷:持帰分岐
-					CASE 1,100 ;Ｓプレイ(咲夜、蕾米莉亚)、摄影(大妖精)、骑乘位
-						CALL NTR_Play_V_2(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-					CASE 2 ;犬プレイ(咲夜)、Ｍプレイ(蕾米莉亚)、后背位
-						CALL NTR_Play_V_1(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-					CASE 3 ;種付けプレイ(咲夜）、正常位
-						CALL NTR_Play_V_0(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-					CASE 4 ;結婚式プレイ(咲夜）、対面座位
-						CALL NTR_Play_V_3(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-					CASEELSE ;該当なしならとりあえず正常位
-						IF TFLAG:輪姦内容 == 輪姦_1A
-							CALL NTR_Play_A_0(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-						ELSE
-							CALL NTR_Play_V_0(奴隷,調教者,プレイ内容-4,プレイ時間*1/3)
-						ENDIF
-				ENDSELECT
-			CASE 2
-			;二人いるときは２穴使用。２人で４部位相手にするのでプレイ時間は2/4で。
-				IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女 &&
-				;处女保存処理
-					TFLAG:輪姦内容 = 輪姦_2MA ;ＭＡ、イメージ的にＡ后背位
-				;口上(地の文)呼び出し
-					IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-						CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-					ENDIF
-					CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_M_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_A_1(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-				ELSEIF EXP:奴隷:Ｖ扩张经验 + EXP:奴隷:浮気Ｖ扩张经验 > 49 && RAND:5 == 0
-					TFLAG:輪姦内容 = 輪姦_2VV ;Ｖ２本挿入、イメージ的に対面座位+背面座位
-				;口上(地の文)呼び出し
-					IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-						CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-					ENDIF
-				;Ｖ扩张经验が250以下なら二本差しでＶ扩张经验が付く
-					IF EXP:奴隷:Ｖ扩张经验 + EXP:奴隷:浮気Ｖ扩张经验 < 250
-						SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-							PRINTFORML %CALLNAME:奴隷%狭窄的阴道、因为被两根肉棒同时插入而扩张了…
-						CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
-					ELSEIF EXP:奴隷:Ｖ扩张经验 + EXP:奴隷:浮気Ｖ扩张经验 > 249
-						SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-							PRINTFORML %CALLNAME:奴隷%淫乱的小穴、轻易地将两根肉棒同时吞了进去…
-					ENDIF
-					CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_V_3(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_V_4(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-				ELSEIF EXP:奴隷:Ａ扩张经验 + EXP:奴隷:浮気Ａ扩张经验 > 49 && RAND:4 == 0
-					TFLAG:輪姦内容 = 輪姦_2AA ;Ａ２本挿入、イメージ的に対面座位+背面座位
-				;口上(地の文)呼び出し
-					IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-						CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-					ENDIF
-				;Ａ扩张经验が250以下なら二本差しでＡ扩张经验が付く
-					IF EXP:奴隷:Ａ扩张经验 + EXP:奴隷:浮気Ａ扩张经验 < 250
-						SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-							PRINTFORML %CALLNAME:奴隷%原本紧致的肛门、因为被两根肉棒同时插入而扩张了…
-						CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
-					ELSEIF EXP:奴隷:Ｖ扩张经验 + EXP:奴隷:浮気Ｖ扩张经验 > 249
-						SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
-							PRINTFORML %CALLNAME:奴隷%淫乱的菊穴、轻易地将两根肉棒同时吞了进去…
-					ENDIF
-					CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_A_3(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_A_4(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-				ELSEIF RAND:3 == 0
-					TFLAG:輪姦内容 = 輪姦_2VA ;ＶＡ挿入、イメージ的にＶ対面座位+Ａ背面座位
-				;口上(地の文)呼び出し
-					IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-						CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-					ENDIF
-					CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_V_3(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_A_4(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-				ELSEIF RAND:2 == 0
-					TFLAG:輪姦内容 = 輪姦_2MV ;ＭＶ、イメージ的にＶ后背位
-				;口上(地の文)呼び出し
-					IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-						CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-					ENDIF
-					CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_M_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_V_1(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-				ELSE
-					TFLAG:輪姦内容 = 輪姦_2MA ;ＭＡ、イメージ的にＡ后背位
-				;口上(地の文)呼び出し
-					IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-						CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-					ENDIF
-					CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_M_0(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-					CALL NTR_Play_A_1(奴隷,調教者,プレイ内容-4,プレイ時間*2/4)
-				ENDIF
-			CASE 3
-			;３人で５部位相手にするのでプレイ時間は3/5で。
-				TFLAG:輪姦内容 = 輪姦_3MAV ; イメージ的にＶ骑乘位、Ａ后背位……かな。
-			;口上(地の文)呼び出し
-				IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-					CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-				ENDIF
-				CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間*3/5)
-				CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間*3/5)
-				CALL NTR_Play_M_0(奴隷,調教者,プレイ内容-4,プレイ時間*3/5)
-				CALL NTR_Play_A_1(奴隷,調教者,プレイ内容-4,プレイ時間*3/5)
-				CALL NTR_Play_V_2(奴隷,調教者,プレイ内容-4,プレイ時間*3/5)
-			CASEELSE
-			;客がいない時は訪問者の相手。一人でVorA相手にするのでプレイ時間は1/4で。
-				IF IS_NTR_KEEP_VIRGIN() && TALENT:奴隷:处女
-					TFLAG:輪姦内容 = 輪姦_1A
-				ELSEIF RAND:3
-					TFLAG:輪姦内容 = 輪姦_1V
-				ELSE
-					TFLAG:輪姦内容 = 輪姦_1A
-				ENDIF
-			;口上(地の文)呼び出し
-				IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-					CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
-				ENDIF
-				CALL NTR_Play_B_0(奴隷,調教者,プレイ内容-4,プレイ時間/4)
-				CALL NTR_Play_C_0(奴隷,調教者,プレイ内容-4,プレイ時間/4)
-				IF TFLAG:輪姦内容 == 輪姦_1V
-					CALLFORM NTR_Play_V_{RAND:4}(奴隷,調教者,プレイ内容-4,プレイ時間/4)
-				ELSE
-					CALLFORM NTR_Play_A_{RAND:4}(奴隷,調教者,プレイ内容-4,プレイ時間/4)
-				ENDIF
-				CALL NTR_Play_M_0(奴隷,調教者,プレイ内容-4,プレイ時間/4)
-		ENDSELECT
-		IF 0 != CFLAG:奴隷:客人数加算フラグ
-			FOR LOOP_I, 0, 客の人数
-				EXP:奴隷:浮気人数 = NTR_FickleCount(奴隷,調教者,LOOP_I)
-			NEXT
-			CFLAG:奴隷:客人数加算フラグ = 0
-		ENDIF
-	ENDIF
-[SKIPEND]
 ENDIF
 ;プレイ時間を反映
 CFLAG:奴隷:访问者宅行为终止时刻 = DATETIME() + プレイ時間
@@ -576,11 +221,8 @@ CALL ORGASM_ADD(奴隷,調教者)
 浮気快楽強度 = (調教者 == 人物_訪問者) ? RESULT # RESULT / 2
 ;口上呼び出し
 IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
-	IF 客の人数
-		;TRYCALL 客口上(奴隷, プレイ内容, TB:奴隷:0:TB_客種別)
-	ENDIF
 	TRYCALLLIST
-		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_10_{プレイ内容}(奴隷, 調教者, 客の人数)
+		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_10_{プレイ内容}(奴隷, 調教者, 0)
 	ENDFUNC
 ENDIF
 ;处女喪失中フラグを一時退避していた場合復旧する

@@ -4082,8 +4082,6 @@ PRINTFORM %CALLNAME:PLAYER%对
 IF ABL:露出癖 == 0
 	IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置
 		PRINTFORM %NTR_NAME(0)%的视线感到害羞的同时、主动的
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 魔理沙的视线感到害羞的同时、主动的
 	ELSE
 		PRINTFORM 一边感到羞耻一边确认周围没人发现
 	ENDIF
@@ -4103,9 +4101,6 @@ ELSEIF ABL:露出癖 == 1
 ELSEIF ABL:露出癖 == 2
 	IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置
 		PRINTFORM %NTR_NAME(0)%的视线意识到了
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 意识到魔理沙的视线
-	ELSE
 	ENDIF
 	PRINTFORML 把手放在下腹部、用食指和中指、主动分开了自己的蜜处
 	IF TCVAR:102
@@ -4116,8 +4111,6 @@ ELSEIF ABL:露出癖 == 2
 ELSEIF ABL:露出癖 == 3
 	IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置
 		PRINTFORM 对被%NTR_NAME(0)%目击的事感到兴奋
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 对被魔理沙目击的事感到兴奋
 	ELSE
 		PRINTFORM 一边想象着被目击的事
 	ENDIF
@@ -4130,9 +4123,6 @@ ELSEIF ABL:露出癖 == 3
 ELSEIF ABL:露出癖 == 4
 	IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置
 		PRINTFORM 对被%NTR_NAME(0)%目击的事感到兴奋
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 对被魔理沙目击的事感到兴奋
-	ELSE
 	ENDIF
 	PRINTFORML  用双手的手指将阴唇连着阴道口也同时扩张开了. 
 	IF TCVAR:102
@@ -4143,8 +4133,6 @@ ELSEIF ABL:露出癖 == 4
 ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱 == 0
 	IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置
 		PRINTFORML 双手的手指放在阴唇上、为了让%NTR_NAME(0)%看见将阴道口大大的扩张了
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORML 双手的手指放在阴唇上、为了让魔理沙看见将阴道口大大的扩张了
 	ELSE
 		PRINTFORML 双手的手指放在阴唇上、像在向谁展示一样将阴道口大大的扩张了
 	ENDIF
@@ -4157,8 +4145,6 @@ ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱 == 0
 ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱
 	IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置
 		PRINTFORML 双手的手指放在阴唇上、为了让%NTR_NAME(0)%看见将阴道口大大的扩张了
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORML 双手的手指放在阴唇上、为了让魔理沙看见将阴道口大大的扩张了
 	ELSE
 		PRINTFORML 双手的手指放在阴唇上、像在向谁展示一样将阴道口大大的扩张了
 	ENDIF

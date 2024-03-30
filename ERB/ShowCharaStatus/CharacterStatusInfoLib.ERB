@@ -410,8 +410,19 @@ SELECTCASE ARG
 		ELSEIF ARG:1 == 2
 			RETURNF "Ｂ过敏"
 		ENDIF
-		;胸围
+		;Ｍ感度
 	CASE 105
+		IF ARG:1 == -2
+			RETURNF "Ｍ不感"
+		ELSEIF ARG:1 == -1
+			RETURNF "Ｍ钝感"
+		ELSEIF ARG:1 == 1
+			RETURNF "Ｍ敏感"
+		ELSEIF ARG:1 == 2
+			RETURNF "Ｍ过敏"
+		ENDIF
+		;胸围
+	CASE 106
 		IF ARG:1 == -2
 			RETURNF "絶壁"
 		ELSEIF ARG:1 == -1
@@ -422,17 +433,6 @@ SELECTCASE ARG
 			RETURNF "巨乳"
 		ELSEIF ARG:1 == 2
 			RETURNF "爆乳"
-		ENDIF
-		;Ｍ感度
-	CASE 106
-		IF ARG:1 == -2
-			RETURNF "Ｍ不感"
-		ELSEIF ARG:1 == -1
-			RETURNF "Ｍ钝感"
-		ELSEIF ARG:1 == 1
-			RETURNF "Ｍ敏感"
-		ELSEIF ARG:1 == 2
-			RETURNF "Ｍ过敏"
 		ENDIF
 		;阴茎尺寸
 	CASE 107
@@ -449,13 +449,18 @@ SELECTCASE ARG
 		ELSEIF ARG:1 == 4
 			RETURNF "膣填充形阴茎"
 		ENDIF
-		;阴道深度
+		;小穴穹隆后移
 	CASE 108
 		IF ARG:1 == 1
 			RETURNF "小穴穹隆后移"
 		ELSEIF ARG:1 == 2
+			RETURNF "永久性穹隆后移"
+		ENDIF
+		;小穴扩张状态
+	CASE 109
+		IF ARG:1 == 1
 			RETURNF "小穴时常拉伸"
-		ELSEIF ARG:1 == 3
+		ELSEIF ARG:1 == 2
 			RETURNF "小穴收缩自如"
 		ENDIF
 		;回复速度
