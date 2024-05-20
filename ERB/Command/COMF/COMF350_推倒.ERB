@@ -8,6 +8,8 @@ FOR LOOP_I,1,CHARANUM
 	SIF TARGET:LOOP_I <= 0
 		CONTINUE
 	奴隷 = TARGET:LOOP_I
+	CFLAG:奴隷:うふふ = 1
+	[SKIPSTART]
 	;NGの場合もあるので後でフラグを立てる。
 	;CFLAG:奴隷:うふふ = 1
 	IF 0 == RESULT
@@ -23,6 +25,7 @@ FOR LOOP_I,1,CHARANUM
 		PRINTFORML %CALLNAME:奴隷%自己也不知道為什麼會做出危險的動作	
 		RETURN 0
 	ENDIF
+	[SKIPEND]
 NEXT
 ;全員成功時、うふふフラグを立てる。
 FOR LOOP_I,1,CHARANUM

@@ -604,7 +604,7 @@ FOR 对象,1,CHARANUM
 	;NTRでも、我慢できなくなれば的な表現。
 	暂定值 = MAX( 好感度基准值 / (50+TALENT:对象:难以越过的界线*10) - (TALENT:对象:NTR) , 0 )
 	;最大ランクまでに切り詰める
-	CFLAG:对象:亲密程度 = MIN( 暂定值 , 亲密程度上限 )
+	CFLAG:对象:亲密程度 = TALENT:对象:NTR ? 3 # MIN( 暂定值 , 亲密程度上限 )
 	;DEBUGPRINTFORML %CALLNAME:对象+"(CFLAG:亲密程度"%{CFLAG:对象:亲密程度}%")"%
 NEXT
 RETURN 0
@@ -1027,11 +1027,11 @@ FOR LOCAL:0,1,CHARANUM
 			TARGET:0 = LOCAL:1
 		ENDIF
 		;亲密程度は、同室中の上位キャラの亲密程度以下に制限される。偉い人の前ではうふふできない。
-		TCVAR:(LOCAL:1):亲密程度 = MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
+		TCVAR:(LOCAL:1):亲密程度 = TALENT:(LOCAL:1):NTR ? 3 # MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
 		IF !CFLAG:(LOCAL:1):睡眠
 			;起きてるキャラの最小亲密程度を取得
 			LOCAL:3 = MIN(CFLAG:(LOCAL:1):亲密程度,LOCAL:3)
-			TCVAR:MASTER:亲密程度 = MAX(CFLAG:(LOCAL:1):亲密程度,0)
+			TCVAR:MASTER:亲密程度 = TALENT:(LOCAL:1):NTR ? 3 # MAX(CFLAG:(LOCAL:1):亲密程度,0)
 		ENDIF
 	ENDIF
 	;DEBUGPRINTFORML %CALLNAME:(LOCAL:1)+"の亲密程度:"%{TCVAR:(LOCAL:1):亲密程度}

@@ -433,7 +433,7 @@ IF FLAG:素質変動onoff == 1
 
 	IF EXP:对象:Ａ绝顶经验+EXP:对象:浮気Ａ绝顶经验 >= 50 && ABL:对象:Ａ感觉 >=3 && TALENT:对象:Ａ感度 == -1
 		PRINTFORML 在一次次绝顶中，%CALLNAME:对象%不断被刺激的肛门记住了快乐的感觉，原本迟钝的尻穴逐渐苏醒
-		PRINTFORML %CALLNAME:对象%获得了[%GET_TALENTNAME(103,-1)%]
+		PRINTFORML %CALLNAME:对象%失去了[%GET_TALENTNAME(103,-1)%]
 		TALENT:对象:Ａ感度 = 0
 	ENDIF
 	IF EXP:对象:Ｃ绝顶经验+EXP:对象:浮気Ｃ绝顶经验 >= 100 && ABL:对象:Ｃ感觉 >=5 && TALENT:对象:Ｃ感度 == 0
