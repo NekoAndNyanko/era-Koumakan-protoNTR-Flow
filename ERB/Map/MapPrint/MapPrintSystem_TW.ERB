@@ -107,17 +107,17 @@ SETFONT
 #DIM LOOP_CHR
 #DIMS LOCAL_TITLE
 FOR LOOP_CHR ,1,CHARANUM
-	IF TALENT:LOOP_CHR:恋慕 && CFLAG:LOOP_CHR:現在位置 == 位置 
+	IF TALENT:LOOP_CHR:恋慕 && CFLAG:LOOP_CHR:当前位置 == 位置 
 		SETCOLOR 色設定_マップ_恋人
-	ELSEIF TALENT:LOOP_CHR:恋人 && CFLAG:LOOP_CHR:現在位置 == 位置
+	ELSEIF TALENT:LOOP_CHR:恋人 && CFLAG:LOOP_CHR:当前位置 == 位置
 		SETCOLOR 0xFFCCFF
 	ENDIF
 NEXT
-IF CFLAG:MASTER:現在位置 == 位置
+IF CFLAG:MASTER:当前位置 == 位置
 	SETCOLOR 色設定_マップ_自分
 ENDIF
 IF FLAG:访问者当前位置 != 900 && FLAG:访问者当前位置 == 位置
-	IF !IS_NTR_SHOW_POS() && CFLAG:MASTER:現在位置 != FLAG:访问者当前位置 && CAN_MOVE(CFLAG:MASTER:現在位置, FLAG:访问者当前位置) != 2
+	IF !IS_NTR_SHOW_POS() && CFLAG:MASTER:当前位置 != FLAG:访问者当前位置 && CAN_MOVE(CFLAG:MASTER:当前位置, FLAG:访问者当前位置) != 2
 	ELSE
 		IF FLAG:訪問者の气氛 == 1 || FLAG:訪問者の气氛 == 2
 			SETCOLOR 色設定_マップ_爱抚

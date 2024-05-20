@@ -30,9 +30,9 @@ IF TFLAG:195
 ELSE
 	CALL CHARA_MOVEMENT
 	IF TCVAR:MASTER:130 >= 1
-		LOCAL:1 = IN_ROOM("MIN", CFLAG:MASTER:現在位置, "CFLAG", GETNUM(CFLAG, "亲密程度"), 1)
+		LOCAL:1 = IN_ROOM("MIN", CFLAG:MASTER:当前位置, "CFLAG", GETNUM(CFLAG, "亲密程度"), 1)
 		LOCAL:2 = CFLAG:(LOCAL:1):6
-		IF LOCAL:2 <= 0 && LOCAL:1 > 0 && CFLAG:(LOCAL:1):現在位置 != CFLAG:(LOCAL:1):前ターン位置 && !CFLAG:(LOCAL:1):睡眠
+		IF LOCAL:2 <= 0 && LOCAL:1 > 0 && CFLAG:(LOCAL:1):当前位置 != CFLAG:(LOCAL:1):前ターン位置 && !CFLAG:(LOCAL:1):睡眠
 			PRINTFORMW %CALLNAME:(LOCAL:1)%が入ってきたことにより空気が変わってしまった…
 			FOR LOCAL, 0, CHARANUM
 				SIF CFLAG:LOCAL:同室 && CFLAG:LOCAL:亲密程度 >= 1 && !CFLAG:LOCAL:睡眠
@@ -50,7 +50,7 @@ CFLAG:MASTER:睡眠 = 0
 ;CALL INFO_SetTarget
 ;MASTERと同室フラグ
 FOR LOCAL,1,CHARANUM
-	IF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置
+	IF CFLAG:LOCAL:当前位置 == CFLAG:MASTER:当前位置
 		CALL 确认肌肤颜色(LOCAL)
 		CALL INFO_确认对象状态(LOCAL)
 		;下半身下着が見える状態ならフラグ取得
@@ -72,8 +72,8 @@ FOR LOCAL,1,CHARANUM
 		ENDIF
 	ELSE
 		;相手からこちらが見えていて、相手かこちらかが移动したかこちらが押し倒した
-		;SIF CAN_MOVE(CFLAG:LOCAL:現在位置, CFLAG:MASTER:現在位置) == 2 && (CFLAG:MASTER:前ターン位置 != CFLAG:MASTER:現在位置 || CFLAG:LOCAL:前ターン位置 != CFLAG:LOCAL:現在位置 || TRAINNAME:PREVCOM == "推到") && !CFLAG:LOCAL:睡眠
-		SIF CAN_MOVE(CFLAG:LOCAL:現在位置, CFLAG:MASTER:現在位置) == 2 && (CFLAG:MASTER:前ターン位置 != CFLAG:MASTER:現在位置 || CFLAG:LOCAL:前ターン位置 != CFLAG:LOCAL:現在位置 || PREVCOM == 350) && !CFLAG:LOCAL:睡眠
+		;SIF CAN_MOVE(CFLAG:LOCAL:当前位置, CFLAG:MASTER:当前位置) == 2 && (CFLAG:MASTER:前ターン位置 != CFLAG:MASTER:当前位置 || CFLAG:LOCAL:前ターン位置 != CFLAG:LOCAL:当前位置 || TRAINNAME:PREVCOM == "推到") && !CFLAG:LOCAL:睡眠
+		SIF CAN_MOVE(CFLAG:LOCAL:当前位置, CFLAG:MASTER:当前位置) == 2 && (CFLAG:MASTER:前ターン位置 != CFLAG:MASTER:当前位置 || CFLAG:LOCAL:前ターン位置 != CFLAG:LOCAL:当前位置 || PREVCOM == 350) && !CFLAG:LOCAL:睡眠
 			CALL AFFAIR_DISCLOSURE(LOCAL, 1)
 		CFLAG:LOCAL:同室 = 0
 	ENDIF
@@ -82,7 +82,7 @@ NEXT
 CALL INFO_SetTarget
 ;ウフフ終了TEQUIP処理
 FOR LOCAL,0,CHARANUM
-	IF !CFLAG:LOCAL:うふふ || CFLAG:LOCAL:現在位置 != CFLAG:LOCAL:前ターン位置
+	IF !CFLAG:LOCAL:うふふ || CFLAG:LOCAL:当前位置 != CFLAG:LOCAL:前ターン位置
 		CALL CLOTHES_RESET(LOCAL)
 		CALL CLOTHES_SETTING_TRAIN(LOCAL)
 		FOR LOCAL:1,10,150
@@ -96,7 +96,7 @@ FOR LOCAL,0,CHARANUM
 			TCVAR:LOCAL:イきそう = 0
 		ENDIF
 	ENDIF
-	IF 存在浴室(CFLAG:LOCAL:現在位置)
+	IF 存在浴室(CFLAG:LOCAL:当前位置)
 		EQUIP:LOCAL:0 = 0
 		IF CFLAG:LOCAL:うふふ || TCVAR:LOCAL:130 > 2
 			TEQUIP:(LOCAL):浴场PLAY = 1
@@ -107,9 +107,9 @@ FOR LOCAL,0,CHARANUM
 	ELSE
 		TEQUIP:(LOCAL):浴场PLAY = 0
 	ENDIF
-	IF OPENPLACE(CFLAG:LOCAL:現在位置)
+	IF OPENPLACE(CFLAG:LOCAL:当前位置)
 		IF CFLAG:LOCAL:うふふ == 1
-			TEQUIP:(LOCAL):野外PLAY = OPENPLACE(CFLAG:LOCAL:現在位置)
+			TEQUIP:(LOCAL):野外PLAY = OPENPLACE(CFLAG:LOCAL:当前位置)
 		ELSE
 			TEQUIP:(LOCAL):野外PLAY = 0
 		ENDIF
@@ -123,7 +123,7 @@ NEXT
 DRAWLINE
 ;現在時刻と睡眠可否の表示
 CALL INFO_PrintCurrentTime(MASTER)
-;現在位置と汚れ状態の表示
+;当前位置と汚れ状態の表示
 CALL INFO_PrintCurrentPosition(MASTER)
 ;-------------------------------------------------
 ;TARGET情報とモード切り替え
@@ -614,9 +614,9 @@ RETURN 0
 @AFFAIR_DISCLOSURE(ARG, ARG:1)
 ;ARG 入室してきたキャラの番号　ARG:1 0なら同室、1なら覗き
 VARSET LOCAL
-LOCAL:1 = IN_ROOM("MAX", CFLAG:MASTER:現在位置, "CFLAG", GETNUM(CFLAG, "うふふ"), 1)
+LOCAL:1 = IN_ROOM("MAX", CFLAG:MASTER:当前位置, "CFLAG", GETNUM(CFLAG, "うふふ"), 1)
 IF (LOCAL:1 && CFLAG:(LOCAL:1):うふふ) || CFLAG:MASTER:うふふ == 3
-	IF ARG:1 == 1 && 天候(天候値) == "云雾" && OPENPLACE(CFLAG:MASTER:現在位置) == 2
+	IF ARG:1 == 1 && 天候(天候値) == "云雾" && OPENPLACE(CFLAG:MASTER:当前位置) == 2
 	ELSEIF ARG:1 == 1 && 天候(天候値) == "白夜"
 	ELSE
 		DRAWLINE
@@ -667,12 +667,12 @@ IF LOCAL:2
 ENDIF
 ;通常遭遇
 ;こちらからも見える位置にいる、もしくは同室
-IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:ARG:現在位置) == 2)
+IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:ARG:当前位置) == 2)
 	;さっきから居るのは分かっていたか否か
-	IF CFLAG:ARG:前ターン位置 == CFLAG:ARG:現在位置
+	IF CFLAG:ARG:前ターン位置 == CFLAG:ARG:当前位置
 		CALL 自慰中断, ARG
-		IF CAN_MOVE(CFLAG:MASTER:前ターン位置, CFLAG:ARG:現在位置) == 2
-			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:現在位置)+"に居る"%
+		IF CAN_MOVE(CFLAG:MASTER:前ターン位置, CFLAG:ARG:当前位置) == 2
+			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:当前位置)+"に居る"%
 			SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
 				PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
 			SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
@@ -681,7 +681,7 @@ IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:ARG
 				PRINTFORML %CALLNAME:ARG+"は服を着ていない…"%
 			CALL INFO_PrintPortrayal(ARG)
 		ELSE
-			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:現在位置)+"に居た"%
+			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:当前位置)+"に居た"%
 			SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
 				PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
 			SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
@@ -694,7 +694,7 @@ IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:ARG
 		LOCAL:3 = 1
 		;さっきから居るのは分かってて相手が移动した場合は別の場所で表示が出る
 	ELSEIF CAN_MOVE(CFLAG:MASTER:前ターン位置, CFLAG:ARG:前ターン位置) < 2 && CFLAG:ARG:前ターン位置 != CFLAG:MASTER:前ターン位置
-		PRINTFORMW %CALLNAME:ARG%が%GETPLACENAME(CFLAG:ARG:現在位置)%に来た
+		PRINTFORMW %CALLNAME:ARG%が%GETPLACENAME(CFLAG:ARG:当前位置)%に来た
 		SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
 			PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
 		SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
@@ -704,7 +704,7 @@ IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:ARG
 		LOCAL:3 = 2
 	ENDIF
 	IF !ARG:1 && LOCAL:3
-		IF CFLAG:ARG:情事目撃 && CFLAG:(CFLAG:ARG:情事目撃):現在位置 != CFLAG:ARG:現在位置
+		IF CFLAG:ARG:情事目撃 && CFLAG:(CFLAG:ARG:情事目撃):当前位置 != CFLAG:ARG:当前位置
 			PRINTFORMW %CALLNAME:ARG%に先の%CALLNAME:(CFLAG:ARG:情事目撃)%との一件について問い詰められた…
 			CALL KOJO_EVENT(0, ARG, 2)
 			CFLAG:ARG:情事目撃 = 0
@@ -770,13 +770,13 @@ RESETCOLOR
 RETURN
 
 ;-------------------------------------------------------------------------------
-;現在位置情報を表示する
+;当前位置情報を表示する
 ;@param ARG:0 キャラクターの番号
 @INFO_PrintCurrentPosition(ARG:0)
-TRYCCALLFORM %"GETPLACENAME_"+TOSTR(CFLAG:(ARG:0):現在位置)%, ARG:0
-	PRINTFORM %"現在位置:"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"("+RESULTS:0+")  "%
+TRYCCALLFORM %"GETPLACENAME_"+TOSTR(CFLAG:(ARG:0):当前位置)%, ARG:0
+	PRINTFORM %"当前位置:"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+"("+RESULTS:0+")  "%
 CATCH
-	PRINTFORM %"現在位置:"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"  "%
+	PRINTFORM %"当前位置:"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+"  "%
 ENDCATCH
 IF FLAG:ゴミ表示OFF
 	;ゴミ表示OFF
@@ -785,7 +785,7 @@ ELSEIF TFLAG:COMABLE管理 == 2
 ELSE
 	;部屋番号+100が汚れ状態
 	PRINTFORM %"清潔度:"%
-	SELECTCASE FLAG:(100+CFLAG:(ARG:0):現在位置)
+	SELECTCASE FLAG:(100+CFLAG:(ARG:0):当前位置)
 		CASE IS < 100
 			SETCOLOR 色設定_清潔度１
 			PRINTFORM %"最高"%
@@ -810,14 +810,14 @@ ELSE
 	ENDSELECT
 	RESETCOLOR
 ENDIF
-;PRINTFORML %"現在位置:"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+" "+LOCALS:0%
+;PRINTFORML %"当前位置:"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+" "+LOCALS:0%
 PRINTL
 IF FLAG:部屋のにおい_初期FLAG
 	CALL ROOM_SMELL
-	IF ROOM_SMELL_VALUE(FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG)) > ROOM_SMELL_VALUE(FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG_2))
-		LOCAL:10 = FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG)
+	IF ROOM_SMELL_VALUE(FLAG:(CFLAG:MASTER:当前位置 + 部屋のにおい_初期FLAG)) > ROOM_SMELL_VALUE(FLAG:(CFLAG:MASTER:当前位置 + 部屋のにおい_初期FLAG_2))
+		LOCAL:10 = FLAG:(CFLAG:MASTER:当前位置 + 部屋のにおい_初期FLAG)
 	ELSE
-		LOCAL:10 = FLAG:(CFLAG:MASTER:現在位置 + 部屋のにおい_初期FLAG_2)
+		LOCAL:10 = FLAG:(CFLAG:MASTER:当前位置 + 部屋のにおい_初期FLAG_2)
 	ENDIF
 	IF ROOM_SMELL_WHOSE_NAME(LOCAL:10) == "無臭"
 		PRINTFORML 没什么气味
@@ -1010,11 +1010,11 @@ CALL SORT_CFLAG(310)
 VARSET LOCAL
 LOCAL:3 = 99
 TCVAR:MASTER:亲密程度=0
-;現在位置が同じキャラを取得し、ターゲット候補一覧に追加
+;当前位置が同じキャラを取得し、ターゲット候補一覧に追加
 FOR LOCAL:0,1,CHARANUM
 	;先ほど取得した館内地位順でキャラ番号を取得
 	LOCAL:1 = RESULT:(LOCAL:0)
-	IF CFLAG:(LOCAL:1):現在位置 == CFLAG:MASTER:現在位置
+	IF CFLAG:(LOCAL:1):当前位置 == CFLAG:MASTER:当前位置
 		;同じ位置にいるのなら、(寝ていたとしても)ターゲット候補に追加
 		LOCAL:2++
 		TARGET:(LOCAL:2) = LOCAL:1
@@ -1048,19 +1048,19 @@ RETURN 0
 @INFO_SetTrainMode(ARG:0)
 #DIM 对象
 #DIM 同室人数
-#DIM POS_NOW		; MASTERの現在位置
+#DIM POS_NOW		; MASTERの当前位置
 #DIM LOOP_CHR
 #DIM 告白判定値
 
 对象 = TARGET:0
-POS_NOW = CFLAG:MASTER:現在位置
+POS_NOW = CFLAG:MASTER:当前位置
 IF 对象 && !CFLAG:对象:睡眠
 	;MASTERの位置から見て他の部屋にだれかいるかどうか
 	同室人数 = 0
 	FOR LOOP_CHR,1,CHARANUM
-		SIF CFLAG:LOOP_CHR:現在位置 == POS_NOW
+		SIF CFLAG:LOOP_CHR:当前位置 == POS_NOW
 			CONTINUE
-		SIF CAN_MOVE(POS_NOW, CFLAG:LOOP_CHR:現在位置) == 2
+		SIF CAN_MOVE(POS_NOW, CFLAG:LOOP_CHR:当前位置) == 2
 			同室人数 ++
 	NEXT
 	IF CFLAG:对象:うふふ == 1
@@ -1124,7 +1124,7 @@ IF FLAG:访问者当前位置 == POS_NOW
 ENDIF
 ;同じ場所にいる他のキャラクターを表示
 FOR LOOP_CHR,1,CHARANUM
-	IF CFLAG:LOOP_CHR:現在位置 == POS_NOW
+	IF CFLAG:LOOP_CHR:当前位置 == POS_NOW
 		IF 同室人数
 			PRINT 、
 		ENDIF

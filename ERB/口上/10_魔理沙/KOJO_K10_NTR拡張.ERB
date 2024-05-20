@@ -310,7 +310,7 @@ IF CFLAG:同行
 ELSE
 	RET_VAL = 0
 	;離れるとき
-	IF CFLAG:奴隷:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:奴隷:当前位置 == FLAG:访问者当前位置
 		; 訪問者が同じ場所にいる
 		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
 			PRINTFORML 「啊，%NTR_NAME(4)%在啊。我去一下”

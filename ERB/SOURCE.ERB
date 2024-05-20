@@ -385,7 +385,7 @@ IF !FLAG:真实模式
 		FOR LOCAL:1,0,100
 			SIF TCVAR:LOCAL:表示カット
 				CONTINUE
-			SIF !NTR_CHK_VISIBLE(CFLAG:LOCAL:現在位置)
+			SIF !NTR_CHK_VISIBLE(CFLAG:LOCAL:当前位置)
 				CONTINUE
 			IF EXP_UP(LOCAL:1,LOCAL)
 				LOCAL:2 ++
@@ -593,7 +593,7 @@ IF CFLAG:奴隷:跳蛋挿入
 	IF RAND:3 == 0 
 		; "あなた"以外
 		IF 奴隷 > 0
-			IF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+			IF CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 				PRINTFORMW 当%CALLNAME:MASTER%顺着低低的喘息声看过去后，%CALLNAME:奴隷%的脸泛起了大片红晕。
 				IF TALENT:奴隷:NTR
 					PRINTFORMW %CALLNAME:奴隷%眼神恍惚地摇晃着腰部。
@@ -604,7 +604,7 @@ IF CFLAG:奴隷:跳蛋挿入
 			; "あなた"
 		ELSEIF 奴隷 == 0
 			FOR LOOP_CHR,1,CHARANUM
-				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置
+				IF CFLAG:奴隷:当前位置 == CFLAG:LOOP_CHR:当前位置
 					PRINTFORMW 可能是漏出来的喘息声吸引到了%CALLNAME:LOOP_CHR%的注意、%CALLNAME:LOOP_CHR%看了过来，%CALLNAME:奴隷%的脸泛起了大片红晕。
 					IF TALENT:奴隷:NTR
 						PRINTFORMW 在%CALLNAME:LOOP_CHR%的注视下，%CALLNAME:奴隷%眼神恍惚地摇晃着腰部。
@@ -646,7 +646,7 @@ IF CFLAG:奴隷:跳蛋A挿入
 		; 跳蛋挿入時に両方表示されることを回避
 		IF 奴隷 > 0
 			; "あなた"以外
-			IF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+			IF CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 				PRINTFORMW 当%CALLNAME:MASTER%顺着低低的喘息声看过去后，%CALLNAME:奴隷%的脸泛起了大片红晕。
 				IF TALENT:奴隷:NTR
 					PRINTFORMW 眼前的%CALLNAME:奴隷%正露出恍惚的表情不断地扭动着屁股。
@@ -657,7 +657,7 @@ IF CFLAG:奴隷:跳蛋A挿入
 		ELSEIF 奴隷 == 0
 			; "あなた"
 			FOR LOOP_CHR,1,CHARANUM
-				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置
+				IF CFLAG:奴隷:当前位置 == CFLAG:LOOP_CHR:当前位置
 					PRINTFORMW 可能是漏出来的喘息声吸引到了%CALLNAME:LOOP_CHR%的注意、%CALLNAME:LOOP_CHR%看了过来，%CALLNAME:奴隷%的脸泛起了大片红晕。
 					IF TALENT:奴隷:NTR
 						PRINTFORMW 眼前的%CALLNAME:奴隷%正露出恍惚的表情不断地扭动着屁股。
@@ -701,16 +701,16 @@ IF CFLAG:奴隷:精液残留中 && !CFLAG:奴隷:睡眠
 		IF 奴隷 > 0 && FLAG:1840 <= 500
 			ノーパン = CFLAG:奴隷:服装_下半身下着２ == 0
 			;ターゲットとあなたと訪問者が一緒
-			IF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置 && CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+			IF CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置 && CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 				CALL CHK_SEMEN_STAY_WITH_MASTER_AND_VISITOR(奴隷)
 				;ターゲットとあなたが一緒
-			ELSEIF CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+			ELSEIF CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 				CALL CHK_SEMEN_STAY_WITH_MASTER(奴隷, ノーパン)
 				;ターゲットと訪問者が一緒、一人だけ
-			ELSEIF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) == 1
+			ELSEIF FLAG:访问者当前位置 == CFLAG:奴隷:当前位置 && GET_N_WITH_VISITER(奴隷) == 1
 				CALL CHK_SEMEN_STAY_WITH_VISITOR(奴隷, ノーパン)
 				;ターゲットと訪問者が一緒、同じ場所に2人以上
-			ELSEIF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) > 1
+			ELSEIF FLAG:访问者当前位置 == CFLAG:奴隷:当前位置 && GET_N_WITH_VISITER(奴隷) > 1
 				CALL CHK_SEMEN_STAY_WITH_VISITOR_AND_OTHER(奴隷, ノーパン)
 				;あなたと訪問者が居ない、他の住人が居る
 			ELSEIF GET_N_WITH_VISITER(奴隷) > 1
@@ -723,23 +723,23 @@ IF CFLAG:奴隷:精液残留中 && !CFLAG:奴隷:睡眠
 		ELSEIF 奴隷 == 0
 			ノーパン = CFLAG:奴隷:服装_下半身下着２ == 0
 			;ターゲット(訪問者・あなた以外)と訪問者が一緒、同じ場所に(あなたを含み、訪問者を除いて)2人超
-			IF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置 && GET_N_WITH_VISITER(奴隷) > 2
+			IF FLAG:访问者当前位置 == CFLAG:奴隷:当前位置 && GET_N_WITH_VISITER(奴隷) > 2
 				CALL CHK_SEMEN_STAY_MASTER_WITH_VISITOR_AND_OTHERS(奴隷, ノーパン)
 				RETURN
 			ENDIF
 			FOR LOOP_CHR,1,CHARANUM && FLAG:1840 <= 500
 				;ターゲット(訪問者・あなた以外)とあなたと訪問者が一緒
-				IF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置 && CFLAG:奴隷:現在位置 == FLAG:访问者当前位置
+				IF CFLAG:奴隷:当前位置 == CFLAG:LOOP_CHR:当前位置 && CFLAG:奴隷:当前位置 == FLAG:访问者当前位置
 					CALL CHK_SEMEN_STAY_MASTER_WITH_VISITOR_AND_OTHER(奴隷, ノーパン, LOOP_CHR)
 					RETURN
 					;ターゲット(訪問者・あなた以外)とあなたが一緒
-				ELSEIF CFLAG:奴隷:現在位置 == CFLAG:LOOP_CHR:現在位置
+				ELSEIF CFLAG:奴隷:当前位置 == CFLAG:LOOP_CHR:当前位置
 					CALL CHK_SEMEN_STAY_MASTER_WITH_OTHER(奴隷, ノーパン, LOOP_CHR)
 					RETURN
 				ENDIF
 			NEXT
 			;あなたと訪問者が一緒
-			IF FLAG:访问者当前位置 == CFLAG:奴隷:現在位置
+			IF FLAG:访问者当前位置 == CFLAG:奴隷:当前位置
 				CALL CHK_SEMEN_STAY_MASTER_WITH_VISITOR(奴隷, ノーパン)
 				;誰も居ない（フェール）
 			ELSE
@@ -820,7 +820,7 @@ RETURN
 相手名称 = NTR_NAME(0)
 相手番号 = 人物_訪問者
 相手_彼 = %NTR_NAME(4)%
-IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 	IF ノーパン != 0
 		PRINTFORML 『笨蛋…』满溢的精液从小穴滴落下来、%相手名称%有些生气地指出了那件事
 	ELSE
@@ -873,7 +873,7 @@ RETURN
 #DIM 奴隷
 #DIM ノーパン	; 1:ノーパン 0:はいてる
 
-IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 	IF ノーパン != 0
 		PRINTFORML %CALLNAME:奴隷%小穴的正下方时不时会发出轻微的“啪嗒…”的声音，%NTR_NAME(0)%知道那是溢出的精液滴落到地上
 		PRINTFORML %NTR_NAME(0)%假装毫不知情，故意一脸疑惑地向附近的其他居民询问「有没有听到某些液体落到地上的声音？」。
@@ -899,7 +899,7 @@ RETURN
 @CHK_SEMEN_STAY_WITH_OTHER(奴隷)
 #DIM 奴隷
 
-IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 	PRINTFORML %CALLNAME:奴隷%表情僵了一下、突然用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
 	IF RAND:3 == 0
 		PRINTFORMW 满脸通红明显动摇的样子让其他的居民感到担忧。
@@ -915,7 +915,7 @@ RETURN
 @CHK_SEMEN_STAY_WITHOUT(奴隷)
 #DIM 奴隷
 
-IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 	PRINTFORMW %CALLNAME:奴隷%偷偷将因时间流逝而溢出的精液擦去了
 ENDIF
 RETURN

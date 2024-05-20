@@ -31,7 +31,7 @@ CALL EJACULATION_V(奴隷, 人物_訪問者)
 CALL NTR_EXP_ADD_V_SEX_EX(奴隷,1)
 IF 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
-	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 		PRINTFORML %CALLNAME:奴隷%的小穴被%NTR_NAME(0)%怒挺的大肉棒蹂躏着…
 	IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:Ｖ扩张经验 + EXP:奴隷:浮気Ｖ扩张经验 < 450
 		CUP:奴隷:欲情 += 500
@@ -74,7 +74,7 @@ CALL NTR_EXP_ADD_A_SEX(奴隷,1)
 CALL NTR_EXP_ADD_A_EX(奴隷,1)
 IF 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
-	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 		PRINTFORML %CALLNAME:奴隷%的肛穴被%NTR_NAME(0)%坚挺的大肉棒狠狠地操弄着…
 	IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:Ａ扩张经验 + EXP:奴隷:浮気Ａ扩张经验 < 450
 		CUP:奴隷:欲情 += 500

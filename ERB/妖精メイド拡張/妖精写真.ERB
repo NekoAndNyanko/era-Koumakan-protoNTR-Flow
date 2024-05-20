@@ -102,7 +102,7 @@ ENDIF
 #DIMS DYNAMIC 腹部状态 = ""
 #DIMS DYNAMIC 外表 = ""
 拍摄时间 = %日付_月(暦法月)%{暦法日}日，第{DAY}日，%天候(天候値)%の日，在
-拍摄地点 = %GETPLACENAME(CFLAG:ARG:現在位置)%，
+拍摄地点 = %GETPLACENAME(CFLAG:ARG:当前位置)%，
 腹部状态 = 小腹%腹部精液膨胀状态(ARG)%，
 IF CFLAG:ARG:淫纹身体改造 == 1
 	外表 = 全身%COM417_GetProstituteMarkColor(ARG)%的淫纹\@获取子宫精液填充率(ARG)>=100?散发着淫靡的光芒#散发着淫靡感\@，白发褐肌的

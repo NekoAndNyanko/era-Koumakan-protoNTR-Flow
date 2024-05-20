@@ -191,16 +191,16 @@ TEQUIP:(ARG:0):利尿剂 = 0
 IF TCVAR:(ARG:0):大腸内便量 >= REST_GetRectalCapacity(ARG:0)
 	;排便する
 	LOCAL:1 = MIN( TCVAR:(ARG:0):大腸内便量 , REST_GetRectalCapacity(ARG:0) )
-	IF CFLAG:(ARG:0):現在位置 == CFLAG:(MASTER):現在位置 && !CFLAG:MASTER:睡眠
+	IF CFLAG:(ARG:0):当前位置 == CFLAG:(MASTER):当前位置 && !CFLAG:MASTER:睡眠
 		TRYCALL LUNA_KOJO("REST_UseRestRoom_Poo",ARG:0,MASTER,LOCAL:0,LOCAL:1)
 	ENDIF
-	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は、【"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"】で"%{LOCAL:0/1000}%UNICODE(0x3396)+"の尿と"%{LOCAL:1/1000}%UNICODE(0x3396)+"の便を出しました。"%
+	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は、【"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+"】で"%{LOCAL:0/1000}%UNICODE(0x3396)+"の尿と"%{LOCAL:1/1000}%UNICODE(0x3396)+"の便を出しました。"%
 ELSE
 	;排尿のみ
-	IF CFLAG:(ARG:0):現在位置 == CFLAG:(MASTER):現在位置 && !CFLAG:MASTER:睡眠
+	IF CFLAG:(ARG:0):当前位置 == CFLAG:(MASTER):当前位置 && !CFLAG:MASTER:睡眠
 		TRYCALL LUNA_KOJO("REST_UseRestRoom_Pee",ARG:0,MASTER,LOCAL:0,LOCAL:1)
 	ENDIF
-	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は、【"+GETPLACENAME(CFLAG:(ARG:0):現在位置)+"】で"%{LOCAL:0/1000}%UNICODE(0x3396)+"の尿を出しました。便は出ませんでした。"%
+	;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は、【"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+"】で"%{LOCAL:0/1000}%UNICODE(0x3396)+"の尿を出しました。便は出ませんでした。"%
 ENDIF
 TCVAR:(ARG:0):大腸内便量 = MAX(TCVAR:(ARG:0):大腸内便量-LOCAL:1,0)
 RETURN 0
@@ -211,11 +211,11 @@ RETURN 0
 @REST_MovementCheck(ARG:0)
 VARSET LOCAL
 ;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"の膀胱は"%{TCVAR:(ARG:0):膀胱内尿量}%"μlの尿で"%{100 * TCVAR:(ARG:0):膀胱内尿量 / REST_GetBladderCapacity(ARG:0)}%"％満たされています。"%
-IF REST_NeedRestroom(ARG:0) && REST_IsRestRoom(CFLAG:(ARG:0):現在位置)&& !CFLAG:(ARG:0):うふふ && ARG:0 != MASTER
+IF REST_NeedRestroom(ARG:0) && REST_IsRestRoom(CFLAG:(ARG:0):当前位置)&& !CFLAG:(ARG:0):うふふ && ARG:0 != MASTER
 	;「あなた」には排泄コマンド実装したので、自動排泄はしない
 	CALL REST_UseRestRoom(ARG:0)
 	IF NEAR_RESTROOM_DOOR(ARG)
-		PRINTFORMW %CALLNAME:ARG%が【%GETPLACENAME(CFLAG:(ARG:0):現在位置)%】に入っていくのが見えました
+		PRINTFORMW %CALLNAME:ARG%が【%GETPLACENAME(CFLAG:(ARG:0):当前位置)%】に入っていくのが見えました
 	ENDIF
 ELSEIF REST_GetUrge(ARG:0) >100
 	IF REST_GetUrge(ARG:0,1) >=100
@@ -233,10 +233,10 @@ RETURN 0
 @REST_PeeAccident(ARG:0)
 VARSET LOCAL
 LOCAL:0 = TCVAR:(ARG:0):膀胱内尿量
-;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は"%{CFLAG:(ARG:0):現在位置}%"でおしっこを漏らしてしまったようです。"%
+;DEBUGPRINTFORML %TOSTR(TIME/60,"00")+":"+TOSTR(TIME%60,"00")+" "+CALLNAME:(ARG:0)+"は"%{CFLAG:(ARG:0):当前位置}%"でおしっこを漏らしてしまったようです。"%
 ;DEBUGPRINTFORML 足元には{LOCAL:0/1000}%UNICODE(0x3396)%のおしっこが水溜まりを作っています。
 ;あなたと同じ場所にいる時は口上を表示したい系
-IF CFLAG:(ARG:0):現在位置 == CFLAG:(MASTER):現在位置 && !CFLAG:MASTER:睡眠
+IF CFLAG:(ARG:0):当前位置 == CFLAG:(MASTER):当前位置 && !CFLAG:MASTER:睡眠
 	IF CFLAG:(ARG:0):睡眠
 		SELECTCASE LOCAL:0
 			CASE IS < 10000 ; 10ml未満
@@ -295,13 +295,13 @@ RETURNF
 VARSET LOCAL
 SELECTCASE ARG
 	CASE 位置_红魔馆_屋外厕所
-		SIF CFLAG:MASTER:現在位置 == 位置_红魔馆_守卫小屋 || CFLAG:MASTER:現在位置 == 位置_红魔馆_后院 || CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼走廊
+		SIF CFLAG:MASTER:当前位置 == 位置_红魔馆_守卫小屋 || CFLAG:MASTER:当前位置 == 位置_红魔馆_后院 || CFLAG:MASTER:当前位置 == 位置_红魔馆_二楼走廊
 			LOCAL = 1
 	CASE 位置_红魔馆_一楼厕所
-		SIF CFLAG:MASTER:現在位置 == 位置_红魔馆_大厅
+		SIF CFLAG:MASTER:当前位置 == 位置_红魔馆_大厅
 			LOCAL = 1
 	CASE 位置_红魔馆_二楼厕所
-		SIF CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼走廊 || CFLAG:MASTER:現在位置 == 位置_红魔馆_二楼楼梯间
+		SIF CFLAG:MASTER:当前位置 == 位置_红魔馆_二楼走廊 || CFLAG:MASTER:当前位置 == 位置_红魔馆_二楼楼梯间
 			LOCAL = 1
 ENDSELECT
 RETURNF LOCAL
@@ -346,11 +346,11 @@ RETURNF LOCAL
 VARSET LOCAL
 ;各トイレの現在の利用者数
 FOR LOCAL:1,1,CHARANUM
-	SIF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_屋外厕所
+	SIF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_屋外厕所
 		LOCAL:2 ++
-	SIF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_一楼厕所
+	SIF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_一楼厕所
 		LOCAL:3 ++
-	SIF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_二楼厕所
+	SIF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_二楼厕所
 		LOCAL:4 ++
 NEXT
 SELECTCASE ARG
@@ -395,7 +395,7 @@ SELECTCASE ARG
 		LOCAL = 17
 		;自宅＞屋外＞1F＞2F チルノ
 	CASE 8
-		IF CFLAG:(ARG):現在位置 == 19
+		IF CFLAG:(ARG):当前位置 == 19
 			LOCAL = 20
 		ELSEIF LOCAL:2 == 0
 			LOCAL = 位置_红魔馆_屋外厕所
@@ -406,7 +406,7 @@ SELECTCASE ARG
 		ENDIF
 		;自宅＞屋外＞1F＞2F 大妖精
 	CASE 9
-		IF CFLAG:(ARG):現在位置 == 19
+		IF CFLAG:(ARG):当前位置 == 19
 			LOCAL = 21
 		ELSEIF LOCAL:2 == 0
 			LOCAL = 位置_红魔馆_屋外厕所
@@ -426,7 +426,7 @@ SELECTCASE ARG
 		ENDIF
 ENDSELECT
 ;トイレに向かう出発点記録
-CFLAG:ARG:910 = CFLAG:ARG:現在位置
+CFLAG:ARG:910 = CFLAG:ARG:当前位置
 ;トイレに向かった時刻記録
 TCVAR:ARG:311 = DATETIME()
 RETURNF LOCAL
@@ -438,8 +438,8 @@ RETURNF LOCAL
 @AFTER_REST_ROOM(ARG)
 #FUNCTION
 VARSET LOCAL
-;現在位置がトイレに向かう前に居た場所でなく、かつ、元居た場所が0でない
-IF CFLAG:ARG:910 != CFLAG:ARG:現在位置 && CFLAG:ARG:910 != 0
+;当前位置がトイレに向かう前に居た場所でなく、かつ、元居た場所が0でない
+IF CFLAG:ARG:910 != CFLAG:ARG:当前位置 && CFLAG:ARG:910 != 0
 	;トイレに向かってから30分が経過している
 	IF TIME_PROGRESS(TCVAR:ARG:311) >= 30
 		LOCAL = 1

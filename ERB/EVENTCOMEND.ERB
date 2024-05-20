@@ -45,7 +45,7 @@ FOR 奴隷, 0, CHARANUM
 	;淫纹による発情処理
 	;CALL COM417_add_sexual_desire(奴隷)
 	;伤心時の屈服度増加
-	IF TALENT:奴隷:伤心 && FLAG:访问者当前位置 == CFLAG:奴隷:現在位置
+	IF TALENT:奴隷:伤心 && FLAG:访问者当前位置 == CFLAG:奴隷:当前位置
 		屈服度上昇値 = TIME_PROGRESS(TFLAG:300)
 		IF TALENT:奴隷:伤心 >= 1000
 			TIMES 屈服度上昇値, 1.30
@@ -88,10 +88,10 @@ IF BASE:MASTER:体力 <= 500
 	FLAG:1840 = 0
 	CFLAG:MASTER:睡眠 = 1
 	CFLAG:MASTER:睡觉時間 = DATETIME()
-	IF TARGET > 0 && TALENT:恋慕 && CFLAG:現在位置 != 位置_訪問者宅 && BASE:体力 >= 500 && !CFLAG:睡眠
+	IF TARGET > 0 && TALENT:恋慕 && CFLAG:当前位置 != 位置_訪問者宅 && BASE:体力 >= 500 && !CFLAG:睡眠
 		PRINTFORMW %CALLNAME%が%CALLNAME:MASTER%を私室へと運んでくれた…
-		CFLAG:MASTER:現在位置 = CFLAG:MASTER:開始位置
-		CFLAG:現在位置 = CFLAG:MASTER:開始位置
+		CFLAG:MASTER:当前位置 = CFLAG:MASTER:開始位置
+		CFLAG:当前位置 = CFLAG:MASTER:開始位置
 		CALL KOJO_EVENT(7, TARGET, 5)
 	ENDIF
 	FOR 奴隷,0,CHARANUM
@@ -106,7 +106,7 @@ IF TARGET && CFLAG:不機嫌
 		CFLAG:奴隷:うふふ = 0
 	NEXT
 ENDIF
-IF TARGET && BASE:体力 < 500 && CFLAG:TARGET:現在位置 != 位置_訪問者宅
+IF TARGET && BASE:体力 < 500 && CFLAG:TARGET:当前位置 != 位置_訪問者宅
 	PRINTFORMW （%CALLNAME:TARGET%の体力が限界に来ています）
 	CFLAG:TARGET:衰弱 = 360
 	CFLAG:TARGET:睡眠深度 = 10000
@@ -117,7 +117,7 @@ IF TARGET && BASE:体力 < 500 && CFLAG:TARGET:現在位置 != 位置_訪問者�
 	NEXT
 ENDIF
 ;睡眠薬などによる睡眠
-IF TARGET && CFLAG:TARGET:睡眠深度 < 0 && CFLAG:TARGET:現在位置 != 位置_訪問者宅
+IF TARGET && CFLAG:TARGET:睡眠深度 < 0 && CFLAG:TARGET:当前位置 != 位置_訪問者宅
 	PRINTFORMW %CALLNAME:TARGET%は急に眠気に教われた
 	CFLAG:TARGET:衰弱 = 360
 	CFLAG:TARGET:睡眠深度 = 20000
@@ -298,8 +298,8 @@ TFLAG:103 = TARGET
 TFLAG:150 = ASSIPLAY
 ;経験値取表示用
 FOR LOOP_CHR,0,CHARANUM
-	;現在位置の保存
-	CFLAG:LOOP_CHR:前ターン位置 = CFLAG:LOOP_CHR:現在位置
+	;当前位置の保存
+	CFLAG:LOOP_CHR:前ターン位置 = CFLAG:LOOP_CHR:当前位置
 	FOR LOOP_I,0,100
 		TCVAR:LOOP_CHR:(400 + LOOP_I) = EXP:LOOP_CHR:LOOP_I
 	NEXT
@@ -332,7 +332,7 @@ ENDIF
 #DIM 性欲上昇値
 IF 天候(天候値) == "桃雾"
 	CFLAG:奴隷:桃霧性欲フラグ += TIME_PROGRESS(TFLAG:300)
-	IF OPENPLACE(CFLAG:奴隷:現在位置) == 2
+	IF OPENPLACE(CFLAG:奴隷:当前位置) == 2
 		;野外
 		IF CFLAG:奴隷:桃霧性欲フラグ >= 5
 			性欲上昇値 = CFLAG:奴隷:桃霧性欲フラグ / 5
@@ -368,7 +368,7 @@ IF !IS_PRIVATE_ROOM(奴隷, 0)
 	RETURN
 ENDIF
 ;部屋に誰か居れば中断(値をマイナスにして保存)
-IF 当前位置存在人数(CFLAG:奴隷:現在位置,1,1) > 1
+IF 当前位置存在人数(CFLAG:奴隷:当前位置,1,1) > 1
 	CFLAG:奴隷:自慰中 = -ABS(CFLAG:奴隷:自慰中)
 	RETURN
 ENDIF
@@ -652,14 +652,14 @@ SIF CFLAG:ARG:自慰中 <= 0
 ;誰かが来た
 LOCAL:1 = 0
 FOR LOCAL, 0, CHARANUM
-	IF ARG != LOCAL && CFLAG:ARG:現在位置 == CFLAG:LOCAL:現在位置
+	IF ARG != LOCAL && CFLAG:ARG:当前位置 == CFLAG:LOCAL:当前位置
 		LOCAL:1 = 1
 		GOTO GGT_33443
 	ENDIF
 NEXT
 $GGT_33443
-IF (CFLAG:ARG:現在位置 == FLAG:访问者当前位置 || LOCAL:1 == 1)
-	SIF CFLAG:ARG:現在位置 == CFLAG:MASTER:現在位置
+IF (CFLAG:ARG:当前位置 == FLAG:访问者当前位置 || LOCAL:1 == 1)
+	SIF CFLAG:ARG:当前位置 == CFLAG:MASTER:当前位置
 		PRINTFORMW %CALLNAME:LOCAL%が部屋をノックすると、中からドタドタと物音が聞こえてきた
 	CFLAG:ARG:自慰中 = -ABS(CFLAG:ARG:自慰中)
 	RETURN

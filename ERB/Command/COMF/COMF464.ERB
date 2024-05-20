@@ -6,7 +6,7 @@ PRINTFORMW 见到了%NTR_NAME(0)%的身影，%CALLNAME:MASTER%想要给%NTR_NAME
 ; ここから他の住人が居る場合の処理
 LOCAL:1 = 0
 FOR LOCAL,1,CHARANUM
-	IF CFLAG:MASTER:現在位置 == CFLAG:LOCAL:現在位置
+	IF CFLAG:MASTER:当前位置 == CFLAG:LOCAL:当前位置
 		IF FLAG:訪問者のお気に入り == LOCAL
 			PRINTFORMW 但是，现在和%CALLNAME:LOCAL%在一起，所以就被拒绝了。
 			RETURN 0
@@ -20,5 +20,5 @@ ELSE
 	PRINTFORMW %NTR_NAME(0)%答应了，来到了%CALLNAME:MASTER%的身边。
 	FLAG:訪問者同行フラグ = DATETIME() + 60
 ENDIF
-FLAG:訪問者との行為の終了時刻 = 0
-FLAG:訪問者との行為 = NTR_行为_なし
+FLAG:访问者当前行为中止时刻 = 0
+FLAG:访问者当前行为 = NTR_行为_无

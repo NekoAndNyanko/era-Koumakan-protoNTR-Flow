@@ -9,8 +9,8 @@ IF FLAG:访问者行为计时点 != 0
 	FLAG:访问者行为计时点 = DATETIME()
 	SIF LOCAL < 1
 		LOCAL = 1
-	SELECTCASE FLAG:訪問者との行為
-		CASE NTR_行为_キス
+	SELECTCASE FLAG:访问者当前行为
+		CASE NTR_行为_接吻
 			FOR LOCAL:1,0,LOCAL
 				CALL NTR_ADD_SURRENDER(奴隷, 1)
 				BASE:奴隷:气力 -= 20
@@ -65,7 +65,7 @@ IF FLAG:访问者行为计时点 != 0
 				SOURCE:奴隷:反感 += 50
 				CALL NTR_EXP_ADD_M_SEX(奴隷,1)
 			NEXT
-		CASE NTR_行为_六九式
+		CASE NTR_行为_六九
 			FOR LOCAL:1,0,LOCAL
 				CALL NTR_ADD_SURRENDER(奴隷, 1)
 				BASE:奴隷:气力 -= 80

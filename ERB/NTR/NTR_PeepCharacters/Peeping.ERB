@@ -1,0 +1,67 @@
+@peepingSelect()
+#DIM 目标位置
+#DIM 位置
+#DIM 角色编号
+
+;---------------------------------------
+;位置选择
+;---------------------------------------
+DRAWLINE
+PRINTFORML 从这里大概可以看到……
+FOR 位置,0,MAXROOM()
+	SIF canPeeping(CFLAG:MASTER:当前位置, 位置)
+		PRINTFORML [{位置}] - %GETPLACENAME(位置)%
+NEXT
+PRINTL [0] - 还是算了吧
+
+;---------------------------------------
+;选择位置
+;---------------------------------------
+$重新输入
+INPUT
+目标位置 = RESULT
+IF 目标位置 == 0
+	RETURN 0
+ENDIF
+IF !CAN_MOVE(CFLAG:MASTER:当前位置, 目标位置) 
+	GOTO 重新输入
+ENDIF
+
+;---------------------------------------
+;调出口上
+;---------------------------------------
+;todo 混入其中的妖精幻觉？
+
+FOR 角色编号,1,CHARANUM
+	IF CFLAG:角色编号:当前位置 == 目标位置
+		CALL peeping(角色编号,目标位置)
+	ENDIF
+NEXT
+
+RETURN 1
+
+@peeping(对象,地点)
+#DIM 对象
+#DIM 地点
+#DIM DYNAMIC 行为阶段
+
+IF CFLAG:对象:当前与访问者行为
+	IF FLAG:访问者当前行为中止时刻 == 0
+		行为阶段 = 0
+	ELSEIF FLAG:访问者当前行为中止时刻 > DATETIME()
+		行为阶段 = 1
+	ELSE
+		行为阶段 = 2
+	ENDIF
+
+	SIF FLAG:口上颜色
+		CALL KOJO_COLOR(对象)
+	TRYCALLLIST
+		FUNC PEEPING_A{地点}_C{对象}_{CFLAG:对象:当前与访问者行为}_{行为阶段}(对象,地点)
+		FUNC PEEPING_A{地点}_CU_{CFLAG:对象:当前与访问者行为}_{行为阶段}(对象,地点)
+		FUNC PEEPING_AU_C{对象}_{CFLAG:对象:当前与访问者行为}_{行为阶段}(对象,地点)
+		FUNC PEEPING_AU_CU_{CFLAG:对象:当前与访问者行为}_{行为阶段}(对象,地点)
+	ENDFUNC
+	RESETCOLOR
+ENDIF
+

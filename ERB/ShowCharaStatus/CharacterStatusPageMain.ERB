@@ -193,7 +193,7 @@ ENDIF
 SIF CFLAG:奴隷:ぱんつ確認
 	RETURNF 0
 ;同室且つズボン等を穿いていない
-SIF CFLAG:奴隷:現在位置 == CFLAG:MASTER:現在位置 && !EQUIP:奴隷:下半身上着１ && !EQUIP:奴隷:下半身上着２ && !EQUIP:奴隷:裙子 && !EQUIP:奴隷:赛车服 && !EQUIP:奴隷:连衣裙 && !EQUIP:奴隷:着物
+SIF CFLAG:奴隷:当前位置 == CFLAG:MASTER:当前位置 && !EQUIP:奴隷:下半身上着１ && !EQUIP:奴隷:下半身上着２ && !EQUIP:奴隷:裙子 && !EQUIP:奴隷:赛车服 && !EQUIP:奴隷:连衣裙 && !EQUIP:奴隷:着物
 	RETURNF 0
 ;下半身下着１
 SIF 服番号 == GETNUM(EQUIP,"下半身下着１")

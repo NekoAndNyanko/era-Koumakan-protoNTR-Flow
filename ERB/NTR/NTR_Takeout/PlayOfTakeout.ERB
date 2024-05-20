@@ -55,7 +55,7 @@ RETURN 0
 #DIM 調教者
 #DIM 射精
 #DIM プレイ時間
-;FLAG:訪問者との行為の終了時刻 = DATETIME() + 10
+;FLAG:访问者当前行为中止时刻 = DATETIME() + 10
 CALL NTR_ADD_SURRENDER(奴隷, 3)
 SIF EXP:奴隷:NTR陷落经验 
 	CALL NTR_ADD_SURRENDER(奴隷, 1)
@@ -875,7 +875,7 @@ IF TALENT:奴隷:亲爱
 ENDIF
 IF 調教者==人物_訪問者 && 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
-	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 		PRINTFORML %CALLNAME:奴隷%的肛穴被%NTR_NAME(0)%坚挺的大肉棒狠狠地操弄着…
 	IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:Ａ扩张经验 + EXP:奴隷:浮気Ａ扩张经验 < 450
 		CUP:奴隷:欲情 += 500
@@ -891,7 +891,7 @@ CALL LOST_VIRGIN_A(奴隷,PLAYER)
 
 CALL NTR_GET_WEAKNESS_2(奴隷)
 ;あなたが訪問者の行為対象者と同じ場所にいない時に限り実行
-SIF CFLAG:MASTER:現在位置 != CFLAG:奴隷:現在位置
+SIF CFLAG:MASTER:当前位置 != CFLAG:奴隷:当前位置
 	CALL EXP_GOT_CHECK(奴隷)
 ;汚れの付与
 CALL STAIN_MOVE_BY_PENIS(部位_Ａ, 奴隷, 人物_訪問者)
@@ -917,7 +917,7 @@ IF TALENT:奴隷:亲爱
 ENDIF
 IF 調教者==人物_訪問者 && 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
-	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 		PRINTFORML %CALLNAME:奴隷%的小穴被%NTR_NAME(0)%怒挺的大肉棒蹂躏着…
 	IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:Ｖ扩张经验 + EXP:奴隷:浮気Ｖ扩张经验 < 450
 		CUP:奴隷:欲情 += 500
@@ -932,7 +932,7 @@ CALL 改变小穴色素(奴隷,1)
 
 CALL NTR_GET_WEAKNESS_2(奴隷)
 ;あなたが訪問者の行為対象者と同じ場所にいない時に限り実行
-SIF CFLAG:MASTER:現在位置 != CFLAG:奴隷:現在位置
+SIF CFLAG:MASTER:当前位置 != CFLAG:奴隷:当前位置
 	CALL EXP_GOT_CHECK(奴隷)
 ;汚れの付与
 CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 奴隷, 人物_訪問者)

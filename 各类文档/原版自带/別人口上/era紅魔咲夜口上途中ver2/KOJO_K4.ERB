@@ -87,7 +87,7 @@ IF LOCAL
 		ENDIF
 ;遭遇口上。遭遇は軽めにして会話や掃除をメインとする。清潔度低の掃除移行口上がそっけなさすぎるので後で直す
 ;正門
-		IF CFLAG:現在位置 == 1
+		IF CFLAG:当前位置 == 1
 			IF 天候(天候値) == "小雨"
 				IF SAMEROOM(1)
 				ELSE
@@ -99,7 +99,7 @@ IF LOCAL
 				IF SAMEROOM(1)
 								PRINTFORML 咲夜は美鈴に説教をしている。
 								PRINTFORMW どうやら美鈴は居眠りをしていたようだ……
-						SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+						SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 							CASE IS < 2000
 								PRINTFORML 美鈴が門番をしている横で咲夜は掃除をしているようだった
 								PRINTFORML 『あれ、お手伝いがきたみたいですよ！』
@@ -108,7 +108,7 @@ IF LOCAL
 							CASEELSE
 						ENDSELECT
 				ELSE
-						SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+						SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 							CASE IS < 2000
 								PRINTFORML %CALLNAME:MASTER%が正門に来ると、ちょうど咲夜は掃除をしているようだった
 								PRINTFORMW 「%CALLNAME:MASTER%はそっちの方をやってくれるかしら。」
@@ -124,10 +124,10 @@ IF LOCAL
 ;あとで季節＋天候テンプレを使う
 ;			ELSEIF 天候(天候値) == "小雪"
 ;広間　書き直す
-		ELSEIF CFLAG:現在位置 == 2
+		ELSEIF CFLAG:当前位置 == 2
 					PRINTFORML 咲夜は壁にかけられたレミリアの肖像画を眺めている
 					PRINTFORMW 「本物のお嬢さまに比べるとかわいらしさ……じゃなかったカリスマが足りないわね」
-			SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+			SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 				CASE IS < 2000
 					PRINTFORML 咲夜は広間が汚れていることに立腹しているようだ
 					PRINTFORML 「なんで屋敷の顔たる広間が……%CALLNAME:MASTER%……職務怠慢……。」
@@ -137,11 +137,11 @@ IF LOCAL
 				CASEELSE
 			ENDSELECT
 ;食堂　微妙に会話文でもいい気が　書き直す
-		ELSEIF CFLAG:現在位置 == 3
+		ELSEIF CFLAG:当前位置 == 3
 ;			IF SAMEROOM(X)
 ;						PRINTFORML あとでかく　食事をする各面面
 ;			ELSE
-				SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+				SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 					CASE IS < 2000
 						PRINTFORML %CALLNAME:MASTER%が食堂に入ると、ちょうど咲夜は掃除をしているようだった
 						PRINTFORML 「妖精がよくこぼしてるのよね……」
@@ -152,10 +152,10 @@ IF LOCAL
 				ENDSELECT
 ;			ENDIF
 ;図書館　なんか見るたびにゴミの山化してるので。
-		ELSEIF CFLAG:現在位置 == 4
+		ELSEIF CFLAG:当前位置 == 4
 					PRINTFORML %CALLNAME:MASTER%が図書館を歩いていると、本を読んでいる咲夜に出くわした
 					PRINTFORML なんの本を読んでいるのか聞いてみようか……
-			SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+			SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 				CASE IS < 2000
 					PRINTFORML 「ここは人の出入りが激しいから汚れがたまりやすいのよね……」
 					IF SAMEROOM(5)
@@ -183,8 +183,8 @@ IF LOCAL
 				CASEELSE
 			ENDSELECT
 ;厨房
-		ELSEIF CFLAG:現在位置 == 5
-			SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+		ELSEIF CFLAG:当前位置 == 5
+			SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 				CASE IS < 2000
 					PRINTFORML 咲夜は食器を洗っているようだった
 					PRINTFORMW 「ちょうどよかった。ちょっと掃除手伝ってくれない？」
@@ -195,8 +195,8 @@ IF LOCAL
 					PRINTFORMW 何を作っているのか聞いてみようか……
 			ENDSELECT
 ;納屋　そもそも納屋にはだれも来ないという噂が
-		ELSEIF CFLAG:現在位置 == 6
-			SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+		ELSEIF CFLAG:当前位置 == 6
+			SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 				CASE IS < 2000
 					PRINTFORML 咲夜は納屋の中を片付けているみたいだ
 					PRINTFORML 「あら%CALLNAME:MASTER%。気づかなかったわ。」
@@ -206,7 +206,7 @@ IF LOCAL
 					PRINTFORM 「あら%CALLNAME:MASTER%。何か庭道具を取りに来たの？」
 			ENDSELECT
 ;守衛小屋
-		ELSEIF CFLAG:現在位置 == 9
+		ELSEIF CFLAG:当前位置 == 9
 			IF SAMEROOM(1)
 				PRINTL 守衛小屋に入ると咲夜と美鈴が出迎えてくれた
 				PRINTFORML 『あれ〜？%CALLNAME:MASTER%さんいらっしゃーい。』
@@ -219,7 +219,7 @@ IF LOCAL
 ;庭　季節＋天候＋めーりん
 ;雨美鈴はテーブル上パラソル　風吹いたら横雨で塗れそう　魔法でなんとかしてる?
 ;このエラーわかんね
-		ELSEIF CFLAG:現在位置 == 10
+		ELSEIF CFLAG:当前位置 == 10
 			IF 天候(天候値) == "小雨"
 ;雨の日に外に出てるものなんだろうか
 								PRINTFORML 咲夜は傘をさしてぼんやり佇んでいた
@@ -227,7 +227,7 @@ IF LOCAL
 								PRINTFORML なんだか物憂げな表情だ……
 			ELSE
 ;この辺を薔薇関係でもっと細かく
-				SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+				SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 					CASE IS < 2000
 						IF DAY:1 > 2 && DAY:1 <= 5
 								PRINTFORML 咲夜は落ちてくる花びらをほうきで掃いているようだった。
@@ -262,8 +262,8 @@ IF LOCAL
 				ENDSELECT
 			ENDIF
 ;二階廊下　いたずら妖精が詰め所でおとなしくしてるわけないよね、ってことで妖精エリア拡張
-		ELSEIF CFLAG:現在位置 == 12
-			SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+		ELSEIF CFLAG:当前位置 == 12
+			SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 				CASE IS < 2000
 					PRINTFORML 突然窓の割れる音がしたのを聞いた%CALLNAME:MASTER%は廊下に飛びこんだ
 					PRINTFORMW そこには野球バットを持って青ざめている妖精メイドの姿が……
@@ -277,12 +277,12 @@ IF LOCAL
 				
 			ENDSELECT
 ;咲夜私室 遭遇文は軽めにの方針
-		ELSEIF CFLAG:現在位置 == 13
+		ELSEIF CFLAG:当前位置 == 13
 			PRINTFORML 咲夜は自室の机に向かって何か書類のようなものを書いていたが、あなたに気づくと座ったままこちらを向いた。
 			PRINTFORMW 「あら%CALLNAME:MASTER%、何かわからないことでもあった？」
 ;妖精部屋。FIRSTTIME。妖精メイドは
-		ELSEIF CFLAG:現在位置 == 14
-			IF FIRSTTIME(TOSTR(CFLAG:現在位置 == 14))
+		ELSEIF CFLAG:当前位置 == 14
+			IF FIRSTTIME(TOSTR(CFLAG:当前位置 == 14))
 				PRINTFORM 咲夜はメイド妖精達に向かってあなたを紹介しようとした
 				PRINTFORM 「彼が新人の%CALLNAME:MASTER%よ。あなたたち・・・・・・」
 				PRINTFORM しかし新しいものに興味深々なメイド妖精たちは咲夜の話も聞かずにあなたを取り囲んできた
@@ -295,9 +295,9 @@ IF LOCAL
 				PRINTFORM 完全に子守をしている母親の姿だった
 			ENDIF
 ;大浴場。323でもいけるけど統一 　全体的に好感度が高すぎる。あとで書き直す
-		ELSEIF CFLAG:現在位置 == 18
+		ELSEIF CFLAG:当前位置 == 18
 			IF TALENT:MASTER:性別 == 2
-				IF FIRSTTIME(TOSTR(CFLAG:現在位置 == 18))
+				IF FIRSTTIME(TOSTR(CFLAG:当前位置 == 18))
 					PRINTFORM 「ひあっ……」
 					PRINTFORM 風呂に入ってきた%CALLNAME:MASTER%を見て咲夜は顔を真っ赤にした
 					PRINTFORM 「そ、そうだったわね……お嬢様の命でここは混浴になったんだったわ。」
@@ -317,7 +317,7 @@ IF LOCAL
 			ELSE
 			ENDIF
 ;買い物の時咲夜さんに遭遇したりしないかな？　MAPがめちゃ広くなったのでどういうシチュで会うか考える
-		ELSEIF CFLAG:現在位置 == 981 || CFLAG:現在位置 == 982
+		ELSEIF CFLAG:当前位置 == 981 || CFLAG:当前位置 == 982
 					PRINTFORML 「あら、%CALLNAME:MASTER%。誰かに買い物でも頼まれたの？」
 					PRINTFORML 「私に言ってくれればついでに買ってきたのに……」
 
@@ -801,7 +801,7 @@ RETURN RESULT
 @KOJO_MESSAGE_COM_K4_300_1
 ;正門　	咲夜はレミリアの元世界でも仕えてたんだろか
 ;このエラーわかんね
-	IF CFLAG:現在位置 == 1 && !RAND:3
+	IF CFLAG:当前位置 == 1 && !RAND:3
 		IF TFLAG:コマンド成功度 > 成功度_成功
 		;心開きすぎ　好感度あるいは信頼度２くらいの台詞
 					PRINTL 咲夜と一緒に門から湖を眺めた
@@ -858,7 +858,7 @@ RETURN RESULT
 ;					ELSEIF DAY:1 < 3 || DAY:1 == 12
 		ENDIF
 ;広間
-	ELSEIF CFLAG:現在位置 == 2 && !RAND:3
+	ELSEIF CFLAG:当前位置 == 2 && !RAND:3
 ;好感度高でピアノを弾かせると瀟洒
 ;好感度を上げると何年かに一度里の絵師に肖像画を依頼することを説明され、倉庫の歴代お嬢様コレクションを閲覧させられる。
 		IF TFLAG:コマンド成功度 > 成功度_成功
@@ -873,7 +873,7 @@ RETURN RESULT
 					PRINTL 「広くするとその分掃除が面倒だけどね」
 		ENDIF
 ;図書館
-	ELSEIF CFLAG:現在位置 == 4 && !RAND:3
+	ELSEIF CFLAG:当前位置 == 4 && !RAND:3
 		IF TFLAG:コマンド成功度 == 成功度_成功
 			IF SAMEROOM(3)		
 ;咲夜も大概甘い
@@ -885,7 +885,7 @@ RETURN RESULT
 		ENDIF
 ;厨房　大成功で料理、成功でお茶、失敗で怪しいお茶と怪しい料理
 ;朝昼夜で料理変更？　おゆはん
-	ELSEIF CFLAG:現在位置 == 5 && !RAND:3
+	ELSEIF CFLAG:当前位置 == 5 && !RAND:3
 		IF TFLAG:コマンド成功度 > 成功度_成功
 ;信頼度高でワインセラーに招待される
 ;また、信頼度高で厨房の裏口が昔の間取りの名残であることが紹介される
@@ -970,7 +970,7 @@ RETURN RESULT
 			ENDDATA
 		ENDIF
 ;守衛小屋
-	ELSEIF CFLAG:現在位置 == 9 && !RAND:3
+	ELSEIF CFLAG:当前位置 == 9 && !RAND:3
 		IF TFLAG:コマンド成功度 > 成功度_成功
 			IF SAMEROOM(1)
 				PRINTDATAL
@@ -1056,14 +1056,14 @@ RETURN RESULT
 		ENDIF
 ;庭
 ;季節ネタ中心で　美鈴同室口上（今○○な季節なんですよ〜）戦闘訓練の話も
-	ELSEIF CFLAG:現在位置 == 10 && !RAND:3
+	ELSEIF CFLAG:当前位置 == 10 && !RAND:3
 		IF TFLAG:コマンド成功度 > 成功度_成功
 		ELSEIF TFLAG:コマンド成功度 == 成功度_成功
 		ELSEIF TFLAG:コマンド成功度 < 成功度_成功
 		ENDIF
 
 ;メイド妖精詰め所
-	ELSEIF CFLAG:現在位置 == 14 && !RAND:3
+	ELSEIF CFLAG:当前位置 == 14 && !RAND:3
 		IF TFLAG:コマンド成功度 > 成功度_成功
 			PRINTL 「この子達は基本仕事しないで遊んでいるだけだから、あなたは相手をしなくてもいいわよ」
 			PRINTL じゃあなんで雇っているんだろう
@@ -1072,7 +1072,7 @@ RETURN RESULT
 			PRINTL 咲夜は何故だか暗い顔になった
 		ENDIF
 ;外。会えるかな？
-	ELSEIF (CFLAG:現在位置 == 981 && !RAND:3) || (CFLAG:現在位置 == 982 && !RAND:3)
+	ELSEIF (CFLAG:当前位置 == 981 && !RAND:3) || (CFLAG:当前位置 == 982 && !RAND:3)
 		IF TFLAG:コマンド成功度 > 成功度_成功
 			PRINTW 「買い物にいくの？せっかくだし一緒に行きましょうか」
 			PRINTL 「私の用事？」
@@ -1369,7 +1369,7 @@ RETURN RESULT
 ;今までうまいこと自分をごまかしごまかし書いてきたが、芝生とバラの仕事はどう考えても美鈴の担当だよね
 ;長々書いてるけど次回で消すかも
 ;ここのエラーわからん
-	IF CFLAG:現在位置 == 1
+	IF CFLAG:当前位置 == 1
 ;193194は手伝う
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
@@ -1388,7 +1388,7 @@ RETURN RESULT
 						PRINTL 平和そのものだった。
 					ENDIF
 ;正門の場合は綺麗な方が人がよってくる。
-					IF FLAG:(CFLAG:現在位置 + 100) < 2000
+					IF FLAG:(CFLAG:当前位置 + 100) < 2000
 						IF ABL:MASTER:戦闘能力 == 0
 							PRINTFORML 咲夜が紅魔館の周りを見回りしている間に、%CALLNAME:MASTER%は門番用の椅子と机を拭いた
 							PRINTL とそこに湖の妖精達が集まってきた
@@ -1693,7 +1693,7 @@ RETURN RESULT
 		ENDIF
 ;広間
 ;広間にも特徴のある掃除コマンドがほしい
-	ELSEIF CFLAG:現在位置 == 2
+	ELSEIF CFLAG:当前位置 == 2
 		IF TFLAG:コマンド成功度
 			IF 天候(天候値) == "小雨"
 ;そんなもんつかうのか？
@@ -1803,7 +1803,7 @@ RETURN RESULT
 		ENDIF
 ;食堂
 ;食器磨き系？
-	ELSEIF CFLAG:現在位置 == 3
+	ELSEIF CFLAG:当前位置 == 3
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 ;お皿運ぼうとして割る。
@@ -1873,7 +1873,7 @@ RETURN RESULT
 ;戦闘能力によるまりさ触手重点　パチェ依頼でまりさとの戦闘もやるか？　でもそれはまりさ口上でやるべきでは
 ;まりさが別キャラ扱いになったので構文まるごとかえる　三人以上の場合台詞枠をどうするか　色変え？
 ;そもそも普通の図書館はこんなひどいありさまじゃない　清潔度高めで図書館掃除らしさを出すべき？
-	ELSEIF CFLAG:現在位置 == 4
+	ELSEIF CFLAG:当前位置 == 4
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 				CASE 0
@@ -2111,7 +2111,7 @@ RETURN RESULT
 		ENDIF
 ;厨房
 ;皿を割る、シンク排水溝は重曹とお酢を使う、換気扇はつけおき、そもそも換気扇なんてあるの？　ぬるぬるのシンクに黴汚れ。コンロ周りの焦げ付き　ガスコンロはマジックアイテムを利用　重曹とクエン酸を混ぜて大惨事を起こす
-	ELSEIF CFLAG:現在位置 == 5
+	ELSEIF CFLAG:当前位置 == 5
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 				CASE 0
@@ -2177,7 +2177,7 @@ RETURN RESULT
 			ENDSELECT
 		ENDIF
 ;納屋	
-	ELSEIF CFLAG:現在位置 == 2
+	ELSEIF CFLAG:当前位置 == 2
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 				CASE 0
@@ -2211,7 +2211,7 @@ RETURN RESULT
 			ENDSELECT
 		ENDIF
 ;守衛小屋
-	ELSEIF CFLAG:現在位置 == 9
+	ELSEIF CFLAG:当前位置 == 9
 		IF SAMEROOM(1)
 			IF TFLAG:コマンド成功度
 				SELECTCASE TFLAG:194
@@ -2403,7 +2403,7 @@ RETURN RESULT
 
 ;庭
 ;ごまかしごまかしやってきたがどう考えても薔薇と芝生は美鈴の仕事なので、代わりに洗濯してもらった。
-	ELSEIF CFLAG:現在位置 == 10
+	ELSEIF CFLAG:当前位置 == 10
 		IF 天候(天候値) == "雨 雪 雷雨 大雨 大雪 嵐 吹雪"
 		ELSE
 			IF TFLAG:コマンド成功度
@@ -2458,7 +2458,7 @@ RETURN RESULT
 		ENDIF
 ;踊り場
 ;あとは窓とか？　咲夜が外から窓を拭く
-	ELSEIF CFLAG:現在位置 == 11
+	ELSEIF CFLAG:当前位置 == 11
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 ;戦闘能力が低いとあなたは飛べないので通るなとか無茶振りされたり妖精にでも頼んで運んでもらいなさいとか無茶ぶり
@@ -2492,7 +2492,7 @@ RETURN RESULT
 		ENDIF
 ;二回廊下
 ;廊下と妖精メイド部屋は妖精メイドエリア
-	ELSEIF CFLAG:現在位置 == 11
+	ELSEIF CFLAG:当前位置 == 11
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 				CASE 0
@@ -2522,7 +2522,7 @@ RETURN RESULT
 			ENDSELECT
 		ENDIF
 ;メイド妖精詰め所
-	ELSEIF CFLAG:現在位置 == 14
+	ELSEIF CFLAG:当前位置 == 14
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 				CASE 0
@@ -2550,7 +2550,7 @@ RETURN RESULT
 				CASE 3
 			ENDSELECT
 		ENDIF
-	ELSEIF CFLAG:現在位置 == 2
+	ELSEIF CFLAG:当前位置 == 2
 		IF TFLAG:コマンド成功度
 			SELECTCASE TFLAG:194
 				CASE 0
@@ -2568,7 +2568,7 @@ RETURN RESULT
 		ENDIF
 ;凡庸掃除口上
 	ELSE
-		SELECTCASE FLAG:(CFLAG:現在位置 + 100)
+		SELECTCASE FLAG:(CFLAG:当前位置 + 100)
 			CASE IS < 500
 				PRINTFORML 「随分綺麗になったじゃない……」
 				PRINTFORML 咲夜はぴかぴかに掃除された部屋に見惚れている……

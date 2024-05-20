@@ -780,7 +780,7 @@ SIF LOCAL:1 <= 0
 ;キャラの体力減少処理
 FOR LOCAL, 0, CHARANUM
 	;野外であること
-	SIF OPENPLACE(CFLAG:LOCAL:現在位置) != 2
+	SIF OPENPLACE(CFLAG:LOCAL:当前位置) != 2
 		CONTINUE
 	LOCAL:2 = 0
 	;気温に耐性がない場合、体力が減少する

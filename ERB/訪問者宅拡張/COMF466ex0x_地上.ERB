@@ -15,7 +15,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_01(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 1
+CFLAG:奴隷:当前位置詳細 = 1
 IF FLAG:訪問者宅の施錠状態 & 訪問者宅_玄関解錠済
 	PRINTFORML 差不多该回到红魔馆了吧…？
 	PRINTFORML %"[0] 回去 [1] 不回去"%
@@ -29,7 +29,7 @@ IF FLAG:訪問者宅の施錠状態 & 訪問者宅_玄関解錠済
 			ELSE
 				PRINTFORML %CALLNAME:奴隷+"给"+NTR_NAME(0)+"留下了『回红魔馆了』的纸条后，就回去了"%
 			ENDIF
-			CFLAG:奴隷:現在位置 = 1
+			CFLAG:奴隷:当前位置 = 1
 		CASE 1
 			PRINTFORML %CALLNAME:奴隷+"希望再得到"+NTR_NAME(0)+"更多的疼爱"%
 		CASEELSE
@@ -57,7 +57,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_02(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 2
+CFLAG:奴隷:当前位置詳細 = 2
 PRINTFORML %"厕所打扫地很干净"%
 PRINTFORMW %"最近，打扫这里也是"+CALLNAME:奴隷+"的工作"%
 RETURN 1
@@ -79,7 +79,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_03(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 3
+CFLAG:奴隷:当前位置詳細 = 3
 PRINTFORML %" "%
 PRINTFORML %" "%
 RETURN 1
@@ -101,7 +101,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_04(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 4
+CFLAG:奴隷:当前位置詳細 = 4
 PRINTFORML %"地板上有一扇提门。"%
 PRINTFORML %" "%
 RETURN 1
@@ -123,7 +123,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_05(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 5
+CFLAG:奴隷:当前位置詳細 = 5
 PRINTFORML %" "%
 RETURN 1
 
@@ -144,7 +144,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_06(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 6
+CFLAG:奴隷:当前位置詳細 = 6
 PRINTFORML %" "%
 PRINTFORML %" "%
 RETURN 1
@@ -166,7 +166,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_07(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 7
+CFLAG:奴隷:当前位置詳細 = 7
 PRINTFORML %"宽敞的浴室。"%
 PRINTFORML %""%
 RETURN 1
@@ -188,7 +188,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_08(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 8
+CFLAG:奴隷:当前位置詳細 = 8
 PRINTFORML %" "%
 PRINTFORML %" "%
 RETURN 1
@@ -210,7 +210,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM466_09(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 9
+CFLAG:奴隷:当前位置詳細 = 9
 PRINTFORML %NTR_NAME(0)+"和"+CALLNAME:奴隷+"一起使用过的床 "%
 PRINTFORML %"似乎还能闻到上面残留的淫靡香气……"%
 PRINTFORML %" "%

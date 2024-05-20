@@ -18,7 +18,7 @@ FOR LOOP_CHR,1,CHARANUM
 	CFLAG:LOOP_CHR:同席目撃回数 = 0
 	CFLAG:LOOP_CHR:同席目撃時行為 = 0
 	CFLAG:LOOP_CHR:跳蛋挿入者 = 0
-	CFLAG:LOOP_CHR:訪問者行為 = NTR_行为_なし
+	CFLAG:LOOP_CHR:当前与访问者行为 = NTR_行为_无
 NEXT
 FLAG:ハーレム時カウンタ = 0
 ;FOR TEST 接吻经验クリア
@@ -43,32 +43,32 @@ RETURN 0
 SIF !GETBIT(FLAG:ＮＴＲパッチ設定,0)
 	CALL NTR_OPTION
 ;お持ち帰りされていた場合は位置を初期化
-SIF CFLAG:1:現在位置 < 位置_訪問者宅
-	CFLAG:1:現在位置 = 位置_红魔馆_守卫小屋
-SIF CFLAG:2:現在位置 < 位置_訪問者宅
-	CFLAG:2:現在位置 = 位置_红魔馆_小恶魔私室
-SIF CFLAG:3:現在位置 < 位置_訪問者宅
-	CFLAG:3:現在位置 = 位置_红魔馆_帕秋莉私室
-SIF CFLAG:4:現在位置 < 位置_訪問者宅
-	CFLAG:4:現在位置 = 位置_红魔馆_咲夜私室
-SIF CFLAG:5:現在位置 < 位置_訪問者宅
-	CFLAG:5:現在位置 = 位置_红魔馆_蕾米莉亚私室
-SIF CFLAG:6:現在位置 < 位置_訪問者宅
-	CFLAG:6:現在位置 = 位置_红魔馆_地下室
-SIF CFLAG:7:現在位置 < 位置_訪問者宅
-	CFLAG:7:現在位置 = (TALENT:7:恋慕 ? 15 # 8)
-SIF CFLAG:8:現在位置 < 位置_訪問者宅
-	CFLAG:8:現在位置 = 位置_雾之湖_琪露诺的家
-SIF CFLAG:9:現在位置 < 位置_訪問者宅
-	CFLAG:9:現在位置 = 位置_雾之湖_大妖精的家
-SIF CFLAG:10:現在位置 < 位置_訪問者宅
-	CFLAG:10:現在位置 = 位置_魔法之森_雾雨魔法店
-SIF CFLAG:11:現在位置 < 位置_訪問者宅
-	CFLAG:11:現在位置 = 位置_博麗神社
-SIF CFLAG:12:現在位置 < 位置_訪問者宅
-	CFLAG:12:現在位置 = 位置_魔法之森_露米娅的树屋
-SIF CFLAG:13:現在位置 < 位置_訪問者宅
-	CFLAG:13:現在位置 = 位置_魔法之森_爱丽丝的家
+SIF CFLAG:1:当前位置 < 位置_訪問者宅
+	CFLAG:1:当前位置 = 位置_红魔馆_守卫小屋
+SIF CFLAG:2:当前位置 < 位置_訪問者宅
+	CFLAG:2:当前位置 = 位置_红魔馆_小恶魔私室
+SIF CFLAG:3:当前位置 < 位置_訪問者宅
+	CFLAG:3:当前位置 = 位置_红魔馆_帕秋莉私室
+SIF CFLAG:4:当前位置 < 位置_訪問者宅
+	CFLAG:4:当前位置 = 位置_红魔馆_咲夜私室
+SIF CFLAG:5:当前位置 < 位置_訪問者宅
+	CFLAG:5:当前位置 = 位置_红魔馆_蕾米莉亚私室
+SIF CFLAG:6:当前位置 < 位置_訪問者宅
+	CFLAG:6:当前位置 = 位置_红魔馆_地下室
+SIF CFLAG:7:当前位置 < 位置_訪問者宅
+	CFLAG:7:当前位置 = (TALENT:7:恋慕 ? 15 # 8)
+SIF CFLAG:8:当前位置 < 位置_訪問者宅
+	CFLAG:8:当前位置 = 位置_雾之湖_琪露诺的家
+SIF CFLAG:9:当前位置 < 位置_訪問者宅
+	CFLAG:9:当前位置 = 位置_雾之湖_大妖精的家
+SIF CFLAG:10:当前位置 < 位置_訪問者宅
+	CFLAG:10:当前位置 = 位置_魔法之森_雾雨魔法店
+SIF CFLAG:11:当前位置 < 位置_訪問者宅
+	CFLAG:11:当前位置 = 位置_博麗神社
+SIF CFLAG:12:当前位置 < 位置_訪問者宅
+	CFLAG:12:当前位置 = 位置_魔法之森_露米娅的树屋
+SIF CFLAG:13:当前位置 < 位置_訪問者宅
+	CFLAG:13:当前位置 = 位置_魔法之森_爱丽丝的家
 FOR LOOP_CHR,1,CHARANUM
 	帰宅フラグ = !IS_NTR_LONG_STAY()
 	IF NTR_GET_STAYOUT_CURRENT(LOOP_CHR) >= NTR_GET_STAYOUT_MAXIMUM(LOOP_CHR)
@@ -78,7 +78,7 @@ FOR LOOP_CHR,1,CHARANUM
 		;屈服度より好感度が高い場合、比率に応じた確率で帰ってくる
 		帰宅フラグ = 1
 	ENDIF
-	IF CFLAG:LOOP_CHR:現在位置 == 位置_訪問者宅 && 帰宅フラグ
+	IF CFLAG:LOOP_CHR:当前位置 == 位置_訪問者宅 && 帰宅フラグ
 		PRINTFORML 
 		;滞在日数のリセット
 		CALL NTR_SET_STAYOUT_CURRENT(LOOP_CHR,0)
@@ -111,9 +111,9 @@ FOR LOOP_CHR,1,CHARANUM
 		PRINTFORMW  ：
 		PRINTFORMW  ：
 		PRINTFORMW %CALLNAME:LOOP_CHR%不知道从哪里回来了
-		CFLAG:LOOP_CHR:現在位置 = GET_PRIVATE_ROOM(LOOP_CHR, 0)
+		CFLAG:LOOP_CHR:当前位置 = GET_PRIVATE_ROOM(LOOP_CHR, 0)
 		;紅魔館玄関から私室への移动経路を算出
-		CALLF FARMOVE(LOOP_CHR,位置_红魔馆_正门,CFLAG:LOOP_CHR:現在位置)
+		CALLF FARMOVE(LOOP_CHR,位置_红魔馆_正门,CFLAG:LOOP_CHR:当前位置)
 		移动目撃フラグ = 0
 		FOR 移动路线循环,0,移动路线MAX
 			IF NTR_CHK_VISIBLE( 移动路线:LOOP_CHR:移动路线循环 )
@@ -174,11 +174,11 @@ FOR LOOP_CHR,1,CHARANUM
 		;RETURN 0
 		;同行解除
 		CFLAG:LOOP_CHR:同行 = 0
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_訪問者宅
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == 位置_訪問者宅
 		CFLAG:LOOP_CHR:当前長期滞在日数 += 1
 		CALL NTR_RESET_VISITOR_ACTION(LOOP_CHR)
 		FLAG:訪問者との汚れ判定に使用 = 0
-		IF NTR_CHK_VISIBLE(CFLAG:LOOP_CHR:現在位置)
+		IF NTR_CHK_VISIBLE(CFLAG:LOOP_CHR:当前位置)
 			SIF FLAG:口上颜色
 				CALL KOJO_COLOR(LOOP_CHR)
 			;滞在継続時口上
@@ -203,7 +203,7 @@ NEXT
 CALL NTR_RESET_VISITOR_ACTION(-1)
 访问者拜访几率 = 75
 FOR LOCAL,1,CHARANUM
-	IF (TALENT:LOCAL:浮気公認 == 5 || TALENT:LOCAL:访问者之妻 == 1) && CFLAG:LOCAL:現在位置 != 位置_訪問者宅
+	IF (TALENT:LOCAL:浮気公認 == 5 || TALENT:LOCAL:访问者之妻 == 1) && CFLAG:LOCAL:当前位置 != 位置_訪問者宅
 		CALL GoOut_SeeYou(LOCAL, 0)
 	ENDIF
 	IF 会外泊(LOCAL)
@@ -213,7 +213,7 @@ NEXT
 DEBUGPRINTFORML 访问者拜访几率{访问者拜访几率}
 IF (GETBIT(FLAG:ゲームモード, 3) && IS_NTR_VISITOR_COME()) || (RAND(100) < 访问者拜访几率 && DAY > 7 && IS_NTR_VISITOR_COME())
 	FOR LOOP_CHR,0,CHARANUM
-		IF CFLAG:LOOP_CHR:現在位置 == 位置_訪問者宅 && (TALENT:LOOP_CHR:浮気公認 < 5 || CFLAG:LOOP_CHR:再教育フラグ == 1)
+		IF CFLAG:LOOP_CHR:当前位置 == 位置_訪問者宅 && (TALENT:LOOP_CHR:浮気公認 < 5 || CFLAG:LOOP_CHR:再教育フラグ == 1)
 			FLAG:访问者当前位置 = 位置_訪問者宅
 			FLAG:訪問者滞在時間カウンタ = 0
 			RETURN 0
@@ -271,7 +271,7 @@ FOR LOOP_CHR,1,CHARANUM
 	; 訪問者「カレシ持ちじゃないオンナには用はないッ！」
 	SIF IS_NTR_ATTACK_LOVER_ONLY() && ! (TALENT:LOOP_CHR:恋人 || TALENT:LOOP_CHR:NTR)
 		CONTINUE
-	IF CFLAG:(LOOP_CHR):現在位置 == 場所
+	IF CFLAG:(LOOP_CHR):当前位置 == 場所
 		;恋慕持ちは狙われやすい
 		RET_CNT += TALENT:LOOP_CHR:恋慕
 		RET_CNT += TALENT:LOOP_CHR:恋人
@@ -320,7 +320,7 @@ ENDIF
 FOR LOOP_CHR,1,CHARANUM
 	SIF !GETBIT(TALENT:LOOP_CHR:性別,0)
 		CONTINUE
-	IF CFLAG:LOOP_CHR:現在位置 == FLAG:访问者当前位置 && FLAG:访问者当前位置 != 位置_訪問者宅
+	IF CFLAG:LOOP_CHR:当前位置 == FLAG:访问者当前位置 && FLAG:访问者当前位置 != 位置_訪問者宅
 		;ストライクゾーン範囲外の時スキップ
 		SIF !NTR_CHK_STRIKE_ZONE(LOOP_CHR)
 			CONTINUE
@@ -347,7 +347,7 @@ FOR LOOP_CHR,1,CHARANUM
 			PRINTFORMW 【DEBUG】%CALLNAME:LOOP_CHR%即将陷落…
 		ENDIF
 		[ENDIF]
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_訪問者宅; && FLAG:访问者当前位置 == 位置_訪問者宅
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == 位置_訪問者宅; && FLAG:访问者当前位置 == 位置_訪問者宅
 		CALL VISITER_TAKEOUT(LOOP_CHR)
 	ENDIF
 NEXT
@@ -362,7 +362,7 @@ RETURN 0
 #DIM LOOP_CHR
 RET_CNT = 0
 FOR LOOP_CHR,0,CHARANUM
-	IF FLAG:访问者当前位置 == CFLAG:LOOP_CHR:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:LOOP_CHR:当前位置
 		RET_CNT ++
 	ENDIF
 NEXT
@@ -378,7 +378,7 @@ RETURNF RET_CNT
 #DIM LOOP_CHR
 RET_CNT = 0
 FOR LOOP_CHR,0,CHARANUM
-	IF 場所 == CFLAG:LOOP_CHR:現在位置
+	IF 場所 == CFLAG:LOOP_CHR:当前位置
 		SIF CFLAG:LOOP_CHR:にんっしんっ
 			RET_CNT |= 1p1
 	ENDIF
@@ -391,7 +391,7 @@ RETURNF RET_CNT
 @DEBUGPRINT_あの人は何処に？()
 #DIM LOOP_CHR
 FOR LOOP_CHR,0,CHARANUM
-	DEBUGPRINTFORML %CALLNAME:LOOP_CHR%は、{CFLAG:LOOP_CHR:現在位置}：【%GETPLACENAME(CFLAG:LOOP_CHR:現在位置)%】にいる。
+	DEBUGPRINTFORML %CALLNAME:LOOP_CHR%は、{CFLAG:LOOP_CHR:当前位置}：【%GETPLACENAME(CFLAG:LOOP_CHR:当前位置)%】にいる。
 NEXT
 DEBUGPRINTFORML %NTR_NAME(0)%は、{FLAG:访问者当前位置}：【%GETPLACENAME(FLAG:访问者当前位置)%】にいる。
 RETURN
@@ -406,7 +406,7 @@ RETURN
 #DIM 带回家里		;0:无 1:有
 
 同席人数 = GET_N_WITH_VISITER(1)
-IF 同席人数 == 2 && CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+IF 同席人数 == 2 && CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 	IF IS_AIR_MASTER(奴隷) < FLAG:訪問者の气氛 && 354 != PREVCOM
 		; MASTERによる「そこまでよ」
 		; [354]不打扰選択時は継続
@@ -419,8 +419,8 @@ ENDIF
 [IF_DEBUG]
 PRINTFORML 
 PRINTFORML FLAG:訪問者の气氛：{FLAG:訪問者の气氛}
-PRINTFORML FLAG:訪問者との行為の終了時刻：{FLAG:訪問者との行為の終了時刻}
-PRINTFORML FLAG:訪問者との行為：{FLAG:訪問者との行為}
+PRINTFORML FLAG:访问者当前行为中止时刻：{FLAG:访问者当前行为中止时刻}
+PRINTFORML FLAG:访问者当前行为：{FLAG:访问者当前行为}
 PRINTFORML CFLAG:{奴隷}:NTR_CNT行为：{CFLAG:奴隷:NTR_CNT行为}
 PRINTFORML 
 [ENDIF]
@@ -456,25 +456,25 @@ ENDIF
 ;好感度が高く、私室に居る場合は施錠
 IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && 密室度 >= 3 && IS_CAN_LOCK(FLAG:访问者当前位置)
 	IF TALENT:奴隷:浮気公認 >= 浮気_性交公認
-		IF !isLocked(CFLAG:奴隷:現在位置)
-			IF tryLock(奴隷, CFLAG:奴隷:現在位置)
-				IF CAN_MOVE(CFLAG:MASTER:現在位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
+		IF !isLocked(CFLAG:奴隷:当前位置)
+			IF tryLock(奴隷, CFLAG:奴隷:当前位置)
+				IF CAN_MOVE(CFLAG:MASTER:当前位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
 					PRINTFORML %CALLNAME:奴隷 + "は" + NTR_NAME(0) + "との一時を邪魔されないように、【" + NTR_GETPLACENAME(FLAG:访问者当前位置) + "】の扉に閂をかけようとしたが、"%
 					PRINTFORML %MSG_RE_LOVER(奴隷) + "が他の男に抱かれて喜ぶ" + CALLNAME:MASTER + "のためにと、閂は外して普通の鍵をかけておいた。"%
 				ENDIF
 			ENDIF
 		ENDIF
 	ELSE
-		IF !isLocked(CFLAG:奴隷:現在位置)
+		IF !isLocked(CFLAG:奴隷:当前位置)
 			IF RAND(CFLAG:奴隷:屈服度) > CFLAG:奴隷:好感度
-				IF tryLockBolt(奴隷, CFLAG:奴隷:現在位置)
-					IF CAN_MOVE(CFLAG:MASTER:現在位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
+				IF tryLockBolt(奴隷, CFLAG:奴隷:当前位置)
+					IF CAN_MOVE(CFLAG:MASTER:当前位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
 						PRINTFORML 为了让与%NTR_NAME(0)%共处的时光不被打搅，%CALLNAME:奴隷%反锁了【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】的门。
 					ENDIF
 				ENDIF
 			ELSE
-				IF tryLock(奴隷, CFLAG:奴隷:現在位置) 
-					IF CAN_MOVE(CFLAG:MASTER:現在位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
+				IF tryLock(奴隷, CFLAG:奴隷:当前位置) 
+					IF CAN_MOVE(CFLAG:MASTER:当前位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
 						PRINTFORML 为了让与%NTR_NAME(0)%共处的时光不被打搅，%CALLNAME:奴隷%锁上了【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】的门。
 					ENDIF
 				ENDIF
@@ -514,12 +514,12 @@ ENDIF
 ;その他の状態で行動中か行動が未決定(終了時間が0なら未決定とする)
 IF !带回家里
 	;訪問者が待機（行動終了状態）の場合。
-	IF FLAG:訪問者との行為の終了時刻 == 0
+	IF FLAG:访问者当前行为中止时刻 == 0
 		CALL VISITER_FRIENDSHIP_START(奴隷, 密室度)
-		;訪問者が行動中（行動終了時刻に満たない）の場合。
-	ELSEIF FLAG:訪問者との行為の終了時刻 > DATETIME()
+	;訪問者が行動中（行動終了時刻に満たない）の場合。
+	ELSEIF FLAG:访问者当前行为中止时刻 > DATETIME()
 		CALL VISITER_FRIENDSHIP_CONT(奴隷, 密室度)
-		;訪問者が行動完了（行動終了時刻に到達した）の場合。
+	;訪問者が行動完了（行動終了時刻に到達した）の場合。
 	ELSE
 		CALL VISITER_FRIENDSHIP_FINISH(奴隷)
 	ENDIF
@@ -529,7 +529,7 @@ TRYCALL NTRPRINT_VISITOR_STATE
 ;玩家不在场时检查快乐经验（不知道有什么用）
 ;----------------------------------------------------------------------------------------------------
 ;あなたが訪問者の行為対象者と同じ場所にいない時に限り実行
-SIF CFLAG:MASTER:現在位置 != CFLAG:奴隷:現在位置
+SIF CFLAG:MASTER:当前位置 != CFLAG:奴隷:当前位置
 	CALL EXP_GOT_CHECK(奴隷)
 
 ;-------------------------------------------------------------------------------
@@ -542,7 +542,7 @@ SIF CFLAG:MASTER:現在位置 != CFLAG:奴隷:現在位置
 #DIM 气氛上限値
 气氛上限値 = 0
 ;訪問者と住民が二人きりまたは主人空気化（屈服度高いとき？）
-IF 同席人数 == 1 || (!FLAG:Flow版本 && (同席人数 == 2 && CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 && IS_AIR_MASTER(奴隷)))
+IF 同席人数 == 1 || (!FLAG:Flow版本 && (同席人数 == 2 && CFLAG:MASTER:当前位置 == FLAG:访问者当前位置 && IS_AIR_MASTER(奴隷)))
 	SIF NTR_CHK_FAVORABLY(奴隷, FAV_接吻程度)
 		气氛上限値 += 1
 	;光明正大地していない場所
@@ -650,7 +650,7 @@ IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	ENDFUNC
 	RESETCOLOR
 ENDIF
-CFLAG:奴隷:現在位置 = FLAG:访问者当前位置
+CFLAG:奴隷:当前位置 = FLAG:访问者当前位置
 FLAG:訪問者滞在時間カウンタ = 0
 ;同行解除
 CFLAG:奴隷:同行 = 0
@@ -666,8 +666,8 @@ CFLAG:奴隷:同行 = 0
 #DIM 奴隷
 #DIM 判定値
 判定値 = CFLAG:奴隷:睡眠 ? 0 # 1 + TALENT:奴隷:幼稚
-FLAG:(100 + CFLAG:奴隷:現在位置) = MAX(FLAG:(100 + CFLAG:奴隷:現在位置) + 判定値 * TIME_PROGRESS(TFLAG:300),0)
-FLAG:(100 + CFLAG:奴隷:現在位置) = MIN(FLAG:(100 + CFLAG:奴隷:現在位置),6000)
+FLAG:(100 + CFLAG:奴隷:当前位置) = MAX(FLAG:(100 + CFLAG:奴隷:当前位置) + 判定値 * TIME_PROGRESS(TFLAG:300),0)
+FLAG:(100 + CFLAG:奴隷:当前位置) = MIN(FLAG:(100 + CFLAG:奴隷:当前位置),6000)
 
 ;-------------------------------------------------------------------------------
 ;同行者への影響チェック
@@ -676,7 +676,7 @@ FLAG:(100 + CFLAG:奴隷:現在位置) = MIN(FLAG:(100 + CFLAG:奴隷:現在位�
 #DIM LOOP_CHR
 FOR LOOP_CHR,1,CHARANUM
 	;訪問者の影響
-	IF CFLAG:LOOP_CHR:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:LOOP_CHR:当前位置 == FLAG:访问者当前位置
 		IF CFLAG:LOOP_CHR:同行 
 			;NTRなら即座に同行解除
 			IF !FLAG:Flow版本 && TALENT:LOOP_CHR:NTR
@@ -759,7 +759,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 		CNT行为 = RAND:(NTR_CNT_深吻+1)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	;主人も同席
-	IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 		;浮気公認レベルで変化
 		IF TALENT:奴隷:浮気公認 == 0
 			SIF RAND:3
@@ -775,7 +775,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	ENDIF
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 	;主人も同席
-	IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 		;浮気公認レベルで変化
 		IF TALENT:奴隷:浮気公認 == 0
 			SIF RAND:3
@@ -794,7 +794,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 	ENDIF
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 	;主人も同席
-	IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 
+	IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置 
 		SIF RAND:4
 			CNT行为 = RAND:(NTR_CNT_耳边吹气+1)
 		;主人不在
@@ -804,7 +804,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 	ENDIF
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_侍奉する程度)
 	;主人も同席
-	IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 		SIF RAND:5
 			CNT行为 = RAND:(NTR_CNT_凝视+1)
 		;主人不在
@@ -849,7 +849,7 @@ SELECTCASE CNT行为
 		CALL NTR_ADD_SURRENDER(奴隷, 1)
 		SIF TALENT:奴隷:浮気的蜜唇
 			CALL NTR_ADD_SURRENDER(奴隷, 1)
-		IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+		IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 			CFLAG:奴隷:同席目撃回数 ++
 			CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, 1)
 		ENDIF
@@ -870,7 +870,7 @@ SELECTCASE CNT行为
 		SOURCE:奴隷:挑衅 += 200
 		SOURCE:奴隷:侍奉 += 200
 		CALL NTR_ADD_SURRENDER(奴隷, 1)
-		IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+		IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 			CFLAG:奴隷:同席目撃回数 ++
 			CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, 2)
 		ENDIF
@@ -887,7 +887,7 @@ SELECTCASE CNT行为
 		CALL NTR_ADD_SURRENDER(奴隷, 2)
 		SIF TALENT:奴隷:浮気的蜜唇
 			CALL NTR_ADD_SURRENDER(奴隷, 2)
-		IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+		IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 			CFLAG:奴隷:同席目撃回数 ++
 			CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, 1)
 		ENDIF
@@ -1054,20 +1054,20 @@ ELSE
 	;NTR覗き発覚カウンタ更新
 	CFLAG:奴隷:覗き発覚回数 ++
 	;NTR覗き発覚時行為コード更新
-	CFLAG:奴隷:覗き発覚時行為 = MAX(CFLAG:奴隷:覗き発覚時行為, FLAG:訪問者との行為)
+	CFLAG:奴隷:覗き発覚時行為 = MAX(CFLAG:奴隷:覗き発覚時行為, FLAG:访问者当前行为)
 	;会话以外の時覗きバレが２回目以降だと好意度低下
-	IF FLAG:訪問者との行為 != 0 && CFLAG:奴隷:覗き発覚回数 > 1
+	IF FLAG:访问者当前行为 != 0 && CFLAG:奴隷:覗き発覚回数 > 1
 		;NTRの場合減らないものとする。
 		SIF !TALENT:奴隷:NTR
 			CFLAG:奴隷:好感度 --
 		SIF CFLAG:奴隷:睡眠
 			CFLAG:奴隷:好感度 --
 	ENDIF
-	SELECTCASE FLAG:訪問者との行為
+	SELECTCASE FLAG:访问者当前行为
 			;会话
 		CASE 0
 			;単に話している時は何もなし
-		CASE NTR_行为_キス
+		CASE NTR_行为_接吻
 			CALL NTR_MESSAGE_KISS_SHOW(奴隷)
 		CASE NTR_行为_爱抚
 			CALL NTR_MESSAGE_PET_SHOW(奴隷)
@@ -1075,7 +1075,7 @@ ELSE
 			CALL NTR_MESSAGE_BUST_PET_SHOW(奴隷)
 		CASE NTR_行为_口交
 			CALL NTR_MESSAGE_FELLATIO_SHOW(奴隷)
-		CASE NTR_行为_六九式
+		CASE NTR_行为_六九
 			CALL NTR_MESSAGE_69_SHOW(奴隷)
 		CASE NTR_行为_素股
 			CALL NTR_MESSAGE_THUG_SHOW(奴隷)
@@ -1136,33 +1136,33 @@ RETURNF 結果
 ;NTR性交時体位名取得
 @NTR_GET_SEX_LAGE
 #FUNCTIONS
-SIF FLAG:訪問者との行為 == NTR_行为_Ｖ正常位
+SIF FLAG:访问者当前行为 == NTR_行为_Ｖ正常位
 	RETURNF "正常位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ｖ后背位
+SIF FLAG:访问者当前行为 == NTR_行为_Ｖ后背位
 	RETURNF "后背位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ｖ骑乘位
+SIF FLAG:访问者当前行为 == NTR_行为_Ｖ骑乘位
 	RETURNF "骑乘位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ｖ対面座位
+SIF FLAG:访问者当前行为 == NTR_行为_Ｖ対面座位
 	RETURNF "対面座位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ｖ背面座位
+SIF FLAG:访问者当前行为 == NTR_行为_Ｖ背面座位
 	RETURNF "背面座位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ｖ対面立位
+SIF FLAG:访问者当前行为 == NTR_行为_Ｖ対面立位
 	RETURNF "対面立位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ｖ背面立位
+SIF FLAG:访问者当前行为 == NTR_行为_Ｖ背面立位
 	RETURNF "背面立位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ａ正常位
+SIF FLAG:访问者当前行为 == NTR_行为_Ａ正常位
 	RETURNF "正常位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ａ后背位
+SIF FLAG:访问者当前行为 == NTR_行为_Ａ后背位
 	RETURNF "后背位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ａ骑乘位
+SIF FLAG:访问者当前行为 == NTR_行为_Ａ骑乘位
 	RETURNF "骑乘位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ａ対面座位
+SIF FLAG:访问者当前行为 == NTR_行为_Ａ対面座位
 	RETURNF "対面座位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ａ背面座位
+SIF FLAG:访问者当前行为 == NTR_行为_Ａ背面座位
 	RETURNF "背面座位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ａ対面立位
+SIF FLAG:访问者当前行为 == NTR_行为_Ａ対面立位
 	RETURNF "対面立位"
-SIF FLAG:訪問者との行為 == NTR_行为_Ａ背面立位
+SIF FLAG:访问者当前行为 == NTR_行为_Ａ背面立位
 	RETURNF "背面立位"
 RETURNF "不存在的体位 NTR_GET_SEX_LAGE"
 
@@ -1185,28 +1185,28 @@ IF FLAG:Flow版本
 		SIF TALENT:奴隷:NTR
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_寝取られ寸前
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 10000 && 1000 > CFLAG:奴隷:好感度
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 12000 && 1000 > CFLAG:奴隷:好感度
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_寝取られそう
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 5000 && 1500 > CFLAG:奴隷:好感度
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 7000 && 1500 > CFLAG:奴隷:好感度
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_主人より高い
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 3000
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 4000
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_うふふする程度2
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 * 5 / 6 && CFLAG:奴隷:屈服度 > 2200
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 * 5 / 6 && CFLAG:奴隷:屈服度 > 3200
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_うふふする程度
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 * 3 / 4 && CFLAG:奴隷:屈服度 > 1600
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 * 3 / 4 && CFLAG:奴隷:屈服度 > 2800
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_侍奉する程度
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 / 2 && CFLAG:奴隷:屈服度 > 1200
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 / 2 && CFLAG:奴隷:屈服度 > 2200
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_体を触らせる程度
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 / 3 && CFLAG:奴隷:屈服度 > 800
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 / 3 && CFLAG:奴隷:屈服度 > 1800
 			RETURNF 1
 	ELSEIF 好感度LV == FAV_接吻程度
-		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 / 4 && CFLAG:奴隷:屈服度 > 500
+		SIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 / 4 && CFLAG:奴隷:屈服度 > 1200
 			RETURNF 1
 	ELSE
 		PRINTFORML !!! bug [{好感度LV}]
@@ -1281,12 +1281,12 @@ RETURNF 0
 @NTR_RESET_VISITOR_ACTION(奴隷)
 #DIM 奴隷
 FLAG:訪問者の气氛 = 0
-FLAG:訪問者との行為の終了時刻 = 0
-FLAG:訪問者との行為 = NTR_行为_なし
+FLAG:访问者当前行为中止时刻 = 0
+FLAG:访问者当前行为 = NTR_行为_无
 FLAG:访问者行为计时点 = 0
 IF 奴隷 >= 0
-	CFLAG:奴隷:访问者宅气氛 = 0
-	CFLAG:奴隷:訪問者行為 = NTR_行为_なし
+	CFLAG:奴隷:TAKEOUT行为控制计数 = 0
+	CFLAG:奴隷:当前与访问者行为 = NTR_行为_无
 	CFLAG:奴隷:处女喪失中 = 0
 ENDIF
 RETURN 0
@@ -1300,10 +1300,10 @@ RETURN 0
 IF IS_NTR_SHOW_ALL()
 	RETURNF 1
 ENDIF
-IF CFLAG:MASTER:現在位置 == 場所
+IF CFLAG:MASTER:当前位置 == 場所
 	RETURNF 1
 ENDIF
-IF CAN_MOVE(CFLAG:MASTER:現在位置, 場所) == 2
+IF CAN_MOVE(CFLAG:MASTER:当前位置, 場所) == 2
 	RETURNF 1
 ENDIF
 IF 場所 == TFLAG:現在覗いている場所
@@ -1386,14 +1386,14 @@ RETURNF (STRCOUNT(CSTR:奴隷:セックスした相手,"/")-1)
 ;访问者当前位置に移动してきたかチェック
 SIF CFLAG:奴隷:睡眠	
 	RETURN 結果
-SIF CFLAG:奴隷:現在位置 == CFLAG:奴隷:前ターン位置
+SIF CFLAG:奴隷:当前位置 == CFLAG:奴隷:前ターン位置
 	RETURN 結果
-SIF CFLAG:奴隷:現在位置 != FLAG:访问者当前位置
+SIF CFLAG:奴隷:当前位置 != FLAG:访问者当前位置
 	RETURN 結果
 ;空気変化
 結果 = 1
 ;訪問者移动時は气氛等リセット
-IF FLAG:訪問者との行為 != NTR_行为_なし
+IF FLAG:访问者当前行为 != NTR_行为_无
 	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 		PRINTFORML %CALLNAME:奴隷%进来后、气氛改变了，%NTR_NAME(0)%不得不中止了行为。
 	ENDIF

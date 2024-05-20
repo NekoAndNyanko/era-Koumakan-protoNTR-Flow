@@ -327,7 +327,7 @@ ENDIF
 SIF TEQUIP:32
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -571,7 +571,7 @@ SIF TEQUIP:32
 SIF TEQUIP:33
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -851,7 +851,7 @@ ENDIF
 SIF PALAM:润滑 < PALAMLV:2 && TALENT:处女
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -906,7 +906,7 @@ IF PALAM:润滑 < PALAMLV:2 && ASSIPLAY
 		RETURN 0
 ENDIF
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -954,7 +954,7 @@ SIF PALAM:润滑 < PALAMLV:2 && TALENT:处女
 SIF TEQUIP:体位 == 5 || TEQUIP:体位 == 2
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -1003,7 +1003,7 @@ SIF PALAM:润滑 < PALAMLV:2 && TALENT:处女
 SIF TEQUIP:体位 == 4 || TEQUIP:体位 == 1
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -1057,7 +1057,7 @@ ENDIF
 SIF TEQUIP:体位 == 5 || TEQUIP:体位 == 2
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -1111,7 +1111,7 @@ ENDIF
 SIF TEQUIP:体位 == 4 || TEQUIP:体位 == 1
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -1741,7 +1741,7 @@ SIF ABS(TALENT:体型 - TALENT:PLAYER:体型) > 2 && !TALENT:PLAYER:禁断的知
 SIF TEQUIP:12
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 ;浴场PLAY中は游戏座垫が無いとダメ
 IF TEQUIP:31
@@ -1825,7 +1825,7 @@ SIF TEQUIP:31
 SIF TEQUIP:33
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -1971,7 +1971,7 @@ IF TEQUIP:31
 		RETURN 0
 ENDIF
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -2123,7 +2123,7 @@ ENDIF
 SIF TEQUIP:33
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -2182,7 +2182,7 @@ ENDIF
 SIF TEQUIP:33
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -2250,7 +2250,7 @@ ENDIF
 SIF TEQUIP:33
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -2325,7 +2325,7 @@ SIF EXP:Ａ经验 < 100
 SIF ABL:顺从 + ABL:欲望 + ABL:露出癖 < 10
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -2425,18 +2425,18 @@ SIF !TALENT:恋慕
 	RETURN 0
 
 ;润滑不足で润滑剂無し、且つ特定地域ではない
-SIF PALAM:润滑 < PALAMLV:3 && !ITEM:润滑剂 && CFLAG:現在位置 != 5
+SIF PALAM:润滑 < PALAMLV:3 && !ITEM:润滑剂 && CFLAG:当前位置 != 5
 	RETURN 0
 
 ;場所別条件
 ;厨房、各トイレ（好感度1500）
-IF (CFLAG:現在位置 == 5 || CFLAG:現在位置 == 18) && CFLAG:好感度 < 1500
+IF (CFLAG:当前位置 == 5 || CFLAG:当前位置 == 18) && CFLAG:好感度 < 1500
 	RETURN 0
 	;食堂、図書室、大浴場（好感度2600）
-ELSEIF (CFLAG:現在位置 == 3 || CFLAG:現在位置 == 4 || CFLAG:現在位置 == 22 || CFLAG:現在位置 == 23 || CFLAG:現在位置 == 24) && CFLAG:好感度 < 2600
+ELSEIF (CFLAG:当前位置 == 3 || CFLAG:当前位置 == 4 || CFLAG:当前位置 == 22 || CFLAG:当前位置 == 23 || CFLAG:当前位置 == 24) && CFLAG:好感度 < 2600
 	RETURN 0
 	;野外、館内通り道(禁断的知识 + 好感度3700)
-ELSEIF OPENPLACE(CFLAG:現在位置) && CFLAG:好感度 < 3700
+ELSEIF OPENPLACE(CFLAG:当前位置) && CFLAG:好感度 < 3700
 	RETURN 0
 ENDIF
 
@@ -2829,7 +2829,7 @@ IF TEQUIP:31
 		RETURN 0
 ENDIF
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -2999,7 +2999,7 @@ SIF TEQUIP:1 > 1
 SIF TEQUIP:绳
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -3047,7 +3047,7 @@ SIF TEQUIP:0 > 1
 SIF TEQUIP:奴隷:0 > 1
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -3442,7 +3442,7 @@ ENDIF
 SIF TEQUIP:32
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1
 
@@ -3683,6 +3683,6 @@ SIF TEQUIP:32
 SIF TEQUIP:33
 	RETURN 0
 ;ベッドルームでないとダメ
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	RETURN 0
 RETURN 1

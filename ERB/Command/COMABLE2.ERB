@@ -39,7 +39,7 @@ SELECTCASE コマンド番号
 			RETURNF 1
 		ENDIF
 		;お風呂場ではガチエロになるので、押し倒され状態でない場合、連れ出す(351)と推到(350)と不打扰(354)以外は不可
-		IF 存在浴室(CFLAG:MASTER:現在位置) && CFLAG:うふふ != 2
+		IF 存在浴室(CFLAG:MASTER:当前位置) && CFLAG:うふふ != 2
 			IF コマンド番号 != 350 && コマンド番号 != 351 && コマンド番号 != 354
 				RESULT = 0
 				RETURNF 1

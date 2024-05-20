@@ -49,7 +49,7 @@
 @NTR_KOJO_K5_1(奴隷)
 #DIM 奴隷
 
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「哈啊・・・竟然让他做到这种地步・・・呼呼・・」
@@ -122,7 +122,7 @@ IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 		ENDDATA
 		PRINTFORML %CALLNAME:奴隷%盯着、%NTR_NAME(0)%移开视线。
 	ENDIF
-ELSEIF CFLAG:奴隷:現在位置 == 位置_红魔馆_蕾米莉亚私室
+ELSEIF CFLAG:奴隷:当前位置 == 位置_红魔馆_蕾米莉亚私室
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 		PRINTDATAL
 			DATAFORM 「啊啊・・喂・・可以吗・・？」
@@ -228,7 +228,7 @@ RETURN 0
 @NTR_KOJO_KW5_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「事到如今，你再也看不下去了吗？」

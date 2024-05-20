@@ -76,7 +76,7 @@ FOR LOOP_CHR,0,CHARANUM
 	CFLAG:LOOP_CHR:同行 = 0
 	IF LOOP_CHR == 対峙者
 		;自分自身は参戦できない
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置 && !CFLAG:LOOP_CHR:睡眠
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置 && !CFLAG:LOOP_CHR:睡眠
 		;同じ位置にいれば参戦してくれる
 		SELECTCASE COM417_Position(LOOP_CHR)
 			CASE IS <= -50
@@ -238,7 +238,7 @@ IF TFLAG:99 == 2
 			;自分自身は評価しない
 		ELSEIF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置
 			PRINTFORML 战斗结束后，%CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%的行为表达了态度、
 			;やり過ぎだよねぇ…と思いつつも、自分を守ってくれた事には一応感謝してる
 			IF TALENT:LOOP_CHR:恋慕
@@ -279,7 +279,7 @@ ELSEIF TFLAG:99 == 1
 			;自分自身は評価しない
 		ELSEIF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置
 			PRINTFORM %CALLNAME:LOOP_CHR%对
 			IF TALENT:LOOP_CHR:恋慕
 				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 + 1
@@ -313,7 +313,7 @@ ELSE
 			;自分自身は評価しない
 		ELSEIF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置
 			IF CFLAG:LOOP_CHR:好感度 > CFLAG:LOOP_CHR:屈服度
 				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 + 10
 				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 100
@@ -463,8 +463,8 @@ ENDIF
 ;屈服度の高い女あなたが一人で敗北、かつ監禁ONの時の例外処理
 IF 対峙者 == MASTER && HAS_VAGINA(対峙者) && CFLAG:対峙者:屈服度 > 1000 && GET_N_WITH_VISITER(0) == 1 && IS_NTR_IMPRISON_ENABLE()
 	PRINTFORMW %NTR_NAME(0)%将瘫软在地的%CALLNAME:対峙者%抱了起来、带回了家……
-	CFLAG:MASTER:現在位置 = 位置_訪問者宅
-	CFLAG:MASTER:現在位置詳細 = 25
+	CFLAG:MASTER:当前位置 = 位置_訪問者宅
+	CFLAG:MASTER:当前位置詳細 = 25
 	FLAG:訪問者同行フラグ = 0
 	FLAG:訪問者宅の施錠状態 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
 	CFLAG:MASTER:NTR訪問者宅監禁状況 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
@@ -477,14 +477,14 @@ FOR LOOP_CHR,0,CHARANUM
 	ELSEIF CFLAG:LOOP_CHR:睡眠
 		;寝てる人は無関係
 		CONTINUE
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_红魔馆_屋外厕所 && CFLAG:対峙者:現在位置 != 位置_红魔馆_屋外厕所
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == 位置_红魔馆_屋外厕所 && CFLAG:対峙者:当前位置 != 位置_红魔馆_屋外厕所
 		;屋外厕所が危険な感じになってきたので脱出
-		IF CFLAG:対峙者:現在位置 == 位置_红魔馆_后院
+		IF CFLAG:対峙者:当前位置 == 位置_红魔馆_后院
 			;庭に居たら正門まで逃跑(守衛小屋は鍵の可能性があるので避ける)
-			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_正门
+			CFLAG:LOOP_CHR:当前位置 = 位置_红魔馆_正门
 		ELSE
 			;それ以外の場合は庭へ逃跑
-			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_后院
+			CFLAG:LOOP_CHR:当前位置 = 位置_红魔馆_后院
 		ENDIF
 	ELSEIF !HAS_VAGINA(LOOP_CHR)
 		; 訪問者「オトコはいいや」
@@ -495,7 +495,7 @@ FOR LOOP_CHR,0,CHARANUM
 	ELSEIF IS_NTR_ATTACK_LOVER_ONLY() && !TALENT:LOOP_CHR:恋慕
 		; 訪問者「他人の恋人を寝取ってこそ価値がある」
 		CONTINUE
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置 && !CFLAG:LOOP_CHR:睡眠
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置 && !CFLAG:LOOP_CHR:睡眠
 		;あなたに味方した娘にはお仕置きだよねー
 		SELECTCASE COM417_Position(LOOP_CHR)
 			CASE 0 TO 19
@@ -638,7 +638,7 @@ IF 介入可否 == 0
 			;寝てる人は無関係
 		ELSEIF TALENT:LOOP_CHR:NTR
 			;NTRだと助けてくれません
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:住人:当前位置
 			;同じ位置にいるならワンチャンある
 			IF COM417_Position(LOOP_CHR) <20
 				;あなた側にさりげなく援護、程度なら口出しする権利がある
@@ -665,7 +665,7 @@ ELSE
 	ELSE
 		PRINTFORMW %CALLNAME:住人%はうつむいて、犯されるためだけに屋外厕所へと歩いて行った……
 	ENDIF
-	CFLAG:住人:現在位置 = 位置_红魔馆_屋外厕所
+	CFLAG:住人:当前位置 = 位置_红魔馆_屋外厕所
 	FLAG:訪問者同行フラグ = 0
 	RETURN 1
 ENDIF
@@ -711,7 +711,7 @@ FOR LOOP_CHR,1,CHARANUM
 		;寝てる人は無関係
 	ELSEIF TALENT:LOOP_CHR:NTR
 		;NTRだと助けてくれません
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:住人:当前位置
 		;同じ位置にいるならワンチャンある
 		IF COM417_Position(LOOP_CHR) <20
 			;あなた側にさりげなく援護、程度なら口出しする権利がある
@@ -746,10 +746,10 @@ ELSE
 	ELSE
 		PRINTFORMW %CALLNAME:住人%抽泣着、乖乖地在正门等待着%NTR_NAME(0)%……
 	ENDIF
-	;現在位置を強制的に開錠
+	;当前位置を強制的に開錠
 	FLAG:(300 + FLAG:访问者当前位置) = 0
 	;正門と言いつつそのまま訪問者宅へ移动。本当に正門へ移动させると誤爆拉致があるので
-	CFLAG:住人:現在位置 = 位置_訪問者宅
+	CFLAG:住人:当前位置 = 位置_訪問者宅
 	;訪問者はまだやることがあるので後で移动します
 	;FLAG:访问者当前位置 = 位置_訪問者宅
 	CALL NTR_RESET_VISITOR_ACTION(住人)
@@ -778,7 +778,7 @@ IF 介入可否 == 0
 			;寝ていると助けてくれません
 		ELSEIF TALENT:LOOP_CHR:NTR
 			;NTRだと助けてくれません
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:住人:当前位置
 			;同じ位置にいるならワンチャンある
 			IF COM417_Position(LOOP_CHR) <20
 				;あなた側にさりげなく援護、程度なら口出しする権利がある
@@ -798,7 +798,7 @@ IF 介入フラグ > 0
 	PRINTW 阻止了
 	RETURN 0
 ELSE
-	CFLAG:住人:現在位置 = 位置_红魔馆_屋外厕所
+	CFLAG:住人:当前位置 = 位置_红魔馆_屋外厕所
 	FLAG:访问者当前位置 = 位置_红魔馆_屋外厕所
 	FLAG:訪問者滞在時間カウンタ = 0
 	FLAG:訪問者同行フラグ = 0
@@ -809,7 +809,7 @@ ELSE
 	FOR LOOP_CHR,0,CHARANUM
 		IF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_红魔馆_屋外厕所
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == 位置_红魔馆_屋外厕所
 			IF TALENT:LOOP_CHR:处女
 				;处女守りたい？
 				CALL COM417_Save_the_Virgin(LOOP_CHR)
@@ -1025,7 +1025,7 @@ RETURN 0
 持帰人数 = 0
 奴隷 = 0
 FOR LOOP_CHR,1,CHARANUM
-	IF CFLAG:LOOP_CHR:現在位置 == 位置_訪問者宅
+	IF CFLAG:LOOP_CHR:当前位置 == 位置_訪問者宅
 		奴隷 = LOOP_CHR
 		IF 持帰人数 == 0
 			PRINTFORM %CALLNAME:LOOP_CHR%正在大门口
@@ -1692,7 +1692,7 @@ IF 0 >= CFLAG:対象者:子宫内体积
 ENDIF
 充填率 = 100*精子量/(CFLAG:対象者:子宫内体积)
 
-IF CFLAG:MASTER:現在位置 == CFLAG:対象者:現在位置
+IF CFLAG:MASTER:当前位置 == CFLAG:対象者:当前位置
 	DEBUGPRINTFORM %CALLNAME:対象者%的子宫里面{充填率}％都被
 	IF あなた以外フラグ
 		DEBUGPRINTFORM %CALLNAME:MASTER%以外

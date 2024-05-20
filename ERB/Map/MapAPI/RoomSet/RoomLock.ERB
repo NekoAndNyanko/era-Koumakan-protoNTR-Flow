@@ -9,7 +9,7 @@ IF 部屋番号 == GET_PRIVATE_ROOM(奴隷, 0)
 	RETURNF 1
 ENDIF
 
-IF 部屋番号 != CFLAG:奴隷:現在位置
+IF 部屋番号 != CFLAG:奴隷:当前位置
 	RETURNF 0
 ENDIF
 
@@ -50,7 +50,7 @@ RETURNF 0
 
 IF isLockedByBolt(部屋番号)
 	;閂での施錠の場合
-	IF CFLAG:奴隷:現在位置 == 部屋番号
+	IF CFLAG:奴隷:当前位置 == 部屋番号
 		;内側からなら解錠出来る
 		RETURNF 1
 	ENDIF
@@ -104,10 +104,10 @@ RETURNF ( FLAG:(300 + 部屋番号) > 1 )
 #DIM 奴隷     ;鍵を掛けようとするキャラクター
 #DIM 部屋番号 ;鍵を掛けられる部屋
 
-IF GET_PRIVATE_ROOM(奴隷, 0) != CFLAG:奴隷:現在位置
+IF GET_PRIVATE_ROOM(奴隷, 0) != CFLAG:奴隷:当前位置
 	RETURNF 0
 ENDIF
-IF 部屋番号 != CFLAG:奴隷:現在位置
+IF 部屋番号 != CFLAG:奴隷:当前位置
 	RETURNF 0
 ENDIF
 

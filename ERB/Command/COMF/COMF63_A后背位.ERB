@@ -18,7 +18,7 @@ IF PREVCOM == 71
 		JUMP COM71
 ENDIF
 ;ベッドがないと立位に
-SIF !存在床铺(CFLAG:PLAYER:現在位置)
+SIF !存在床铺(CFLAG:PLAYER:当前位置)
 	TFLAG:193 = 1
 ;-------------------------------------------------
 ;COM別FLAGの設定
@@ -103,7 +103,7 @@ RETURN 1
 ;绳で縛られている場合は無視（绳が無い時のみ実行判定を行う）
 IF !TEQUIP:19
 	SKIPDISP ARG
-	IF !存在床铺(CFLAG:PLAYER:現在位置)
+	IF !存在床铺(CFLAG:PLAYER:当前位置)
 		PRINTL 背面立位菊花
 	ELSE
 		PRINTL 肛交后背位

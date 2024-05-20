@@ -203,7 +203,7 @@ IF RESULT == 0
 						EXP:已知的浮気Ｂ经验 = EXP:浮気Ｂ经验
 				ENDIF
 				;不愿意说的时候，访问者在旁边
-			ELSEIF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
+			ELSEIF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
 				IF TALENT:恋慕 || TALENT:亲爱 || TALENT:恋人
 					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%可是被我抚摸得很快乐呢~~』
 				ELSEIF TALENT:人妻
@@ -222,7 +222,7 @@ IF RESULT == 0
 			ENDDATA
 			PRINTFORMW  %CALLNAME:TARGET%显得很不耐烦，再问下去可能就要生气了……
 			;不愿意说的时候，访问者在旁边
-			IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
+			IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验)
 				IF TALENT:恋慕 || TALENT:亲爱 || TALENT:恋人
 					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%可是被我抚摸得很快乐呢~~』
 				ELSEIF TALENT:人妻
@@ -520,7 +520,7 @@ IF RESULT == 0
 				ENDIF
 				PRINTFORMW %CALLNAME:TARGET%全都说了一遍……
 				;不愿意说的时候，访问者在旁边
-			ELSEIF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
+			ELSEIF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
 				IF TALENT:恋慕 || TALENT:亲爱 || !TALENT:恋人
 					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%倒是很喜欢做这些呢~~』
 				ELSEIF TALENT:人妻
@@ -555,7 +555,7 @@ IF RESULT == 0
 			ENDDATA
 			PRINTFORMW  %CALLNAME:TARGET%显得很不耐烦，再问下去可能就要生气了……
 			;不愿意说的时候，访问者在旁边
-			IF FLAG:访问者当前位置 == CFLAG:PLAYER:現在位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
+			IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置 && CFLAG:屈服度 >= CFLAG:好感度 && (EXP:浮気Ｃ经验 || EXP:浮気Ｂ经验 || EXP:浮気Ｍ经验 || EXP:浮気接吻经验 || EXP:浮気手淫经验 || EXP:浮気口淫经验)
 				IF TALENT:恋慕 || TALENT:亲爱 || !TALENT:恋人
 					PRINTFORMW 『在谈这个啊……%CALLNAME:TARGET%倒是很喜欢做这些呢~~』
 				ELSEIF TALENT:人妻

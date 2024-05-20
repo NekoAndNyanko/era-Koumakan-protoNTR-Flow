@@ -398,7 +398,7 @@ IF TALENT:恋慕
 	ELSEIF LOCAL == 1
 		PRINTFORM 微笑みを交わしながら
 	ELSE
-		IF (CFLAG:MASTER:現在位置 == 4) || (CFLAG:MASTER:現在位置 == 5) || (CFLAG:MASTER:現在位置 == 11) || (CFLAG:MASTER:現在位置 == 17) || (CFLAG:MASTER:現在位置 == 18)
+		IF (CFLAG:MASTER:当前位置 == 4) || (CFLAG:MASTER:当前位置 == 5) || (CFLAG:MASTER:当前位置 == 11) || (CFLAG:MASTER:当前位置 == 17) || (CFLAG:MASTER:当前位置 == 18)
 			LOCAL = (RAND:5 + 1)
 			IF LOCAL == 5
 				PRINTFORM 指先を絡ませながら
@@ -518,7 +518,7 @@ RETURN RESULT
 ;302,身体接触
 ;==================================================
 @KOJO_MESSAGE_COM_K10_302_1
-IF CFLAG:MASTER:現在位置 == 18
+IF CFLAG:MASTER:当前位置 == 18
 	IF TFLAG:193 == 1
 		;風呂場にて
 		PRINTFORML 「きゃ、ちょっと擽ったいぜ。」
@@ -687,7 +687,7 @@ RETURN RESULT
 IF FIRSTTIME(TOSTR(350),1)
 	;初めて集
 	;魔理沙的家OR玩家房间
-	IF (CFLAG:現在位置 ==25) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==25) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「これから、するんだよな・・・いいぜ、私も、ずっとして欲しかった。」
 		PRINTFORML 「あまり、乱暴にはしなんで欲しいな…。」
 		PRINTFORMW 陶酔した顔で%CALLNAME:人物_魔理沙%は%CALLNAME:MASTER%に身を預けた
@@ -697,7 +697,7 @@ IF FIRSTTIME(TOSTR(350),1)
 	ENDIF
 ELSEIF TALENT:恋慕
 	;あなたOR魔理沙的家
-	IF (CFLAG:現在位置 ==20) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==20) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「ふふ、なんだか嬉しいな、%CALLNAME:MASTER%とこういう関係になれてさ。」
 		PRINTFORML 「気持よくしてくれよ、%CALLNAME:MASTER%♪」
 	ELSE
@@ -706,7 +706,7 @@ ELSEIF TALENT:恋慕
 	ENDIF
 ELSE
 	;あなたOR魔理沙的家
-	IF (CFLAG:現在位置 ==20) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==20) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「またするんだな、もう、好きだよな%CALLNAME:MASTER%も。」
 	ELSE
 		PRINTFORML 「全く、誰かに見られても私は知らないぞ…。」

@@ -5,7 +5,7 @@
 #DIM 調教者
 TCVAR:奴隷:行為者 = 調教者
 CALL NTR_KISS_PET_FELLA_MSG_KOJO_01(奴隷, 3)
-IF FLAG:訪問者との行為の終了時刻 == 0
+IF FLAG:访问者当前行为中止时刻 == 0
 	FLAG:访问者行为计时点 = DATETIME()
 	CALL NTR_ADD_SURRENDER(奴隷, 3)
 	SIF EXP:奴隷:NTR陷落经验 
@@ -34,7 +34,7 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 		SOURCE:奴隷:肮脏 *= 3
 	SIF TALENT:奴隷:自尊心 > 0
 		SOURCE:奴隷:肮脏 *= 2
-	FLAG:訪問者との行為の終了時刻 = DATETIME() + 10
+	FLAG:访问者当前行为中止时刻 = DATETIME() + 10
 	CALL NTR_EXP_ADD_KISS(奴隷,1)
 	CALL NTR_EXP_ADD_C_EX(奴隷,1)
 	CALL NTR_EXP_ADD_B_EX(奴隷,1)
@@ -42,8 +42,8 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	CALL 改变乳头色素(奴隷,1)
 	CALL 改变小穴色素(奴隷,1)
 	CALL 改变乳头大小(奴隷,1)
-	FLAG:訪問者との行為 = NTR_行为_爱抚
-	CFLAG:奴隷:訪問者行為 = NTR_行为_爱抚
+	FLAG:访问者当前行为 = NTR_行为_爱抚
+	CFLAG:奴隷:当前与访问者行为 = NTR_行为_爱抚
 	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
 ENDIF
 RETURN 0

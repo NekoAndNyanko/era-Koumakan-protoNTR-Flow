@@ -32,25 +32,25 @@ FOR コマンド番号,0,700
 			PRINTFORMC 母乳飲み[{コマンド番号,3}]
 		ELSEIF コマンド番号 == 11 && TALENT:PLAYER:泌乳体质
 			PRINTFORMC 授乳[{コマンド番号,3}]
-		ELSEIF コマンド番号 == 60 && !存在床铺(CFLAG:PLAYER:現在位置)
+		ELSEIF コマンド番号 == 60 && !存在床铺(CFLAG:PLAYER:当前位置)
 			PRINTFORMC 対面立位[{コマンド番号,3}]
-		ELSEIF コマンド番号 == 61 && !存在床铺(CFLAG:PLAYER:現在位置)
+		ELSEIF コマンド番号 == 61 && !存在床铺(CFLAG:PLAYER:当前位置)
 			PRINTFORMC 背面立位[{コマンド番号,3}]
-		ELSEIF コマンド番号 == 62 && !存在床铺(CFLAG:PLAYER:現在位置)
+		ELSEIF コマンド番号 == 62 && !存在床铺(CFLAG:PLAYER:当前位置)
 			PRINTFORMC 対面立位菊花[{コマンド番号,3}]
-		ELSEIF コマンド番号 == 63 && !存在床铺(CFLAG:PLAYER:現在位置)
+		ELSEIF コマンド番号 == 63 && !存在床铺(CFLAG:PLAYER:当前位置)
 			PRINTFORMC 背面立位菊花[{コマンド番号,3}]
-		ELSEIF (コマンド番号 == 97 && 存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 97 && 存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
+		ELSEIF (コマンド番号 == 97 && 存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 97 && 存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 			PRINTFORMC 正常位侍奉[{コマンド番号,3}]
-		ELSEIF (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 <= 1 ) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && !TALENT:PLAYER:受虐狂) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 <= 2) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 >= 3 && !TALENT:施虐狂)
+		ELSEIF (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 <= 1 ) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && !TALENT:PLAYER:受虐狂) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 <= 2) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 >= 3 && !TALENT:施虐狂)
 			PRINTFORMC 対面立位させる[{コマンド番号,3}]
-		ELSEIF (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
+		ELSEIF (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 97 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 			PRINTFORMC 対面立位される[{コマンド番号,3}]
-		ELSEIF (コマンド番号 == 98 && 存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 98 && 存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
+		ELSEIF (コマンド番号 == 98 && 存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 98 && 存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 			PRINTFORMC 后背位侍奉[{コマンド番号,3}]
-		ELSEIF (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 <= 1 ) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && !TALENT:PLAYER:受虐狂) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 <= 2) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 >= 3 && !TALENT:施虐狂)
+		ELSEIF (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 <= 1 ) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && !TALENT:PLAYER:受虐狂) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 <= 2) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 >= 3 && !TALENT:施虐狂)
 			PRINTFORMC 背面立位させる[{コマンド番号,3}]
-		ELSEIF (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:現在位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
+		ELSEIF (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (コマンド番号 == 98 && !存在床铺(CFLAG:PLAYER:当前位置) && ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 			PRINTFORMC 背面立位される[{コマンド番号,3}]
 		ELSEIF コマンド番号 == 200
 			IF EQUIP:上半身上着１
@@ -117,7 +117,7 @@ FOR コマンド番号,0,700
 			ENDIF
 		ELSEIF コマンド番号 == 350
 			;ベッドがない
-			IF !存在床铺(CFLAG:PLAYER:現在位置)
+			IF !存在床铺(CFLAG:PLAYER:当前位置)
 				コマンド名称 = 抱到怀里
 			ELSE
 				コマンド名称 = 推倒
@@ -125,11 +125,11 @@ FOR コマンド番号,0,700
 			SIF GET_TARGETNUM() > 1 && GET_TARGETWAKEUP() > 1
 				コマンド名称 = まとめて%コマンド名称%
 			PRINTFORMC %コマンド名称%[{コマンド番号,3}]
-		ELSEIF コマンド番号 == 403 && REST_IsRestRoom(CFLAG:MASTER:現在位置)
+		ELSEIF コマンド番号 == 403 && REST_IsRestRoom(CFLAG:MASTER:当前位置)
 			PRINTFORMC 用を足す[{コマンド番号,3}]
-		ELSEIF コマンド番号 == 403 && 存在浴室(CFLAG:MASTER:現在位置)
+		ELSEIF コマンド番号 == 403 && 存在浴室(CFLAG:MASTER:当前位置)
 			PRINTFORMC お風呂でくつろぐ[{コマンド番号,3}]
-		ELSEIF コマンド番号 == 490 && CFLAG:MASTER:現在位置 > 場所番号最大値
+		ELSEIF コマンド番号 == 490 && CFLAG:MASTER:当前位置 > 場所番号最大値
 			PRINTFORMC %"移动する["%{コマンド番号,3}%"]"%
 		ELSEIF STRLENS(TRAINNAME:コマンド番号)
 			PRINTFORMC %TRAINNAME:コマンド番号%[{コマンド番号,3}]

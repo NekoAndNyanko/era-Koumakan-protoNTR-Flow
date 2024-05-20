@@ -30,7 +30,7 @@ FOR LOOP_CHR, 開始時人数, CHARANUM
 	IF CFLAG:LOOP_CHR:子供訪問フラグ >= 101
 		PRINTFORMW %CALLNAME:LOOP_CHR%を紅魔館へ呼び寄せました。
 		;正門
-		CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_正门
+		CFLAG:LOOP_CHR:当前位置 = 位置_红魔馆_正门
 		;滞在処理
 		IF CFLAG:LOOP_CHR:子供訪問フラグ == 999
 			CFLAG:LOOP_CHR:子供訪問フラグ = -999
@@ -63,7 +63,7 @@ FOR LOOP_CHR, 開始時人数, CHARANUM
 		IF RAND:確率母数 < 20
 			PRINTFORMW %CALLNAME:LOOP_CHR%が紅魔館へ遊びに来たようです。
 			;正門
-			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_正门
+			CFLAG:LOOP_CHR:当前位置 = 位置_红魔馆_正门
 			;とりあえず1日滞在処理
 			CFLAG:LOOP_CHR:子供訪問フラグ = -1
 			訪問人数 ++
@@ -95,9 +95,9 @@ FOR LOOP_CHR, 開始時人数, CHARANUM
 	;帰る口上とその処理
 	IF CFLAG:LOOP_CHR:子供訪問フラグ == -1
 		;お持ち帰りされているなどで移动できるマップ内にいない場合、もう1日紅魔館に残る
-		IF CFLAG:LOOP_CHR:現在位置 < 位置_訪問者宅
+		IF CFLAG:LOOP_CHR:当前位置 < 位置_訪問者宅
 			PRINTFORMW %CALLNAME:LOOP_CHR%は里へと帰って行きました。
-			CFLAG:LOOP_CHR:現在位置 = 位置_里の住処
+			CFLAG:LOOP_CHR:当前位置 = 位置_里の住処
 			CFLAG:LOOP_CHR:子供訪問フラグ = RAND(8, 13)
 		ENDIF
 		;残り滞在日数減少

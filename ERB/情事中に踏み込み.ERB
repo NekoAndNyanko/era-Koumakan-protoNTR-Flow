@@ -6,7 +6,7 @@
 @NTR_INFIDELITY(奴隷)
 #DIM 奴隷
 CFLAG:奴隷:同席目撃回数 ++
-CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, FLAG:訪問者との行為)
+CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, FLAG:访问者当前行为)
 ;覗きバレしてる
 ;PRINTFORML 回数:{CFLAG:奴隷:覗き発覚回数}  行為:{CFLAG:奴隷:覗き発覚時行為}
 IF CFLAG:奴隷:覗き発覚回数 > 0 && CFLAG:奴隷:覗き発覚時行為 >= NTR_行为_Ｖ正常位
@@ -157,7 +157,7 @@ IF TALENT:奴隷:NTR || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR
 	ELSE
 		PRINTFORML %CALLNAME:MASTER%の目の前で
 	ENDIF
-	SELECTCASE FLAG:訪問者との行為
+	SELECTCASE FLAG:访问者当前行为
 		CASE NTR_行为_Ｖ正常位, NTR_行为_Ａ正常位, NTR_行为_Ｖ対面座位, NTR_行为_Ａ対面座位
 			PRINTFORM 自分から相手に抱きつきながら
 		CASE NTR_行为_Ｖ后背位, NTR_行为_Ａ后背位
@@ -173,7 +173,7 @@ IF TALENT:奴隷:NTR || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR
 ELSE
 	PRINTFORML %CALLNAME:MASTER%に気づいた%CALLNAME:奴隷%は逃れようと助けを求めたが、興奮している%NTR_NAME(0)%によって
 	PRINTFORM 逃げられぬ様に
-	SELECTCASE FLAG:訪問者との行為
+	SELECTCASE FLAG:访问者当前行为
 		CASE NTR_行为_Ｖ正常位, NTR_行为_Ｖ后背位, NTR_行为_Ａ正常位, NTR_行为_Ａ后背位
 			PRINTFORM 無理矢理に組み伏せられて
 		CASE NTR_行为_Ｖ骑乘位, NTR_行为_Ａ骑乘位

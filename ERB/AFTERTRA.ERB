@@ -10,8 +10,8 @@ SIF FLAG:真实模式
 	SKIPDISP 1
 
 ;一時退避してあなたを「ここではないどこか」へ
-場所番号記憶 = CFLAG:MASTER:現在位置
-CFLAG:MASTER:現在位置  = -1
+場所番号記憶 = CFLAG:MASTER:当前位置
+CFLAG:MASTER:当前位置  = -1
 WHILE (TIME_PROGRESS(CFLAG:MASTER:起床時間) < 要睡眠経過時間)
 	CALL CHARA_MOVEMENT_AFTERTRA(場所番号記憶) ; キャラの移动
 	CALL INHABITANT_DO  ; 住人同士の交流
@@ -22,10 +22,10 @@ WHILE (TIME_PROGRESS(CFLAG:MASTER:起床時間) < 要睡眠経過時間)
 WEND
 SELECTCASE 場所番号記憶
 	CASE 位置_訪問者宅,位置_売春宿
-		CFLAG:MASTER:現在位置 = 場所番号記憶
+		CFLAG:MASTER:当前位置 = 場所番号記憶
 	CASEELSE
 		;初期位置をリセット
-		CFLAG:MASTER:現在位置 = CFLAG:MASTER:開始位置
+		CFLAG:MASTER:当前位置 = CFLAG:MASTER:開始位置
 ENDSELECT
 ;解除同行
 FOR LOCAL,0,CHARANUM
@@ -199,7 +199,7 @@ WEND
 ;冻结同行者
 FOR LOOP_CHR,0,CHARANUM
 	IF CFLAG:LOOP_CHR:同行
-		CFLAG:LOOP_CHR:現在位置 = CFLAG:MASTER:現在位置
+		CFLAG:LOOP_CHR:当前位置 = CFLAG:MASTER:当前位置
 		CFLAG:LOOP_CHR:好感度 += 5
 	ENDIF
 NEXT
@@ -214,7 +214,7 @@ FOR LOOP_CHR,0,CHARANUM
 	;尿量/便量増加@お手洗い勝手に拡張パッチ
 	TRYCALL REST_PeePoo_Increase(LOOP_CHR)
 	; 紅魔館エリアの外なら移动しない（霊夢の寝床は特殊）
-	SIF CFLAG:LOOP_CHR:現在位置 >= 位置_訪問者宅 && CFLAG:LOOP_CHR:現在位置 != 位置_博麗神社 && CFLAG:LOOP_CHR:現在位置 != 位置_人間の里
+	SIF CFLAG:LOOP_CHR:当前位置 >= 位置_訪問者宅 && CFLAG:LOOP_CHR:当前位置 != 位置_博麗神社 && CFLAG:LOOP_CHR:当前位置 != 位置_人間の里
 		CONTINUE
 	;MASTERを部屋から追い出すチェック
 	CALL TURN_OUT_WHEN_SLEEP(LOOP_CHR)
@@ -237,8 +237,8 @@ FOR LOOP_CHR,0,CHARANUM
 	CALL PREGNACY_S_Milking(LOOP_CHR)
 	;汚れを付ける
 	WK = CFLAG:LOOP_CHR:睡眠 ? 0 # 1 + TALENT:LOOP_CHR:幼稚 - 2 * ABL:LOOP_CHR:清扫技能
-	FLAG:(100 + CFLAG:LOOP_CHR:現在位置) = MAX(FLAG:(100 + CFLAG:LOOP_CHR:現在位置) + WK * TIME_PROGRESS(TFLAG:300),0)
-	FLAG:(100 + CFLAG:LOOP_CHR:現在位置) = MIN(FLAG:(100 + CFLAG:LOOP_CHR:現在位置),2000)
+	FLAG:(100 + CFLAG:LOOP_CHR:当前位置) = MAX(FLAG:(100 + CFLAG:LOOP_CHR:当前位置) + WK * TIME_PROGRESS(TFLAG:300),0)
+	FLAG:(100 + CFLAG:LOOP_CHR:当前位置) = MIN(FLAG:(100 + CFLAG:LOOP_CHR:当前位置),2000)
 NEXT
 
 FOR LOOP_CHR,0,CHARANUM
@@ -254,6 +254,6 @@ TRYCALL SECRET_CAMERA
 ;解除冻结同行者
 FOR LOCAL,0,CHARANUM
 	IF CFLAG:LOCAL:同行
-		CFLAG:LOCAL:現在位置 = 場所番号記憶
+		CFLAG:LOCAL:当前位置 = 場所番号記憶
 	ENDIF
 	NEXT

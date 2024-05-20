@@ -21,7 +21,7 @@ SIF FLAG:访问者当前位置 == 0 || FLAG:访问者当前位置 == 位置_訪�
 SIF FLAG:1840 > 0 && FLAG:1840 < 9
 	RETURN 0
 ;訪問者行動中であれば移动しない
-SIF FLAG:訪問者との行為の終了時刻 != 0
+SIF FLAG:访问者当前行为中止时刻 != 0
 	RETURN 0
 睡眠同室 = 0
 滞在フラグ = 0
@@ -30,7 +30,7 @@ SIF FLAG:訪問者との行為の終了時刻 != 0
 存在讨厌的对象 = 0
 存在喜欢的对象 = 0
 FOR LOOP_CHR,0,CHARANUM
-	IF FLAG:访问者当前位置 == CFLAG:LOOP_CHR:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:LOOP_CHR:当前位置
 		同室人数 += 1
 
 		;嫌いなキャラが登録済み、居た場合
@@ -93,7 +93,7 @@ IF 滞在フラグ > 0
 ELSE
 	RET_MOVE = 1
 ENDIF
-;現在位置を強制的に開錠
+;当前位置を強制的に開錠
 ;FLAG:(300 + FLAG:访问者当前位置) = 0
 
 IF !存在喜欢的对象

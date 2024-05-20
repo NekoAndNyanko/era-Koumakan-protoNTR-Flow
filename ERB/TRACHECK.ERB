@@ -112,7 +112,7 @@ IF TALENT:奴隷:处女 == 1
 			CFLAG:奴隷:NTR处女喪失 = 0
 		ENDIF
 	ENDIF
-	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 		PRINTFORMW 【%CALLNAME:奴隷%】处女喪失
 	;处女喪失フラグ(今回のコマンド)
 	TCVAR:奴隷:破瓜 = 1
@@ -166,7 +166,7 @@ ENDIF
 ;再生处女喪失のチェック
 ;-------------------------------------------------
 IF TALENT:奴隷:处女 == 2 && (EXP_UP(20,奴隷)||EXP_UP(33,奴隷)||EXP_UP(93,奴隷)||EXP_UP(102,奴隷))
-	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 		PRINTFORMW 【%CALLNAME:奴隷%】处女喪失（？）
 	;处女喪失フラグ(今回のコマンド)
 	TCVAR:奴隷:破瓜 = 2
@@ -255,7 +255,7 @@ IF 奴隷 == 相手编号
 ENDIF
 IF CSTR:奴隷:M处女丧失记录 == ""
 	日時 = 第{年份记录}年 %日付_月(暦法月)%{暦法日}日 %天候(天候値)%%" "%
-	場所 = %"在"+GETPLACENAME(CFLAG:奴隷:現在位置)+"，"%
+	場所 = %"在"+GETPLACENAME(CFLAG:奴隷:当前位置)+"，"%
 	IF CFLAG:奴隷:睡眠
 		場所 += "在睡梦中"
 	ENDIF

@@ -14,8 +14,8 @@ RETURN RESULT:0
 #DIMS コマンド,100
 #DIM コマンド数 = 0
 ;未設定の場合初期位置にリセット
-IF CFLAG:奴隷:現在位置詳細 == 0
-	CFLAG:奴隷:現在位置詳細 = 25
+IF CFLAG:奴隷:当前位置詳細 == 0
+	CFLAG:奴隷:当前位置詳細 = 25
 ENDIF
 IF FLAG:访问者当前位置 != 位置_訪問者宅 && RAND:20 == 0
 	CALL COMMAND461_01(奴隷)
@@ -44,7 +44,7 @@ RETURN 0
 #DIM 行為時間
 #DIM 累計時間
 FLAG:访问者当前位置 = 位置_訪問者宅
-SELECTCASE CFLAG:奴隷:現在位置詳細
+SELECTCASE CFLAG:奴隷:当前位置詳細
 	CASE 24,25,26,27
 		PRINTFORMW %"似乎、"+NTR_NAME(0)+"已经回来了……"%
 	CASEELSE
@@ -83,12 +83,12 @@ SELECTCASE CFLAG:奴隷:現在位置詳細
 						PRINTFORMW %"没有办法违逆那个命令、更不可能从"+NTR_NAME(0)+"这里逃得出去"+CALLNAME:奴隷+"无可奈何地再次开始了自慰……。"%
 					ENDIF
 				ELSE
-					SELECTCASE CFLAG:奴隷:現在位置詳細
+					SELECTCASE CFLAG:奴隷:当前位置詳細
 						CASE 1
 						CASEELSE
 							PRINTFORMW %"感觉到"+NTR_NAME(0)+"要回来的样子"+CALLNAME:奴隷+"双眼中染上了粉红的情欲，急忙赶到玄关迎接。"%
 							;お出迎えで玄関に移动
-							CFLAG:奴隷:現在位置詳細 = 1
+							CFLAG:奴隷:当前位置詳細 = 1
 					ENDSELECT
 					PRINTFORM %CALLNAME:奴隷+"向"+NTR_NAME(0)+"表示回家的欢迎"%
 					PRINTFORML %"恭敬地说了一句「欢迎回来」。"% 
@@ -201,7 +201,7 @@ SELECTCASE CFLAG:奴隷:現在位置詳細
 				PRINTFORMW %"在牢房外、被恰好回来的"+NTR_NAME(0)+"发现了！"%
 				PRINTFORMW %CALLNAME:奴隷+"被重新关进了牢里、并作为惩罚激烈地侵犯了……"%
 				;場所は牢屋に
-				CFLAG:奴隷:現在位置詳細 = 25
+				CFLAG:奴隷:当前位置詳細 = 25
 				;鍵は全部かける
 				FLAG:訪問者宅の施錠状態 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
 				CFLAG:奴隷:NTR訪問者宅監禁状況 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
@@ -252,7 +252,7 @@ FOR 階層,VARSIZE("地図",0)-1,-1,-1
 		FOR LOCAL:0,0,100
 			TRYCCALLFORM %"COM461_"+TOSTR(LOCAL:0,"00")+"_ENABLE"%, 奴隷
 				IF RESULT:0 && STRCOUNT(地図:階層:行数,TOSTR(LOCAL:0,"00")) > 0
-					IF CFLAG:奴隷:現在位置詳細 == LOCAL:0
+					IF CFLAG:奴隷:当前位置詳細 == LOCAL:0
 						地図:階層:行数 = %REPLACE(地図:階層:行数,TOSTR(LOCAL:0,"00"),"<button value='"+TOSTR(LOCAL:0,"00")+"'><font color='"+自分位置色+"'>"+TOSTR(LOCAL:0,"00")+"</font></button>")%
 						地図:階層:行数 = %地図:階層:行数+"  "+"<button value='"+TOSTR(LOCAL:0,"00")+"'><font color='"+自分位置色+"'>"+TOSTR(LOCAL:0,"00")+":"+RESULTS:0+"</font></button>"%
 					ELSE

@@ -26,14 +26,14 @@ FOR 位置编号,1,MAXROOM()
 	SIF GET_ATTRIBUTE_OF_PERSON_IN_ROOM(位置编号)
 		最大移动概率 /= 2
 		;嫌いなキャラが登録ずみ、居た場合確率1/4
-	IF FLAG:訪問者の嫌いな相手 != 999 && FLAG:訪問者の嫌いな相手 < CHARANUM && 位置编号 == CFLAG:(FLAG:訪問者の嫌いな相手):現在位置
+	IF FLAG:訪問者の嫌いな相手 != 999 && FLAG:訪問者の嫌いな相手 < CHARANUM && 位置编号 == CFLAG:(FLAG:訪問者の嫌いな相手):当前位置
 		最大移动概率 /= 4
 	ENDIF
 
 	IF FLAG:訪問者のお気に入り != 999 && FLAG:訪問者のお気に入り < CHARANUM 
-		IF 位置编号 == CFLAG:(FLAG:訪問者のお気に入り):現在位置 
+		IF 位置编号 == CFLAG:(FLAG:訪問者のお気に入り):当前位置 
 			最大移动概率 *= 5
-		ELSEIF 位置编号 == SAFE_NEXT_POS(FLAG:访问者当前位置, CFLAG:(FLAG:訪問者のお気に入り):現在位置)
+		ELSEIF 位置编号 == SAFE_NEXT_POS(FLAG:访问者当前位置, CFLAG:(FLAG:訪問者のお気に入り):当前位置)
 			最大移动概率 *= 5
 		ENDIF
 	ENDIF
@@ -211,7 +211,7 @@ FOR 位置编号,1,MAXROOM()
 		ENDSELECT
 	ENDIF
 	;条件(女あなたがお気に入り + 女あなたが私室にいる + 訪問者が館内にいる)を満たしたらまっしぐら
-	IF FLAG:訪問者のお気に入り == 0 && CFLAG:MASTER:現在位置 == 位置_红魔馆_玩家房间 && FLAG:1840 == 0
+	IF FLAG:訪問者のお気に入り == 0 && CFLAG:MASTER:当前位置 == 位置_红魔馆_玩家房间 && FLAG:1840 == 0
 		IF (FLAG:访问者当前位置 == 位置_红魔馆_仓库 || FLAG:访问者当前位置 == 位置_红魔馆_守卫小屋 || FLAG:访问者当前位置 == 位置_红魔馆_后院 || FLAG:访问者当前位置 == 位置_红魔馆_屋外厕所) && 位置编号 == 位置_红魔馆_正门
 			RATE_WK = RAND:(最大移动概率 + 7500) + 12500
 			SIF 位置概率:位置编号 < RATE_WK
@@ -242,5 +242,5 @@ FOR 位置编号,1,MAXROOM()
 	DEBUGPRINTFORML 移动確率 {位置编号}：【%GETPLACENAME(位置编号)%】→ {位置概率:位置编号}／{最大移动概率}％、{CHK_TGT_IN_POS(位置编号)}人在室
 NEXT
 SIF FLAG:訪問者同行フラグ
-	RETURN CFLAG:MASTER:現在位置
+	RETURN CFLAG:MASTER:当前位置
 RETURN RET_POS

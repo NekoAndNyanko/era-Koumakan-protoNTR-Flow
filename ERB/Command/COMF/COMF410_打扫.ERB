@@ -2,7 +2,7 @@
 ;扫除
 ;-------------------------------------------------
 @COM410
-SELECTCASE FLAG:(100 + CFLAG:MASTER:現在位置)
+SELECTCASE FLAG:(100 + CFLAG:MASTER:当前位置)
 	CASE IS < 500
 		TFLAG:194 = 0
 	CASE IS < 2000
@@ -14,7 +14,7 @@ SELECTCASE FLAG:(100 + CFLAG:MASTER:現在位置)
 ENDSELECT
 IF TARGET <= 0
 	;扫除した場所が誰かの私室の場合その人物のぱんつをゲット（子悪魔どうしよう…）
-	SELECTCASE CFLAG:MASTER:現在位置
+	SELECTCASE CFLAG:MASTER:当前位置
 		CASE 位置_红魔馆_帕秋莉私室
 			LOCAL = 人物_帕秋莉
 		CASE 位置_红魔馆_小恶魔私室
@@ -56,7 +56,7 @@ IF TARGET <= 0
 			LOCAL:1 = PANTS_TODAY(LOCAL)
 		ENDIF
 	ENDIF
-	IF FLAG:(100 + CFLAG:MASTER:現在位置) > RAND:5000 && LOCAL && LOCAL:1
+	IF FLAG:(100 + CFLAG:MASTER:当前位置) > RAND:5000 && LOCAL && LOCAL:1
 		;ぱんつGET!
 		TSTR:3 = %CALLNAME:LOCAL%{LOCAL:1}/
 		;		CSTR:MASTER:収集品 += TSTR:2
@@ -73,9 +73,9 @@ ELSE
 	TFLAG:コマンド成功度 = 0
 ENDIF
 IF TFLAG:コマンド成功度 && !CFLAG:睡眠
-	FLAG:(100 + CFLAG:MASTER:現在位置) = FLAG:(100 + CFLAG:MASTER:現在位置) / (3 + ABL:MASTER:清扫技能 + ABL:清扫技能)
+	FLAG:(100 + CFLAG:MASTER:当前位置) = FLAG:(100 + CFLAG:MASTER:当前位置) / (3 + ABL:MASTER:清扫技能 + ABL:清扫技能)
 ELSE
-	FLAG:(100 + CFLAG:MASTER:現在位置) = FLAG:(100 + CFLAG:MASTER:現在位置) / (2 + ABL:MASTER:清扫技能)
+	FLAG:(100 + CFLAG:MASTER:当前位置) = FLAG:(100 + CFLAG:MASTER:当前位置) / (2 + ABL:MASTER:清扫技能)
 ENDIF
 
 DOWNBASE:MASTER:体力 = 50

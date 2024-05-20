@@ -20,14 +20,14 @@ FOR LOOP_CHR,0,CHARANUM
 		PRINTFORMW %CALLNAME:LOOP_CHR%は%N_T_R(父親, 1)%の子供を身篭った様だ
 		PRINTFORMW %CALLNAME:LOOP_CHR%は[妊娠]した
 		;父親によって固有のメッセージ表示
-		IF CFLAG:MASTER:現在位置 == 位置_訪問者宅 || CFLAG:MASTER:現在位置 == 位置_売春宿
+		IF CFLAG:MASTER:当前位置 == 位置_訪問者宅 || CFLAG:MASTER:当前位置 == 位置_売春宿
 			;MASTERが拉致されている時は知らされない
 		ELSE
 			CALL PREGNACY_S_ANNOUNCEMENT_MSG(LOOP_CHR)
 		ENDIF
 		TALENT:LOOP_CHR:妊娠 = 1
 		CALL CHANGE_N_STATUS(LOOP_CHR)
-	ELSEIF TALENT:LOOP_CHR:妊娠 == 0 && CFLAG:LOOP_CHR:にんっしんっ > 0 && LOOP_CHR == MASTER && (CFLAG:MASTER:現在位置 == 位置_訪問者宅 || CFLAG:MASTER:現在位置 == 位置_売春宿) && CFLAG:MASTER:屈服度 < 1000
+	ELSEIF TALENT:LOOP_CHR:妊娠 == 0 && CFLAG:LOOP_CHR:にんっしんっ > 0 && LOOP_CHR == MASTER && (CFLAG:MASTER:当前位置 == 位置_訪問者宅 || CFLAG:MASTER:当前位置 == 位置_売春宿) && CFLAG:MASTER:屈服度 < 1000
 		PRINTFORML 体の調子がおかしい…
 		PRINTFORMW しかしここでは検査する事もできない…
 		;		TALENT:LOOP_CHR:妊娠 = 1
@@ -204,7 +204,7 @@ ELSEIF 奴隷 != MASTER && DAY == CFLAG:奴隷:出産日 - 3
 	PRINTFORML %CALLNAME:奴隷%は臨月を迎えました
 	PRINTFORMW %CALLNAME:奴隷%は出産に備え永琳診療所へ移动します
 	;部屋拡張に備えてとりあえず950
-	CFLAG:奴隷:現在位置 = 950
+	CFLAG:奴隷:当前位置 = 950
 	SIF TARGET == 奴隷
 		TARGET = 0
 ELSEIF DAY == CFLAG:奴隷:出産日 - 3
@@ -258,7 +258,7 @@ IF 里子CHK == 1
 	NEXT
 	;永琳診療所から私室へ戻す
 	IF NTR_GET_STAYOUT_CURRENT(奴隷) < NTR_GET_STAYOUT_MAXIMUM(奴隷)
-		CFLAG:奴隷:現在位置 = 位置_訪問者宅
+		CFLAG:奴隷:当前位置 = 位置_訪問者宅
 	ELSE
 		CALL MOTHER_RETURN_ROOM(奴隷)
 	ENDIF
@@ -310,9 +310,9 @@ ELSE
 	;永琳診療所から私室へ戻す
 	TRYCALL 私室戻しDEBUG, 奴隷
 	IF NTR_GET_STAYOUT_CURRENT(奴隷) < NTR_GET_STAYOUT_MAXIMUM(奴隷)
-		CFLAG:奴隷:現在位置 = 位置_訪問者宅
+		CFLAG:奴隷:当前位置 = 位置_訪問者宅
 	ELSE
-		CFLAG:奴隷:現在位置 = GET_PRIVATE_ROOM(奴隷, 0)
+		CFLAG:奴隷:当前位置 = GET_PRIVATE_ROOM(奴隷, 0)
 	ENDIF
 ENDIF
 
@@ -440,7 +440,7 @@ SIF CFLAG:奴隷:出産数 >= 2
 ;一人目のときだけ口上表示
 IF 反復番号 == 0
 	IF CFLAG:子供:父親 == MASTER
-		IF CFLAG:MASTER:現在位置 == 位置_訪問者宅 || CFLAG:MASTER:現在位置 == 位置_売春宿
+		IF CFLAG:MASTER:当前位置 == 位置_訪問者宅 || CFLAG:MASTER:当前位置 == 位置_売春宿
 			;MASTERが拉致されている時は口上非表示
 		ELSE
 			PRINTFORMW 鈴仙が突然%CALLNAME:MASTER%の元へと駆け込んできた
@@ -565,36 +565,36 @@ CALL 子宫内体积設定(子供)
 TRYCALL 私室戻しDEBUG, 奴隷
 IF 奴隷 != MASTER
 	IF 奴隷 == 人物_美铃
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_守卫小屋
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_守卫小屋
 	ELSEIF 奴隷 == 人物_小恶魔
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_小恶魔私室
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_小恶魔私室
 	ELSEIF 奴隷 == 人物_帕秋莉
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_帕秋莉私室
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_帕秋莉私室
 	ELSEIF 奴隷 == 人物_咲夜
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_咲夜私室
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_咲夜私室
 	ELSEIF 奴隷 == 人物_蕾米莉亚
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_蕾米莉亚私室
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_蕾米莉亚私室
 	ELSEIF 奴隷 == 人物_芙兰朵露
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_地下室
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_地下室
 	ELSEIF 奴隷 == 人物_艾丽娅 && TALENT:奴隷:恋慕
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_玩家房间
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_玩家房间
 	ELSEIF 奴隷 == 人物_艾丽娅
-		CFLAG:奴隷:現在位置 = 位置_红魔馆_小恶魔私室
+		CFLAG:奴隷:当前位置 = 位置_红魔馆_小恶魔私室
 	ELSEIF 奴隷 == 人物_琪露诺
-		CFLAG:奴隷:現在位置 = 位置_雾之湖_琪露诺的家
+		CFLAG:奴隷:当前位置 = 位置_雾之湖_琪露诺的家
 	ELSEIF 奴隷 == 人物_大妖精
-		CFLAG:奴隷:現在位置 = 位置_雾之湖_大妖精的家
+		CFLAG:奴隷:当前位置 = 位置_雾之湖_大妖精的家
 	ELSEIF 奴隷 == 人物_魔理沙
-		CFLAG:奴隷:現在位置 = 位置_魔法之森_雾雨魔法店
+		CFLAG:奴隷:当前位置 = 位置_魔法之森_雾雨魔法店
 	ELSEIF 奴隷 == 人物_灵梦
-		CFLAG:奴隷:現在位置 = 位置_博麗神社
+		CFLAG:奴隷:当前位置 = 位置_博麗神社
 	ELSEIF 奴隷 == 人物_露米娅
-		CFLAG:奴隷:現在位置 = 位置_魔法之森_露米娅的树屋
+		CFLAG:奴隷:当前位置 = 位置_魔法之森_露米娅的树屋
 	ELSEIF 奴隷 == 人物_爱丽丝
-		CFLAG:奴隷:現在位置 = 位置_魔法之森_爱丽丝的家
+		CFLAG:奴隷:当前位置 = 位置_魔法之森_爱丽丝的家
 		;その他追加されたキャラ用(息子・娘)
 	ELSE
-		CFLAG:奴隷:現在位置 = CFLAG:奴隷:開始位置
+		CFLAG:奴隷:当前位置 = CFLAG:奴隷:開始位置
 	ENDIF
 ENDIF
 
@@ -696,7 +696,7 @@ ELSEIF DAY > CFLAG:子供:80 + 60 && CFLAG:子供:成長度 == 成長度_成長�
 	SIF CFLAG:子供:父親 < 900
 		PRINTFORM %CALLNAME:(CFLAG:子供:父親)%と
 	PRINTFORMW %CALLNAME:(CFLAG:子供:母親)%に見送られながら紅魔館を出て、里で一人暮らしを始めた
-	CFLAG:子供:現在位置 = 位置_里の住処
+	CFLAG:子供:当前位置 = 位置_里の住処
 	CFLAG:子供:子供訪問フラグ = 5
 	;1/5の確率で寝間着再変更
 	IF !RAND:5
@@ -2362,8 +2362,8 @@ SIF !TALENT:(奴隷):泌乳体质
 BASE:(奴隷):母乳 += TIME_PROGRESS(TFLAG:300)*5
 ;母乳が８割ぐらい溜まってて 自室で 一人だったら搾る
 IF BASE:(奴隷):母乳*10 > MAXBASE:(奴隷):母乳*8
-	IF GET_PRIVATE_ROOM(奴隷,0) == CFLAG:(奴隷):現在位置
-		IF 当前位置存在人数(CFLAG:(奴隷):現在位置,1,1) == 1
+	IF GET_PRIVATE_ROOM(奴隷,0) == CFLAG:(奴隷):当前位置
+		IF 当前位置存在人数(CFLAG:(奴隷):当前位置,1,1) == 1
 			;10～15%搾る
 			BASE:(奴隷):母乳 -= (RAND(MAX(MAXBASE:(奴隷):母乳,1)*15)/10)
 			;DEBUGPRINTFORML %CALLNAME:(奴隷)+"は母乳を搾りました。"%

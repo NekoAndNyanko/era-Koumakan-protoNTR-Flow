@@ -13,7 +13,7 @@ RETURN 0
 @GoOut_SeeYou(キャラ, 強制外出)
 #DIM キャラ
 #DIM 強制外出
-IF CFLAG:MASTER:現在位置 != CFLAG:キャラ:現在位置 || TALENT:キャラ:浮気公認 < 5 || TALENT:キャラ:访问者之妻 == 0 || CFLAG:キャラ:性欲 < 50
+IF CFLAG:MASTER:当前位置 != CFLAG:キャラ:当前位置 || TALENT:キャラ:浮気公認 < 5 || TALENT:キャラ:访问者之妻 == 0 || CFLAG:キャラ:性欲 < 50
 	RETURN 0
 ENDIF
 RESULT:0 = 900

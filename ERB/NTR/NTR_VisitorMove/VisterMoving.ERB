@@ -30,11 +30,11 @@ IF 目的地
 	FLAG:訪問者滞在時間カウンタ = 0
 	原位置 = FLAG:访问者当前位置
 	FLAG:访问者当前位置 = 目的地
-	IF CFLAG:MASTER:現在位置 == 目的地
+	IF CFLAG:MASTER:当前位置 == 目的地
 		PRINTFORML %NTR_NAME(0)%走进了【%GETPLACENAME(目的地)%】
 		提示语未显示 = 1
 		FOR LOOP_CHR,0,CHARANUM
-			IF CFLAG:LOOP_CHR:現在位置 == 目的地
+			IF CFLAG:LOOP_CHR:当前位置 == 目的地
 				IF CFLAG:LOOP_CHR:うふふ != 0
 					IF 提示语未显示
 						PRINTFORML 随着%NTR_NAME(0)%的到来，现场的气氛改变了...

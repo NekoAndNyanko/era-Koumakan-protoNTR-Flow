@@ -107,8 +107,8 @@ IF CFLAG:奴隷:好感度 > 閾値 && EXP:奴隷:侍奉快乐经验 >= 30 && ABL
 			PRINTFORML 「回来了哦……不再做%NTR_NAME(0)%的妻子了……」%CALLNAME:奴隷%含着泪站在%CALLNAME:MASTER%的面前。
 			PRINTFORMW %CALLNAME:奴隷%不再是[访问者之妻]了。
 			TALENT:奴隷:访问者之妻 = 0
-			SIF CFLAG:奴隷:現在位置 == 位置_訪問者宅
-				CFLAG:奴隷:現在位置 = 位置_红魔馆_正门
+			SIF CFLAG:奴隷:当前位置 == 位置_訪問者宅
+				CFLAG:奴隷:当前位置 = 位置_红魔馆_正门
 		ENDIF
 		;浮気公認は消えます
 		IF TALENT:奴隷:浮気公認 > 0

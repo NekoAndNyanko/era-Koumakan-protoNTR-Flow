@@ -1,0 +1,7 @@
+#DIM CONST 近距离无障碍	= 1
+#DIM CONST 近距离有障碍	= 2
+#DIM CONST 远距离无障碍	= 3
+#DIM CONST 远距离有障碍	= 4
+#DIM CONST 隔窗无障碍	= 5
+#DIM CONST 隔窗有障碍	= 6
+#DIM CONST 槅门			= 7

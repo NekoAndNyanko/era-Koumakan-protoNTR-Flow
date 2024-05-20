@@ -23,7 +23,7 @@ SELECTCASE 访问者行为
 	CASE NTR_MOOD_会话
 		$SELECT_CASE_ELSE
 			; 行動選択→会话
-		IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置 && !CFLAG:对象:睡眠
+		IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置 && !CFLAG:对象:睡眠
 				;会话（主人同席）
 			CALL NTR_MESSAGE_1_1(对象)
 			CALL NTR_RESET_VISITOR_ACTION(对象)
@@ -69,7 +69,7 @@ SELECTCASE 访问者行为
 		CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
 	CASE NTR_MOOD_侍奉
 			; 行動選択→侍奉
-		IF 密室度 != 3  && CFLAG:对象:現在位置 != 位置_红魔馆_仓库
+		IF 密室度 != 3  && CFLAG:对象:当前位置 != 位置_红魔馆_仓库
 			CALL VISITOR_GOWITH_ROOM(对象)
 		ENDIF
 			;前回住人がNTRカウンターで股間をまさぐっていた場合口交
@@ -95,7 +95,7 @@ SELECTCASE 访问者行为
 		CFLAG:对象:NTR_CNT行为 = NTR_CNT_无行为
 	CASE NTR_MOOD_性交
 			; 行動選択→性交(お持ち帰り抑制時も)に成功
-		IF 密室度 != 3  && CFLAG:对象:現在位置 != 位置_红魔馆_仓库
+		IF 密室度 != 3  && CFLAG:对象:当前位置 != 位置_红魔馆_仓库
 			CALL VISITOR_GOWITH_ROOM(对象)
 		ENDIF
 		IF IS_NTR_KEEP_VIRGIN() && TALENT:对象:处女
@@ -131,8 +131,8 @@ ENDSELECT
 #DIM 密室度
 CALL VISITER_FRIENDSHIP_TIMEPLUS(对象)
 CALL NTR_SIMPLE_FULFIL(对象)
-SELECTCASE FLAG:訪問者との行為
-	CASE NTR_行为_キス
+SELECTCASE FLAG:访问者当前行为
+	CASE NTR_行为_接吻
 		CALL NTR_KISS(对象)
 	CASE NTR_行为_爱抚
 		CALL NTR_PET(对象)
@@ -140,7 +140,7 @@ SELECTCASE FLAG:訪問者との行為
 		CALL NTR_BUST_PET(对象)
 	CASE NTR_行为_口交
 		CALL NTR_FELLATIO(对象)
-	CASE NTR_行为_六九式
+	CASE NTR_行为_六九
 		CALL NTR_69(对象)
 	CASE NTR_行为_素股
 		CALL NTR_THUG(对象)
@@ -160,8 +160,8 @@ CNT执行 = 0
 CALL VISITER_FRIENDSHIP_TIMEPLUS(对象)
 CALL ORGASM_ADD(对象,人物_訪問者)
 CALL NTR_SIMPLE_FULFIL(对象)
-SELECTCASE FLAG:訪問者との行為
-	CASE NTR_行为_キス
+SELECTCASE FLAG:访问者当前行为
+	CASE NTR_行为_接吻
 		CALL NTR_KISS_FINISH(对象)
 		CNT执行 = 1
 	CASE NTR_行为_爱抚
@@ -170,7 +170,7 @@ SELECTCASE FLAG:訪問者との行為
 		CALL NTR_BUST_PET_FINISH(对象)
 	CASE NTR_行为_口交
 		CALL NTR_FELLATIO_FINISH(对象)
-	CASE NTR_行为_六九式
+	CASE NTR_行为_六九
 		CALL NTR_69_FINISH(对象)
 	CASE NTR_行为_素股
 		CALL NTR_THUG_FINISH(对象)

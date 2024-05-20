@@ -34,8 +34,8 @@ NEXT
 
 ;催眠で出て行ったまま帰ってこない人の救済措置
 FOR キャラ番号, 1, CHARANUM
-	IF CFLAG:キャラ番号:現在位置 == 位置_人間の里 || CFLAG:キャラ番号:現在位置 == 位置_民家
-		CFLAG:キャラ番号:現在位置 = 位置_红魔馆_正门
+	IF CFLAG:キャラ番号:当前位置 == 位置_人間の里 || CFLAG:キャラ番号:当前位置 == 位置_民家
+		CFLAG:キャラ番号:当前位置 = 位置_红魔馆_正门
 		PRINTFORMW %CALLNAME:キャラ番号%不知道从哪里回来了
 	ENDIF
 NEXT
@@ -60,8 +60,8 @@ WHILE LOOP_FLG
 		CALL CHARA_MOVEMENT
 	ELSE
 		FOR キャラ番号,0,CHARANUM
-			;現在位置の保存
-			CFLAG:キャラ番号:前ターン位置 = CFLAG:キャラ番号:現在位置
+			;当前位置の保存
+			CFLAG:キャラ番号:前ターン位置 = CFLAG:キャラ番号:当前位置
 		NEXT
 		TIME =  CFLAG:MASTER:通常起床時間
 		TFLAG:300 = DATETIME()
@@ -108,8 +108,8 @@ ENDIF
 IF 霊夢移动フラグ == 0
 	霊夢移动フラグ = MAX(10 - ( CFLAG:人物_灵梦:好感度 > 0 ? CFLAG:人物_灵梦:好感度 / 300 # 0) - ( CFLAG:人物_灵梦:屈服度 > 0 ? CFLAG:人物_灵梦:屈服度 / 300 # 0), 0)
 	;元の場所へ戻す
-	SIF CFLAG:人物_灵梦:現在位置 <= 場所番号最大値
-		CFLAG:人物_灵梦:現在位置 = CFLAG:人物_灵梦:開始位置
+	SIF CFLAG:人物_灵梦:当前位置 <= 場所番号最大値
+		CFLAG:人物_灵梦:当前位置 = CFLAG:人物_灵梦:開始位置
 	;PRINTFORMW テスト 霊夢移动OFF {霊夢移动フラグ}
 ELSE
 	;PRINTFORMW テスト 霊夢移动ON1 {霊夢移动フラグ}
@@ -229,7 +229,7 @@ TARGET = 0
 FOR LOOP_CHR,1,CHARANUM
 	;ぱんつ確認フラグをOFF
 	CFLAG:LOOP_CHR:ぱんつ確認 = 0
-	SIF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置
+	SIF CFLAG:MASTER:当前位置 == CFLAG:LOOP_CHR:当前位置
 		TARGET = LOOP_CHR
 	SIF TALENT:LOOP_CHR:NTR == 0
 		全员NTR = 0

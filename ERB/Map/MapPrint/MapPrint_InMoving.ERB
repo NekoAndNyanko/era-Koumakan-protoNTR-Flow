@@ -39,12 +39,12 @@ NEXT
 PRINTL
 DRAWLINE
 PRINTL
-PRINTFORML 现在位置：%GETPLACENAME(CFLAG:MASTER:現在位置)%（{CFLAG:MASTER:現在位置}）
-IF !CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:MASTER:開始位置) && CFLAG:MASTER:現在位置 != CFLAG:MASTER:開始位置
+PRINTFORML 现在位置：%GETPLACENAME(CFLAG:MASTER:当前位置)%（{CFLAG:MASTER:当前位置}）
+IF !CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:MASTER:開始位置) && CFLAG:MASTER:当前位置 != CFLAG:MASTER:開始位置
 	PRINTL [0] - 回到自己的房间
 ENDIF
 FOR LOOP_POS,0, 場所番号最大値+1
-	IF CAN_MOVE(CFLAG:MASTER:現在位置, LOOP_POS)
+	IF CAN_MOVE(CFLAG:MASTER:当前位置, LOOP_POS)
 		PRINTFORML [{LOOP_POS}] - %GETPLACENAME(LOOP_POS)%
 	ENDIF
 NEXT
@@ -77,18 +77,18 @@ ELSEIF INRANGE(TargetRoom, 1000, 1003)
 	当前选中地图 = TargetRoom - 1000
 	GOTO LOOP_PAGE
 ;目的地がテラスなら蕾米莉亚私室が閉まっている且つ合鍵を持っていないと進めない
-ELSEIF TargetRoom == 位置_红魔馆_三楼阳台 && CFLAG:MASTER:現在位置 != 位置_红魔馆_蕾米莉亚私室 &&  isLocked(位置_红魔馆_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_红魔馆_蕾米莉亚私室)
+ELSEIF TargetRoom == 位置_红魔馆_三楼阳台 && CFLAG:MASTER:当前位置 != 位置_红魔馆_蕾米莉亚私室 &&  isLocked(位置_红魔馆_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_红魔馆_蕾米莉亚私室)
 	PRINTW 因为不能通过蕾米莉亚的房间，所以不能移动
 	GOTO LOOP_PAGE
 ELSEIF TargetRoom == 0
 ;どうしようもなければワープで返回
-	CFLAG:MASTER:現在位置 = CFLAG:MASTER:開始位置
+	CFLAG:MASTER:当前位置 = CFLAG:MASTER:開始位置
 ELSEIF !INRANGE(TargetRoom, 0, 場所番号最大値)
 	CLEARLINE 1
 	REUSELASTLINE 
 	GOTO INPUT_LOOP
 ;移动先が隣の場所
-ELSEIF CAN_MOVE(CFLAG:MASTER:現在位置, TargetRoom)
+ELSEIF CAN_MOVE(CFLAG:MASTER:当前位置, TargetRoom)
 	IF FLAG:1840 < 2
 		FLAG:1840 = 0
 	ENDIF
@@ -111,7 +111,7 @@ ELSEIF CAN_MOVE(CFLAG:MASTER:現在位置, TargetRoom)
 			RESTART
 		ENDIF
 	ENDIF
-	CFLAG:MASTER:現在位置 = TargetRoom
+	CFLAG:MASTER:当前位置 = TargetRoom
 	PRINTFORML 
 	FOR LOOP_CHR, 1, CHARANUM
 		CALL CHAR_ON_PLACE(LOOP_CHR)
@@ -123,12 +123,12 @@ ELSE
 	ENDIF
 	;目的地が離れているので、最終目的地として設定
 	TFLAG:遠距離移动 = TargetRoom
-	CALLF FARMOVE(MASTER, CFLAG:MASTER:現在位置, TargetRoom)
-	;現在位置を更新し、次も移动の扱いにする
-	CFLAG:MASTER:現在位置 = 移动路线:MASTER:0
+	CALLF FARMOVE(MASTER, CFLAG:MASTER:当前位置, TargetRoom)
+	;当前位置を更新し、次も移动の扱いにする
+	CFLAG:MASTER:当前位置 = 移动路线:MASTER:0
 	CALL SORT_ROUTE(MASTER)
 	NEXTCOM = 400
 ENDIF
 IF FLAG:訪問者同行フラグ
-	FLAG:访问者当前位置 = CFLAG:MASTER:現在位置
+	FLAG:访问者当前位置 = CFLAG:MASTER:当前位置
 ENDIF

@@ -11,7 +11,7 @@ RETURN RESULT:0
 ; RETURN 0:コマンドの実行に失敗, 1:コマンドの実行に成功
 @COMMAND462(奴隷)
 #DIM 奴隷
-SELECTCASE CFLAG:奴隷:現在位置
+SELECTCASE CFLAG:奴隷:当前位置
 	CASE 位置_訪問者宅
 		CALL COMMAND462_01(奴隷)
 	CASE 位置_売春宿
@@ -60,7 +60,7 @@ RETURN 0
 #DIM 行為時間
 #DIM 累計時間
 IF !TALENT:MASTER:NTR
-	CFLAG:奴隷:現在位置詳細 = 25
+	CFLAG:奴隷:当前位置詳細 = 25
 ENDIF
 IF TALENT:MASTER:NTR
 	PRINTFORMW "见到"+%CALLNAME:奴隷+"在发呆，"+NTR_NAME(0)+"饶有兴趣地开始爱抚"+CALLNAME:奴隷+"敏感的肉体"%
@@ -68,7 +68,7 @@ IF TALENT:MASTER:NTR
 ELSEIF CFLAG:奴隷:屈服度 >= 1000
 	PRINTFORML "见到"+%CALLNAME:奴隷+"在发呆，"+NTR_NAME(0)+"就走过来搭话了"%
 	PRINTFORMW %"虽然知道例行的调教要开始了，但"+CALLNAME:奴隷+"无可奈何"%
-ELSEIF CFLAG:奴隷:現在位置詳細 == 25
+ELSEIF CFLAG:奴隷:当前位置詳細 == 25
 	PRINTFORML "见到"+%CALLNAME:奴隷+"在发呆，"+NTR_NAME(0)+"就走了过来"%
 	PRINTFORMW %"虽然知道例行的调教要开始了，但"+CALLNAME:奴隷+"无可奈何"%
 ELSE
@@ -76,7 +76,7 @@ ELSE
 	PRINTFORMW %"虽然知道例行的调教要开始了，但"+CALLNAME:奴隷+"无可奈何"%
 ENDIF
 CALL COM46x_V_2(奴隷)
-IF CFLAG:奴隷:現在位置詳細 == 25 && !TALENT:MASTER:NTR
+IF CFLAG:奴隷:当前位置詳細 == 25 && !TALENT:MASTER:NTR
 	;訪問者は1/2の確率で鍵を開けっ放しにする。
 	IF RAND:2 == 0
 		PRINTFORML %NTR_NAME(0)+"爬上了楼梯……。"%

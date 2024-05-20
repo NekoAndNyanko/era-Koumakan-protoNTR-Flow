@@ -7,9 +7,9 @@
 #DIM 摄影する部屋
 PRINTL 拍摄哪里？
 FOR 部屋番号,0,MAXROOM()
-	IF CAN_MOVE(CFLAG:MASTER:現在位置,部屋番号)
+	IF CAN_MOVE(CFLAG:MASTER:当前位置,部屋番号)
 		FOR キャラ番号,1,CHARANUM
-			IF CFLAG:キャラ番号:現在位置 == 部屋番号
+			IF CFLAG:キャラ番号:当前位置 == 部屋番号
 				SETCOLOR 色設定_マップ_他人
 			ENDIF
 		NEXT
@@ -25,7 +25,7 @@ TFLAG:現在覗いている場所 = 0
 IF 摄影する部屋 == 999
 	RETURN 0
 ENDIF
-IF CAN_MOVE(CFLAG:MASTER:現在位置,摄影する部屋)
+IF CAN_MOVE(CFLAG:MASTER:当前位置,摄影する部屋)
 	CALL PEEP(摄影する部屋)
 	TIME += 5
 ELSE
@@ -72,7 +72,7 @@ TFLAG:現在覗いている場所 = 部屋番号
 ;住人同士の交流は先に判定する
 IF ITEM:胶卷 > 1
 	FOR キャラ番号,1,CHARANUM
-		IF CFLAG:キャラ番号:現在位置 == 部屋番号
+		IF CFLAG:キャラ番号:当前位置 == 部屋番号
 			IF 0 != CFLAG:キャラ番号:住人同士イベント内容 
 				;攻め・受けを判定
 				IF CFLAG:キャラ番号:住人同士イベント内容 % 10 == 0
@@ -106,7 +106,7 @@ IF 0 == 摄影枚数
 		IF ITEM:胶卷 < 1
 			;胶卷が無ければ終了
 			RETURN 0
-		ELSEIF CFLAG:キャラ番号:現在位置 == 部屋番号
+		ELSEIF CFLAG:キャラ番号:当前位置 == 部屋番号
 			摄影枚数++
 			写真内容 = CHOOSE_PHOTO(キャラ番号,部屋番号)
 			写真詳細 = CHOOSE_PHOTO_DETAIL(キャラ番号,部屋番号)
@@ -321,9 +321,9 @@ ENDSELECT
 #DIM キャラ番号
 #DIM 部屋番号
 ;訪問者と一緒で、何かしらの行為中であれば寝取られ姿の摄影
-IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者との行為 != 0
-	SELECTCASE FLAG:訪問者との行為
-		CASE NTR_行为_キス
+IF CFLAG:キャラ番号:当前位置 == FLAG:访问者当前位置 && FLAG:访问者当前行为 != 0
+	SELECTCASE FLAG:访问者当前行为
+		CASE NTR_行为_接吻
 			RETURNF 写真_NTR_キス
 		CASE NTR_行为_爱抚
 			RETURNF 写真_NTR_爱抚
@@ -331,7 +331,7 @@ IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪�
 			RETURNF 写真_NTR_胸爱抚
 		CASE NTR_行为_口交
 			RETURNF 写真_NTR_口交
-		CASE NTR_行为_六九式
+		CASE NTR_行为_六九
 			RETURNF 写真_NTR_六九式
 		CASE NTR_行为_素股
 			RETURNF 写真_NTR_素股
@@ -342,7 +342,7 @@ IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪�
 	ENDSELECT
 ENDIF
 ;訪問者と一緒で、住人からのカウンターセクハラの場合
-IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪問者との行為 == 0
+IF CFLAG:キャラ番号:当前位置 == FLAG:访问者当前位置 && FLAG:访问者当前行为 == 0
 	SELECTCASE CFLAG:キャラ番号:NTR_CNT行为
 		CASE NTR_CNT_接吻, NTR_CNT_深吻
 			RETURNF 写真_NTR_キス
@@ -354,7 +354,7 @@ IF CFLAG:キャラ番号:現在位置 == FLAG:访问者当前位置 && FLAG:訪�
 			RETURNF 写真_NTR_抱擁
 	ENDSELECT
 ENDIF
-;訪問者との行為中でなければ通常の摄影
+;访问者当前行为中でなければ通常の摄影
 SELECTCASE 部屋番号
 	CASE GET_PRIVATE_ROOM(キャラ番号)
 		IF CFLAG:(キャラ番号):睡眠
@@ -392,14 +392,14 @@ RETURNF 写真_普段
 #DIM キャラ番号
 #DIM 部屋番号
 ;訪問者と一緒で、何かしらの行為中でなければ詳細なし
-IF FLAG:訪問者との行為 == 0
+IF FLAG:访问者当前行为 == 0
 	RETURNF 写真詳細_なし
 ENDIF
-IF CFLAG:キャラ番号:現在位置 != FLAG:访问者当前位置
+IF CFLAG:キャラ番号:当前位置 != FLAG:访问者当前位置
 	RETURNF 写真詳細_なし
 ENDIF
 
-IF FLAG:訪問者との行為の終了時刻 <= (DATETIME() + 3)
+IF FLAG:访问者当前行为中止时刻 <= (DATETIME() + 3)
 	RETURNF 写真詳細_絶頂
 ENDIF
 

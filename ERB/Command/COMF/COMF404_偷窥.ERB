@@ -27,7 +27,7 @@ DRAWLINE
 PRINTFORML 你想窥视哪个房间？
 PRINTL [0] - 放弃
 FOR LOOP_POS,0,MAXROOM()
-	SIF CAN_MOVE(CFLAG:MASTER:現在位置, LOOP_POS)
+	SIF CAN_MOVE(CFLAG:MASTER:当前位置, LOOP_POS)
 		PRINTFORML [{LOOP_POS}] - %GETPLACENAME(LOOP_POS)%
 NEXT
 $INPUT_LABEL
@@ -36,7 +36,7 @@ targetArea = RESULT
 IF 0 ==targetArea
 	RETURN 0
 ENDIF
-IF !CAN_MOVE(CFLAG:MASTER:現在位置, targetArea) 
+IF !CAN_MOVE(CFLAG:MASTER:当前位置, targetArea) 
 	;不適切なtargetAreaならやり直し
 	GOTO INPUT_LABEL
 ENDIF
@@ -50,8 +50,8 @@ RETURN 1
 @COM404_02_tryPeeping(targetArea)
 #DIM targetArea
 #DIM isSoundOnly
-IF !CAN_MOVE(CFLAG:MASTER:現在位置, targetArea)
-	PRINTFORML %GETPLACENAME(CFLAG:MASTER:現在位置)%から%GETPLACENAME(targetArea)%は覗けない。
+IF !CAN_MOVE(CFLAG:MASTER:当前位置, targetArea)
+	PRINTFORML %GETPLACENAME(CFLAG:MASTER:当前位置)%から%GETPLACENAME(targetArea)%は覗けない。
 	RETURN 0
 ENDIF
 
@@ -66,7 +66,7 @@ IF 天候(天候値) == "云雾" && OPENPLACE(targetArea) == 2
 ENDIF
 
 ; 移动可能な場所であれば扉を開けようとする
-IF CAN_MOVE(CFLAG:MASTER:現在位置, targetArea) == 1
+IF CAN_MOVE(CFLAG:MASTER:当前位置, targetArea) == 1
 	IF tryOpenDoor(MASTER, targetArea)
 		PRINTFORML %CALLNAME:MASTER + "は音を立てないように扉を少しだけ開き、" + GETPLACENAME(targetArea) + "の様子をうかがった……。"%
 		isSoundOnly = 0
@@ -115,7 +115,7 @@ ENDIF
 ; 自慰しているキャラを探す
 見付けたキャラ = 0
 FOR 登録番号, 1, CHARANUM
-	IF CFLAG:登録番号:現在位置 == targetArea
+	IF CFLAG:登録番号:当前位置 == targetArea
 		IF CFLAG:登録番号:自慰中 > 0
 			見付けたキャラ = 登録番号
 			BREAK
@@ -132,7 +132,7 @@ ENDIF
 見付けたキャラ説明 = %""%
 PRINTFORM %"在" + GETPLACENAME(targetArea) + "，"%
 FOR 登録番号, 1, CHARANUM
-	IF CFLAG:登録番号:現在位置 == targetArea
+	IF CFLAG:登録番号:当前位置 == targetArea
 		IF 0 == 見付けたキャラ
 			見付けたキャラ = 登録番号
 			見付けたキャラ説明 += CALLNAME:登録番号
@@ -238,7 +238,7 @@ ENDIF
 ; 訪問者と同じ場所にいる住人の人数を数える
 CNT_CHR = 0
 FOR LOOP_CHR, 1, CHARANUM
-	IF CFLAG:LOOP_CHR:現在位置 == targetArea
+	IF CFLAG:LOOP_CHR:当前位置 == targetArea
 		CNT_CHR++
 	ENDIF
 NEXT
@@ -251,7 +251,7 @@ ENDIF
 IF CNT_CHR == 1
 	;同じ場所にいる住人が１人の場合詳細を覗ける
 	FOR LOOP_CHR, 1, CHARANUM
-		IF CFLAG:LOOP_CHR:現在位置 == targetArea
+		IF CFLAG:LOOP_CHR:当前位置 == targetArea
 			訪問者との描写 += "【" + GETPLACENAME(targetArea) + "】"
 			CALL COM404_VisitorDetail(LOOP_CHR, 訪問者との描写, 訪問者との音声)
 			IF isSoundOnly 
@@ -269,7 +269,7 @@ IF CNT_CHR == 1
 ELSE
 	;同じ場所にいる住人が２人以上の場合概略を覗ける。覗きバレ見せつけなし
 	FOR LOOP_CHR,1,CHARANUM
-		IF CFLAG:LOOP_CHR:現在位置 == targetArea && !CFLAG:LOOP_CHR:睡眠
+		IF CFLAG:LOOP_CHR:当前位置 == targetArea && !CFLAG:LOOP_CHR:睡眠
 			CALL COM404_VisitorDetail(LOOP_CHR, 訪問者との描写, 訪問者との音声)
 			IF isSoundOnly 
 				PRINTFORML %訪問者との音声%
@@ -285,15 +285,15 @@ RETURN 1
 #DIM キャラ
 #DIMS REF 訪問者との描写
 #DIMS REF 訪問者との音声
-SELECTCASE CFLAG:キャラ:訪問者行為
-	CASE NTR_行为_なし
+SELECTCASE CFLAG:キャラ:当前与访问者行为
+	CASE NTR_行为_无
 		IF FLAG:ハーレム時カウンタ
 			訪問者との描写 += NTR_NAME(0) + "正抱着" + CALLNAME:キャラ
 		ELSE
 			訪問者との描写 += NTR_NAME(0) + "和" + CALLNAME:キャラ + "在说话"
 		ENDIF
 		訪問者との音声 += NTR_NAME(0) + "と" + CALLNAME:キャラ + "の声が聞こえた…話をしているようだ"
-	CASE NTR_行为_キス
+	CASE NTR_行为_接吻
 		訪問者との描写 += NTR_NAME(0) + "和" + CALLNAME:キャラ + "在接吻"
 		訪問者との音声 += NTR_NAME(0) + "と" + CALLNAME:キャラ + "の声が聞こえた…キスをしているようだ"
 	CASE NTR_行为_爱抚
@@ -305,7 +305,7 @@ SELECTCASE CFLAG:キャラ:訪問者行為
 	CASE NTR_行为_口交
 		訪問者との描写 += CALLNAME:キャラ + "正含着" + NTR_NAME(0) + "的阴茎"
 		訪問者との音声 += NTR_NAME(0) + "の声が聞こえた…" + CALLNAME:キャラ + "に口交をさせているようだ"
-	CASE NTR_行为_六九式
+	CASE NTR_行为_六九
 		訪問者との描写 += NTR_NAME(0) + "和" + CALLNAME:キャラ + "互相舔舐对方的性器"
 		訪問者との音声 += NTR_NAME(0) + "と" + CALLNAME:キャラ + "の声が聞こえた…互いに性器を舐め合っているようだ"
 	CASE NTR_行为_素股
@@ -328,7 +328,7 @@ RETURN 1
 #DIM TGT_CHR	; 覗いてる先の人物
 #DIM POS		; 覗いてる側の場所
 
-POS =  CFLAG:MASTER:現在位置		; 覗いてる側の場所
+POS =  CFLAG:MASTER:当前位置		; 覗いてる側の場所
 ;広間から踊り場を見上げたとき1/3でパンチラ
 IF POS == 位置_红魔馆_大厅 && targetArea == 位置_红魔馆_二楼楼梯间 && !RAND:3
 	CALL LOOK_PANCHIRA(TGT_CHR, MASTER, targetArea, 0)
@@ -495,7 +495,7 @@ SIF EQUIP:MASTER:裙子 == 3 && RAND:2
 SIF EQUIP:MASTER:裙子 == 5
 	RETURN 0
 ;パンチラ不可能な場所の場合処理しない（踊り場、二階廊下、庭、湖以外）
-SELECTCASE CFLAG:MASTER:現在位置
+SELECTCASE CFLAG:MASTER:当前位置
 	CASE 位置_红魔馆_二楼楼梯间
 	CASE 位置_红魔馆_二楼走廊
 	CASE 位置_红魔馆_后院
@@ -506,7 +506,7 @@ SELECTCASE CFLAG:MASTER:現在位置
 		RETURN 0
 ENDSELECT
 ;MASTER以外に誰かいたら見られない
-SIF 当前位置存在人数(CFLAG:MASTER:現在位置, 0, 1)
+SIF 当前位置存在人数(CFLAG:MASTER:当前位置, 0, 1)
 	RETURN 0
 
 FLG_LOOKED = 0 ; 0:パンチラを見られていない 1:パンチラを見られた
@@ -517,9 +517,9 @@ FOR LOOP_CHR,1,CHARANUM
 	SIF CFLAG:LOOP_CHR:睡眠
 		CONTINUE
 	;パンチラを窥视ことのできる場所にいるかチェック
-	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, CFLAG:LOOP_CHR:現在位置)
+	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:当前位置, CFLAG:LOOP_CHR:当前位置)
 	IF RSLT_CHK != -1 && RAND:2
-		CALL LOOK_PANCHIRA(MASTER, LOOP_CHR, CFLAG:MASTER:現在位置, RSLT_CHK)
+		CALL LOOK_PANCHIRA(MASTER, LOOP_CHR, CFLAG:MASTER:当前位置, RSLT_CHK)
 		FLG_LOOKED = 1
 	ENDIF
 	SIF FLG_LOOKED
@@ -528,9 +528,9 @@ NEXT
 ;訪問者チェック
 IF FLG_LOOKED == 0
 	;パンチラを窥视ことのできる場所にいるかチェック
-	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:現在位置, FLAG:访问者当前位置)
+	RSLT_CHK = CHK_LOOK_PANCHIRA(CFLAG:MASTER:当前位置, FLAG:访问者当前位置)
 	IF RSLT_CHK != -1 && RAND:2
-		CALL LOOK_PANCHIRA(MASTER, 人物_訪問者, CFLAG:MASTER:現在位置, RSLT_CHK)
+		CALL LOOK_PANCHIRA(MASTER, 人物_訪問者, CFLAG:MASTER:当前位置, RSLT_CHK)
 		FLG_LOOKED = 1
 	ENDIF
 ENDIF
@@ -782,7 +782,7 @@ RETURN 戻り値
 #DIM TGT_CHR	; チェック対象の人物
 #DIM PTN_CHR	; チェック対象の人物の相手
 
-IF CFLAG:TGT_CHR:住人同士イベント内容%10 && ((targetArea == CFLAG:TGT_CHR:現在位置) || (GETBIT(FLAG:住人同士イベント設定,2)))
+IF CFLAG:TGT_CHR:住人同士イベント内容%10 && ((targetArea == CFLAG:TGT_CHR:当前位置) || (GETBIT(FLAG:住人同士イベント設定,2)))
 	PTN_CHR = CFLAG:TGT_CHR:住人同士イベント相手
 	;PRINTFORML %CALLNAME:TGT_CHR%と%CALLNAME:PTN_CHR% {CFLAG:TGT_CHR:住人同士イベント内容} {CFLAG:TGT_CHR:住人同士イベントシチュエーション}
 	SELECTCASE CFLAG:TGT_CHR:住人同士イベント内容/10

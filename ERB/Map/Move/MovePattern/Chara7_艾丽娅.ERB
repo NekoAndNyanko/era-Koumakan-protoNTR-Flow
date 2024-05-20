@@ -72,9 +72,9 @@ FOR LOCAL:4, 1, 場所番号最大値+1
 			;基本的には1F厕所を使用
 			IF REST_NeedRestroom(ARG:1)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
@@ -85,7 +85,7 @@ FOR LOCAL:4, 1, 場所番号最大値+1
 		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(ARG:1)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 < 2
@@ -96,9 +96,9 @@ FOR LOCAL:4, 1, 場所番号最大値+1
 		CASE 位置_红魔馆_二楼厕所
 			IF REST_NeedRestroom(ARG:1)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1
@@ -190,9 +190,9 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 		CASE 位置_红魔馆_屋外厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
@@ -207,7 +207,7 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:1 ++
 				NEXT
 				IF LOCAL:1 < 2
@@ -223,9 +223,9 @@ IF CFLAG:人物_艾丽娅:亲密程度 == 2
 			VARSET LOCAL
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1
@@ -312,9 +312,9 @@ ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 		CASE 位置_红魔馆_屋外厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
@@ -329,7 +329,7 @@ ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:1 ++
 				NEXT
 				IF LOCAL:1 < 2
@@ -345,9 +345,9 @@ ELSEIF CFLAG:人物_艾丽娅:亲密程度 == 1
 			VARSET LOCAL
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1
@@ -435,9 +435,9 @@ ELSE
 		CASE 位置_红魔馆_屋外厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:2 > 2 && LOCAL:1 == 0
@@ -452,7 +452,7 @@ ELSE
 		CASE 位置_红魔馆_一楼厕所
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:1 ++
 				NEXT
 				IF LOCAL:1 < 2
@@ -468,9 +468,9 @@ ELSE
 			VARSET LOCAL
 			IF REST_NeedRestroom(2)
 				FOR LOCAL,0,CHARANUM
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 						LOCAL:1 ++
-					SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 						LOCAL:2 ++
 				NEXT
 				IF LOCAL:1 != 0 && LOCAL:2 > 1

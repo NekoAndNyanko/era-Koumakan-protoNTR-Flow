@@ -36,9 +36,9 @@ LOCAL:3 = 13
 ;2F厕所はかなり条件が揃わないと使用しない
 IF REST_NeedRestroom(ARG:1)
 	FOR LOCAL,0,CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_屋外厕所
+		SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
 			LOCAL:1++
-		SIF CFLAG:LOCAL:現在位置 == 位置_红魔馆_一楼厕所
+		SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
 			LOCAL:2 ++
 	NEXT
 	IF LOCAL:1 != 0 && LOCAL:2 > 1

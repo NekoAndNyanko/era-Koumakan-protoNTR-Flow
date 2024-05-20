@@ -41,7 +41,7 @@ ENDIF
 #DIM 对象
 IF FLAG:Flow版本
 	IF CFLAG:对象:初吻丧失日
-		IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+		IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 			IF NTR_CHK_FAVORABLY(对象, FAV_寝取られ)
 				PRINTFORMW 即使身为恋人的%CALLNAME:MASTER%还在身边，但与%NTR_NAME(0)%共处一室的悸动还是驱使着%CALLNAME:对象%趁%CALLNAME:MASTER%不注意大胆地吻上了%NTR_NAME(0)%…
 			ELSEIF NTR_CHK_FAVORABLY(对象, FAV_寝取られそう)
@@ -55,7 +55,7 @@ IF FLAG:Flow版本
 			ENDIF
 		ENDIF
 	ELSE
-		IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+		IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 			IF NTR_CHK_FAVORABLY(对象, FAV_寝取られ)
 				PRINTFORMW 即使身为恋人的%CALLNAME:MASTER%还在身边，但%CALLNAME:对象%还是趁%CALLNAME:MASTER%不注意将嘴唇递到%NTR_NAME(0)%眼前，大胆地吐出舌尖引诱%NTR_NAME(0)%…
 				PRINTFORMW 那谄媚的神情仿佛在说「是时候收下人家的初吻了」…
@@ -72,7 +72,7 @@ IF FLAG:Flow版本
 		ENDIF
 	ENDIF
 ELSE
-	IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 		PRINTFORM %CALLNAME:对象%在
 		;主人公より好意度がかなり高いか、浮気公認だと同席でも光明正大地接吻
 		IF CFLAG:对象:屈服度 > (CFLAG:对象:好感度 * 2) || TALENT:对象:浮気公認 > 0
@@ -103,7 +103,7 @@ ENDIF
 
 @NTR_CNT_U_6(对象)
 #DIM 对象
-IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 	IF FLAG:Flow版本
 		IF NTR_CHK_FAVORABLY(对象, FAV_寝取られ)
 			PRINTFORML 在身为恋人的%CALLNAME:MASTER%面前，%CALLNAME:对象%自然大方地从身后环住了%NTR_NAME(0)%的身体，就像与其它女人聊天时一样…
@@ -145,7 +145,7 @@ ENDIF
 @NTR_CNT_U_7(对象)
 #DIM 对象
 IF FLAG:Flow版本
-	IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 		IF NTR_CHK_FAVORABLY(对象, FAV_寝取られ)
 			PRINTFORMW 在身为恋人的%CALLNAME:MASTER%面前，%CALLNAME:对象%像是与同性好友嬉戏似的拥抱着%NTR_NAME(0)%…
 		ELSEIF NTR_CHK_FAVORABLY(对象, FAV_寝取られそう)
@@ -159,7 +159,7 @@ IF FLAG:Flow版本
 		ENDIF
 	ENDIF
 ELSE
-	IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+	IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 		PRINTFORM %CALLNAME:对象%在
 		PRINTFORM %ANATA_LOVER(对象)%的眼前
 		IF TALENT:对象:浮気公認 > 0
@@ -176,7 +176,7 @@ ENDIF
 
 @NTR_CNT_U_8(对象)
 #DIM 对象
-IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 	IF FLAG:Flow版本
 		PRINTDATAL
 			DATAFORM %CALLNAME:对象%不着边际地用\@ TALENT:对象:胸部尺寸 > 0 ? 饱满的乳房 # 可爱的胸部 \@蹭了蹭%NTR_NAME(0)%的手臂
@@ -212,7 +212,7 @@ ENDIF
 
 @NTR_CNT_U_9(对象)
 #DIM 对象
-IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 	PRINTFORM %CALLNAME:对象%双颊绯红地
 	IF TALENT:对象:浮気公認 > 0
 		PRINTFORM 像专门给%ANATA_LOVER(对象)%看一样
@@ -230,7 +230,7 @@ ENDIF
 @NTR_CNT_U_10(对象)
 #DIM 对象
 IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
-	IF FLAG:Flow版本 && CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+	IF FLAG:Flow版本 && CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 		PRINTFORML 在%CALLNAME:MASTER%走神的间隙，%CALLNAME:对象%轻轻将手放在股间，对着%NTR_NAME(0)%慢慢地掀起了自己的裙摆
 		PRINTFORM \@ TALENT:对象:羞耻心 > 0 ? 羞涩地 # 大胆地\@展示着裙下
 		IF EQUIP:对象:下半身下着１
@@ -265,7 +265,7 @@ ENDIF
 
 @NTR_CNT_U_11(对象)
 #DIM 对象
-IF CFLAG:MASTER:現在位置 == FLAG:访问者当前位置
+IF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 	PRINTFORM %CALLNAME:对象%
 	IF TALENT:对象:浮気公認 > 0
 		PRINTFORM 像是专门给%ANATA_LOVER(对象)%欣赏一样
