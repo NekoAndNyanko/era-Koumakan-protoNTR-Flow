@@ -1,7 +1,0 @@
-﻿
-;挿入部位の配列引数
-#DIM CONST 挿入部位3P_あなた	= 0
-#DIM CONST 挿入部位3P_奴隷		= 1
-;挿入部位の設定値
-#DIM CONST 挿入部位3P_V挿入		= 0
-#DIM CONST 挿入部位3P_A挿入		= 1

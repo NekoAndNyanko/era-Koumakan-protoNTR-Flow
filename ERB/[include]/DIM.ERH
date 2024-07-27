@@ -4,6 +4,8 @@
 
 #DIMS 依頼内容, 8
 
+#DIMS SAVEDATA 访问者名称
+
 #DIM CONST 移动路线MAX = 13 
 #DIM CHARADATA 移动路线, 移动路线MAX
 
@@ -98,25 +100,25 @@
 #DIM CONST NTR_MOOD_性交 = 4
 #DIM CONST NTR_MOOD_同伴 = 5
 
-#DIM CONST NTR_CNT_なし                 = 0
-#DIM CONST NTR_CNT_诱惑姿势       = 1
+#DIM CONST NTR_CNT_无行为           = 0
+#DIM CONST NTR_CNT_诱惑姿势         = 1
 #DIM CONST NTR_CNT_凝视             = 2
 #DIM CONST NTR_CNT_贴近身体         = 3
-#DIM CONST NTR_CNT_耳边吹气             = 4
-#DIM CONST NTR_CNT_接吻                 = 5
-#DIM CONST NTR_CNT_背面拥抱             = 6
-#DIM CONST NTR_CNT_正面拥抱             = 7
-#DIM CONST NTR_CNT_揉胸         = 8
-#DIM CONST NTR_CNT_揉搓股间       = 9
-#DIM CONST NTR_CNT_掀裙子看内裤 = 10
-#DIM CONST NTR_CNT_深吻         = 11
+#DIM CONST NTR_CNT_耳边吹气         = 4
+#DIM CONST NTR_CNT_接吻             = 5
+#DIM CONST NTR_CNT_背面拥抱         = 6
+#DIM CONST NTR_CNT_正面拥抱         = 7
+#DIM CONST NTR_CNT_揉胸            = 8
+#DIM CONST NTR_CNT_揉搓股间        = 9
+#DIM CONST NTR_CNT_掀裙子看内裤    = 10
+#DIM CONST NTR_CNT_深吻           = 11
 
-#DIM CONST NTR_行为_なし           = 0
-#DIM CONST NTR_行为_キス           = 1
+#DIM CONST NTR_行为_无            = 0
+#DIM CONST NTR_行为_接吻           = 1
 #DIM CONST NTR_行为_爱抚           = 2
 #DIM CONST NTR_行为_胸爱抚         = 3
-#DIM CONST NTR_行为_口交     = 4
-#DIM CONST NTR_行为_六九式 = 5
+#DIM CONST NTR_行为_口交           = 4
+#DIM CONST NTR_行为_六九           = 5
 #DIM CONST NTR_行为_素股           = 6
 #DIM CONST NTR_行为_Ｖ正常位       = 7
 #DIM CONST NTR_行为_Ｖ后背位       = 8
@@ -133,29 +135,6 @@
 #DIM CONST NTR_行为_Ａ背面座位     = 18
 #DIM CONST NTR_行为_Ａ対面立位     = 19
 #DIM CONST NTR_行为_Ａ背面立位     = 20
-
-#DIM CONST NTR_行为_睡奸_无			= 0
-#DIM CONST NTR_行为_睡奸_接吻			= 1
-#DIM CONST NTR_行为_睡奸_爱抚			= 2
-#DIM CONST NTR_行为_睡奸_胸爱抚		= 3
-#DIM CONST NTR_行为_睡奸_舔菊			= 4
-#DIM CONST NTR_行为_睡奸_口交			= 5
-#DIM CONST NTR_行为_睡奸_６９			= 6
-#DIM CONST NTR_行为_睡奸_素股			= 7
-#DIM CONST NTR_行为_睡奸_Ｖ正常位		= 8
-#DIM CONST NTR_行为_睡奸_Ｖ后背位		= 9
-#DIM CONST NTR_行为_睡奸_Ｖ骑乘位		= 10
-#DIM CONST NTR_行为_睡奸_Ｖ对面座位		= 11
-#DIM CONST NTR_行为_睡奸_Ｖ背面座位		= 12
-#DIM CONST NTR_行为_睡奸_Ｖ对面立位		= 13
-#DIM CONST NTR_行为_睡奸_Ｖ背面立位		= 14
-#DIM CONST NTR_行为_睡奸_Ａ正常位		= 15
-#DIM CONST NTR_行为_睡奸_Ａ后背位		= 16
-#DIM CONST NTR_行为_睡奸_Ａ骑乘位		= 17
-#DIM CONST NTR_行为_睡奸_Ａ对面座位		= 18
-#DIM CONST NTR_行为_睡奸_Ａ背面座位		= 19
-#DIM CONST NTR_行为_睡奸_Ａ对面立位		= 20
-#DIM CONST NTR_行为_睡奸_Ａ背面立位		= 21
 
 #DIM CONST 写真_普段               = 1
 #DIM CONST 写真_着替え             = 2
@@ -290,14 +269,7 @@
 #DIM CONST CNT_股間をまさぐる			= 34
 #DIM CONST CNT_裙子の中を見せる		= 35
 #DIM CONST CNT_胸を揉む					= 36
-#DIM CONST CNT_处女献上					= 40
-#DIM CONST CNT_強制絶頂・Ｐ				= 41
-#DIM CONST CNT_強制絶頂・Ｖ				= 42
-#DIM CONST CNT_強制絶頂・Ａ				= 43
-#DIM CONST CNT_強制絶頂・Ｃ				= 44
-#DIM CONST CNT_強制絶頂・Ｂ				= 45
-#DIM CONST CNT_性欲処理・Ｖ				= 46
-#DIM CONST CNT_性欲処理・Ａ				= 47
+
 #DIM CONST CNT_手淫						= 50
 #DIM CONST CNT_口交				= 51
 #DIM CONST CNT_素股						= 52
@@ -337,14 +309,6 @@
 #DIM CONST 訪問者宅_床扉解錠済 = 1p3
 #DIM CONST 訪問者宅_玄関解錠済 = 1p4
 #DIM CONST 訪問者宅_便所使用済 = 1p5
-
-;客口上用客種別
-#DIM CONST 客種別_擬音系				= 0
-#DIM CONST 客種別_DQN・口悪い系			= 1
-#DIM CONST 客種別_紳士のような変態系	= 2
-#DIM CONST 客種別_おっさん系			= 3
-#DIM CONST 客種別_キモデブ系			= 4
-#DIM CONST 客種別_性経験少ない系		= 5
 
 ;淫纹ビット番号
 #DIM CONST 淫纹_恥丘				= 0
@@ -416,18 +380,12 @@
 #DIM CONST 住人同士行为_Ａ後戯Ｎ	= 356
 #DIM CONST 住人同士行为_Ａ後戯Ｃ	= 357
 
-;前回売春フラグ
-#DIM CONST 前回売春_初売春			= 1
-#DIM CONST 前回売春_处女喪失		= 2
-
 ;TA変数用
 ;0～7は子宮内精液管理に使用
 ;住人同士の処理用
 #DIM CONST TA_好感度	= 9
 ;TB変数用
 ;0～7は子宮内精液管理に使用
-#DIM CONST TB_客番号	= 9
-#DIM CONST TB_客種別	= 10
 
 ;部屋のにおいパッチ
 ;FLAG
@@ -474,8 +432,8 @@
 ;移动目的
 #DIM CONST 移动目的_自慰自室	 = 1
 #DIM CONST 移动目的_妊娠自室	 = 2
-#DIM CONST 移动目的_WC移动		 = 3
-#DIM CONST 移动目的_WC帰路		 = 4
+#DIM CONST 移动目的_去厕所		 = 3
+#DIM CONST 移动目的_从厕所返回		 = 4
 #DIM CONST 移动目的_NTR逃避		 = 5
 #DIM CONST 移动目的_訪問者		 = 6	; 訪問者の元への移动
 
@@ -523,6 +481,3 @@
 #DIM CONST 出掛理由_外泊公認_時間経過 = 11
 #DIM CONST 出掛理由_外泊公認_あなたのため = 12
 #DIM CONST 出掛理由_外泊公認_訪問者のため = 13
-#DIM CONST 出掛理由_公众便所_時間経過 = 21
-#DIM CONST 出掛理由_公众便所_亲爱 = 22
-#DIM CONST 出掛理由_公众便所_精液量不足 = 23

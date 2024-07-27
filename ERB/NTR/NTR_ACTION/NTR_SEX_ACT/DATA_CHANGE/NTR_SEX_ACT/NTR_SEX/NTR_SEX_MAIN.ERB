@@ -14,20 +14,20 @@ TCVAR:奴隷:行為者 = 調教者
 TCVAR:行為者 = 調教者
 TEQUIP:奴隷:Ｖ性爱 = 人物_訪問者
 CALL 締り具合変動, 奴隷, 3, 0
-IF FLAG:訪問者との行為の終了時刻 == 0
+IF FLAG:访问者当前行为中止时刻 == 0
 	FLAG:访问者行为计时点 = DATETIME()
 	CALL NTR_ADD_SURRENDER(奴隷, 10)
-	;CFLAG:奴隷:屈服度 += (FLAG:訪問者との行為の終了時刻 - DATETIME()) / 10
+	;CFLAG:奴隷:屈服度 += (FLAG:访问者当前行为中止时刻 - DATETIME()) / 10
 ENDIF
 SIF EXP:奴隷:NTR陷落经验
 	CALL NTR_ADD_SURRENDER(奴隷, 2)
 ;体位の決定(目立たない場所か私室かで体位に違いを)
 体位 = 0
-SELECTCASE FLAG:訪問者との行為
+SELECTCASE FLAG:访问者当前行为
 	CASE NTR_行为_Ｖ正常位 TO NTR_行为_Ｖ背面座位
-		体位 = FLAG:訪問者との行為 - NTR_行为_Ｖ正常位
+		体位 = FLAG:访问者当前行为 - NTR_行为_Ｖ正常位
 	CASE IS > NTR_行为_Ｖ背面座位
-		体位 = FLAG:訪問者との行為 - NTR_行为_Ｖ背面座位
+		体位 = FLAG:访问者当前行为 - NTR_行为_Ｖ背面座位
 	CASEELSE
 		SIF 密室度 == 2
 			体位 = 5 + RAND:2
@@ -49,7 +49,7 @@ CFLAG:奴隷:和访问者已做爱 = 1
 ;无知去除
 CALL 无知去除(奴隷)
 CFLAG:奴隷:精液残留中 = 0
-CFLAG:奴隷:NTR訪問者と最後にセックスした日時 = DATETIME()
+CFLAG:奴隷:与访问者最后做爱的时间 = DATETIME()
 RETURN 0
 
 ;-------------------------------------------------------------------------------

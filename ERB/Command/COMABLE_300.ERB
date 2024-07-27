@@ -1,0 +1,506 @@
+﻿
+;-------------------------------------------------
+;300番台,日常(相手が必要)
+;-------------------------------------------------
+;会话
+@COM_ABLE300
+;会话実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(300)
+	RETURN RESULT
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;泡一杯茶
+@COM_ABLE301
+;泡一杯茶実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(301)
+	RETURN RESULT
+;二時間間隔
+SIF TIME_PROGRESS(TCVAR:300) < 120
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;浴場 ただし私室は吃饭可能
+SIF 存在浴室(CFLAG:MASTER:当前位置) && (CFLAG:MASTER:当前位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:当前位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:当前位置 != 位置_雾之湖_大妖精的家)
+	RETURN 0
+;トイレ ただし私室は吃饭可能
+SIF REST_IsRestRoom(CFLAG:MASTER:当前位置) && (CFLAG:MASTER:当前位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:当前位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:当前位置 != 位置_雾之湖_大妖精的家)
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;身体接触
+@COM_ABLE302
+;身体接触実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(302)
+	RETURN RESULT
+;1時間間隔
+SIF TIME_PROGRESS(TCVAR:303) < 60
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;抚摸臀部
+@COM_ABLE310
+;抚摸臀部実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(310)
+	RETURN RESULT
+;亲密程度1（弱味を握られている場合2）
+SIF TCVAR:MASTER:亲密程度 < 1 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;腕使用中
+SIF TFLAG:61
+	RETURN 0
+SIF GETBIT (TCVAR:26,0)
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;抱住
+@COM_ABLE311
+;抱住実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(311)
+	RETURN RESULT
+;亲密程度1（弱味を握られている場合2）
+SIF TCVAR:MASTER:亲密程度 < 1 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;腕使用中
+SIF TFLAG:61
+	RETURN 0
+SIF GETBIT (TCVAR:26,1)
+	RETURN 0
+;六九式体勢
+SIF TEQUIP:六九式
+	RETURN 0
+;素股中は口がふさがってると無理な気がする
+SIF TCVAR:20 == 52 && TFLAG:60
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;接吻
+@COM_ABLE312
+;接吻実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(312)
+	RETURN RESULT
+;亲密程度1（弱味を握られている場合2）
+SIF TCVAR:MASTER:亲密程度 < 1 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;口使用中
+SIF TFLAG:60 && MASTER_POSE(4,4) != TARGET
+	RETURN 0
+SIF GETBIT (TCVAR:26,2)
+	RETURN 0
+;六九式体勢
+SIF TEQUIP:六九式
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;胸爱抚
+@COM_ABLE313
+;胸爱抚実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(313)
+	RETURN RESULT
+;亲密程度2（弱味を握られている場合3）
+SIF TCVAR:MASTER:亲密程度 < 2 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;腕使用中
+SIF TFLAG:61 && MASTER_POSE(5,3) != TARGET
+	RETURN 0
+SIF GETBIT (TCVAR:26,3)
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+
+RETURN 1
+
+;肛门爱抚
+@COM_ABLE314
+;肛门爱抚実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(314)
+	RETURN RESULT
+;亲密程度2（弱味を握られている場合3）
+SIF TCVAR:MASTER:亲密程度 < 2 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;颜面骑乘菊花
+SIF TCVAR:20 == 72
+	RETURN 1
+;六九式体勢
+SIF TEQUIP:六九式
+	RETURN 1
+;腕使用中
+SIF TFLAG:61 && MASTER_POSE(7,3) != TARGET
+	RETURN 0
+SIF GETBIT (TCVAR:26,4)
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;阴蒂爱抚
+@COM_ABLE315
+;阴蒂爱抚実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(315)
+	RETURN RESULT
+;亲密程度2（弱味を握られている場合3）
+SIF TCVAR:MASTER:亲密程度 < 2 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;腕使用中
+SIF TFLAG:61 && MASTER_POSE(2,3) != TARGET && MASTER_POSE(1,3) != TARGET && MASTER_POSE(6,3) != TARGET && MASTER_POSE(7,3) != TARGET
+	RETURN 0
+SIF GETBIT (TCVAR:26,5)
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;指挿入れ
+@COM_ABLE316
+;指挿入れ実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(316)
+	RETURN RESULT
+;オトコだとダメ
+IF !HAS_VAGINA(TARGET)
+	RETURN 0
+ENDIF
+;亲密程度2（弱味を握られている場合3）
+SIF TCVAR:MASTER:亲密程度 < 2 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;着衣
+SIF TEQUIP:0 & 4
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;腕使用中
+SIF TFLAG:61 && MASTER_POSE(2,3) != TARGET && MASTER_POSE(1,3) != TARGET && MASTER_POSE(6,3) != TARGET && MASTER_POSE(7,3) != TARGET
+	RETURN 0
+SIF GETBIT (TCVAR:26,5)
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;推到
+@COM_ABLE350
+;推到実行判定
+IF !TFLAG:100
+	RETURN 0
+ENDIF
+;一括管理
+IF GLOBAL_COMABLE(350)
+	RETURN RESULT
+ENDIF
+;ターゲットが睡眠中はダメ
+SIF CFLAG:睡眠
+	RETURN 0
+;あなたの气力が0だとダメ
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;亲密程度2以上必要（弱味を握られている場合3）
+SIF TCVAR:MASTER:亲密程度 < 2 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;ターゲットが２人以上いる
+IF GET_TARGETNUM() > 1
+	;誰かが眠っている
+	IF GET_TARGETSLEEP()
+		;起きている人数による条件変化
+		IF GET_TARGETWAKEUP() >= 2 && TCVAR:MASTER:亲密程度 < 3
+			RETURN 0
+		ELSEIF GET_TARGETWAKEUP() == 1 && TCVAR:MASTER:亲密程度 < 2
+			RETURN 0
+		ENDIF
+		;全員起きている
+		;まとめて推到場合には、全体の亲密程度が３以上必要
+	ELSEIF TCVAR:MASTER:亲密程度 < 3
+		RETURN 0
+	ENDIF
+ENDIF
+
+FOR LOCAL,1,CHARANUM
+	SIF TARGET:LOCAL <= 0
+		CONTINUE
+	;睡眠中は回避
+	IF !CFLAG:(TARGET:LOCAL):睡眠
+		;相手に合意がない場合はダメ
+		IF !TALENT:(TARGET:LOCAL):恋人
+			RETURN 0
+		ENDIF
+	ENDIF
+NEXT
+
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;連れ出す
+@COM_ABLE351
+;連れ出す実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(351)
+	RETURN RESULT
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;TARGETの亲密程度1
+FOR LOCAL,0,CHARANUM
+	;TARGET:1～をさがす
+	SIF !TARGET:LOCAL
+		CONTINUE
+	;睡眠中は除外
+	SIF CFLAG:(TARGET:LOCAL):睡眠
+		CONTINUE
+	;可能なキャラが居れば1を返す
+	SIF (FLAG:Flow版本 && TALENT:(TARGET:LOCAL):恋人) || CFLAG:(TARGET:LOCAL):亲密程度
+		RETURN 1
+NEXT
+RETURN 0
+
+
+;告白
+@COM_ABLE352
+;告白実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(352)
+	RETURN RESULT
+;二人きりでないとだめ
+SIF GET_TARGETNUM() > 1
+	RETURN 0
+;亲密程度1（弱味を握られている場合2）
+SIF TCVAR:MASTER:亲密程度 < 1 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+[SKIPSTART]
+;すでに合意を得ている場合はだめ
+SIF GETBIT(CFLAG:既成事実 , 0)
+	RETURN 0
+[SKIPEND]
+SIF TALENT:恋人
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;許しを乞う
+@COM_ABLE353
+;告白実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(353)
+	RETURN RESULT
+;亲密程度1（弱味を握られている場合2）;;肉便器だと更に+1
+SIF TCVAR:MASTER:亲密程度 < 1 + (CFLAG:TARGET:MASTERの弱味>0)
+	RETURN 0
+;二人きりでないとだめ
+SIF GET_TARGETNUM() > 1
+	RETURN 0
+;睡眠中
+SIF CFLAG:睡眠
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 0
+RETURN 1
+
+;不打扰
+@COM_ABLE354
+;会话実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(354)
+	RETURN RESULT
+;睡眠中
+;SIF CFLAG:睡眠
+;	RETURN 0
+;气力0
+;SIF BASE:MASTER:气力 <= 0
+;	RETURN 0
+;訪問者と住人１人同席、かつ主人が空気
+SIF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+	RETURN 1
+RETURN 0
+
+;任其摆布(対訪問者)
+@COM_ABLE355
+;任其摆布(対訪問者)実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(355)
+	RETURN RESULT
+;あなたと訪問者以外に誰かいるとダメ
+SIF GET_N_WITH_VISITER(TARGET) >= 2
+	RETURN 0
+;あなたを訪問者のお気に入りに設定していないとダメ
+SIF FLAG:訪問者のお気に入り != 0
+	RETURN 0
+;玩家房间でないとダメ
+SIF CFLAG:MASTER:当前位置 != 位置_红魔馆_玩家房间 && CFLAG:MASTER:当前位置 != 位置_红魔馆_大浴场
+	RETURN 0
+;訪問者と同室でないとダメ
+SIF FLAG:访问者当前位置 != CFLAG:MASTER:当前位置
+	RETURN 0
+RETURN 1
+
+;任其摆布
+@COM_ABLE360
+;任其摆布実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(360)
+	RETURN RESULT
+SIF CFLAG:うふふ != 2
+	RETURN 0
+RETURN 1
+
+
+;挣扎
+@COM_ABLE361
+;挣扎実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(361)
+	RETURN RESULT
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+SIF TFLAG:COMABLE管理 != 4
+	RETURN 0
+RETURN 1
+
+
+;逃跑
+@COM_ABLE362
+;逃跑実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(362)
+	RETURN RESULT
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+SIF TFLAG:COMABLE管理 != 4
+	RETURN 0
+RETURN 1
+

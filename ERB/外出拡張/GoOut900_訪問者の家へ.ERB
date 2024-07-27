@@ -13,9 +13,6 @@ RETURN 0
 ; return 11 でかける(外泊公認時:時間が来たので)
 ; return 12 でかける(外泊公認時:あなたをもっと喜ばせるため)
 ; return 13 でかける(外泊公認時:訪問者をもっと喜ばせるため)
-; return 21 でかける(公众便所時:時間が来たので)
-; return 22 でかける(公众便所時:亲爱であるため)
-; return 23 でかける(公众便所時:子宮内精液量が足りないため)
 @GoOut_Able_900(奴隷)
 #DIM 奴隷
 #DIM 放置時間
@@ -59,7 +56,7 @@ IF TALENT:奴隷:浮気公認 > 3
 	IF TALENT:奴隷:浮気公認 == 5
 		放置時間 = DATETIME() - CFLAG:奴隷:访问者之妻归来时间
 	ELSE
-		放置時間 = DATETIME() - MAX(CFLAG:奴隷:NTR訪問者と最後にセックスした日時,CFLAG:奴隷:NTR他の男と最後にセックスした日時)
+		放置時間 = DATETIME() - CFLAG:奴隷:与访问者最后做爱的时间
 	ENDIF
 	IF 訪問者用補正値 < あなた用補正値
 		;好感度が高い時はあなたを喜ばせるために
@@ -72,7 +69,7 @@ IF TALENT:奴隷:浮気公認 > 3
 		休暇終了理由 = 出掛理由_外泊公認_時間経過 ; 11
 	ENDIF
 ELSEIF CFLAG:奴隷:屈服度/2 > CFLAG:奴隷:好感度
-	放置時間 = DATETIME() - MAX(CFLAG:奴隷:NTR訪問者と最後にセックスした日時,CFLAG:奴隷:NTR他の男と最後にセックスした日時)
+	放置時間 = DATETIME() - CFLAG:奴隷:与访问者最后做爱的时间
 
 	IF 訪問者用補正値 < あなた用補正値
 		;好感度が高い時はあなたを喜ばせるために
@@ -99,37 +96,6 @@ SETCOLOR 黄色
 PRINTFORML %"恋人の『"+CALLNAME:奴隷+"』の休暇時間(分)："+TOSTR(休暇時間)+" ＆ 放置時間(分)："+TOSTR(放置時間)%
 RESETCOLOR
 [ENDIF]
-IF TALENT:奴隷:公众便所
-	IF TALENT:奴隷:浮気公認 == 5
-		放置時間 = DATETIME() - CFLAG:奴隷:访问者之妻归来时间
-	ELSE
-		;公众便所なら「他の男とセックスしてから」で判定
-		放置時間 = DATETIME() - CFLAG:奴隷:NTR他の男と最後にセックスした日時
-	ENDIF
-	;子宮内精液量を取得
-	CALL COM417_GetFillingRateByPublicSperm(奴隷)
-	子宮内精液量 = RESULT:0
-	;子宮内精液量が少ないほど休暇が減少、公众便所の子宮には常に誰かの精液が入っていなければならない。
-	;具体的には常に赤色の淫纹を維持しなければならない。
-	IF 休暇時間 < 放置時間
-		休暇終了理由 = 出掛理由_公众便所_時間経過 ; 21
-	ELSEIF TALENT:奴隷:亲爱
-		;亲爱公众便所の場合は休暇を半分にされる
-		休暇時間 /= 2
-		IF (休暇時間 < 放置時間)
-			;亲爱でよるペナルティにより休暇を切り上げなければならない
-			休暇終了理由 = 出掛理由_公众便所_亲爱 ; 22
-		ENDIF
-	ELSE
-		休暇時間 = 休暇時間 * MIN(子宮内精液量,50) / 50
-		IF 休暇時間 < 放置時間
-			;子宮内に精液が足りないため休暇を切り上げなければならない
-			休暇終了理由 = 出掛理由_公众便所_精液量不足 ; 23
-		ENDIF
-	ENDIF
-	DEBUGPRINTFORML %"便所の『"+CALLNAME:奴隷+"』の休暇時間(分)："+TOSTR(休暇時間)+" ＆ 放置時間(分)："+TOSTR(放置時間)%
-ENDIF
-
 
 IF 休暇時間 < 放置時間
 	RETURN 休暇終了理由
@@ -157,14 +123,10 @@ IF TALENT:奴隷:妊娠 || TALENT:奴隷:育儿中
 	;妊娠中、育儿中は出て行かない
 	RETURN 0
 ENDIF
-IF TALENT:奴隷:浮気公認 < 4 && !TALENT:奴隷:公众便所
-	;浮気公認４レベル以上、または公众便所が必要
+IF TALENT:奴隷:浮気公認 < 4
+	;浮気公認４レベル以上
 	SIF CFLAG:奴隷:好感度 >= CFLAG:奴隷:屈服度 || TALENT:奴隷:恋慕 == 0
 		RETURN 0
-ENDIF
-IF FLAG:贞操帯鍵購入フラグ == 奴隷
-	;鍵を持っていたら出て行かない
-	RETURN 0
 ENDIF
 IF FLAG:訪問者の气氛 > 0 && TALENT:奴隷:浮気公認 < 5
 	;訪問者が誰かとうふふ中だったら行かない(相手して貰えないので)
@@ -177,8 +139,8 @@ RETURN 1
 @会外泊(奴隷)
 #FUNCTION
 #DIM 奴隷
-IF TALENT:奴隷:浮気公認 < 4 && !TALENT:奴隷:公众便所
-	;浮気公認４レベル以上、または公众便所が必要
+IF TALENT:奴隷:浮気公認 < 4
+	;浮気公認４レベル以上
 	SIF CFLAG:奴隷:好感度 >= CFLAG:奴隷:屈服度 || TALENT:奴隷:恋慕 == 0
 		RETURNF 0
 ENDIF
@@ -203,12 +165,8 @@ IF !強制外出
 ENDIF
 IF TALENT:奴隷:浮気公認 == 5
 	CALL GoOut_SeeYou_900_做访问者妻子(奴隷,外出理由)
-ELSEIF TALENT:奴隷:NTR == 0 && TALENT:奴隷:浮気公認 < 4 && !TALENT:奴隷:公众便所
+ELSEIF TALENT:奴隷:NTR == 0 && TALENT:奴隷:浮気公認 < 4
 	CALL GoOut_SeeYou_900_秘密外泊(奴隷,外出理由)
-ELSEIF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-	CALL GoOut_SeeYou_900_0(奴隷,外出理由)
-ELSEIF TALENT:奴隷:公众便所
-	CALL GoOut_SeeYou_900_1(奴隷,外出理由)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	CALL GoOut_SeeYou_900_2(奴隷,外出理由)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
@@ -235,17 +193,6 @@ ENDIF
 PRINTL
 ;お持ち帰り時初期化処理
 CALL INIT_TAKINGOUT(奴隷)
-[SKIPSTART]
-;处女公众便所競売
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:处女 
-	CALL NTR_VIRGIN_AUCTION(奴隷)
-ELSE
-[SKIPEND]
-;口上呼び出しの前に口上の特殊な客情報生成があれば実行
-TRYCALLLIST
-	FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_MAKE_CLIENT(奴隷)
-	FUNC NTR_KOJO_K_MAKE_CLIENT(奴隷)
-ENDFUNC
 ;口上呼び出し、現在の口上は訪問者宅描写が混じっているので訪問者宅を前提とする
 IF NTR_CHK_VISIBLE(位置_訪問者宅)
 	TRYCALLLIST
@@ -266,7 +213,7 @@ RETURN 0
 #DIM 奴隷
 #DIM 理由
 #DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
+同伴 = (FLAG:访问者当前位置 != 位置_訪問者宅)
 PRINTFORMW 「哪，我要走了哦~~」
 PRINTFORMW 「就像%CALLNAME:MASTER%希望的那样，去做%NTR_NAME(0)%的妻子，住到对面去了~❤~」
 PRINTFORMW 与%CALLNAME:奴隷%告别了…
@@ -278,55 +225,12 @@ PRINTFORMW %CALLNAME:奴隷%向着%NTR_NAME(0)%家的方向离开了···
 #DIM 奴隷
 #DIM 理由
 #DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
+同伴 = (FLAG:访问者当前位置 != 位置_訪問者宅)
 PRINTDATAL
 	DATAFORM %CALLNAME:奴隷%说是要出去玩，打了声招呼就走了。
 	DATAFORM %CALLNAME:奴隷%说是要出去办些事。
 	DATAFORM %CALLNAME:奴隷%说这几天过得很闷，想要出去散散心。
 ENDDATA
-
-
-;-------------------------------------------------------------------------------
-;訪問者の家へおでかけ：[亲爱][公众便所]
-@GoOut_SeeYou_900_0(奴隷,理由=0)
-#DIM 奴隷
-#DIM 理由
-#DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
-;亲爱つき公众便所はこっそりいなくなる
-IF 同伴
-	PRINTFORML %NTR_NAME(0)+"要求的『工作』的时间到了，"+CALLNAME:奴隷+"因为害怕被"+CALLNAME:MASTER+"发现，所以悄悄跟着"+NTR_NAME(0)+"离开了……。"%
-ELSE
-	PRINTFORML %NTR_NAME(0)+"要求的『工作』的时间到了，"+CALLNAME:奴隷+"为了不被"+CALLNAME:MASTER+"发现，悄悄走向了"+NTR_NAME(0)+"指定的场所……。"%
-ENDIF
-RETURN 1
-
-;-------------------------------------------------------------------------------
-;訪問者の家へおでかけ：[公众便所]
-@GoOut_SeeYou_900_1(奴隷,理由=0)
-#DIM 奴隷
-#DIM 理由
-#DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
-;公众便所はお仕事として出かける
-
-TRYCALLLIST
-	FUNC KOJO_MESSAGE_K{奴隷}_SeeYou_900_1_Reason(奴隷,同伴,理由)
-	FUNC KOJO_MESSAGE_K{奴隷}_SeeYou_900_1(奴隷,同伴)
-	FUNC KOJO_MESSAGE_KU_SeeYou_900_1(奴隷,同伴)
-ENDFUNC
-
-IF 同伴
-	PRINTDATAL
-		DATAFORM %CALLNAME:奴隷+"被"+NTR_NAME(0)+"拉着手带走了・・。"%
-		DATAFORM %CALLNAME:奴隷+"被"+NTR_NAME(0)+"半强迫地带走了・・。"%
-		DATAFORM %CALLNAME:奴隷+"满脸通红地被"+NTR_NAME(0)+"带走了・・。"%
-	ENDDATA
-ELSE
-	PRINTFORML %CALLNAME:奴隷+"告诉"+CALLNAME:MASTER+"自己将要去"+NTR_NAME(0)+"的家・・。"%
-ENDIF
-
-RETURN 1
 
 ;-------------------------------------------------------------------------------
 ;訪問者の家へおでかけ：FAV_寝取られ
@@ -334,7 +238,7 @@ RETURN 1
 #DIM 奴隷
 #DIM 理由
 #DIM 同伴
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
+同伴 = (FLAG:访问者当前位置 != 位置_訪問者宅)
 ;積極的にお出かけする
 
 TRYCALLLIST
@@ -360,7 +264,7 @@ RETURN 1
 #DIM 奴隷
 #DIM 理由
 #DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
+同伴 = (FLAG:访问者当前位置 != 位置_訪問者宅)
 
 TRYCALLLIST
 	FUNC KOJO_MESSAGE_K{奴隷}_SeeYou_900_3(奴隷,同伴)
@@ -385,7 +289,7 @@ RETURN 1
 #DIM 奴隷
 #DIM 理由
 #DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
+同伴 = (FLAG:访问者当前位置 != 位置_訪問者宅)
 
 TRYCALLLIST
 	FUNC KOJO_MESSAGE_K{奴隷}_SeeYou_900_4(奴隷,同伴)
@@ -410,7 +314,7 @@ RETURN 1
 #DIM 奴隷
 #DIM 理由
 #DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
+同伴 = (FLAG:访问者当前位置 != 位置_訪問者宅)
 
 TRYCALLLIST
 	FUNC KOJO_MESSAGE_K{奴隷}_SeeYou_900_5(奴隷,同伴)
@@ -435,7 +339,7 @@ RETURN 1
 #DIM 奴隷
 #DIM 理由
 #DIM 同伴 
-同伴 = (FLAG:訪問者の現在位置 != 位置_訪問者宅)
+同伴 = (FLAG:访问者当前位置 != 位置_訪問者宅)
 IF 同伴
 	PRINTFORML %CALLNAME:奴隷+"被"+NTR_NAME(0)+"邀请出去了、说打算在"+NTR_NAME(0)+"的家住下……。"%
 ELSE

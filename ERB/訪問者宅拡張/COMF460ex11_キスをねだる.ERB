@@ -23,7 +23,7 @@ IF RESULT:0 == 0
 ENDIF
 ;SKIPDISPが既に設定されているかもしれないので退避して後で復帰
 SKIPDISP退避 = ISSKIP()
-IF !NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+IF !NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 	SKIPDISP 1
 ENDIF
 PRINTFORML %CALLNAME:奴隷+"准备亲吻、"+NTR_NAME(0)+"娇嫩的嘴唇前，询问希望温柔点还是激烈点"%

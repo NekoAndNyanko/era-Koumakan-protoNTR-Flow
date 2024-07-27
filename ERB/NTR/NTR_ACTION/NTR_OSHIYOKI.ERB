@@ -10,11 +10,7 @@ IF 奴隷 == 0
 	;その他住人
 ELSE
 	仕置き行為上限=1
-	;公众便所
-	IF TALENT:奴隷:公众便所
-		仕置き行為上限=5
-		;寝取られ
-	ELSEIF TALENT:奴隷:NTR
+	IF TALENT:奴隷:NTR
 		仕置き行為上限=4
 	ELSE
 		;行為種別で分岐
@@ -38,10 +34,6 @@ ELSE
 			仕置き行為 = 1
 		ENDIF
 	ENDIF
-	;公众便所にノーパンはない
-	IF TALENT:奴隷:公众便所 && 仕置き行為 == 0
-		仕置き行為 = 1
-	ENDIF
 	;結果に応じて処理
 	IF 仕置き行為 == 3
 		CALL NTR_PUNISHMENT_3(奴隷)
@@ -62,7 +54,7 @@ RETURN 0
 SIF !CFLAG:奴隷:服装_下半身下着２
 	RETURN 1
 CFLAG:奴隷:服装_下半身下着２ = 0
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 	PRINTFORML %NTR_NAME(0)%把%CALLNAME:奴隷%的内裤夺走了
 	PRINTFORML 下达了今天一天不准穿内裤的命令，然后整理了弄乱的衣服…
 	SIF FLAG:口上颜色
@@ -88,15 +80,9 @@ IF TALENT:奴隷:处女
 	RETURN 0
 ENDIF
 CFLAG:奴隷:跳蛋挿入 = 240
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
-	IF TALENT:奴隷:公众便所
-		PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的小穴里插入跳蛋然后固定住
-		PRINTFORML 然后锁上了贞操带。
-		PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
-	ELSE
-		PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的小穴里插入跳蛋然后固定住
-		PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
-	ENDIF
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+	PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的小穴里插入跳蛋然后固定住
+	PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
 	SIF FLAG:口上颜色
 		CALL KOJO_COLOR(奴隷)
 	TRYCALLLIST
@@ -115,15 +101,9 @@ RETURN 0
 SIF CFLAG:奴隷:跳蛋A挿入 != 0
 	RETURN 1
 CFLAG:奴隷:跳蛋A挿入 = 240
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
-	IF TALENT:奴隷:公众便所
-		PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的后穴里插入跳蛋然后固定住
-		PRINTFORML 然后锁上了贞操带。
-		PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
-	ELSE
-		PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的后穴里插入跳蛋然后固定住
-		PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
-	ENDIF
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+	PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的后穴里插入跳蛋然后固定住
+	PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
 	SIF FLAG:口上颜色
 		CALL KOJO_COLOR(奴隷)
 	TRYCALLLIST
@@ -145,15 +125,9 @@ IF !HAS_VAGINA(奴隷)
 ENDIF
 CFLAG:奴隷:跳蛋挿入 = 240
 CFLAG:奴隷:跳蛋A挿入 = 240
-IF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
-	IF TALENT:奴隷:公众便所
-		PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的两个小穴里插入跳蛋然后固定住
-		PRINTFORML 然后锁上了贞操带。
-		PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
-	ELSE
-		PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的两个小穴里插入跳蛋然后固定住
-		PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
-	ENDIF
+IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+	PRINTFORML %NTR_NAME(0)%在%CALLNAME:奴隷%的两个小穴里插入跳蛋然后固定住
+	PRINTFORML 命令暂时保持这个样子，然后整理了弄乱的衣服…
 	SIF FLAG:口上颜色
 		CALL KOJO_COLOR(奴隷)
 	TRYCALLLIST
@@ -177,7 +151,7 @@ SIF !HAS_VAGINA(奴隷)
 SIF CFLAG:奴隷:精液残留中 != 0
 	RETURN 1
 CFLAG:奴隷:精液残留中 = 40
-IF NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 	PRINTFORML 
 	IF 部位 == 0
 		PRINTFORML %NTR_NAME(0)%注入的大量精液就像是拒绝溢出一样在%CALLNAME:奴隷%的膣内留了下来…

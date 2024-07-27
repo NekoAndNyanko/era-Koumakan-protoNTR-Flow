@@ -27,7 +27,7 @@ SOURCE:反感 = 300
 
 
 IF TEQUIP:膣镜 == 0 && PALAM:润滑 < PALAMLV:3
-	SIF CFLAG:現在位置 != 5 && ITEM:润滑剂
+	SIF CFLAG:当前位置 != 5 && ITEM:润滑剂
 		ITEM:润滑剂 -= 1
 	SOURCE:液体 = 5000
 ENDIF

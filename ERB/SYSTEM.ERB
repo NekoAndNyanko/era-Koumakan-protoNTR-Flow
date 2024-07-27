@@ -233,7 +233,7 @@ ELSE
 	;SETBIT FLAG:ＮＴＲパッチ設定, 6	;把角色带回家
 	SETBIT FLAG:ＮＴＲパッチ設定,7
 	SETBIT FLAG:ＮＴＲパッチ設定, 24
-	SETBIT FLAG:ＮＴＲパッチ設定,27
+	SETBIT FLAG:ＮＴＲパッチ設定, 27
 	SETBIT FLAG:ＮＴＲパッチ設定, 31
 	SETBIT FLAG:ＮＴＲパッチ設定, 32
 	FOR LOCAL, 1, CHARANUM
@@ -265,7 +265,6 @@ ENDIF
 [SKIPEND]
 
 ;//默认设置
-FLAG:屏蔽部分貞操帶 = 1
 FLAG:AA表示 = 1
 FLAG:画像表示 = 3
 FLAG:图像_插图显示 = 1
@@ -291,7 +290,7 @@ CALL SHORT_CUT_MODE
 
 FOR LOCAL,0,CHARANUM
 	;開始位置
-	CFLAG:LOCAL:現在位置 = CFLAG:LOCAL:311
+	CFLAG:LOCAL:当前位置 = CFLAG:LOCAL:311
 	;服装
 	CALL CLOTHES_SETTING(LOCAL,1)
 NEXT

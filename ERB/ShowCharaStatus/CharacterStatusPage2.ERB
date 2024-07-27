@@ -220,14 +220,14 @@ IF HAS_VAGINA(对象)
 	ENDIF
 ENDIF
 
-
-@PRINT_SUB_V(女方,男方)
+@PRINT_SUB_V(女方,男方,计算阴道拉伸)
 #FUNCTION
 #DIM 女方
 #DIM 男方
 #DIM 女方体型
 #DIM 男方尺寸
 #DIM 判断值
+#DIM 计算阴道拉伸
 判断值 = 0
 IF 男方 == MASTER
 	男方尺寸 = TALENT:MASTER:阴茎尺寸
@@ -238,22 +238,26 @@ ELSEIF 男方 < CHARANUM
 	男方尺寸 = TALENT:男方:阴茎尺寸
 ELSE
 	男方尺寸 = 0
-	PRINTL 【警告】在PRINT_SUB_V(女方,男方)中出现了意外情况，此时男方={男方}
+	PRINTL 【警告】在PRINT_SUB_V(女方,男方,计算阴道拉伸)中出现了意外情况，此时男方={男方}
 ENDIF
 IF 女方 < CHARANUM
 	女方体型 = TALENT:女方:体型
 ELSE
 	女方体型 = 0
-	PRINTL 【警告】在PRINT_SUB_V(女方,男方)中出现了意外情况，此时女方={女方}
+	PRINTL 【警告】在PRINT_SUB_V(女方,男方,计算阴道拉伸)中出现了意外情况，此时女方={女方}
 ENDIF
-;基本思路是比如尺寸0（一般大小）对体型0（正常体型）来说刚刚好，差值越大说明男人的阴茎对女人越大，然后加上特殊素质的补正
-IF TALENT:女方:阴道深度 != 3
-	判断值 += 男方尺寸 - 女方体型 - TALENT:女方:阴道深度
+IF 计算阴道拉伸
+	;基本思路是比如尺寸0（一般大小）对体型0（正常体型）来说刚刚好，差值越大说明男人的阴茎对女人越大，然后加上特殊素质的补正
+	IF CFLAG:女方:阴道深度 != 3
+		判断值 += 男方尺寸 - 女方体型 - CFLAG:女方:阴道深度
+	ELSE
+		判断值 += 男方尺寸 - 女方体型 - 2
+	ENDIF
+	IF 男方 == 人物_訪問者 && 判断值 < 0
+		判断值 = 0
+	ENDIF
 ELSE
-	判断值 += 男方尺寸 - 女方体型 - 2
-ENDIF
-IF 男方 == 人物_訪問者 && 判断值 < 0
-	判断值 = 0
+	判断值 += 男方尺寸 - 女方体型
 ENDIF
 SELECTCASE 判断值
 	CASE IS <= -4
@@ -294,64 +298,9 @@ ENDSELECT
 ;特大 2		5		4		3		2		1		0	 	-1
 ;极大 3		6		5		4		3		2		1		 0	;这个实际上不存在，阴茎2就是极限了，考虑访问者的判定值要不要+1
 
-;不考虑素质只考虑尺寸和体型的版本
-@PRINT_SUB_V_BASE(女方,男方)
-#FUNCTION
-#DIM 女方
-#DIM 男方
-#DIM 女方体型
-#DIM 男方尺寸
-#DIM 判断值
-判断值 = 0
-IF 男方 < CHARANUM
-	男方尺寸 = TALENT:男方:阴茎尺寸
-ELSEIF 男方 == 人物_訪問者
-	男方尺寸 = 2
-	; 判断值 += 1
-ELSE
-	男方尺寸 = 0
-	PRINTL 【警告】在PRINT_SUB_V_BASE(女方,男方)中出现了意外情况，此时男方={男方}
-ENDIF
-IF 女方 < CHARANUM
-	女方体型 = TALENT:女方:体型
-ELSE
-	女方体型 = 0
-	PRINTL 【警告】在PRINT_SUB_V_BASE(女方,男方)中出现了意外情况，此时女方={女方}
-ENDIF
-判断值 += 男方尺寸 - 女方体型
-SELECTCASE 判断值
-	CASE IS < -4
-		;只能在前半来回的程度，完全没有充实感啦
-		RETURNF -4
-	CASE -3
-		;能不能到一半还是个问题的程度
-		RETURNF -3
-	CASE -2
-		;能抵达后半，但再怎么努力都没办法填满的程度
-		RETURNF -2
-	CASE -1
-		;努努力能碰到底部的程度
-		RETURNF -1
-	CASE 0
-		;刚刚好抵住的程度
-		RETURNF 0
-	CASE 1
-		;非常充实、征服子宫的程度，会极大拉伸阴道的程度
-		RETURNF 1
-	CASE 2
-		;使阴道过度扩张、完全填满内心的程度，完全插入会过分拉伸阴道的程度
-		RETURNF 2
-	CASE 3
-		;仅仅是进入就让女人升起渴望的程度，即使阴道拼命拉伸，也无法完全插入的程度，完全插入会进入子宫的程度，现实中虽然会挂掉，但游戏里就算了吧，不要纠结
-		RETURNF 3
-	CASE IS >=4
-		;完全没入女人身体、彻底支配身心的程度，emmm这是什么玩意，我写了什么东西，算了，访问者嘛，特殊对待
-		RETURNF 4
-ENDSELECT
-
 @PRINT_V_DEPICT(对象)
 #DIM 对象
-SELECTCASE PRINT_SUB_V(对象,MASTER)
+SELECTCASE PRINT_SUB_V(对象,MASTER,1)
 	CASE 4
 				;PRINTFORML 不经过惨无人道的训练就无法容纳%CALLNAME:MASTER%的阴茎，自然更不用说%NTR_NAME(0)%了
 		PRINTFORML 【错误】不可能出现的情形：可能是MASTER阴茎尺寸被意外修改或角色%CALLNAME:对象%的体型设置错误
@@ -377,56 +326,81 @@ SELECTCASE PRINT_SUB_V(对象,MASTER)
 	CASE -4
 		PRINTFORML 即使%CALLNAME:MASTER%完全插入，这个小穴也不会回以快感了吧
 	CASEELSE
-		PRINTFORML 【错误】不可能出现的情形：PRINT_SUB_V(对象,MASTER)的返回结果不在[-4,4]
+		PRINTFORML 【错误】不可能出现的情形：PRINT_SUB_V(对象,MASTER,1)的返回结果不在[-4,4]
 ENDSELECT
 IF EXP:对象:浮気Ｖ性交经验 > 0
-	SELECTCASE PRINT_SUB_V_BASE(对象,人物_訪問者)
+	SELECTCASE PRINT_SUB_V(对象,人物_訪問者,0)
+	;小穴穹隆后移（1）->小穴时常拉伸（2）->永久性穹隆后移（2）->小穴收缩自如（3）
+		;芙兰朵露那种
 		CASE 4
-			IF TALENT:对象:阴道深度 == 3
-				PRINTFORML 尽管开发完毕的小穴能够收缩自如，但要想完全吞没%NTR_NAME(0)%的阴茎仍然需要全身心地奉献
-			ELSEIF TALENT:对象:阴道深度 == 2
-				PRINTFORML 被彻底蹂躏的小穴几乎无法回到原来的样子，然而已经变得宽松而幽长的小穴要吞下%NTR_NAME(0)%的阴茎仍然有些勉强
-			ELSEIF TALENT:对象:阴道深度 == 1
+			IF CFLAG:对象:阴道深度 == 3
+				PRINTFORML 尽管开发完毕的小穴能够收缩自如，但从两腿间到小腹深处，为%NTR_NAME(0)%而生的小穴却永远地改变了
+				PRINTFORML 为了塑造这小腹深处悠长而深邃的通道，小小的身躯拼尽了全力去改变，从腰肢到体态，从肌肉到步姿……
+				PRINTFORML 彻底改变的身体美丽而动人，%NTR_NAME(0)%的调教永远地留在了这娇小的身体里
+			ELSEIF CFLAG:对象:阴道深度 == 2
+				IF TALENT:对象:小穴穹隆后移 == 2
+					PRINTFORML 彻底无法回到原样的小穴有着与体型不相匹配的深邃，长久的迎合让身体完全适应了%NTR_NAME(0)%的阴茎
+					PRINTFORML 如同不断被打入身体的快感，穹隆的过度后移使得娇小的身躯拼命为膣壁分裂新的细胞，永久地为迎接%NTR_NAME(0)%做好准备
+				ELSE
+					PRINTFORML 被彻底蹂躏的小穴几乎无法回到原来的样子，然而已经变得宽松而幽长的小穴要吞下%NTR_NAME(0)%的阴茎仍然有些勉强
+				ENDIF
+			ELSEIF CFLAG:对象:阴道深度 == 1
 				PRINTFORML 尽管经过初步的开发，小穴深处的穹隆开始位移，也难以接纳%NTR_NAME(0)%远超自己体型的阴茎
 			ELSE
 				PRINTFORML 如果足够松弛，%NTR_NAME(0)%可以随意地贯穿这个小穴，但不经调教地贸然出手，恐怕会造成大出血吧
 			ENDIF
+		;大妖精、爱丽丝那种
 		CASE 3
-			IF TALENT:对象:阴道深度 == 3
+			IF CFLAG:对象:阴道深度 == 3
 				PRINTFORML 开发完毕的小穴拉伸时深邃无比，收缩时宛如处女，被调教得与%NTR_NAME(0)%凶恶的阴茎完美契合
-			ELSEIF TALENT:对象:阴道深度 == 2
-				PRINTFORML 被开发得足够让%NTR_NAME(0)%远超规格的阴茎轻松进出，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
-			ELSEIF TALENT:对象:阴道深度 == 1
+				PRINTFORML 优美体态的深处，使%NTR_NAME(0)%的尖端完美嵌入的穹隆与子宫口，诉说着这具身体经历的快乐回忆……
+			ELSEIF CFLAG:对象:阴道深度 == 2
+				IF TALENT:对象:小穴穹隆后移 == 2
+					PRINTFORML 如同不断被%NTR_NAME(0)%打入深处的快感，连接子宫口的膣壁不断分裂新的细胞，后移的穹隆永久地改变了小穴尽头的风景
+					PRINTFORML 为接纳%NTR_NAME(0)%而向内延展的小穴改变了子宫口的位置，带动着整个腰肢变得纤细而优美
+				ELSE
+					PRINTFORML 被开发得足够让%NTR_NAME(0)%远超规格的阴茎轻松进出，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
+				ENDIF
+			ELSEIF CFLAG:对象:阴道深度 == 1
 				PRINTFORML 随着宫颈被不断地冲刺，小穴深处的穹隆开始位移，已经勉强能够容纳%NTR_NAME(0)%的阴茎了
 			ELSE
 				PRINTFORML 如果不经过开发，恐怕难以容纳%NTR_NAME(0)%的阴茎
 			ENDIF
+		;咲夜那种
 		CASE 2
-			IF TALENT:对象:阴道深度 == 3
+			IF CFLAG:对象:阴道深度 == 3
 				PRINTFORML 开发完毕的小穴拉伸时深邃无比，收缩时宛如处女，被调教得与%NTR_NAME(0)%凶恶的阴茎完美契合
-			ELSEIF TALENT:对象:阴道深度 == 2
-				PRINTFORML 被开发得与%NTR_NAME(0)%远超规格的阴茎完美契合，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
-			ELSEIF TALENT:对象:阴道深度 == 1
+				PRINTFORML 于小腹深处诞生的那与身材不符的深邃，连同着少女的身体都变得更加匀称而美丽，诉说着这具身体经历的快乐回忆……
+			ELSEIF CFLAG:对象:阴道深度 == 2
+				IF TALENT:对象:小穴穹隆后移 == 2
+					PRINTFORML 少女美丽的外表下，是因%NTR_NAME(0)%而彻底变化的蜜穴，是没有特殊手段就再也不会收缩的深邃狭间
+					PRINTFORML 就如同不断被%NTR_NAME(0)%打入深处的快感一样，子宫口与蜜穴的尽头，那被改变了的风景将伴随她的生命始终
+				ELSE
+					PRINTFORML 被开发得与%NTR_NAME(0)%远超规格的阴茎完美契合，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
+				ENDIF
+			ELSEIF CFLAG:对象:阴道深度 == 1
 				PRINTFORML 随着宫颈被不断地冲刺，小穴深处的穹隆开始位移，已经能够完全容纳%NTR_NAME(0)%的阴茎了
 			ELSE
 				PRINTFORML 对于这个小穴来说，容纳%NTR_NAME(0)%的阴茎有些勉强
 			ENDIF
 		CASE 1
-			IF TALENT:对象:阴道深度 == 3
-				PRINTFORML 开发完毕的小穴不仅完美契合%NTR_NAME(0)%阴茎的形状，还能够收缩自如，宛如处女
-			ELSEIF TALENT:对象:阴道深度 == 2
+			IF CFLAG:对象:阴道深度 == 3
+				SIF TALENT:对象:小穴扩张状态 == 2
+					PRINTFORML 开发完毕的小穴不仅完美契合%NTR_NAME(0)%阴茎的形状，还能够收缩自如，宛如处女
+			ELSEIF CFLAG:对象:阴道深度 == 2
 				PRINTFORML 被彻底扩张拉伸的小穴完全契合了%NTR_NAME(0)%阴茎的形状，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
-			ELSEIF TALENT:对象:阴道深度 == 1
+			ELSEIF CFLAG:对象:阴道深度 == 1
 				PRINTFORML 经过一段时间的开发，随着深处的穹隆开始位移，小穴变得逐渐契合%NTR_NAME(0)%的阴茎了
 			ELSE
 				PRINTFORML %NTR_NAME(0)%的阴茎可以轻易地填满整个小穴，并极大地拉长肉壁的深度
 			ENDIF
 		CASE 0
-			IF TALENT:对象:阴道深度 == 3
-				PRINTFORML 开发完毕的小穴收缩自如，无论怎样的性爱都能够为自己的伴侣献上
-			ELSEIF TALENT:对象:阴道深度 == 2
+			IF CFLAG:对象:阴道深度 == 3
+				SIF TALENT:对象:小穴扩张状态 == 2
+					PRINTFORML 开发完毕的小穴收缩自如，无论怎样的性爱都能够为自己的伴侣献上
+			ELSEIF CFLAG:对象:阴道深度 == 2
 				PRINTFORML 在不断的调教下，身体已经认定了自己的伴侣，即使不做爱时为接纳%NTR_NAME(0)%而向内延展的小穴也不会恢复原状
-			ELSEIF TALENT:对象:阴道深度 == 1
+			ELSEIF CFLAG:对象:阴道深度 == 1
 				PRINTFORML 由于子宫口被不断地刺激，小穴深处的穹隆开始位移，本能地为接纳%NTR_NAME(0)%提供着更多地空间
 			ELSE
 				PRINTFORML %NTR_NAME(0)%的阴茎可以完美地与这个小穴契合
@@ -435,7 +409,7 @@ IF EXP:对象:浮気Ｖ性交经验 > 0
 			PRINTFORML 【错误】不可能出现的情形：访问者阴茎尺寸对%CALLNAME:对象%为的差值不在0-4
 	ENDSELECT
 ENDIF
-SIF TALENT:对象:阴道深度 == 3
+SIF CFLAG:对象:阴道深度 == 3
 	PRINTFORML 能够自由收缩的小穴恢复了紧致，即使是经验十足的老手也看不出性爱在上面留下的中古痕迹
 PRINTL
 SELECTCASE ABL:对象:Ｖ感觉

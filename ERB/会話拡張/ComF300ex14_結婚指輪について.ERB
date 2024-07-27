@@ -42,13 +42,7 @@ RETURN 1
 @MESSAGE_COM_300_14_01(調教者,奴隷)
 #DIM 調教者
 #DIM 奴隷
-IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
-	;项圈が優先
-	PRINTFORML %"因为自己已经被调教成【商品】了，所以有义务摘下象征爱情的戒指、戴上代表奴隶的项圈。"%
-ELSEIF TALENT:奴隷:公众便所
-	;项圈が優先
-	PRINTFORML %"因为【客人们】表示了不满，所以才摘下了戒指、戴上奴隶项圈。"%
-ELSEIF TALENT:奴隷:NTR
+IF TALENT:奴隷:NTR
 	;チョーカーが優先
 	PRINTFORML %"因为已经不是"+CALLNAME:MASTER+"的人了，所以没必要戴着戒指了。"%
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)

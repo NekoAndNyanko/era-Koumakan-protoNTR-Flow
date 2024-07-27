@@ -47,15 +47,7 @@ RETURN RESULT
 奴隷 = 人物_帕秋莉
 RET_VAL = 0
 
-IF TALENT:奴隷:公众便所
-
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「ええ・・そうね。抱き合うだけなら、鍵なんて要らないわ・・」
-	ELSE
-		PRINTFORML 「・・やめておきなさい」
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
 
 	PRINTDATAL
 		DATAFORM 「・・仕方ないわね・・少しだけよ？」
@@ -222,18 +214,7 @@ IF TFLAG:193
 	RET_VAL = 1
 	;告白失敗
 ELSE
-	;公众便所
-	IF TALENT:奴隷:公众便所
-		PRINTFORML 「・・やめておきなさい・・こんな汚れた女に、想いを寄せる必要なんてないわ」
-		IF IS_DOUTEI(MASTER)
-			PRINTFORML 「そんなに童贞を捨てたいのかしら？」
-		ELSE
-			PRINTFORML 「そんなに私を抱きたいのかしら？」
-		ENDIF
-		PRINTFORML 「それなら、あの人にお金を渡して鍵を買ってちょうだい」
-		PRINTFORML 「あなたの目的は、それで达成できるわ」
-		;寝取られ
-	ELSEIF TALENT:奴隷:NTR
+	IF TALENT:奴隷:NTR
 		IF 400 < CFLAG:奴隷:好感度
 			PRINTFORML 「・・だめよ・・だめなのよ・・」
 		ELSEIF 300 < CFLAG:奴隷:好感度

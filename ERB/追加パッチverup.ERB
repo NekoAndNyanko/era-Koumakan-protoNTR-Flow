@@ -31,8 +31,8 @@ IF FLAG:パッチ初期設定フラグ <= 1
 
 	FOR LOCAL, 0, CHARANUM
 		;妊娠してない且つ診療所にいるなら開始位置に戻す
-		IF LOCAL != MASTER && !TALENT:LOCAL:妊娠 && CFLAG:LOCAL:現在位置 == 950
-			CFLAG:LOCAL:現在位置 = CFLAG:LOCAL:311
+		IF LOCAL != MASTER && !TALENT:LOCAL:妊娠 && CFLAG:LOCAL:当前位置 == 950
+			CFLAG:LOCAL:当前位置 = CFLAG:LOCAL:311
 		ENDIF
 	NEXT
 	FLAG:パッチ初期設定フラグ = 2
@@ -50,9 +50,9 @@ IF FLAG:パッチ初期設定フラグ <= 2
 ENDIF
 
 IF FLAG:パッチ初期設定フラグ <= 3
-	;子宮内体積設定(男も一応含む)
+	;子宫内体积設定(男も一応含む)
 	FOR LOCAL, 0, CHARANUM
-		CALL 子宮内体積設定(LOCAL)
+		CALL 子宫内体积設定(LOCAL)
 	NEXT
 	FLAG:パッチ初期設定フラグ  = 4
 ENDIF
@@ -143,16 +143,16 @@ ENDIF
 IF FLAG:パッチ初期設定フラグ <= 11
 	;催眠パッチで民家に行ってしまった人を強制的に復帰
 	FOR LOCAL, 開始時人数, CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_民家
-			CFLAG:LOCAL:現在位置 = 位置_红魔馆_正门
+		SIF CFLAG:LOCAL:当前位置 == 位置_民家
+			CFLAG:LOCAL:当前位置 = 位置_红魔馆_正门
 	NEXT
 	FLAG:パッチ初期設定フラグ = 12
 ENDIF
 IF FLAG:パッチ初期設定フラグ <= 12
 	;催眠パッチで民家に行ってしまった人を強制的に復帰
 	FOR LOCAL, 1, CHARANUM
-		SIF CFLAG:LOCAL:現在位置 == 位置_人間の里 || CFLAG:LOCAL:現在位置 == 位置_民家
-			CFLAG:LOCAL:現在位置 = 位置_红魔馆_正门
+		SIF CFLAG:LOCAL:当前位置 == 位置_人間の里 || CFLAG:LOCAL:当前位置 == 位置_民家
+			CFLAG:LOCAL:当前位置 = 位置_红魔馆_正门
 	NEXT
 	FLAG:パッチ初期設定フラグ = 13
 ENDIF
@@ -164,7 +164,7 @@ IF FLAG:パッチ初期設定フラグ <= 13
 			CONTINUE
 		;訪問していない子供の位置を変更
 		SIF CFLAG:LOCAL:子供訪問フラグ >= 0
-			CFLAG:LOCAL:現在位置 = 位置_里の住処
+			CFLAG:LOCAL:当前位置 = 位置_里の住処
 	NEXT
 	FLAG:パッチ初期設定フラグ = 14
 ENDIF

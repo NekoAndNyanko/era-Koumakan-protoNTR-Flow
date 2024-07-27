@@ -1,6 +1,8 @@
 ﻿;オプション設定処理
 @OPTION
-PRINTL 选项设置
+CLEARLINE 10000
+PRINTL □选项设置----------------------------------------------------------------------------------------□
+PRINTL
 PRINTL [0] - 文本设定
 PRINTL [1] - 命令过滤器
 PRINT [2] - 消耗品自动购入 
@@ -25,15 +27,17 @@ PRINTFORML [27] - 房间和住人的气味设定
 ;PRINTFORML [28] - 催眠深度の上昇倍率設定：\@ FLAG:催眠倍率 ?{FLAG:催眠倍率}倍#1倍\@
 PRINTFORML [29] - 簡易調教模式（阻止反発刻印）：\@ GETBIT(FLAG:簡易調教模式,1) ?ON#OFF\@
 PRINTFORML [30] - 私处颜色初始化
-;PRINTFORML [31] - 屏蔽公衆便所、肉便器和管理人贞操带：\@ GETBIT(FLAG:屏蔽部分貞操帶,1) ?ON#OFF\@
 PRINTFORML [32] - 禁止受精：\@ GETBIT(FLAG:禁止受精,1) ?ON#OFF\@
 PRINTFORML [98] - \@ FLAG:AA表示 ? ┬ # %" "%- \@图像显示%"	" * 5%\@ FLAG:AA表示 ? 打开 # 关闭 \@
 SIF FLAG:AA表示
 	PRINTFORML [99] - └图像显示设置
 PRINTL
 PRINTL [100]-返回
+PRINTL □选项设置----------------------------------------------------------------------------------------□
 $INPUT_LOOP
 INPUT
+SIF RESULT != 100
+	CLEARLINE 10000
 IF RESULT == 0
 	CALL OPTION_TEXT_SETTING
 ELSEIF RESULT == 1
@@ -63,28 +67,16 @@ ELSEIF RESULT == 20
 	CALL INHABITANT_SETTINGS
 ELSEIF RESULT == 21
 	CALL 匂いフェチコンフィグ
-[SKIPSTART]
-ELSEIF RESULT == 24
-	CALL 催眠パッチコンフィグ
-[SKIPEND]
 ELSEIF RESULT == 25
 	CALL 好感度倍率コンフィグ
 ELSEIF RESULT == 26
 	CALL 屈服度倍率コンフィグ
 ELSEIF RESULT == 27
 	CALL 部屋のにおいコンフィグ
-[SKIPSTART]
-ELSEIF RESULT == 28
-	CALL 催眠倍率コンフィグ
-[SKIPEND]
 ELSEIF RESULT == 29
 	CALL 簡易調教模式選項
 ELSEIF RESULT == 30
 	CALL 私处颜色初始化
-[SKIPSTART]
-ELSEIF RESULT == 31
-	CALL 屏蔽部分貞操帶選項
-[SKIPEND]
 ELSEIF RESULT == 32
 	CALL 禁止受精選項
 ELSEIF RESULT == 98
@@ -392,13 +384,6 @@ FOR LOCAL,1,開始時人数
 	BASE:LOCAL:小穴色素 = 0
 	BASE:LOCAL:肛门色素 = 0
 NEXT
-
-@屏蔽部分貞操帶選項
-IF GETBIT(FLAG:屏蔽部分貞操帶,1)
-	CLEARBIT FLAG:屏蔽部分貞操帶,1
-ELSE
-	SETBIT FLAG:屏蔽部分貞操帶,1
-ENDIF
 
 @禁止受精選項
 IF GETBIT(FLAG:禁止受精,1)

@@ -652,7 +652,7 @@ RETURN RESULT
 IF FIRSTTIME(TOSTR(350),1)
 	;初めて集
 	;大妖精的家OR玩家房间
-	IF (CFLAG:現在位置 ==21) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==21) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「…えっと、するん、ですよね、いいですよ。」
 		PRINTFORML 「%CALLNAME:MASTER%と、したいって私も思ってました。」
 		PRINTFORML 「でも、やっぱり恥ずかしいです。」
@@ -667,7 +667,7 @@ IF FIRSTTIME(TOSTR(350),1)
 	ENDIF
 ELSEIF TALENT:恋慕
 	;あなたOR大妖精的家
-	IF (CFLAG:現在位置 ==21) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==21) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「するんですね…解りました、優しくしてください。」
 		PRINTFORML 「ふふふ、%CALLNAME_K9(人物_大妖精, 人物_琪露诺)%や館の皆に見られたら…。」
 		PRINTFORML 「考えたら少し、怖いですね…%CALLNAME:MASTER%」
@@ -677,7 +677,7 @@ ELSEIF TALENT:恋慕
 	ENDIF
 ELSE
 	;あなたOR大妖精的家
-	IF (CFLAG:現在位置 ==21) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==21) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「きゃぁ！そ、そんないきなり…。」
 		PRINTFORMW 「もう、スケベですね%CALLNAME:MASTER%」
 	ELSE

@@ -48,11 +48,6 @@
 ;以下はprotoNTR版作者（寝の人）による追記
 ;好感度と屈服度の比率の判定基準を変えているため、若干挙動が変わります。
 ;
-;;公众便所
-;寝取られからさらに進んだ状態です。
-;訪問者の命じるまま名も知らぬ男たち相手に嬉々として身体を開いています。
-;ただし恋慕かつ亲爱の場合は売春を强迫され泣く泣く幼い身体を汚されています。
-;
 ;;寝取られ
 ;これは完全に堕とされた状態です。
 ;訪問者との逢瀬に溺れ、あなたの事など眼中にありません。
@@ -100,7 +95,7 @@
 @NTR_KOJO_K6_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「うふふ、大っきい・・・・」
@@ -163,21 +158,7 @@ IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 	ENDIF
 	;その他
 ELSE
-	IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「次の『おしごと』・・？ や・・やだ・・やだよぉ・・」
-			DATAFORM 「え・・？ また『お店』に？ やだ・・もう、あんな事、やだぁ」
-			DATAFORM 「また・・また、あんなこと・・しないといけないの？」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に『仕事』の話を聞かされ泣きそうになっている。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「うふふっ、『お店』に行かなくていいの？」
-			DATAFORM 「あのねっ、この間のお客様、すっごく上手だったよ？」
-			DATAFORM 「ん～～、おおぜいの人より、一人がじっくりしてくれるほうがいいなぁ」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%はあっけらかんとした表情でそんなことを話している。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 		PRINTDATAL
 			DATAFORM 「ねえ、せっかくだからもっと楽しい事しよ・・・・」
 			DATAFORM 「ねえ、人のこないところに行こうよ？」
@@ -234,7 +215,7 @@ RETURN 0
 @NTR_KOJO_KW6_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 		PRINTFORML 「はぁ・・・あったかい・・・」
 		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の膝の上に腰掛けてくつろいでいる。
@@ -7078,12 +7059,12 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「ここならみんなにみつからないよ♪」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の中で%NTR_NAME(0)%に抱きついた。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の中で%NTR_NAME(0)%に抱きついた。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「ここならみんなにみつからないかなぁ・・」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の中で%NTR_NAME(0)%に抱きつかれた。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%の中で%NTR_NAME(0)%に抱きつかれた。
 
 ELSE
 
@@ -7133,61 +7114,6 @@ ENDIF
 IF TALENT:奴隷:浮気公認
 	PRINTFORML 「これでよかったんだよね・・？ %CALLNAME:奴隷%がんばって、%CALLNAME:MASTER%の言うとおりにしたよ？」
 	PRINTFORML %NTR_NAME(0)%と関係を持つことを勧めた%CALLNAME:MASTER%を責めるかのように、%CALLNAME:奴隷%はぽつりと呟いた。
-ENDIF
-
-RETURN 0
-
-;==================================================
-;公众便所宣言
-;==================================================
-@NTR_KOJO_K6_13(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	;たぶんここには来ないと思うけど念のため余計なものを出さないように
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:浮気公認
-		PRINTFORML 「ねぇねぇ%CALLNAME:MASTER%、前に言ってたよね？ もっともっと寝取られたいって・・」
-		PRINTFORML 「だから、その願いをかなえてあげるっ！ え？ どうするのかって？」
-		PRINTFORML 「それはね・・あの人の紹介で、他の男の人とエッチするんだ♪」
-	ELSEIF TALENT:奴隷:淫乱
-		PRINTFORML 「ねぇねぇ%CALLNAME:MASTER%、私ね、もっと気持ちよくなりたいの」
-		PRINTFORML 「%CALLNAME:MASTER%やアノ人だけじゃなくて、もっともっといろんな人とエッチしたいの」
-		PRINTFORML 「それはね・・あの人の紹介で、他の男の人とエッチするんだ♪」
-	ELSE
-		;たぶんないとは思うけど恋慕かつ非公認のケース
-		PRINTFORML （・・いえない・・%CALLNAME:MASTER%に、この事を言うなんてできない・・）
-		PRINTFORML （・・許して・・許して、%CALLNAME:MASTER%・・）
-	ENDIF
-	PRINTFORML 「それでね、あの人が勝手に%CALLNAME:MASTER%とエッチしちゃだめだって言うの」
-	PRINTFORML 「%CALLNAME:奴隷%とエッチするためには、お金を出して、この贞操帯の鍵を買わないといけないんだって」
-	PRINTFORML %CALLNAME:奴隷%は裙子をたくし上げると、股間に装着された贞操帯とその鍵穴を%CALLNAME:MASTER%に見せ付けた。
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「たとえ%MSG_LOVER(奴隷)%でも、ズルをしちゃいけないって言ってたよ。わかった？」
-	ENDIF
-ELSE
-	;初回
-	IF EXP:奴隷:公众便所陷落经验 == 0
-
-		PRINTFORML %CALLNAME:奴隷%は熱にうかされたような表情で呟いた。
-		PRINTFORML 「あのね、今度私、みんなの精液便所になるんだって」
-		PRINTFORML 「いろんな男の人といっぱいエッチするんだって、ご主人様が言ってた♪」
-		PRINTFORML 「あ、でも勝手にエッチしちゃダメなんだって」
-		PRINTFORML 「%CALLNAME:奴隷%とエッチするためには、お金を出して、この贞操帯の鍵を買わないといけないんだって」
-		PRINTFORML %CALLNAME:奴隷%は裙子をたくし上げると、股間に装着された贞操帯とその鍵穴を%CALLNAME:MASTER%に見せ付けた。
-
-		;2回目以降
-	ELSE
-
-		PRINTFORML %CALLNAME:奴隷%は熱にうかされたような表情で呟いた。
-		PRINTFORML 「あのね、今度私、みんなの精液便所に返回ことにしたんだ」
-		PRINTFORML 「いろんな男の人といっぱいエッチするのってやっぱり楽しいの」
-		PRINTFORML 「みんなが%CALLNAME:奴隷%と遊んでくれるんだよ♪」
-		PRINTFORML 「でも勝手にエッチするのは、やっぱりダメなんだって」
-		PRINTFORML 「%CALLNAME:奴隷%とエッチするためには、お金を出して、この贞操帯の鍵を買わないといけないんだって」
-		PRINTFORML %CALLNAME:奴隷%は裙子をたくし上げると、股間に装着された贞操帯とその鍵穴を%CALLNAME:MASTER%に見せ付けた。
-
-	ENDIF
 ENDIF
 
 RETURN 0
@@ -7442,144 +7368,6 @@ ELSE
 ENDIF
 
 ;==================================================
-;贞操帯鍵購入に対する反応
-;==================================================
-;本人
-@NTR_KOJO_K6_16_0(奴隷)
-#DIM 奴隷
-
-PRINTDATAL
-	DATAFORM 「あ・・%CALLNAME:奴隷%のこと買ってくれたんだ」
-	DATAFORM 「あ、それって%CALLNAME:奴隷%の鍵だよね？」
-	DATAFORM 「%CALLNAME:奴隷%のこと買ってくれたんだ」
-ENDDATA
-
-IF TALENT:奴隷:亲爱
-	PRINTDATAL
-		DATAFORM 「ありがとう・・%CALLNAME:MASTER%にだけ買われたいな・・」
-		DATAFORM 「ありがと・・うん・・大好き」
-		DATAFORM 「嬉しいよ・・%CALLNAME:MASTER%だけのものだから・・」
-	ENDDATA
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:人妻
-		PRINTDATAL
-			DATAFORM 「吼啊、夫婦らしいこと、いっぱいシようね」
-			DATAFORM 「贞操帯があると、夫婦なのにエッチできないもんね」
-			DATAFORM 「夫婦なのに、変だよね」
-		ENDDATA
-	ELSE
-		PRINTDATAL
-			DATAFORM 「吼啊、恋人らしいこと、いっぱいシようね」
-			DATAFORM 「贞操帯があると、恋人なのにエッチできないもんね」
-			DATAFORM 「恋人なのに、変だよね」
-		ENDDATA
-	ENDIF
-ELSE
-	PRINTDATAL
-		DATAFORM 「うふっ、どんなサービスすればいいのかな？」
-		DATAFORM 「ねぇ、なにして欲しい？」
-		DATAFORM 「ねぇ、シないの？」
-	ENDDATA
-ENDIF
-
-;本人以外
-@NTR_KOJO_K6_16_1(奴隷)
-#DIM 奴隷
-;公众便所
-IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
-
-	PRINTFORML 「あ・・%CALLNAME_K6(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんだ」
-	PRINTFORML 「次は%CALLNAME:奴隷%のことを買ってね？ ・・ぜったい、ぜったいだよ・・？」
-
-ELSEIF TALENT:奴隷:公众便所
-
-	PRINTFORML 「あ・・%CALLNAME_K6(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんだ」
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「うふっ、今度は%CALLNAME:奴隷%のことを買ってね？ ぜったいだよ？」
-	ELSE
-		PRINTFORML 「%CALLNAME:奴隷%の方が気持ちよくしてあげられるのに」
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
-
-	PRINTFORML 「ふうん・・%CALLNAME_K6(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんだ・・」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
-
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「ふうん・・%CALLNAME:奴隷%がいるのに、%CALLNAME_K6(奴隷, FLAG:贞操帯鍵購入フラグ)%がいいんだ・・」
-	ELSE
-		PRINTFORML 「・・ふうん・・」
-	ENDIF
-	PRINTFORML 「・・どうでもいいけど・・」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「ふうん・・%CALLNAME:奴隷%がいるのに、%CALLNAME_K6(奴隷, FLAG:贞操帯鍵購入フラグ)%がいいんだ・・」
-	ELSE
-		PRINTFORML 「・・ふうん・・」
-	ENDIF
-	PRINTFORML %CALLNAME:奴隷%の視線が冷たい。
-
-ELSE
-
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「%CALLNAME:奴隷%がいるのに、どうして%CALLNAME_K6(奴隷, FLAG:贞操帯鍵購入フラグ)%のことを買うの？」
-	ELSE
-		PRINTFORML 「どうして女の子のことをお金で買うの？」
-	ENDIF
-	PRINTFORML %CALLNAME:奴隷%の視線が冷たい。
-
-ENDIF
-
-
-;非NTR口上に移动
-;==================================================
-;身体接触前口上
-;==================================================
-;@NTR_KOJO_K6_COM302_0(奴隷)
-;	#DIM 奴隷
-;	;寝取られ
-;	IF TALENT:奴隷:NTR
-;		;好意度低いと冷たい
-;		IF CFLAG:奴隷:好感度 < 500
-;			PRINTFORML 「さわっちゃダメだよぉ」
-;		ELSE
-;			PRINTFORML 「ご主人様にはナイショだよ？」
-;		ENDIF
-;
-;	;寝取られ寸前
-;	ELSEIF CFLAG:奴隷:好感度 < 1000 && CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && TALENT:奴隷:恋慕
-;
-;	ELSE
-;	ENDIF
-;
-;	RETURN 0
-
-;非NTR口上に移动
-;;==================================================
-;;抚摸臀部前口上
-;;==================================================
-;@NTR_KOJO_K6_COM310_0
-;;寝取られ
-;IF TALENT:6:NTR
-;	;好意度低いと冷たい
-;	IF CFLAG:6:好感度 < 500
-;		PRINTFORML 「だめっ・・ご主人様に叱られちゃう」
-;	ELSE
-;		PRINTFORML 「もう・・・ナイショだからね？」
-;	ENDIF
-;
-;;寝取られ寸前
-;ELSEIF CFLAG:6:好感度 < 1000 && CFLAG:6:屈服度 > CFLAG:6:好感度 && TALENT:6:恋慕
-;
-;ELSE
-;ENDIF
-;
-;RETURN 0
-
-;==================================================
 ;抱きつく前口上
 ;==================================================
 @NTR_KOJO_K6_COM311_0
@@ -7599,96 +7387,3 @@ ELSE
 ENDIF
 
 RETURN 0
-
-;;非NTR口上に移动
-;;==================================================
-;;キス前口上
-;;;;==================================================
-;@NTR_KOJO_K6_COM312_0
-;;寝取られ
-;IF TALENT:6:NTR
-;	;好意度低いと冷たい
-;	IF CFLAG:6:好感度 < 500
-;	ELSE
-;	ENDIF
-;
-;;寝取られ寸前
-;ELSEIF CFLAG:6:好感度 < 1000 && CFLAG:6:屈服度 > CFLAG:6:好感度 && TALENT:6:恋慕
-;	PRINTFORML （ん・・・あの人の方が上手だな・・・）
-;
-;ELSE
-;ENDIF
-;
-;RETURN 0
-
-;;非NTR口上に移动
-;;==================================================
-;;推到前口上
-;;==================================================
-;@NTR_KOJO_K6_COM350_0
-;;公众便所
-;IF TALENT:6:公众便所
-;	PRINTFORML 「だめだよぉ・・・ご主人様に怒られちゃう」
-;;寝取られ
-;ELSEIF TALENT:6:NTR
-;	;好意度低いと冷たい
-;	IF CFLAG:6:好感度 < 500
-;		PRINTFORML 「だめだよぉ・・・ご主人様に怒られちゃう」
-;	ELSE
-;		PRINTFORML 「ふふっ、ご主人様にはナイショだからね？」
-;	ENDIF
-;
-;;寝取られ寸前
-;ELSEIF CFLAG:6:好感度 < 1000 && CFLAG:6:屈服度 > CFLAG:6:好感度 && TALENT:6:恋慕
-;
-;ELSE
-;ENDIF
-
-;==================================================
-;手淫前口上
-;==================================================
-;@NTR_KOJO_K6_COM80_0
-;;寝取られ
-;IF TALENT:6:NTR
-;	;好意度低いと冷たい
-;	IF CFLAG:6:好感度 < 500
-;		PRINTFORML 「%CALLNAME:MASTER%のって小さいよね」
-;	ELSE
-;		PRINTFORML 「%CALLNAME:MASTER%のってかわいいよね」
-;	ENDIF
-;
-;;寝取られ寸前
-;ELSEIF CFLAG:6:好感度 < 1000 && CFLAG:6:屈服度 > CFLAG:6:好感度 && TALENT:6:恋慕
-;	IF TALENT:6:处女 || CFLAG:6:处女喪失中
-;		PRINTFORML （こんなことさせるのに、どうして%CALLNAME:MASTER%は私とセックスしないだろう？）
-;	ENDIF
-;
-;ELSE
-;ENDIF
-;
-;RETURN 0
-
-;;==================================================
-;;口交前口上
-;;==================================================
-;@NTR_KOJO_K6_COM81_0
-;;寝取られ
-;IF TALENT:6:NTR
-;	;好意度低いと冷たい
-;	IF CFLAG:6:好感度 < 500
-;		PRINTFORML （%CALLNAME:MASTER%のってあの人よりぜんぜん小さいよね）
-;	ELSE
-;		PRINTFORML （あの人に叱られちゃうけど、バレなければいいよね）
-;	ENDIF
-;
-;寝取られ寸前
-;ELSEIF CFLAG:6:好感度 < 1000 && CFLAG:6:屈服度 > CFLAG:6:好感度 && TALENT:6:恋慕
-;	IF TALENT:6:处女 || CFLAG:6:处女喪失中
-;		PRINTFORML （%CALLNAME:MASTER%は%CALLNAME:奴隷%の初めていらないのかな？）
-;	ENDIF
-;
-;ELSE
-;ENDIF
-;
-;RETURN 0
-

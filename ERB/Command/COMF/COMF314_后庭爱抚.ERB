@@ -5,25 +5,6 @@ TRYCALL COM417_is_Protected(PLAYER,TARGET,淫纹_左尻)
 SIF RESULT
 	RETURN 0
 
-TRYCALL NTR_UNLOCK_CHASTITY_BELT(TARGET)
-IF !RESULT
-	DRAWLINE
-	PRINTFORML %CALLNAME:MASTER%本来想伸手去爱抚%CALLNAME:TARGET%
-	PRINTFORML 但是被%CALLNAME:TARGET%身上的贞操带阻止了。
-	CFLAG:TARGET:ぱんつ確認 = 1
-
-	IF CFLAG:TARGET:好感度 > 0
-		PRINTFORML %CALLNAME:TARGET%似乎对无法触碰到身体而感到不满
-		;欲情していると反感が伸びる
-		PALAM:TARGET:反感 += MIN( PALAM:TARGET:欲情/MAX(CFLAG:TARGET:好感度,1),300)
-		;欲情していると好感度も下がる
-		CFLAG:TARGET:好感度 = MAX( CFLAG:TARGET:好感度 - MIN(PALAM:TARGET:欲情 ,30),0)
-	ELSE
-		PRINTFORML %CALLNAME:TARGET%很无聊地看着%CALLNAME:MASTER%……
-	ENDIF
-	RETURN 0
-ENDIF
-
 ;-------------------------------------------------
 ;COM別FLAGの設定
 ;-------------------------------------------------

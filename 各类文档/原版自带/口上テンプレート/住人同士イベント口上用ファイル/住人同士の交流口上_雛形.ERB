@@ -391,7 +391,7 @@
 		;性交(裸)
 		CASE 350
 			;大浴場(床)
-			IF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_大浴场
+			IF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_大浴场
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -874,7 +874,7 @@
 					ENDIF
 				ENDIF
 			;ベッドのある部屋
-			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			ELSEIF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -1361,7 +1361,7 @@
 		;性交(着衣)
 		CASE 351
 			;ベッドのある部屋
-			IF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			IF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -1848,7 +1848,7 @@
 		;アナル性交(裸)
 		CASE 352
 			;大浴場(床)
-			IF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_大浴场
+			IF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_大浴场
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -2331,7 +2331,7 @@
 					ENDIF
 				ENDIF
 			;ベッドのある部屋
-			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			ELSEIF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -2818,7 +2818,7 @@
 		;アナル性交(着衣)
 		CASE 353
 			;ベッドのある部屋
-			IF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			IF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -3305,7 +3305,7 @@
 		;後戯(イチャイチャタイム)(性交(裸)から移行)
 		CASE 354
 			;大浴場(床)
-			IF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_大浴场
+			IF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_大浴场
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -3660,7 +3660,7 @@
 					ENDIF
 				ENDIF
 			;ベッドのある部屋
-			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			ELSEIF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -4014,7 +4014,7 @@
 						ENDIF
 					ENDIF
 				ENDIF
-			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):当前位置)%で"隅っこ"か"目立たない茂み"が表示される)
 			ELSE
 				;攻め側
 				IF LOCAL:0
@@ -4374,7 +4374,7 @@
 		;後戯(イチャイチャタイム)(性交(着衣)から移行)
 		CASE 355
 			;大浴場(床)
-			IF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_大浴场
+			IF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_大浴场
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -4729,7 +4729,7 @@
 					ENDIF
 				ENDIF
 			;ベッドのある部屋
-			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			ELSEIF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -5083,7 +5083,7 @@
 						ENDIF
 					ENDIF
 				ENDIF
-			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):当前位置)%で"隅っこ"か"目立たない茂み"が表示される)
 			ELSE
 				;攻め側
 				IF LOCAL:0
@@ -5443,7 +5443,7 @@
 		;後戯(イチャイチャタイム)(アナル性交(裸)から移行)
 		CASE 356
 			;大浴場(床)
-			IF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_大浴场
+			IF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_大浴场
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -5798,7 +5798,7 @@
 					ENDIF
 				ENDIF
 			;ベッドのある部屋
-			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			ELSEIF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -6152,7 +6152,7 @@
 						ENDIF
 					ENDIF
 				ENDIF
-			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):当前位置)%で"隅っこ"か"目立たない茂み"が表示される)
 			ELSE
 				;攻め側
 				IF LOCAL:0
@@ -6512,7 +6512,7 @@
 		;後戯(イチャイチャタイム)(アナル性交(着衣)から移行)
 		CASE 357
 			;大浴場(床)
-			IF CFLAG:(LOCAL:1):現在位置 == 位置_红魔馆_大浴场
+			IF CFLAG:(LOCAL:1):当前位置 == 位置_红魔馆_大浴场
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -6867,7 +6867,7 @@
 					ENDIF
 				ENDIF
 			;ベッドのある部屋
-			ELSEIF BEDROOM(CFLAG:(LOCAL:1):現在位置)
+			ELSEIF 存在床铺(CFLAG:(LOCAL:1):当前位置)
 				;攻め側
 				IF LOCAL:0
 					;自分がペニス持ちの場合相手に挿入
@@ -7221,7 +7221,7 @@
 						ENDIF
 					ENDIF
 				ENDIF
-			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):現在位置)%で"隅っこ"か"目立たない茂み"が表示される)
+			;大浴場とベッドがある部屋以外(%NOT_CONSPICUOUS_PLACE(CFLAG:(LOCAL:1):当前位置)%で"隅っこ"か"目立たない茂み"が表示される)
 			ELSE
 				;攻め側
 				IF LOCAL:0

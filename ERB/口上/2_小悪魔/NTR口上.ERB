@@ -18,7 +18,7 @@
 @NTR_KOJO_K2_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「どこかかゆいところはありませんか？うふふ・・・」
@@ -89,29 +89,7 @@ IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 	ENDIF
 	;その他
 ELSE
-	IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-		IF TALENT:奴隷:人妻
-			PRINTDATAL
-				DATAFORM 「い、今は仕事中ですっ・・そんな話はしないでくださいっ」
-				DATAFORM 「そ、そんな話は後にしてくださいっ」
-				DATAFORM 「・・いいつけどおり指輪は外しています・・」
-			ENDDATA
-		ELSE
-			PRINTDATAL
-				DATAFORM 「い、今は仕事中ですっ・・そんな話はしないでくださいっ」
-				DATAFORM 「そ、そんな話は後にしてくださいっ」
-				DATAFORM 「や、やめてくださいっ・・」
-			ENDDATA
-		ENDIF
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に『仕事』の話を聞かされ辟易しているようだ。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「この間のお客様、すごかったんですよぉ。うふふっ」
-			DATAFORM 「今度のお仕事はいつですか？」
-			DATAFORM 「いつお呼びになられてもいいように、綺麗にしてますね」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%と売春宿での話をしているようだ。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「うふふっ、私の部屋に行きませんか・・？」
 			DATAFORM 「うふふっ、下着の色、気になります？」
@@ -162,7 +140,7 @@ RETURN 0
 @NTR_KOJO_KW2_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTFORML 「お背中をお流しいたしましょうか？うふふ・・・」
 		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の隣に腰をおろして%CALLNAME:MASTER%がいないかのように接している。
@@ -3584,21 +3562,21 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「はい・・・なんでもお望みのままに・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(4)%にしなだれかかった。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%を導いた%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(4)%にしなだれかかった。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%を導いた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「うふふっ、ここなら邪魔が入りませんよ♪」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(4)%にしなだれかかった。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
 	ELSE
-		IF IS_CAN_LOCK(FLAG:訪問者の現在位置)
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%へと導き、扉を閉めると鍵をかけた。
+		IF IS_CAN_LOCK(FLAG:访问者当前位置)
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導き、扉を閉めると鍵をかけた。
 		ELSE
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%へと導いた。
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導いた。
 		ENDIF
 	ENDIF
 	IF TALENT:奴隷:恋慕
@@ -3611,12 +3589,12 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「うふふっ、ここなら邪魔が入りませんよ♪」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%で%NTR_NAME(4)%に微笑んだ。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%に微笑んだ。
 	ELSE
-		IF IS_CAN_LOCK(FLAG:訪問者の現在位置)
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%へと導き、扉を閉めると鍵をかけた。
+		IF IS_CAN_LOCK(FLAG:访问者当前位置)
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導き、扉を閉めると鍵をかけた。
 		ELSE
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%へと導いた。
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導いた。
 		ENDIF
 	ENDIF
 	IF TALENT:奴隷:恋慕
@@ -3628,7 +3606,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「ああんっ、駄目ですよぉ」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%へと連れ込まれてしまった。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと連れ込まれてしまった。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML （%CALLNAME:MASTER%に怒られちゃいます♪）
 	ELSE
@@ -3637,7 +3615,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「ああんっ、お、お仕事がっ」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%へと連れ込まれてしまった。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと連れ込まれてしまった。
 
 ENDIF
 
@@ -3691,53 +3669,6 @@ IF TALENT:奴隷:浮気公認
 	PRINTFORML 「嬉しいですよね？ だってお望みどおりにアノお方に抱かれて、アノお方に寝取られるんですだから」
 	PRINTFORML 「もし嫌だとか悔しいとかお思いになられても、自業自得ってやつですぉ？」
 ENDIF
-RETURN 0
-
-;==================================================
-;公众便所宣言
-;==================================================
-@NTR_KOJO_K2_13(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	;たぶんここには来ないと思うけど念のため余計なものを出さないように
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:浮気公認
-		PRINTFORML 「あっ、%CALLNAME:MASTER%・・以前私におっしゃいましたよね？ もっともっと寝取られたいって・・」
-		PRINTFORML 「だから私、その願いをかなえてあげたいと思うんです・・うふふっ、どうすると思いますか？」
-		PRINTFORML 「うふふっ、実は、アノ人の紹介で他の男の人達にカラダを買ってもらうことにしましたぁ♪」
-	ELSEIF TALENT:奴隷:淫乱
-		PRINTFORML 「あっ、%CALLNAME:MASTER%・・私、もっともっとエッチなことしたいんです」
-		PRINTFORML 「%CALLNAME:MASTER%やアノ人だけじゃなくて、いろんな人に抱かれたくて・・」
-		PRINTFORML 「だから私、アノ人の紹介で、他の男の人達にカラダを買ってもらうことにしたましたぁ♪」
-	ELSE
-		;たぶんないとは思うけど恋慕かつ非公認のケース
-		PRINTFORML （・・いえない・・%CALLNAME:MASTER%に、この事を言うなんてできない・・）
-		PRINTFORML （・・許して・・許して、%CALLNAME:MASTER%・・）
-	ENDIF
-	PRINTFORML 「それで、私のカラダは『商品』になっちゃったので、%CALLNAME:MASTER%も私とエッチしたいときはお金を出して鍵を買ってくださいね？」
-	PRINTFORML 「たとえ%MSG_LOVER(奴隷)%でも、例外じゃありませんからね？」
-ELSE
-	;初回
-	IF EXP:奴隷:公众便所陷落经验 == 0
-
-		PRINTFORML 「あ、%CALLNAME:MASTER%。私、%CALLNAME:奴隷%はぁ、今から牝犬便器になる事を誓いますぅぅ♪」
-		;主人が童贞
-		IF IS_DOUTEI(MASTER) 
-			PRINTFORML 「%CALLNAME:MASTER%・・もし童贞捨てたくなったら、私のことを買ってくださってもいいんですよ？」
-		ELSE
-			PRINTFORML 「%CALLNAME:MASTER%にも私のマンコ使わせてあげてもイイんですけどぉ、ちゃんと私のことを買ってくださいね？」
-		ENDIF
-
-		;2回目以降
-	ELSE
-
-		PRINTFORML 「あ、%CALLNAME:MASTER%。私、%CALLNAME:奴隷%はぁ、今から牝犬便器に復帰する事を誓いますぅぅ♪」
-		PRINTFORML 「%CALLNAME:MASTER%にも私のマンコ使わせてあげてもイイんですけどぉ・・ご主人様からお許しが出た場合に限りますね♪」
-
-	ENDIF
-ENDIF
-
 RETURN 0
 
 ;==================================================
@@ -3981,131 +3912,3 @@ ELSE
 
 ENDIF
 RETURN
-
-;==================================================
-;贞操帯鍵購入に対する反応
-;==================================================
-;本人
-@NTR_KOJO_K2_16_0(奴隷)
-#DIM 奴隷
-IF TALENT:奴隷:亲爱
-	; 亲爱だと小恶魔でもちょっと真面目。
-	PRINTDATAL
-		DATAFORM 「あ・・これって・・もしかしなくても、私の鍵ですよね・・？」
-		DATAFORM 「あ・・私のことを買ってくださったんですね・・」
-		DATAFORM 「うふふっ、お買い上げ、ありがとうございます」
-	ENDDATA
-	PRINTDATAL
-		DATAFORM 「是的、私のご主人様・・時間いっぱい、ご侍奉します！」
-		DATAFORM 「是的、喜んで・・な、なんでも言ってください。なんでも、してください」
-		DATAFORM 「うれしい・・嬉しいですっ」
-	ENDDATA
-ELSE
-	; そうでなければお調子者っぽく。
-	IF CFLAG:奴隷:NTR鍵購入回数 <= 5
-		PRINTDATAL
-			DATAFORM 「あ、これって、もしかしなくても私の鍵ですよね？」
-			DATAFORM 「あ、これは私の贞操帯の鍵ですね？ お買い上げ、ありがとうございまぁす♪」
-			DATAFORM 「うふふっ、お買い上げ、ありがとうございまぁす♪」
-		ENDDATA
-	ELSE
-		PRINTDATAL
-			DATAFORM 「あ、これって、毎度おなじみ、私の鍵ですよね？」
-			DATAFORM 「あ、これは私の贞操帯の鍵ですね？ お買い上げ、毎度ありがとうございまぁす♪」
-			DATAFORM 「うふふっ、毎度のお買い上げ、ありがとうございまぁす♪」
-		ENDDATA
-	ENDIF
-	PRINTDATAL
-		DATAFORM 「今だけは%CALLNAME:MASTER%が私のご主人様です♪ サービスしますよぉ♪」
-		DATAFORM 「%CALLNAME:MASTER%が私のご主人様ですから、時間いっぱいサービスしますよぉ♪」
-		DATAFORM 「今だけは%CALLNAME:MASTER%が私のご主人様です♪ ご侍奉しますよぉ♪」
-	ENDDATA
-	; 恋慕持ちのときはＮＤＫ風味。
-	IF TALENT:奴隷:恋慕
-		PRINTDATAL
-			DATAFORM 「でも%CALLNAME:MASTER%も悪趣味ですよね？ ご自分の%MSG_LOVER(奴隷)%とのセックスをお金で買うだなんて♪」
-			DATAFORM 「うふふっ、ご自分の%MSG_LOVER(奴隷)%とセックスをする権利を、他人からお金で買うのってどんなお気持ちですか？」
-			DATAFORM 「お金がとりもつ%MSG_LOVER(奴隷)%とのセックス・・うふふっ、退廃的ですよね♪」
-		ENDDATA
-	ENDIF
-ENDIF
-RETURN
-
-;本人以外
-@NTR_KOJO_K2_16_1(奴隷)
-#DIM 奴隷
-;公众便所
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-
-	PRINTFORML 「あ・・%CALLNAME_K2(奴隷, FLAG:贞操帯鍵購入フラグ)%を買われたんですね・・」
-	PRINTDATAL
-		DATAFORM 「・・でも、どうせなら・・私のことを買っていただきたかったです」
-		DATAFORM 「・・この次は、ぜひ私のぶんの鍵を買ってください・・お願いします」
-		DATAFORM 「今度は、私のことを買ってくださいね？ 待ってますから」
-	ENDDATA
-
-ELSEIF TALENT:奴隷:公众便所
-
-	PRINTFORML 「あ・・%CALLNAME_K2(奴隷, FLAG:贞操帯鍵購入フラグ)%を買われたんですね？」
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「私をさしおいて他の女を買うなんて、%MSG_LOVER(奴隷)%のすることですか！？」
-		PRINTDATAL
-			DATAFORM 「・・冗談ですよ。この次は、ちゃんと私を買ってくださいますよね？」
-			DATAFORM 「なんちゃって♪ この次は、私のことを買ってくださいね？」
-			DATAFORM 「今度は、絶対私のことを買ってくださいね？ うふふっ、待ってますから♪」
-		ENDDATA
-	ELSE
-		PRINTDATAL
-			DATAFORM 「次は私を買ってみます？ うふふっ、サービスしちゃいますよぉ♪」
-			DATAFORM 「うふふっ、%CALLNAME:MASTER%もお好きですねぇ？ この次は、私なんていかがですか？」
-			DATAFORM 「今度は、私のことを買ってくださいね？ うふふっ、待ってますから♪」
-		ENDDATA
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
-
-	PRINTFORML 「あ・・%CALLNAME_K2(奴隷, FLAG:贞操帯鍵購入フラグ)%を買われたんですね」
-	PRINTDATAL
-		DATAFORM 「うふふっ、アノお方も、きっとお喜びです」
-		DATAFORM 「うふふっ、%CALLNAME:MASTER%もお好きですねぇ？」
-		DATAFORM 「うふふっ、%CALLNAME:MASTER%もお盛んですねぇ？」
-	ENDDATA
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
-
-	PRINTFORML 「ふぅ～ん・・%CALLNAME_K2(奴隷, FLAG:贞操帯鍵購入フラグ)%を買われたんですね」
-	IF TALENT:奴隷:恋慕
-		PRINTDATAL
-			DATAFORM 「うふふっ、あの人も、きっとお喜びです」
-			DATAFORM 「うふふっ、私のことを放ったらかして、%CALLNAME:MASTER%もお好きですねぇ？」
-			DATAFORM 「うふふっ、私のことを放ったらかして、%CALLNAME:MASTER%もお盛んですねぇ？」
-		ENDDATA
-	ELSE
-		PRINTDATAL
-			DATAFORM 「うふふっ、あの人も、きっとお喜びです」
-			DATAFORM 「うふふっ、%CALLNAME:MASTER%もお好きですねぇ？」
-			DATAFORM 「うふふっ、%CALLNAME:MASTER%もお盛んですねぇ？」
-		ENDDATA
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-
-	PRINTFORML 「ふぅ～ん・・%CALLNAME_K2(奴隷, FLAG:贞操帯鍵購入フラグ)%を買われたんですね」
-	PRINTDATAL
-		DATAFORM 「悪魔の私が言うのもなんですけど、そういうのって、どうなんですか？」
-		DATAFORM 「私が言うのもアレですけど、ドン引きです・・」
-		DATAFORM 「%CALLNAME:MASTER%もお盛んですねぇ・・？」
-	ENDDATA
-
-ELSE
-
-	PRINTFORML 「それって・・%CALLNAME_K2(奴隷, FLAG:贞操帯鍵購入フラグ)%のことをお買いになったんですか？」
-	PRINTDATAL
-		DATAFORM 「悪魔の私が言うのもなんですけど、そういうのって、どうなんですか？」
-		DATAFORM 「私が言うのもアレですけど、ドン引きです・・」
-		DATAFORM 「%CALLNAME:MASTER%もお盛んですねぇ・・？」
-	ENDDATA
-
-ENDIF
-RETURN
-

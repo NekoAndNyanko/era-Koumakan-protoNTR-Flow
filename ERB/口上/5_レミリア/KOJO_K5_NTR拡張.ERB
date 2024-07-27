@@ -47,15 +47,7 @@ RETURN RESULT
 奴隷 = 人物_蕾米莉亚
 RET_VAL = 0
 
-IF TALENT:奴隷:公众便所
-
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「库库、适可而止吧？」
-	ELSE
-		PRINTFORML 「・・住手」
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
 
 	PRINTDATAL
 		DATAFORM 「・・没办法」
@@ -224,17 +216,7 @@ RETURN RESULT
 奴隷 = 人物_蕾米莉亚
 RET_VAL = 0
 
-IF TALENT:奴隷:公众便所
-	;鍵購入済み
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML 「呼呼、欢迎光临・・呼呼、随你的便吧」
-		;未購入
-	ELSE
-		PRINTFORML 「阿拉？想让佣人使用这个精液便器吗？」
-		PRINTFORML 「要是让主人知道的话，我可不会饶了你哦？」
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中)
 
 	PRINTDATAL
 		DATAFORM 「・・你要瞒着他」

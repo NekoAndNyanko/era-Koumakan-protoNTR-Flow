@@ -1834,7 +1834,7 @@ ENDIF
 ;相手に主導権
 IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 	;対面立位
-	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+	IF !存在床铺(CFLAG:PLAYER:当前位置)
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
 			IF NOWEX:TARGET:射精
@@ -1951,7 +1951,7 @@ IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之�
 	ENDIF
 ELSE
 	;対面立位
-	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+	IF !存在床铺(CFLAG:PLAYER:当前位置)
 		;抜かず
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
@@ -2028,7 +2028,7 @@ ELSE
 			ENDIF
 		ELSE
 			PRINTFORM %CALLNAME:PLAYER%は
-			IF BEDROOM(CFLAG:PLAYER:現在位置) && CFLAG:PLAYER:現在位置 != 18
+			IF 存在床铺(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
 				PRINT 坐在床上
 			ELSE
 				PRINT 坐在地上
@@ -2076,7 +2076,7 @@ ENDIF
 ;相手に主導権
 IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 	;背面立位
-	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+	IF !存在床铺(CFLAG:PLAYER:当前位置)
 		;抜かずに
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
@@ -2103,7 +2103,7 @@ IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之�
 			PRINTFORM %CALLNAME:TARGET%は%CALLNAME:PLAYER%に
 			SIF ABL:抖Ｓ之气 >= 3 || TALENT:施虐狂
 				PRINTFORM 強引に
-			IF CFLAG:PLAYER:現在位置 == 19
+			IF CFLAG:PLAYER:当前位置 == 19
 				PRINTL 手扶着树提起翘臀、
 			ELSE
 				PRINTL 手扶着墙提起翘臀、
@@ -2208,7 +2208,7 @@ IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之�
 	ENDIF
 ELSE
 	;背面立位
-	IF !BEDROOM(CFLAG:PLAYER:現在位置)
+	IF !存在床铺(CFLAG:PLAYER:当前位置)
 		;抜かず
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
@@ -2234,7 +2234,7 @@ ELSE
 			SIF TEQUIP:PLAYER:0 & 2
 				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
 			PRINT 弯下腰
-			IF CFLAG:PLAYER:現在位置 == 19
+			IF CFLAG:PLAYER:当前位置 == 19
 				PRINT 手扶着树
 			ELSE
 				PRINT 手扶着墙
@@ -2296,7 +2296,7 @@ ELSE
 
 			SIF TEQUIP:PLAYER:0 & 2
 				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
-			IF BEDROOM(CFLAG:PLAYER:現在位置) && CFLAG:PLAYER:現在位置 != 18
+			IF 存在床铺(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
 				PRINT 四肢向下趴在床上
 			ELSE
 				PRINT 四肢着地趴在地上
@@ -2423,7 +2423,7 @@ ELSE
 		ENDIF
 	ELSE
 		PRINTFORM %CALLNAME:PLAYER%将
-		IF BEDROOM(CFLAG:PLAYER:現在位置) && CFLAG:PLAYER:現在位置 != 18
+		IF 存在床铺(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
 			PRINTFORML %CALLNAME:TARGET%横放在床上跨坐了上去、
 		ELSE
 			PRINTFORML %CALLNAME:TARGET%横放在地上跨坐了上去、
@@ -2739,7 +2739,7 @@ ELSE
 	IF PALAM:润滑 >= PALAMLV:3
 		PRINT 湿润的
 	ELSE
-		IF CFLAG:現在位置 == 5
+		IF CFLAG:当前位置 == 5
 			PRINTL 如果不够湿润也可以充分涂抹食用油代替乳液
 		ELSE
 			PRINTL 在器具上充分涂上润滑剂
@@ -2759,7 +2759,7 @@ PRINTFORML 在那里的中心能看到通向子宫的小嘴巴.
 PRINTFORML 
 
 IF TALENT:MASTER:施虐狂
-	IF CFLAG:現在位置 == 4
+	IF CFLAG:当前位置 == 4
 		PRINTFORML %CALLNAME:PLAYER%从书架上拿来性知识的书
 		PRINTFORML 比较阴道内与书的内容是否相同,%CALLNAME:TARGET%羞耻心愈发强烈
 	ELSE
@@ -3489,7 +3489,7 @@ ENDIF
 ;302,身体接触
 ;-------------------------------------------------
 @MESSAGE_COM302
-IF BATHROOM(CFLAG:MASTER:現在位置)
+IF 存在浴室(CFLAG:MASTER:当前位置)
 	PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%的背上抚摸
 ELSE
 	PRINTFORML %CALLNAME:PLAYER%谋求与%CALLNAME:TARGET%的亲密接触
@@ -3845,24 +3845,12 @@ PRINTFORML %CALLNAME:PLAYER%任由%CALLNAME:TARGET%摆布…
 ;-------------------------------------------------
 @MESSAGE_COM403
 #DIM LOOP_CHR
-IF BATHROOM(CFLAG:MASTER:現在位置)
+IF 存在浴室(CFLAG:MASTER:当前位置)
 	PRINTFORML %CALLNAME:PLAYER%在浴场很舒适
-ELSEIF REST_IsRestroom(CFLAG:MASTER:現在位置)
+ELSEIF REST_IsRestroom(CFLAG:MASTER:当前位置)
 	PRINTFORML %CALLNAME:PLAYER%今天事办完了
 ELSE
 	PRINTFORML %CALLNAME:PLAYER%喘了一口气
-ENDIF
-
-;現時点では女/ふたなりあなたのみ対象とする
-;;肉便器では発生させないでおく
-IF HAS_VAGINA(MASTER) && TALENT:MASTER:公众便所 && !TALENT:MASTER:肉便器
-	FOR LOOP_CHR,1,人物_魔理沙+1
-		IF MASTER != LOOP_CHR && CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置 && RAND:10 <= CFLAG:MASTER:屈服度 
-			IF !CFLAG:LOOP_CHR:睡眠 
-				CALL SexHara休息中(LOOP_CHR)
-			ENDIF
-		ENDIF
-	NEXT
 ENDIF
 
 ;-------------------------------------------------
@@ -3870,7 +3858,7 @@ ENDIF
 ;-------------------------------------------------
 @MESSAGE_COM410
 ;訪問者と住人１人同席、かつ主人が空気
-IF FLAG:訪問者の現在位置 == CFLAG:MASTER:現在位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+IF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
 	LOCALS = %CALLNAME:MASTER%
 ELSE
 	IF TFLAG:193 && !CFLAG:睡眠
@@ -3891,7 +3879,7 @@ SELECTCASE TFLAG:194
 		PRINTFORML %LOCALS%压倒性的垃圾就在眼前,即使讨厌也得继续工作
 ENDSELECT
 ;訪問者と住人１人同席、かつ主人が空気
-IF FLAG:訪問者の現在位置 == CFLAG:MASTER:現在位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
+IF FLAG:访问者当前位置 == CFLAG:MASTER:当前位置 && GET_N_WITH_VISITER(TARGET) == 2 && IS_AIR_MASTER(TARGET)
 	RETURN
 ENDIF
 IF STRLENS(TSTR:2)
@@ -3911,11 +3899,6 @@ ENDIF
 SIF !TFLAG:193 && TARGET > 0 && !CFLAG:睡眠
 	PRINTFORML %CALLNAME:TARGET%钦佩的注视着%CALLNAME:MASTER%的工作
 
-;SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && TALENT:MASTER:2 == 1 && RAND:100 >= 50
-;ふたなりも対象に含める（男以外であればセクハラされる）
-;;肉便器の時は発生させない
-SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置 && TALENT:MASTER:2 != 2 && RAND:100 <= CFLAG:MASTER:屈服度 && !TALENT:MASTER:肉便器
-	TRYCALL SOJI_SexHara
 ;逆パンチラ
 TRYCALL REV_PANCHIRA
 
@@ -4097,10 +4080,8 @@ ENDIF
 PRINTFORM %CALLNAME:PLAYER%对
 ;露出癖
 IF ABL:露出癖 == 0
-	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置
 		PRINTFORM %NTR_NAME(0)%的视线感到害羞的同时、主动的
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 魔理沙的视线感到害羞的同时、主动的
 	ELSE
 		PRINTFORM 一边感到羞耻一边确认周围没人发现
 	ENDIF
@@ -4118,11 +4099,8 @@ ELSEIF ABL:露出癖 == 1
 	SIF TCVAR:102
 		PRINTFORML 从露出了的阴道口中,慢慢地流出了刚刚射入的精液…
 ELSEIF ABL:露出癖 == 2
-	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置
 		PRINTFORM %NTR_NAME(0)%的视线意识到了
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 意识到魔理沙的视线
-	ELSE
 	ENDIF
 	PRINTFORML 把手放在下腹部、用食指和中指、主动分开了自己的蜜处
 	IF TCVAR:102
@@ -4131,10 +4109,8 @@ ELSEIF ABL:露出癖 == 2
 		PRINTFORML 从大开的阴道口处窥视里面的,蜜穴就好像期待着肉棒一样,被爱液打湿了,淫乱地蠢动着
 	ENDIF
 ELSEIF ABL:露出癖 == 3
-	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置
 		PRINTFORM 对被%NTR_NAME(0)%目击的事感到兴奋
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 对被魔理沙目击的事感到兴奋
 	ELSE
 		PRINTFORM 一边想象着被目击的事
 	ENDIF
@@ -4145,11 +4121,8 @@ ELSEIF ABL:露出癖 == 3
 		PRINTFORML %CALLNAME:PLAYER% 的手每次刺激阴核,都会从阴道口滴下爱液… 
 	ENDIF
 ELSEIF ABL:露出癖 == 4
-	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置
 		PRINTFORM 对被%NTR_NAME(0)%目击的事感到兴奋
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORM 对被魔理沙目击的事感到兴奋
-	ELSE
 	ENDIF
 	PRINTFORML  用双手的手指将阴唇连着阴道口也同时扩张开了. 
 	IF TCVAR:102
@@ -4158,10 +4131,8 @@ ELSEIF ABL:露出癖 == 4
 		PRINTFORML 对暴露阴道内感到快感、%CALLNAME:PLAYER%脸颊上染上了淡淡的红晕
 	ENDIF
 ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱 == 0
-	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置
 		PRINTFORML 双手的手指放在阴唇上、为了让%NTR_NAME(0)%看见将阴道口大大的扩张了
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORML 双手的手指放在阴唇上、为了让魔理沙看见将阴道口大大的扩张了
 	ELSE
 		PRINTFORML 双手的手指放在阴唇上、像在向谁展示一样将阴道口大大的扩张了
 	ENDIF
@@ -4172,10 +4143,8 @@ ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱 == 0
 	ENDIF
 	;露出癖LV5以上＋淫乱or娼婦
 ELSEIF ABL:露出癖 >= 5 && TALENT:淫乱
-	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置
 		PRINTFORML 双手的手指放在阴唇上、为了让%NTR_NAME(0)%看见将阴道口大大的扩张了
-	ELSEIF FLAG:侵入者の現在位置 == CFLAG:PLAYER:現在位置
-		PRINTFORML 双手的手指放在阴唇上、为了让魔理沙看见将阴道口大大的扩张了
 	ELSE
 		PRINTFORML 双手的手指放在阴唇上、像在向谁展示一样将阴道口大大的扩张了
 	ENDIF

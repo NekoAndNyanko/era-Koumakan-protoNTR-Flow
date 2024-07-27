@@ -68,7 +68,7 @@ IF 判定难度 < 0
 	;IF CFLAG:TARGET:性欲 > 30
 	;	优先类型 = 2
 	;ENDIF
-	IF FLAG:訪問者の現在位置 == CFLAG:PLAYER:現在位置
+	IF FLAG:访问者当前位置 == CFLAG:PLAYER:当前位置
 		优先类型 = 4
 	ENDIF
 	TRYCALLFORM COM300_20_3(成否判定,优先类型)

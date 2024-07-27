@@ -38,11 +38,11 @@ SIF TFLAG:相机記録回数 >= 20
 VARSET LOCAL
 VARSET LOCALS
 FOR LOCAL, 1, CHARANUM
-	SIF CFLAG:LOCAL:現在位置 != TFLAG:相机设置場所
+	SIF CFLAG:LOCAL:当前位置 != TFLAG:相机设置場所
 		CONTINUE
 	;誰かが相机设置位置にいる場合、その情報を記録
 	;@記録時間:キャラ番号:摄影場所(番号):時間
-	LOCALS = {TFLAG:相机記録回数}:{LOCAL}:{CFLAG:LOCAL:現在位置}:{TIME}/
+	LOCALS = {TFLAG:相机記録回数}:{LOCAL}:{CFLAG:LOCAL:当前位置}:{TIME}/
 	IF TFLAG:相机記録回数 == 0
 		TSTR:10 = %LOCALS%
 	ELSE
@@ -251,7 +251,7 @@ SELECTCASE LOCAL:3
 		;補正なし
 ENDSELECT
 ;お風呂補正、個人宅に二度補正がかからないように
-IF BATHROOM(LOCAL:3)
+IF 存在浴室(LOCAL:3)
 	LOCAL:2 += 80
 	;私室補正
 ELSEIF CFLAG:LOCAL:開始位置 == LOCAL:3
@@ -279,14 +279,14 @@ SIF GLOBAL_COMABLE(450)
 SIF ITEM:35 == 0
 	RETURN 0
 ;館の外では無理
-SIF CFLAG:MASTER:現在位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
 	RETURN 0
 ;既に設置中は無理
 SIF TFLAG:相机设置場所 != 0
 	RETURN 0
 ;誰かが同じ場所にいるときは無理
 FOR LOCAL, 1, CHARANUM
-	SIF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置
+	SIF CFLAG:LOCAL:当前位置 == CFLAG:MASTER:当前位置
 		RETURN 0
 NEXT
 RETURN 1
@@ -305,17 +305,17 @@ SIF GLOBAL_COMABLE(451)
 SIF ITEM:35 == 0
 	RETURN 0
 ;館の外では無理
-SIF CFLAG:MASTER:現在位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
 	RETURN 0
 ;既に設置していなければ無利
 SIF TFLAG:相机设置場所 == 0
 	RETURN 0
 ;設置場所にいなければ無利
-SIF CFLAG:MASTER:現在位置 != TFLAG:相机设置場所
+SIF CFLAG:MASTER:当前位置 != TFLAG:相机设置場所
 	RETURN 0
 ;誰か同じ場所にいると無理
 FOR LOCAL, 1, CHARANUM
-	SIF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置 && !CFLAG:LOCAL:睡眠
+	SIF CFLAG:LOCAL:当前位置 == CFLAG:MASTER:当前位置 && !CFLAG:LOCAL:睡眠
 		RETURN 0
 NEXT
 ;設置から1時間以上経たないと撤去不可
@@ -334,14 +334,14 @@ SIF !TFLAG:100
 SIF GLOBAL_COMABLE(452)
 	RETURN RESULT
 ;自室にいないと無理
-SIF CFLAG:MASTER:現在位置 != CFLAG:MASTER:開始位置
+SIF CFLAG:MASTER:当前位置 != CFLAG:MASTER:開始位置
 	RETURN 0
 ;相机が回収されていないと無理
 SIF TFLAG:相机设置場所 != 0 || TFLAG:相机设置時刻 == 0
 	RETURN 0
 ;誰かが部屋にいると無理
 FOR LOCAL, 1, CHARANUM
-	SIF CFLAG:LOCAL:現在位置 == CFLAG:MASTER:現在位置 && !CFLAG:LOCAL:睡眠
+	SIF CFLAG:LOCAL:当前位置 == CFLAG:MASTER:当前位置 && !CFLAG:LOCAL:睡眠
 		RETURN 0
 NEXT
 RETURN 1

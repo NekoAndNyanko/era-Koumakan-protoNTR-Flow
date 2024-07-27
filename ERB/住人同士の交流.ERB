@@ -44,7 +44,7 @@ FOR LOOP_CHR_0,1,MAX_LOOP
 			CONTINUE
 		SIF CFLAG:(LOOP_CHR_1):睡眠
 			CONTINUE
-		IF CFLAG:LOOP_CHR_0:現在位置 == CFLAG:LOOP_CHR_1:現在位置
+		IF CFLAG:LOOP_CHR_0:当前位置 == CFLAG:LOOP_CHR_1:当前位置
 			SIF CFLAG:LOOP_CHR_0:住人同士イベント内容 != 0 && CFLAG:LOOP_CHR_0:住人同士イベント相手 != LOOP_CHR_1
 				INTRUDER = LOOP_CHR_1
 			相手番号 = LOOP_CHR_1
@@ -54,7 +54,7 @@ FOR LOOP_CHR_0,1,MAX_LOOP
 		ENDIF
 		;			PRINTFORMW {LOOP_CHR_0},{CFLAG:LOOP_CHR_0:住人同士イベント相手}, {LOOP_CHR_1},{CFLAG:LOOP_CHR_1:住人同士イベント相手}
 	NEXT
-	IF CFLAG:LOOP_CHR_0:現在位置 == FLAG:訪問者の現在位置
+	IF CFLAG:LOOP_CHR_0:当前位置 == FLAG:访问者当前位置
 		SIF CFLAG:LOOP_CHR_0:住人同士イベント内容 != 0
 			INTRUDER = 人物_訪問者
 		同室人数 += 1
@@ -70,7 +70,7 @@ FOR LOOP_CHR_0,1,MAX_LOOP
 			FOR LOOP_CHR_3,0,CHARANUM
 				SIF LOOP_CHR_2 == LOOP_CHR_3
 					CONTINUE
-				SIF CFLAG:LOOP_CHR_2:現在位置 == CFLAG:LOOP_CHR_3:現在位置
+				SIF CFLAG:LOOP_CHR_2:当前位置 == CFLAG:LOOP_CHR_3:当前位置
 					CALL INHABITANT_FRIENDSHIP_END(LOOP_CHR_0,0,INTRUDER,CFLAG:LOOP_CHR_0:住人同士イベントシチュエーション)
 			NEXT
 		NEXT
@@ -106,7 +106,7 @@ FOR LOOP_CHR_0,1,MAX_LOOP
 		ENDIF
 		SIF LOOP_CHR_0 == LOOP_CHR_1
 			CONTINUE
-		SIF CFLAG:LOOP_CHR_0:現在位置 == CFLAG:MASTER:現在位置
+		SIF CFLAG:LOOP_CHR_0:当前位置 == CFLAG:MASTER:当前位置
 			CALL INHABITANT_FRIENDSHIP_END(LOOP_CHR_0,0,MASTER,CFLAG:LOOP_CHR_0:住人同士イベントシチュエーション)
 	NEXT
 NEXT
@@ -185,40 +185,40 @@ WK = RAND:(WK)
 IF WK < 50
 	IF RAND:2 && !(TIME_PROGRESS(TCVAR:攻め側:300) < 120)
 		CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_お茶,DATETIME() + RAND:5 + 10)
-		SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%にお茶の用意をしてもらった
 	ELSE
 		CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_会话,DATETIME() + RAND:5 + 10)
-		SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+		SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%に話しかけた
 	ENDIF
 ELSEIF WK < 200
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_身体接触,DATETIME() + RAND:10 + 10)
-	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と身体接触を始めた
 ELSEIF WK < 300
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_お茶,DATETIME() + RAND:10 + 10)
-	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%のお尻を撫で始めた
 ELSEIF WK < 500
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_抱きつく,DATETIME() + RAND:10 + 10)
-	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%に抱きついた
 ELSEIF WK < 600
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_接吻,DATETIME() + RAND:10 + 10)
-	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の唇を奪った
 ELSEIF WK < 700
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_胸爱抚,DATETIME() + RAND:10 + 10)
-	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の%OPPAI_DESCRIPTION(受け側)%を撫で始めた
 ELSEIF WK < 800
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_肛门爱抚,DATETIME() + RAND:10 + 10)
-	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+	SIF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 		PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%の菊花に指を這わせた
 ELSEIF WK < 900
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_阴蒂爱抚,DATETIME() + RAND:10 + 10)
-	IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:キャラ番号:現在位置)
+	IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:キャラ番号:当前位置)
 		PRINTFORM %CALLNAME:攻め側%は%CALLNAME:受け側%の
 		IF HAS_PENIS(受け側)
 			PRINTL 阴茎を握った
@@ -228,7 +228,7 @@ ELSEIF WK < 900
 	ENDIF
 ELSEIF WK < 1000
 	CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_手指插入,DATETIME() + RAND:10 + 10)
-	IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:キャラ番号:現在位置)
+	IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:キャラ番号:当前位置)
 		PRINTFORM %CALLNAME:攻め側%は%CALLNAME:受け側%の
 		IF !HAS_VAGINA(受け側)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_阴蒂爱抚,-1)
@@ -247,27 +247,27 @@ ELSE
 	ENDIF
 	;対象：ふ×ふ、ふ×♀、♂×ふ、♂×♀
 	IF HAS_PENIS(攻め側) && HAS_VAGINA(受け側) && WK == 0
-		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
+		IF CFLAG:攻め側:当前位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF RAND:2 && 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ELSE
@@ -276,47 +276,47 @@ ELSE
 			ENDIF
 		ELSEIF RAND:2
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、服を脱いで裸になると%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ELSE
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、%CALLNAME:受け側%を地面に押し倒して%CALLNAME:受け側%の%MSG_SLIT(受け側)%に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ENDIF
 		;暫定処理：攻め側がふたなりの場合は対象外
 		;対象：♀×ふ、♀×♂
 	ELSEIF HAS_VAGINA(攻め側) && HAS_PENIS(受け側) && WK == 0 && !HAS_PENIS(攻め側)
-		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
+		IF CFLAG:攻め側:当前位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF RAND:2 && 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
@@ -325,20 +325,20 @@ ELSE
 			ENDIF
 		ELSEIF RAND:2
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、服を脱いで裸になると自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ELSE
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%が嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ENDIF
@@ -346,27 +346,27 @@ ELSE
 		;対象：♀×♀
 		;ELSEIF WK == 0
 	ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
-		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
+		IF CFLAG:攻め側:当前位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ENDIF
 			ENDIF
-		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF RAND:2 && 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ENDIF
 			ENDIF
-		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) && TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) && TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
@@ -375,20 +375,20 @@ ELSE
 			ENDIF
 		ELSEIF RAND:2
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、服を脱いで裸になると地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ENDIF
 			ENDIF
 		ELSE
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ENDIF
 			ENDIF
 		ENDIF
@@ -396,27 +396,27 @@ ELSE
 		;対象：ふ×♀、ふ×ふ、ふ×♂、♂×ふ、♂×♀、♂×♂
 		;ELSEIF HAS_PENIS(攻め側) && WK == 1
 	ELSEIF HAS_PENIS(攻め側)
-		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
+		IF CFLAG:攻め側:当前位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF RAND:2 && 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ELSE
@@ -425,46 +425,46 @@ ELSE
 			ENDIF
 		ELSEIF RAND:2
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
-				IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) && TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、服を脱いで裸になると地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
+				IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) && TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
+					PRINTFORML %CALLNAME:攻め側%と%CALLNAME:受け側%は%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、服を脱いで裸になると地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ELSE
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、地面に押し倒して%CALLNAME:受け側%の菊花に阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ENDIF
 		;対象：♀×ふ、♀×♂
 	ELSEIF HAS_PENIS(受け側) && WK == 1
-		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
+		IF CFLAG:攻め側:当前位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF RAND:2 && BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF RAND:2 && 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%の服を破る勢いで脱がし、ベッドに押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
-		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%をベッドに押し倒し、自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
@@ -473,38 +473,38 @@ ELSE
 			ENDIF
 		ELSEIF RAND:2
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、服を剥ぎ取ると%CALLNAME:受け側%を押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ELSE
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ａ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に移动し、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%と%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に移动し、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、地面に押し倒して自分の菊花に%CALLNAME:受け側%の阴茎をあてがい一気に貫いた
 				ENDIF
 			ENDIF
 		ENDIF
 		;暫定処理：両者ついていない場合は阴部摩擦固定
 		;対象：♀×♀
 	ELSEIF !HAS_PENIS(攻め側) && !HAS_PENIS(受け側)
-		IF CFLAG:攻め側:現在位置 == 位置_红魔馆_大浴场
+		IF CFLAG:攻め側:当前位置 == 位置_红魔馆_大浴场
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
 					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を床に押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ENDIF
 			ENDIF
-		ELSEIF BEDROOM(CFLAG:攻め側:現在位置)
+		ELSEIF 存在床铺(CFLAG:攻め側:当前位置)
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｎ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
 					PRINTFORML %CALLNAME:攻め側%が服を脱ぐと同じく服を脱いで裸になった%CALLNAME:受け側%をベッドに押し倒し、自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
@@ -513,11 +513,11 @@ ELSE
 			ENDIF
 		ELSE
 			CALL INHABITANT_EVENT_SET(攻め側,受け側,住人同士行为_Ｖ性交Ｃ,-1)
-			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置) 
+			IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置) 
 				IF TA:受け側:攻め側:TA_好感度 >= CFLAG:受け側:体を許す好感度
-					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+					PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ELSE
-					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:現在位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
+					PRINTFORML %CALLNAME:攻め側%は嫌がる%CALLNAME:受け側%を%NOT_CONSPICUOUS_PLACE(CFLAG:攻め側:当前位置)%に連れ込み、地面に押し倒して自分の%MSG_SLIT(攻め側)%を%CALLNAME:受け側%の%MSG_SLIT(受け側)%に擦りつけた
 				ENDIF
 			ENDIF
 		ENDIF
@@ -525,7 +525,7 @@ ELSE
 		PRINTFORMW 住人イベントスタート分岐エラー 性別：{TALENT:攻め側:性別} {TALENT:受け側:性別}
 	ENDIF
 ENDIF
-IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 	TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{攻め側}_0(CFLAG:攻め側:住人同士イベント内容%10,攻め側,受け側,0)
 	TRYCALLFORM INHABITANT_FRIENDSHIP_KOJO_K{受け側}_0(CFLAG:受け側:住人同士イベント内容%10,受け側,攻め側,0)
 ENDIF
@@ -549,7 +549,7 @@ ELSE
 	攻め側 = キャラ番号
 ENDIF
 
-IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 	SELECTCASE CFLAG:攻め側:住人同士イベント内容/10
 		CASE 住人同士行为_会话
 			PRINTFORML %CALLNAME:攻め側%は%CALLNAME:受け側%との会话を楽しんでいる
@@ -692,7 +692,7 @@ ELSE
 	攻め側 = キャラ番号
 ENDIF
 
-IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:現在位置, CFLAG:攻め側:現在位置)
+IF GETBIT(FLAG:住人同士イベント設定,2) || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:攻め側:当前位置)
 	IF 終わり方 == 0
 		SELECTCASE CFLAG:キャラ番号:住人同士イベント内容/10
 			CASE 住人同士行为_会话
@@ -2297,7 +2297,7 @@ RETURN 0
 #DIMS 内容
 
 日時 = %日付_月(暦法月)+"の"+天候(天候値)+"の日に"%
-場所 = %GETPLACENAME(CFLAG:キャラ番号:現在位置)+"で"%
+場所 = %GETPLACENAME(CFLAG:キャラ番号:当前位置)+"で"%
 
 IF キャラ番号 == TCVAR:キャラ番号:行為者
 	IF 相手 == ""

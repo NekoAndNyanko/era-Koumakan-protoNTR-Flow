@@ -88,8 +88,6 @@ FOR LOOP_CHR,1, CHARANUM
 						LOCALS += "恋慕 "
 					SIF TALENT:LOOP_CHR:人妻
 						LOCALS += "人妻 "
-					SIF TALENT:LOOP_CHR:公众便所
-						LOCALS += "公众便所 "
 					PRINTFORM 好感度:{CFLAG:LOOP_CHR:(FLAG:能力表示詳細),5,LEFT}  
 					IF !FLAG:真实模式
 						PRINTFORM 屈服度:{CFLAG:LOOP_CHR:屈服度,5,LEFT} %LOCALS%
@@ -118,7 +116,7 @@ FOR LOOP_CHR,1, CHARANUM
 					ELSE
 						LOCALS:1 = 　
 					ENDIF
-					PRINTFORM 子宮内精液量:{精子量,5}/{CFLAG:LOOP_CHR:子宮内体積,5}
+					PRINTFORM 子宮内精液量:{精子量,5}/{CFLAG:LOOP_CHR:子宫内体积,5}
 					PRINTFORM  %LOCALS:1%
 					;弱味
 				CASE 10

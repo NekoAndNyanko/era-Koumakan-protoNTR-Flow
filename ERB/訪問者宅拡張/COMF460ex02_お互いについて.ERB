@@ -23,7 +23,7 @@ IF RESULT:0 == 0
 ENDIF
 ;SKIPDISPが既に設定されているかもしれないので退避して後で復帰
 SKIPDISP退避 = ISSKIP()
-IF !NTR_CHK_VISIBLE(CFLAG:奴隷:現在位置)
+IF !NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
 	SKIPDISP 1
 ENDIF
 SELECTCASE ( TALENT:奴隷:态度 + TALENT:奴隷:应答 + TALENT:奴隷:胆量 + TALENT:奴隷:自尊心 )

@@ -5,7 +5,7 @@
 #DIM 調教者
 TCVAR:奴隷:行為者 = 調教者
 CALL NTR_KISS_PET_FELLA_MSG_KOJO_01(奴隷, 6)
-IF FLAG:訪問者との行為の終了時刻 == 0
+IF FLAG:访问者当前行为中止时刻 == 0
 	FLAG:访问者行为计时点 = DATETIME()
 	CALL NTR_ADD_SURRENDER(奴隷, 3)
 	SIF EXP:奴隷:NTR陷落经验 
@@ -56,11 +56,11 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 			CALL 无知去除(奴隷)
 		CFLAG:奴隷:射精者M = 調教者
 	ENDIF
-	FLAG:訪問者との行為の終了時刻 = DATETIME() + 10
+	FLAG:访问者当前行为中止时刻 = DATETIME() + 10
 	CALL NTR_EXP_ADD_C_EX(奴隷,1)
 	CALL NTR_EXP_ADD_M_EX(奴隷,1)
-	FLAG:訪問者との行為 = NTR_行为_六九式
-	CFLAG:奴隷:訪問者行為 = NTR_行为_六九式
+	FLAG:访问者当前行为 = NTR_行为_六九
+	CFLAG:奴隷:当前与访问者行为 = NTR_行为_六九
 	;处女菊花厨時の特殊処理。菊花も責められる。
 	;IF IS_NTR_KEEP_VIRGIN()
 	CALL NTR_EXP_ADD_A(奴隷,1)

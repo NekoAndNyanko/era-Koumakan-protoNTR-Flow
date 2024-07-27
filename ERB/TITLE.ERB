@@ -17,10 +17,10 @@ DO
 		PRINTFORML era紅魔館protoNTR Flow
 		;GameBase内的版本，前两位在前，后两位算小数
 		PRINTFORML Ver{GAMEBASE_VERSION/100}.{GAMEBASE_VERSION%100}
-		PRINTFORML 【原作】寝の人（2013-2019）
-		PRINTFORML 【Flow分支】xhmmmm（超级猫猫）
-		PRINTFORML 【制作协力】LanKE 不怕猫的苦力怕 不翻案的小狐狸
-		PRINTFORML （2013-2024）
+		PRINTFORML 【　原作　】　　　　　　　寝の人(2013－2019)
+		PRINTFORML 【Flow分支】　不懒散的大猫猫　不悠闲的古关忧
+		PRINTFORML 　　　　　　　不怕猫的苦力怕　不翻案的小狐狸
+		PRINTFORML （2013--2024）
 		;显示GameBase内的“追加情报”
 		;PRINTFORML %GAMEBASE_INFO%
 		PRINTFORML
@@ -98,28 +98,41 @@ SELECTCASE RESULT
 		PRINTFORML 3.艾丽娅的正常位非NTR口上
 		PRINTFORML %"	"%微调自eraTW的映姬口上，仅用作测试，这东西原版自带的口上结构居然是错误的，所以找了点内容测试
 		PRINTFORML Ver0.038.4.4--------------------------------------------------------------------------------24.02.20
-		PRINTFORML 1.根据【环月幽灵魔改V0.2.32】调整了访问者的移动逻辑
+		PRINTFORML 1.根据【环月幽灵魔改V0.2.32】版本调整了访问者的移动逻辑
 		PRINTFORML 2.调整目录结构和方法层次
 		PRINTFORML 超级猫猫的更新履历-------------------------------------------------------------------------------END
 		PRINTFORML 
 		PRINTFORML 
-		PRINTFORML ----------------------------------------------Flow版本----------------------------------------------
+		PRINTFORML <---------------------------------------------Flow版本--------------------------------------------->
 		PRINTFORML 
 		PRINTFORML 
 		PRINTFORML Flow版本更新履历--------------------------------------------------------------------------------最旧
 		PRINTFORML Alpha0.1------------------------------------------------------------------------------------24.xx.xx
-		PRINTFORML 1.移植了eraTW的地图绘制功能，并重置了部分地图。
-		PRINTFORML 2.重置了偷窥系统，支持角色、场景差分的口上。
-		PRINTFORML 3.
+		PRINTFORML ◎ 新增与调整
+		PRINTFORML >> 1.移植了eraTW的地图绘制功能，并重置了部分地图。
+		PRINTFORML    2.重置了偷窥系统，支持角色、场景差分的口上。
+		PRINTFORML    3.支持自定义访问者名字。
+		PRINTFORML    4.改用黑体，并根据黑体优化了相关图形的显示。
+		PRINTFORML    5.出于简化开发的考虑，暂时不允许[亲爱]素质的获取，何时恢复与恢复形式待定。
+		PRINTFORML ◎ 问题与修复
+		PRINTFORML >> 1.修复了无法推倒角色的问题
+		PRINTFORML    2.修复了部分随机文本随着输出次数增加而不停重复导致越来越长的问题
+		PRINTFORML    3.修复了访问者移动时由于出发地和目的地一致导致的报错问题
+		PRINTFORML ◎ 移除与废弃
+		PRINTFORML >> 1.彻底移除WC系内容（肉便器、管理人）
+		PRINTFORML    2.彻底移除男用贞操带、部分移除女用贞操带
+		PRINTFORML    3.彻底移除野外调教内容
+		PRINTFORML    4.彻底移除睡奸内容
+		PRINTFORML    5.基本移除卖春情节
 		PRINTFORMW Flow版本更新履历--------------------------------------------------------------------------------最新
 		GOTO VERSION_INFO
 	CASE 1
-		PRINTFORML 原始版本信息--------------------------------------------------------------
-		PRINTFORML 本游戏是era紅魔館protoNTR的汉化版本，依照从下到上的顺序修改而来。
-		PRINTFORML 超级猫猫图像扩展移植
-		PRINTFORML 下陷深渊：红茶丸真实模式修复+微调1.04
-		PRINTFORML 未知来源：era紅魔館protoNTR0037甜艮菜汉化版
-		PRINTFORMW 图像移植扩展可以根据/各类文档/人物图像显示说明.txt中的说明依样移植到其它作者/汉化者发布的任意版本中。
+		PRINTFORML 原始版本信息--------------------------------------------------------------------------------------■
+		PRINTFORML 【パチュロダ（推测源）】初始本体　：era紅魔館protoNTR 0.37
+		PRINTFORML 【　　　未知来源　　　】半成品汉化：era紅魔館protoNTR0037甜艮菜汉化版
+		PRINTFORML 【　论坛：下陷の深渊　】算法调整　：红茶丸真实模式修复+微调1.04
+		PRINTFORML 以上是本游戏开发所依据的原始版本，后续开发中如有参考原作新版本或其它分支的，可详见于更新日志。
+		PRINTFORMW 原始版本信息--------------------------------------------------------------------------------------■
 		GOTO VERSION_INFO
 	CASE 2
 		RETURN

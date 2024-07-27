@@ -50,41 +50,7 @@ RETURN RESULT
 奴隷 = 人物_咲夜
 RET_VAL = 0
 
-IF TALENT:奴隷:公众便所
-
-	IF TALENT:奴隷:恋慕 && TALENT:奴隷:亲爱
-		PRINTFORML 「..嗯嗯、很开心哦..」
-	ELSEIF TALENT:奴隷:恋慕
-		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-			PRINTDATAL
-				DATAFORM 「..没钥匙的话、也就这样了呢」
-				DATAFORM 「..如果要停止这事的话。需要钥匙吧」
-				DATAFORM 「..我想..你应该明白了吧？」
-				DATAFORM 「实在不知道怎么翻了,以下原句」
-				DATAFORM 「・・鍵なしでは、この程度ね」
-				DATAFORM 「・・これ以上は駄目よ。鍵がいるわ」
-				DATAFORM 「・・これ以上は・・わかっているわね？」
-			ENDDATA
-		ELSE
-			PRINTDATAL
-				DATAFORM 「..嗯嗯、这样的话..哼哼、不需要钥匙的吧？」
-				DATAFORM 「..哼哼、那么、给我钥匙怎么样？」
-				DATAFORM 「..这样的话也没关系吧」
-				DATAFORM 「实在不知道怎么翻了,以下原句」
-				DATAFORM 「・・ええ、これくらいなら・・ふふっ、鍵もいらないものね？」
-				DATAFORM 「・・ふふっ、これ以上は、鍵がいるわよ？」
-				DATAFORM 「・・これくらいなら構わないわ」
-			ENDDATA
-		ENDIF
-	ELSE
-		PRINTDATAL
-			DATAFORM 「不可以」
-			DATAFORM 「请停手」
-			DATAFORM 「..不要」
-		ENDDATA
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
 
 	PRINTDATAL
 		DATAFORM 「..这样的话、可以呢」
@@ -133,33 +99,7 @@ RETURN RESULT
 奴隷 = 人物_咲夜
 RET_VAL = 0
 
-IF TALENT:奴隷:公众便所
-
-	IF TALENT:奴隷:恋慕 && TALENT:奴隷:亲爱
-		PRINTFORML 「嗯....抱紧我..更多、更用力地......抱紧我....」
-	ELSEIF TALENT:奴隷:恋慕
-		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-			PRINTDATAL
-				DATAFORM 「..没钥匙的话、也就只能这样了哦。你知道的吧？」
-				DATAFORM 「..不能再继续了哦。除非你给我钥匙？」
-				DATAFORM 「..我想..你应该明白了吧？」
-				DATAFORM 「实在不知道怎么翻了,以下原句」
-				DATAFORM 「・・鍵なしでは、ここまでよ。わかっているわね？」
-				DATAFORM 「・・これ以上は駄目よ。鍵がないとね？」
-				DATAFORM 「・・これ以上は・・わかっているわね？」
-			ENDDATA
-		ELSE
-			PRINTDATAL
-				DATAFORM 「嗯....哼哼、如果只是拥抱的话、也不用钥匙呢..」
-				DATAFORM 「是的哦..紧紧地抱在一起....」
-				DATAFORM 「嗯....很喜欢的呢..」
-			ENDDATA
-		ENDIF
-	ELSE
-		PRINTFORML 「....请停手」
-	ENDIF
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取り返し中) 
 
 	PRINTDATAL
 		DATAFORM 「真拿你没办法啊....」
@@ -319,15 +259,9 @@ IF CFLAG:同行
 ELSE
 	RET_VAL = 0
 	;離れるとき
-	IF CFLAG:奴隷:現在位置 == FLAG:訪問者の現在位置
+	IF CFLAG:奴隷:当前位置 == FLAG:访问者当前位置
 		; 訪問者が同じ場所にいる
-		IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-			PRINTFORML 「..」
-			PRINTFORML 感受到%NTR_NAME(0)%那视奸一样的眼神的%CALLNAME:奴隷%露出不安的表情在%CALLNAME:MASTER%的旁边停下。
-		ELSEIF TALENT:奴隷:公众便所
-			PRINTFORML 「啊啦、%NTR_NAME(4)%来了啊。又是关于工作的事情吗？」
-			PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并向%NTR_NAME(4)%那边走去。
-		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
+		IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) 
 			PRINTFORML 「啊啦、%NTR_NAME(4)%来了。待会见。」
 			PRINTFORML 感受到%NTR_NAME(0)%的视线的%CALLNAME:奴隷%离开%CALLNAME:MASTER%并微微脸红地向%NTR_NAME(4)%那边走去。
 		ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
@@ -418,17 +352,7 @@ IF TFLAG:193
 	RET_VAL = 1
 	;告白失敗
 ELSE
-	;公众便所
-	IF TALENT:奴隷:公众便所
-		IF IS_DOUTEI(MASTER)
-			PRINTFORML 「就那么想失去童真？」
-		ELSE
-			PRINTFORML 「就那么想抱我吗？」
-		ENDIF
-		PRINTFORML 「但是，很抱歉。的确、我是谁都可以付钱使用的精液肉便器」
-		PRINTFORML 「主人曾严厉地跟我说只有%CALLNAME:MASTER%不可用做」
-		;寝取られ
-	ELSEIF TALENT:奴隷:NTR
+	IF TALENT:奴隷:NTR
 		IF 400 < CFLAG:奴隷:好感度
 			PRINTFORML 「并不是讨厌你..%CALLNAME:MASTER%..但是..非常抱歉..」
 		ELSEIF 300 < CFLAG:奴隷:好感度

@@ -832,12 +832,7 @@ RETURN 1
 ;==================================================
 @KOJO_MESSAGE_COM_K7_350
 CALL TRAIN_MESSAGE
-CALL KOJO_MESSAGE_COM_K7_350_1
 RETURN RESULT
-
-@KOJO_MESSAGE_COM_K7_350_1
-;公众便所
-RETURN 1
 
 ;==================================================
 ;351,連れ出す
@@ -2013,7 +2008,7 @@ IF LOCAL
 					PRINTFORMW 「好舒服…站不起来…♥」
 				CASE 3
 					PRINTFORML 「啊♥ 嗯♥ 哎呀，讨厌…%CALLNAME:MASTER%，你要做什么…」
-					IF BEDROOM(CFLAG:現在位置)
+					IF 存在床铺(CFLAG:当前位置)
 						PRINTFORMDL %CALLNAME:MASTER%为了更加强烈地抽插、把艾丽娅推到墙上固定
 						PRINTFORMDL 从下面撑起来的活塞运动，向艾丽娅的更深处顶去
 						PRINTFORMW 「啊♥ 哎呀…呀♥ 喂，到深处，讨厌…♥ 喂，不行♥」

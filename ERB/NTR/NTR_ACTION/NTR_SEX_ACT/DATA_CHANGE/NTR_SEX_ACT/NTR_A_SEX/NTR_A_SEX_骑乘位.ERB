@@ -5,10 +5,10 @@
 #DIM 調教者
 TEQUIP:奴隷:Ａ性爱 = 調教者
 ;性交時メッセージ・口上の前に設定
-FLAG:訪問者との行為 = NTR_行为_Ａ骑乘位
-CFLAG:奴隷:訪問者行為 = NTR_行为_Ａ骑乘位
+FLAG:访问者当前行为 = NTR_行为_Ａ骑乘位
+CFLAG:奴隷:当前与访问者行为 = NTR_行为_Ａ骑乘位
 CALL NTR_A_SEX_MSG_KOJO(奴隷)
-IF FLAG:訪問者との行為の終了時刻 == 0
+IF FLAG:访问者当前行为中止时刻 == 0
 	BASE:奴隷:体力 -= 80
 	BASE:奴隷:气力 -= 200
 	IF TALENT:奴隷:浮気的菊花
@@ -38,9 +38,9 @@ IF FLAG:訪問者との行為の終了時刻 == 0
 	SIF TALENT:奴隷:亲爱
 		EXP:奴隷:被强奸经验 += 1
 	CALL NTR_GET_WEAKNESS_2(奴隷)
-	FLAG:訪問者との行為の終了時刻 = DATETIME() + (RAND:30 + 30)
-	FLAG:訪問者との行為 = NTR_行为_Ａ骑乘位
-	CFLAG:奴隷:訪問者行為 = NTR_行为_Ａ骑乘位
+	FLAG:访问者当前行为中止时刻 = DATETIME() + (RAND:30 + 30)
+	FLAG:访问者当前行为 = NTR_行为_Ａ骑乘位
+	CFLAG:奴隷:当前与访问者行为 = NTR_行为_Ａ骑乘位
 	CALL NTR_SOURCE_CHECK_LITE(奴隷,調教者)
 ENDIF
 RETURN 0

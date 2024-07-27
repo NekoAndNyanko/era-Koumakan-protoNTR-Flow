@@ -41,7 +41,7 @@ ENDIF
 ;書かれていない場所へは移动しない
 ;常に母の元へ
 IF CFLAG:(ARG:1):成長度 == 成長度_乳児
-	RESULT:1 = CFLAG:(CFLAG:(ARG:1):母親):現在位置 * 倍_万 + 1000
+	RESULT:1 = CFLAG:(CFLAG:(ARG:1):母親):当前位置 * 倍_万 + 1000
 
 	;性格次第でどこにでも行く(臆病だと暗い部屋(納屋と地下室)には近寄らない(例外有))
 ELSEIF CFLAG:(ARG:1):成長度 == 成長度_幼児
@@ -97,7 +97,7 @@ ELSE
 	RETURN 0
 ENDIF
 
-;引数で指定されたキャラの現在位置取得
+;引数で指定されたキャラの当前位置取得
 ;ARG … チェック対象キャラ
 ;戻り値 … 場所コード, -1:不明（キャラが「誰か」など)
 @GET_NOW_POS(ARG)
@@ -109,6 +109,6 @@ SIF ARG == 人物_村人
 	RETURNF -1
 ;訪問者
 SIF ARG == 人物_訪問者
-	RETURNF FLAG:訪問者の現在位置
+	RETURNF FLAG:访问者当前位置
 ;それ以外
-RETURNF CFLAG:ARG:現在位置
+RETURNF CFLAG:ARG:当前位置

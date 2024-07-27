@@ -1,0 +1,97 @@
+;-------------------------------------------------------------------------------
+;咲夜
+@CHARA_MOVEMENT_ACTIVETIME_4(住人)
+#DIM 住人
+
+;4時〜7時は寝てる
+RETURN (TIME > 240 && TIME < 420) || CFLAG:住人:衰弱
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CHARA_MOVEMENT_MOVERATE_4
+RETURN 60
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@CHARA_MOVEMENT_4(ARG,ARG:1)
+;書かれていない場所へは移动しない
+RESULT:1 = 位置_红魔馆_咲夜私室 * 倍_万 + 100
+RESULT:2 = 位置_红魔馆_二楼走廊 * 倍_万 + 100
+RESULT:3 = 位置_红魔馆_二楼楼梯间 * 倍_万 + 100
+RESULT:4 = 位置_红魔馆_大厅 * 倍_万 + 100
+RESULT:5 = 位置_红魔馆_正门 * 倍_万 + 100
+RESULT:6 = 位置_红魔馆_大图书馆 * 倍_万 + 100
+RESULT:7 = 位置_红魔馆_餐厅 * 倍_万 + 100
+RESULT:8 = 位置_红魔馆_厨房 * 倍_万 + 100
+RESULT:9 = 位置_红魔馆_妖精女仆办公室 * 倍_万 + 100
+RESULT:10 = 位置_红魔馆_帕秋莉私室 * 倍_万 + 80
+RESULT:11 = 位置_红魔馆_小恶魔私室 * 倍_万 + 80
+RESULT:12 = 位置_红魔馆_大浴场 * 倍_万 + 80
+RESULT:13 = 位置_红魔馆_玩家房间 * 倍_万 + 80
+RESULT:14 = 位置_红魔馆_地下室 * 倍_万 + 80
+RESULT:15 = 位置_红魔馆_蕾米莉亚私室 * 倍_万 + 80
+RESULT:16 = 位置_红魔馆_一楼厕所 * 倍_万 + 100
+RESULT:17 = 位置_红魔馆_二楼厕所 * 倍_万 + 100
+RESULT:18 = 位置_红魔馆_仓库 * 倍_万 + 100
+RESULT:19 = 位置_红魔馆_守卫小屋 * 倍_万 + 80
+RESULT:20 = 位置_红魔馆_后院 * 倍_万 + 100
+RESULT:21 = 位置_红魔馆_三楼阳台 * 倍_万 + 100
+
+LOCAL:3 = 1
+FOR LOCAL:4, 1, 場所番号最大値+1
+	;紅魔館内の風呂、トイレ、納屋以外の汚れている場所を優先して移动
+	SIF MAP_DISTINCTION(LOCAL:4) != 0 || LOCAL:4 == 位置_红魔馆_仓库
+		CONTINUE
+
+	SELECTCASE LOCAL:4
+		CASE 位置_红魔馆_屋外厕所
+			;お手洗いパッチ
+			;基本的には1F厕所を使用
+			IF REST_NeedRestroom(ARG:1)
+				FOR LOCAL,0,CHARANUM
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
+						LOCAL:1++
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
+						LOCAL:2 ++
+				NEXT
+				IF LOCAL:2 > 2 && LOCAL:1 == 0
+					RESULT:(LOCAL:3) = 位置_红魔馆_屋外厕所 * 倍_万 + 10
+					LOCAL:3 ++
+				ENDIF
+			ENDIF
+		CASE 位置_红魔馆_一楼厕所
+			IF REST_NeedRestroom(ARG:1)
+				FOR LOCAL,0,CHARANUM
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
+						LOCAL:2 ++
+				NEXT
+				IF LOCAL:2 < 2
+					RESULT:(LOCAL:3) = 位置_红魔馆_一楼厕所 * 倍_万 + 10
+					LOCAL:3 ++
+				ENDIF
+			ENDIF
+		CASE 位置_红魔馆_二楼厕所
+			IF REST_NeedRestroom(ARG:1)
+				FOR LOCAL,0,CHARANUM
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_屋外厕所
+						LOCAL:1++
+					SIF CFLAG:LOCAL:当前位置 == 位置_红魔馆_一楼厕所
+						LOCAL:2 ++
+				NEXT
+				IF LOCAL:1 != 0 && LOCAL:2 > 1
+					RESULT:(LOCAL:3) = 位置_红魔馆_二楼厕所 * 倍_万 + 10
+					LOCAL:3 ++
+				ENDIF
+			ENDIF
+		CASE 位置_红魔馆_大浴场
+			IF CFLAG:(ARG:1):風呂 >= 1000
+				RESULT:(LOCAL:3) = 位置_红魔馆_大浴场 * 倍_万 + 8000
+				LOCAL:3 ++
+			ENDIF
+		CASEELSE
+			RESULT:(LOCAL:3) = LOCAL:4 * 倍_万 + (FLAG:(100 + LOCAL:4) + 100)
+			LOCAL:3 ++
+	ENDSELECT
+NEXT

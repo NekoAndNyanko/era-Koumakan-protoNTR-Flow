@@ -15,7 +15,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_01(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 1
+CFLAG:奴隷:当前位置詳細 = 1
 IF FLAG:訪問者宅の施錠状態 & 訪問者宅_玄関解錠済
 	PRINTFORML %"大门没有锁上……看来可以逃走了"%
 	PRINTFORML %"[0] 逃跑 [1] 沉溺在被调教的喜悦中"%
@@ -24,7 +24,7 @@ IF FLAG:訪問者宅の施錠状態 & 訪問者宅_玄関解錠済
 	SELECTCASE RESULT:0
 		CASE 0
 			PRINTFORML %CALLNAME:奴隷+"从门口飞奔而出，一边祈祷不要被"+NTR_NAME(0)+"发现，一边逃走了……"%
-			CFLAG:奴隷:現在位置 = 1
+			CFLAG:奴隷:当前位置 = 1
 		CASE 1
 			PRINTFORML %"真的不逃跑吗……？"%
 			PRINTFORML %CALLNAME:奴隷+"的脸上满是红晕…"%
@@ -53,7 +53,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_02(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 2
+CFLAG:奴隷:当前位置詳細 = 2
 PRINTFORML %"厕所正在被打扫"%
 PRINTFORML %NTR_NAME(0)+"说过不会让『商品』使用"%
 RETURN 1
@@ -75,7 +75,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_03(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 3
+CFLAG:奴隷:当前位置詳細 = 3
 PRINTFORML %" "%
 PRINTFORML %" "%
 RETURN 1
@@ -97,7 +97,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_04(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 4
+CFLAG:奴隷:当前位置詳細 = 4
 PRINTFORML %"地板上有提门。"%
 PRINTFORML %" "%
 RETURN 1
@@ -119,7 +119,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_05(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 5
+CFLAG:奴隷:当前位置詳細 = 5
 PRINTFORML %NTR_NAME(0)+"似乎不在。"%
 PRINTFORML %" "%
 RETURN 1
@@ -141,7 +141,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_06(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 6
+CFLAG:奴隷:当前位置詳細 = 6
 PRINTFORML %" "%
 PRINTFORML %" "%
 RETURN 1
@@ -163,7 +163,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_07(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 7
+CFLAG:奴隷:当前位置詳細 = 7
 PRINTFORML %"非常大的浴室。"%
 PRINTFORML %""%
 RETURN 1
@@ -185,7 +185,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_08(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 8
+CFLAG:奴隷:当前位置詳細 = 8
 PRINTFORML %" "%
 PRINTFORML %" "%
 RETURN 1
@@ -207,7 +207,7 @@ ENDIF
 ; @return 0 実行失敗, 1 実行成功
 @COM461_09(奴隷)
 #DIM 奴隷
-CFLAG:奴隷:現在位置詳細 = 9
+CFLAG:奴隷:当前位置詳細 = 9
 PRINTFORML %" "%
 PRINTFORML %" "%
 RETURN 1

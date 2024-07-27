@@ -1,0 +1,32 @@
+;删除野外调教时遗留的TALENT，感觉会有用就先留着了
+;-------------------------------------------------------------------------------
+;弱み獲得1 自慰行為を目撃されることによる訪問者への弱み獲得
+@NTR_GET_WEAKNESS_1(奴隷)
+#DIM 奴隷
+
+;再表示防止
+IF !TALENT:奴隷:被访问者抓到把柄
+	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+		PRINTFORMW %CALLNAME:奴隷%は自慰行為を%NTR_NAME(0)%に撮影されてしまったようだ
+		PRINTFORMW %CALLNAME:奴隷%は%NTR_NAME(0)%に弱みを握られた。
+	ENDIF
+	TALENT:奴隷:被访问者抓到把柄 = 1
+ENDIF
+RETURN
+
+;-------------------------------------------------------------------------------
+;弱み獲得2 恋人以外との性行為による訪問者への弱み獲得
+@NTR_GET_WEAKNESS_2(奴隷)
+#DIM 奴隷
+;恋慕でなければチェックしない
+IF TALENT:奴隷:恋慕
+	;再表示防止
+	IF !TALENT:奴隷:被访问者抓到把柄
+		IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
+			PRINTFORMW %CALLNAME:奴隷%与%ANATA_LOVER(奴隷)%以外的%NTR_NAME(3)%身体重叠。
+			PRINTFORMW %CALLNAME:奴隷%被%NTR_NAME(0)%掌握了弱点。
+		ENDIF
+		TALENT:奴隷:被访问者抓到把柄 = 1
+	ENDIF
+ENDIF
+RETURN

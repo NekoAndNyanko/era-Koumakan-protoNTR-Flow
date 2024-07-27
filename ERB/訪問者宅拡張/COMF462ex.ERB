@@ -11,7 +11,7 @@ RETURN RESULT:0
 ; RETURN 0:コマンドの実行に失敗, 1:コマンドの実行に成功
 @COMMAND462(奴隷)
 #DIM 奴隷
-SELECTCASE CFLAG:奴隷:現在位置
+SELECTCASE CFLAG:奴隷:当前位置
 	CASE 位置_訪問者宅
 		CALL COMMAND462_01(奴隷)
 	CASE 位置_売春宿
@@ -27,7 +27,7 @@ RETURN 0
 ; RETURN 0:コマンドの実行に失敗, 1:コマンドの実行に成功
 @COMMAND462_01(奴隷)
 #DIM 奴隷
-IF FLAG:訪問者の現在位置 == 位置_訪問者宅
+IF FLAG:访问者当前位置 == 位置_訪問者宅
 	CALL COMMAND462_01_01(奴隷)
 ELSE
 	CALL COMMAND462_01_02(奴隷)
@@ -60,19 +60,15 @@ RETURN 0
 #DIM 行為時間
 #DIM 累計時間
 IF !TALENT:MASTER:NTR
-	CFLAG:奴隷:現在位置詳細 = 25
+	CFLAG:奴隷:当前位置詳細 = 25
 ENDIF
 IF TALENT:MASTER:NTR
 	PRINTFORMW "见到"+%CALLNAME:奴隷+"在发呆，"+NTR_NAME(0)+"饶有兴趣地开始爱抚"+CALLNAME:奴隷+"敏感的肉体"%
-	IF CFLAG:MASTER:WC_訪問者受け入れ具合 >= 4
-		PRINTFORMW %CALLNAME:奴隷+"露出淫靡的微笑，点头同意了"%
-	ELSE
-		PRINTFORMW %"又要被狠狠地调教了，"+CALLNAME:奴隷+"无可奈何"%
-	ENDIF
+	PRINTFORMW %"又要被狠狠地调教了，"+CALLNAME:奴隷+"无可奈何"%
 ELSEIF CFLAG:奴隷:屈服度 >= 1000
 	PRINTFORML "见到"+%CALLNAME:奴隷+"在发呆，"+NTR_NAME(0)+"就走过来搭话了"%
 	PRINTFORMW %"虽然知道例行的调教要开始了，但"+CALLNAME:奴隷+"无可奈何"%
-ELSEIF CFLAG:奴隷:現在位置詳細 == 25
+ELSEIF CFLAG:奴隷:当前位置詳細 == 25
 	PRINTFORML "见到"+%CALLNAME:奴隷+"在发呆，"+NTR_NAME(0)+"就走了过来"%
 	PRINTFORMW %"虽然知道例行的调教要开始了，但"+CALLNAME:奴隷+"无可奈何"%
 ELSE
@@ -80,7 +76,7 @@ ELSE
 	PRINTFORMW %"虽然知道例行的调教要开始了，但"+CALLNAME:奴隷+"无可奈何"%
 ENDIF
 CALL COM46x_V_2(奴隷)
-IF CFLAG:奴隷:現在位置詳細 == 25 && !TALENT:MASTER:NTR
+IF CFLAG:奴隷:当前位置詳細 == 25 && !TALENT:MASTER:NTR
 	;訪問者は1/2の確率で鍵を開けっ放しにする。
 	IF RAND:2 == 0
 		PRINTFORML %NTR_NAME(0)+"爬上了楼梯……。"%
@@ -113,7 +109,7 @@ IF 奴隷 == MASTER
 		DATAFORM %"訪問者好像出去了……"%
 	ENDDATA
 ENDIF
-FLAG:訪問者の現在位置 = 1
+FLAG:访问者当前位置 = 1
 IF RAND:2 == 0
 	;出掛ける時は床扉を閉めていく事もある
 	FLAG:訪問者宅の施錠状態 ^= 訪問者宅_床扉解錠済
@@ -153,7 +149,7 @@ IF 奴隷 == MASTER
 	PRINTFORMW %CALLNAME:奴隷+"只是默默地等待时间流逝"%
 	TIME:0 += 30
 ENDIF
-IF FLAG:訪問者の現在位置 != 位置_訪問者宅 && RAND:20 == 0
+IF FLAG:访问者当前位置 != 位置_訪問者宅 && RAND:20 == 0
 	CALL COMMAND461_01(奴隷)
 	RETURN 1
 ENDIF

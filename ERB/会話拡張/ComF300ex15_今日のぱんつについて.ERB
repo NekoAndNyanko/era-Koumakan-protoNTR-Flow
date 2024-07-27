@@ -34,9 +34,7 @@ RETURN 0
 #DIM 奴隷
 調教者 = PLAYER:0
 奴隷 = TARGET:0
-IF TALENT:奴隷:公众便所
-	CALL MESSAGE_COM_300_15_01(調教者,奴隷)
-ELSEIF TALENT:奴隷:小恶魔 || TALENT:奴隷:淫乱
+IF TALENT:奴隷:小恶魔 || TALENT:奴隷:淫乱
 	CALL MESSAGE_COM_300_15_02(調教者,奴隷)
 ELSEIF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && CFLAG:奴隷:屈服度 > 999
 	CALL MESSAGE_COM_300_15_03(調教者,奴隷)
@@ -45,40 +43,6 @@ ELSEIF CFLAG:奴隷:ぱんつ確認 == 2
 ELSE
 	CALL MESSAGE_COM_300_15_05(調教者,奴隷)
 ENDIF
-RETURN 1
-
-;-------------------------------------------------------------------------------
-;会话拡張：ぱんつについて：贞操帯
-;　前提：公众便所
-@MESSAGE_COM_300_15_01(調教者,奴隷)
-#DIM 調教者
-#DIM 奴隷
-#DIMS 下着名
-#DIM ノーパン
-
-CFLAG:奴隷:ぱんつ確認 = 3
-;はいてないかチェック
-ノーパン = CHK_NO_PANTS(奴隷)
-IF 1 == ノーパン
-	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"下面有没有穿、"%
-	PRINTFORML “现在是真空的喔，什么都没有穿。”
-	PRINTFORML %"因为"+CALLNAME:奴隷+"的身体是受"+NTR_NAME(0)+"管理的『商品』、"%
-	PRINTFORML %"所以本来为了不让"+CALLNAME:調教者+"随意使用，而穿上了"+下着名+""%
-	PRINTFORML %"但不管是谁，只要从"+NTR_NAME(0)+"那买来了钥匙、"%
-	PRINTFORML %"在时间允许的情况下，无论多么变态的行为，"+CALLNAME:奴隷+"都得乖乖接受……。"%
-ELSE
-	下着名 = %下着名１_２(奴隷)%
-	PRINTFORML %CALLNAME:調教者+"询问"+CALLNAME:奴隷+"穿着的"+下着名+"是怎么回事、"%
-	PRINTFORML %"因为"+CALLNAME:奴隷+"的身体是受"+NTR_NAME(0)+"管理的『商品』、"%
-	PRINTFORML %"所以为了不让"+CALLNAME:調教者+"随意使用，而穿上了"+下着名+""%
-	PRINTFORML %"但不管是谁，只要从"+NTR_NAME(0)+"那买来了钥匙、"%
-	PRINTFORML %"在时间允许的情况下，无论多么变态的行为，"+CALLNAME:奴隷+"都会乖乖接受……。"%
-	PRINTFORML %""%
-ENDIF
-TRYCALLLIST
-	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_15_01(奴隷, 調教者, ノーパン)
-	FUNC KOJO_MESSAGE_COM_KU_300_15_01(奴隷, 調教者, ノーパン)
-ENDFUNC
 RETURN 1
 
 ;-------------------------------------------------------------------------------

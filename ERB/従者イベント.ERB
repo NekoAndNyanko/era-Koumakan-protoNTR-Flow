@@ -183,7 +183,7 @@ IF ARG:1 == 0 && 部屋の汚れ_最大(1) >= 2000
 	ENDIF
 ELSEIF ARG:1 == 1
 	;部屋の状態
-	IF CFLAG:MASTER:現在位置 == CFLAG:ARG:従者イベント２
+	IF CFLAG:MASTER:当前位置 == CFLAG:ARG:従者イベント２
 		;イベント达成
 		IF FLAG:(100+CFLAG:ARG:従者イベント２) < 500
 			CALL 従者E_达成, ARG
@@ -407,7 +407,7 @@ ELSEIF ARG:1 == 1
 	;里へ買い物
 	IF CFLAG:ARG:従者イベント１ == 20
 		;里分岐
-		IF CFLAG:MASTER:現在位置 == 位置_人間の里周辺
+		IF CFLAG:MASTER:当前位置 == 位置_人間の里周辺
 			PRINTFORMW %CALLNAME:MASTER%は%CALLNAME:ARG%から頼まれた物を買いに向かった
 			IF ARG == 4
 				CALL 従者E_お使い購入２, ARG
@@ -420,7 +420,7 @@ ELSEIF ARG:1 == 1
 		;対象へ渡す
 	ELSEIF CFLAG:ARG:従者イベント１ == 21
 		;場所分岐、睡觉中分岐
-		IF CFLAG:MASTER:現在位置 == CFLAG:ARG:現在位置
+		IF CFLAG:MASTER:当前位置 == CFLAG:ARG:当前位置
 			IF CFLAG:ARG:睡眠
 				CALL 従者E_受け取り不可, ARG, "睡眠"
 			ELSE
@@ -445,7 +445,7 @@ ELSEIF ARG:1 == 1
 			RETURN
 		ENDIF
 	ELSEIF CFLAG:ARG:従者イベント１ == 22
-		SIF CFLAG:ARG:現在位置 == CFLAG:ARG:開始位置 && !CFLAG:ARG:睡眠
+		SIF CFLAG:ARG:当前位置 == CFLAG:ARG:開始位置 && !CFLAG:ARG:睡眠
 			CALL 従者E_お使い_END, ARG
 	ENDIF
 	;時間超過
@@ -912,7 +912,7 @@ IF ARG:1 == 0
 ELSEIF ARG:1 == 1
 	;指定場所へ
 	IF CFLAG:ARG:従者イベント１ == 40
-		IF CFLAG:MASTER:現在位置 == CFLAG:ARG:従者イベント２
+		IF CFLAG:MASTER:当前位置 == CFLAG:ARG:従者イベント２
 			CFLAG:ARG:従者イベント２ = CFLAG:ARG:開始位置
 			CFLAG:ARG:従者イベント１ = 41
 			;口上
@@ -923,7 +923,7 @@ ELSEIF ARG:1 == 1
 		ENDIF
 		;対象の部屋へ
 	ELSEIF CFLAG:ARG:従者イベント１ == 41
-		IF CFLAG:MASTER:現在位置 == CFLAG:ARG:従者イベント２
+		IF CFLAG:MASTER:当前位置 == CFLAG:ARG:従者イベント２
 			;口上
 			PRINTFORMW %CALLNAME:ARG%の依頼品を%GETPLACENAME(CFLAG:ARG:従者イベント２)%に置いた
 			CALL 従者E_达成, ARG
@@ -968,7 +968,7 @@ IF ARG:1 == 0
 ELSEIF ARG:1 == 1
 	;指定場所へ
 	IF CFLAG:ARG:従者イベント１ == 30
-		IF CFLAG:MASTER:現在位置 == CFLAG:ARG:従者イベント２
+		IF CFLAG:MASTER:当前位置 == CFLAG:ARG:従者イベント２
 			;口上
 			PRINTFORMW %CALLNAME:ARG%の依頼品を%GETPLACENAME(CFLAG:ARG:従者イベント２)%に置いた
 			CALL 従者E_达成, ARG

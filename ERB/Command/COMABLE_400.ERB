@@ -1,0 +1,481 @@
+﻿;-------------------------------------------------
+;400番台,移动、仕事
+; コマンドの実行判定をまとめた部分。各コマンドファイルに振り分けてもいい気はする。
+;-------------------------------------------------
+;移动
+@COM_ABLE400
+;大浴場で抱きしめられている間は移动不可
+SIF FLAG:1840 >= 10 && FLAG:1840 <= 14
+	RETURN 0
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(400)
+	RETURN RESULT
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;收藏
+@COM_ABLE401
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(401)
+	RETURN RESULT
+;私室設定
+SIF CFLAG:MASTER:当前位置 != CFLAG:MASTER:開始位置
+	RETURN 0
+SIF CSTR:MASTER:収集品 == ""
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;睡觉
+@COM_ABLE402
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(402)
+	RETURN RESULT
+;私室設定
+SIF !(CFLAG:MASTER:当前位置 == CFLAG:MASTER:開始位置 || CFLAG:MASTER:当前位置 == 位置_訪問者宅)
+	RETURN 0
+;起床後12時間以上経過してないとダメ
+SIF TIME_PROGRESS(CFLAG:MASTER:起床時間) < 睡眠可経過時間
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;休息
+@COM_ABLE403
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(403)
+	RETURN RESULT
+;私室設定
+;10分休息パッチ変更点
+;私室以外でも休息できるようにするため
+;SIF CFLAG:MASTER:当前位置 != CFLAG:MASTER:開始位置 && CFLAG:MASTER:当前位置 != 位置_红魔馆_大浴场
+;	RETURN 0
+;訪問者宅での休息は禁止
+SIF CFLAG:MASTER:当前位置 == 位置_訪問者宅
+	RETURN 0
+SIF TIME_PROGRESS(CFLAG:MASTER:起床時間) >= 要睡眠経過時間 && 存在浴室(CFLAG:MASTER:当前位置)
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;窥视
+@COM_ABLE404
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(404)
+	RETURN RESULT
+SIF TARGET > 0
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;闻气味
+@COM_ABLE405
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(405)
+	RETURN RESULT
+SIF !FLAG:部屋のにおい_初期FLAG
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;扫除
+@COM_ABLE410
+;扫除実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(410)
+	RETURN RESULT
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+	RETURN 0
+;汚れてないとダメ
+SIF FLAG:(100 + CFLAG:MASTER:当前位置) < 100
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;战斗训练
+@COM_ABLE411
+;扫除実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(411)
+	RETURN RESULT
+;庭
+SIF CFLAG:MASTER:当前位置 != 位置_红魔馆_后院
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;学习
+@COM_ABLE412
+;扫除実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(412)
+	RETURN RESULT
+;図書室
+SIF CFLAG:MASTER:当前位置 != 位置_红魔馆_大图书馆
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;料理を作る
+@COM_ABLE413
+;扫除実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(413)
+	RETURN RESULT
+;厨房
+SIF !存在厨房(CFLAG:MASTER:当前位置)
+	RETURN 0
+;吃饭をしたフラグ
+;SIF TCVAR:PLAYER:304
+;	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+;既に料理を作っている
+SIF FLAG:料理
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;吃饭
+@COM_ABLE414
+;吃饭実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(414)
+	RETURN RESULT
+;料理がないとダメ
+SIF !FLAG:料理
+	RETURN 0
+;既に何か食べた
+SIF TCVAR:PLAYER:304
+	RETURN 0
+;うふふ中以外
+SIF CFLAG:うふふ == 2
+	RETURN 0
+;便所飯ＮＧ ただしトイレと私室が同じ場所にある場合は吃饭可能
+SIF REST_IsRestRoom(CFLAG:MASTER:当前位置) && (CFLAG:MASTER:当前位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:当前位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:当前位置 != 位置_雾之湖_大妖精的家)
+	RETURN 0
+;大浴場では吃饭不可、食堂以外での主食、デザートの吃饭不可
+SIF (CFLAG:MASTER:当前位置 != 位置_红魔馆_餐厅 && GETDISHMENU(FLAG:料理 % 1000) != "軽食") || CFLAG:MASTER:当前位置 == 位置_红魔馆_大浴场
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;招待食物
+@COM_ABLE415
+;吃饭実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(415)
+	RETURN RESULT
+;料理がないとダメ
+SIF !FLAG:料理
+	RETURN 0
+;その場に誰かいるか
+SIF TARGET < 1
+	RETURN 0
+;対象が眠っていない
+SIF CFLAG:TARGET:睡眠
+	RETURN 0
+;うふふ中以外
+SIF CFLAG:うふふ == 2
+	RETURN 0
+;主食、デザートは対象一人につき1日一回づつ
+SIF (TCVAR:304 & 2) && (GETDISHMENU(FLAG:料理 % 1000) == "主食")
+	RETURN 0
+SIF (TCVAR:304 & 4) && (GETDISHMENU(FLAG:料理 % 1000) == "甜点")
+	RETURN 0
+;便所飯ＮＧ ただしトイレと私室が同じ場所にある場合は吃饭可能
+SIF REST_IsRestRoom(CFLAG:MASTER:当前位置) && (CFLAG:MASTER:当前位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:当前位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:当前位置 != 位置_雾之湖_大妖精的家)
+	RETURN 0
+;その他食べられそうな場所でのみ吃饭可能、軽食は何処でも吃饭可
+IF  GETDISHMENU(FLAG:料理 % 1000) != "軽食"
+	IF CFLAG:MASTER:当前位置 == 位置_红魔馆_正门 || CFLAG:MASTER:当前位置 == 位置_红魔馆_大厅 || CFLAG:MASTER:当前位置 == 位置_红魔馆_大图书馆 || CFLAG:MASTER:当前位置 == 位置_红魔馆_后院 || CFLAG:MASTER:当前位置 == 位置_红魔馆_二楼楼梯间 || CFLAG:MASTER:当前位置 == 位置_红魔馆_二楼走廊 || CFLAG:MASTER:当前位置 == 位置_红魔馆_大浴场
+		RETURN 0
+	ENDIF
+ENDIF
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;自慰
+@COM_ABLE416
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(416)
+	RETURN RESULT
+;NTRでない場合紅魔館内部じゃないとダメ
+IF !TALENT:MASTER:NTR
+	SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+		RETURN 0
+	;NTRの場合訪問者宅でならOK
+ELSE
+	IF CFLAG:MASTER:当前位置 > 場所番号最大値
+		SIF CFLAG:MASTER:当前位置 != 位置_訪問者宅
+			RETURN 0
+	ENDIF
+ENDIF
+;一人きりじゃないとダメ
+SIF GET_TARGETNUM() > 0
+	RETURN 0
+;气力0
+SIF BASE:MASTER:气力 <= 0
+	RETURN 0
+;あるていど精力がないとダメ
+;SIF BASE:MASTER:精力 <= 500
+;	RETURN 0
+;最中
+SIF CFLAG:うふふ == 3
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@COM_ABLE417
+;撃破実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(417)
+	RETURN RESULT
+;訪問者と同じ場所のみ
+SIF CFLAG:MASTER:当前位置 != FLAG:访问者当前位置
+	RETURN 0
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;换衣服
+@COM_ABLE430
+;移动実行判定
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(430)
+	RETURN RESULT
+;私室
+SIF CFLAG:MASTER:当前位置 != 位置_红魔馆_玩家房间
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;摄影
+@COM_ABLE446
+#DIM LOOP_CHR
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(446)
+	RETURN RESULT
+SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+	RETURN 0
+SIF CFLAG:うふふ == 2
+	RETURN 0
+SIF ITEM:19 == 0 && NOITEM == 0
+	RETURN 0
+SIF NOITEM == 0 && ITEM:44 < 1
+	RETURN 0
+FOR LOOP_CHR , 1, CHARANUM
+	IF CFLAG:MASTER:当前位置 == CFLAG:LOOP_CHR:当前位置
+		RETURN 0
+		;		ELSE
+		;			SIF CAN_MOVE(CFLAG:LOOP_CHR:当前位置,CFLAG:MASTER:当前位置) == 2
+		;				RETURN 0
+	ENDIF
+NEXT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)訪問者と会话
+@COM_ABLE460
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(460)
+	RETURN RESULT
+;訪問者宅でのみ
+SIF CFLAG:MASTER:当前位置 != 位置_訪問者宅
+	RETURN 0
+;訪問者が居る場合のみ
+SIF CFLAG:MASTER:当前位置 != FLAG:访问者当前位置
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)逃跑
+@COM_ABLE461
+SIF TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(461)
+	RETURN RESULT
+;訪問者宅でのみ
+SIF CFLAG:MASTER:当前位置 != 位置_訪問者宅
+	RETURN 0
+;NTRなら随便转转になる
+SIF TALENT:MASTER:NTR
+	RETURN 0
+;訪問者が居ない場合のみ
+SIF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置 && CFLAG:MASTER:当前位置詳細 == FLAG:访问者当前位置詳細
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)什麽也不做
+@COM_ABLE462
+SIF !TFLAG:100
+	RETURN 0
+;訪問者宅でのみ
+SIF CFLAG:MASTER:当前位置 != 位置_訪問者宅
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(462)
+	RETURN RESULT
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;与访问者同行
+@COM_ABLE464
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(464)
+	RETURN RESULT
+;訪問者と同じ場所のみ
+SIF CFLAG:MASTER:当前位置 != FLAG:访问者当前位置
+	RETURN 0
+;訪問者宅ではダメ
+SIF CFLAG:MASTER:当前位置 == 位置_訪問者宅
+	RETURN 0
+SIF CFLAG:MASTER:屈服度 < 400
+	RETURN 0
+SIF FLAG:訪問者同行フラグ
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;与访问者分开
+@COM_ABLE465
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(465)
+	RETURN RESULT
+;訪問者と同じ場所のみ
+SIF CFLAG:MASTER:当前位置 != FLAG:访问者当前位置
+	RETURN 0
+SIF CFLAG:MASTER:屈服度 < 400
+	RETURN 0
+SIF !FLAG:訪問者同行フラグ
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;(訪問者宅にて)随便转转
+@COM_ABLE466
+SIF !TALENT:MASTER:NTR
+	RETURN 0
+SIF !TFLAG:100
+	RETURN 0
+;一括管理
+SIF GLOBAL_COMABLE(461)
+	RETURN RESULT
+;訪問者宅でのみ
+SIF CFLAG:MASTER:当前位置 != 位置_訪問者宅
+	RETURN 0
+;訪問者が居ない場合のみ
+SIF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置 && CFLAG:MASTER:当前位置詳細 == FLAG:访问者当前位置詳細
+	RETURN 0
+RETURN 1
+
+;-------------------------------------------------------------------------------
+;与访问者同寝
+@COM_ABLE467
+SIF !TFLAG:100
+	RETURN 0
+;NTRじゃないとできない
+SIF !TALENT:MASTER:NTR
+	RETURN 0
+;訪問者と同じ場所のみ
+SIF CFLAG:MASTER:当前位置 != FLAG:访问者当前位置
+	RETURN 0
+;訪問者宅ではベッドルームで
+IF CFLAG:MASTER:当前位置 != 位置_訪問者宅
+	SIF !CFLAG:MASTER:当前位置詳細 == 9
+		RETURN 0
+ELSE
+	;私室設定
+	SIF !(CFLAG:MASTER:当前位置 == CFLAG:MASTER:開始位置 || CFLAG:MASTER:当前位置 == 位置_訪問者宅)
+		RETURN 0
+ENDIF
+;起床後12時間以上経過もしくは体力が500以下でないとダメ
+SIF TIME_PROGRESS(CFLAG:MASTER:起床時間) < 睡眠可経過時間 || BASE:MASTER:体力 <= 500
+	RETURN 0
+RETURN 1

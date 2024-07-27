@@ -14,10 +14,10 @@ RETURN RESULT:0
 #DIMS コマンド,100
 #DIM コマンド数 = 0
 ;未設定の場合初期位置にリセット
-IF CFLAG:奴隷:現在位置詳細 == 0
-	CFLAG:奴隷:現在位置詳細 = 9
+IF CFLAG:奴隷:当前位置詳細 == 0
+	CFLAG:奴隷:当前位置詳細 = 9
 ENDIF
-IF FLAG:訪問者の現在位置 != 位置_訪問者宅 && RAND:20 == 0
+IF FLAG:访问者当前位置 != 位置_訪問者宅 && RAND:20 == 0
 	CALL COMMAND466_01(奴隷)
 	RETURN 1
 ENDIF
@@ -38,14 +38,14 @@ RETURN 0
 ;@return 1:xxx,0:xxx
 @COMMAND466_01(奴隷)
 #DIM 奴隷
-FLAG:訪問者の現在位置 = 位置_訪問者宅
+FLAG:访问者当前位置 = 位置_訪問者宅
 PRINTFORMW %"どうやら、"+NTR_NAME(0)+"が帰ってきたようだ……"%
-SELECTCASE CFLAG:奴隷:現在位置詳細
+SELECTCASE CFLAG:奴隷:当前位置詳細
 	CASE 1
 	CASEELSE
 		PRINTFORML %NTR_NAME(0)+"が帰ってくる気配を感じて、"+CALLNAME:奴隷+"は玄関に駆けつけた"%
 		;お出迎えで玄関に移动
-		CFLAG:奴隷:現在位置詳細 = 1
+		CFLAG:奴隷:当前位置詳細 = 1
 ENDSELECT
 PRINTFORML %CALLNAME:奴隷+"は"+NTR_NAME(0)+"を出迎えると、お帰りのキスをした"%
 RETURN 1
@@ -92,7 +92,7 @@ FOR 階層,VARSIZE("地図",0)-1,-1,-1
 		FOR LOCAL:0,0,100
 			TRYCCALLFORM %"COM466_"+TOSTR(LOCAL:0,"00")+"_ENABLE"%, 奴隷
 				IF RESULT:0 && STRCOUNT(地図:階層:行数,TOSTR(LOCAL:0,"00")) > 0
-					IF CFLAG:奴隷:現在位置詳細 == LOCAL:0
+					IF CFLAG:奴隷:当前位置詳細 == LOCAL:0
 						地図:階層:行数 = %REPLACE(地図:階層:行数,TOSTR(LOCAL:0,"00"),"<button value='"+TOSTR(LOCAL:0,"00")+"'><font color='"+自分位置色+"'>"+TOSTR(LOCAL:0,"00")+"</font></button>")%
 						地図:階層:行数 = %地図:階層:行数+"  "+"<button value='"+TOSTR(LOCAL:0,"00")+"'><font color='"+自分位置色+"'>"+TOSTR(LOCAL:0,"00")+":"+RESULTS:0+"</font></button>"%
 					ELSE

@@ -1,0 +1,610 @@
+﻿;-------------------------------------------------------------------------------
+;NTRパッチ関係オプション設定モジュール
+;
+;設定関数と設定状態の取得関数群
+;-------------------------------------------------------------------------------
+
+;-------------------------------------------------------------------------------
+;FIXME:関数の説明を書いてください
+;@return 1:xxx,0:xxx
+@NTR_OPTION
+SETBIT FLAG:ＮＴＲパッチ設定,0
+SETBIT FLAG:ＮＴＲパッチ設定,3
+CLEARLINE 10000
+$INPUT_LOOP_NTR_OPTION_TOP
+PRINTFORML 
+PRINTFORML ♡NTR各项设定-----------------------------------------------------------------------------------❤♪~
+PRINTFORML
+STRLENFORM %NTR_NAME(0)%
+IF !FLAG:真实模式
+	PRINTFORML [01] - %NTR_NAME(0)%吸收角色对%CALLNAME:MASTER%的好感度（建议打开）%"	" * (2 + (RESULT/2 == 2))%\@ GETBIT(FLAG:ＮＴＲパッチ設定,1) ? [是] # [否] \@
+	;PRINTFORML [02] - [恋慕] 等素质消去 \@ GETBIT(FLAG:ＮＴＲパッチ設定,2) ? [是] # [否] \@
+	;PRINTFORML [03] - %NTR_NAME(0)%家的长期滞在 \@ GETBIT(FLAG:ＮＴＲパッチ設定,3) ? [是] # [否] \@
+	;PRINTFORML [04]  - %NTR_NAME(0)%会监禁%CALLNAME:MASTER%%"	" * 6%\@ GETBIT(FLAG:ＮＴＲパッチ設定,4) ? [是] # [否] \@
+ENDIF
+PRINTFORML [05] - 角色会怀上%NTR_NAME(0)%的孩子%"	" * 5%\@ GETBIT(FLAG:ＮＴＲパッチ設定,5) ? [是] # [否] \@
+PRINTFORML [06] - %NTR_NAME(0)%会把角色带回家（建议关闭）%"	" * (3 + (RESULT/2 == 2))%\@ GETBIT(FLAG:ＮＴＲパッチ設定,6) ? [是] # [否] \@
+PRINTFORML [07] - %NTR_NAME(0)%是否出现（建议打开）%"	" * (4 + (RESULT/2 == 2))%\@ GETBIT(FLAG:ＮＴＲパッチ設定,7) ? [是] # [否] \@
+;PRINTFORML [10] - 角色与%NTR_NAME(0)%相爱%"	" * 6%\@ FLAG:Flow版本 ? [是] # [否] \@
+PRINTFORML [24] - %NTR_NAME(0)%仅调教[恋慕]角色（建议打开）%"	" * 3%\@ GETBIT(FLAG:ＮＴＲパッチ設定,24) ? [是] # [否] \@
+PRINTFORML [25] - 处女肛门調教（建议关闭）%"	" * 5%\@ GETBIT(FLAG:ＮＴＲパッチ設定,25) ? [是] # [否] \@
+IF !FLAG:真实模式
+	PRINTFORML [27] - 偷情模式（建议打开）%"	" * 5%\@ GETBIT(FLAG:ＮＴＲパッチ設定,27) ? [是] # [否] \@
+	;PRINTFORML [30] - 角色被发现出轨后逃避见面%"	" * 5%\@ GETBIT(FLAG:ＮＴＲパッチ設定,30) ? [是] # [否] \@
+	PRINTFORML [31] - 显示%NTR_NAME(0)%的位置%"	" * (6 - (RESULT/2 == 4))%\@ GETBIT(FLAG:ＮＴＲパッチ設定,31) ? [是] # [否] \@
+	PRINTFORML [32] - 显示%NTR_NAME(0)%的活动%"	" * (6 - (RESULT/2 == 4))%\@ GETBIT(FLAG:ＮＴＲパッチ設定,32) ? [是] # [否] \@
+ENDIF
+PRINTFORML [99] - 自定义访问者的名字%"	" * 5%\@ 访问者名称 != "" ? [是] # [否] \@
+PRINTFORML [100]- 返回
+PRINTDATAL
+	DATAFORM 喂喂，你不会很兴奋吧~♡-------------------------------------------------------------------------❤♪~
+	DATAFORM 又在想什么呢♡----------------------------------------------------------------------------------❤♪~
+	DATAFORM 那个人的……好舒服……♡------------------------------------------------------------------------❤♪~
+ENDDATA
+$INPUT_LOOP_NTR_OPTION
+INPUT
+IF RESULT == 1
+	CLEARLINE 10000
+	PRINTFORML ♡NTR好感度吸收设定-----------------------------------------------------------------------------❤♪~
+	PRINTFORML 【NTR好感度吸收】打开后，在好感度耗尽前，%NTR_NAME(0)%与角色的互动会不断将好感度转化为屈服度
+	PRINTFORML 「在她的心灵，%CALLNAME:MASTER%的存在被一点一点地替换……」
+	PRINTFORML 「嘛……一个人的精神是有限的，装不下太多东西，人的世界就是这样运行的吧。」
+	PRINTFORML 「说到底被这样那样之后还能不变心才奇怪吧……」
+	PRINTFORML 「对了，姑且提醒一下，只有打开后才能达成获得[NTR]素质的条件……」
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	PRINTFORML 从身体到心灵，对她来说重要的是……已经分不清是屈服还是爱意了呢♡--------------------------------❤♪~
+	$INPUT_LOOP_NTR_OPTION_1
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,1
+		PRINTFORML 「毕竟世间常理如此……虽然现实中没有什么能一天干到晚的『魔法大鸡鸡』就是了。」
+		PRINTFORMW 「嗯？那人们是怎么变心的？你真的和人好好交流过吗……」（盯——）
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,1
+		PRINTFORML 「嘛……也不是不行，永远维持在不会彻底陷落、还有点在意恋人的状态也行吧。」
+		PRINTFORML 「不过，万事万物都有结局，中间让人感到有趣、美丽或兴奋的，往往总是转瞬即逝的……」
+		PRINTFORMW 「别被束缚在对过渡态的迷恋里……祝你看得开心。」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_1
+	ENDIF
+[SKIPSTART]
+	;//此项已无效
+	ELSEIF RESULT == 2
+		PRINTFORML [恋慕] 等素质会被消去？
+		PRINTFORML [0] 打开
+		PRINTFORML [1] 关闭
+		$INPUT_LOOP_NTR_OPTION_2
+		INPUT
+		IF RESULT == 0
+			SETBIT FLAG:ＮＴＲパッチ設定,2
+			PRINTFORMW 素质会被消去
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSEIF RESULT == 1
+			CLEARBIT FLAG:ＮＴＲパッチ設定,2
+			PRINTFORMW 素质不会被消去
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_2
+		ENDIF
+[SKIPEND]
+ELSEIF RESULT == 3
+	;GOTO INPUT_LOOP_NTR_OPTION_TOP
+	PRINTFORML 住民在%NTR_NAME(0)%家的长期滞在有效？
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	$INPUT_LOOP_NTR_OPTION_3
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,3
+		PRINTFORMW 长期滞在有效
+		PRINTFORML 
+		$INPUT_LOOP_NTR_OPTION_3_0
+		FOR LOCAL,1,CHARANUM
+			PRINTFORML [{LOCAL,3}] - %CALLNAME:LOCAL% {NTR_GET_STAYOUT_MAXIMUM(LOCAL)}日
+		NEXT
+		PRINTFORML [999] - 返回
+		$INPUT_LOOP_NTR_OPTION_3_1
+		INPUT
+		IF 0 < RESULT && RESULT <= CHARANUM
+			LOCAL = RESULT
+			PRINTFORML 最大滞在日数？(0以下は翌朝帰り, 最大7日)
+			INPUT
+			CALL NTR_SET_STAYOUT_MAXIMUM(LOCAL,LIMIT(RESULT,0,7))
+			GOTO INPUT_LOOP_NTR_OPTION_3_0
+		ELSEIF RESULT == 999
+			GOTO INPUT_LOOP_NTR_OPTION_TOP
+		ELSE
+			GOTO INPUT_LOOP_NTR_OPTION_3_1
+		ENDIF
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,3
+		PRINTFORMW 长期滞在无效
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_3
+	ENDIF
+[SKIPSTART]
+ELSEIF RESULT == 4
+	PRINTFORML "%CALLNAME:MASTER%"会被%NTR_NAME(0)%打包带回家监禁？
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	$INPUT_LOOP_NTR_OPTION_4
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,4
+		PRINTFORMW 会被打包带回家监禁
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,4
+		PRINTFORMW 不会被打包带回家监禁
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_4
+	ENDIF
+[SKIPEND]
+ELSEIF RESULT == 5
+	CLEARLINE 10000
+	PRINTFORML ♡NTR妊娠设定-----------------------------------------------------------------------------------❤♪~
+	PRINTFORML 【NTR妊娠】打开后在妊娠功能启用的情况下，%NTR_NAME(0)%可以使角色怀孕。
+	PRINTFORML %NTR_NAME(0)%射进她们身体的精液……当然可以让她们怀孕吧❤~
+	PRINTFORML 不仅仅是让大脑感到快感、把灵魂锁进快乐的身体，就连无意识的子宫也选择了他……之类的？
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	PRINTFORML 这种事情很棒对吧♡------------------------------------------------------------------------------❤♪~
+	$INPUT_LOOP_NTR_OPTION_5
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,5
+		PRINTFORMW 「呼呼，我就知道你喜欢这样♥」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,5
+		PRINTFORMW 「诶……真遗憾」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_5
+	ENDIF
+ELSEIF RESULT == 6
+	CLEARLINE 10000
+	PRINTFORML 允许%NTR_NAME(0)%把住人带回家吗？
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	$INPUT_LOOP_NTR_OPTION_6
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,6
+		PRINTFORMW 允许带回家
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,6
+		PRINTFORMW 不允许带回家
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_6
+	ENDIF
+ELSEIF RESULT == 7
+	CLEARLINE 10000
+	PRINTFORML ♡NTR访问者出现设定-----------------------------------------------------------------------------❤♪~
+	PRINTFORML 【访问者出现】让%NTR_NAME(0)%在游戏中登场
+	PRINTFORML 故事的主角不登场，一切就都没法开始吧？
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	PRINTFORML 这难道不是个甜美的故事吗♡----------------------------------------------------------------------❤♪~
+	$INPUT_LOOP_NTR_OPTION_7
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,7
+		PRINTFORMW 「%NTR_NAME(0)%会登场的，命运的齿轮开始转动～」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,7
+		PRINTFORMW 「%NTR_NAME(0)%不会再来了，但是她们的心真的还属于%CALLNAME:MASTER%吗？身体深处又在渴望什么呢？」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_7
+	ENDIF
+ELSEIF RESULT == 10
+	PRINTFORML 此开关使得居民在NTR后依然与主人公保持「恋人」关系
+	PRINTFORML 并且尽可能地隐藏与%NTR_NAME(0)%关系，即使已经不再爱%CALLNAME:MASTER%。
+	PRINTFORML 与此同时，「公共厕所」「浮気公認」等性癖以及与%CALLNAME:MASTER%和%NTR_NAME(0)%以外的男人发生关系的桥段也会被屏蔽。
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	$INPUT_LOOP_NTR_OPTION_10
+	INPUT
+	IF RESULT == 0
+		FLAG:Flow版本 = 1
+		;清除不兼容的设置
+		CLEARBIT FLAG:ＮＴＲパッチ設定,8
+		CLEARBIT FLAG:ＮＴＲパッチ設定,9
+		CLEARBIT FLAG:ＮＴＲパッチ設定,25
+		CLEARBIT FLAG:ＮＴＲパッチ設定,26
+		CLEARBIT FLAG:ＮＴＲパッチ設定,30
+		PRINTFORMW 已经打开
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		FLAG:Flow版本 = 0
+		PRINTFORMW 已经关闭
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_10
+	ENDIF
+ELSEIF RESULT == 24
+	CLEARLINE 10000
+	PRINTFORML ♡NTR恋慕限定设定-------------------------------------------------------------------------------❤♪~
+	PRINTFORML 【NTR恋慕限定】打开后角色只有获得[恋慕]之后才会与%NTR_NAME(0)%产生联系
+	PRINTFORML 内容多是以角色与玩家成为恋人为前提制作的，打开可能导致奇怪的情节发展。
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	PRINTFORML 个人认为，没有爱作为前提应该也不叫NTR了--------------------------------------------------------❤♪~
+	$INPUT_LOOP_NTR_OPTION_24
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,24
+		PRINTFORML 「这才对嘛！没有爱这么能叫NTR呢！」
+		PRINTFORMW %NTR_NAME(0)%只与拥有[恋慕]或[NTR]素质的角色进行深入交流
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,24
+		PRINTFORML 「啊啊……真的有人选这个吗……这太奇怪了！算了，随便你。」
+		PRINTFORMW %NTR_NAME(0)%会无视条件直接与所有角色进行深入交流
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_24
+	ENDIF
+ELSEIF RESULT == 25
+	CLEARLINE 10000
+	PRINTFORML ♡NTR处女调教设定-------------------------------------------------------------------------------❤♪~
+	PRINTFORML 【NTR处女调教】打开后在角色彻底陷落之前，若角色是处女，则%NTR_NAME(0)%不会与角色用小穴做爱。
+	PRINTFORML 虽然我觉得这很奇怪，但总有人会喜欢？%NTR_NAME(0)%觉得他有意见。
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	PRINTFORML 人家……想要做爱嘛……用前面♡------------------------------------------------------------------❤♪~
+	$INPUT_LOOP_NTR_OPTION_25
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,25
+		PRINTFORML 「嘛……这种爱好也是有的吧……」
+		PRINTFORMW 简单来说，%NTR_NAME(0)%在角色获得[NTR]素质前，最多只会进行肛交。
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,25
+		PRINTFORMW 「在和%CALLNAME:MASTER%进行『初体验』之前，已经知晓真正快乐的小穴和心灵……究竟会做出什么样的回答呢？」
+		PRINTFORMW 「不觉得很有趣吗？呼呼~♥」
+		PRINTFORMW 在陷落进行到一定阶段后，如果角色还是处女，%NTR_NAME(0)%就会代%CALLNAME:MASTER%收下它了……当然，也包括她♡
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_25
+	ENDIF
+	;NTR和姦
+ELSEIF RESULT == 27
+	CLEARLINE 10000
+	PRINTFORML 通过调整算法，减少%NTR_NAME(0)%在低屈服度直接强奸的情况，使角色与%NTR_NAME(0)%看起来更像是偷情。
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	$INPUT_LOOP_NTR_OPTION_27
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,27
+		PRINTFORML 现在需要有一定的“感情基础”（屈服度），%NTR_NAME(0)%才会进行本番。
+		; PRINTFORMW (野外調教、睡姦关闭の設定を推奨します)
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,27
+		PRINTFORMW 现在只要%NTR_NAME(0)%连续进行调教，就有可能直接进入本番环节。
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_27
+	ENDIF
+	;浮気発覚回避逃避
+ELSEIF RESULT == 30 && !FLAG:Flow版本
+	CLEARLINE 10000
+	PRINTFORML 住人会因为害怕发现外遇而逃跑吗？
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	$INPUT_LOOP_NTR_OPTION_30
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,30
+		PRINTFORMW 会逃
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,30
+		PRINTFORMW 不会逃
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_30
+	ENDIF
+	;訪問者居場所筒抜け
+ELSEIF RESULT == 31
+	CLEARLINE 10000
+	PRINTFORML ♡访问者位置显示设定----------------------------------------------------------------------------❤♪~
+	PRINTFORML 【访问者位置显示】打开后在地图上高亮访问者的位置
+	PRINTFORML 这样一来，%NTR_NAME(0)%的位置就一清二楚了呢~
+	PRINTFORML 那么，你想知道什么秘密呢？
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	PRINTFORML 看到地图上的嫣红了吗？那是绽放的爱之花，两腿间的哦♡--------------------------------------------❤♪~
+	$INPUT_LOOP_NTR_OPTION_31
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,31
+		PRINTFORMW 「这是张有魔法的地图～」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,31
+		PRINTFORMW 「世界是片迷雾，得好好探索花朵般灿烂的那笑颜背后的秘密～」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_31
+	ENDIF
+	;筒抜けモード
+ELSEIF RESULT == 32
+	CLEARLINE 10000
+	PRINTFORML ♡访问者行为显示设定----------------------------------------------------------------------------❤♪~
+	PRINTFORML 【访问者行为显示】打开后在玩家行动后同步播报访问者的行动
+	PRINTFORML 在%CALLNAME:MASTER%看不见的地方，%NTR_NAME(0)%都在做些什么……他的恋人们又在做什么呢♥
+	PRINTFORML [0] 打开
+	PRINTFORML [1] 关闭
+	PRINTFORML 玩家的身边什么都没有，不要被幻觉迷惑了耳朵♡----------------------------------------------------❤♪~
+	$INPUT_LOOP_NTR_OPTION_32
+	INPUT
+	IF RESULT == 0
+		SETBIT FLAG:ＮＴＲパッチ設定,32
+		PRINTFORMW 「嗯嗯，有一对顺风耳和千里眼也不是什么坏事……大概？」
+		PRINTFORMW 「啊，对了，%CALLNAME:MASTER%这个角色本身是听不到的哦？」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSEIF RESULT == 1
+		CLEARBIT FLAG:ＮＴＲパッチ設定,32
+		PRINTFORMW 「眼见为实、耳听……娇喘～♪哎呀，为什么怎么都发现不了那是你心爱的恋人呢～嘛……毕竟是幻想乡？」
+		GOTO INPUT_LOOP_NTR_OPTION_TOP
+	ELSE
+		GOTO INPUT_LOOP_NTR_OPTION_32
+	ENDIF
+ELSEIF RESULT == 99
+	CLEARLINE 10000
+	CALL 访问者名字设置
+	GOTO INPUT_LOOP_NTR_OPTION_TOP
+ELSEIF RESULT == 100
+	RETURN 0
+ELSE
+	GOTO INPUT_LOOP_NTR_OPTION
+ENDIF
+RETURN 0
+
+;-------------------------------------------------------------------------------
+;好感度吸収オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_DRAIN_LOVE
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,1)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;素質吸収オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_DRAIN_TALENT
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,2)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;長期滞在オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_LONG_STAY
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,3)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;監禁オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_IMPRISON_ENABLE
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,4)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;妊娠オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_PREGNANCY_ENABLE
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,5)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;お持ち帰りオプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_TAKINGOUT_ENABLE
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,6)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;訪問者来訪オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_VISITOR_COME
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,7)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;历史遗留，已失效
+;訪問者野外調教オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_EXHIBITION
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,8)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;历史遗留，已失效
+;訪問者睡姦オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_SLEEP_RAPE
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,9)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;恋慕つき住人のみ口説くオプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_ATTACK_LOVER_ONLY
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,24)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;处女保存オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_KEEP_VIRGIN
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,25)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;NTR和姦モード
+;　戻り値:0:关闭 1:打开
+@IS_NTR_SOFT
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,27)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+
+;-------------------------------------------------------------------------------
+;浮気発覚回避逃避オプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_ESCAPE
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,30)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;場所筒抜けオプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_SHOW_POS
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,31)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;筒抜けオプション設定状態
+;　戻り値:0:关闭 1:打开
+@IS_NTR_SHOW_ALL
+#FUNCTION
+IF GETBIT(FLAG:ＮＴＲパッチ設定,32)
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+;-------------------------------------------------------------------------------
+;是否存在访问者中意的对象
+@IS_VISITOR_FAVORITE_CHAR(charId)
+#FUNCTION
+#DIM charId
+
+SIF FLAG:訪問者のお気に入り != 999 && charId == FLAG:訪問者のお気に入り
+	RETURNF 1
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;是否存在访问者不喜欢的对象
+@IS_VISITOR_HATE_CHAR(charId)
+#FUNCTION
+#DIM charId
+
+SIF FLAG:訪問者の嫌いな相手 != 999 && charId == FLAG:訪問者の嫌いな相手
+	RETURNF 1
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;是否存在访问者可出手的对象
+@IS_VISITOR_HARASS_TARGET(charId, includeNTR)
+#FUNCTION
+#DIM charId
+#DIM includeNTR
+
+SIF !IS_NTR_ATTACK_LOVER_ONLY() || TALENT:charId:恋慕 || (includeNTR && TALENT:charId:NTR)
+	RETURNF 1
+RETURNF 0
+
+;-------------------------------------------------------------------------------
+;访问者是否在中意的地方附近停留
+@SETTING_VISITOR_STAY_AT_FAV_POS()
+#FUNCTION
+RETURNF GETBIT(FLAG:雑多設定, 4)
+
+@访问者名字设置
+$访问者名字设置
+PRINTL ♡访问者名字设定--------------------------------------------------------------------------------❤♪~
+PRINTL 【访问者名字设定】可以自由更改访问者的名字，但此前已记录的文字中（如处女丧失的文本），名字无法修改。
+PRINTL 输入访问者的名字（2-4个汉字）
+PRINTL 直接确认输入/回车会重置为默认名字
+PRINTL ------------------------------------------------------------------------------------------------
+PRINTL 建议不要在游戏中途修改，因为诸如角色和访问者的第一次记录这些地方的文本仍然会保留旧的名字
+PRINTL 如果想连那些内容也一起修改，可以用记事本打开对应的存档文件，使用Ctrl+H将旧名字全部替换为新名字
+PRINTL ------------------------------------------------------------------------------------------------
+PRINTFORML 当前访问者名字：%NTR_NAME(0)%
+PRINTBUTTONLC "[确认输入]",""
+PRINTBUTTONLC "[不变更名字]","无"
+PRINTL
+PRINTL 有名字的访问者才是好访问者……吗？-------------------------------------------------------------❤♪~
+INPUTS
+TOFULL RESULTS
+IF RESULTS == ""
+	访问者名称 = 
+ELSEIF RESULTS == "无"
+	PRINTFORML 没有改变访问者名字，当前名字：%NTR_NAME(0)%
+ELSE
+	IF STRLENS(RESULTS) < 4 || STRLENS(RESULTS) > 8
+		PRINTL 请输入2-4个汉字的内容
+		GOTO 访问者名字设置
+	ELSE
+		访问者名称 = %RESULTS%
+	ENDIF
+ENDIF

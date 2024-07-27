@@ -32,11 +32,10 @@ FOR キャラ番号,0,CHARANUM
 
 NEXT
 
-
 ;催眠で出て行ったまま帰ってこない人の救済措置
 FOR キャラ番号, 1, CHARANUM
-	IF CFLAG:キャラ番号:現在位置 == 位置_人間の里 || CFLAG:キャラ番号:現在位置 == 位置_民家
-		CFLAG:キャラ番号:現在位置 = 位置_红魔馆_正门
+	IF CFLAG:キャラ番号:当前位置 == 位置_人間の里 || CFLAG:キャラ番号:当前位置 == 位置_民家
+		CFLAG:キャラ番号:当前位置 = 位置_红魔馆_正门
 		PRINTFORMW %CALLNAME:キャラ番号%不知道从哪里回来了
 	ENDIF
 NEXT
@@ -61,8 +60,8 @@ WHILE LOOP_FLG
 		CALL CHARA_MOVEMENT
 	ELSE
 		FOR キャラ番号,0,CHARANUM
-			;現在位置の保存
-			CFLAG:キャラ番号:前ターン位置 = CFLAG:キャラ番号:現在位置
+			;当前位置の保存
+			CFLAG:キャラ番号:前ターン位置 = CFLAG:キャラ番号:当前位置
 		NEXT
 		TIME =  CFLAG:MASTER:通常起床時間
 		TFLAG:300 = DATETIME()
@@ -105,20 +104,12 @@ IF FLAG:ランダム_訪問者のお気に入りの場所 > 7
 ELSE 
 	FLAG:ランダム_訪問者のお気に入りの場所 += RAND:2
 ENDIF
-[SKIPSTART]
-IF RAND:10 && CFLAG:MASTER:現在位置 != 位置_訪問者宅
-	FLAG:侵入者の現在位置 = 位置_红魔馆_正门
-	PRINTFORMW 馆里好像有入侵者进来了！
-ELSE
-	FLAG:侵入者の現在位置 = 0
-ENDIF
-[SKIPEND]
 ;霊夢の移动可能判定
 IF 霊夢移动フラグ == 0
 	霊夢移动フラグ = MAX(10 - ( CFLAG:人物_灵梦:好感度 > 0 ? CFLAG:人物_灵梦:好感度 / 300 # 0) - ( CFLAG:人物_灵梦:屈服度 > 0 ? CFLAG:人物_灵梦:屈服度 / 300 # 0), 0)
 	;元の場所へ戻す
-	SIF CFLAG:人物_灵梦:現在位置 <= 場所番号最大値
-		CFLAG:人物_灵梦:現在位置 = CFLAG:人物_灵梦:開始位置
+	SIF CFLAG:人物_灵梦:当前位置 <= 場所番号最大値
+		CFLAG:人物_灵梦:当前位置 = CFLAG:人物_灵梦:開始位置
 	;PRINTFORMW テスト 霊夢移动OFF {霊夢移动フラグ}
 ELSE
 	;PRINTFORMW テスト 霊夢移动ON1 {霊夢移动フラグ}
@@ -144,8 +135,6 @@ BASE:MASTER:气力 += MAXBASE:MASTER:气力 * (CFLAG:MASTER:起床時間 - CFLAG
 BASE:MASTER:体力 = MIN(MAXBASE:MASTER:体力,BASE:MASTER:体力)
 BASE:MASTER:气力 = MIN(MAXBASE:MASTER:气力,BASE:MASTER:气力)
 BASE:MASTER:勃起 = MIN(1000 * BASE:MASTER:体力 / MAXBASE:MASTER:体力,1500)
-;勃起ペナルティ判定
-CALL SOJI_SexHara_ErectPunishment(MASTER)
 ;調教者は誰か
 IF ASSIPLAY == 0
 	PLAYER = MASTER
@@ -240,7 +229,7 @@ TARGET = 0
 FOR LOOP_CHR,1,CHARANUM
 	;ぱんつ確認フラグをOFF
 	CFLAG:LOOP_CHR:ぱんつ確認 = 0
-	SIF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置
+	SIF CFLAG:MASTER:当前位置 == CFLAG:LOOP_CHR:当前位置
 		TARGET = LOOP_CHR
 	SIF TALENT:LOOP_CHR:NTR == 0
 		全员NTR = 0
@@ -365,42 +354,4 @@ IF TARGET
 		ENDIF
 		CALL KOJO_EVENT(6, TARGET, 1)
 	ENDIF
-ELSEIF CFLAG:MASTER:現在位置 == 位置_人間の里周辺 && HAS_VAGINA(MASTER) && !(TALENT:公众便所 == 1 && EQUIP:MASTER:下半身下着２ == 0 && EQUIP:MASTER:下半身下着１ == 1)
-	PRINTFORMW 在人间之里昏倒睡着后的%CALLNAME:MASTER%醒来了，但眼前的景色并不是睡着之前看到的景色
-	PRINTFORMW 好像是在睡着的时候被带到了暗处
-	PRINTFORMW 空气中漂浮着的腥味，让%CALLNAME:MASTER%怀疑是自己身上涂着的那些都是精液
-	PRINTFORMW %CALLNAME:MASTER%明白了被轮奸的事情，含着泪将自己整理打扮好
-	TEQUIP:MASTER:Ｖ性爱 = 人物_客
-	FOR LOOP_I,1,(RAND:20 + 10)
-		IF RAND:2
-			EXP:MASTER:Ｖ经验 ++
-			EXP:MASTER:Ｖ性交经验 ++
-			IF ABL:MASTER:Ｖ感觉 > RAND:5
-				EXP:MASTER:Ｖ绝顶经验 ++
-				EXP:MASTER:绝顶经验 ++
-			ENDIF
-			CALL EJACULATION_V(MASTER, 人物_客)
-			IF TALENT:MASTER:处女
-				CALL LOST_VIRGIN(MASTER, 人物_客)
-			ENDIF
-			;V感覚が高いと绝顶经验加算（強絶頂扱い）
-			;CALL NTR_V_EXP_PLUS(MASTER)
-		ELSEIF !RAND:3
-			EXP:MASTER:精液经验 ++
-			EXP:MASTER:手淫经验 ++
-			CALL STAIN_ADD_SEMEN_HAND(MASTER, 人物_客)
-		ELSEIF RAND:2
-			EXP:MASTER:精液经验 ++
-			EXP:MASTER:口淫经验 ++
-			CALL STAIN_ADD_SEMEN_M(MASTER, 人物_客)
-		ELSE
-			EXP:MASTER:精液经验 ++
-			EXP:MASTER:乳交经验 ++
-			IF ABL:MASTER:Ｂ感觉 > RAND:5
-				EXP:MASTER:Ｂ绝顶经验 ++
-				EXP:MASTER:绝顶经验 ++
-			ENDIF
-			CALL STAIN_ADD_SEMEN_B(MASTER, 人物_客)
-		ENDIF
-	NEXT
 ENDIF

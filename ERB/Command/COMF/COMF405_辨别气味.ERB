@@ -6,7 +6,7 @@
 #DIM LOOP_CHR
 #DIM BK_SELCOM
 
-IF (GETBIT(ROOM_SMELL_BIT(FLAG:(部屋のにおい_初期FLAG + CFLAG:MASTER:現在位置)), 气味类型B_ゴミ) || GETBIT(ROOM_SMELL_BIT(FLAG:(部屋のにおい_初期FLAG_2 + CFLAG:MASTER:現在位置)), 气味类型B_ゴミ))
+IF (GETBIT(ROOM_SMELL_BIT(FLAG:(部屋のにおい_初期FLAG + CFLAG:MASTER:当前位置)), 气味类型B_ゴミ) || GETBIT(ROOM_SMELL_BIT(FLAG:(部屋のにおい_初期FLAG_2 + CFLAG:MASTER:当前位置)), 气味类型B_ゴミ))
 	PRINTFORML 房间里到处都是垃圾…
 	PRINTFORMW 要仔细闻的话还是先打扫干净比较好。
 	RETURN 0
@@ -15,10 +15,10 @@ ENDIF
 PRINTL 要闻谁身上的气味？
 ;対象を探す
 FOR LOOP_CHR, 0, MIN(CHARANUM, バグ回避用キャラ最大値)
-	SIF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置
+	SIF CFLAG:MASTER:当前位置 == CFLAG:LOOP_CHR:当前位置
 		PRINTFORML %"["+TOSTR(LOOP_CHR)+"] - "+CALLNAME:(LOOP_CHR)%
 NEXT
-SIF CFLAG:MASTER:現在位置 == FLAG:訪問者の現在位置
+SIF CFLAG:MASTER:当前位置 == FLAG:访问者当前位置
 	PRINTFORML [998] - %NTR_NAME(0)%
 PRINTFORML [999] %"放弃"%
 

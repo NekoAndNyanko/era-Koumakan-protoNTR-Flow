@@ -1,19 +1,11 @@
 ;1X = 目击
-;├─ 10 = 直视无障碍
-;├─ 11 = 远眺无障碍
-;├─ 12 = 极目远眺无障碍（无法辨析身型：即连“像是xx”都无法分辨的距离，如相隔一整个雾之湖；正门->湖北部->湖南部）
+;├─ 1 = 近距离无障碍
+;├─ 2 = 近距离有障碍（隔窗等）
+;├─ 3 = 远距离
 ;├─ 13 = 直视/远眺物体阻碍（障碍物使得无法分辨）
 ;├─ 14 = 隔窗无障碍（如只能看到舞动的足部等）
 ;├─ 15 = 隔窗有障碍（如窗帘后的人影等）
 ;├─ 16 = 槅门无障碍
-;├─ 
-;├─ 
-;2X = 声音
-;├─ 
-;├─ 
-;├─ 
-;├─ 
-;├─ 
 ;├─ 
 ;├─ 
 ;eavesdrop - 偷听
@@ -23,101 +15,71 @@
 #DIM 目标地
 SELECTCASE 所在地
 	CASE 位置_红魔馆_正门
-		IF 目标地 == 位置_红魔馆_大厅
-			RETURNF 1
-		ELSEIF 目标地 == 位置_红魔馆_守卫小屋
-			RETURNF 1
-		ELSEIF 目标地 == 位置_雾之湖_湖北部
-			RETURNF 1
-		ELSEIF 目标地 == 位置_雾之湖_湖南部
+		IF GROUPMATCH(目标地,位置_红魔馆_大厅,位置_红魔馆_守卫小屋,位置_雾之湖_湖北部,位置_红魔馆_二楼楼梯间,位置_红魔馆_三楼阳台,位置_红魔馆_咲夜私室,位置_红魔馆_妖精女仆办公室)
 			RETURNF 1
 		ELSE
 			RETURNF 0
 		ENDIF
 	CASE 位置_红魔馆_大厅
-		IF GROUPMATCH(目标地,位置_红魔馆_正门,位置_红魔馆_餐厅,位置_红魔馆_二楼楼梯间)
-			RETURNF 10
-		ELSEIF GROUPMATCH(目标地,位置_红魔馆_大图书馆,位置_红魔馆_一楼厕所)
-			RETURNF 16
-		ELSEIF GROUPMATCH(目标地,位置_红魔馆_地下室,位置_红魔馆_大浴场)
-
+		IF GROUPMATCH(目标地,位置_红魔馆_正门,位置_红魔馆_餐厅,位置_红魔馆_大图书馆,位置_红魔馆_厨房,位置_红魔馆_二楼楼梯间,位置_红魔馆_二楼走廊,位置_红魔馆_一楼厕所,位置_红魔馆_地下室,位置_红魔馆_会客厅)
+			RETURNF 1
 		ELSE
 			RETURNF 0
 		ENDIF
-		SIF 目标地 == 位置_红魔馆_正门
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_餐厅
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_大图书馆
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_二楼楼梯间
-			RETURNF 2
-		SIF 目标地 == 位置_红魔馆_地下室
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_大浴场
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_一楼厕所
-			RETURNF 1
 	CASE 位置_红魔馆_餐厅
-		SIF 目标地 == 位置_红魔馆_大厅
+		IF GROUPMATCH(目标地,位置_红魔馆_大厅,位置_红魔馆_后院,位置_红魔馆_屋外厕所)
 			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_厨房
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_守卫小屋
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_后院
-			RETURNF 2
-		SIF 目标地 == 位置_红魔馆_屋外厕所
-			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_大图书馆
-		SIF 目标地 == 位置_红魔馆_大厅
+		IF GROUPMATCH(目标地,位置_红魔馆_大厅,位置_红魔馆_帕秋莉私室,位置_红魔馆_小恶魔私室)
 			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_帕秋莉私室
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_小恶魔私室
-			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_厨房
-		SIF 目标地 == 位置_红魔馆_餐厅
+		IF GROUPMATCH(目标地,位置_红魔馆_大厅,位置_红魔馆_餐厅,位置_红魔馆_小恶魔私室,位置_红魔馆_后院,位置_红魔馆_蕾米莉亚私室)
 			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_仓库
-		SIF 目标地 == 位置_红魔馆_后院
+		IF GROUPMATCH(目标地,位置_红魔馆_后院,位置_红魔馆_屋外厕所)
 			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_帕秋莉私室
-		SIF 目标地 == 位置_红魔馆_大图书馆
+		IF GROUPMATCH(目标地,位置_红魔馆_大图书馆,位置_红魔馆_仓库,位置_红魔馆_后院)
 			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_小恶魔私室
-		SIF 目标地 == 位置_红魔馆_大图书馆
+		IF GROUPMATCH(目标地,位置_红魔馆_大图书馆,位置_红魔馆_后院)
 			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_守卫小屋
-		SIF 目标地 == 位置_红魔馆_正门
+		IF GROUPMATCH(目标地,位置_红魔馆_咲夜私室,位置_红魔馆_蕾米莉亚私室,位置_红魔馆_屋外厕所,位置_红魔馆_三楼阳台)
 			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_餐厅
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_后院
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_屋外厕所
-			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_后院
-		SIF 目标地 == 位置_红魔馆_正门
-			RETURNF 2
-		SIF 目标地 == 位置_红魔馆_餐厅
-			RETURNF 2
-		SIF 目标地 == 位置_红魔馆_仓库
+		IF GROUPMATCH(目标地,位置_红魔馆_餐厅,位置_红魔馆_仓库,位置_红魔馆_帕秋莉私室,位置_红魔馆_小恶魔私室,位置_红魔馆_玩家房间,位置_红魔馆_屋外厕所,位置_红魔馆_二楼厕所)
 			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_守卫小屋
-			RETURNF 1
-		SIF 目标地 == 位置_红魔馆_屋外厕所
-			RETURNF 1
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_二楼楼梯间
-		SIF 目标地 == 位置_红魔馆_大厅
-			RETURNF 2
-		;二階廊下 + 見える
-		SIF 目标地 == 位置_红魔馆_二楼走廊
-			RETURNF 2
-		;蕾米莉亚私室
-		SIF 目标地 == 位置_红魔馆_蕾米莉亚私室
+		IF GROUPMATCH(目标地,0)
 			RETURNF 1
-		;二階廊下から
+		ELSE
+			RETURNF 0
+		ENDIF
 	CASE 位置_红魔馆_二楼走廊
 		;踊り場 + 見える
 		SIF 目标地 == 位置_红魔馆_二楼楼梯间

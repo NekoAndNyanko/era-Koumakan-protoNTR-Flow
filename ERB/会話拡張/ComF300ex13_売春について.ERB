@@ -7,13 +7,6 @@
 
 奴隷 = TARGET:0
 RESULTS:0 = %"[13]-"+CALLNAME:奴隷+"的卖淫情况"%
-IF TCVAR:奴隷:会话不能
-	RETURN 0
-ELSEIF TALENT:奴隷:公众便所 == 0
-	RETURN 0
-ELSE
-	RETURN 1
-ENDIF
 RETURN 0
 
 ;-------------------------------------------------------------------------------
@@ -52,20 +45,6 @@ IF EXP:奴隷:前回浮気人数 > 0
 	ENDFUNC
 ENDIF
 PRINTL
-;恋慕、鍵の有無で分岐
-IF TALENT:奴隷:恋慕
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML %CALLNAME:奴隷%表示对作为%MSG_LOVER(奴隷)%的%CALLNAME:調教者%能来买下自己、感到非常高兴。
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%说即使是%MSG_LOVER(奴隷)%、不买钥匙也不能和自己做爱。
-	ENDIF
-ELSE
-	IF FLAG:贞操帯鍵購入フラグ == 奴隷
-		PRINTFORML %CALLNAME:奴隷%对%CALLNAME:調教者%说、很高兴能买下自己。
-	ELSE
-		PRINTFORML %CALLNAME:奴隷%说不买钥匙就不能和自己做爱。
-	ENDIF
-ENDIF
 TRYCALLLIST
 	FUNC KOJO_MESSAGE_COM_K{CFLAG:奴隷:口上パターン}_300_13_02(奴隷, 調教者)
 	FUNC KOJO_MESSAGE_COM_KU_300_13_02(奴隷, 調教者)

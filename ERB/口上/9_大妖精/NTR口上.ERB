@@ -14,7 +14,7 @@
 @NTR_KOJO_K9_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「是的、ここですね？」
@@ -57,21 +57,7 @@ IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 	ENDIF
 	;その他
 ELSE
-	IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「や、やめてくださいっ」
-			DATAFORM 「そ、そんなっ・・他の人に聞かれたらっ・・」
-			DATAFORM 「お願いです・・後にしてください」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に『仕事』の話をもちかけられ無理矢理に話題を変えた。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「え・・次の『お仕事』ですか・・はい、お引き受けします」
-			DATAFORM 「また『お仕事』ですか？ 今度はどんな服を着ればいいんでしょう？」
-			DATAFORM 「はい・・お待ちしています」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に『仕事』の話をもちかけられ頬を染めながら頷いた。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「はい・・いつでも構いませんよ」
 			DATAFORM 「私なら、いつでも暇ですから」
@@ -112,7 +98,7 @@ RETURN 0
 @NTR_KOJO_KW9_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTFORML 「お背中お流ししましょうか？」
 		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の隣に腰をおろして入浴している。
@@ -1636,12 +1622,12 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「やあっ、は、離して、離してくださいっ」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に腕を捕まれ、%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれてしまった。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に腕を捕まれ、%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれてしまった。
 
 ELSE
 
 	PRINTFORML 「やあっ、は、離して、離してくださいっ」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に腕を捕まれ、強引に%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれてしまった。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に腕を捕まれ、強引に%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれてしまった。
 
 ENDIF
 
@@ -1682,50 +1668,6 @@ IF TALENT:奴隷:浮気公認
 	PRINTFORML 「%CALLNAME:MASTER%が背中を押してくれたから私、あの方といっぱいエッチできたんです・・ふふっ、ありがとうございました」
 ENDIF
 RETURN 0
-
-;==================================================
-;公众便所宣言
-;==================================================
-@NTR_KOJO_K9_13(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	;たぶんここには来ないと思うけど念のため余計なものを出さないように
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:浮気公認
-		PRINTFORML 「あの・・%CALLNAME:MASTER%・・以前言ってましたよね？ もっと寝取られたいって・・」
-		PRINTFORML 「だから私、その願いをかなえてあげたいと思うんです・・」
-		PRINTFORML 「それで、あの人の紹介で、他の男の人に買ってもらって、その、セ、セックスすることに、なりました」
-	ELSEIF TALENT:奴隷:淫乱
-		PRINTFORML 「あの・・%CALLNAME:MASTER%・・私、もっと気持ちよくなりたいんです」
-		PRINTFORML 「%CALLNAME:MASTER%やあの人の他にも、いろんな人に抱かれたらいいなって思うんです」
-		PRINTFORML 「それで、あの人の紹介で、他の男の人に買ってもらって、その、セ、セックスすることに、なりました」
-	ELSE
-		;たぶんないとは思うけど恋慕かつ非公認のケース
-		PRINTFORML （・・いえない・・%CALLNAME:MASTER%に、この事を言うなんてできない・・）
-		PRINTFORML （・・許して・・許して、%CALLNAME:MASTER%・・）
-	ENDIF
-	PRINTFORML 「そういう事で私は『商品』になりました。だから%CALLNAME:MASTER%も私を抱く時はお金を出して鍵を買ってくださいね」
-	IF TALENT:奴隷:人妻
-		PRINTFORML 「たとえ夫婦でも、ズルやえこひいきはいけないんだそうです」
-	ELSEIF TALENT:奴隷:恋慕
-		PRINTFORML 「たとえ恋人でも、ズルやえこひいきはいけないんだそうです」
-	ENDIF
-ELSE
-	;初回
-	IF EXP:奴隷:公众便所陷落经验 == 0
-		PRINTFORML 「是的、ご主人様の命令なら喜んで肉便器になります♪」
-		PRINTFORML 「%CALLNAME:奴隷%のマンコが孕みマンコになるまで知らない人の精子、いっぱい子宮に出してもらいます♪」
-		PRINTFORML 「%CALLNAME:MASTER%さんもよろしかったら私を買ってくださいね♪」
-		;2回目以降
-	ELSE
-		PRINTFORML 「是的、私はやっぱり肉便器です♪」
-		PRINTFORML 「ご主人様のお言いつけどおり、皆様のおチンポでいっぱい犯してもらいます♪」
-	ENDIF
-ENDIF
-
-RETURN 0
-
 
 ;==================================================
 ;訪問者によるおしおき
@@ -1906,70 +1848,12 @@ ELSE
 ENDIF
 
 ;==================================================
-;贞操帯鍵購入に対する反応
-;==================================================
-;本人
-@NTR_KOJO_K9_16_0(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	PRINTFORML 「あ・・わ、私のことを買ってくださったんですね・・！」
-	PRINTFORML 「うれしい・・だ、だって・・堂々と%CALLNAME:MASTER%にご侍奉できる・・」
-ELSE
-	PRINTFORML 「あ・・私のことを買ってくださったんですね・・」
-	PRINTFORML 「是的、ご侍奉いたします」
-ENDIF
-RETURN 0
-
-;本人以外
-@NTR_KOJO_K9_16_1(奴隷)
-#DIM 奴隷
-;公众便所
-IF TALENT:奴隷:公众便所 && TALENT:奴隷:亲爱
-
-	PRINTFORML 「あ・・%CALLNAME_K9(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんですね・・」
-	PRINTFORML 「あ、あの・・この次は・・私のことを・・おねがいします・・」
-
-ELSEIF TALENT:奴隷:公众便所
-
-	PRINTFORML 「あ・・%CALLNAME_K9(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんですね・・」
-	PRINTFORML 「うふふ、今度は私のことも買ってみますか？」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
-
-	PRINTFORML 「あ・・%CALLNAME_K9(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったんですね・・」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
-
-	PRINTFORML 「%CALLNAME_K9(奴隷, FLAG:贞操帯鍵購入フラグ)%を買うだなんて・・」
-	PRINTFORML 「・・%CALLNAME:MASTER%がそういうことをする人だったなんて・・」
-
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
-
-	PRINTFORML 「%CALLNAME_K9(奴隷, FLAG:贞操帯鍵購入フラグ)%を買うだなんて・・」
-	PRINTFORML 「・・%CALLNAME:MASTER%がそういうことをする人だったなんて・・」
-
-ELSE
-
-	PRINTFORML 「%CALLNAME_K9(奴隷, FLAG:贞操帯鍵購入フラグ)%を買うだなんて・・」
-	IF TALENT:奴隷:恋慕
-		PRINTFORML 「・・私が、いるのに・・」
-	ELSE
-		PRINTFORML 「・・男の人ってそういうことするんですか？」
-	ENDIF
-
-ENDIF
-RETURN 0
-
-;==================================================
 ;野外調教
 ;==================================================
 ;強制自慰
 @NTR_KOJO_K9_17_3(奴隷)
 #DIM 奴隷
-IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
-	PRINTFORML 「あっ・・ああ・・誰かに・・見られちゃう・・%MSG_HEART()%」
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 	PRINTFORML 「あっ・・ああ・・誰かに・・見られちゃう・・♪」
 ELSE
 	PRINTFORML 「あっ・・ああ・・誰かに・・見られたら・・」
@@ -1979,10 +1863,7 @@ RETURN 0
 ;露出写真摄影
 @NTR_KOJO_K9_17_4(奴隷)
 #DIM 奴隷
-IF TALENT:奴隷:公众便所 || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
-	PRINTFORML 「はい・・こ、こうですね・・%MSG_HEART()%」
-	PRINTFORML 「・・あの・・綺麗に、撮ってください・・%MSG_HEART()%」
-ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 	PRINTFORML 「はい・・こ、こうですか・・？」
 ELSE
 	PRINTFORML 「・・こ・・こ、こうすれば・・いいんですか・・？」

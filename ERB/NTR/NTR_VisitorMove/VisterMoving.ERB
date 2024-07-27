@@ -2,7 +2,7 @@
 ;訪問者移动
 ;引数…无
 ;戻り値…0:移动しない
-;処理結果…FLAG:訪問者の現在位置を更新する
+;処理結果…FLAG:访问者当前位置を更新する
 @VISITER_MOVEMENT
 #DIM 目的地
 #DIM 原位置
@@ -10,7 +10,7 @@
 #DIM LOOP_CHR
 
 ;気になる場所が設定されていてまだ1度も到達していない場合、気になる場所に到達したかどうか判定
-IF FLAG:訪問者の気になる場所 != 0 && FLAG:1832 == 0 && FLAG:訪問者の現在位置 == FLAG:訪問者の気になる場所
+IF FLAG:訪問者の気になる場所 != 0 && FLAG:1832 == 0 && FLAG:访问者当前位置 == FLAG:訪問者の気になる場所
 	FLAG:1832 += 1
 ENDIF
 ;訪問者の滞在時間更新
@@ -26,15 +26,15 @@ CALL JUDGE_VISITOR_MOVE_POS
 目的地 = RESULT
 ;訪問者の移动
 IF 目的地
-	;訪問者の現在位置更新
+	;访问者当前位置更新
 	FLAG:訪問者滞在時間カウンタ = 0
-	原位置 = FLAG:訪問者の現在位置
-	FLAG:訪問者の現在位置 = 目的地
-	IF CFLAG:MASTER:現在位置 == 目的地
+	原位置 = FLAG:访问者当前位置
+	FLAG:访问者当前位置 = 目的地
+	IF CFLAG:MASTER:当前位置 == 目的地
 		PRINTFORML %NTR_NAME(0)%走进了【%GETPLACENAME(目的地)%】
 		提示语未显示 = 1
 		FOR LOOP_CHR,0,CHARANUM
-			IF CFLAG:LOOP_CHR:現在位置 == 目的地
+			IF CFLAG:LOOP_CHR:当前位置 == 目的地
 				IF CFLAG:LOOP_CHR:うふふ != 0
 					IF 提示语未显示
 						PRINTFORML 随着%NTR_NAME(0)%的到来，现场的气氛改变了...
@@ -50,8 +50,8 @@ IF 目的地
 			ENDIF
 		NEXT
 	ELSE
-		IF FLAG:訪問者の現在位置 != 目的地 && IS_NTR_SHOW_POS() && (NTR_CHK_VISIBLE(目的地) || NTR_CHK_VISIBLE(FLAG:訪問者の現在位置))
-			PRINTFORML %NTR_NAME(0)%从【%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%】向【%NTR_GETPLACENAME(目的地)%】移动了
+		IF FLAG:访问者当前位置 != 目的地 && IS_NTR_SHOW_POS() && (NTR_CHK_VISIBLE(目的地) || NTR_CHK_VISIBLE(FLAG:访问者当前位置))
+			PRINTFORML %NTR_NAME(0)%从【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】向【%NTR_GETPLACENAME(目的地)%】移动了
 		ENDIF
 	ENDIF
 		;訪問者移动時は气氛等リセット

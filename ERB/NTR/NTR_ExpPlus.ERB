@@ -92,8 +92,8 @@ EXP:对象:浮気Ｖ性交经验 += 次数
 IF 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_V_EXPANSION(对象,1)
 	CALL 締り具合変動, 对象, 18, 0
-	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
-		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:对象:当前位置
+		SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			PRINTFORML %CALLNAME:对象%的小穴被%NTR_NAME(0)%超常规的肉棒不断拓展着…
 	ENDIF
 	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ｖ扩张经验+EXP:对象:Ｖ扩张经验 < 450
@@ -113,8 +113,8 @@ EXP:对象:Ａ性交经验 += 次数
 EXP:对象:浮気Ａ性交经验 += 次数
 IF 訪問者_Ｐ大きさ >= 2
 	CALL NTR_EXP_ADD_A_EXPANSION(对象,1)
-	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
-		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:对象:当前位置
+		SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			PRINTFORML %CALLNAME:对象%的尻穴被%NTR_NAME(0)%超常规的肉棒不断拓展着…
 	ENDIF
 	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ａ扩张经验+EXP:对象:Ａ扩张经验 < 450
@@ -141,8 +141,8 @@ EXP:对象:浮気Ｖ绝顶经验 += 次数
 IF 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_V_EXPANSION(对象,1)
 	CALL 締り具合変動, 对象, 18, 0
-	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
-		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:对象:当前位置
+		SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			PRINTFORML %CALLNAME:对象%的小穴被%NTR_NAME(0)%超常规的肉棒开拓得更深了…
 	ENDIF
 	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ｖ扩张经验+EXP:对象:Ｖ扩张经验 < 450
@@ -166,8 +166,8 @@ EXP:对象:Ａ绝顶经验 += 次数
 EXP:对象:浮気Ａ绝顶经验 += 次数
 IF 訪問者_Ｐ大きさ >= 2
 	CALL NTR_EXP_ADD_A_EXPANSION(对象,1)
-	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:对象:現在位置
-		SIF NTR_CHK_VISIBLE(FLAG:訪問者の現在位置)
+	IF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:对象:当前位置
+		SIF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			PRINTFORML %CALLNAME:对象%的尻穴被%NTR_NAME(0)%超常规的肉棒开拓得更深了…
 	ENDIF
 	IF ( TALENT:对象:受虐狂 || ABL:对象:抖Ｍ之气 > 2 ) && EXP:对象:浮気Ａ扩张经验+EXP:对象:Ａ扩张经验 < 450

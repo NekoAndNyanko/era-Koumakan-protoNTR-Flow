@@ -76,7 +76,7 @@ FOR LOOP_CHR,0,CHARANUM
 	CFLAG:LOOP_CHR:同行 = 0
 	IF LOOP_CHR == 対峙者
 		;自分自身は参戦できない
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置 && !CFLAG:LOOP_CHR:睡眠
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置 && !CFLAG:LOOP_CHR:睡眠
 		;同じ位置にいれば参戦してくれる
 		SELECTCASE COM417_Position(LOOP_CHR)
 			CASE IS <= -50
@@ -221,10 +221,9 @@ RETURNF LIMIT((100*(CFLAG:住人:好感度-CFLAG:住人:屈服度)/MAX(CFLAG:住
 @COM417_Win(対峙者)
 #DIM 対峙者				; 訪問者に対峙する人物。基本はMASTER
 #DIM LOOP_CHR
-#DIM 公众便所人数
 
 PRINTFORMW %CALLNAME:対峙者%成功将%NTR_NAME(0)%赶走了！
-FLAG:訪問者の現在位置 = 位置_訪問者宅
+FLAG:访问者当前位置 = 位置_訪問者宅
 FLAG:訪問者同行フラグ = 0
 CALL NTR_RESET_VISITOR_ACTION(-1)
 FLAG:訪問者との汚れ判定に使用 = 0
@@ -239,7 +238,7 @@ IF TFLAG:99 == 2
 			;自分自身は評価しない
 		ELSEIF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置
 			PRINTFORML 战斗结束后，%CALLNAME:LOOP_CHR%对%CALLNAME:対峙者%的行为表达了态度、
 			;やり過ぎだよねぇ…と思いつつも、自分を守ってくれた事には一応感謝してる
 			IF TALENT:LOOP_CHR:恋慕
@@ -280,7 +279,7 @@ ELSEIF TFLAG:99 == 1
 			;自分自身は評価しない
 		ELSEIF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置
 			PRINTFORM %CALLNAME:LOOP_CHR%对
 			IF TALENT:LOOP_CHR:恋慕
 				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 + 1
@@ -314,7 +313,7 @@ ELSE
 			;自分自身は評価しない
 		ELSEIF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置
 			IF CFLAG:LOOP_CHR:好感度 > CFLAG:LOOP_CHR:屈服度
 				CFLAG:LOOP_CHR:好感度 = CFLAG:LOOP_CHR:好感度 + 10
 				CFLAG:LOOP_CHR:屈服度 = CFLAG:LOOP_CHR:屈服度 - 100
@@ -335,67 +334,8 @@ ELSE
 		ENDIF
 	NEXT
 ENDIF
-;亲爱公眾便器奪還
-FOR LOOP_CHR,0,CHARANUM
-	IF LOOP_CHR == 対峙者
-	ELSEIF CFLAG:LOOP_CHR:睡眠
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置
-		IF TALENT:LOOP_CHR:亲爱&&TALENT:LOOP_CHR:恋慕&&TALENT:LOOP_CHR:公众便所==1
-			PRINTFORML 
-			PRINTFORML %CALLNAME:master%從%NTR_NAME(0)%手中奪回了%CALLNAME:LOOP_CHR%的贞操帶鑰匙和同意出軌的契約書
-			PRINTFORML 當著%NTR_NAME(0)%的面，%CALLNAME:master%將契約書撕毀了
-			PRINTFORML %CALLNAME:LOOP_CHR%臉頰赤紅，露出了下身的贞操帶
-			PRINTFORML %CALLNAME:master%解開了贞操帶拋在一邊
-			PRINTFORML %CALLNAME:LOOP_CHR%緊緊依偎在%CALLNAME:master%身上，身體變得火熱，並獻上了感謝的深吻
-			PRINTFORML %CALLNAME:LOOP_CHR%失去了[公众便所]和[浮気公認]
-			TALENT:LOOP_CHR:公众便所 = 0
-			TALENT:LOOP_CHR:浮気公認 = 0
-			CFLAG:LOOP_CHR:淫纹 = 0
-			PRINTFORML 
-		ENDIF
-	ENDIF
-NEXT
-
-;贞操帶鑰匙奪取
-公众便所人数 = 0
-FOR LOOP_CHR,1,CHARANUM
-	SIF TALENT:LOOP_CHR:公众便所
-		公众便所人数 ++
-NEXT
-IF 公众便所人数 == 0
-ELSEIF 公众便所人数 != 0
-	PRINTFORML
-	PRINTFORML 作為贖取戰敗之身的代價，%NTR_NAME(0)%將持有的贞操帶鑰匙陳列出來
-	FOR LOOP_CHR,1,CHARANUM
-		IF TALENT:LOOP_CHR:公众便所
-			PRINTFORML %"["+TOSTR(LOOP_CHR,"000")+"]『"+CALLNAME:LOOP_CHR+"』"%
-		ENDIF
-	NEXT
-ENDIF
-PRINTFORML [999] - 放棄
-$INPUT_LOOP
-INPUT
-SIF 999 == RESULT
-	RETURN 1
-SIF RESULT <= 0 || CHARANUM <= RESULT
-	GOTO INPUT_LOOP
-SIF !TALENT:RESULT:公众便所
-	GOTO INPUT_LOOP
-LOOP_CHR = RESULT
-PRINTFORML %CALLNAME:master%成為了%CALLNAME:LOOP_CHR%的長期主人
-;鍵購入
-FLAG:贞操帯鍵購入フラグ = LOOP_CHR
-CFLAG:LOOP_CHR:NTR鍵購入回数++
-;鍵購入カウンタ
-FLAG:贞操帯鍵有効カウンタ = TIME_PROGRESS() + 4*60
-;住人の反応等
-FOR LOOP_CHR,1,CHARANUM
-	;鍵購入反応フラグ初期化
-	CFLAG:LOOP_CHR:NTR贞操帯反応 = 1
-NEXT
-;持有鑰匙永久化
-FLAG:贞操帯鍵奪 = 1
 RETURN 0
+
 @主人公战败刻画淫纹
 IF CFLAG:MASTER:淫纹 == 0
 	PRINTFORMW 女孩子可不能这么暴力，这下可不得不惩罚你了。
@@ -514,13 +454,6 @@ PRINTL
 #DIM LOOP_CHR
 
 PRINTFORMW %CALLNAME:対峙者%被%NTR_NAME(0)%击败了……
-;贞操帯の鍵没収
-IF FLAG:贞操帯鍵購入フラグ
-	PRINTFORMW %CALLNAME:(FLAG:贞操帯鍵購入フラグ)%的贞操带的钥匙被没收了……
-	FLAG:贞操帯鍵購入フラグ = 0
-	FLAG:贞操帯鍵有効カウンタ = 0
-	FLAG:贞操帯鍵奪 = 0
-ENDIF
 IF 対峙者 == MASTER && HAS_VAGINA(対峙者) && GET_N_WITH_VISITER(0) == 1
 	IF CFLAG:MASTER:淫纹 != 31 && CFLAG:MASTER:淫纹身体改造 == 0
 		CALL 主人公战败刻画淫纹
@@ -530,28 +463,12 @@ ENDIF
 ;屈服度の高い女あなたが一人で敗北、かつ監禁ONの時の例外処理
 IF 対峙者 == MASTER && HAS_VAGINA(対峙者) && CFLAG:対峙者:屈服度 > 1000 && GET_N_WITH_VISITER(0) == 1 && IS_NTR_IMPRISON_ENABLE()
 	PRINTFORMW %NTR_NAME(0)%将瘫软在地的%CALLNAME:対峙者%抱了起来、带回了家……
-	CFLAG:MASTER:現在位置 = 位置_訪問者宅
-	CFLAG:MASTER:現在位置詳細 = 25
+	CFLAG:MASTER:当前位置 = 位置_訪問者宅
+	CFLAG:MASTER:当前位置詳細 = 25
 	FLAG:訪問者同行フラグ = 0
 	FLAG:訪問者宅の施錠状態 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
 	CFLAG:MASTER:NTR訪問者宅監禁状況 ^= (訪問者宅_牢屋解錠済|訪問者宅_通路解錠済|訪問者宅_床扉解錠済)
 	RETURN 0
-ENDIF
-;恋慕公众便所持ちの住人とあなたと訪問者の３人のケースの例外処理
-奴隷 = 0
-IF 対峙者 == MASTER && GET_N_WITH_VISITER(0) == 2
-	;同じ場所にいる対峙者の特定
-	FOR LOOP_CHR,1,CHARANUM
-		IF CFLAG:MASTER:現在位置 == CFLAG:LOOP_CHR:現在位置
-			奴隷 = LOOP_CHR
-			BREAK
-		ENDIF
-	NEXT
-	;奴隷が恋慕公众便所かつ浮気公認？
-	IF TALENT:奴隷:恋慕 && TALENT:奴隷:公众便所 && TALENT:奴隷:浮気公認
-		CALL COM417_Lose_Punishment_Special(対峙者, 奴隷)
-		RETURN 0
-	ENDIF
 ENDIF
 介入可否 = 0
 FOR LOOP_CHR,0,CHARANUM
@@ -560,14 +477,14 @@ FOR LOOP_CHR,0,CHARANUM
 	ELSEIF CFLAG:LOOP_CHR:睡眠
 		;寝てる人は無関係
 		CONTINUE
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_红魔馆_屋外厕所 && CFLAG:対峙者:現在位置 != 位置_红魔馆_屋外厕所
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == 位置_红魔馆_屋外厕所 && CFLAG:対峙者:当前位置 != 位置_红魔馆_屋外厕所
 		;屋外厕所が危険な感じになってきたので脱出
-		IF CFLAG:対峙者:現在位置 == 位置_红魔馆_后院
+		IF CFLAG:対峙者:当前位置 == 位置_红魔馆_后院
 			;庭に居たら正門まで逃跑(守衛小屋は鍵の可能性があるので避ける)
-			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_正门
+			CFLAG:LOOP_CHR:当前位置 = 位置_红魔馆_正门
 		ELSE
 			;それ以外の場合は庭へ逃跑
-			CFLAG:LOOP_CHR:現在位置 = 位置_红魔馆_后院
+			CFLAG:LOOP_CHR:当前位置 = 位置_红魔馆_后院
 		ENDIF
 	ELSEIF !HAS_VAGINA(LOOP_CHR)
 		; 訪問者「オトコはいいや」
@@ -578,7 +495,7 @@ FOR LOOP_CHR,0,CHARANUM
 	ELSEIF IS_NTR_ATTACK_LOVER_ONLY() && !TALENT:LOOP_CHR:恋慕
 		; 訪問者「他人の恋人を寝取ってこそ価値がある」
 		CONTINUE
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:対峙者:現在位置 && !CFLAG:LOOP_CHR:睡眠
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:対峙者:当前位置 && !CFLAG:LOOP_CHR:睡眠
 		;あなたに味方した娘にはお仕置きだよねー
 		SELECTCASE COM417_Position(LOOP_CHR)
 			CASE 0 TO 19
@@ -611,36 +528,6 @@ CALL COM417_Lose_Punishment_Extra_Continue(対峙者)
 RETURN 0
 
 ;---------------------------------------------
-;戦闘敗北時の(特殊な)お仕置き処理(恋慕公众便所への淫纹)
-;@param 対峙者  訪問者に対峙したキャラクター番号
-@COM417_Lose_Punishment_Special(対峙者, 奴隷)
-#DIM 対峙者
-#DIM 奴隷
-#DIM 取得部位
-
-PRINTFORML %NTR_NAME(0)%看了看%CALLNAME:奴隷%，想到了对%CALLNAME:対峙者%的惩罚。
-PRINTFORML 反正%CALLNAME:奴隷%也是个喜欢出轨的婊子、干脆以%MSG_RE_LOVER(奴隷)%的身份成为大家公用的娼妇好了。
-PRINTFORML %NTR_NAME(0)%将赤色的糖果取了出来、给%CALLNAME:奴隷%吃了下去。
-PRINTFORML %CALLNAME:奴隷%的处女膜再生了。
-PRINTFORM  %NTR_NAME(0)%又取出了一个印章、在%CALLNAME:奴隷%的右脸和阴唇
-SIF TALENT:奴隷:人妻
-	PRINTFORM 以及左臀上
-PRINTFORML 盖下了印章。
-TALENT:奴隷:处女 = 2
-取得部位 = 0
-;右頬は絶対に押下
-SETBIT 取得部位,淫纹_右頬
-;恋慕公众便所は必ず浮気公認Lvが4なので判定なしで追加
-SETBIT 取得部位,淫纹_恥丘
-;人妻だとさらにダメ押し
-SIF TALENT:奴隷:人妻
-	SETBIT 取得部位,淫纹_左尻
-CALL COM417_Put_Stump(奴隷, 取得部位)
-PRINTFORML 因为是处女状态印上去的淫纹，所以不会再度消失……%NTR_NAME(0)%下流地笑着。
-PRINTW
-RETURN 0
-
-;---------------------------------------------
 ;戦闘敗北時の(優しい)お仕置き処理(ぱんつ回収＆跳蛋挿入)
 @COM417_Lose_Punishment_Easy(住人)
 #DIM 住人				; 訪問者に対峙したキャラクター番号
@@ -654,13 +541,6 @@ IF EQUIP:住人:下半身下着１ == 0 && EQUIP:住人:下半身下着２ == 0
 	SOURCE:住人:欲情 += 100 + 200 * ABL:住人:欲望
 	SOURCE:住人:被动 += 100 + 200 * ABL:住人:顺从
 	CALL NTR_ADD_SURRENDER(住人, 1)
-ELSEIF EQUIP:下半身下着１ == 100
-	;贞操帯
-	PRINTFORML %CALLNAME:住人%はしばらく黙っていたが、鍵が無ければ脱ぎたくても脱げないのだと返事をした
-	SOURCE:住人:欲情 += 100 + 100 * ABL:住人:欲望
-	SOURCE:住人:被动 += 100 + 100 * ABL:住人:顺从
-	CALL NTR_ADD_SURRENDER(住人, 2)
-	RETURN 0
 ELSE	;ぱんつはかせたくない
 	PRINTFORM %CALLNAME:住人%はしばらく黙っていたが、やがて
 	IF EQUIP:住人:下半身下着１
@@ -758,7 +638,7 @@ IF 介入可否 == 0
 			;寝てる人は無関係
 		ELSEIF TALENT:LOOP_CHR:NTR
 			;NTRだと助けてくれません
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:住人:当前位置
 			;同じ位置にいるならワンチャンある
 			IF COM417_Position(LOOP_CHR) <20
 				;あなた側にさりげなく援護、程度なら口出しする権利がある
@@ -785,7 +665,7 @@ ELSE
 	ELSE
 		PRINTFORMW %CALLNAME:住人%はうつむいて、犯されるためだけに屋外厕所へと歩いて行った……
 	ENDIF
-	CFLAG:住人:現在位置 = 位置_红魔馆_屋外厕所
+	CFLAG:住人:当前位置 = 位置_红魔馆_屋外厕所
 	FLAG:訪問者同行フラグ = 0
 	RETURN 1
 ENDIF
@@ -807,27 +687,6 @@ ENDIF
 
 PRINTFORML %NTR_NAME(0)%は%CALLNAME:住人%に、正門で待っているように命じた
 PRINTFORML %CALLNAME:住人%が恐る恐る理由を聞くと、%NTR_NAME(0)%は自宅に連れ帰って可愛がってやるからだ、と答えた
-;公众便所即行が有効？
-IF IS_NTR_DROP_LOVER_WC()
-	;恋慕状態で亲爱持ちだと一発で公众便所行き
-	IF TALENT:住人:亲爱&&TALENT:住人:恋慕&&TALENT:住人:公众便所==0
-		PRINTFORML 
-		PRINTFORML %CALLNAME:住人%恳求说，只要%NTR_NAME(0)%能原谅%CALLNAME:MASTER%的行为，怎么对待自己都行
-		PRINTFORML %NTR_NAME(0)%说，因为%CALLNAME:MASTER%的袭击而感到全身疼痛，如果能被%CALLNAME:住人%照顾到痊愈为止，就可以考虑原谅了
-		PRINTFORML %CALLNAME:住人%为了%CALLNAME:MASTER%艰难地同意了
-		PRINTFORML %NTR_NAME(0)%要求%CALLNAME:住人%在契约书上签字
-		PRINTFORML 内心慌乱的%CALLNAME:住人%没有仔细阅读契约的内容就签上了自己的名字
-		PRINTFORML 被签上名字的契约书发出了奇怪的光，%CALLNAME:住人%感觉自己的大脑里好像有什么被改变了
-		PRINTFORML %CALLNAME:住人%成为了[公众便所]并得到了[浮気公認]
-		TALENT:住人:公众便所 = 1
-		TALENT:住人:浮気公認 = 1
-		EXP:住人:公众便所陷落经验 ++
-		PRINTFORML %NTR_NAME(0)%说那接下来只要%CALLNAME:住人%好好按照契约做事就行了
-		PRINTFORML %CALLNAME:住人%有些后悔了，但%NTR_NAME(0)%说，那样的话、回头就给%CALLNAME:MASTER%好看
-		PRINTFORML %CALLNAME:住人%不知为何无非抗拒%NTR_NAME(0)%的命令，脚违背自己的意思带着身体走向了门外……
-		PRINTFORML 
-	ENDIF
-ENDIF
 IF TALENT:住人:处女
 	IF TALENT:住人:自尊心 > 0
 		PRINTFORML %CALLNAME:住人%脸色苍白，绷紧了脸颊勉强挤出了笑容……
@@ -852,7 +711,7 @@ FOR LOOP_CHR,1,CHARANUM
 		;寝てる人は無関係
 	ELSEIF TALENT:LOOP_CHR:NTR
 		;NTRだと助けてくれません
-	ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+	ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:住人:当前位置
 		;同じ位置にいるならワンチャンある
 		IF COM417_Position(LOOP_CHR) <20
 			;あなた側にさりげなく援護、程度なら口出しする権利がある
@@ -887,17 +746,17 @@ ELSE
 	ELSE
 		PRINTFORMW %CALLNAME:住人%抽泣着、乖乖地在正门等待着%NTR_NAME(0)%……
 	ENDIF
-	;現在位置を強制的に開錠
-	FLAG:(300 + FLAG:訪問者の現在位置) = 0
+	;当前位置を強制的に開錠
+	FLAG:(300 + FLAG:访问者当前位置) = 0
 	;正門と言いつつそのまま訪問者宅へ移动。本当に正門へ移动させると誤爆拉致があるので
-	CFLAG:住人:現在位置 = 位置_訪問者宅
+	CFLAG:住人:当前位置 = 位置_訪問者宅
 	;訪問者はまだやることがあるので後で移动します
-	;FLAG:訪問者の現在位置 = 位置_訪問者宅
+	;FLAG:访问者当前位置 = 位置_訪問者宅
 	CALL NTR_RESET_VISITOR_ACTION(住人)
 	FLAG:訪問者との汚れ判定に使用 = 0
 	FLAG:訪問者滞在時間カウンタ = 0
 	FLAG:訪問者同行フラグ = 0
-	CFLAG:住人:NTRカウンターセクハラ = 0
+	CFLAG:住人:NTR_CNT行为 = 0
 ENDIF
 
 RETURN 0
@@ -919,7 +778,7 @@ IF 介入可否 == 0
 			;寝ていると助けてくれません
 		ELSEIF TALENT:LOOP_CHR:NTR
 			;NTRだと助けてくれません
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == CFLAG:住人:現在位置
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == CFLAG:住人:当前位置
 			;同じ位置にいるならワンチャンある
 			IF COM417_Position(LOOP_CHR) <20
 				;あなた側にさりげなく援護、程度なら口出しする権利がある
@@ -939,8 +798,8 @@ IF 介入フラグ > 0
 	PRINTW 阻止了
 	RETURN 0
 ELSE
-	CFLAG:住人:現在位置 = 位置_红魔馆_屋外厕所
-	FLAG:訪問者の現在位置 = 位置_红魔馆_屋外厕所
+	CFLAG:住人:当前位置 = 位置_红魔馆_屋外厕所
+	FLAG:访问者当前位置 = 位置_红魔馆_屋外厕所
 	FLAG:訪問者滞在時間カウンタ = 0
 	FLAG:訪問者同行フラグ = 0
 	PRINTFORMW %CALLNAME:住人%被%NTR_NAME(0)%带到了室外的厕所里
@@ -950,7 +809,7 @@ ELSE
 	FOR LOOP_CHR,0,CHARANUM
 		IF CFLAG:LOOP_CHR:睡眠
 			;寝てる人は無関係
-		ELSEIF CFLAG:LOOP_CHR:現在位置 == 位置_红魔馆_屋外厕所
+		ELSEIF CFLAG:LOOP_CHR:当前位置 == 位置_红魔馆_屋外厕所
 			IF TALENT:LOOP_CHR:处女
 				;处女守りたい？
 				CALL COM417_Save_the_Virgin(LOOP_CHR)
@@ -1051,15 +910,6 @@ NEXT
 IF 被害者 == MASTER
 	;MASTERのレイプ回数
 	FLAG:MASTERが犯された回数 += Ｖレイプ回数 + Ａレイプ回数
-	;屈服度がある程度あると阴茎用贞操帯の着用を強いられる。
-	IF HAS_PENIS(MASTER) && CFLAG:MASTER:屈服度 > 500
-		PRINTFORML %NTR_NAME(0)%来到筋疲力竭的%CALLNAME:MASTER%身边、取出了个小阴茎专用贞操带
-		PRINTFORML 给%CALLNAME:MASTER%戴上后、%NTR_NAME(0)%说就先这么惩罚一星期吧、然后就离开了……
-		;屈服度が劇的に増える。満たない場合は強制的に1500に
-		CFLAG:MASTER:屈服度 = MAX (CFLAG:MASTER:屈服度 + 20 + RAND:20,1500)
-		;阴茎用贞操帯装着
-		CALL MOUNT_P_CHASTITY_BELT(MASTER, 人物_訪問者, 2)
-	ENDIF
 ENDIF
 
 ;時間経過
@@ -1175,7 +1025,7 @@ RETURN 0
 持帰人数 = 0
 奴隷 = 0
 FOR LOOP_CHR,1,CHARANUM
-	IF CFLAG:LOOP_CHR:現在位置 == 位置_訪問者宅
+	IF CFLAG:LOOP_CHR:当前位置 == 位置_訪問者宅
 		奴隷 = LOOP_CHR
 		IF 持帰人数 == 0
 			PRINTFORM %CALLNAME:LOOP_CHR%正在大门口
@@ -1187,33 +1037,19 @@ FOR LOOP_CHR,1,CHARANUM
 NEXT
 IF 持帰人数==0
 	;レイプ後にみんな屋外厕所に居て会话始まっちゃうのはアレなので訪問者を庭へ逃がす
-	FLAG:訪問者の現在位置 = 位置_红魔馆_后院
+	FLAG:访问者当前位置 = 位置_红魔馆_后院
 	FLAG:訪問者同行フラグ = 0
 	RETURN 0
 ELSE
 	PRINTFORM 等待着%NTR_NAME(0)%……
 	;ここで訪問者も帰る
-	FLAG:訪問者の現在位置 = 位置_訪問者宅
+	FLAG:访问者当前位置 = 位置_訪問者宅
 	FLAG:訪問者同行フラグ = 0
 	IF 持帰人数 > 1
 		PRINTFORMW %NTR_NAME(0)%带着她们{持帰人数}人、不知去了哪里……
-		;複数人の場合のオークションは不整合が生じるので対応保留
-		;FOR LOOP_CHR,1,CHARANUM
-		;	IF TALENT:LOOP_CHR:公众便所 && TALENT:LOOP_CHR:处女 
-		;		;处女公众便所競売
-		;		CALL NTR_VIRGIN_AUCTION(LOOP_CHR)
-		;	ENDIF
-		;NEXT
 	ELSE
 		PRINTFORMW %NTR_NAME(0)%带着%CALLNAME:奴隷%、不知去了哪里……
-		[SKIPSTART]
-		IF TALENT:奴隷:公众便所 && TALENT:奴隷:处女 
-			;处女公众便所競売
-			CALL NTR_VIRGIN_AUCTION(奴隷)
-		ENDIF
-		[SKIPEND]
 	ENDIF
-
 ENDIF
 
 RETURN 0
@@ -1795,11 +1631,11 @@ FOR LOOP_CHR, 0, 301
 	ENDIF
 NEXT
 
-;暫定措置 子宮内体積が0未満のとき、追加パッチ同様の処理で子宮内体積を設定する
-IF 0 >= CFLAG:対象者:子宮内体積
-	DMY = 子宮内体積設定F(対象者)
+;暫定措置 子宫内体积が0未満のとき、追加パッチ同様の処理で子宫内体积を設定する
+IF 0 >= CFLAG:対象者:子宫内体积
+	DMY = 子宫内体积設定F(対象者)
 ENDIF
-充填率 = 100*精子量/(CFLAG:対象者:子宮内体積)
+充填率 = 100*精子量/(CFLAG:対象者:子宫内体积)
 SELECTCASE LIMIT(充填率,0,200)
 	CASE IS >= 200
 		RETURNF 0
@@ -1850,13 +1686,13 @@ FOR LOOP_CHR, 0, 301
 	ENDIF
 NEXT
 
-;暫定措置 子宮内体積が0未満のとき、追加パッチと同じ扱いで子宮内体積設定をする
-IF 0 >= CFLAG:対象者:子宮内体積
-	CALL 子宮内体積設定(対象者)
+;暫定措置 子宫内体积が0未満のとき、追加パッチと同じ扱いで子宫内体积設定をする
+IF 0 >= CFLAG:対象者:子宫内体积
+	CALL 子宫内体积設定(対象者)
 ENDIF
-充填率 = 100*精子量/(CFLAG:対象者:子宮内体積)
+充填率 = 100*精子量/(CFLAG:対象者:子宫内体积)
 
-IF CFLAG:MASTER:現在位置 == CFLAG:対象者:現在位置
+IF CFLAG:MASTER:当前位置 == CFLAG:対象者:当前位置
 	DEBUGPRINTFORM %CALLNAME:対象者%的子宫里面{充填率}％都被
 	IF あなた以外フラグ
 		DEBUGPRINTFORM %CALLNAME:MASTER%以外
@@ -1903,11 +1739,11 @@ FOR LOOP_CHR, 0, 301
 	ENDIF
 NEXT
 
-;暫定措置 子宮内体積が0未満のとき、追加パッチと同じ扱いで子宮内体積設定をする
-IF 0 >= CFLAG:ARG:子宮内体積
-	CFLAG:ARG:子宮内体積 = 子宮内体積設定F(ARG)
+;暫定措置 子宫内体积が0未満のとき、追加パッチと同じ扱いで子宫内体积設定をする
+IF 0 >= CFLAG:ARG:子宫内体积
+	CFLAG:ARG:子宫内体积 = 子宫内体积設定F(ARG)
 ENDIF
-充填率 = 100*精子量/(CFLAG:ARG:子宮内体積)
+充填率 = 100*精子量/(CFLAG:ARG:子宫内体积)
 IF ARG:1 == 1
 	RETURNF LIMIT(充填率,0,200)*あなた以外フラグ
 ELSE

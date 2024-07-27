@@ -55,16 +55,6 @@ IF TALENT:ARG:处女 == 1
 ELSEIF HAS_VAGINA(ARG) && EXP:ARG:Ｖ经验 == 0
 	EXP:ARG:Ｖ经验 = 1
 ENDIF
-IF TALENT:ARG:肉便器 == 1		;;公众便所と肉便器を初期で両立させない
-	TALENT:ARG:公众便所 = 0		;;
-ELSEIF TALENT:ARG:公众便所 == 1	;;
-	TALENT:ARG:肉便器 = 0		;;
-ENDIF							;;
-IF TALENT:ARG:肉便器 == 1		;;NTRと肉便器を初期で両立させない
-	TALENT:ARG:NTR = 0			;;
-ELSEIF TALENT:ARG:NTR == 1		;;
-	TALENT:ARG:肉便器 = 0		;;
-ENDIF							;;
 
 DRAWLINE
 PRINTSL NAME:ARG
@@ -142,9 +132,6 @@ ELSEIF LOCAL:100 == 1003
 	SIF RESULT < 0 || RESULT > 500 || TALENTNAME:RESULT == ""
 		RESTART
 	;陥落素質ほか
-	;;[肉便器]を追加。[管理人]は選べない
-	SIF (RESULT >= 3 && RESULT <= 5) || RESULT == 9 || RESULT == 34 || (RESULT >= 72 && RESULT <= 76) || RESULT == 84 || RESULT == 85 || (RESULT >= 153 && RESULT <= 155) || RESULT == 38
-		RESTART
 	;性別
 	IF RESULT == 2
 		IF TALENT:ARG:RESULT == 3
@@ -309,9 +296,6 @@ FOR LOCAL,ARG:1 * 40,40 + ARG:1 * 40
 		LOCAL:1 = 0
 	ENDIF
 	;陥落素質ほか
-	;;[肉便器]を追加。[管理人]は選べない
-	SIF (LOCAL >= 3 && LOCAL <= 5) || LOCAL == 9 || LOCAL == 34 || (LOCAL >= 72 && LOCAL <= 76) || LOCAL == 84 || LOCAL == 85 || (LOCAL >= 153 && LOCAL <= 155) || LOCAL == 38
-		CONTINUE
 	;TALENT.CSVに登録されていない
 	SIF TALENTNAME:LOCAL == ""
 		CONTINUE

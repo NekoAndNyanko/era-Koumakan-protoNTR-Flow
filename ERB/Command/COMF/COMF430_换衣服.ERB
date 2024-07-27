@@ -557,12 +557,6 @@ DO
 	CLEARLINE (LINECOUNT - 描画行数)
 	PRINTFORML %"□ カテゴリ □-----------------------------------------------------------------"%
 	PRINTFORML %"        下半身下着     ："+CLOTHNAME(GETNUM(EQUIP,"下半身下着１")  ,EQUIP:奴隷:下半身下着１)  +CLOTHNAME(GETNUM(EQUIP,"下半身下着２"),EQUIP:奴隷:下半身下着２)%
-	IF TALENT:奴隷:公众便所 && !FLAG:屏蔽部分貞操帶
-		IF (奴隷 == MASTER) || (奴隷 != FLAG:贞操帯鍵購入フラグ)
-			PRINTFORMW %"贞操帯の鍵を持っていないので、下着を替える事はできません"%
-			RETURN 0
-		ENDIF
-	ENDIF
 	PRINTFORML %"□ 下半身下着 □---------------------------------------------------------------"%
 	PRINTFORML %"[0] - 脱掉"%
 	PRINTFORML %"[1] - 男物"%

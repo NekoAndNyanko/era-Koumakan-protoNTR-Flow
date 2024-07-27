@@ -3,7 +3,7 @@
 ; RETURN 0 コマンドの実行不可
 ; RETURN 1 コマンドの実行可能
 @COM300_26_ENABLE
-IF TALENT:TARGET:NTR || TALENT:TARGET:公众便所 || TALENT:TARGET:浮気公認 > 0
+IF TALENT:TARGET:NTR || TALENT:TARGET:浮気公認 > 0
 	RESULTS = %"[26]-询问"+CALLNAME:TARGET+"有没有好好做避孕措施"%
 ELSEIF TALENT:TARGET:恋慕 || TALENT:TARGET:人妻 || TALENT:TARGET:亲爱
 	RESULTS = %"[26]-跟"+CALLNAME:TARGET+"谈谈关于避孕的事情"%
@@ -18,7 +18,7 @@ RETURN 1
 ; RETURN 0 コマンドの実行に失敗
 ; RETURN 1 コマンドの実行に成功
 @COM300_26
-IF TALENT:TARGET:NTR || TALENT:TARGET:公众便所 || TALENT:TARGET:浮気公認 > 0
+IF TALENT:TARGET:NTR || TALENT:TARGET:浮気公認 > 0
 	PRINTFORMW 「%NTR_NAME(0)%说如果要避孕的话他不会给我买药的，而且也不准我买药。」
 	PRINTFORMW 「说只能准吃%CALLNAME:MASTER%买的药，所以……如果%CALLNAME:MASTER%不给我买药吃的话，我就要做好妊娠的准备了……」
 	IF FLAG:访问者的避孕药 == 0

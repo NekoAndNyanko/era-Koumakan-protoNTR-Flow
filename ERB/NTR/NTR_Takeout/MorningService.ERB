@@ -31,7 +31,7 @@ CALL EJACULATION_V(奴隷, 人物_訪問者)
 CALL NTR_EXP_ADD_V_SEX_EX(奴隷,1)
 IF 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_V_EXPANSION(奴隷,1)
-	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 		PRINTFORML %CALLNAME:奴隷%的小穴被%NTR_NAME(0)%怒挺的大肉棒蹂躏着…
 	IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:Ｖ扩张经验 + EXP:奴隷:浮気Ｖ扩张经验 < 450
 		CUP:奴隷:欲情 += 500
@@ -62,8 +62,7 @@ ENDIF
 CALL NTR_DRAIN_LOVE(奴隷, 50)
 ;快楽経験追加
 CALL EXP_GOT_CHECK(奴隷)
-CFLAG:奴隷:NTR訪問者と最後にセックスした日時 = DATETIME()
-CFLAG:奴隷:NTR他の男と最後にセックスした日時 = DATETIME()
+CFLAG:奴隷:与访问者最后做爱的时间 = DATETIME()
 
 ;-------------------------------------------------------------------------------
 ;朝のご侍奉(Ａ性交)
@@ -75,7 +74,7 @@ CALL NTR_EXP_ADD_A_SEX(奴隷,1)
 CALL NTR_EXP_ADD_A_EX(奴隷,1)
 IF 訪問者_Ｐ大きさ == 2
 	CALL NTR_EXP_ADD_A_EXPANSION(奴隷,1)
-	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:現在位置 == CFLAG:奴隷:現在位置
+	SIF GETBIT(FLAG:ＮＴＲパッチ設定,32) || CFLAG:MASTER:当前位置 == CFLAG:奴隷:当前位置
 		PRINTFORML %CALLNAME:奴隷%的肛穴被%NTR_NAME(0)%坚挺的大肉棒狠狠地操弄着…
 	IF ( TALENT:奴隷:受虐狂 || ABL:奴隷:抖Ｍ之气 > 2 ) && EXP:奴隷:Ａ扩张经验 + EXP:奴隷:浮気Ａ扩张经验 < 450
 		CUP:奴隷:欲情 += 500
@@ -106,49 +105,4 @@ ENDIF
 CALL NTR_DRAIN_LOVE(奴隷, 50)
 ;快楽経験追加
 CALL EXP_GOT_CHECK(奴隷)
-CFLAG:奴隷:NTR訪問者と最後にセックスした日時 = DATETIME()
-CFLAG:奴隷:NTR他の男と最後にセックスした日時 = DATETIME()
-
-[SKIPSTART]
-;-------------------------------------------------------------------------------
-;公众便所時の汚染追加
-@MORNING_ADD_STAIN(奴隷)
-#DIM 奴隷
-IF TALENT:奴隷:公众便所
-	;手
-	CALL STAIN_ADD_SEMEN_HAND(奴隷, 人物_訪問者)
-	;胸
-	CALL STAIN_ADD_SEMEN_B(奴隷, 人物_訪問者)
-	CALL NTR_EXP_ADD_M_SEX(奴隷,1)
-	;IF !TALENT:奴隷:亲爱
-	;	CALL NTR_EXP_ADD_M_SEX(奴隷,1)
-	;ENDIF
-	CALL EJACULATION_M(奴隷, 人物_訪問者)
-	;A
-	CALL NTR_EXP_ADD_A(奴隷,1)
-	CALL NTR_EXP_ADD_A_SEX(奴隷,1)
-	CALL NTR_EXP_ADD_A_EX(奴隷,1)
-	; IF !TALENT:奴隷:亲爱
-	; CALL NTR_EXP_ADD_A_SEX(奴隷,1)
-	; EXP:奴隷:浮気绝顶经验 ++
-	; ENDIF
-	CALL NTR_GET_WEAKNESS_2(奴隷)
-	CALL EJACULATION_A(奴隷, 人物_訪問者)
-	;A感覚が高いと绝顶经验加算（強絶頂扱い）
-	CALL NTR_A_EXP_PLUS(奴隷)
-	;V
-	IF !TALENT:奴隷:处女
-		CALL NTR_EXP_ADD_V_SEX_EX(奴隷,1)
-		; IF !TALENT:奴隷:亲爱
-		; CALL NTR_EXP_ADD_V_SEX(奴隷,1)
-		; EXP:奴隷:浮気绝顶经验 ++
-		; ENDIF
-		CALL NTR_GET_WEAKNESS_2(奴隷)
-		CALL EJACULATION_V(奴隷, 人物_訪問者)
-		;V感覚が高いと绝顶经验加算（強絶頂扱い）
-		CALL NTR_V_EXP_PLUS(奴隷)
-	ENDIF
-	;好感度吸収			
-	CALL NTR_DRAIN_LOVE(奴隷, 50)
-ENDIF
-[SKIPEND]
+CFLAG:奴隷:与访问者最后做爱的时间 = DATETIME()

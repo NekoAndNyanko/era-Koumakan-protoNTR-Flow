@@ -7,7 +7,7 @@ IF GETBIT(FLAG:催眠設定,1)
 	;赤ん坊、幼兒は勝手に人里までは行けないことに是的。
 	IF CFLAG:住人:成長度 != 成長度_乳児 && CFLAG:住人:成長度 != 成長度_幼児
 		IF CFLAG:住人:本日催眠次數 == 0
-			IF CFLAG:住人:現在位置 == 位置_红魔馆_正门 || CFLAG:住人:現在位置 == 位置_红魔馆_大厅 || CFLAG:住人:現在位置 == 位置_雾之湖_湖北部 || CFLAG:住人:現在位置 == 位置_雾之湖_湖南部
+			IF CFLAG:住人:当前位置 == 位置_红魔馆_正门 || CFLAG:住人:当前位置 == 位置_红魔馆_大厅 || CFLAG:住人:当前位置 == 位置_雾之湖_湖北部 || CFLAG:住人:当前位置 == 位置_雾之湖_湖南部
 				IF TALENT:住人:催眠中毒 == 1 || TALENT:住人:專屬烙印 == 1
 					IF RAND:50 < 40
 						;念のため同行解除
@@ -16,7 +16,7 @@ IF GETBIT(FLAG:催眠設定,1)
 							PRINTFORMW %CALLNAME:住人%趁%CALLNAME:MASTER%不注意，從%CALLNAME:MASTER%眼前溜走了。
 						ENDIF
 						PRINTFORMW %CALLNAME:住人%眼神迷離起來，在腦內神秘聲音的命令下往人間里的方向出去了
-						CFLAG:住人:現在位置 = 位置_人間の里
+						CFLAG:住人:当前位置 = 位置_人間の里
 						CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 						;方式が設定されていれば復位
 						SIF 移动路线:住人:0
@@ -31,7 +31,7 @@ IF GETBIT(FLAG:催眠設定,1)
 							PRINTFORMW %CALLNAME:住人%趁%CALLNAME:MASTER%不注意，從%CALLNAME:MASTER%眼前溜走了。
 						ENDIF
 						PRINTFORMW %CALLNAME:住人%往人間里的方向出去了
-						CFLAG:住人:現在位置 = 位置_人間の里
+						CFLAG:住人:当前位置 = 位置_人間の里
 						CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 						;方式が設定されていれば復位
 						SIF 移动路线:住人:0
@@ -76,74 +76,74 @@ ELSE
 ENDIF
 IF CFLAG:住人:催眠行為持續時間 > DATETIME()
 ELSE
-	IF CFLAG:住人:現在位置 == 位置_人間の里
+	IF CFLAG:住人:当前位置 == 位置_人間の里
 		IF TALENT:住人:催眠中毒 == 1
 			CALL 催眠便器(住人)
 		ELSEIF TALENT:住人:專屬烙印 == 1
 			CALL 催眠侍奉(住人)
 		ELSE
 			IF FLAG:催眠 != 0 ;同時調教一人
-				CFLAG:住人:現在位置 = 位置_红魔馆_正门
+				CFLAG:住人:当前位置 = 位置_红魔馆_正门
 				PRINTFORMW %CALLNAME:住人%在人間之裡閒逛了一陣，回到了館裡
 			ELSE
 				SELECTCASE 好感度LV
 					CASE IS > 5
 						IF RAND:50 < 40
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
-							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:当前位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)
 						ELSE
-							CFLAG:住人:現在位置 = 位置_红魔馆_正门
+							CFLAG:住人:当前位置 = 位置_红魔馆_正门
 							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
 						ENDIF
 					CASE IS > 3
 						IF RAND:50 < 30
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
-							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:当前位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)
 						ELSE
-							CFLAG:住人:現在位置 = 位置_红魔馆_正门
+							CFLAG:住人:当前位置 = 位置_红魔馆_正门
 							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
 						ENDIF
 					CASE IS > 0
 						IF RAND:50 < 20
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
-							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:当前位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)
 						ELSE
-							CFLAG:住人:現在位置 = 位置_红魔馆_正门
+							CFLAG:住人:当前位置 = 位置_红魔馆_正门
 							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
 						ENDIF
 					CASEELSE
 						IF RAND:50 < 10
 							PRINTFORMW %CALLNAME:住人%遇到個有點奇怪的男人，談話中氣氛變得曖昧起來，%CALLNAME:住人%在不知不覺間跟隨那個人走了
-							CFLAG:住人:現在位置 = 位置_民家
+							CFLAG:住人:当前位置 = 位置_民家
 							CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 							SIF 移动路线:住人:0
 								CALLF RESET_ROUTE(住人, 0)
 							FLAG:催眠 = 1
 							CALL 催眠調教開始(住人)
 						ELSE
-							CFLAG:住人:現在位置 = 位置_红魔馆_正门
+							CFLAG:住人:当前位置 = 位置_红魔馆_正门
 							PRINTFORML %CALLNAME:住人%沒有受到男人的引誘，不知道從哪回到館裏了
 						ENDIF
 				ENDSELECT
 			ENDIF
 		ENDIF
 	ENDIF
-	IF CFLAG:住人:現在位置 == 位置_民家
+	IF CFLAG:住人:当前位置 == 位置_民家
 		CALL 催眠調教開始(住人)
 	ENDIF
 ENDIF
@@ -202,7 +202,7 @@ ELSE
 			ENDFUNC
 			CALL 催眠_性交村人(住人)
 		ELSE
-			CFLAG:住人:現在位置 = 位置_红魔馆_正门
+			CFLAG:住人:当前位置 = 位置_红魔馆_正门
 			CFLAG:住人:催眠气氛 = 0
 			CFLAG:住人:催眠中 = 0
 			PRINTFORML 催眠時間終了
@@ -213,7 +213,7 @@ ELSE
 ENDIF
 CFLAG:住人:催眠气氛 ++
 ;催眠便器奪還
-IF CFLAG:MASTER:現在位置 == 位置_人間の里周辺
+IF CFLAG:MASTER:当前位置 == 位置_人間の里周辺
 	PRINTFORML %CALLNAME:MASTER%遠遠看見%CALLNAME:住人%的裸體被村人糾纏的場景
 	PRINTFORML 即使相隔很遠，淫亂的氣氛也使%CALLNAME:MASTER%胸口一陣刺痛
 	PRINTL [000] - 衝過去
@@ -226,7 +226,7 @@ IF CFLAG:MASTER:現在位置 == 位置_人間の里周辺
 		PRINTFORML %CALLNAME:MASTER%無法忍受面前的場景，轉身從人間里周辺逃走了
 		PRINTFORML 直到遠遠將%CALLNAME:住人%拋在身後，%CALLNAME:MASTER%才停下了腳步
 		PRINTFORML %CALLNAME:MASTER%流下了悔恨的淚水
-		CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+		CFLAG:MASTER:当前位置 = 位置_红魔馆_正门
 	ELSEIF RESULT == 000
 		PRINTFORML %CALLNAME:MASTER%向村人群衝了過去，為奪回%CALLNAME:住人%展開激戰
 		PRINTFORML 令%CALLNAME:MASTER%心痛，%CALLNAME:住人%站在村人一側對自己發動了攻擊
@@ -284,7 +284,7 @@ IF FLAG:催眠 == 0
 				PRINTFORML 「現在你是一頭肛交雌豚」
 				CALL 催眠_性交A(住人)
 			ELSE
-				CFLAG:住人:現在位置 = 位置_红魔馆_正门
+				CFLAG:住人:当前位置 = 位置_红魔馆_正门
 				CFLAG:住人:催眠气氛 = 0
 				CFLAG:住人:催眠中 = 0
 				FLAG:催眠侍奉中 = 0
@@ -302,7 +302,7 @@ ELSE
 ENDIF
 
 ;專屬烙印奪還
-IF CFLAG:MASTER:現在位置 == 位置_人間の里周辺
+IF CFLAG:MASTER:当前位置 == 位置_人間の里周辺
 	PRINTFORML %CALLNAME:MASTER%偶爾看見%CALLNAME:住人%卑猥地侍奉催眠者的場景
 	PRINTFORML 即使相隔很遠，淫猥的氣氛也使%CALLNAME:MASTER%胸口一陣刺痛
 	PRINTL [000] - 衝過去
@@ -315,7 +315,7 @@ IF CFLAG:MASTER:現在位置 == 位置_人間の里周辺
 		PRINTFORML %CALLNAME:MASTER%無法忍受面前的場景，轉身從人間里周辺逃走了
 		PRINTFORML 直到遠遠將%CALLNAME:住人%拋在身後，%CALLNAME:MASTER%才停下了腳步
 		PRINTFORML %CALLNAME:MASTER%流下了悔恨的淚水
-		CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+		CFLAG:MASTER:当前位置 = 位置_红魔馆_正门
 	ELSEIF RESULT == 000
 		PRINTFORML %CALLNAME:MASTER%向催眠者衝了過去，為奪回%CALLNAME:住人%展開激戰
 		PRINTFORML 令%CALLNAME:MASTER%心痛，%CALLNAME:住人%擋在催眠者面前與自己展開了爭鬥
@@ -376,7 +376,7 @@ IF TALENT:住人:洗腦解除 == 1
 	PRINTFORML 又将不能将跳蛋取下的强制观念写入%CALLNAME:住人%的脑内
 	PRINTFORML 完成恶作剧之后，催眠者就将%CALLNAME:住人%赶回了馆里
 	CFLAG:住人:跳蛋挿入者 = 人物_催眠者
-	CFLAG:住人:現在位置 = 位置_红魔馆_正门
+	CFLAG:住人:当前位置 = 位置_红魔馆_正门
 	PRINTFORML %CALLNAME:住人%不知從哪裡返回館裡了，完全沒有發現自己身上發生了什麼
 	CFLAG:住人:催眠气氛 = 0
 	CFLAG:住人:催眠中 = 0
@@ -569,9 +569,9 @@ IF TALENT:住人:部分洗腦 == 0 && CFLAG:住人:前回催眠行為 == 0
 ENDIF
 
 ;逃脫檢定
-IF CFLAG:住人:前回催眠行為 == 0 && CFLAG:住人:現在位置 == 位置_民家
+IF CFLAG:住人:前回催眠行為 == 0 && CFLAG:住人:当前位置 == 位置_民家
 	IF RAND:(CFLAG:住人:催眠深度 + 100) - RAND:(CFLAG:住人:好感度 + 1) <= 0
-		CFLAG:住人:現在位置 = 位置_红魔馆_正门
+		CFLAG:住人:当前位置 = 位置_红魔馆_正门
 		PRINTFORML %CALLNAME:住人%的意識開始出現清醒的跡象
 		PRINTFORML 催眠者下達了返回的暗號
 		PRINTFORML %CALLNAME:住人%不知從哪裡返回館裡了，完全沒有發現自己身上發生了什麼
@@ -1302,7 +1302,7 @@ EXP:住人:Ｃ经验 ++
 EXP:住人:Ｃ绝顶经验 ++
 EXP:住人:苦痛快乐经验 ++
 TALENT:住人:部分洗腦 = 1
-CFLAG:住人:現在位置 = 位置_红魔馆_正门
+CFLAG:住人:当前位置 = 位置_红魔馆_正门
 PRINTFORML %CALLNAME:住人%被催眠者扔在館的門外，完全沒有發現自己身上發生了什麼
 CFLAG:住人:好感度 = CFLAG:住人:好感度 / 2
 CFLAG:住人:亲密程度 -= 1
@@ -1372,7 +1372,7 @@ IF TALENT:住人:处女 == 1 ;專屬烙印受孕儀式
 		累計時間 += 10
 	LOOP BASE:住人:气力 > 0
 	CFLAG:住人:催眠行為持續時間 = DATETIME() + 累計時間
-	CFLAG:住人:現在位置 = 位置_人間の里
+	CFLAG:住人:当前位置 = 位置_人間の里
 	PRINTFORML %CALLNAME:住人%的身體和靈魂都被打上了催眠者的烙印
 	PRINTFORML 對%CALLNAME:住人%來說，催眠者已經成為了她的唯一、她的主宰，其他人的存在是完全不必要的
 	TALENT:住人:恋慕 = 0
@@ -1442,7 +1442,7 @@ ELSE ;催眠中毒村人輪姦
 		累計時間 += 10
 	LOOP BASE:住人:气力 > 0
 	CFLAG:住人:催眠行為持續時間 = DATETIME() + 累計時間
-	CFLAG:住人:現在位置 = 位置_人間の里
+	CFLAG:住人:当前位置 = 位置_人間の里
 	PRINTFORML %CALLNAME:住人%的身體和靈魂都被染成了精液的白濁顏色
 	PRINTFORML 對%CALLNAME:住人%來說，自己已經成為了只會追求性愛快樂的雌獸，無論對手是誰都會張開雙腿
 	PRINTFORML 除此之外的關係都是多餘的
@@ -1582,7 +1582,7 @@ LOOP BASE:master:气力 > 0
 PRINTDATAL
 	DATAFORM %CALLNAME:master+"在"+TOSTR(累計時間)+"分中被強姦了"+TOSTR(回数)+"次"%
 ENDDATA
-CFLAG:master:現在位置 = 位置_红魔馆_正门
+CFLAG:master:当前位置 = 位置_红魔馆_正门
 PRINTFORML 連續高潮到失去意識之後，%CALLNAME:MASTER%被像垃圾一樣扔在了館的門外
 RETURN
 ;-------------------------------------------------------------------------------
@@ -1613,8 +1613,8 @@ IF ABL:MASTER:指 + ABL:MASTER:舌 >= 10
 	CFLAG:住人:催眠中 = 0
 	TALENT:住人:專屬烙印 = 0
 	TALENT:住人:洗腦解除 = 1
-	CFLAG:住人:現在位置 = 位置_红魔馆_正门
-	CFLAG:MASTER:現在位置 = 位置_红魔馆_正门
+	CFLAG:住人:当前位置 = 位置_红魔馆_正门
+	CFLAG:MASTER:当前位置 = 位置_红魔馆_正门
 ELSE
 	PRINTFORML %CALLNAME:MASTER%徒劳地玩弄着%CALLNAME:住人%的身体，但%CALLNAME:住人%冷冰冰的毫无反应
 	PRINTFORML 时间悄悄流逝，%CALLNAME:MASTER%不由地焦躁起来
@@ -1625,7 +1625,7 @@ ELSE
 		PRINTFORML 「今天的失败会成为你的梦魇，让你再也硬不起来啦，哈哈哈哈」
 		MAXBASE:master:勃起 = 0
 		PRINTFORML 随着催眠者的诅咒，%CALLNAME:MASTER%的肉棒软软地垂了下去
-		CFLAG:master:現在位置 = 位置_红魔馆_正门
+		CFLAG:master:当前位置 = 位置_红魔馆_正门
 		PRINTFORML %CALLNAME:MASTER%像梦游一样回到了馆里，脑海中催眠者的冷笑声缭绕不去
 	ELSE
 		PRINTFORML 「作为惩罚，%CALLNAME:住人%，给我抓住他！」
@@ -1676,7 +1676,7 @@ ELSE
 		PRINTDATAL
 			DATAFORM %CALLNAME:master+"在"+TOSTR(累計時間)+"分中被強姦了"+TOSTR(回数)+"次"%
 		ENDDATA
-		CFLAG:master:現在位置 = 位置_红魔馆_正门
+		CFLAG:master:当前位置 = 位置_红魔馆_正门
 		PRINTFORML 連續高潮到失去意識之後，%CALLNAME:MASTER%被像垃圾一樣扔在了館的門外
 	ENDIF
 ENDIF
@@ -1699,7 +1699,7 @@ CFLAG:住人:催眠中 = 0
 TALENT:住人:催眠中毒 = 0
 TALENT:住人:洗腦解除 = 1
 TIME += 120
-CFLAG:住人:現在位置 = 位置_红魔馆_正门
+CFLAG:住人:当前位置 = 位置_红魔馆_正门
 RETURN
 ;-------------------------------------------------------------------------------
 ;住人の訪問者に対する好感度チェック

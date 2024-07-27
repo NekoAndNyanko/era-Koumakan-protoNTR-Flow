@@ -1,0 +1,256 @@
+﻿;-------------------------------------------------------------------------------
+;NTRお持ち帰り関係
+;　訪問者による住人お持ち帰り関係の処理
+;　あなたお持ち帰りは別枠
+;-------------------------------------------------------------------------------
+;	お持ち帰り中処理
+;-------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------
+;お持ち帰り最中
+@VISITER_TAKINGOUT(对象)
+#DIM 对象
+#DIM LOOP_I
+#DIM 移动路线循环
+#DIM 移动时经过玩家
+;----------------------------------------------------------------------------------------------------
+;去访问者家的路线处理
+;----------------------------------------------------------------------------------------------------
+;当前位置から紅魔館玄関への移动経路を算出
+CALLF FARMOVE(对象,CFLAG:对象:当前位置,位置_红魔馆_正门)
+移动时经过玩家 = 0
+FOR 移动路线循环,0,移动路线MAX
+	IF (0 == 移动路线:对象:移动路线循环)
+		BREAK
+	ENDIF
+	IF NTR_CHK_VISIBLE( 移动路线:对象:移动路线循环 )
+		移动时经过玩家 = 1
+	ENDIF
+NEXT
+;移动経路算出に使った移动路线を消去しておく
+CALLF RESET_ROUTE(对象,1)
+;お持ち帰り時初期化処理
+CALL INIT_TAKINGOUT(对象)
+;----------------------------------------------------------------------------------------------------
+;去访问者的家口上部分
+;----------------------------------------------------------------------------------------------------
+PRINTFORML 【事件】%CALLNAME:对象%和%NTR_NAME(0)%一起去了某个地方……
+SIF FLAG:口上颜色
+	CALL KOJO_COLOR(对象)
+IF 移动时经过玩家
+	;玩家看到角色与访问者走在一起的情况
+	TRYCALLLIST
+		FUNC NTR_ROOM_K{对象}_GOTO_SEEN(对象)
+		FUNC NTR_ROOM_KU_GOTO_SEEN(对象)
+	ENDFUNC
+ELSE
+	;没有与玩家相遇的情况
+	TRYCALLLIST
+		FUNC NTR_ROOM_K{对象}_GOTO(对象)
+		FUNC NTR_ROOM_KU_GOTO(对象)
+	ENDFUNC
+ENDIF
+;角色进入访问者家之后的口上
+IF NTR_CHK_VISIBLE(位置_訪問者宅)
+	TRYCALLLIST
+		FUNC NTR_ROOM_K{对象}_GOTO_AFTER(对象)
+		FUNC NTR_ROOM_KU_GOTO_AFTER(对象)
+	ENDFUNC
+ENDIF
+RESETCOLOR
+;----------------------------------------------------------------------------------------------------
+;重置角色和访问者的行为以便开展后续在访问者家中的行为
+CALL NTR_RESET_VISITOR_ACTION(对象)
+RETURN 0
+
+;お持ち帰り時初期化処理
+;VISITER_TAKINGOUTとGoOut_SeeYou_900の共通処理
+@INIT_TAKINGOUT(奴隷)
+#DIM 奴隷
+#DIM LOOP_I
+
+CFLAG:奴隷:持帰分岐 = 0
+;同行解除
+CFLAG:奴隷:同行 = 0
+;うふふ解除
+IF CFLAG:奴隷:うふふ>0 && CFLAG:MASTER:うふふ>0
+	CFLAG:奴隷:うふふ = 0
+	CFLAG:MASTER:うふふ = 0
+ENDIF
+;汚れ発覚による逃走なし
+CFLAG:奴隷:汚れ発覚 = 汚れ発覚_なし
+;当前位置を強制的に開錠
+FLAG:(300 + FLAG:访问者当前位置) = 0
+;訪問者宅へ移动
+FLAG:访问者当前位置 = 位置_訪問者宅
+CFLAG:奴隷:当前位置 = 位置_訪問者宅
+FLAG:訪問者同行フラグ = 0
+FLAG:訪問者との汚れ判定に使用 = 0
+FLAG:訪問者滞在時間カウンタ = 0
+CFLAG:奴隷:NTR_CNT行为 = NTR_CNT_无行为
+EXP:奴隷:前回浮気人数 = 0
+CFLAG:奴隷:持帰時处女 = TALENT:奴隷:处女
+CFLAG:奴隷:持帰Ｖ射精回数 = 0
+CFLAG:奴隷:持帰Ａ射精回数 = 0
+RETURN 0
+
+;----------------------------------------------------------------------------------------------------
+;在访问者家中的行为
+;----------------------------------------------------------------------------------------------------
+;お持ち帰り後
+@VISITER_TAKEOUT(奴隷)
+#DIM 奴隷
+#DIM 調教者
+#DIM DYNAMIC プレイ時間
+#DIM DYNAMIC 浮気快楽強度
+#DIM 气氛上限値 = 50
+#DIM プレイ内容
+#DIM LOOP_I
+#DIM 处女喪失中保存		; 处女喪失中フラグの退避用
+#DIM 回復係数
+
+;一応处女喪失フラグリセット（複数回発生しちゃうので
+CFLAG:奴隷:处女喪失中 = 0
+处女喪失中保存 = CFLAG:奴隷:处女喪失中
+;予約時間毎に何かする
+;各種素質により毎ターン上乗せ。
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:淫壶
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:淫肛
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:淫乳
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:浮気的蜜唇
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:浮気的蜜壶
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:浮気的菊花
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:浮気癖
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:淫乱
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:NTR
+CFLAG:奴隷:TAKEOUT行为控制计数 += 1 * TALENT:奴隷:浮気公認
+;予約時間になるまでは同じ行動
+IF CFLAG:奴隷:TAKEOUT行为结束时间 > DATETIME()
+	RETURN 0
+ENDIF
+;体力100未満で、相手が射精後の場合休息が与えられる（マグロになっててもオナホにして射精はするよね）
+IF BASE:奴隷:体力 < 100 && プレイ内容 == 5
+	;休息は2時間程度、最大値の25%回復。おそらく体力はマイナス行くので0に補正しておく。
+	CFLAG:奴隷:TAKEOUT行为结束时间 = DATETIME() + 119
+	; 通常25%、恢复速度により±10%補正、淫乱10%、娼婦+10%(計20%)
+	回復係数 = 5 + (2 * TALENT:奴隷:恢复速度) + (2 *TALENT:奴隷:淫乱)
+	BASE:奴隷:体力 = MIN( MAX(0, BASE:奴隷:体力) + MAXBASE:奴隷:体力 * 回復係数 / 20 , MAXBASE:奴隷:体力)
+	BASE:奴隷:气力 = MIN( MAX(0, BASE:奴隷:气力) + MAXBASE:奴隷:气力 * 回復係数 / 20 , MAXBASE:奴隷:气力)
+	IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
+		;todo 休息口上
+		PRINTFORML %"筋疲力尽的"+CALLNAME:奴隷+"、被给予了一点点休息时间。"%
+	ENDIF
+	;休息したらプレイ内容のリセット、性欲減退
+	プレイ内容 = 0
+	CFLAG:奴隷:性欲 /= 2
+	CFLAG:奴隷:TAKEOUT行为控制计数 /= 2
+	RETURN 0
+ENDIF
+IF FLAG:访问者当前位置 == 位置_訪問者宅
+	調教者 = 人物_訪問者
+ELSE
+	SIF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
+		PRINTFORML %NTR_NAME(0)%不在家，也没有客人来，%CALLNAME:奴隷%无所事事。
+	RETURN 0
+ENDIF
+;气氛が悪い時は帰る
+IF CFLAG:奴隷:TAKEOUT行为控制计数 < 0 && TALENT:奴隷:浮気公認 < 5
+	;PRINTW 气氛不好回来了
+	CFLAG:奴隷:当前位置 = 位置_红魔馆_正门
+	IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
+		;PRINTFORML CFLAG:奴隷:TAKEOUT行为控制计数{CFLAG:奴隷:TAKEOUT行为控制计数}
+		PRINTFORMW %CALLNAME:奴隷%不知道从哪里回来了
+		;气氛が悪くて帰ってきた時は汚れ具合とか違うだろうから別関数とする。
+		TRYCALLLIST
+			FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_0_1(奴隷)
+			FUNC NTR_KOJO_K_0_1(奴隷)
+		ENDFUNC
+	ENDIF
+	RETURN 0
+ENDIF
+IF CFLAG:奴隷:TAKEOUT行为控制计数 < 10
+	;会话(好感度上昇のみ)
+	プレイ内容 = 1
+	プレイ時間 = (RAND:5 + 5)
+	CALL VISITOR_TAKEOUT_10_01(奴隷,調教者)
+ELSEIF CFLAG:奴隷:TAKEOUT行为控制计数 < 20
+	;キス
+	プレイ内容 = 1
+	プレイ内容 = 2
+	プレイ時間 = (RAND:5 + 5)
+	CALL VISITOR_TAKEOUT_10_02(奴隷,調教者)
+	;口上(地の文)呼び出し
+	IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
+		CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
+	ENDIF
+ELSEIF CFLAG:奴隷:TAKEOUT行为控制计数 < 30
+	;色々前戯 六九式イメージ
+	プレイ内容 = 3
+	プレイ時間 = (RAND:5 + 5)
+	CALL VISITOR_TAKEOUT_10_03(奴隷,調教者)
+	;口上(地の文)呼び出し
+	IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
+		CALLFORM NTR_MESSAGE_10_{プレイ内容}(奴隷, 調教者, TFLAG:輪姦内容)
+	ENDIF
+ELSE
+	IF CFLAG:奴隷:TAKEOUT行为控制计数 > 44 && プレイ内容 > 3
+		;气氛45以上かつ、１回はプレイ内容４（射精無しセックス）してること
+		プレイ内容 = 5
+		;持ち帰り時处女フラグかつ最初の射精時は处女喪失中扱いとする
+		;(处女喪失中フラグは毎回クリアされてしまうため)
+		IF CFLAG:奴隷:持帰時处女 && CFLAG:奴隷:持帰Ｖ射精回数 == 0
+			处女喪失中保存 = 1
+			CFLAG:奴隷:处女喪失中 = CFLAG:奴隷:持帰時处女
+		ENDIF
+		;プレイ時間が確定(20～39分)
+		プレイ時間 = (RAND:20 + 20)
+	ELSE
+		プレイ内容 = 4
+		;プレイ時間が確定(10～19分)
+		プレイ時間 = (RAND:10 + 10)
+	ENDIF
+	;プレイ時間により屈服度が増加
+	CALL NTR_ADD_SURRENDER(奴隷, MAX(プレイ時間/2,0))
+ENDIF
+;プレイ時間を反映
+CFLAG:奴隷:TAKEOUT行为结束时间 = DATETIME() + プレイ時間
+;絶頂判定
+CALL NTR_SOURCE_CHECK(奴隷,調教者)
+CALL ORGASM_ADD(奴隷,調教者)
+;ORGASM_ADDを呼んだ直後なら R で本来の快楽強度が取得できる
+;訪問者なら最大LV12まで、客の場合6までとする。
+浮気快楽強度 = (調教者 == 人物_訪問者) ? RESULT # RESULT / 2
+;口上呼び出し
+IF NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
+	TRYCALLLIST
+		FUNC NTR_KOJO_K{CFLAG:奴隷:口上パターン}_10_{プレイ内容}(奴隷, 調教者, 0)
+	ENDFUNC
+ENDIF
+;处女喪失中フラグを一時退避していた場合復旧する
+IF 处女喪失中保存 == 1
+	CFLAG:奴隷:处女喪失中 = 0
+ENDIF
+IF CFLAG:奴隷:处女喪失中
+	;口上との兼ね合いでこの位置で確認
+	;保存しておいた处女/再生处女フラグを取得
+	TALENT:奴隷:处女 = CFLAG:奴隷:处女喪失中
+	TRYCALL COM417_Lost_Virgin(奴隷, 調教者)
+	TALENT:奴隷:处女 = 0
+	;处女を奪われると气氛がごっそり減る
+	CFLAG:奴隷:TAKEOUT行为控制计数 /= 2
+ENDIF
+;浮気快乐刻印の付与チェック
+CALL NTR_MARK_5(奴隷, 浮気快楽強度)
+IF RESULT:0 && TALENT:奴隷:浮気公認 < 5
+	DEBUGPRINTFORML 訪問者の气氛减少{-浮気快楽強度 * 2}
+	;浮気快乐刻印が増えたら、一旦气氛を減らして帰りやすくしてあげる
+	CFLAG:奴隷:TAKEOUT行为控制计数 = -浮気快楽強度 * 2
+ENDIF
+DEBUGPRINTFORML 浮気快楽強度{浮気快楽強度} 訪問者の气氛{CFLAG:奴隷:TAKEOUT行为控制计数}
+;气氛の上下。最初のベース増加で0～19程度増えるので特別な判定はしない。
+;NTRがあれば減る事はない。快楽により气氛増加。上限以上あれば上限値に切り詰め。
+CFLAG:奴隷:TAKEOUT行为控制计数 += MIN(气氛上限値,CFLAG:奴隷:TAKEOUT行为控制计数+(RAND:13 - 4)+浮気快楽強度)
+;行為における口上や射精関連のフラグリセット
+TFLAG:輪姦内容 = 輪姦_0
+;处女喪失口上が何度も出るのを防止
+CFLAG:奴隷:处女喪失中 = 0
+RETURN 0

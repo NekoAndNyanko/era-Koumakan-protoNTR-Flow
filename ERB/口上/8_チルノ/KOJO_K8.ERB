@@ -413,7 +413,7 @@ IF TALENT:恋慕
 	ELSEIF LOCAL == 1
 		PRINTFORM 微笑みを交わしながら
 	ELSE
-		IF (CFLAG:MASTER:現在位置 == 4) || (CFLAG:MASTER:現在位置 == 5) || (CFLAG:MASTER:現在位置 == 11) || (CFLAG:MASTER:現在位置 == 17) || (CFLAG:MASTER:現在位置 == 18)
+		IF (CFLAG:MASTER:当前位置 == 4) || (CFLAG:MASTER:当前位置 == 5) || (CFLAG:MASTER:当前位置 == 11) || (CFLAG:MASTER:当前位置 == 17) || (CFLAG:MASTER:当前位置 == 18)
 			LOCAL = (RAND:5 + 1)
 			IF LOCAL == 5
 				PRINTFORM 指先を絡ませながら
@@ -539,7 +539,7 @@ RETURN RESULT
 ;302,身体接触
 ;==================================================
 @KOJO_MESSAGE_COM_K8_302_1
-IF CFLAG:MASTER:現在位置 == 18
+IF CFLAG:MASTER:当前位置 == 18
 	IF TFLAG:193 == 1
 		;風呂場にて
 		PRINTFORML %CALLNAME:MASTER%は%CALLNAME:人物_琪露诺%の身体を洗っている。
@@ -737,7 +737,7 @@ RETURN RESULT
 IF FIRSTTIME(TOSTR(350),1)
 	;初めて集
 	;琪露诺的家OR玩家房间
-	IF (CFLAG:現在位置 ==20) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==20) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「え、えへへ、あたいでも知ってるよこれくらい。」
 		PRINTFORML %CALLNAME:MASTER%は%CALLNAME:人物_琪露诺%を押し倒したまま静止している。
 		PRINTFORMW 「あたいもずっとして欲しかったよ。」
@@ -752,7 +752,7 @@ IF FIRSTTIME(TOSTR(350),1)
 	ENDIF
 ELSEIF TALENT:恋慕
 	;あなたOR琪露诺的家
-	IF (CFLAG:現在位置 ==20) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==20) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「ねえ、今日%CALLNAME_K8(人物_琪露诺, 人物_大妖精)%も来ないんだ、だからさ。」
 		PRINTFORML %CALLNAME:人物_琪露诺%は赤面して%CALLNAME:MASTER%を見ている
 		PRINTFORML 「あたいを気持ちよくして、あたいも頑張るから。」
@@ -762,7 +762,7 @@ ELSEIF TALENT:恋慕
 	ENDIF
 ELSE
 	;あなたOR琪露诺的家
-	IF (CFLAG:現在位置 ==20) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==20) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「あたい、もっとして欲しいよ…%CALLNAME:MASTER%…。」
 		PRINTFORMW %CALLNAME:人物_琪露诺%の求めに応じて%CALLNAME:MASTER%は%CALLNAME:人物_琪露诺%を押し倒した。
 	ELSE

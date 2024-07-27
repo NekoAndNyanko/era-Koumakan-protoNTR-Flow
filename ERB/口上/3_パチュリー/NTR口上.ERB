@@ -21,7 +21,7 @@
 @NTR_KOJO_K3_1(奴隷)
 #DIM 奴隷
 ;大浴场
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「这里也要好好清洁呢。毕竟也会变成我舔的地方」
@@ -67,21 +67,7 @@ IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
 	ENDIF
 	;その他
 ELSE
-	IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
-		PRINTDATAL
-			DATAFORM 「今はそんな話を聞きたくないわ」
-			DATAFORM 「つまらない話はやめてちょうだい」
-			DATAFORM 「今はやめて。それより、聞いておきたいことがあるのだけど」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に『仕事』の話をされ無理矢理に話題を変えた。
-	ELSEIF TALENT:奴隷:公众便所
-		PRINTDATAL
-			DATAFORM 「次の『お仕事』...ええ、いつでも引き受けるわ」
-			DATAFORM 「一度に何人も相手するのはさすがに疲れるわ。たまにならいいけど」
-			DATAFORM 「ふふ、この次にお呼びがかかるのはいつかしら？」
-		ENDDATA
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に『仕事』の話をされ期待に満ちた笑顔を見せた。
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
+	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTDATAL
 			DATAFORM 「嗯呢...后面的内容，我想和你一起慢慢聊呢」
 			DATAFORM 「很有趣呢...能找个安~静的地方，慢慢讲给我听吗？」
@@ -133,7 +119,7 @@ RETURN 0
 @NTR_KOJO_KW3_1(奴隷)
 #DIM 奴隷
 ;大浴場
-IF CFLAG:奴隷:現在位置 == 位置_红魔馆_大浴场
+IF CFLAG:奴隷:当前位置 == 位置_红魔馆_大浴场
 	IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 		PRINTFORML 「こうしてお風呂に入ると身体が軽くなった気がするわ」
 		PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%から離れ%NTR_NAME(0)%の側で話をしている。
@@ -4333,20 +4319,20 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「ええ...いいわ...」
 	IF 0 == 誘いフラグ
-		PRINTFORML %NTR_NAME(0)%によって%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれた%CALLNAME:奴隷%は期待に頬を染めている。
+		PRINTFORML %NTR_NAME(0)%によって%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた%CALLNAME:奴隷%は期待に頬を染めている。
 	ELSE
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に誘った%CALLNAME:奴隷%は期待に頬を染めている。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%に誘った%CALLNAME:奴隷%は期待に頬を染めている。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「...そうね...人目につきたくはないわ...」
-	PRINTFORML %NTR_GETPLACENAME(FLAG:訪問者の現在位置)%に連れ込まれた%CALLNAME:奴隷%はむすっとした目つきで%NTR_NAME(0)%を見ている。
+	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた%CALLNAME:奴隷%はむすっとした目つきで%NTR_NAME(0)%を見ている。
 
 ELSE
 
 	PRINTFORML 「けほっ...咽に悪いわ...」
-	PRINTFORML %CALLNAME:奴隷%は埃っぽい%NTR_GETPLACENAME(FLAG:訪問者の現在位置)%の中でむせている。	
+	PRINTFORML %CALLNAME:奴隷%は埃っぽい%NTR_GETPLACENAME(FLAG:访问者当前位置)%の中でむせている。	
 
 ENDIF
 RETURN 0
@@ -4392,71 +4378,6 @@ ENDIF
 ;浮気公認時
 IF TALENT:奴隷:浮気公認
 	PRINTFORML 「これで满足かしら？ 满足よね...私は%CALLNAME:MASTER%に言われた通りのことをして、これはその必然的な帰結だもの」
-ENDIF
-
-RETURN 0
-
-;==================================================
-;公众便所宣言
-;==================================================
-@NTR_KOJO_K3_13(奴隷)
-#DIM 奴隷
-
-IF TALENT:奴隷:亲爱
-	;たぶんここには来ないと思うけど念のため余計なものを出さないように
-ELSEIF TALENT:奴隷:恋慕
-	IF TALENT:奴隷:浮気公認
-		PRINTFORML 「そうそう、%CALLNAME:MASTER%...以前私に言ったよね？ もっと寝取られたいって」
-		PRINTFORML 「だから私、その願いをかなえてあげるわ...え？ どうするかですって？ 簡単よ。私、あの人のもとで娼婦になることにしたわ」
-		PRINTFORML 「お金をもらって他の人に抱かれるの。嬉しいでしょう？ だって、沢山の男が私を寝取ってくれるのよ？」
-	ELSEIF TALENT:奴隷:淫乱
-		PRINTFORML 「そうそう、%CALLNAME:MASTER%、伝えておくわ。私、あの人のもとで娼婦になることにしたわ」
-		PRINTFORML 「ふふっ、もっともっとセックスしたいの。たくさんの男達に抱かれたいの」
-	ELSE
-		;たぶんないとは思うけど恋慕かつ非公認のケース
-		PRINTFORML （...いえない...%CALLNAME:MASTER%に、この事を言うなんてできない...）
-		PRINTFORML （...許して...許して、%CALLNAME:MASTER%...）
-	ENDIF
-	PRINTFORML 「そういうわけで、私のカラダは『商品』なの...だから、%CALLNAME:MASTER%も私を抱くときはお金を出して『鍵』を買いなさい」
-	IF TALENT:奴隷:人妻
-		PRINTFORML 「たとえ夫婦でも、例外ではないわ。公私混同はなし...あの人に、そう約束したの」
-	ELSE
-		PRINTFORML 「たとえ恋人でも、例外ではないわ。公私混同はなし...あの人に、そう約束したの」
-	ENDIF
-ELSE
-	;初回
-	IF EXP:奴隷:公众便所陷落经验 == 0
-
-		PRINTFORML 「そうそう、%CALLNAME:MASTER%、伝えておくわ。私、ご主人様の牝犬便器になることを誓ったわ」
-		PRINTFORML 「...わからない？ 平たく言えば娼婦になったわ。お金をもらって、皆様のお相手をする事になったの」
-		;淫纹ありの時
-		IF CFLAG:奴隷:淫纹
-			PRINTFORML 「憶えているかしら...この紋章」
-			PRINTFORML %CALLNAME:奴隷%はその身に刻まれた淫らさを感じさせる紋章を%CALLNAME:MASTER%に見せた。
-			PRINTFORML 「もちろん憶えているわよね。この紋を私に刻んでくれたのは%CALLNAME:MASTER%だもの」
-			PRINTFORML 「誤解しないで。責めているわけではないわ。むしろ感謝しているくらい。ふふっ」
-			PRINTFORML %CALLNAME:奴隷%は熱にうかされたような笑みを浮かべながら、その紋章を撫でていた。
-			PRINTFORML 「この紋章が刻まれた時から、こうなることは決まっていたのよ。きっとね」
-		ENDIF
-		;主人が童贞
-		IF IS_DOUTEI(MASTER) 
-			PRINTFORML 「%CALLNAME:MASTER%確か童贞だったわね？ 私でよかったら筆下ろしの相手をしてあげてもいいわよ？ ご主人様にかけあってちょうだい」
-		ELSE
-			PRINTFORML 「%CALLNAME:MASTER%も私のことを使いたかったら、ご主人様とかけあってちょうだい」
-		ENDIF
-
-		;2回目以降
-	ELSE
-		PRINTFORML 「そうそう、%CALLNAME:MASTER%、伝えておくわ。私、ご主人様の牝犬便器に返回ことを誓ったわ」
-		PRINTFORML 「...お金をもらって、皆様にご侍奉する...ご主人様のお役に立てることが、私の悦びなの」
-		;淫纹ありの時
-		IF CFLAG:奴隷:淫纹
-			PRINTFORML %CALLNAME:奴隷%はその身に刻まれた淫らさを感じさせる紋章を%CALLNAME:MASTER%に見せた。
-			PRINTFORML 「ふふっ...この紋章が刻まれている私は、然るべき処にいるのが幸福なのよ」
-		ENDIF
-		PRINTFORML 「%CALLNAME:MASTER%も私のことを使いたかったら、ご主人様とかけあってちょうだい」
-	ENDIF
-
 ENDIF
 
 RETURN 0
@@ -4760,83 +4681,6 @@ ELSE
 	ENDIF
 
 ENDIF
-
-[SKIPSTART]
-;==================================================
-;贞操帯鍵購入に対する反応
-;==================================================
-;本人
-@NTR_KOJO_K3_16_0(奴隷)
-	#DIM 奴隷
-	PRINTFORML 「あら...私のことを買ってくれたのね...」
-	PRINTFORML 「そう。歓迎するわ。私のご主人様？」
-	IF TALENT:奴隷:亲爱
-		PRINTFORML 「こんなことになってしまったけど、私のことを求めてくれるのが嬉しいわ」
-	ELSEIF TALENT:奴隷:恋慕
-		IF TALENT:奴隷:人妻
-			PRINTFORML 「でも皮肉なものね？ 夫婦のはずなのに、お金を出して身体を買わないといけないだなんて」
-		ELSE
-			PRINTFORML 「でも皮肉なものね？ 恋人のはずなのに、お金を出して身体を買わないといけないだなんて」
-		ENDIF
-		IF TALENT:奴隷:浮気公認
-			PRINTFORML 「...そういえば%CALLNAME:MASTER%はそういうことに興奮する人だったわね」
-		ENDIF
-	ENDIF
-RETURN
-
-;本人以外
-@NTR_KOJO_K3_16_1(奴隷)
-	#DIM 奴隷
-	;公众便所
-	IF TALENT:奴隷:公众便所&& TALENT:奴隷:亲爱
-
-		PRINTFORML 「それは...%CALLNAME_K3(奴隷, FLAG:贞操帯鍵購入フラグ)%の...」
-		PRINTFORML 「...わかっているわ。それは%CALLNAME:MASTER%の自由だもの」
-		PRINTFORML 「...でも、私のことを買って欲しいと思うのは、私の自由よ」
-
-	ELSEIF TALENT:奴隷:公众便所
-
-		PRINTFORML 「あら...%CALLNAME_K3(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったのね...」
-		IF TALENT:奴隷:恋慕
-			PRINTFORML 「そもそも%MSG_RE_LOVER(奴隷)%である私をさしおいて他の女を買うなんてどんな了見なのかしら？」
-			PRINTFORML 「ふふ、冗談よ。この次は私を買ってね？」
-		ELSE
-			PRINTFORML 「ふふ、この次は私を買ってみる？」
-		ENDIF
-
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
-
-		PRINTFORML 「あら...%CALLNAME_K3(奴隷, FLAG:贞操帯鍵購入フラグ)%を買ったのね...」
-
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) && TALENT:奴隷:恋慕
-
-		PRINTFORML 「...%CALLNAME:MASTER%もそういう人だったのね」
-		PRINTFORML 「...男にとって、女というのは金で買える程度のものなのかしら」
-		PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%を冷ややかな視線で見ている。
-
-	ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) && TALENT:奴隷:恋慕
-
-		PRINTFORML 「...%CALLNAME:MASTER%もそういう人だったのね」
-		PRINTFORML 「...男にとって、女というのは金で買える程度のものなのかしら」
-
-	ELSE
-
-		IF FLAG:贞操帯鍵購入フラグ == 人物_蕾米莉亚|| FLAG:贞操帯鍵購入フラグ == 人物_芙兰朵露
-			PRINTFORML 「...%CALLNAME_K3(奴隷, FLAG:贞操帯鍵購入フラグ)%を何だと思っているの...？」
-			PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%を睨みつけ手にした魔道書を開こうとした。
-			PRINTFORML %CALLNAME:人物_芙兰朵露%を解放するためだという%CALLNAME:MASTER%の説明に怪訝な顔をしながら、%CALLNAME:奴隷%はしぶしぶ矛を収めた。
-		ELSEIF FLAG:贞操帯鍵購入フラグ == 人物_小恶魔|| FLAG:贞操帯鍵購入フラグ == 人物_艾丽娅
-			PRINTFORML 「...事前に私の許可をとってもらいたいものね」
-			PRINTFORML %CALLNAME:奴隷%は%CALLNAME:MASTER%を睨みつけ自分の使い魔を好きにされていることに不満を漏らした。
-			PRINTFORML 本来なら%NTR_NAME(0)%に向けるべき愚痴までも聞かされてしまった。
-		;その他
-		ELSE
-			PRINTFORML 「...軽蔑するわ」
-		ENDIF
-
-	ENDIF
-RETURN
-[SKIPEND]
 
 @NTR_KOJO_K3_MARK_5(奴隷, 快乐刻印レベル)
 #DIM 奴隷

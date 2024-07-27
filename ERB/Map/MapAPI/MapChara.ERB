@@ -1,0 +1,89 @@
+;-------------------------------------------------------------------------------
+;指定した位置にいる对象の人数を返す
+;位置…位置の指定
+;戻り値…指定した位置にいる对象の人数
+@COUNT_MEM_IN_POS(位置)
+#FUNCTION
+#DIM 位置
+#DIM 人数
+#DIM LOOP_CHR
+
+人数 = 0
+FOR LOOP_CHR,1,CHARANUM
+	SIF CFLAG:LOOP_CHR:当前位置 == 位置
+		人数 ++
+NEXT
+RETURNF 人数
+
+;-------------------------------------------------------------------------------
+;当前位置が個人の私室か判定
+;对象…キャラ番号
+;SEX房间…子悪魔例外処理フラグ 0:寝る部屋 1:うふふ時誘う場所
+@IS_PRIVATE_ROOM(对象, SEX房间)
+#FUNCTION
+#DIM 对象
+#DIM SEX房间
+RETURNF (CFLAG:对象:当前位置 == GET_PRIVATE_ROOM(对象, SEX房间) ? 1 # 0)
+
+;-------------------------------------------------------------------------------
+;個人の私室を返す
+;对象…キャラ番号
+;SEX房间：为0时返回的是其睡觉的房间，1则是邀请访问者做爱时的房间，一般是给艾丽娅这样没有固定私室、身份特殊的角色用的
+@GET_PRIVATE_ROOM(对象, SEX房间)
+#FUNCTION
+#DIM 对象
+#DIM SEX房间
+LOCAL = 0
+SELECTCASE 对象
+	; 美鈴
+	CASE 1
+		LOCAL =	位置_红魔馆_守卫小屋
+	; 小恶魔
+	CASE 2
+		LOCAL =	位置_红魔馆_小恶魔私室
+	; パチュリー
+	CASE 3
+		LOCAL =	位置_红魔馆_帕秋莉私室
+	; 咲夜
+	CASE 4
+		LOCAL =	位置_红魔馆_咲夜私室	
+	; 蕾米莉亚
+	CASE 5 
+		LOCAL =	位置_红魔馆_蕾米莉亚私室
+	; フランドール
+	CASE 6
+		LOCAL =	位置_红魔馆_地下室
+	; 子悪魔
+	CASE 7
+		IF SEX房间
+			LOCAL =	位置_红魔馆_仓库
+		ELSE
+			IF TALENT:对象:恋慕
+				LOCAL =	位置_红魔馆_玩家房间
+			ELSE
+				LOCAL =	位置_红魔馆_仓库
+			ENDIF
+		ENDIF
+	; チルノ
+	CASE 8 
+		LOCAL =	位置_雾之湖_琪露诺的家
+	; 大妖精
+	CASE 9
+		LOCAL =	位置_雾之湖_大妖精的家
+	; 魔理沙
+	CASE 10
+		LOCAL =	位置_魔法之森_雾雨魔法店
+	; 霊夢
+	CASE 11
+		LOCAL =	位置_博麗神社
+	; ルーミア
+	CASE 12
+		LOCAL =	位置_魔法之森_露米娅的树屋
+	; アリス
+	CASE 13
+		LOCAL =	位置_魔法之森_爱丽丝的家
+	;その他
+	CASEELSE
+		LOCAL =	CFLAG:对象:311
+ENDSELECT
+RETURNF LOCAL

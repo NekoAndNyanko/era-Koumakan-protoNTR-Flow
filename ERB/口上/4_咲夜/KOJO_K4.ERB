@@ -411,7 +411,7 @@ IF TALENT:恋慕
 	ELSEIF LOCAL == 1
 		PRINTFORM 互相对望着微微一笑
 	ELSE
-		IF (CFLAG:MASTER:現在位置 == 4) || (CFLAG:MASTER:現在位置 == 5) || (CFLAG:MASTER:現在位置 == 11) || (CFLAG:MASTER:現在位置 == 17) || (CFLAG:MASTER:現在位置 == 18)
+		IF (CFLAG:MASTER:当前位置 == 4) || (CFLAG:MASTER:当前位置 == 5) || (CFLAG:MASTER:当前位置 == 11) || (CFLAG:MASTER:当前位置 == 17) || (CFLAG:MASTER:当前位置 == 18)
 			LOCAL = (RAND:5 + 1)
 			IF LOCAL == 5
 				PRINTFORM 手指互相交叉在了一起
@@ -530,7 +530,7 @@ RETURN RESULT
 ;302,身体接触
 ;==================================================
 @KOJO_MESSAGE_COM_K4_302_1
-IF CFLAG:MASTER:現在位置 == 18
+IF CFLAG:MASTER:当前位置 == 18
 	IF TFLAG:193 == 1
 		;風呂場にて
 		PRINTFORML 「啊...对，就是那里。」
@@ -713,7 +713,7 @@ RETURN RESULT
 IF FIRSTTIME(TOSTR(350),1)
 	;初めて集
 	;咲夜OR玩家房间
-	IF (CFLAG:現在位置 ==13) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==13) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「…真是不可思议啊、原本是给大小姐的身体享用的身体..现在却给%CALLNAME:MASTER%了。」
 		PRINTFORMW 「不让我好好满足的话可不行哦」
 	ELSE
@@ -723,7 +723,7 @@ IF FIRSTTIME(TOSTR(350),1)
 	ENDIF
 ELSEIF TALENT:恋慕
 	;あなたOR咲夜私室
-	IF (CFLAG:現在位置 ==13) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==13) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「既然今天也想要做的话、那么现在就开始吧。」
 		PRINTFORML 「不管是%CALLNAME:MASTER%的、还是我的时间。」
 		PRINTFORML 「现在才是享受的时刻(輝くのは今この時だけよ)。」
@@ -733,7 +733,7 @@ ELSEIF TALENT:恋慕
 	ENDIF
 ELSE
 	;あなたOR咲夜私室
-	IF (CFLAG:現在位置 ==13) || (CFLAG:MASTER:現在位置 == 15)
+	IF (CFLAG:当前位置 ==13) || (CFLAG:MASTER:当前位置 == 15)
 		PRINTFORML 「虽然这样没关系…但如果做什么奇怪的事情的话我也是会生气的」
 	ELSE
 		PRINTFORMW 「呐、难道在这里做吗？还是回房间去吧…。」
