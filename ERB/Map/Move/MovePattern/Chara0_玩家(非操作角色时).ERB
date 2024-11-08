@@ -16,7 +16,7 @@ RETURN 60
 @CHARA_MOVEMENT_0(ARG,ARG:1)
 ;書かれていない場所へは移动しない
 LOCAL:3 = 1
-FOR LOCAL:4, 1, 場所番号最大値+1
+FOR LOCAL:4, 1, 位置编号最大值+1
 	;紅魔館内の風呂、トイレ、納屋以外の汚れている場所を優先して移动
 	SIF MAP_DISTINCTION(LOCAL:4) != 0 || LOCAL:4 == 位置_红魔馆_仓库
 		CONTINUE

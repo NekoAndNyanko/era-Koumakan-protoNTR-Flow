@@ -4,25 +4,25 @@
 @EVENTEND
 #LATER
 #DIM LOOP_CHR
-#DIM 場所番号記憶
+#DIM 位置编号记录
 #DIM 精子量
 SIF FLAG:真实模式
 	SKIPDISP 1
 
 ;一時退避してあなたを「ここではないどこか」へ
-場所番号記憶 = CFLAG:MASTER:当前位置
+位置编号记录 = CFLAG:MASTER:当前位置
 CFLAG:MASTER:当前位置  = -1
 WHILE (TIME_PROGRESS(CFLAG:MASTER:起床時間) < 要睡眠経過時間)
-	CALL CHARA_MOVEMENT_AFTERTRA(場所番号記憶) ; キャラの移动
+	CALL CHARA_MOVEMENT_AFTERTRA(位置编号记录) ; キャラの移动
 	CALL INHABITANT_DO  ; 住人同士の交流
 	CALL VISITER_DO     ; 訪問者のアクション
 	CALL EVENTCOMEND2   ; コマンド終了後
 	TFLAG:300 = DATETIME()
 	TIME += 30
 WEND
-SELECTCASE 場所番号記憶
+SELECTCASE 位置编号记录
 	CASE 位置_訪問者宅,位置_売春宿
-		CFLAG:MASTER:当前位置 = 場所番号記憶
+		CFLAG:MASTER:当前位置 = 位置编号记录
 	CASEELSE
 		;初期位置をリセット
 		CFLAG:MASTER:当前位置 = CFLAG:MASTER:開始位置
@@ -190,10 +190,10 @@ WHILE 1
 	JUEL:奴隷:珠種別 -= 増減値
 WEND
 
-@CHARA_MOVEMENT_AFTERTRA(場所番号記憶)
+@CHARA_MOVEMENT_AFTERTRA(位置编号记录)
 ;此函数与CHARA_MOVEMENT连动仅在本文件中使用
 ;不直接在CHARA_MOVEMENT修改是为减少日版更新的工作量
-#DIM 場所番号記憶
+#DIM 位置编号记录
 #DIM LOOP_CHR
 #DIM WK
 ;冻结同行者
@@ -254,6 +254,6 @@ TRYCALL SECRET_CAMERA
 ;解除冻结同行者
 FOR LOCAL,0,CHARANUM
 	IF CFLAG:LOCAL:同行
-		CFLAG:LOCAL:当前位置 = 場所番号記憶
+		CFLAG:LOCAL:当前位置 = 位置编号记录
 	ENDIF
 	NEXT

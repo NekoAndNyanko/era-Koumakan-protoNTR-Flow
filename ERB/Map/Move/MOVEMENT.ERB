@@ -141,7 +141,7 @@ RETURN
 
 入浴フラグ = CFLAG:住人:風呂
 CFLAG:住人:風呂 += TIME_PROGRESS(TFLAG:300)
-IF 存在浴室(CFLAG:住人:当前位置)
+IF IsPlaceHasBathroom(CFLAG:住人:当前位置)
 	SIF 住人 == 0 && 入浴フラグ
 		PRINTFORMW %CALLNAME:MASTER%は風呂に浸かった
 	CFLAG:住人:風呂 = 0
@@ -215,7 +215,7 @@ ENDIF
 ;その場から動かない場合は移动処理をスキップ
 IF CFLAG:住人:当前位置 != 目標地点
 	IF (CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:住人:当前位置) == 2 || CFLAG:住人:同室) && !CFLAG:MASTER:睡眠
-		PRINTFORMW %CALLNAME:住人%从【%GETPLACENAME(CFLAG:住人:当前位置)%】向【%GETPLACENAME(目標地点)%】移动了
+		PRINTFORMW %CALLNAME:住人%从【%GetPlaceName(CFLAG:住人:当前位置)%】向【%GetPlaceName(目標地点)%】移动了
 	ENDIF
 	;起床時間内で寝間着を着ている場合は移动時に私服に返回
 	IF CFLAG:住人:寝間着着用
@@ -227,7 +227,7 @@ IF CFLAG:住人:当前位置 != 目標地点
 			CALL CLOTHES_Preset_NIGHTWEAR_S(住人)
 		ENDIF
 	ENDIF
-	;DEBUGPRINTFORML %CALLNAME:住人%:%GETPLACENAME(CFLAG:住人:当前位置)%→%GETPLACENAME(目標地点)%
+	;DEBUGPRINTFORML %CALLNAME:住人%:%GetPlaceName(CFLAG:住人:当前位置)%→%GetPlaceName(目標地点)%
 	IF 目標地点
 		;IF CFLAG:住人:当前位置 == FLAG:访问者当前位置
 		;	FLAG:訪問者の气氛 = 0
@@ -305,10 +305,10 @@ IF (CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:住人:当前位置) == 2 || CFLAG
 		ENDIF
 	ELSE
 		IF CFLAG:住人:衰弱 && TALENT:住人:恋慕 && CFLAG:MASTER:当前位置 == CFLAG:住人:当前位置
-			PRINTFORMW 将%CALLNAME:住人%从%GETPLACENAME(CFLAG:住人:当前位置)%搬回了%GETPLACENAME(CFLAG:住人:311)%
+			PRINTFORMW 将%CALLNAME:住人%从%GetPlaceName(CFLAG:住人:当前位置)%搬回了%GetPlaceName(CFLAG:住人:311)%
 			LOCAL = 3
 		ELSE
-			PRINTFORMW %CALLNAME:住人%从%GETPLACENAME(CFLAG:住人:当前位置)%回到了%GETPLACENAME(CFLAG:住人:311)%
+			PRINTFORMW %CALLNAME:住人%从%GetPlaceName(CFLAG:住人:当前位置)%回到了%GetPlaceName(CFLAG:住人:311)%
 			LOCAL = 0
 		ENDIF
 	ENDIF
@@ -370,13 +370,13 @@ RETURN 0
 SIF CFLAG:住人:うふふ
 	RETURN 0
 ;汚れ発覚による逃走処理
-IF CFLAG:住人:汚れ発覚 == 汚れ発覚_逃走 && 存在浴室(CFLAG:住人:当前位置) 
+IF CFLAG:住人:汚れ発覚 == 汚れ発覚_逃走 && IsPlaceHasBathroom(CFLAG:住人:当前位置) 
 	;お風呂に入ったら汚れ発覚による逃走終了
 	CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 ENDIF
 IF CFLAG:住人:汚れ発覚 == 汚れ発覚_逃走 && !CFLAG:住人:睡眠
 	LOCAL = 位置_红魔馆_大浴场
-	PRINTFORMW %CALLNAME:住人%从【%GETPLACENAME(CFLAG:住人:当前位置)%】向【%GETPLACENAME(LOCAL)%】移动了
+	PRINTFORMW %CALLNAME:住人%从【%GetPlaceName(CFLAG:住人:当前位置)%】向【%GetPlaceName(LOCAL)%】移动了
 	CFLAG:住人:汚れ発覚 = 汚れ発覚_なし
 	CFLAG:住人:同行 = 0
 	CFLAG:住人:当前位置 = LOCAL

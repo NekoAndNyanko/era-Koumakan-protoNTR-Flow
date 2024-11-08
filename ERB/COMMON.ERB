@@ -635,7 +635,7 @@ SELECTCASE キャラ
 		RETURNF "催眠者"
 	CASE 人物_訪問者
 		RETURNF NTR_NAME(0)
-	CASE IS < 人物_あなた
+	CASE IS < 人物_玩家
 		;不正な番号
 		RETURNF "見知らぬ誰か"
 	CASE IS < CHARANUM
@@ -659,7 +659,7 @@ SELECTCASE キャラ
 		RETURNF "催眠師先生"
 	CASE 人物_訪問者
 		RETURNF NTR_NAME(0)
-	CASE IS < 人物_あなた
+	CASE IS < 人物_玩家
 		;不正な番号
 		RETURNF "貴方"
 	CASE IS < CHARANUM

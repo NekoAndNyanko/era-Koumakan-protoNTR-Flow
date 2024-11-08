@@ -2,7 +2,7 @@
 #DIM 目标位置
 #DIM 位置
 #DIM 角色编号
-
+#DIM 遮挡物
 ;---------------------------------------
 ;位置选择
 ;---------------------------------------
@@ -10,7 +10,7 @@ DRAWLINE
 PRINTFORML 从这里大概可以看到……
 FOR 位置,0,MAXROOM()
 	SIF canPeeping(CFLAG:MASTER:当前位置, 位置)
-		PRINTFORML [{位置}] - %GETPLACENAME(位置)%
+		PRINTFORML [{位置}] - %GetPlaceName(位置)%
 NEXT
 PRINTL [0] - 还是算了吧
 
@@ -26,6 +26,11 @@ ENDIF
 IF !CAN_MOVE(CFLAG:MASTER:当前位置, 目标位置) 
 	GOTO 重新输入
 ENDIF
+
+;---------------------------------------
+;获取该房间的遮挡物
+;---------------------------------------
+遮挡物 = GET_PEEPING_ROOM_TYPE(目标位置)
 
 ;---------------------------------------
 ;调出口上

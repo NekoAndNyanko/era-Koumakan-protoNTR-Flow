@@ -96,7 +96,7 @@ FOR LOCAL,0,CHARANUM
 			TCVAR:LOCAL:イきそう = 0
 		ENDIF
 	ENDIF
-	IF 存在浴室(CFLAG:LOCAL:当前位置)
+	IF IsPlaceHasBathroom(CFLAG:LOCAL:当前位置)
 		EQUIP:LOCAL:0 = 0
 		IF CFLAG:LOCAL:うふふ || TCVAR:LOCAL:130 > 2
 			TEQUIP:(LOCAL):浴场PLAY = 1
@@ -672,7 +672,7 @@ IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:ARG
 	IF CFLAG:ARG:前ターン位置 == CFLAG:ARG:当前位置
 		CALL 自慰中断, ARG
 		IF CAN_MOVE(CFLAG:MASTER:前ターン位置, CFLAG:ARG:当前位置) == 2
-			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:当前位置)+"に居る"%
+			PRINTFORML %CALLNAME:ARG+"が"+GetPlaceName(CFLAG:ARG:当前位置)+"に居る"%
 			SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
 				PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
 			SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
@@ -681,7 +681,7 @@ IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:ARG
 				PRINTFORML %CALLNAME:ARG+"は服を着ていない…"%
 			CALL INFO_PrintPortrayal(ARG)
 		ELSE
-			PRINTFORML %CALLNAME:ARG+"が"+GETPLACENAME(CFLAG:ARG:当前位置)+"に居た"%
+			PRINTFORML %CALLNAME:ARG+"が"+GetPlaceName(CFLAG:ARG:当前位置)+"に居た"%
 			SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
 				PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
 			SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
@@ -694,7 +694,7 @@ IF !CFLAG:ARG:睡眠 && (!ARG:1 || CAN_MOVE(CFLAG:MASTER:当前位置, CFLAG:ARG
 		LOCAL:3 = 1
 		;さっきから居るのは分かってて相手が移动した場合は別の場所で表示が出る
 	ELSEIF CAN_MOVE(CFLAG:MASTER:前ターン位置, CFLAG:ARG:前ターン位置) < 2 && CFLAG:ARG:前ターン位置 != CFLAG:MASTER:前ターン位置
-		PRINTFORMW %CALLNAME:ARG%が%GETPLACENAME(CFLAG:ARG:当前位置)%に来た
+		PRINTFORMW %CALLNAME:ARG%が%GetPlaceName(CFLAG:ARG:当前位置)%に来た
 		SIF !TEQUIP:ARG:0 == 0 && TEQUIP:ARG:1 == 0
 			PRINTFORML %CALLNAME:ARG+"は半裸の上半身を晒け出している…"%
 		SIF TEQUIP:ARG:0 == 0 && !TEQUIP:ARG:1 == 0
@@ -740,10 +740,10 @@ ENDIF
 IF TIME > 1440
 	DAY ++
 	TIME -= 1440
-	CALL 日付変更
+	CALL 日期_日期变更
 	CALL 日間気温設定
 ENDIF
-PRINTFORM %日付_月(暦法月)%{暦法日}日[%TOSTR(DAY)+"日目]("+GET_DAY()+") "+TOSTR(TIME/60,"00")+"時"+TOSTR(TIME%60,"00")+"分"%
+PRINTFORM %日期_月份名称(日期_月数)%{日期_天数}日[%TOSTR(DAY)+"日目]("+GET_DAY()+") "+TOSTR(TIME/60,"00")+"時"+TOSTR(TIME%60,"00")+"分"%
 IF 6<=TIME/60 && TIME/60<=18
 	;06時から18時までは昼間
 	SETCOLOR 色設定_日時_昼間
@@ -773,10 +773,10 @@ RETURN
 ;当前位置情報を表示する
 ;@param ARG:0 キャラクターの番号
 @INFO_PrintCurrentPosition(ARG:0)
-TRYCCALLFORM %"GETPLACENAME_"+TOSTR(CFLAG:(ARG:0):当前位置)%, ARG:0
-	PRINTFORM %"当前位置:"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+"("+RESULTS:0+")  "%
+TRYCCALLFORM %"GetPlaceName_"+TOSTR(CFLAG:(ARG:0):当前位置)%, ARG:0
+	PRINTFORM %"当前位置:"+GetPlaceName(CFLAG:(ARG:0):当前位置)+"("+RESULTS:0+")  "%
 CATCH
-	PRINTFORM %"当前位置:"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+"  "%
+	PRINTFORM %"当前位置:"+GetPlaceName(CFLAG:(ARG:0):当前位置)+"  "%
 ENDCATCH
 IF FLAG:ゴミ表示OFF
 	;ゴミ表示OFF
@@ -810,7 +810,7 @@ ELSE
 	ENDSELECT
 	RESETCOLOR
 ENDIF
-;PRINTFORML %"当前位置:"+GETPLACENAME(CFLAG:(ARG:0):当前位置)+" "+LOCALS:0%
+;PRINTFORML %"当前位置:"+GetPlaceName(CFLAG:(ARG:0):当前位置)+" "+LOCALS:0%
 PRINTL
 IF FLAG:部屋のにおい_初期FLAG
 	CALL ROOM_SMELL
@@ -825,7 +825,7 @@ IF FLAG:部屋のにおい_初期FLAG
 		PRINTFORML %ROOM_SMELL_KINDS(LOCAL:10)%的气味
 	ELSE
 		IF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + ROOM_SMELL_WHOSE(LOCAL:10)) >= においの判別_詳細
-			IF ROOM_SMELL_WHOSE(LOCAL:10) == 人物_あなた
+			IF ROOM_SMELL_WHOSE(LOCAL:10) == 人物_玩家
 				PRINT 自己
 			ELSE
 				PRINTFORM %ROOM_SMELL_WHOSE_NAME(LOCAL:10)%
@@ -839,7 +839,7 @@ IF FLAG:部屋のにおい_初期FLAG
 				PRINT 有些微的
 			ENDIF
 			PRINTFORML %ROOM_SMELL_KINDS(LOCAL:10)%的气味
-		ELSEIF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + ROOM_SMELL_WHOSE(LOCAL:10)) >= においの判別_可能 || ROOM_SMELL_WHOSE(LOCAL:10) == 人物_あなた
+		ELSEIF CFLAG:MASTER:(キャラのにおいの嗅ぎ分け + ROOM_SMELL_WHOSE(LOCAL:10)) >= においの判別_可能 || ROOM_SMELL_WHOSE(LOCAL:10) == 人物_玩家
 			IF ROOM_SMELL_VALUE(LOCAL:10) >= 50
 				PRINT 有强烈的
 			ELSEIF ROOM_SMELL_VALUE(LOCAL:10) >= 20
@@ -847,7 +847,7 @@ IF FLAG:部屋のにおい_初期FLAG
 			ELSE
 				PRINT 有些微的
 			ENDIF
-			IF ROOM_SMELL_WHOSE(LOCAL:10) == 人物_あなた
+			IF ROOM_SMELL_WHOSE(LOCAL:10) == 人物_玩家
 				PRINT 自己
 			ELSE
 				PRINTFORM %ROOM_SMELL_WHOSE_NAME(LOCAL:10)%

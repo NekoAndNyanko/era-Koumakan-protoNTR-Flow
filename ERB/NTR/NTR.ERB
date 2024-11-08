@@ -391,9 +391,9 @@ RETURNF RET_CNT
 @DEBUGPRINT_あの人は何処に？()
 #DIM LOOP_CHR
 FOR LOOP_CHR,0,CHARANUM
-	DEBUGPRINTFORML %CALLNAME:LOOP_CHR%は、{CFLAG:LOOP_CHR:当前位置}：【%GETPLACENAME(CFLAG:LOOP_CHR:当前位置)%】にいる。
+	DEBUGPRINTFORML %CALLNAME:LOOP_CHR%は、{CFLAG:LOOP_CHR:当前位置}：【%GetPlaceName(CFLAG:LOOP_CHR:当前位置)%】にいる。
 NEXT
-DEBUGPRINTFORML %NTR_NAME(0)%は、{FLAG:访问者当前位置}：【%GETPLACENAME(FLAG:访问者当前位置)%】にいる。
+DEBUGPRINTFORML %NTR_NAME(0)%は、{FLAG:访问者当前位置}：【%GetPlaceName(FLAG:访问者当前位置)%】にいる。
 RETURN
 
 ;-------------------------------------------------------------------------------
@@ -459,7 +459,7 @@ IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && 密室度 >= 3 && IS_CAN_L
 		IF !isLocked(CFLAG:奴隷:当前位置)
 			IF tryLock(奴隷, CFLAG:奴隷:当前位置)
 				IF CAN_MOVE(CFLAG:MASTER:当前位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
-					PRINTFORML %CALLNAME:奴隷 + "は" + NTR_NAME(0) + "との一時を邪魔されないように、【" + NTR_GETPLACENAME(FLAG:访问者当前位置) + "】の扉に閂をかけようとしたが、"%
+					PRINTFORML %CALLNAME:奴隷 + "は" + NTR_NAME(0) + "との一時を邪魔されないように、【" + NTR_GetPlaceName(FLAG:访问者当前位置) + "】の扉に閂をかけようとしたが、"%
 					PRINTFORML %MSG_RE_LOVER(奴隷) + "が他の男に抱かれて喜ぶ" + CALLNAME:MASTER + "のためにと、閂は外して普通の鍵をかけておいた。"%
 				ENDIF
 			ENDIF
@@ -469,13 +469,13 @@ IF CFLAG:奴隷:屈服度 > CFLAG:奴隷:好感度 && 密室度 >= 3 && IS_CAN_L
 			IF RAND(CFLAG:奴隷:屈服度) > CFLAG:奴隷:好感度
 				IF tryLockBolt(奴隷, CFLAG:奴隷:当前位置)
 					IF CAN_MOVE(CFLAG:MASTER:当前位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
-						PRINTFORML 为了让与%NTR_NAME(0)%共处的时光不被打搅，%CALLNAME:奴隷%反锁了【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】的门。
+						PRINTFORML 为了让与%NTR_NAME(0)%共处的时光不被打搅，%CALLNAME:奴隷%反锁了【%NTR_GetPlaceName(FLAG:访问者当前位置)%】的门。
 					ENDIF
 				ENDIF
 			ELSE
 				IF tryLock(奴隷, CFLAG:奴隷:当前位置) 
 					IF CAN_MOVE(CFLAG:MASTER:当前位置, FLAG:访问者当前位置) == 2 || IS_NTR_SHOW_ALL()
-						PRINTFORML 为了让与%NTR_NAME(0)%共处的时光不被打搅，%CALLNAME:奴隷%锁上了【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】的门。
+						PRINTFORML 为了让与%NTR_NAME(0)%共处的时光不被打搅，%CALLNAME:奴隷%锁上了【%NTR_GetPlaceName(FLAG:访问者当前位置)%】的门。
 					ENDIF
 				ENDIF
 			ENDIF
@@ -602,7 +602,7 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) && 奴隷 != 7 && RAND:4 == 0
 	FLAG:訪問者同行フラグ = 0
 	誘いフラグ = 1
 	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
-		PRINTFORMW %CALLNAME:奴隷%好像邀请了%NTR_NAME(0)%一起去【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】
+		PRINTFORMW %CALLNAME:奴隷%好像邀请了%NTR_NAME(0)%一起去【%NTR_GetPlaceName(FLAG:访问者当前位置)%】
 	ENDIF
 	;寝取られ寸前、寝取られそうだと私室に誘う/ここぁは例外(メッセージが異なるため)
 ELSEIF (NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)) && 奴隷 != 7 && RAND:3 > 0
@@ -612,7 +612,7 @@ ELSEIF (NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(�
 		FLAG:訪問者同行フラグ = 0
 		誘いフラグ = 0
 		IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
-			PRINTFORMW %NTR_NAME(0)%好像邀请了%CALLNAME:奴隷%一起去【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】
+			PRINTFORMW %NTR_NAME(0)%好像邀请了%CALLNAME:奴隷%一起去【%NTR_GetPlaceName(FLAG:访问者当前位置)%】
 			PRINTFORMW %CALLNAME:奴隷%十分乖巧地服从了%NTR_NAME(0)%的指示。
 		ENDIF
 	ELSE
@@ -621,9 +621,9 @@ ELSEIF (NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR_CHK_FAVORABLY(�
 		誘いフラグ = 1
 		IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
 			IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || TALENT:奴隷:浮気公認
-				PRINTFORMW %CALLNAME:奴隷%好像邀请了%NTR_NAME(0)%一起去【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】
+				PRINTFORMW %CALLNAME:奴隷%好像邀请了%NTR_NAME(0)%一起去【%NTR_GetPlaceName(FLAG:访问者当前位置)%】
 			ELSE
-				PRINTFORMW %CALLNAME:奴隷%好像偷偷邀请了%NTR_NAME(0)%一起去【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】
+				PRINTFORMW %CALLNAME:奴隷%好像偷偷邀请了%NTR_NAME(0)%一起去【%NTR_GetPlaceName(FLAG:访问者当前位置)%】
 			ENDIF
 		ENDIF
 	ENDIF
@@ -638,7 +638,7 @@ ELSE
 		FLAG:訪問者同行フラグ = 0
 	ENDIF
 	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
-		PRINTFORMW %NTR_NAME(0)%似乎将%CALLNAME:奴隷%带到了【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】
+		PRINTFORMW %NTR_NAME(0)%似乎将%CALLNAME:奴隷%带到了【%NTR_GetPlaceName(FLAG:访问者当前位置)%】
 	ENDIF
 ENDIF
 IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)

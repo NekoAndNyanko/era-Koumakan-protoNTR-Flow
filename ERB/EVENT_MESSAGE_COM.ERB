@@ -1834,7 +1834,7 @@ ENDIF
 ;相手に主導権
 IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 	;対面立位
-	IF !存在床铺(CFLAG:PLAYER:当前位置)
+	IF !IsPlaceHasBed(CFLAG:PLAYER:当前位置)
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
 			IF NOWEX:TARGET:射精
@@ -1951,7 +1951,7 @@ IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之�
 	ENDIF
 ELSE
 	;対面立位
-	IF !存在床铺(CFLAG:PLAYER:当前位置)
+	IF !IsPlaceHasBed(CFLAG:PLAYER:当前位置)
 		;抜かず
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
@@ -2028,7 +2028,7 @@ ELSE
 			ENDIF
 		ELSE
 			PRINTFORM %CALLNAME:PLAYER%は
-			IF 存在床铺(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
+			IF IsPlaceHasBed(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
 				PRINT 坐在床上
 			ELSE
 				PRINT 坐在地上
@@ -2076,7 +2076,7 @@ ENDIF
 ;相手に主導権
 IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之气 >= 3 && TALENT:施虐狂)
 	;背面立位
-	IF !存在床铺(CFLAG:PLAYER:当前位置)
+	IF !IsPlaceHasBed(CFLAG:PLAYER:当前位置)
 		;抜かずに
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
@@ -2208,7 +2208,7 @@ IF (ABL:PLAYER:抖Ｍ之气 >= 2 && TALENT:PLAYER:受虐狂) || (ABL:抖Ｓ之�
 	ENDIF
 ELSE
 	;背面立位
-	IF !存在床铺(CFLAG:PLAYER:当前位置)
+	IF !IsPlaceHasBed(CFLAG:PLAYER:当前位置)
 		;抜かず
 		IF SELECTCOM == PREVCOM && ASSIPLAY == TFLAG:150
 			;対象が射精
@@ -2296,7 +2296,7 @@ ELSE
 
 			SIF TEQUIP:PLAYER:0 & 2
 				PRINTFORM %SHOW_BOTTOM(PLAYER,2)%拉开了、
-			IF 存在床铺(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
+			IF IsPlaceHasBed(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
 				PRINT 四肢向下趴在床上
 			ELSE
 				PRINT 四肢着地趴在地上
@@ -2423,7 +2423,7 @@ ELSE
 		ENDIF
 	ELSE
 		PRINTFORM %CALLNAME:PLAYER%将
-		IF 存在床铺(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
+		IF IsPlaceHasBed(CFLAG:PLAYER:当前位置) && CFLAG:PLAYER:当前位置 != 18
 			PRINTFORML %CALLNAME:TARGET%横放在床上跨坐了上去、
 		ELSE
 			PRINTFORML %CALLNAME:TARGET%横放在地上跨坐了上去、
@@ -3489,7 +3489,7 @@ ENDIF
 ;302,身体接触
 ;-------------------------------------------------
 @MESSAGE_COM302
-IF 存在浴室(CFLAG:MASTER:当前位置)
+IF IsPlaceHasBathroom(CFLAG:MASTER:当前位置)
 	PRINTFORML %CALLNAME:PLAYER%は%CALLNAME:TARGET%的背上抚摸
 ELSE
 	PRINTFORML %CALLNAME:PLAYER%谋求与%CALLNAME:TARGET%的亲密接触
@@ -3845,7 +3845,7 @@ PRINTFORML %CALLNAME:PLAYER%任由%CALLNAME:TARGET%摆布…
 ;-------------------------------------------------
 @MESSAGE_COM403
 #DIM LOOP_CHR
-IF 存在浴室(CFLAG:MASTER:当前位置)
+IF IsPlaceHasBathroom(CFLAG:MASTER:当前位置)
 	PRINTFORML %CALLNAME:PLAYER%在浴场很舒适
 ELSEIF REST_IsRestroom(CFLAG:MASTER:当前位置)
 	PRINTFORML %CALLNAME:PLAYER%今天事办完了

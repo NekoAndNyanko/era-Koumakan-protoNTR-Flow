@@ -95,7 +95,7 @@ IF FLAG:ハーレム時カウンタ == 1
 	;ハーレム状態の時の施錠処理を外す
 	;IF !FLAG:(300 + FLAG:访问者当前位置)
 	;	IF NTR_CHK_VISIBLE(FLAG:访问者当前位置)
-	;		PRINTFORMW %NTR_NAME(0)%のハーレム状態のため【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】に入りづらくなった。
+	;		PRINTFORMW %NTR_NAME(0)%のハーレム状態のため【%NTR_GetPlaceName(FLAG:访问者当前位置)%】に入りづらくなった。
 	;	ENDIF
 	;ENDIF
 	;FLAG:(300 + FLAG:访问者当前位置) = 1

@@ -47,7 +47,7 @@ FLAG:料理 = 0
 IF TIME > CFLAG:MASTER:通常起床時間
 	DAY ++
 	TIME -= 1440
-	CALL 日付変更
+	CALL 日期_日期变更
 	CALL 日間気温設定
 ENDIF
 CALL 天候状態
@@ -108,7 +108,7 @@ ENDIF
 IF 霊夢移动フラグ == 0
 	霊夢移动フラグ = MAX(10 - ( CFLAG:人物_灵梦:好感度 > 0 ? CFLAG:人物_灵梦:好感度 / 300 # 0) - ( CFLAG:人物_灵梦:屈服度 > 0 ? CFLAG:人物_灵梦:屈服度 / 300 # 0), 0)
 	;元の場所へ戻す
-	SIF CFLAG:人物_灵梦:当前位置 <= 場所番号最大値
+	SIF CFLAG:人物_灵梦:当前位置 <= 位置编号最大值
 		CFLAG:人物_灵梦:当前位置 = CFLAG:人物_灵梦:開始位置
 	;PRINTFORMW テスト 霊夢移动OFF {霊夢移动フラグ}
 ELSE

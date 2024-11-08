@@ -81,9 +81,9 @@ ENDSELECT
 #DIM 相手
 
 IF TALENT:奴隷:处女 == 1
-	CFLAG:奴隷:处女丧失年_V = 年份记录
-	CFLAG:奴隷:处女丧失月_V = 暦法月
-	CFLAG:奴隷:处女丧失日_V = 暦法日
+	CFLAG:奴隷:处女丧失年_V = 日期_年数
+	CFLAG:奴隷:处女丧失月_V = 日期_月数
+	CFLAG:奴隷:处女丧失日_V = 日期_天数
 	CFLAG:奴隷:处女丧失对象_V = 相手
 	;純正处女だった場合喪失を記録
 	IF TEQUIP:奴隷:振动棒
@@ -202,9 +202,9 @@ ENDIF
 #DIM 相手
 SIF CFLAG:奴隷:处女丧失日_A
 	RETURN
-CFLAG:奴隷:处女丧失年_A = 年份记录
-CFLAG:奴隷:处女丧失月_A = 暦法月
-CFLAG:奴隷:处女丧失日_A = 暦法日
+CFLAG:奴隷:处女丧失年_A = 日期_年数
+CFLAG:奴隷:处女丧失月_A = 日期_月数
+CFLAG:奴隷:处女丧失日_A = 日期_天数
 CFLAG:奴隷:处女丧失对象_A = 相手
 ;菊花处女の記録
 ;IF EXP_UP(21,奴隷)||EXP_UP(34,奴隷)||EXP_UP(94,奴隷)||EXP_UP(103,奴隷)
@@ -218,17 +218,17 @@ TRYCALL memorial_a_append(奴隷, 相手)
 IF isPenis
 	SIF CFLAG:奴隷:处女丧失日_M
 		RETURN
-	CFLAG:奴隷:处女丧失年_M = 年份记录
-	CFLAG:奴隷:处女丧失月_M = 暦法月
-	CFLAG:奴隷:处女丧失日_M = 暦法日
+	CFLAG:奴隷:处女丧失年_M = 日期_年数
+	CFLAG:奴隷:处女丧失月_M = 日期_月数
+	CFLAG:奴隷:处女丧失日_M = 日期_天数
 	CFLAG:奴隷:处女丧失对象_M = 相手
 ELSE
 	SIF CFLAG:奴隷:初吻丧失日
 		RETURN
-	CFLAG:奴隷:初吻丧失年 = 年份记录
-	CFLAG:奴隷:初吻丧失月 = 暦法月
-	CFLAG:奴隷:初吻丧失日 = 暦法日
-	CFLAG:奴隷:初吻对象 = 相手
+	CFLAG:奴隷:初吻丧失年 = 日期_年数
+	CFLAG:奴隷:初吻丧失月 = 日期_月数
+	CFLAG:奴隷:初吻丧失日 = 日期_天数
+	CFLAG:奴隷:初吻丧失对象 = 相手
 ENDIF
 ;ファーストキスの記録
 ;IF EXP_UP(27,奴隷) || (EXP_UP(25,奴隷)&&是肉棒)
@@ -254,8 +254,8 @@ IF 奴隷 == 相手编号
 	RETURN
 ENDIF
 IF CSTR:奴隷:M处女丧失记录 == ""
-	日時 = 第{年份记录}年 %日付_月(暦法月)%{暦法日}日 %天候(天候値)%%" "%
-	場所 = %"在"+GETPLACENAME(CFLAG:奴隷:当前位置)+"，"%
+	日時 = 第{日期_年数}年 %日期_月份名称(日期_月数)%{日期_天数}日 %天候(天候値)%%" "%
+	場所 = %"在"+GetPlaceName(CFLAG:奴隷:当前位置)+"，"%
 	IF CFLAG:奴隷:睡眠
 		場所 += "在睡梦中"
 	ENDIF
@@ -287,9 +287,9 @@ IF CSTR:奴隷:M处女丧失记录 == ""
 						内容 = %"半推半就地吸吮了"%
 					ENDIF
 				CASE IS == 人物_訪問者
-					IF TALENT:奴隷:NTR || (奴隷 == 人物_あなた && (FLAG:1840 >= 11 && FLAG:1840 <= 15))
+					IF TALENT:奴隷:NTR || (奴隷 == 人物_玩家 && (FLAG:1840 >= 11 && FLAG:1840 <= 15))
 						内容 = %"满怀爱意地吸吮了"%
-					ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || (奴隷 == 人物_あなた && FLAG:1840 == 10)
+					ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || (奴隷 == 人物_玩家 && FLAG:1840 == 10)
 						内容 = %"满怀爱意地吸吮了"%
 					ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 						内容 = %"主动地吸吮了"%

@@ -63,7 +63,7 @@ SIF LOCAL:1
 @CAMERA_SPOT
 IF TFLAG:相机设置場所 != 0
 	PRINTFORML 
-	PRINTFORML 現在相机を【%GETPLACENAME(TFLAG:相机设置場所)%】に設置しています
+	PRINTFORML 現在相机を【%GetPlaceName(TFLAG:相机设置場所)%】に設置しています
 	PRINTFORML (摄影開始から{TIME_PROGRESS(TFLAG:相机设置時刻)}分経過)
 ENDIF
 RETURN 1
@@ -108,7 +108,7 @@ FOR LOCAL:1, 0, LOCAL
 	;摄影場所取得
 	LOCAL:7 = SLOTPLACE(LOCALS)
 	IF LOCAL:5 == 0
-		PRINTFORM %GETPLACENAME(LOCAL:7)%に仕掛けた相机には
+		PRINTFORM %GetPlaceName(LOCAL:7)%に仕掛けた相机には
 	ELSE
 		PRINTFORM と
 	ENDIF
@@ -251,7 +251,7 @@ SELECTCASE LOCAL:3
 		;補正なし
 ENDSELECT
 ;お風呂補正、個人宅に二度補正がかからないように
-IF 存在浴室(LOCAL:3)
+IF IsPlaceHasBathroom(LOCAL:3)
 	LOCAL:2 += 80
 	;私室補正
 ELSEIF CFLAG:LOCAL:開始位置 == LOCAL:3
@@ -279,7 +279,7 @@ SIF GLOBAL_COMABLE(450)
 SIF ITEM:35 == 0
 	RETURN 0
 ;館の外では無理
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 ;既に設置中は無理
 SIF TFLAG:相机设置場所 != 0
@@ -305,7 +305,7 @@ SIF GLOBAL_COMABLE(451)
 SIF ITEM:35 == 0
 	RETURN 0
 ;館の外では無理
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 ;既に設置していなければ無利
 SIF TFLAG:相机设置場所 == 0
@@ -352,7 +352,7 @@ RETURN 1
 @MESSAGE_COM450
 ;描写
 DRAWLINE
-PRINTFORMW 小型相机を%GETPLACENAME(TFLAG:相机设置場所)%に設置しました
+PRINTFORMW 小型相机を%GetPlaceName(TFLAG:相机设置場所)%に設置しました
 PRINTFORML 
 DRAWLINE
 

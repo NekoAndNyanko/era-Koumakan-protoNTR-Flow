@@ -13,7 +13,7 @@ SIF !TFLAG:100
 ;一括管理
 SIF GLOBAL_COMABLE(400)
 	RETURN RESULT
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 SIF CFLAG:うふふ == 2
 	RETURN 0
@@ -73,7 +73,7 @@ SIF GLOBAL_COMABLE(403)
 ;訪問者宅での休息は禁止
 SIF CFLAG:MASTER:当前位置 == 位置_訪問者宅
 	RETURN 0
-SIF TIME_PROGRESS(CFLAG:MASTER:起床時間) >= 要睡眠経過時間 && 存在浴室(CFLAG:MASTER:当前位置)
+SIF TIME_PROGRESS(CFLAG:MASTER:起床時間) >= 要睡眠経過時間 && IsPlaceHasBathroom(CFLAG:MASTER:当前位置)
 	RETURN 0
 SIF CFLAG:うふふ == 2
 	RETURN 0
@@ -85,7 +85,7 @@ RETURN 1
 ;移动実行判定
 SIF !TFLAG:100
 	RETURN 0
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 ;一括管理
 SIF GLOBAL_COMABLE(404)
@@ -100,7 +100,7 @@ RETURN 1
 ;移动実行判定
 SIF !TFLAG:100
 	RETURN 0
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 ;一括管理
 SIF GLOBAL_COMABLE(405)
@@ -118,7 +118,7 @@ SIF !TFLAG:100
 ;一括管理
 SIF GLOBAL_COMABLE(410)
 	RETURN RESULT
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 ;汚れてないとダメ
 SIF FLAG:(100 + CFLAG:MASTER:当前位置) < 100
@@ -178,7 +178,7 @@ SIF !TFLAG:100
 SIF GLOBAL_COMABLE(413)
 	RETURN RESULT
 ;厨房
-SIF !存在厨房(CFLAG:MASTER:当前位置)
+SIF !IsPlaceHasKitchen(CFLAG:MASTER:当前位置)
 	RETURN 0
 ;吃饭をしたフラグ
 ;SIF TCVAR:PLAYER:304
@@ -267,11 +267,11 @@ SIF GLOBAL_COMABLE(416)
 	RETURN RESULT
 ;NTRでない場合紅魔館内部じゃないとダメ
 IF !TALENT:MASTER:NTR
-	SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+	SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 		RETURN 0
 	;NTRの場合訪問者宅でならOK
 ELSE
-	IF CFLAG:MASTER:当前位置 > 場所番号最大値
+	IF CFLAG:MASTER:当前位置 > 位置编号最大值
 		SIF CFLAG:MASTER:当前位置 != 位置_訪問者宅
 			RETURN 0
 	ENDIF
@@ -303,7 +303,7 @@ SIF GLOBAL_COMABLE(417)
 ;訪問者と同じ場所のみ
 SIF CFLAG:MASTER:当前位置 != FLAG:访问者当前位置
 	RETURN 0
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 SIF CFLAG:うふふ == 2
 	RETURN 0
@@ -334,7 +334,7 @@ SIF !TFLAG:100
 ;一括管理
 SIF GLOBAL_COMABLE(446)
 	RETURN RESULT
-SIF CFLAG:MASTER:当前位置 > 場所番号最大値
+SIF CFLAG:MASTER:当前位置 > 位置编号最大值
 	RETURN 0
 SIF CFLAG:うふふ == 2
 	RETURN 0

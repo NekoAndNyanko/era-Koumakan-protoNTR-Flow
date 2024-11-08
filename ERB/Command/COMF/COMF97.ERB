@@ -9,7 +9,7 @@ SIF RESULT
 
 
 ;ベッドがないと立位に
-SIF !存在床铺(CFLAG:PLAYER:当前位置)
+SIF !IsPlaceHasBed(CFLAG:PLAYER:当前位置)
 	TFLAG:193 = 1
 ;-------------------------------------------------
 ;COM別FLAGの設定
@@ -86,7 +86,7 @@ ENDIF
 SIF !ASSIPLAY
 	EXP:爱情经验 += TALENT:恋慕
 
-IF !存在床铺(CFLAG:PLAYER:当前位置)
+IF !IsPlaceHasBed(CFLAG:PLAYER:当前位置)
 	STR:0 = 対面立位させる
 ELSE
 	STR:0 = 正常位させる
@@ -102,7 +102,7 @@ RETURN 1
 ;绳で縛られている場合は無視（绳が無い時のみ実行判定を行う）
 IF !TEQUIP:绳
 	SKIPDISP ARG
-	IF !存在床铺(CFLAG:PLAYER:当前位置)
+	IF !IsPlaceHasBed(CFLAG:PLAYER:当前位置)
 		PRINTL 対面立位させる
 	ELSE
 		PRINTL 正常位させる

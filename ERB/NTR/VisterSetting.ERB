@@ -68,7 +68,7 @@ IF FLAG:訪問者の気になる場所 == 0
 ELSE
 	SETCOLOR 色設定_設定_肯定的
 	IF FLAG:ランダム_訪問者の気になる場所 == 0
-		PRINTFORML  %GETPLACENAME(FLAG:訪問者の気になる場所)%
+		PRINTFORML  %GetPlaceName(FLAG:訪問者の気になる場所)%
 	ELSE
 		PRINTFORML  随机
 	ENDIF
@@ -95,7 +95,7 @@ IF FLAG:訪問者のお気に入りの場所 == 0
 ELSE
 	SETCOLOR 色設定_設定_肯定的
 	IF FLAG:ランダム_訪問者のお気に入りの場所 == 0
-		PRINTFORML  %GETPLACENAME(FLAG:訪問者のお気に入りの場所)%
+		PRINTFORML  %GetPlaceName(FLAG:訪問者のお気に入りの場所)%
 	ELSE
 		PRINTFORML  随机
 	ENDIF
@@ -229,7 +229,7 @@ ELSEIF RESULT == 10
 	PRINTL 少し気になり足が向いてしまう場所を選択してください
 	PRINTFORML （%CALLNAME:MASTER%がお気に入りのキャラになっている場合は機能しません）
 	FOR LOCAL, 1, MAXROOM()
-		PRINTFORML [{LOCAL, 2}]%GETPLACENAME(LOCAL)%
+		PRINTFORML [{LOCAL, 2}]%GetPlaceName(LOCAL)%
 	NEXT
 	;050番は流石に使わないと思うので使わせてもらいます
 	PRINTL [998] 随机
@@ -240,7 +240,7 @@ ELSEIF RESULT == 10
 		FLAG:訪問者の気になる場所 = RESULT
 		;手動で選んだので随机表示もクリア
 		FLAG:ランダム_訪問者の気になる場所 = 0
-		PRINTFORMW %GETPLACENAME(RESULT)%を%NTR_NAME(0)%の気になる場所に設定しました
+		PRINTFORMW %GetPlaceName(RESULT)%を%NTR_NAME(0)%の気になる場所に設定しました
 		PRINTL 
 	ELSEIF RESULT == 998
 		FLAG:訪問者の気になる場所 = RAND:MAXROOM()
@@ -256,7 +256,7 @@ ELSEIF RESULT == 10
 ELSEIF RESULT == 12
 	PRINTL 选择喜欢与对象一起去的地方
 	FOR LOCAL, 1, MAXROOM()
-		PRINTFORML [{LOCAL, 2}]%GETPLACENAME(LOCAL)%
+		PRINTFORML [{LOCAL, 2}]%GetPlaceName(LOCAL)%
 	NEXT
 	;050番は流石に使わないと思うので使わせてもらいます
 	PRINTL [998] 随机
@@ -267,7 +267,7 @@ ELSEIF RESULT == 12
 		FLAG:訪問者のお気に入りの場所 = RESULT
 		;手動で選んだので随机表示もクリア
 		FLAG:ランダム_訪問者のお気に入りの場所 = 0
-		PRINTFORMW %GETPLACENAME(RESULT)%をお気に入りの場所に設定しました
+		PRINTFORMW %GetPlaceName(RESULT)%をお気に入りの場所に設定しました
 		PRINTL 
 	ELSEIF RESULT == 998
 		FLAG:訪問者のお気に入りの場所 = RAND:MAXROOM()

@@ -3,9 +3,9 @@
 #DIM nowPos
 #DIM targetPos
 
-SIF nowPos > 場所番号最大値 || nowPos <= 0
+SIF nowPos > 位置编号最大值 || nowPos <= 0
 	RETURNF -1
-SIF targetPos > 場所番号最大値 || targetPos <= 0
+SIF targetPos > 位置编号最大值 || targetPos <= 0
 	RETURNF -1
 IF nowPos == targetpos
 	RETURNF nowPos

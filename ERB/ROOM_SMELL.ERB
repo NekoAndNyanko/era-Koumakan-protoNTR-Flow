@@ -40,7 +40,7 @@ RETURN 0
 FLAG:(LOCAL:1) = TIME
 
 ;各部屋の汚れ具合によるにおいを上書き及び初期化
-FOR LOOP_ROOM,1,場所番号最大値 + 1
+FOR LOOP_ROOM,1,位置编号最大值 + 1
 	SELECTCASE FLAG:(100 + LOOP_ROOM)
 			;最高 ～ やや高
 		CASE IS < 1000
@@ -63,7 +63,7 @@ FOR LOOP_ROOM,1,場所番号最大値 + 1
 			FLAG:(LOCAL:0 + LOOP_ROOM) = 04500001
 			FLAG:(LOCAL:1 + LOOP_ROOM) = 0
 	ENDSELECT
-	;PRINTFORML 朝の部屋汚し処理：%GETPLACENAME(LOOP_ROOM)%, 部屋番号{LOOP_ROOM}, 汚れ具合{FLAG:(100+LOOP_ROOM)}, {FLAG:(LOCAL:0+LOOP_ROOM)}
+	;PRINTFORML 朝の部屋汚し処理：%GetPlaceName(LOOP_ROOM)%, 部屋番号{LOOP_ROOM}, 汚れ具合{FLAG:(100+LOOP_ROOM)}, {FLAG:(LOCAL:0+LOOP_ROOM)}
 NEXT
 
 ;各キャラの体臭を日毎に増し、各部屋に追加. さらに他人のにおいを初期化
@@ -131,7 +131,7 @@ RETURN 0
 
 ;風呂に入るとにおいが消える
 FOR LOOP_CHARA, 0, CHARANUM
-	IF 存在浴室(CFLAG:LOOP_CHARA:当前位置)
+	IF IsPlaceHasBathroom(CFLAG:LOOP_CHARA:当前位置)
 		CFLAG:LOOP_CHARA:角色的气味_初期CFLAG = 1
 		CFLAG:LOOP_CHARA:角色的气味_自己的气味 = 0
 		CFLAG:LOOP_CHARA:角色的气味_膣内精液の主 = -1
@@ -151,28 +151,28 @@ FOR LOOP_CHARA, 0, CHARANUM
 	;カウンターセクハラ処理
 	;抱擁など体をくっつける系はにおいをつける
 	IF (TCVAR:LOOP_CHARA >= CNT_キス && TCVAR:LOOP_CHARA <= CNT_対面抱擁) || TCVAR:LOOP_CHARA == CNT_胸を揉む || (TCVAR:LOOP_CHARA >= CNT_胸爱抚 && TCVAR:LOOP_CHARA <= CNT_ディープキス) || (TCVAR:LOOP_CHARA >= CNT_ぱふぱふ && TCVAR:LOOP_CHARA <= CNT_乳合わせ)
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, LOOP_CHARA, ROOM_SMELL_VALUE(CFLAG:LOOP_CHARA:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:LOOP_CHARA:角色的气味_自己的气味))
-		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_あなた, ROOM_SMELL_VALUE(CFLAG:人物_あなた:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_あなた:角色的气味_自己的气味))
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, LOOP_CHARA, ROOM_SMELL_VALUE(CFLAG:LOOP_CHARA:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:LOOP_CHARA:角色的气味_自己的气味))
+		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_玩家, ROOM_SMELL_VALUE(CFLAG:人物_玩家:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_玩家:角色的气味_自己的气味))
 		;股間に触れたりするものもにおいをつける(においの移り先があなた→住人)
 	ELSEIF TCVAR:LOOP_CHARA == CNT_股間をまさぐる || (TCVAR:LOOP_CHARA >= CNT_手淫 && TCVAR:LOOP_CHARA <= CNT_指挿入)
 		LOCAL:11 = 0
 		LOCAL:12 = 0
-		IF PALAM:人物_あなた:润滑 > PALAMLV:3 && HAS_VAGINA(人物_あなた)
+		IF PALAM:人物_玩家:润滑 > PALAMLV:3 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_ぐっしょり
-		ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(人物_あなた)
+		ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_しっとり
 		ENDIF
-		IF HAS_PENIS(人物_あなた)
-			IF GETBIT(STAIN:人物_あなた:部位_Ｐ, 汚れB_精液)
-				IF MAXBASE:人物_あなた:精力 > BASE:人物_あなた:精力
+		IF HAS_PENIS(人物_玩家)
+			IF GETBIT(STAIN:人物_玩家:部位_Ｐ, 汚れB_精液)
+				IF MAXBASE:人物_玩家:精力 > BASE:人物_玩家:精力
 					SETBIT LOCAL:12, 气味类型B_精液
 					LOCAL:11 = においの強さ_精液_少量
 				ENDIF
 			ENDIF
 		ENDIF
-		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_あなた, LOCAL:11, LOCAL:12)
+		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_玩家, LOCAL:11, LOCAL:12)
 		;股間に触れたりするものもにおいをつける(においの移り先が住人→あなた)
 	ELSEIF (TCVAR:LOOP_CHARA >= CNT_强制舔阴 && TCVAR:LOOP_CHARA <= CNT_舔肛侍奉) || TCVAR:LOOP_CHARA == CNT_タワシ洗い
 		LOCAL:11 = 0
@@ -192,31 +192,31 @@ FOR LOOP_CHARA, 0, CHARANUM
 				ENDIF
 			ENDIF
 		ENDIF
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, LOOP_CHARA, LOCAL:11, LOCAL:12)
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, LOOP_CHARA, LOCAL:11, LOCAL:12)
 		;セックス系(お互いににおいが移る)
 	ELSEIF (TCVAR:LOOP_CHARA >= CNT_正常位挿入される && TCVAR:LOOP_CHARA <= CNT_背面座位A挿入される) || TCVAR:LOOP_CHARA == CNT_骑乘位逆强奸
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, LOOP_CHARA, ROOM_SMELL_VALUE(CFLAG:LOOP_CHARA:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:LOOP_CHARA:角色的气味_自己的气味))
-		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_あなた, ROOM_SMELL_VALUE(CFLAG:人物_あなた:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_あなた:角色的气味_自己的气味))
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, LOOP_CHARA, ROOM_SMELL_VALUE(CFLAG:LOOP_CHARA:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:LOOP_CHARA:角色的气味_自己的气味))
+		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_玩家, ROOM_SMELL_VALUE(CFLAG:人物_玩家:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_玩家:角色的气味_自己的气味))
 
 		LOCAL:11 = 0
 		LOCAL:12 = 0
-		IF PALAM:人物_あなた:润滑 > PALAMLV:3 && HAS_VAGINA(人物_あなた)
+		IF PALAM:人物_玩家:润滑 > PALAMLV:3 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_ぐっしょり
-		ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(人物_あなた)
+		ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_しっとり
 		ENDIF
-		IF HAS_PENIS(人物_あなた)
-			IF GETBIT(STAIN:人物_あなた:部位_Ｐ, 汚れB_精液)
-				IF MAXBASE:人物_あなた:精力 > BASE:人物_あなた:精力
+		IF HAS_PENIS(人物_玩家)
+			IF GETBIT(STAIN:人物_玩家:部位_Ｐ, 汚れB_精液)
+				IF MAXBASE:人物_玩家:精力 > BASE:人物_玩家:精力
 					SETBIT LOCAL:12, 气味类型B_精液
 					SIF LOCAL:11 < においの強さ_精液_少量
 						LOCAL:11 = においの強さ_精液_少量
 				ENDIF
 			ENDIF
 		ENDIF
-		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_あなた, LOCAL:11, LOCAL:12)
+		CALL ROOM_SMELL_CHARA_SUB(LOOP_CHARA, 人物_玩家, LOCAL:11, LOCAL:12)
 
 		LOCAL:11 = 0
 		LOCAL:12 = 0
@@ -236,7 +236,7 @@ FOR LOOP_CHARA, 0, CHARANUM
 				ENDIF
 			ENDIF
 		ENDIF
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, LOOP_CHARA, LOCAL:11, LOCAL:12)
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, LOOP_CHARA, LOCAL:11, LOCAL:12)
 	ENDIF
 
 	;住人同士交流処理　処理は上に準拠
@@ -259,7 +259,7 @@ FOR LOOP_CHARA, 0, CHARANUM
 			IF PALAM:受け側:润滑 > PALAMLV:3 && HAS_VAGINA(受け側)
 				SETBIT LOCAL:12, 气味类型B_愛液
 				LOCAL:11 = においの強さ_愛液_ぐっしょり
-			ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(受け側)
+			ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(受け側)
 				SETBIT LOCAL:12, 气味类型B_愛液
 				LOCAL:11 = においの強さ_愛液_しっとり
 			ENDIF
@@ -282,7 +282,7 @@ FOR LOOP_CHARA, 0, CHARANUM
 			IF PALAM:受け側:润滑 > PALAMLV:3 && HAS_VAGINA(受け側)
 				SETBIT LOCAL:12, 气味类型B_愛液
 				LOCAL:11 = においの強さ_愛液_ぐっしょり
-			ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(受け側)
+			ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(受け側)
 				SETBIT LOCAL:12, 气味类型B_愛液
 				LOCAL:11 = においの強さ_愛液_しっとり
 			ENDIF
@@ -395,75 +395,75 @@ IF SELECTCOM <= 10 || SELECTCOM == 123 || (SELECTCOM >= 141 && SELECTCOM <= 144)
 			ENDIF
 		ENDIF
 	ENDIF
-	CALL ROOM_SMELL_CHARA_SUB(人物_あなた, TARGET, LOCAL:11, LOCAL:12)
+	CALL ROOM_SMELL_CHARA_SUB(人物_玩家, TARGET, LOCAL:11, LOCAL:12)
 	;侍奉系(においはあなた→住人)
 ELSEIF (SELECTCOM >= 80 && SELECTCOM <= 91) || (SELECTCOM >= 95 && SELECTCOM <= 96) || SELECTCOM == 120 || SELECTCOM == 140 || SELECTCOM == 145 || SELECTCOM == 505 || SELECTCOM == 512 || SELECTCOM == 515 || SELECTCOM == 516 || (SELECTCOM >= 314 && SELECTCOM <= 316)
 	LOCAL:11 = 0
 	LOCAL:12 = 0
-	IF PALAM:人物_あなた:润滑 > PALAMLV:3 && HAS_VAGINA(人物_あなた)
+	IF PALAM:人物_玩家:润滑 > PALAMLV:3 && HAS_VAGINA(人物_玩家)
 		SETBIT LOCAL:12, 气味类型B_愛液
 		LOCAL:11 = においの強さ_愛液_ぐっしょり
-	ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(人物_あなた)
+	ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(人物_玩家)
 		SETBIT LOCAL:12, 气味类型B_愛液
 		LOCAL:11 = においの強さ_愛液_しっとり
 	ENDIF
-	IF HAS_PENIS(人物_あなた)
-		IF GETBIT(STAIN:人物_あなた:部位_Ｐ, 汚れB_精液)
-			IF MAXBASE:人物_あなた:精力 > BASE:人物_あなた:精力
+	IF HAS_PENIS(人物_玩家)
+		IF GETBIT(STAIN:人物_玩家:部位_Ｐ, 汚れB_精液)
+			IF MAXBASE:人物_玩家:精力 > BASE:人物_玩家:精力
 				SETBIT LOCAL:12, 气味类型B_精液
 				LOCAL:11 = においの強さ_精液_少量
 			ENDIF
 		ENDIF
 	ENDIF
-	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_あなた, LOCAL:11, LOCAL:12)
+	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_玩家, LOCAL:11, LOCAL:12)
 	IF ASSI && (SELECTCOM == 509 || SELECTCOM == 511)
 		LOCAL:11 = 0
 		LOCAL:12 = 0
-		IF PALAM:人物_あなた:润滑 > PALAMLV:3 && HAS_VAGINA(人物_あなた)
+		IF PALAM:人物_玩家:润滑 > PALAMLV:3 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_ぐっしょり
-		ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(人物_あなた)
+		ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_しっとり
 		ENDIF
-		IF HAS_PENIS(人物_あなた)
-			IF GETBIT(STAIN:人物_あなた:部位_Ｐ, 汚れB_精液)
-				IF MAXBASE:人物_あなた:精力 > BASE:人物_あなた:精力
+		IF HAS_PENIS(人物_玩家)
+			IF GETBIT(STAIN:人物_玩家:部位_Ｐ, 汚れB_精液)
+				IF MAXBASE:人物_玩家:精力 > BASE:人物_玩家:精力
 					SETBIT LOCAL:12, 气味类型B_精液
 					LOCAL:11 = においの強さ_精液_少量
 				ENDIF
 			ENDIF
 		ENDIF
-		CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_あなた, LOCAL:11, LOCAL:12)
+		CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_玩家, LOCAL:11, LOCAL:12)
 	ENDIF
 	;コミュニケーション系
 ELSEIF SELECTCOM == 20 || SELECTCOM == 126 || SELECTCOM == 302 || (SELECTCOM >= 310 && SELECTCOM <= 313) || SELECTCOM == 351
-	CALL ROOM_SMELL_CHARA_SUB(人物_あなた, TARGET, ROOM_SMELL_VALUE(CFLAG:TARGET:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:TARGET:角色的气味_自己的气味))
-	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_あなた, ROOM_SMELL_VALUE(CFLAG:人物_あなた:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_あなた:角色的气味_自己的气味))
+	CALL ROOM_SMELL_CHARA_SUB(人物_玩家, TARGET, ROOM_SMELL_VALUE(CFLAG:TARGET:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:TARGET:角色的气味_自己的气味))
+	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_玩家, ROOM_SMELL_VALUE(CFLAG:人物_玩家:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_玩家:角色的气味_自己的气味))
 	;セックス系
 ELSEIF (SELECTCOM >= 60 && SELECTCOM <= 72) || (SELECTCOM >= 92 && SELECTCOM <= 94) || (SELECTCOM >= 97 && SELECTCOM <= 99) || SELECTCOM == 121 || (SELECTCOM >= 502 && SELECTCOM <= 503) || SELECTCOM == 504 || (SELECTCOM >= 506 && SELECTCOM <= 507) || SELECTCOM == 513
-	CALL ROOM_SMELL_CHARA_SUB(人物_あなた, TARGET, ROOM_SMELL_VALUE(CFLAG:TARGET:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:TARGET:角色的气味_自己的气味))
-	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_あなた, ROOM_SMELL_VALUE(CFLAG:人物_あなた:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_あなた:角色的气味_自己的气味))
+	CALL ROOM_SMELL_CHARA_SUB(人物_玩家, TARGET, ROOM_SMELL_VALUE(CFLAG:TARGET:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:TARGET:角色的气味_自己的气味))
+	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_玩家, ROOM_SMELL_VALUE(CFLAG:人物_玩家:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_玩家:角色的气味_自己的气味))
 
 	LOCAL:11 = 0
 	LOCAL:12 = 0
-	IF PALAM:人物_あなた:润滑 > PALAMLV:3 && HAS_VAGINA(人物_あなた)
+	IF PALAM:人物_玩家:润滑 > PALAMLV:3 && HAS_VAGINA(人物_玩家)
 		SETBIT LOCAL:12, 气味类型B_愛液
 		LOCAL:11 = においの強さ_愛液_ぐっしょり
-	ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(人物_あなた)
+	ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(人物_玩家)
 		SETBIT LOCAL:12, 气味类型B_愛液
 		LOCAL:11 = においの強さ_愛液_しっとり
 	ENDIF
-	IF HAS_PENIS(人物_あなた)
-		IF GETBIT(STAIN:人物_あなた:部位_Ｐ, 汚れB_精液)
-			IF MAXBASE:人物_あなた:精力 > BASE:人物_あなた:精力
+	IF HAS_PENIS(人物_玩家)
+		IF GETBIT(STAIN:人物_玩家:部位_Ｐ, 汚れB_精液)
+			IF MAXBASE:人物_玩家:精力 > BASE:人物_玩家:精力
 				SETBIT LOCAL:12, 气味类型B_精液
 				SIF LOCAL:11 < においの強さ_精液_少量
 					LOCAL:11 = においの強さ_精液_少量
 			ENDIF
 		ENDIF
 	ENDIF
-	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_あなた, LOCAL:11, LOCAL:12)
+	CALL ROOM_SMELL_CHARA_SUB(TARGET, 人物_玩家, LOCAL:11, LOCAL:12)
 
 	LOCAL:11 = 0
 	LOCAL:12 = 0
@@ -483,30 +483,30 @@ ELSEIF (SELECTCOM >= 60 && SELECTCOM <= 72) || (SELECTCOM >= 92 && SELECTCOM <= 
 			ENDIF
 		ENDIF
 	ENDIF
-	CALL ROOM_SMELL_CHARA_SUB(人物_あなた, TARGET, LOCAL:11, LOCAL:12)
+	CALL ROOM_SMELL_CHARA_SUB(人物_玩家, TARGET, LOCAL:11, LOCAL:12)
 	IF ASSI && (SELECTCOM == 513)
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, ASSI, ROOM_SMELL_VALUE(CFLAG:ASSI:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:ASSI:角色的气味_自己的气味))
-		CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_あなた, ROOM_SMELL_VALUE(CFLAG:人物_あなた:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_あなた:角色的气味_自己的气味))
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, ASSI, ROOM_SMELL_VALUE(CFLAG:ASSI:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:ASSI:角色的气味_自己的气味))
+		CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_玩家, ROOM_SMELL_VALUE(CFLAG:人物_玩家:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_玩家:角色的气味_自己的气味))
 
 		LOCAL:11 = 0
 		LOCAL:12 = 0
-		IF PALAM:人物_あなた:润滑 > PALAMLV:3 && HAS_VAGINA(人物_あなた)
+		IF PALAM:人物_玩家:润滑 > PALAMLV:3 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_ぐっしょり
-		ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(人物_あなた)
+		ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(人物_玩家)
 			SETBIT LOCAL:12, 气味类型B_愛液
 			LOCAL:11 = においの強さ_愛液_しっとり
 		ENDIF
-		IF HAS_PENIS(人物_あなた)
-			IF GETBIT(STAIN:人物_あなた:部位_Ｐ, 汚れB_精液)
-				IF MAXBASE:人物_あなた:精力 > BASE:人物_あなた:精力
+		IF HAS_PENIS(人物_玩家)
+			IF GETBIT(STAIN:人物_玩家:部位_Ｐ, 汚れB_精液)
+				IF MAXBASE:人物_玩家:精力 > BASE:人物_玩家:精力
 					SETBIT LOCAL:12, 气味类型B_精液
 					SIF LOCAL:11 < においの強さ_精液_少量
 						LOCAL:11 = においの強さ_精液_少量
 				ENDIF
 			ENDIF
 		ENDIF
-		CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_あなた, LOCAL:11, LOCAL:12)
+		CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_玩家, LOCAL:11, LOCAL:12)
 
 		LOCAL:11 = 0
 		LOCAL:12 = 0
@@ -526,7 +526,7 @@ ELSEIF (SELECTCOM >= 60 && SELECTCOM <= 72) || (SELECTCOM >= 92 && SELECTCOM <= 
 				ENDIF
 			ENDIF
 		ENDIF
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, ASSI, LOCAL:11, LOCAL:12)
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, ASSI, LOCAL:11, LOCAL:12)
 	ENDIF
 	;セックス系(助手)
 ELSEIF ASSI && (SELECTCOM == 122)
@@ -574,28 +574,28 @@ ELSEIF ASSI && (SELECTCOM == 122)
 	CALL ROOM_SMELL_CHARA_SUB(ASSI, TARGET, LOCAL:11, LOCAL:12)
 	;セックス系(あなたと助手)
 ELSEIF ASSI && SELECTCOM == 185
-	CALL ROOM_SMELL_CHARA_SUB(人物_あなた, ASSI, ROOM_SMELL_VALUE(CFLAG:ASSI:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:ASSI:角色的气味_自己的气味))
-	CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_あなた, ROOM_SMELL_VALUE(CFLAG:人物_あなた:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_あなた:角色的气味_自己的气味))
+	CALL ROOM_SMELL_CHARA_SUB(人物_玩家, ASSI, ROOM_SMELL_VALUE(CFLAG:ASSI:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:ASSI:角色的气味_自己的气味))
+	CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_玩家, ROOM_SMELL_VALUE(CFLAG:人物_玩家:角色的气味_自己的气味), ROOM_SMELL_BIT(CFLAG:人物_玩家:角色的气味_自己的气味))
 
 	LOCAL:11 = 0
 	LOCAL:12 = 0
-	IF PALAM:人物_あなた:润滑 > PALAMLV:3 && HAS_VAGINA(人物_あなた)
+	IF PALAM:人物_玩家:润滑 > PALAMLV:3 && HAS_VAGINA(人物_玩家)
 		SETBIT LOCAL:12, 气味类型B_愛液
 		LOCAL:11 = においの強さ_愛液_ぐっしょり
-	ELSEIF PALAM:人物_あなた:润滑 > PALAMLV:1 && HAS_VAGINA(人物_あなた)
+	ELSEIF PALAM:人物_玩家:润滑 > PALAMLV:1 && HAS_VAGINA(人物_玩家)
 		SETBIT LOCAL:12, 气味类型B_愛液
 		LOCAL:11 = においの強さ_愛液_しっとり
 	ENDIF
-	IF HAS_PENIS(人物_あなた)
-		IF GETBIT(STAIN:人物_あなた:部位_Ｐ, 汚れB_精液)
-			IF MAXBASE:人物_あなた:精力 > BASE:人物_あなた:精力
+	IF HAS_PENIS(人物_玩家)
+		IF GETBIT(STAIN:人物_玩家:部位_Ｐ, 汚れB_精液)
+			IF MAXBASE:人物_玩家:精力 > BASE:人物_玩家:精力
 				SETBIT LOCAL:12, 气味类型B_精液
 				SIF LOCAL:11 < においの強さ_精液_少量
 					LOCAL:11 = においの強さ_精液_少量
 			ENDIF
 		ENDIF
 	ENDIF
-	CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_あなた, LOCAL:11, LOCAL:12)
+	CALL ROOM_SMELL_CHARA_SUB(ASSI, 人物_玩家, LOCAL:11, LOCAL:12)
 
 	LOCAL:11 = 0
 	LOCAL:12 = 0
@@ -615,7 +615,7 @@ ELSEIF ASSI && SELECTCOM == 185
 			ENDIF
 		ENDIF
 	ENDIF
-	CALL ROOM_SMELL_CHARA_SUB(人物_あなた, ASSI, LOCAL:11, LOCAL:12)
+	CALL ROOM_SMELL_CHARA_SUB(人物_玩家, ASSI, LOCAL:11, LOCAL:12)
 ELSEIF SELECTCOM == 411
 	FOR LOOP_CHARA, 0, CHARANUM
 		SIF CFLAG:MASTER:当前位置 == CFLAG:LOOP_CHARA:当前位置
@@ -674,16 +674,16 @@ ENDIF
 ;訪問者と女あなた関連の処理
 IF FLAG:1840 >= 3 && FLAG:1840 < 9 || FLAG:1840 == 601 || FLAG:1840 == 10
 	IF ROOM_SMELL_WHOSE(FLAG:訪問者の他人のにおい) != 人物_訪問者 && ROOM_SMELL_VALUE(FLAG:訪問者の他人のにおい) > においの強さ_精液_大量
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, ROOM_SMELL_WHOSE(FLAG:訪問者の他人のにおい), ROOM_SMELL_VALUE(FLAG:訪問者の他人のにおい) / 3, ROOM_SMELL_BIT(FLAG:訪問者の他人のにおい))
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, ROOM_SMELL_WHOSE(FLAG:訪問者の他人のにおい), ROOM_SMELL_VALUE(FLAG:訪問者の他人のにおい) / 3, ROOM_SMELL_BIT(FLAG:訪問者の他人のにおい))
 	ELSE
-		CALL ROOM_SMELL_CHARA_SUB(人物_あなた, 人物_訪問者, においの強さ_精液_大量, 气味类型_体臭 + 气味类型_精液)
+		CALL ROOM_SMELL_CHARA_SUB(人物_玩家, 人物_訪問者, においの強さ_精液_大量, 气味类型_体臭 + 气味类型_精液)
 	ENDIF
-	LOCAL:10 = ROOM_SMELL_CHARA_MOST(人物_あなた)
+	LOCAL:10 = ROOM_SMELL_CHARA_MOST(人物_玩家)
 	CALL ROOM_SMELL_VISITER_SUB(ROOM_SMELL_WHOSE(LOCAL:10), ROOM_SMELL_VALUE(LOCAL:10), ROOM_SMELL_BIT(LOCAL:10))
 ENDIF
 
 ;汚い部屋はゴミの臭いが再発生
-FOR LOOP_ROOM, 1, 場所番号最大値 + 1
+FOR LOOP_ROOM, 1, 位置编号最大值 + 1
 	SELECTCASE FLAG:(100 + LOOP_ROOM)
 			;中以下はゴミの臭いが発生しない
 		CASE IS < 2000
@@ -705,7 +705,7 @@ FOR LOOP_ROOM, 1, 場所番号最大値 + 1
 			LOCAL:10 = ROOM_SMELL_WHOSE(ROOM_SMELL_CHARA_MOST(LOOP_CHARA))
 			LOCAL:11 = ROOM_SMELL_VALUE(ROOM_SMELL_CHARA_MOST(LOOP_CHARA))
 			LOCAL:12 = ROOM_SMELL_BIT(ROOM_SMELL_CHARA_MOST(LOOP_CHARA))
-			;PRINTFORML キャラのにおい移动処理：{LOOP_ROOM}, {LOOP_CHARA}, %GETPLACENAME(LOOP_ROOM)%, {LOOP_ROOM}, 「%ROOM_SMELL_WHOSE_NAME(LOCAL:10)%{LOCAL:10}」, {LOCAL:11}, {LOCAL:12}
+			;PRINTFORML キャラのにおい移动処理：{LOOP_ROOM}, {LOOP_CHARA}, %GetPlaceName(LOOP_ROOM)%, {LOOP_ROOM}, 「%ROOM_SMELL_WHOSE_NAME(LOCAL:10)%{LOCAL:10}」, {LOCAL:11}, {LOCAL:12}
 			CALL ROOM_SMELL_ROOM_SUB(LOOP_ROOM,LOCAL:10,LOCAL:11,LOCAL:12)
 		ENDIF
 	NEXT
@@ -735,7 +735,7 @@ RETURN 0
 #DIM LOOP_ROOM
 
 FLAG:(LOCAL:1) = TIME
-FOR LOOP_ROOM, 1, 場所番号最大値 + 1
+FOR LOOP_ROOM, 1, 位置编号最大值 + 1
 	CALL ROOM_SMELL_ROOM_MINUS(LOOP_ROOM,LOCAL:0,LOCAL:1,LOCAL:5)
 NEXT
 
@@ -1012,7 +1012,7 @@ RETURN 0
 ;LOCAL:13	一時変数
 #DIM LOOP_I
 
-SIF ARG > 場所番号最大値
+SIF ARG > 位置编号最大值
 	RETURN 0
 SIF LOCAL:11 > 99
 	LOCAL:11 = 99
@@ -1023,7 +1023,7 @@ SIF LOCAL:12 >= 65536
 SIF LOCAL:12 < 0
 	LOCAL:12 = 0
 LOCAL:13 = LOCAL:10 * 10000000 + LOCAL:11 * 100000 + LOCAL:12
-;PRINTFORMW 代入処理：%GETPLACENAME(ARG)%, {ARG}, %CALLNAME:(LOCAL:10)%, {LOCAL:11}, {LOCAL:12}, {LOCAL:13}, {ROOM_SMELL_WHOSE(LOCAL:13)}
+;PRINTFORMW 代入処理：%GetPlaceName(ARG)%, {ARG}, %CALLNAME:(LOCAL:10)%, {LOCAL:11}, {LOCAL:12}, {LOCAL:13}, {ROOM_SMELL_WHOSE(LOCAL:13)}
 IF ROOM_SMELL_WHOSE(FLAG:(部屋のにおい_初期FLAG + ARG)) == ROOM_SMELL_WHOSE(LOCAL:13) && ROOM_SMELL_BIT(FLAG:(部屋のにおい_初期FLAG + ARG)) != 气味类型_ゴミ
 	FOR LOOP_I, 0, 气味类型数最大値
 		SIF GETBIT(ROOM_SMELL_BIT(LOCAL:13), 气味类型_ゴミ + LOOP_I)

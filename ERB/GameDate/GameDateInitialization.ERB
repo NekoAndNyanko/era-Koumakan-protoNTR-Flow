@@ -1,0 +1,46 @@
+;追加パッチverup 93----------------------------------------------------------------
+@日期_日期初始化
+日期_月数 = 1
+日期_天数 = 1
+日期_年数 = 1
+$Ty245124
+DRAWLINE
+PRINTL
+PRINTL 日期设置初始化
+PRINTL
+PRINTFORM   %日期_月份名称(日期_月数)% 
+PRINTBUTTON "[0:変更]", 0
+PRINTL
+PRINTFORM   {日期_天数}日 
+PRINTBUTTON "[1:変更]", 1
+PRINTL
+PRINTL
+PRINTL
+SIF 日期_月数 >= 1 && 日期_月数 <= 6 && 日期_天数 >= 1 && 日期_天数 <= 30
+	PRINTBUTTON "[2:決定]", 2
+PRINTL 
+INPUT
+IF RESULT == 0
+	PRINTL 月份设置
+	PRINTL [1] 春季     4~5月
+	PRINTL [2] 夏季上旬 6~7月
+	PRINTL [3] 夏季下旬 8~9月
+	PRINTL [4] 秋季     10~11月
+	PRINTL [5] 冬季上旬 12~1月
+	PRINTL [6] 冬季下旬 2~3月
+	INPUT
+	SIF RESULT >= 1 && RESULT <= 6
+		日期_月数 = RESULT
+ELSEIF RESULT == 1
+	PRINTL 日数设置（请输入1-30范围内的数字）
+	INPUT
+
+	SIF RESULT >= 1 && RESULT <= 30
+		日期_天数 = RESULT
+
+ELSEIF RESULT == 2 && 日期_月数 >= 1 && 日期_月数 <= 6 && 日期_天数 >= 1 && 日期_天数 <= 30
+	CALL 日間気温設定
+	CALL 現在気温設定
+	RETURN 
+ENDIF
+GOTO Ty245124

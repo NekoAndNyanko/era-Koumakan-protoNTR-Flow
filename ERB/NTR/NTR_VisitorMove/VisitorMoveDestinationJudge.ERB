@@ -3,7 +3,7 @@
 ;戻り値…訪問者の移动先
 @JUDGE_VISITOR_MOVE_POS
 #DIM RET_POS		; 戻り値（場所)
-#DIM 位置概率, 場所番号最大値+1	; 部屋ごとの確率
+#DIM 位置概率, 位置编号最大值+1	; 部屋ごとの確率
 #DIM 最大移动概率	; その部屋に行く最大確率
 #DIM 上回最大概率		; 過去最大の確率
 #DIM 位置编号		; ループ変数(場所)
@@ -239,7 +239,7 @@ FOR 位置编号,1,MAXROOM()
 		上回最大概率 = 位置概率:位置编号
 		RET_POS = 位置编号
 	ENDIF
-	DEBUGPRINTFORML 移动確率 {位置编号}：【%GETPLACENAME(位置编号)%】→ {位置概率:位置编号}／{最大移动概率}％、{CHK_TGT_IN_POS(位置编号)}人在室
+	DEBUGPRINTFORML 移动確率 {位置编号}：【%GetPlaceName(位置编号)%】→ {位置概率:位置编号}／{最大移动概率}％、{CHK_TGT_IN_POS(位置编号)}人在室
 NEXT
 SIF FLAG:訪問者同行フラグ
 	RETURN CFLAG:MASTER:当前位置

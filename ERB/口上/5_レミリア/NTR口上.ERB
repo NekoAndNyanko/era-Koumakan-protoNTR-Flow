@@ -6729,22 +6729,22 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「居然要使用这边吗・・？ 真是不错的趣味啊・・好啊・・给我吧・・」
-	PRINTFORML %CALLNAME:奴隷%露出淫荡的笑容、将背靠在%MSG_WALL_OR_TREE()%中、并迎接%NTR_NAME(0)%
+	PRINTFORML %CALLNAME:奴隷%露出淫荡的笑容、将背靠在%MSG_WallOrTree_NTR()%中、并迎接%NTR_NAME(0)%
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「居然要使用这边吗・・？ 真是不错的趣味啊・・好啊・・来吧・・」
-	PRINTFORML %CALLNAME:奴隷%露出淫荡的笑容、将背靠在%MSG_WALL_OR_TREE()%中、并迎接%NTR_NAME(0)%
+	PRINTFORML %CALLNAME:奴隷%露出淫荡的笑容、将背靠在%MSG_WallOrTree_NTR()%中、并迎接%NTR_NAME(0)%
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 
 	PRINTFORML 「居然要使用这边吗・・？真是个不错的爱好啊・・好啊・・来吧・・」
-	PRINTFORML %CALLNAME:奴隷%浮现出微妙的笑容、将背靠在%MSG_WALL_OR_TREE()%中、并迎接%NTR_NAME(0)%
+	PRINTFORML %CALLNAME:奴隷%浮现出微妙的笑容、将背靠在%MSG_WallOrTree_NTR()%中、并迎接%NTR_NAME(0)%
 
 ELSE
 
 	PRINTFORML 「用、用那种地方！？ 不、不行、不要啊！ 呜啊啊啊啊！！」
-	PRINTFORML %NTR_NAME(0)%将%CALLNAME:奴隷%娇小的身体压在%MSG_WALL_OR_TREE()%上、强行贯穿了菊穴
+	PRINTFORML %NTR_NAME(0)%将%CALLNAME:奴隷%娇小的身体压在%MSG_WallOrTree_NTR()%上、强行贯穿了菊穴
 
 ENDIF
 RETURN 0
@@ -6976,18 +6976,18 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「这里不碍事・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GetPlaceName(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GetPlaceName(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方、被他拥抱着
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「这里不碍事・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GetPlaceName(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GetPlaceName(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
 		IF FLAG:访问者当前位置 == 位置_红魔馆_蕾米莉亚私室 && TALENT:奴隷:恋慕
 			PRINTFORML %MSG_LOVER(奴隷)%虽然在，但是邀请其他的%NTR_NAME(3)%到卧室・・空气中漂浮着背德感的香气、%CALLNAME:奴隷%洋溢着妖异的微笑。
 		ELSE
@@ -6998,9 +6998,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「这里不碍事・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GetPlaceName(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
+		PRINTFORML %CALLNAME:奴隷%向%NTR_GetPlaceName(FLAG:访问者当前位置)%引导至%NTR_NAME(0)%的地方
 		IF FLAG:访问者当前位置 == 位置_红魔馆_蕾米莉亚私室 && TALENT:奴隷:恋慕
 			PRINTFORML %MSG_LOVER(奴隷)%虽然在，但是邀请其他的%NTR_NAME(3)%到卧室・・空气中漂浮着背德感的香气、%CALLNAME:奴隷%洋溢着妖异的微笑。
 		ELSE
@@ -7010,7 +7010,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「这里应该没问题吧・・」
-	PRINTFORML %CALLNAME:奴隷%向%NTR_GETPLACENAME(FLAG:访问者当前位置)%引导%NTR_NAME(0)%
+	PRINTFORML %CALLNAME:奴隷%向%NTR_GetPlaceName(FLAG:访问者当前位置)%引导%NTR_NAME(0)%
 
 ELSE
 
