@@ -1,0 +1,277 @@
+;--------------------------------------------------------------------------------
+;记录角色第一次时对第一次的态度、发生地点和当时天气
+;--------------------------------------------------------------------------------
+@FirstTimeAttitude(对象, 对方, 部位)
+#DIM 对象
+#DIM 对方
+#DIM 部位
+#DIM 态度
+;部位：1=V 2=A 3=M 4=接吻
+;1=被夺走 2=半推半就（无法抵抗的状态被夺走） 3=交给他（不主动但感觉可以接受） 
+;4=献给他 5=悄悄献给他（NTR） 6=满怀爱意、爱到无以复加、不在意旁人目光也要献给他（访问者专属）
+;-1=不愿意但是无法拒绝（NTR）
+IF 对方 == 人物_訪問者
+	IF TALENT:对象:NTR || (对象 == 人物_玩家 && (FLAG:1840 >= 11 && FLAG:1840 <= 15))
+		态度 = 6
+	ELSEIF NTR_CHK_FAVORABLY(对象, FAV_寝取られ寸前) || (对象 == 人物_玩家 && FLAG:1840 == 10)
+		态度 = 5
+	ELSEIF NTR_CHK_FAVORABLY(对象, FAV_寝取られそう)
+		态度 = 4
+	ELSEIF NTR_CHK_FAVORABLY(对象, FAV_主人より高い)
+		态度 = 3
+	ELSEIF NTR_CHK_FAVORABLY(对象, FAV_うふふする程度) 
+		态度 = 2
+	ELSE
+		态度 = 1
+	ENDIF
+ELSEIF 对方 == 人物_玩家
+	IF TALENT:对象:NTR
+		;我感觉应该没有NTR了还是处女的吧……？
+		态度 = -1
+	ELSEIF TALENT:对象:恋慕
+		;告白后并且真的喜欢玩家时
+		态度 = 4
+	ELSEIF TALENT:对象:恋人
+		;告白后没有恋慕
+		态度 = 3
+	ELSE
+		;感觉可以加个半推半就……
+		态度 = 1
+	ENDIF
+ENDIF
+IF 部位 == 1
+	CFLAG:对象:处女丧失时态度_V = 态度
+	CFLAG:对象:处女丧失时位置_V = CFLAG:对象:当前位置
+	CSTR:对象:处女丧失时天气_V = %天候(天候値)%
+ELSEIF 部位 == 2
+	CFLAG:对象:处女丧失时态度_A = 态度
+	CFLAG:对象:处女丧失时位置_A = CFLAG:对象:当前位置
+	CSTR:对象:处女丧失时天气_A = %天候(天候値)%
+ELSEIF 部位 == 3
+	CFLAG:对象:处女丧失时态度_M = 态度
+	CFLAG:对象:处女丧失时位置_M = CFLAG:对象:当前位置
+	CSTR:对象:处女丧失时天气_M = %天候(天候値)%
+ELSEIF 部位 == 4
+	CFLAG:对象:初吻丧失时态度 = 态度
+	CFLAG:对象:初吻丧失时位置 = CFLAG:对象:当前位置
+	CSTR:对象:初吻丧失时天气 = %天候(天候値)%
+ENDIF
+
+;--------------------------------------------------------------------------------
+;对角色第一次时的描述（泛用）
+;--------------------------------------------------------------------------------
+@LostVirginDepict_KU_1(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF CFLAG:对象:处女丧失时位置_V == GET_PRIVATE_ROOM(对象,1)
+	文本内容 += "在自己的房间里，"
+ELSEIF CFLAG:对象:处女丧失时位置_V == 位置_红魔馆_玩家房间
+	文本内容 += @"在%CALLNAME:MASTER%的房间里，"
+ELSE
+	文本内容 += @"在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%"
+ENDIF
+文本内容 += @"%CALLNAME:对象%在无力反抗的间隙被%CALLNAME:MASTER%夺走了处女。"
+RETURNF 文本内容
+
+@LostVirginDepict_KU_3(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF CFLAG:对象:处女丧失时位置_V == GET_PRIVATE_ROOM(对象,1)
+	文本内容 += "在自己的房间里，"
+ELSEIF CFLAG:对象:处女丧失时位置_V == 位置_红魔馆_玩家房间
+	文本内容 += "在恋人的房间里，"
+ELSE
+	文本内容 += @"在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%"
+ENDIF
+文本内容 += @"%CALLNAME:对象%顺着彼此间的气氛将珍贵的处女献给了%CALLNAME:MASTER%。"
+RETURNF 文本内容
+
+@LostVirginDepict_KU_4(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF CFLAG:对象:处女丧失时位置_V == GET_PRIVATE_ROOM(对象,1)
+	文本内容 += "在自己的房间里，"
+ELSEIF CFLAG:对象:处女丧失时位置_V == 位置_红魔馆_玩家房间
+	文本内容 += "在恋人的房间里，"
+ELSE
+	文本内容 += @"在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%"
+ENDIF
+文本内容 += @"%CALLNAME:对象%满怀爱意地将珍贵的处女献给了%CALLNAME:MASTER%，用身体许下了永远的约定。"
+RETURNF 文本内容
+
+@LostVirginDepict_KU_NTR_1(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF IsPlaceHasBed(CFLAG:对象:处女丧失时位置_V, 1)
+	文本内容 += @"%CALLNAME:对象%被%NTR_NAME(0)%按倒在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的床上，在无法抵抗的绝顶中被强迫地夺走了处女。"
+ELSEIF IsPlaceHasBathroom(CFLAG:对象:处女丧失时位置_V)
+	文本内容 += @"%CALLNAME:对象%被%NTR_NAME(0)%压倒在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的水池边，被%NTR_NAME(0)%无可抵抗的强大肉棒撕裂了处女膜。"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "树干"
+	文本内容 += @"在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，%CALLNAME:对象%柔弱的身体被%NTR_NAME(0)%粗暴地按在粗糙树干上，双手被束在身后，强迫着用纯洁的小穴迎接了%NTR_NAME(0)%远超常规的肉棒。"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "墙壁"
+	IF IsIndoor(CFLAG:对象:处女丧失时位置_V)
+		文本内容 += @"%CALLNAME:对象%柔弱的身体被%NTR_NAME(0)%粗暴地压在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的地上，双手被束在腰间，不情愿地用纯洁的小穴吞没了%NTR_NAME(0)%远超常规的肉棒。"
+	ELSE
+		文本内容 += @"%CALLNAME:对象%柔弱的身体被%NTR_NAME(0)%粗暴地按在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的墙上，双手被扣过头顶，纯洁的小穴在难以保持平衡的姿势中被重力压迫着吞下了%NTR_NAME(0)%远超常规的肉棒。"
+	ENDIF
+ENDIF
+RETURNF 文本内容
+
+@LostVirginDepict_KU_NTR_2(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF IsPlaceHasBed(CFLAG:对象:处女丧失时位置_V, 1)
+	文本内容 += @"被%NTR_NAME(0)%骚扰调戏的%CALLNAME:对象%在%NTR_NAME(0)%高超的技巧下浑身瘫软，失神中被按倒在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的床上，在无法抵抗的绝顶中被%NTR_NAME(0)%收下了处女。"
+ELSEIF IsPlaceHasBathroom(CFLAG:对象:处女丧失时位置_V)
+	文本内容 += @"被%NTR_NAME(0)%压倒在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的水池边，被%NTR_NAME(0)%无可抵抗的强大肉棒撕裂了处女膜。"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "树干"
+	文本内容 += @"柔弱的身体被%NTR_NAME(0)%粗暴地按在粗糙树干上，双手被束在身后，强迫着用纯洁的小穴迎接了%NTR_NAME(0)%远超常规的肉棒。"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "墙壁"
+	IF IsIndoor(CFLAG:对象:处女丧失时位置_V)
+		文本内容 += @"柔弱的身体被%NTR_NAME(0)%粗暴地压在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的地上，双手被束在腰间，不情愿地用纯洁的小穴吞没了%NTR_NAME(0)%远超常规的肉棒。"
+	ELSE
+		文本内容 += @"柔弱的身体被%NTR_NAME(0)%粗暴地按在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的墙上，双手被扣过头顶，纯洁的小穴在难以保持平衡的姿势中被重力压迫着吞下了%NTR_NAME(0)%远超常规的肉棒。"
+	ENDIF
+ENDIF
+RETURNF 文本内容
+
+@LostVirginDepict_KU_NTR_3(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF IsPlaceHasBathroom(CFLAG:对象:处女丧失时位置_V)
+	文本内容 += @"被%NTR_NAME(0)%带到大浴场的%CALLNAME:对象%一如既往地被要求清洗%NTR_NAME(0)%的身体，不过也同样一如既往地清洗着清洗着就变成了爱抚%NTR_NAME(0)%那根渐渐让%CALLNAME:对象%无法移开视线的肉棒了。到了一同入浴时，%CALLNAME:对象%一不留神就被一把按进了水里，而她的挣扎在%NTR_NAME(0)%面前毫无意义，只能任由他摆布。一会后，直到水面浮起一律鲜红，%CALLNAME:对象%才满脸羞红地钻出水面，但还没来得及抗议，直冲心房的快感就搅得波涛都荡漾开来。随着白浊从水底一股一股地翻涌，%CALLNAME:对象%也逐渐变成了只能挂在%NTR_NAME(0)%身上的玩偶。而随着水花忽闷忽明的娇吟，也已然规划了她命运的航向……"
+ELSE
+	IF CFLAG:对象:处女丧失时位置_V == GET_PRIVATE_ROOM(对象,1)
+		文本内容 += @"被%NTR_NAME(0)%带到自己房间的%CALLNAME:对象%一如既往地接受着调教、被要求侍奉，"
+	ELSE
+		文本内容 += @"被%NTR_NAME(0)%带到%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的%CALLNAME:对象%一如既往地接受着调教、被要求侍奉，"
+	ENDIF
+	文本内容 += @"不久后也一如往常地在连续地绝顶中泪眼摩挲。然而不一样的是，这次%NTR_NAME(0)%趁着这期间将自己滚烫的、不可抵挡的肉棒抵在了%CALLNAME:对象%的小穴入口，意识到这点的%CALLNAME:对象%努力地试图清醒过来阻止，但浑身酥软的她只能眼睁睁地看着%NTR_NAME(0)%撕碎那本应属于%CALLNAME:MASTER%的纯洁。随着鲜红而起的是%CALLNAME:对象%动情的娇吟，伴着白浊而起的是%CALLNAME:对象%跳动的心弦，在%CALLNAME:对象%与%CALLNAME:MASTER%之间划出一道无形的隔阂，越来越大、越来越深……"
+	IF CFLAG:对象:处女丧失时位置_V == 位置_红魔馆_玩家房间
+		文本内容 += "每一声娇吟都像是对房间的主人无声的判决……"
+	ENDIF
+ENDIF
+RETURNF 文本内容
+
+@LostVirginDepict_KU_NTR_4(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF IsPlaceHasBed(CFLAG:对象:处女丧失时位置_V, 1)
+	IF CFLAG:对象:处女丧失时位置_V == GET_PRIVATE_ROOM(对象,1)
+		文本内容 += @"被%NTR_NAME(0)%要求的%CALLNAME:对象%将%NTR_NAME(0)%悄悄带进了自己房间，在被命令着昨晚前戏和侍奉之后，%CALLNAME:对象%第一次用不一样的、最重要的「嘴」吞下了%NTR_NAME(0)%充满魅力、不可抵抗的肉棒，任由它撕碎了%CALLNAME:MASTER%再也无法触碰的纯洁。在这段%CALLNAME:对象%一生中最重要的秘密时光里，无数浇灌而入的滚烫白浊伴随着悦耳的娇吟，如关上的房门在她与%CALLNAME:MASTER%之间划出一道或许%CALLNAME:MASTER%再也无法跨越的鸿沟……很深、很深……"
+	ELSEIF CFLAG:对象:处女丧失时位置_V == 位置_红魔馆_玩家房间
+		文本内容 += @"被%NTR_NAME(0)%叫到%CALLNAME:MASTER%的房间的%CALLNAME:对象%，在%NTR_NAME(0)%戏谑的笑容中，满脸通红地躺倒在%CALLNAME:MASTER%的床榻上，在%CALLNAME:对象%呼吸颤抖的注视下，%NTR_NAME(0)%那散发着无限魅力、无法用言语形容的肉棒，带着无尽的快感冲破了%CALLNAME:MASTER%再也无法触碰的纯洁。挥洒在空中的汗水、弥散在房间的气味、一刻都未停的娇吟，这场似乎没有尽头的快乐终于随着那浓厚的、混杂着些许朱红的白浊洒满床榻与地板画上了句号，而在这属于%CALLNAME:MASTER%的房间里，双眸中尽是迷离水雾的%CALLNAME:对象%，已经用喊到有些干燥的小嘴含住了%NTR_NAME(0)%的肉棒，伴随着还未合拢的小穴里仍在渗出的点点精液，对房间的主人做出了无形的判决……"
+	ELSE
+		文本内容 += @"跟随%NTR_NAME(0)%来到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，在%NTR_NAME(0)%高超的爱抚下，%CALLNAME:对象%很快就忘记了关于「是否会暴露」的担忧，取而代之的是对%NTR_NAME(0)%充满魅力、不可抵抗的肉棒的渴望眼神。在%CALLNAME:对象%紧张又带着些许期待的凝视中，%NTR_NAME(0)%缓缓推入了那令%CALLNAME:对象%心神动摇的炽热，撕碎了%CALLNAME:MASTER%再也无法触碰的纯洁。快乐与白浊倾泻而入，由内而外地洗礼着%CALLNAME:对象%，而%CALLNAME:对象%也用隆起的小腹、甜美的娇吟做出了自己的回答。"
+	ENDIF
+ELSEIF IsPlaceHasBathroom(CFLAG:对象:处女丧失时位置_V)
+	文本内容 += @"被%NTR_NAME(0)%带到%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%的%CALLNAME:对象%一如既往地被要求清洗%NTR_NAME(0)%的身体，不过也同样一如既往地清洗着清洗着就变成了爱抚%NTR_NAME(0)%那根逐渐可以撩动%CALLNAME:对象%心弦的肉棒了。到了一同入浴时，%CALLNAME:对象%一不留神就被一把按进了水里，虽然略有挣扎，但%CALLNAME:对象%对着一天的到来也算是心有准备。一会后，直到水面浮起一律鲜红，%CALLNAME:对象%才满脸羞红地钻出水面，但还没来得及抗议，直冲心房的快感就搅得波涛都荡漾开来。随着白浊从水底一股一股地翻涌，%CALLNAME:对象%也逐渐变成了只能挂在%NTR_NAME(0)%身上的玩偶。而随着水花忽闷忽明的娇吟，也已然规划了她命运的航向……"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "树干"
+	文本内容 += @"跟着%NTR_NAME(0)%的%CALLNAME:对象%被带到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，当被要求靠到树后面时，%CALLNAME:对象%的身体早已先于意识做出了回答，轻轻"
+	IF CFLAG:对象:服装_下半身下着２
+		文本内容 += "掀起裙摆早已本能地湿透、散发强烈雌性情欲的清纯小穴，无法掩饰期待的粘液早已湿润了充满少女心的内裤。"
+	ELSE
+		文本内容 += "脱下裤子，那散发强烈雌性情欲的清纯小穴就与裤子拉出一条爱欲的丝线。"
+	ENDIF
+	文本内容 += @"感受着%NTR_NAME(0)%的炽热的拥抱，凝望着那魅力四散、不可匹敌的肉棒的眼睛逐渐潮湿，目送它缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%都再也没有想起过%CALLNAME:MASTER%。"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "墙壁"
+	文本内容 += @"被%NTR_NAME(0)%带走的%CALLNAME:对象%到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%时被要求扶住墙壁，虽然早就知道会有这么一天，但当这天真的到来时，%CALLNAME:对象%还是羞得满脸通红。不过害羞归害羞，%CALLNAME:对象%却没有任何抵抗，自然地"
+	IF CFLAG:对象:服装_下半身下着２
+		文本内容 += "撩起裙摆，露出早就开始散发强烈雌性情欲的清纯小穴。"
+	ELSE
+		文本内容 += "脱下裤子，让早就开始散发强烈雌性情欲的清纯小穴与裤子拉出一条爱欲的丝线。"
+	ENDIF
+	文本内容 += @"比起心理准备，身体先一步做好了为%NTR_NAME(0)%献出处女的准备，勾勒出美妙轮廓的、少女心慢慢的内裤无声地用湿润程度诉说着她内心深处的情感。随着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%都再也没有想起过%CALLNAME:MASTER%。"
+ENDIF
+RETURNF 文本内容
+
+@LostVirginDepict_KU_NTR_5(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF IsPlaceHasBed(CFLAG:对象:处女丧失时位置_V, 1)
+	IF CFLAG:对象:处女丧失时位置_V == GET_PRIVATE_ROOM(对象,1)
+		文本内容 += @"%CALLNAME:对象%背着%CALLNAME:MASTER%把%NTR_NAME(0)%悄悄迎进了自己房间。在充满爱意的前戏和侍奉之后，%CALLNAME:对象%第一次用不一样的、最重要的「嘴」吞下了%NTR_NAME(0)%充满魅力、不可抵抗的肉棒，任由它撕碎了%CALLNAME:MASTER%再也无法触碰的纯洁。在这段%CALLNAME:对象%一生中最重要的秘密时光里，无数浇灌而入的滚烫白浊伴随着悦耳的娇吟，如反锁的房门在她与%CALLNAME:MASTER%之间划出一道永远无法跨越的深渊……很深、很深……"
+	ELSEIF CFLAG:对象:处女丧失时位置_V == 位置_红魔馆_玩家房间
+		文本内容 += @"%CALLNAME:对象%背着%CALLNAME:MASTER%把%NTR_NAME(0)%悄悄叫到了%CALLNAME:MASTER%的房间。在%NTR_NAME(0)%戏谑的笑容中，两人拥吻着躺倒在%CALLNAME:MASTER%的床榻上，在%CALLNAME:对象%充满爱意的注视下，%NTR_NAME(0)%那散发着无限魅力、无法用言语形容的肉棒，带着无尽的快感冲破了%CALLNAME:MASTER%再也无法触碰的纯洁。挥洒在空中的汗水、弥散在房间的气味、一刻都未停的娇吟，这场似乎没有尽头的快乐终于随着那浓厚的、混杂着些许朱红的白浊洒满床榻与地板画上了句号，而在这属于%CALLNAME:MASTER%的房间里，双眸中尽是迷离水雾的%CALLNAME:对象%，已经用喊到有些干燥的小嘴含住了%NTR_NAME(0)%的肉棒，伴随着还未合拢的小穴里仍在渗出的点点精液，对房间的主人做出了无形的判决……"
+	ELSE
+		文本内容 += @"%CALLNAME:对象%背着%CALLNAME:MASTER%跟随%NTR_NAME(0)%来到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%。在%NTR_NAME(0)%高超的爱抚下，%CALLNAME:对象%很快就忘记了关于「是否会暴露」的担忧，取而代之的是对%NTR_NAME(0)%充满魅力、不可抵抗的肉棒的渴望眼神。在%CALLNAME:对象%充满爱意的凝视中，%NTR_NAME(0)%缓缓推入了那令%CALLNAME:对象%魂牵梦绕的炽热，撕碎了%CALLNAME:MASTER%再也无法触碰的纯洁。快乐与白浊倾泻而入，由内而外地洗礼着%CALLNAME:对象%，而%CALLNAME:对象%也用隆起的小腹、甜美的娇吟做出了自己的回答。"
+	ENDIF
+ELSEIF IsPlaceHasBathroom(CFLAG:对象:处女丧失时位置_V)
+	文本内容 += @"%CALLNAME:对象%背着%CALLNAME:MASTER%被%NTR_NAME(0)%叫到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，虽说是被要求冲洗身体，但在简单的清洗后%CALLNAME:对象%就开始用纤细的小手细心爱抚起了%NTR_NAME(0)%那令她魂牵梦绕的、充满无限力量的肉棒。被%NTR_NAME(0)%命令着入水后，%CALLNAME:对象%就被一把按进了水里，直到水面浮起一缕鲜红，%CALLNAME:对象%才满脸羞红地钻出水面，但还没来得及抗议，直冲心房的快感就搅得波涛都荡漾开来。随着白浊从水底一股一股地翻涌，%CALLNAME:对象%也逐渐变成了只能挂在%NTR_NAME(0)%身上的玩偶。而随着水花忽闷忽明的娇吟，也已然规划了她命运的航向……"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "树干"
+	文本内容 += @"为了避开%CALLNAME:MASTER%，%CALLNAME:对象%跟着%NTR_NAME(0)%到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，当被要求靠到树后面时，%CALLNAME:对象%的身体早已先于意识做出了回答，轻轻"
+	IF CFLAG:对象:服装_下半身下着２
+		文本内容 += "掀起裙摆露出事先褪去内裤的、散发强烈雌性情欲的清纯小穴，充满爱欲的粘液早已挂满了洁白的腿根。"
+	ELSE
+		文本内容 += "脱下裤子，那散发强烈雌性情欲的清纯小穴就与裤子拉出一条爱欲的丝线。"
+	ENDIF
+	文本内容 += @"温顺地接受了%NTR_NAME(0)%的拥抱，用充满爱意的凝视守望着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%都再也没有想起过%CALLNAME:MASTER%。"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "墙壁"
+	IF IsIndoor(CFLAG:对象:处女丧失时位置_V)
+		文本内容 += @"趁着%CALLNAME:MASTER%不在，"
+	ELSE
+		文本内容 += @"为了避开%CALLNAME:MASTER%，"
+	ENDIF
+	文本内容 += @"%CALLNAME:对象%跟着%NTR_NAME(0)%到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，当被要求扶住墙壁时，"
+	IF CFLAG:对象:服装_下半身下着２
+		文本内容 += @"%CALLNAME:对象%的脸上瞬间爬满了羞意，但她马上就顺从地轻轻掀起裙摆露出散发强烈雌性情欲的清纯小穴，充满爱欲的粘液早已挂满了洁白的腿根。那段时间里，她一直做着为%NTR_NAME(0)%献出处女的准备，每每与%NTR_NAME(0)%见面都会事先脱掉内裤、方便%NTR_NAME(0)%侵犯，用充满爱意的凝视守望着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%都再也没有想起过%CALLNAME:MASTER%。"
+	ELSE
+		文本内容 += @"%CALLNAME:对象%的脸上瞬间爬满了羞意，脱下裤子，那散发强烈雌性情欲的清纯小穴与裤子拉出一条爱欲的丝线。那段时间里，她一直做着为%NTR_NAME(0)%献出处女的准备，每每与%NTR_NAME(0)%见面都会事先脱掉内裤、方便%NTR_NAME(0)%侵犯，用充满爱意的凝视守望着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%都再也没有想起过%CALLNAME:MASTER%。"
+	ENDIF
+ENDIF
+RETURNF 文本内容
+
+@LostVirginDepict_KU_NTR_6(对象)
+#FUNCTIONS
+#DIM 对象
+#DIMS 文本内容
+文本内容 += @"那是在%日期_年份名称(日期_年数)%的%日期_月份名称(日期_月数)%{日期_天数}日，那天%CSTR:对象:处女丧失时天气_V%，"
+IF IsPlaceHasBed(CFLAG:对象:处女丧失时位置_V, 1)
+	IF CFLAG:对象:处女丧失时位置_V == GET_PRIVATE_ROOM(对象,1)
+		文本内容 += @"%CALLNAME:对象%热情地把%NTR_NAME(0)%迎进了自己房间，在这个特别的日子里，%CALLNAME:对象%甚至连一路上都紧紧扣着%NTR_NAME(0)%的手，并肩而行时身体几乎要贴在%NTR_NAME(0)%的身上，仿佛不这样就不足以表达自己对%NTR_NAME(0)%的爱意。在用尽全身每一个地方的前戏和侍奉之后，%CALLNAME:对象%第一次张开两腿间最重要的「嘴」，吞下了%NTR_NAME(0)%充满魅力、不可抵抗的肉棒，幸福地感受着它将%CALLNAME:MASTER%再也无法触碰的纯洁撕碎。在这段%CALLNAME:对象%一生中最重要的幸福时光里，无数浇灌而入的滚烫白浊伴随着动情的娇吟，如反锁的房门在她与%CALLNAME:MASTER%之间划出一道永远无法跨越的深渊……很深、很深……"
+	ELSEIF CFLAG:对象:处女丧失时位置_V == 位置_红魔馆_玩家房间
+		文本内容 += @"%CALLNAME:对象%牵着%NTR_NAME(0)%的手将他带到了%CALLNAME:MASTER%的房间，在%NTR_NAME(0)%戏谑的笑容中，两人拥吻着躺倒在%CALLNAME:MASTER%的床榻上，在%CALLNAME:对象%充满爱意的注视下，%NTR_NAME(0)%那散发着无限魅力、无法用言语形容的肉棒，带着无尽的快感冲破了%CALLNAME:MASTER%再也无法触碰的纯洁。挥洒在空中的汗水、弥散在房间的气味、一刻都未停的娇吟，这场似乎没有尽头的快乐终于随着那浓厚的、混杂着些许朱红的白浊洒满床榻与地板画上了句号，而在这属于%CALLNAME:MASTER%的房间里，双眸中尽是迷离水雾的%CALLNAME:对象%，已经用喊到有些干燥的小嘴含住了%NTR_NAME(0)%的肉棒，伴随着还未合拢的小穴里仍在渗出的点点精液，对房间的主人做出了无形的判决……"
+	ELSE
+		文本内容 += @"%CALLNAME:对象%跟随%NTR_NAME(0)%来到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，一进门，%CALLNAME:对象%就急不可耐地与%NTR_NAME(0)%拥吻在一起，似乎她根本没有考虑过「是否会暴露」的问题，取而代之的是对%NTR_NAME(0)%充满魅力、不可抵抗的肉棒的渴望眼神。在%CALLNAME:对象%充满爱意的凝视中，%NTR_NAME(0)%缓缓推入了那令%CALLNAME:对象%魂牵梦绕的炽热，撕碎了%CALLNAME:MASTER%再也无法触碰的纯洁。快乐与白浊倾泻而入，由内而外地洗礼着%CALLNAME:对象%，而%CALLNAME:对象%也用隆起的小腹、甜美的娇吟做出了自己的回答。"
+	ENDIF
+ELSEIF IsPlaceHasBathroom(CFLAG:对象:处女丧失时位置_V)
+	文本内容 += @"%CALLNAME:对象%被%NTR_NAME(0)%带到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%，虽说是被要求冲洗身体，但在简单的清洗后%CALLNAME:对象%就开始用纤细的小手细心爱抚起了%NTR_NAME(0)%那令她魂牵梦绕的、充满无限力量的肉棒。PRINTFORM 被%NTR_NAME(0)%命令着入水后，%CALLNAME:对象%就被一把按进了水里，直到水面浮起一缕鲜红，%CALLNAME:对象%才满脸羞红地钻出水面，但还没来得及抗议，直冲心房的快感就搅得波涛都荡漾开来。随着白浊从水底一股一股地翻涌，%CALLNAME:对象%也逐渐变成了只能挂在%NTR_NAME(0)%身上的玩偶。而随着水花忽闷忽明的娇吟，也已然规划了她命运的航向……"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "树干"
+	IF CFLAG:对象:服装_下半身下着２
+		文本内容 += @"%CALLNAME:对象%与%NTR_NAME(0)%并肩而行，到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%时，%NTR_NAME(0)%突然要求她要求靠到树后面时，而%CALLNAME:对象%的身体早已先于意识做出了回答，轻轻掀起裙摆露出事先褪去内裤的、散发强烈雌性情欲的清纯小穴，充满爱欲的粘液早已挂满了洁白的腿根。温顺地接受了%NTR_NAME(0)%的拥抱，用充满爱意的凝视守望着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%水雾弥漫的眼眸里都从没出现过%CALLNAME:MASTER%的身影。"
+	ELSE
+		文本内容 += @"%CALLNAME:对象%与%NTR_NAME(0)%并肩而行，到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%时，%NTR_NAME(0)%突然要求她要求靠到树后面时，而%CALLNAME:对象%的身体早已先于意识做出了回答，轻轻脱下裤子，那散发强烈雌性情欲的清纯小穴就与裤子拉出一条爱欲的丝线。温顺地接受了%NTR_NAME(0)%的拥抱，用充满爱意的凝视守望着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%水雾弥漫的眼眸里都从没出现过%CALLNAME:MASTER%的身影。"
+	ENDIF
+	文本内容 += @"%CALLNAME:对象%与%NTR_NAME(0)%并肩而行，到了%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%时，%NTR_NAME(0)%突然要求她要求靠到树后面时，而%CALLNAME:对象%的身体早已先于意识做出了回答，轻轻"
+	IF CFLAG:对象:服装_下半身下着２
+		文本内容 += "掀起裙摆露出事先褪去内裤的、散发强烈雌性情欲的清纯小穴，充满爱欲的粘液早已挂满了洁白的腿根。"
+	ELSE
+		文本内容 += "脱下裤子，那散发强烈雌性情欲的清纯小穴就与裤子拉出一条爱欲的丝线。"
+	ENDIF
+	文本内容 += @"温顺地接受了%NTR_NAME(0)%的拥抱，用充满爱意的凝视守望着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%水雾弥漫的眼眸里都从没出现过%CALLNAME:MASTER%的身影。"
+ELSEIF MSG_WallOrTree(CFLAG:对象:处女丧失时位置_V) == "墙壁"
+	文本内容 += @"%CALLNAME:对象%与%NTR_NAME(0)%在%GetPlaceName(CFLAG:对象:处女丧失时位置_V)%亲热时，突然被要求扶住墙壁，%CALLNAME:对象%的脸上瞬间爬满了羞意，但她马上就顺从地轻轻"
+	IF CFLAG:对象:服装_下半身下着２
+		文本内容 += "掀起裙摆露出散发强烈雌性情欲的清纯小穴，充满爱欲的粘液早已挂满了洁白的腿根。"
+	ELSE
+		文本内容 += "脱下裤子，那散发强烈雌性情欲的清纯小穴与裤子拉出一条爱欲的丝线。"
+	ENDIF
+	文本内容 += @"那段时间里，她一直做着为%NTR_NAME(0)%献出处女的准备，每每与%NTR_NAME(0)%见面都会事先脱掉内裤、方便%NTR_NAME(0)%侵犯，用充满爱意的凝视守望着那魅力四散、不可匹敌的肉棒缓缓撕碎%CALLNAME:MASTER%再也无法触碰的纯洁。随着被爱液稀释的鲜红落地，决堤的娇吟便响彻了这片静谧之地，直到腿间滴落的点点白浊将它彻底覆盖，直到子宫被灼烧在滚烫的快乐里，%CALLNAME:对象%水雾弥漫的眼眸里都从没出现过%CALLNAME:MASTER%的身影。"
+ENDIF
+RETURNF 文本内容
