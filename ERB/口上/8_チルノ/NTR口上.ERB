@@ -4073,12 +4073,12 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「ここならみんなにバレないよね・・」	
-	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと連れ込まれた。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_GetPlaceName(FLAG:访问者当前位置)%へと連れ込まれた。
 
 ELSE
 
 	PRINTFORML 「痛っ、は、離せえっ！」	
-	PRINTFORML %CALLNAME:奴隷%は強引に%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと連れ込まれた。
+	PRINTFORML %CALLNAME:奴隷%は強引に%NTR_GetPlaceName(FLAG:访问者当前位置)%へと連れ込まれた。
 
 ENDIF
 RETURN 0

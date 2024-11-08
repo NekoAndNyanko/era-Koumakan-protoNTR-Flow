@@ -4072,27 +4072,27 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「こっちで...？ ふふ...いいわ...きて...」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%にもたれかかって%NTR_NAME(0)%を誘った。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%にもたれかかって%NTR_NAME(0)%を誘った。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「こっちで...？ ふふ...いいわ...きて...」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%にもたれかかって%NTR_NAME(0)%を誘った。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%にもたれかかって%NTR_NAME(0)%を誘った。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「こっちで...？ ...いいわ...きて...」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%にもたれかかって%NTR_NAME(0)%を待った。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%にもたれかかって%NTR_NAME(0)%を待った。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 
 	PRINTFORML 「こっちで...？ ...そんな...あっ...」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%に押し付けられ、強引に菊門を奪われた。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%に押し付けられ、強引に菊門を奪われた。
 
 ELSE
 
 	PRINTFORML 「こ、こっちって...！ ...そんな...いやっ...いやああっ...！！」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%に押し付けられ、強引に菊門を犯された。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%に押し付けられ、強引に菊門を犯された。
 
 ENDIF
 RETURN 0
@@ -4319,20 +4319,20 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「ええ...いいわ...」
 	IF 0 == 誘いフラグ
-		PRINTFORML %NTR_NAME(0)%によって%NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた%CALLNAME:奴隷%は期待に頬を染めている。
+		PRINTFORML %NTR_NAME(0)%によって%NTR_GetPlaceName(FLAG:访问者当前位置)%に連れ込まれた%CALLNAME:奴隷%は期待に頬を染めている。
 	ELSE
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%に誘った%CALLNAME:奴隷%は期待に頬を染めている。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GetPlaceName(FLAG:访问者当前位置)%に誘った%CALLNAME:奴隷%は期待に頬を染めている。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「...そうね...人目につきたくはないわ...」
-	PRINTFORML %NTR_GETPLACENAME(FLAG:访问者当前位置)%に連れ込まれた%CALLNAME:奴隷%はむすっとした目つきで%NTR_NAME(0)%を見ている。
+	PRINTFORML %NTR_GetPlaceName(FLAG:访问者当前位置)%に連れ込まれた%CALLNAME:奴隷%はむすっとした目つきで%NTR_NAME(0)%を見ている。
 
 ELSE
 
 	PRINTFORML 「けほっ...咽に悪いわ...」
-	PRINTFORML %CALLNAME:奴隷%は埃っぽい%NTR_GETPLACENAME(FLAG:访问者当前位置)%の中でむせている。	
+	PRINTFORML %CALLNAME:奴隷%は埃っぽい%NTR_GetPlaceName(FLAG:访问者当前位置)%の中でむせている。	
 
 ENDIF
 RETURN 0

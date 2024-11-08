@@ -238,7 +238,7 @@ ELSEIF EQUIP:ARG:上半身下着２ == 9
 	ENDIF
 	RETURN 1
 	;サンタ:プレゼントが…？
-ELSEIF EQUIP:ARG:上半身上着２ == 19 && 暦法月 == 5 && 暦法日 == 24
+ELSEIF EQUIP:ARG:上半身上着２ == 19 && 日期_月数 == 5 && 日期_天数 == 24
 	IF ARG != 0
 		CFLAG:ARG:サンタ = 1
 	ELSE

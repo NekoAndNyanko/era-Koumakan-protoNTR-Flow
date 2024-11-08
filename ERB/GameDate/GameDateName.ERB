@@ -1,0 +1,76 @@
+;SHOP.ERB 8,INFO.ERB 615----------------------------------------------------------------
+@日期_月份名称(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1
+		RETURNF "春开"
+	CASE 2
+		RETURNF "夏至"
+	CASE 3
+		RETURNF "仲夏"
+	CASE 4
+		RETURNF "秋凉"
+	CASE 5
+		RETURNF "腊寒"
+	CASE 6
+		RETURNF "除岁"
+ENDSELECT
+
+[SKIPSTART]
+@日期_月份名称(ARG)
+#FUNCTIONS
+SELECTCASE ARG
+	CASE 1
+		RETURNF "春季"
+	CASE 2
+		RETURNF "夏季上旬"
+	CASE 3
+		RETURNF "夏季下旬"
+	CASE 4
+		RETURNF "秋季"
+	CASE 5
+		RETURNF "冬季上旬"
+	CASE 6
+		RETURNF "冬季下旬"
+ENDSELECT
+[SKIPEND]
+
+;因为设定是2011年为第一年，所以从日与秋与火之年开始。
+@日期_年份名称(ARG)
+#FUNCTIONS
+#DIMS 年份名称
+年份名称 = 
+SELECTCASE ARG%3
+	CASE 0
+		年份名称 += "星与"
+	CASE 1
+		年份名称 += "日与"
+	CASE 2
+		年份名称 += "月与"
+	CASEELSE
+ENDSELECT
+SELECTCASE ARG%4
+	CASE 0
+		年份名称 += "夏与"
+	CASE 1
+		年份名称 += "秋与"
+	CASE 2
+		年份名称 += "冬与"
+	CASE 3
+		年份名称 += "春与"
+	CASEELSE
+ENDSELECT
+SELECTCASE ARG%3
+	CASE 0
+		年份名称 += "土之年"
+	CASE 1
+		年份名称 += "火之年"
+	CASE 2
+		年份名称 += "水之年"
+	CASE 3
+		年份名称 += "木之年"
+	CASE 4
+		年份名称 += "金之年"
+	CASEELSE
+ENDSELECT
+RETURNF 年份名称

@@ -764,7 +764,7 @@ IF TALENT:奴隷:NTR || TALENT:奴隷:浮気公認
 	ENDIF
 ELSE
 	PRINTFORML %CALLNAME:奴隷%表情僵了一下、突然用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
-	IF CFLAG:奴隷:射精者V == 人物_あなた
+	IF CFLAG:奴隷:射精者V == 人物_玩家
 		PRINTFORML 脸上泛起潮红、神色十分慌乱。
 	ELSE
 		PRINTFORML 不知道为什么脸上泛起了潮红、显得有些慌张。
@@ -793,11 +793,11 @@ IF ノーパン != 0
 ELSE
 	IF TALENT:奴隷:NTR || TALENT:奴隷:浮気公認
 		PRINTFORML %CALLNAME:奴隷%的脸上泛起了红晕、用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
-		IF CFLAG:奴隷:射精者V != 人物_あなた
+		IF CFLAG:奴隷:射精者V != 人物_玩家
 			PRINTFORMW 眼神有些恍惚地在嘴角勾起了淫靡的微笑。
 		ENDIF
 	ELSE
-		IF CFLAG:奴隷:射精者V == 人物_あなた
+		IF CFLAG:奴隷:射精者V == 人物_玩家
 			PRINTFORML %CALLNAME:奴隷%表情僵了一下、突然用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。
 		ELSE
 			PRINTFORML %CALLNAME:奴隷%表情僵了一下、突然用手捂住了%SHOW_BOTTOM(奴隷,1)%的下腹部。

@@ -52,7 +52,7 @@ IF TFLAG:遠距離移动
 		住人 = TARGET:LOOP_CHR
 	NEXT
 	IF 住人
-		PRINTFORM 在%GETPLACENAME(CFLAG:MASTER:当前位置)%遇到了%CALLNAME:住人%
+		PRINTFORM 在%GetPlaceName(CFLAG:MASTER:当前位置)%遇到了%CALLNAME:住人%
 		;STRLENSU CALLNAME:住人
 		;PRINTFORMW 対象:%CALLNAME:住人% パンツ:%CSTR:MASTER:収集品% %SUBSTRINGU(CSTR:MASTER:収集品, 0, RESULT)%
 		IF STRLENS(CSTR:MASTER:収集品) && 収集品死守戦発生(住人) && !CFLAG:住人:睡眠
@@ -234,7 +234,7 @@ RETURN 0
 IF CFLAG:住人:当前位置 == FLAG:访问者当前位置 && FLAG:訪問者の气氛 != 0 && CFLAG:MASTER:当前位置 == CFLAG:住人:当前位置
 	;性交以外
 	IF 1 <= FLAG:访问者当前行为 && FLAG:访问者当前行为 <= 6
-		PRINTFORML 【%GETPLACENAME(FLAG:21)%】%CALLNAME:住人%和%NTR_NAME(0)%好像在做什么、但因为%CALLNAME:MASTER%来了停了下来
+		PRINTFORML 【%GetPlaceName(FLAG:21)%】%CALLNAME:住人%和%NTR_NAME(0)%好像在做什么、但因为%CALLNAME:MASTER%来了停了下来
 		PRINTFORML 感觉%CALLNAME:住人%的脸有些红
 		PRINTFORMW 
 		CALL NTR_RESET_VISITOR_ACTION(住人)
@@ -243,7 +243,7 @@ IF CFLAG:住人:当前位置 == FLAG:访问者当前位置 && FLAG:訪問者の�
 		TRYCALLFORM NTR_INFIDELITY(住人)
 		;性交時
 	ELSEIF 7 <= FLAG:访问者当前行为 && FLAG:访问者当前行为 <= 13
-		PRINTFORML 【%GETPLACENAME(FLAG:21)%】%CALLNAME:住人%和%NTR_NAME(0)%好像在做些什么、但是注意到接近的%CALLNAME:MASTER%、慌忙中断了行动
+		PRINTFORML 【%GetPlaceName(FLAG:21)%】%CALLNAME:住人%和%NTR_NAME(0)%好像在做些什么、但是注意到接近的%CALLNAME:MASTER%、慌忙中断了行动
 		PRINTFORML %CALLNAME:住人%的脸有些红，衣服凌乱
 		PRINTFORMW 
 		CALL NTR_RESET_VISITOR_ACTION(住人)
@@ -461,7 +461,7 @@ ELSEIF RESULT == 1
 		IF !移动中
 			PRINTFORMW 总算成功地把%CALLNAME:住人%敷衍住了
 		ELSE
-			PRINTFORMW 成功的敷衍了事，%CALLNAME:MASTER%匆匆忙忙离开了%GETPLACENAME(CFLAG:MASTER:当前位置)%……
+			PRINTFORMW 成功的敷衍了事，%CALLNAME:MASTER%匆匆忙忙离开了%GetPlaceName(CFLAG:MASTER:当前位置)%……
 		ENDIF
 		;一度ごまかしに成功するにつれてごまかされにくくなる
 		CFLAG:住人:収集品死守戦フラグ += 10

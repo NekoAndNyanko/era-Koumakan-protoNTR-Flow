@@ -46,7 +46,7 @@ IF CFLAG:(ARG:1):成長度 == 成長度_乳児
 	;性格次第でどこにでも行く(臆病だと暗い部屋(納屋と地下室)には近寄らない(例外有))
 ELSEIF CFLAG:(ARG:1):成長度 == 成長度_幼児
 	LOCAL:3 = 1
-	FOR LOCAL:4, 1, 場所番号最大値+1
+	FOR LOCAL:4, 1, 位置编号最大值+1
 		SELECTCASE LOCAL:4
 			CASE 位置_红魔馆_仓库
 				IF TALENT:(ARG:1):胆量 == -1 && !(GET_NOW_POS(CFLAG:(ARG:1):父親) == 6 || GET_NOW_POS(CFLAG:(ARG:1):母親) == 6)
@@ -71,7 +71,7 @@ ELSEIF CFLAG:(ARG:1):成長度 == 成長度_幼児
 	;性格次第でどこにでも行く(臆病だと暗い部屋(納屋と地下室)には近寄らない(例外有))
 ELSEIF CFLAG:(ARG:1):成長度 >= 成長度_成長期
 	LOCAL:3 = 1
-	FOR LOCAL:4, 1, 場所番号最大値+1
+	FOR LOCAL:4, 1, 位置编号最大值+1
 		SELECTCASE LOCAL:4
 			CASE 位置_红魔馆_仓库
 				IF TALENT:(ARG:1):胆量 == -1 && !(GET_NOW_POS(CFLAG:(ARG:1):父親) == 6 || GET_NOW_POS(CFLAG:(ARG:1):母親) == 6)

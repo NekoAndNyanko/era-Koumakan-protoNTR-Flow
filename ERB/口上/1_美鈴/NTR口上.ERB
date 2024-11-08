@@ -391,13 +391,13 @@ ELSE
 		DATAFORM 「ううんっ！ うっ・・う・・ちゅ・・」
 	ENDDATA
 	IF NTR_CHK_PEEP_CONT(奴隷) 
-		PRINTFORML %CALLNAME:奴隷%虽然持续抵抗，但被%MSG_WALL_OR_TREE()%强加，身体也动弹不得就老实了。
+		PRINTFORML %CALLNAME:奴隷%虽然持续抵抗，但被%MSG_WallOrTree_NTR()%强加，身体也动弹不得就老实了。
 		IF TALENT:奴隷:恋慕
 			PRINTFORML 看着%ANATA_LOVER(奴隷)%沒有帮助自己而感到绝望、便巧妙地用親吻的快乐覆盖過去。
 		ELSE
 		ENDIF
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%虽然持续抵抗，但被%MSG_WALL_OR_TREE()%强加，身体也动弹不得就老实了。
+		PRINTFORML %CALLNAME:奴隷%虽然持续抵抗，但被%MSG_WallOrTree_NTR()%强加，身体也动弹不得就老实了。
 	ENDIF
 
 ENDIF
@@ -1495,42 +1495,42 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「是……正如您所说……」
 	IF 0 == 誘いフラグ
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GetPlaceName(FLAG:访问者当前位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
 	ELSE
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GetPlaceName(FLAG:访问者当前位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「是……照您所说的……」
 	IF 0 == 誘いフラグ
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GetPlaceName(FLAG:访问者当前位置)%同行%CALLNAME:奴隷%被%NTR_NAME(4)%被紧紧抱住脸颊染红了。
 	ELSE
-		PRINTFORML %NTR_NAME(0)%を%NTR_GETPLACENAME(FLAG:访问者当前位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%に被紧紧抱住脸颊染红了。
+		PRINTFORML %NTR_NAME(0)%を%NTR_GetPlaceName(FLAG:访问者当前位置)%的邀请%CALLNAME:奴隷%被%NTR_NAME(4)%に被紧紧抱住脸颊染红了。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「嗯……这里没问题。」
 	IF IS_CAN_LOCK(FLAG:访问者当前位置)
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%的钥匙，染红了脸颊,对%NTR_NAME(0)%微笑了。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GetPlaceName(FLAG:访问者当前位置)%的钥匙，染红了脸颊,对%NTR_NAME(0)%微笑了。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%然后，脸颊染红了,对%NTR_NAME(0)%的微笑。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GetPlaceName(FLAG:访问者当前位置)%然后，脸颊染红了,对%NTR_NAME(0)%的微笑。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「・・这里没关系・・・」
 	IF IS_CAN_LOCK(FLAG:访问者当前位置)
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%的钥匙，对%NTR_NAME(0)%微笑了。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GetPlaceName(FLAG:访问者当前位置)%的钥匙，对%NTR_NAME(0)%微笑了。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%然后，对%NTR_NAME(0)%微笑。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_GetPlaceName(FLAG:访问者当前位置)%然后，对%NTR_NAME(0)%微笑。
 	ENDIF
 
 ELSE
 
 	PRINTFORML 「请放开我」
-	PRINTFORML %CALLNAME:奴隷%被抓住手腕强行带入%NTR_GETPLACENAME(FLAG:访问者当前位置)%。
+	PRINTFORML %CALLNAME:奴隷%被抓住手腕强行带入%NTR_GetPlaceName(FLAG:访问者当前位置)%。
 
 ENDIF
 RETURN 0

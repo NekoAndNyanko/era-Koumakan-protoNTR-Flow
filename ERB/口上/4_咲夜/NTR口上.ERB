@@ -539,7 +539,7 @@ ELSE
 		DATAFORM 「嗯嗯！嗯！呜・・呜呜・・」
 		DATAFORM 「呜呜嗯！呜・・呜・・啾・・」
 	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%想要逃跑，却被%MSG_WALL_OR_TREE()%强行伸入口中蹂躙。
+	PRINTFORML %CALLNAME:奴隷%想要逃跑，却被%MSG_WallOrTree_NTR()%强行伸入口中蹂躙。
 
 ENDIF
 RETURN 0
@@ -6649,21 +6649,21 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ) || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「这里・・？呵呵、悪趣味呢・・好吧、可以哦・・插进来吧・・」
-	PRINTFORML 被要求用菊花做的%CALLNAME:奴隷%背靠着%MSG_WALL_OR_TREE()%，浮现出淫荡的笑容提起女服服的裙子，迎接%NTR_NAME(0)%的插入。
+	PRINTFORML 被要求用菊花做的%CALLNAME:奴隷%背靠着%MSG_WallOrTree_NTR()%，浮现出淫荡的笑容提起女服服的裙子，迎接%NTR_NAME(0)%的插入。
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「这里・・？呵呵、悪趣味呢・・」
-	PRINTFORML 被要求用菊花做的%CALLNAME:奴隷%背靠着%MSG_WALL_OR_TREE()%，浮现出淫荡的笑容提起女服服的裙子，迎接%NTR_NAME(0)%的插入。
+	PRINTFORML 被要求用菊花做的%CALLNAME:奴隷%背靠着%MSG_WallOrTree_NTR()%，浮现出淫荡的笑容提起女服服的裙子，迎接%NTR_NAME(0)%的插入。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 
 	PRINTFORML 「这里・・？呵呵、悪趣味呢・・」
-	PRINTFORML 被要求用菊花做的%CALLNAME:奴隷%背靠着%MSG_WALL_OR_TREE()%，提起女服服的裙子，等待%NTR_NAME(0)%的插入。
+	PRINTFORML 被要求用菊花做的%CALLNAME:奴隷%背靠着%MSG_WallOrTree_NTR()%，提起女服服的裙子，等待%NTR_NAME(0)%的插入。
 
 ELSE
 
 	PRINTFORML 「这、这里・・！？不、不要啊啊！！」
-	PRINTFORML %NTR_NAME(0)%将挣扎的%CALLNAME:奴隷%压在%MSG_WALL_OR_TREE()%上。强行贯穿了菊花。		
+	PRINTFORML %NTR_NAME(0)%将挣扎的%CALLNAME:奴隷%压在%MSG_WallOrTree_NTR()%上。强行贯穿了菊花。		
 
 ENDIF
 RETURN 0
@@ -6929,7 +6929,7 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	ELSE
 		PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
 	ENDIF
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 	PRINTFORML 就算被谁看到了也没问题。她已经如此地屈服于快感了。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
@@ -6939,7 +6939,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 	ELSE
 		PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
 	ENDIF
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML 被%MSG_LOVER(奴隷)%看到的话该怎么办，这种事已经不存在于%CALLNAME:奴隷%的意识之中了。
 		IF TALENT:奴隷:浮気公認
@@ -6959,7 +6959,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 	ELSE
 		PRINTFORML 「好吧・・不论如何・・都照你说的做・・♪」
 	ENDIF
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，%CALLNAME:奴隷%用满是期待的笑脸看着%NTR_NAME(0)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，%CALLNAME:奴隷%用满是期待的笑脸看着%NTR_NAME(0)%。
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
 			PRINTFORML 让%MSG_LOVER(奴隷)%在一边看也会是一种乐趣，%CALLNAME:奴隷%如此考虑着。
@@ -6980,9 +6980,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 		PRINTFORML 「虽然是这种地方・・没办法呢」
 	ENDIF
 	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%锁上了%NTR_GETPLACENAME(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%锁上了%NTR_GetPlaceName(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7000,7 +7000,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放开我、不要啊」
-	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GETPLACENAME(FLAG:访问者当前位置)%。
+	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GetPlaceName(FLAG:访问者当前位置)%。
 
 ENDIF
 RETURN 0
@@ -7019,7 +7019,7 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 	ELSE
 		PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
 	ENDIF
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 	PRINTFORML 可能会被谁看到。但就算那样也没有问题。她已经如此地屈服于快感了。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
@@ -7029,7 +7029,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 	ELSE
 		PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
 	ENDIF
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML 被%MSG_LOVER(奴隷)%看到的话该怎么办，这种事已经不存在于%CALLNAME:奴隷%的意识之中了。
 		IF TALENT:奴隷:浮気公認
@@ -7050,9 +7050,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 		PRINTFORML 「好吧・・不论如何・・都照你说的做・・♪」
 	ENDIF
 	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GETPLACENAME(FLAG:访问者当前位置)%的锁，用满是期待的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GetPlaceName(FLAG:访问者当前位置)%的锁，用满是期待的笑脸看着%NTR_NAME(0)%。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，用满是期待的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，用满是期待的笑脸看着%NTR_NAME(0)%。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7074,9 +7074,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 		PRINTFORML 「虽然是这种地方・・没办法呢」
 	ENDIF
 	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GETPLACENAME(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GetPlaceName(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7094,7 +7094,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放开我、不要啊」
-	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GETPLACENAME(FLAG:访问者当前位置)%。
+	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GetPlaceName(FLAG:访问者当前位置)%。
 
 ENDIF
 RETURN 0
@@ -7109,12 +7109,12 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
@@ -7124,9 +7124,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 		PRINTFORML 「呵呵・・这里的话基本就没问题了・・・」
 	ENDIF
 	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GETPLACENAME(FLAG:访问者当前位置)%的锁，用满是期待的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GetPlaceName(FLAG:访问者当前位置)%的锁，用满是期待的笑脸看着%NTR_NAME(0)%。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，用满是期待的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，用满是期待的笑脸看着%NTR_NAME(0)%。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7149,9 +7149,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 		PRINTFORML 「这里的话应该就没问题了」
 	ENDIF
 	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GETPLACENAME(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GetPlaceName(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7169,7 +7169,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放开我、不要啊」
-	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GETPLACENAME(FLAG:访问者当前位置)%。
+	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GetPlaceName(FLAG:访问者当前位置)%。
 
 ENDIF
 RETURN 0
@@ -7184,12 +7184,12 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「好吧・・不论如何・・都照你说的做・・%MSG_HEART()%」
-	PRINTFORML 在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
+	PRINTFORML 在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，跪在%NTR_NAME(0)%面前的%CALLNAME:奴隷%用香艳的眼神仰望着%NTR_NAME(4)%。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML 万一被%MSG_LOVER(奴隷)%看到的话该怎么办，这种事已经不存在于%CALLNAME:奴隷%的意识之中了。
 		IF TALENT:奴隷:浮気公認
@@ -7205,9 +7205,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「呵呵・・这里的话就没问题了・・♪」
 	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GETPLACENAME(FLAG:访问者当前位置)%的锁，用满是期待的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GetPlaceName(FLAG:访问者当前位置)%的锁，用满是期待的笑脸看着%NTR_NAME(0)%。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，用满是期待的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，用满是期待的笑脸看着%NTR_NAME(0)%。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7230,9 +7230,9 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 		PRINTFORML 「这里的话应该就没问题了」
 	ENDIF
 	IF IS_CAN_LOCK(FLAG:访问者当前位置) && TALENT:奴隷:浮気公認 < 3
-		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GETPLACENAME(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%锁上%NTR_GetPlaceName(FLAG:访问者当前位置)%的锁，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%在%NTR_GETPLACENAME(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
+		PRINTFORML %CALLNAME:奴隷%在%NTR_GetPlaceName(FLAG:访问者当前位置)%中，用妖艳的笑脸看着%NTR_NAME(0)%。
 	ENDIF
 	IF TALENT:奴隷:恋慕
 		IF TALENT:奴隷:浮気公認
@@ -7250,7 +7250,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「放开我、不要啊」
-	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GETPLACENAME(FLAG:访问者当前位置)%。
+	PRINTFORML %CALLNAME:奴隷%被拉住手腕，强行带入了%NTR_GetPlaceName(FLAG:访问者当前位置)%。
 
 ENDIF
 

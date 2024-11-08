@@ -9,9 +9,9 @@ PRINTFORM ■　
 RESETCOLOR
 PRINTFORML %色汎用(CFLAG:ARG:髪色)%
 PRINTFORML %"头发长度",12%：%髪の長さ(CFLAG:ARG:髪の長さ)%
-PRINTFORML %"特徴",12%：\@ (CFLAG:ARG:髪の長さ < 200 || 存在浴室(CFLAG:ARG:当前位置) || CFLAG:ARG:寝間着着用) ?ーーー#%髪オプション(CFLAG:ARG:髪オプション１)%\@
+PRINTFORML %"特徴",12%：\@ (CFLAG:ARG:髪の長さ < 200 || IsPlaceHasBathroom(CFLAG:ARG:当前位置) || CFLAG:ARG:寝間着着用) ?ーーー#%髪オプション(CFLAG:ARG:髪オプション１)%\@
 IF CFLAG:ARG:髪オプション２
-	PRINTFORML %"",12%：\@ (CFLAG:ARG:髪の長さ < 200 || 存在浴室(CFLAG:ARG:当前位置) || CFLAG:ARG:寝間着着用) ?ーーー#%髪オプション(CFLAG:ARG:髪オプション２)%\@
+	PRINTFORML %"",12%：\@ (CFLAG:ARG:髪の長さ < 200 || IsPlaceHasBathroom(CFLAG:ARG:当前位置) || CFLAG:ARG:寝間着着用) ?ーーー#%髪オプション(CFLAG:ARG:髪オプション２)%\@
 ELSE
 	PRINTL
 ENDIF

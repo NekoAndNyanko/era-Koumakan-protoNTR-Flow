@@ -22,7 +22,7 @@ DRAWLINE
 ;全員分ループ
 FOR キャラ番号,1,CHARANUM
 	PRINTFORM %CALLNAME:キャラ番号,15,LEFT%
-	ボタン文字列 = %GETPLACENAME(CFLAG:キャラ番号:当前位置)%
+	ボタン文字列 = %GetPlaceName(CFLAG:キャラ番号:当前位置)%
 	PRINTBUTTON "["+ボタン文字列+"]", CFLAG:キャラ番号:当前位置
 	PRINTFORM %" "*MAX(0,(20-STRLENS(ボタン文字列)))%
 	PRINTFORM %TOSTR(CFLAG:キャラ番号:好感度,"#####0"),7%
@@ -43,7 +43,7 @@ $COM420_01_INPUT_LOOP
 INPUT
 IF RESULT == 0
 	RETURN 1
-ELSEIF RESULT > 0 &&  RESULT <= 場所番号最大値
+ELSEIF RESULT > 0 &&  RESULT <= 位置编号最大值
 	NEXTCOM = GETNUM(TRAINNAME, "移动")
 	TFLAG:195 = RESULT
 	CALLF FARMOVE(MASTER, CFLAG:MASTER:当前位置, RESULT)

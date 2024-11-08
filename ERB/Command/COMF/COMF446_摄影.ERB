@@ -13,7 +13,7 @@ FOR 部屋番号,0,MAXROOM()
 				SETCOLOR 色設定_マップ_他人
 			ENDIF
 		NEXT
-		PRINTFORML %"["%{部屋番号,2}%"] - "+GETPLACENAME(部屋番号)%
+		PRINTFORML %"["%{部屋番号,2}%"] - "+GetPlaceName(部屋番号)%
 		RESETCOLOR
 	ENDIF
 NEXT
@@ -60,7 +60,7 @@ IF isLocked(部屋番号)
 		ENDIF
 		PRINTFORML 扉を開けることができなかった。
 		;		IF IS_NTR_SHOW_ALL()
-		PRINTFORML %CALLNAME:MASTER + "は仕方なく、採光用の小さな窓から" + GETPLACENAME(部屋番号) + "の様子を摄影した……。"%
+		PRINTFORML %CALLNAME:MASTER + "は仕方なく、採光用の小さな窓から" + GetPlaceName(部屋番号) + "の様子を摄影した……。"%
 		;		ELSE
 		;			HTML_PRINT @"<font color='#" +TOSTR(色設定_テキスト_備考,"x") ;+"'>ＮＴＲ筒抜けモードを有効にすると、採光窓から中を窥视事ができるようになります。</font>"
 		;			RETURN 1

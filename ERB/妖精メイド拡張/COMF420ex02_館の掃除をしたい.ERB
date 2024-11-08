@@ -13,23 +13,23 @@ RETURN 0
 ; RETURN 0 コマンドの実行に失敗
 ; RETURN 1 コマンドの実行に成功
 @COM420_02
-#DIM  場所番号
+#DIM  位置编号
 #DIMS 場所名称
 PRINTFORML %"妖精女仆「现在的清洁情况是这样的」"%
 DRAWLINE
 PRINTFORML %"場所名                  清潔度    場所名                  清潔度"%
 DRAWLINE
-FOR 場所番号,1,場所番号最大値+1
-	IF 場所番号 == 位置_红魔馆_玩家房间
+FOR 位置编号,1,位置编号最大值+1
+	IF 位置编号 == 位置_红魔馆_玩家房间
 		場所名称 = %CALLNAME:MASTER%私室
 	ELSE
-		場所名称 = %GETPLACENAME(場所番号)%
+		場所名称 = %GetPlaceName(位置编号)%
 	ENDIF
-	PRINTBUTTON "["+場所名称+"]", 場所番号
+	PRINTBUTTON "["+場所名称+"]", 位置编号
 	PRINTFORM %" "*(20-STRLENS(場所名称))%
-	PRINTFORM %SEIKETU(場所番号),8,RIGHT%%"    "%
+	PRINTFORM %SEIKETU(位置编号),8,RIGHT%%"    "%
 	RESETCOLOR
-	IF 場所番号 % 2 == 0
+	IF 位置编号 % 2 == 0
 		PRINTL
 	ENDIF
 NEXT
@@ -40,7 +40,7 @@ $COM420_02_INPUT_LOOP
 INPUT
 IF RESULT == 0
 	RETURN 1
-ELSEIF RESULT > 0 &&  RESULT <= 場所番号最大値
+ELSEIF RESULT > 0 &&  RESULT <= 位置编号最大值
 	;目的地がテラスなら蕾米莉亚私室が閉まっている且つ合鍵を持っていないと進めない
 	IF RESULT == 位置_红魔馆_三楼阳台 && FLAG:(300 + 位置_红魔馆_蕾米莉亚私室) && !HAS_DUPLICATE_KEY(位置_红魔馆_蕾米莉亚私室)
 		PRINTW 蕾米莉亚私室を通れない為、移动できません
@@ -59,10 +59,10 @@ RETURN 1
 ;-------------------------------------------------------------------------------
 ;指定された部屋の清潔度を返す
 ;@return 清潔度の表示文字列
-@SEIKETU(場所番号)
+@SEIKETU(位置编号)
 #FUNCTIONS
-#DIM 場所番号
-SELECTCASE FLAG:(100 + 場所番号)
+#DIM 位置编号
+SELECTCASE FLAG:(100 + 位置编号)
 	CASE IS < 100
 		SETCOLOR 色設定_清潔度１
 		RETURNF "    最高"

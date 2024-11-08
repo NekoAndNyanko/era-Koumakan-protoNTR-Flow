@@ -1501,13 +1501,13 @@ DO
 		EXP:住人:Ｖ性交经验 ++
 		EXP:住人:催眠Ｖ性交经验 ++
 		;汚賍等共通する処理
-		CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_あなた)
-		CALL STAIN_MOVE_BY_PENIS(部位_膣内, 住人, 人物_あなた)
+		CALL STAIN_MOVE_BY_PENIS(部位_Ｖ, 住人, 人物_玩家)
+		CALL STAIN_MOVE_BY_PENIS(部位_膣内, 住人, 人物_玩家)
 		IF TALENT:住人:处女
-			CALL LOST_VIRGIN(住人, 人物_あなた)
+			CALL LOST_VIRGIN(住人, 人物_玩家)
 			;处女喪失中フラグ套裝
 		ENDIF
-		CALL EJACULATION_V(住人, 人物_あなた)
+		CALL EJACULATION_V(住人, 人物_玩家)
 		EXP:住人:Ｖ绝顶经验 ++
 		EXP:住人:绝顶经验 ++
 		;V感覚が高いと绝顶经验加算（強絶頂扱い）

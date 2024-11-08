@@ -10,7 +10,7 @@ CFLAG:奴隷:同席目撃時行為 = MAX(CFLAG:奴隷:同席目撃時行為, FLA
 ;覗きバレしてる
 ;PRINTFORML 回数:{CFLAG:奴隷:覗き発覚回数}  行為:{CFLAG:奴隷:覗き発覚時行為}
 IF CFLAG:奴隷:覗き発覚回数 > 0 && CFLAG:奴隷:覗き発覚時行為 >= NTR_行为_Ｖ正常位
-	PRINTFORML 【%GETPLACENAME(FLAG:21)%】に入ると先程見ていた通り%CALLNAME:奴隷%が%NTR_NAME(0)%と%NTR_GET_SEX_LAGE()%でまぐわっていた
+	PRINTFORML 【%GetPlaceName(FLAG:21)%】に入ると先程見ていた通り%CALLNAME:奴隷%が%NTR_NAME(0)%と%NTR_GET_SEX_LAGE()%でまぐわっていた
 	;継続
 	;IF RAND:3 == 0 || IS_AIR_MASTER(奴隷) >= 4
 	;NTR or 寝取られ寸前 or 寝取られそう
@@ -32,7 +32,7 @@ IF CFLAG:奴隷:覗き発覚回数 > 0 && CFLAG:奴隷:覗き発覚時行為 >= 
 	CALL NTR_RESET_VISITOR_ACTION(奴隷)
 	;覗きバレしてない
 ELSE
-	PRINTFORML なんと、%CALLNAME:MASTER%が【%GETPLACENAME(FLAG:21)%】に入ると%CALLNAME:奴隷%が%NTR_NAME(0)%と%NTR_GET_SEX_LAGE()%でまぐわっていた
+	PRINTFORML なんと、%CALLNAME:MASTER%が【%GetPlaceName(FLAG:21)%】に入ると%CALLNAME:奴隷%が%NTR_NAME(0)%と%NTR_GET_SEX_LAGE()%でまぐわっていた
 	;継続
 	IF RAND:3 == 0 || IS_AIR_MASTER(奴隷) >= 4 || TALENT:奴隷:浮気公認 >= 3
 		;NTR or 寝取られ寸前 or 寝取られそう or 浮気公認Lv3以上
@@ -165,9 +165,9 @@ IF TALENT:奴隷:NTR || NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || NTR
 		CASE NTR_行为_Ｖ骑乘位, NTR_行为_Ａ骑乘位, NTR_行为_Ｖ背面座位, NTR_行为_Ａ背面座位
 			PRINTFORM %NTR_NAME(0)%の上に跨り自ら腰を動かしながら
 		CASE NTR_行为_Ｖ対面立位, NTR_行为_Ａ対面立位
-			PRINTFORM %MSG_WALL_OR_TREE()%を背に自分から相手に抱きつきながら
+			PRINTFORM %MSG_WallOrTree_NTR()%を背に自分から相手に抱きつきながら
 		CASE NTR_行为_Ｖ背面立位, NTR_行为_Ａ背面立位
-			PRINTFORM %MSG_WALL_OR_TREE()%に手をつき自ら腰を振りながら
+			PRINTFORM %MSG_WallOrTree_NTR()%に手をつき自ら腰を振りながら
 	ENDSELECT
 	PRINTFORMW 激しく打ち込まれる男根を受け入れている
 ELSE
@@ -181,7 +181,7 @@ ELSE
 		CASE NTR_行为_Ｖ対面座位, NTR_行为_Ｖ背面座位, NTR_行为_Ａ対面座位, NTR_行为_Ａ背面座位
 			PRINTFORM 強引に腰を抱き寄せられて
 		CASE NTR_行为_Ｖ対面立位, NTR_行为_Ｖ背面立位, NTR_行为_Ａ対面立位, NTR_行为_Ａ背面立位
-			PRINTFORM %MSG_WALL_OR_TREE()%に押し付けられて
+			PRINTFORM %MSG_WallOrTree_NTR()%に押し付けられて
 	ENDSELECT
 	PRINTFORMW 激しく腰を打ちつけられている
 ENDIF

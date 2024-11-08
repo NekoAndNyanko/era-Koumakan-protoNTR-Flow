@@ -31,7 +31,7 @@ IF 目的地
 	原位置 = FLAG:访问者当前位置
 	FLAG:访问者当前位置 = 目的地
 	IF CFLAG:MASTER:当前位置 == 目的地
-		PRINTFORML %NTR_NAME(0)%走进了【%GETPLACENAME(目的地)%】
+		PRINTFORML %NTR_NAME(0)%走进了【%GetPlaceName(目的地)%】
 		提示语未显示 = 1
 		FOR LOOP_CHR,0,CHARANUM
 			IF CFLAG:LOOP_CHR:当前位置 == 目的地
@@ -51,7 +51,7 @@ IF 目的地
 		NEXT
 	ELSE
 		IF FLAG:访问者当前位置 != 目的地 && IS_NTR_SHOW_POS() && (NTR_CHK_VISIBLE(目的地) || NTR_CHK_VISIBLE(FLAG:访问者当前位置))
-			PRINTFORML %NTR_NAME(0)%从【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】向【%NTR_GETPLACENAME(目的地)%】移动了
+			PRINTFORML %NTR_NAME(0)%从【%NTR_GetPlaceName(FLAG:访问者当前位置)%】向【%NTR_GetPlaceName(目的地)%】移动了
 		ENDIF
 	ENDIF
 		;訪問者移动時は气氛等リセット

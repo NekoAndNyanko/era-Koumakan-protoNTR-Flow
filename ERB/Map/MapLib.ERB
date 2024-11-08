@@ -1,12 +1,9 @@
 ﻿;原名：COMMON_PLACE.ERB
-
-;位置関係
-;部屋名出力
-@GETPLACENAME(場所番号,場所番号詳細)
+;返回位置名称
+@GetPlaceName(位置编号)
 #FUNCTIONS
-#DIM 場所番号
-#DIM 場所番号詳細
-SELECTCASE 場所番号
+#DIM 位置编号
+SELECTCASE 位置编号
 	CASE 位置_红魔馆_正门
 		RETURNF "红魔馆正门"
 	CASE 位置_红魔馆_大厅
@@ -129,16 +126,16 @@ SELECTCASE 場所番号
 ENDSELECT
 
 ;-------------------------------------------------
-;関数名:NTR_GETPLACENAME
+;関数名:NTR_GetPlaceName
 ;访问者当前位置を返す
 ;MASTERから見えない位置の場合"あなたの目の届かない場所"を返す
 ;-------------------------------------------------
-@NTR_GETPLACENAME(ARG)
+@NTR_GetPlaceName(ARG)
 #FUNCTIONS
 ;訪問者が見える
 ; IF NTR_CHK_VISIBLE(ARG)
 IF IS_NTR_SHOW_ALL() && IS_NTR_SHOW_POS()
-	RETURNF GETPLACENAME(ARG)
+	RETURNF GetPlaceName(ARG)
 ELSE
 	;訪問者が見えない
 	RETURNF @"%CALLNAME:MASTER%看不到的地方"
@@ -295,7 +292,7 @@ RETURNF LOCAL:1
 
 @MAXROOM()
 #FUNCTION
-RETURNF 場所番号最大値+1
+RETURNF 位置编号最大值+1
 
 ;見通しがいい場所
 ;戻り値2 野外PLAY 1室内

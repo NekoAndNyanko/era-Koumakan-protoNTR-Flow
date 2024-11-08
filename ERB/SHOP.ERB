@@ -18,7 +18,7 @@ NEXT
 ;奴隷購入ページフラグ
 TFLAG:100 = 0
 DRAWLINE
-PRINTFORML %日付_月(暦法月)%{暦法日}日[{DAY}日目](%GET_DAY()%)
+PRINTFORML %日期_月份名称(日期_月数)%{日期_天数}日[{DAY}日目](%GET_DAY()%)
 PRINTFORML (所持金:{MONEY} 元)
 PRINT 体力:
 BAR BASE:MASTER:0,MAXBASE:MASTER:0,16
@@ -86,7 +86,7 @@ ENDIF
 
 PRINTFORML [0] - 起床時間設定　　現在の設定：{CFLAG:MASTER:通常起床時間 / 60, 3}時
 SIF FLAG:陥落人数
-	PRINTFORML [1] - 私室設定　　　　現在の設定：%GETPLACENAME(CFLAG:MASTER:開始位置)%
+	PRINTFORML [1] - 私室設定　　　　現在の設定：%GetPlaceName(CFLAG:MASTER:開始位置)%
 PRINTFORML [2] - %NTR_NAME(0)%状态设定
 PRINTFORML [3] - 孩子的呼叫
 PRINTL [100] - 返回

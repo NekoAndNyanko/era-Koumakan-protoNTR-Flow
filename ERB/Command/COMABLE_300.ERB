@@ -36,7 +36,7 @@ SIF TIME_PROGRESS(TCVAR:300) < 120
 SIF CFLAG:睡眠
 	RETURN 0
 ;浴場 ただし私室は吃饭可能
-SIF 存在浴室(CFLAG:MASTER:当前位置) && (CFLAG:MASTER:当前位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:当前位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:当前位置 != 位置_雾之湖_大妖精的家)
+SIF IsPlaceHasBathroom(CFLAG:MASTER:当前位置) && (CFLAG:MASTER:当前位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:当前位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:当前位置 != 位置_雾之湖_大妖精的家)
 	RETURN 0
 ;トイレ ただし私室は吃饭可能
 SIF REST_IsRestRoom(CFLAG:MASTER:当前位置) && (CFLAG:MASTER:当前位置 != 位置_红魔馆_地下室 && CFLAG:MASTER:当前位置 != 位置_雾之湖_琪露诺的家 && CFLAG:MASTER:当前位置 != 位置_雾之湖_大妖精的家)

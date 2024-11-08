@@ -439,7 +439,7 @@ ELSE
 		DATAFORM 「んんっ！ んっ！ う・・ううっ・・」
 		DATAFORM 「ううんっ！ うっ・・う・・ちゅ・・」
 	ENDDATA
-	PRINTFORML %CALLNAME:奴隷%は逃れようとしたが、%MSG_WALL_OR_TREE()%に押し付けられ口内を蹂躙されている。
+	PRINTFORML %CALLNAME:奴隷%は逃れようとしたが、%MSG_WallOrTree_NTR()%に押し付けられ口内を蹂躙されている。
 
 ENDIF
 RETURN 0
@@ -3315,27 +3315,27 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「こっちですね？ うふふっ・・きてください・・」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%にもたれかかって%NTR_NAME(0)%を誘った。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%にもたれかかって%NTR_NAME(0)%を誘った。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「こっちですね？ うふふっ・・きてください・・」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%にもたれかかって%NTR_NAME(0)%を誘った。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%にもたれかかって%NTR_NAME(0)%を誘った。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「こっちですか？ わかりました・・さ・・きてください・・」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%にもたれかかって%NTR_NAME(0)%を待った。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%にもたれかかって%NTR_NAME(0)%を待った。
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
 
 	PRINTFORML 「こっちですか？ わかりました・・さ・・きてください・・」
-	PRINTFORML %CALLNAME:奴隷%は%MSG_WALL_OR_TREE()%にもたれかかって%NTR_NAME(0)%を待った。
+	PRINTFORML %CALLNAME:奴隷%は%MSG_WallOrTree_NTR()%にもたれかかって%NTR_NAME(0)%を待った。
 
 ELSE
 
 	PRINTFORML 「きゃっ、えっ？やっ、そんなとこ・・いやああっ・・いっ、あぐっ！？」
-	PRINTFORML %NTR_NAME(0)%は挣扎%CALLNAME:奴隷%を%MSG_WALL_OR_TREE()%に押し付け強引にアヌスを貫いた。		
+	PRINTFORML %NTR_NAME(0)%は挣扎%CALLNAME:奴隷%を%MSG_WallOrTree_NTR()%に押し付け強引にアヌスを貫いた。		
 ENDIF
 
 RETURN 0
@@ -3562,21 +3562,21 @@ IF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ)
 
 	PRINTFORML 「はい・・・なんでもお望みのままに・・」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GetPlaceName(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
 	ELSE
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%を導いた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%を導いた%NTR_GetPlaceName(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
 
 	PRINTFORML 「うふふっ、ここなら邪魔が入りませんよ♪」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GetPlaceName(FLAG:访问者当前位置)%で%NTR_NAME(4)%にしなだれかかった。
 	ELSE
 		IF IS_CAN_LOCK(FLAG:访问者当前位置)
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導き、扉を閉めると鍵をかけた。
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GetPlaceName(FLAG:访问者当前位置)%へと導き、扉を閉めると鍵をかけた。
 		ELSE
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導いた。
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GetPlaceName(FLAG:访问者当前位置)%へと導いた。
 		ENDIF
 	ENDIF
 	IF TALENT:奴隷:恋慕
@@ -3589,12 +3589,12 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 
 	PRINTFORML 「うふふっ、ここなら邪魔が入りませんよ♪」
 	IF 0 == 誘いフラグ
-		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GETPLACENAME(FLAG:访问者当前位置)%で%NTR_NAME(4)%に微笑んだ。
+		PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%に導かれた%NTR_GetPlaceName(FLAG:访问者当前位置)%で%NTR_NAME(4)%に微笑んだ。
 	ELSE
 		IF IS_CAN_LOCK(FLAG:访问者当前位置)
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導き、扉を閉めると鍵をかけた。
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GetPlaceName(FLAG:访问者当前位置)%へと導き、扉を閉めると鍵をかけた。
 		ELSE
-			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと導いた。
+			PRINTFORML %CALLNAME:奴隷%は%NTR_NAME(0)%の手を引いて%NTR_GetPlaceName(FLAG:访问者当前位置)%へと導いた。
 		ENDIF
 	ENDIF
 	IF TALENT:奴隷:恋慕
@@ -3606,7 +3606,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
 ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 
 	PRINTFORML 「ああんっ、駄目ですよぉ」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと連れ込まれてしまった。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_GetPlaceName(FLAG:访问者当前位置)%へと連れ込まれてしまった。
 	IF TALENT:奴隷:恋慕
 		PRINTFORML （%CALLNAME:MASTER%に怒られちゃいます♪）
 	ELSE
@@ -3615,7 +3615,7 @@ ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度)
 ELSE
 
 	PRINTFORML 「ああんっ、お、お仕事がっ」
-	PRINTFORML %CALLNAME:奴隷%は%NTR_GETPLACENAME(FLAG:访问者当前位置)%へと連れ込まれてしまった。
+	PRINTFORML %CALLNAME:奴隷%は%NTR_GetPlaceName(FLAG:访问者当前位置)%へと連れ込まれてしまった。
 
 ENDIF
 

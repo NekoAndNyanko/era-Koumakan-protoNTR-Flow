@@ -10,7 +10,7 @@ DRAWLINE
 PRINTFORML 从这里大概可以看到……
 FOR 位置,0,MAXROOM()
 	SIF canPeeping(CFLAG:MASTER:当前位置, 位置)
-		PRINTFORML [{位置}] - %GETPLACENAME(位置)%
+		PRINTFORML [{位置}] - %GetPlaceName(位置)%
 NEXT
 PRINTL [0] - 还是算了吧
 

@@ -135,7 +135,7 @@ RETURN 0
 ;==================================================
 ;主人は同席していない
 @NTR_MESSAGE_1_0(ARG)
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%と話をしているようだ
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%と話をしているようだ
 RETURN 0
 
 ;主人同席
@@ -149,7 +149,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_2_0(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%在接吻
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%在接吻
 SIF NTR_CHK_PEEP_CONT(ARG)
 	PRINTFORMW %NTR_NAME(0)%は%CALLNAME:MASTER%の視線を意識して、重なっている唇がよく見えるよう首の角度を変えた
 
@@ -158,7 +158,7 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_2_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%在接吻
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%在接吻
 SIF NTR_CHK_PEEP_CONT(ARG)
 	PRINTFORMW %NTR_NAME(0)%は%CALLNAME:MASTER%の視線を意識して、重なっている唇がよく見えるよう首の角度を変えた
 
@@ -167,7 +167,7 @@ RETURN 0
 ;終了
 @NTR_MESSAGE_2_2(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%分开的嘴唇间牵起了一条晶莹的丝线
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%分开的嘴唇间牵起了一条晶莹的丝线
 SIF NTR_CHK_PEEP_CONT(ARG)
 	PRINTFORMW %NTR_NAME(0)%は%CALLNAME:MASTER%の視線を意識して、唇を離す際に伸ばした舌を絡め合わせた
 
@@ -223,9 +223,9 @@ RETURN 0
 @NTR_MESSAGE_3_0(ARG)
 
 IF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%仔细爱抚着%CALLNAME:ARG%的身体
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%仔细爱抚着%CALLNAME:ARG%的身体
 ELSE
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%仔细爱抚着抵抗着的%CALLNAME:ARG%的身体
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%仔细爱抚着抵抗着的%CALLNAME:ARG%的身体
 ENDIF
 
 RETURN 0
@@ -234,9 +234,9 @@ RETURN 0
 @NTR_MESSAGE_3_1(ARG)
 
 IF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%沉浸于被给予的快乐而喘息着
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%沉浸于被给予的快乐而喘息着
 ELSE
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%因被给予的快乐而喘息着
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%因被给予的快乐而喘息着
 ENDIF
 
 RETURN 0
@@ -245,14 +245,14 @@ RETURN 0
 @NTR_MESSAGE_3_2(ARG)
 
 IF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%的手指一离开%CALLNAME:ARG%的私处，
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%的手指一离开%CALLNAME:ARG%的私处，
 	IF PALAM:ARG:润滑 > 5000
 		PRINTW 那里就溢出了如泉涌的爱液
 	ELSEIF PALAM:ARG:润滑 <= 5000
 		PRINTW 那里就垂落下丝丝爱液，点落在地
 	ENDIF
 ELSE
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%的手指一离开%CALLNAME:ARG%的私处，
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%的手指一离开%CALLNAME:ARG%的私处，
 	IF PALAM:ARG:润滑 > 5000
 		PRINTW 那里就溢出了如泉涌的爱液
 	ELSEIF PALAM:ARG:润滑 <= 5000
@@ -311,7 +311,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_4_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%
 IF TALENT:ARG:体型 < 0
 	PRINT 如同温柔地抚摸一般轻触着
 ELSE
@@ -324,14 +324,14 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_4_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%因被给予的快乐而喘息着
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%因被给予的快乐而喘息着
 
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_4_2(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%的手一离开%CALLNAME:ARG%的胸部，%CALLNAME:ARG%就面露红潮，渴求着继续
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%的手一离开%CALLNAME:ARG%的胸部，%CALLNAME:ARG%就面露红潮，渴求着继续
 
 RETURN 0
 
@@ -368,7 +368,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_5_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 	PRINT 带着怜爱的表情
 ;淫乱か娼婦
@@ -381,14 +381,14 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_5_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%一边观察着%NTR_NAME(0)%的反应一边拼命动着舌头
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%一边观察着%NTR_NAME(0)%的反应一边拼命动着舌头
 
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_5_2(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%在%CALLNAME:ARG%的口中射出大量的精液后拔出了肉棒，并让%CALLNAME:ARG%将它们舔舐干净…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%在%CALLNAME:ARG%的口中射出大量的精液后拔出了肉棒，并让%CALLNAME:ARG%将它们舔舐干净…
 
 RETURN 0
 
@@ -424,21 +424,21 @@ RETURN 0
 ;==================================================
 ;開始
 @NTR_MESSAGE_6_0(ARG)
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%相互舔舐着彼此的性器
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%相互舔舐着彼此的性器
 RETURN 0
 
 ;継続
 @NTR_MESSAGE_6_1(ARG)
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%一边舔舐着彼此的性器一边给予着对方快乐
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%一边舔舐着彼此的性器一边给予着对方快乐
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_6_2(ARG)
 IF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%在%CALLNAME:ARG%的嘴里射出了大量的精液
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%在%CALLNAME:ARG%的嘴里射出了大量的精液
 	PRINTFORMW %NTR_NAME(0)%拔出肉棒后，%CALLNAME:ARG%主动地伸出了舌头将上面附着的精液舔舐干净…
 ELSE
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%在%CALLNAME:ARG%的口中射出大量的精液后拔出了肉棒，并让%CALLNAME:ARG%将它们舔舐干净…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%在%CALLNAME:ARG%的口中射出大量的精液后拔出了肉棒，并让%CALLNAME:ARG%将它们舔舐干净…
 ENDIF
 RETURN 0
 
@@ -470,11 +470,11 @@ RETURN 0
 @NTR_MESSAGE_K_8_0_0(ARG)
 
 IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-	PRINTFORML 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%平躺之后，张开她的双腿将龟头浅浅地嵌入其中，将还不认识男人的%MSG_SLIT(ARG)%贯穿了…
+	PRINTFORML 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%平躺之后，张开她的双腿将龟头浅浅地嵌入其中，将还不认识男人的%MSG_SLIT(ARG)%贯穿了…
 	SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 		PRINTFORML %CALLNAME:ARG%一边忍耐着疼痛一边紧紧地抱住了%NTR_NAME(0)%…
 ELSE
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%平躺之后，
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%平躺之后，
 	SIF TEQUIP:ARG:0 & 2
 		PRINTFORM 掀开她的%SHOW_BOTTOM(ARG,2)%，
 	PRINTFORML 将阴茎贴上%MSG_SLIT(ARG)%贯穿而入…
@@ -495,7 +495,7 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_8_0_1(ARG)
 
-PRINTFORML 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
+PRINTFORML 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
 ;寝取り返したケース
 IF !TALENT:ARG:NTR && EXP:ARG:NTR陷落经验
 	IF TALENT:ARG:浮気的蜜壶
@@ -509,7 +509,7 @@ RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_8_0_2(ARG)
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORML 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORML %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的小穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -634,9 +634,9 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_8_1_0(ARG)
 IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%四肢着地趴下、高高抬起屁股，将龟头浅浅地嵌入其中后，用肉棒贯穿了还不认识男人的%MSG_SLIT(ARG)%…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%四肢着地趴下、高高抬起屁股，将龟头浅浅地嵌入其中后，用肉棒贯穿了还不认识男人的%MSG_SLIT(ARG)%…
 ELSE
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%四肢着地趴下，
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%四肢着地趴下，
 	IF TEQUIP:ARG:0 & 2
 		PRINTFORM 将%SHOW_BOTTOM(ARG,2)%向一边掀开
 	ELSEIF TEQUIP:ARG:0 & 1
@@ -648,12 +648,12 @@ RETURN 0
 
 ;継続
 @NTR_MESSAGE_K_8_1_1(ARG)
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_8_1_2(ARG)
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORML 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORML %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的小穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -835,38 +835,38 @@ RETURN 0
 IF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ)
 
 	IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-		PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰，
+		PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰，
 		PRINTFORMW 用还不认识男人的%MSG_SLIT(ARG)%吞下了阴茎…
 	ELSE
-		PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰去…
+		PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰去…
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ寸前)
 
 	IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-		PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰，
+		PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰，
 		PRINTFORMW 用还不认识男人的%MSG_SLIT(ARG)%吞下了阴茎…
 	ELSE
-		PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰去…
+		PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%跨坐在%NTR_NAME(0)%的身上，慢慢地沉下腰去…
 	ENDIF
 
 ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_寝取られそう)
 
 	IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-		PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
+		PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
 		PRINTFORMW 一边向还不认识男人的%MSG_SLIT(ARG)%插入了阴茎。
 	ELSE
-		PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
+		PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
 		PRINTFORMW 一边向湿透了的%MSG_SLIT(ARG)%插入了阴茎。
 	ENDIF
 
 ELSE
 
 	IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-		PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
+		PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
 		PRINTFORMW 一边向还不认识男人的%MSG_SLIT(ARG)%插入了肉棒。
 	ELSE
-		PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
+		PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%躺下后让%CALLNAME:ARG%跨坐在自己的身上，一边抓住她的腰
 		PRINTFORMW 一边向湿透了的%MSG_SLIT(ARG)%插入了阴茎。
 	ENDIF
 
@@ -880,7 +880,7 @@ RETURN 0
 
 IF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ)
 
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，再次动起了腰…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，再次动起了腰…
 	PRINTFORM %CALLNAME:ARG%
 	IF TALENT:ARG:体型 < 0
 		PRINT 用小小的身体拼命地
@@ -895,7 +895,7 @@ IF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ)
 
 ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ寸前)
 
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，再次动起了腰…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，再次动起了腰…
 	PRINTFORM %CALLNAME:ARG%
 	IF TALENT:ARG:体型 < 0
 		PRINT 用小小的身体拼命地
@@ -910,11 +910,11 @@ ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_寝取られ寸前)
 
 ELSEIF NTR_CHK_FAVORABLY(ARG, FAV_寝取られそう)
 
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，听从%NTR_NAME(0)%催促动起了腰…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，听从%NTR_NAME(0)%催促动起了腰…
 
 ELSE
 
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，被强迫着动起了腰…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，被强迫着动起了腰…
 
 ENDIF
 
@@ -923,7 +923,7 @@ RETURN 0
 ;終了
 @NTR_MESSAGE_K_8_2_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORML 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORML 每当%CALLNAME:ARG%的身体一跳、一跳地颤抖时，%NTR_NAME(0)%的肉棒都会释放出滚烫的白浊将子宫填满。
 
@@ -937,9 +937,9 @@ RETURN 0
 @NTR_MESSAGE_K_8_3_0(ARG)
 
 IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，在接吻的同时一边慢慢放下，用肉棒将还不认识男人的%MSG_SLIT(ARG)%贯穿了…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，在接吻的同时一边慢慢放下，用肉棒将还不认识男人的%MSG_SLIT(ARG)%贯穿了…
 ELSE
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，慢慢放下的同时向着
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，慢慢放下的同时向着
 	SIF TEQUIP:ARG:0 & 2
 		PRINTFORM 已经掀开一角的%SHOW_BOTTOM(ARG,2)%间隙中的
 	PRINTFORMW %MSG_SLIT(ARG)%插入，一边接吻一边摇动着腰…
@@ -951,14 +951,14 @@ RETURN 0
 
 ;継続
 @NTR_MESSAGE_K_8_3_1(ARG)
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%保持着对小穴的插入，紧紧拥抱住%CALLNAME:ARG%的身体，一边缠绕着彼此的舌尖一边摇晃着腰…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%保持着对小穴的插入，紧紧拥抱住%CALLNAME:ARG%的身体，一边缠绕着彼此的舌尖一边摇晃着腰…
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 	PRINTFORMW %CALLNAME:ARG%的双手换过%NTR_NAME(0)%的脑袋，紧紧地抱住了他…
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_8_3_2(ARG)
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORML 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORML %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的小穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -981,9 +981,9 @@ RETURN 0
 @NTR_MESSAGE_K_8_4_0(ARG)
 
 IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，用早已做好准备的肉棒缓缓贯穿了还不认识男人的%MSG_SLIT(ARG)%…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，用早已做好准备的肉棒缓缓贯穿了还不认识男人的%MSG_SLIT(ARG)%…
 ELSE
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的身体轻轻抱起，
 	IF TEQUIP:ARG:0 & 2
 		PRINTFORMW 从%SHOW_BOTTOM(ARG,2)%的缝隙间缓缓插入了%MSG_SLIT(ARG)%…
 	ELSE
@@ -998,7 +998,7 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_8_4_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%保持着对小穴的插入，从背后抱住%CALLNAME:ARG%，左右摇晃起腰来…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%保持着对小穴的插入，从背后抱住%CALLNAME:ARG%，左右摇晃起腰来…
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 	PRINTFORMW %CALLNAME:ARG%仰过身子，娇柔地靠在%NTR_NAME(0)%的身上…
 
@@ -1006,7 +1006,7 @@ RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_8_4_2(ARG)
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORML 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORML %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的小穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1030,9 +1030,9 @@ RETURN 0
 @NTR_MESSAGE_K_8_5_0(ARG)
 
 IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-	PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的一只脚向上抬起，将龟头贴上裸露而出还不认识男人的%MSG_SLIT(ARG)%一口气贯穿了它…
+	PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的一只脚向上抬起，将龟头贴上裸露而出还不认识男人的%MSG_SLIT(ARG)%一口气贯穿了它…
 ELSE
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的一只脚向上抬起，
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%将%CALLNAME:ARG%的一只脚向上抬起，
 	SIF TEQUIP:ARG:0 & 2
 		PRINTFORM 向一旁掀开%SHOW_BOTTOM(ARG,2)%，
 	PRINTFORMW 将肉棒对准贴上%MSG_SLIT(ARG)%后贯穿了它…
@@ -1045,7 +1045,7 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_8_5_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度 && TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
 	PRINTFORML %CALLNAME:ARG%一边忍耐着疼痛一边紧紧地抱住了%NTR_NAME(0)%…
 
@@ -1053,7 +1053,7 @@ RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_8_5_2(ARG)
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORML 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORML %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的小穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1077,10 +1077,10 @@ RETURN 0
 @NTR_MESSAGE_K_8_6_0(ARG)
 
 IF TALENT:ARG:处女 || CFLAG:ARG:处女喪失中
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%扶着%MSG_WALL_OR_TREE()%
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%扶着%MSG_WallOrTree_NTR()%
 	PRINTFORMW 然后向后伸出屁股，用肉棒贯穿了还不认识男人的%MSG_SLIT(ARG)%…
 ELSE
-	PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%扶着%MSG_WALL_OR_TREE()%然后
+	PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%扶着%MSG_WallOrTree_NTR()%然后
 	IF TEQUIP:ARG:0 & 2
 		PRINTFORM 向一旁掀开%SHOW_BOTTOM(ARG,2)%，
 	ELSEIF TEQUIP:ARG:0 & 1
@@ -1094,13 +1094,13 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_8_6_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%小穴内的触感，再次动起了腰…
 
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_8_6_2(ARG)
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORML 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORML %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的小穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1124,7 +1124,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_9_0_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%平躺之后
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%让%CALLNAME:ARG%平躺之后
 IF TEQUIP:ARG:0 & 2
 	PRINTFORM 将%SHOW_BOTTOM(ARG,2)%间隙中的
 ELSE
@@ -1146,14 +1146,14 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_9_0_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
 
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_9_0_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORMW 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORMW %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的尻穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1169,7 +1169,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_9_1_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%は四つん這いにさせた%CALLNAME:ARG%の
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%は四つん這いにさせた%CALLNAME:ARG%の
 IF TEQUIP:ARG:0 & 2
 	PRINTFORM %SHOW_BOTTOM(ARG,2)%をずらし、
 ELSEIF TEQUIP:0 & 1
@@ -1186,14 +1186,14 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_9_1_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
 
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_9_1_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORMW 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORMW %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的尻穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1209,7 +1209,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_9_2_0(ARG)
 
-PRINTFORML 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%は%NTR_NAME(0)%の上にまたがると、アヌスでゆっくりと%NTR_NAME(0)%のモノを飲み込んでいった…
+PRINTFORML 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%は%NTR_NAME(0)%の上にまたがると、アヌスでゆっくりと%NTR_NAME(0)%のモノを飲み込んでいった…
 IF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 	PRINTFORM %CALLNAME:ARG%は
 	SIF TALENT:ARG:体型 < 0
@@ -1226,14 +1226,14 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_9_2_1(ARG)
 
-PRINTFORML 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，再次动起了腰…
+PRINTFORML 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%CALLNAME:ARG%保持着被插入的状态，再次动起了腰…
 
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_9_2_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORMW 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORMW %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的尻穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1250,7 +1250,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_9_3_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%の身体を抱き上げ
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%の身体を抱き上げ
 SIF TEQUIP:ARG:0 & 2
 	PRINTFORM %SHOW_BOTTOM(ARG,2)%を強引にずらし
 PRINTFORMW ゆっくりと降ろしながらアヌスへと挿入すると、口付けをしつつ腰を揺り動かしていた…
@@ -1262,7 +1262,7 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_9_3_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%とキスをし、舌を絡めながら再び腰を揺すり始めた…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%とキスをし、舌を絡めながら再び腰を揺すり始めた…
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 	PRINTFORML %CALLNAME:ARG%的双手换过%NTR_NAME(0)%的脑袋，紧紧地抱住了他…
 
@@ -1271,7 +1271,7 @@ RETURN 0
 ;終了
 @NTR_MESSAGE_K_9_3_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORMW 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORMW %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的尻穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1287,7 +1287,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_9_4_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%の身体を抱き上げ、
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%の身体を抱き上げ、
 SIF TEQUIP:ARG:0 & 2
 	PRINTFORM ずらした%SHOW_BOTTOM(ARG,2)%の隙間から
 PRINTFORMW アヌスを待ち構えていたモノでゆっくり貫いた…
@@ -1299,7 +1299,7 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_9_4_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%を背後から抱きしめ、再び%CALLNAME:ARG%の身体を揺らし始めた…
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%CALLNAME:ARG%を背後から抱きしめ、再び%CALLNAME:ARG%の身体を揺らし始めた…
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 	PRINTFORML %CALLNAME:ARG%仰过身子，娇柔地靠在%NTR_NAME(0)%的身上…
 
@@ -1308,7 +1308,7 @@ RETURN 0
 ;終了
 @NTR_MESSAGE_K_9_4_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORMW 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORMW %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的尻穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1324,7 +1324,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_9_5_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%
 IF TEQUIP:ARG:0 & 2
 	PRINTFORM 将%CALLNAME:ARG%%SHOW_BOTTOM(ARG,2)%间隙中的
 ELSE
@@ -1345,14 +1345,14 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_9_5_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
 
 RETURN 0
 
 ;終了
 @NTR_MESSAGE_K_9_5_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORMW 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORMW %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的尻穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
@@ -1369,7 +1369,7 @@ RETURN 0
 ;開始
 @NTR_MESSAGE_K_9_6_0(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%MSG_WALL_OR_TREE()%
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%は%MSG_WallOrTree_NTR()%
 PRINTFORM に手を付かせた%CALLNAME:ARG%の
 IF TEQUIP:ARG:0 & 2
 	PRINTFORM %SHOW_BOTTOM(ARG,2)%をずらし、
@@ -1385,7 +1385,7 @@ RETURN 0
 ;継続
 @NTR_MESSAGE_K_9_6_1(ARG)
 
-PRINTFORMW 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
+PRINTFORMW 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%品味着%CALLNAME:ARG%尻穴内的触感，再次动起了腰……
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
 	PRINTFORML %CALLNAME:ARG%仰过身子，娇柔地靠在%NTR_NAME(0)%的身上…
 
@@ -1394,7 +1394,7 @@ RETURN 0
 ;終了
 @NTR_MESSAGE_K_9_6_2(ARG)
 
-PRINTFORM 【%NTR_GETPLACENAME(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
+PRINTFORM 【%NTR_GetPlaceName(FLAG:访问者当前位置)%】%NTR_NAME(0)%与%CALLNAME:ARG%正在用%NTR_GET_SEX_LAGE()%交合，
 PRINTFORMW 突然间%CALLNAME:ARG%的口中发出一阵无法抑制的娇声，僵直地停止了动作
 PRINTFORMW %NTR_NAME(0)%一拔出肉棒，%CALLNAME:ARG%的尻穴中就散落下点点精液
 SIF CFLAG:ARG:屈服度 > CFLAG:ARG:好感度
