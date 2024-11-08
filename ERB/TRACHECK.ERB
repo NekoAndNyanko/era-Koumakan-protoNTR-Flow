@@ -71,57 +71,58 @@ ENDSELECT
 ;-------------------------------------------------
 ;处女喪失時の処理
 ;事前に下記変数の設定が必要
-; TEQUIP:奴隷:Ｖ性爱 挿入しているキャラ(挿入させられている場合もこっち)
-; TCVAR:奴隷:行為者     破らせたキャラ(自分で挿入している場合Ｖ性爱と同一)
-; TEQUIP:奴隷:振动棒    振动棒を使ってるなら1
-; TFLAG:50  =3であればG点刺激による处女喪失。相手はあなたとする。
+; TEQUIP:对象:Ｖ性爱 挿入しているキャラ(挿入させられている場合もこっち)
+; TCVAR:对象:行為者     破らせたキャラ(自分で挿入している場合Ｖ性爱と同一)
+; TEQUIP:对象:振动棒    振动棒を使ってるなら1
+; TFLAG:50  =3であればG点刺激による处女喪失。对方はあなたとする。
 ;-------------------------------------------------
-@LOST_VIRGIN(奴隷, 相手)
-#DIM 奴隷
-#DIM 相手
+@LOST_VIRGIN(对象, 对方)
+#DIM 对象
+#DIM 对方
 
-IF TALENT:奴隷:处女 == 1
-	CFLAG:奴隷:处女丧失年_V = 日期_年数
-	CFLAG:奴隷:处女丧失月_V = 日期_月数
-	CFLAG:奴隷:处女丧失日_V = 日期_天数
-	CFLAG:奴隷:处女丧失对象_V = 相手
+IF TALENT:对象:处女 == 1
+	CFLAG:对象:处女丧失年_V = 日期_年数
+	CFLAG:对象:处女丧失月_V = 日期_月数
+	CFLAG:对象:处女丧失日_V = 日期_天数
+	CFLAG:对象:处女丧失对象_V = 对方
 	;純正处女だった場合喪失を記録
-	IF TEQUIP:奴隷:振动棒
-		IF 奴隷 == 相手 || 相手 == -1
-			IF TCVAR:奴隷:行為者 == 奴隷
+	IF TEQUIP:对象:振动棒
+		IF 对象 == 对方 || 对方 == -1
+			IF TCVAR:对象:行為者 == 对象
 				; 自分自身の手で
-				TRYCALL memorial_v_append(奴隷,-1,"振动棒で失った")
+				TRYCALL memorial_v_append(对象,-1,"因振动棒失去了")
 			ELSE
-				TRYCALL memorial_v_append(奴隷, TCVAR:奴隷:行為者,"振动棒で奪われた")
+				TRYCALL memorial_v_append(对象, TCVAR:对象:行為者,"用振动棒夺走了")
 			ENDIF
 		ELSE
-			TRYCALL memorial_v_append(奴隷,相手,"振动棒で奪われた")
+			TRYCALL memorial_v_append(对象,对方,"用振动棒夺走了")
 		ENDIF
-		TRYCALL COM417_Lost_Virgin(奴隷,-1)
+		TRYCALL COM417_Lost_Virgin(对象,-1)
 	ELSEIF TFLAG:50 == 3
 		; G点刺激の場合の例外処理
-		TRYCALL memorial_v_append(奴隷,PLAYER,"指で奪われた")
-		TRYCALL COM417_Lost_Virgin(奴隷,PLAYER)
+		TRYCALL memorial_v_append(对象,PLAYER,"用手指夺走了")
+		TRYCALL COM417_Lost_Virgin(对象,PLAYER)
 	ELSE
-		TRYCALL memorial_v_append(奴隷, 相手)
-		TRYCALL COM417_Lost_Virgin(奴隷,TEQUIP:奴隷:Ｖ性爱)
-		; 訪問者相手にＶ处女喪失時に記録
-		IF 相手 == 人物_訪問者
-			CFLAG:奴隷:NTR处女喪失 = 人物_訪問者
+		CALL FirstTimeAttitude(对象, 对方, 1)
+		TRYCALL memorial_v_append(对象, 对方)
+		TRYCALL COM417_Lost_Virgin(对象,TEQUIP:对象:Ｖ性爱)
+		; 訪問者对方にＶ处女喪失時に記録
+		IF 对方 == 人物_訪問者
+			CFLAG:对象:NTR处女喪失 = 人物_訪問者
 		ELSE
-			CFLAG:奴隷:NTR处女喪失 = 0
+			CFLAG:对象:NTR处女喪失 = 0
 		ENDIF
 	ENDIF
-	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
-		PRINTFORMW 【%CALLNAME:奴隷%】处女喪失
+	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:对象:当前位置)
+		PRINTFORMW 【%CALLNAME:对象%】处女喪失
 	;处女喪失フラグ(今回のコマンド)
-	TCVAR:奴隷:破瓜 = 1
+	TCVAR:对象:破瓜 = 1
 	;录像摄影なら記録
-	IF TEQUIP:奴隷:录像摄影
+	IF TEQUIP:对象:录像摄影
 		;性交
-		IF TEQUIP:奴隷:Ｖ性爱
+		IF TEQUIP:对象:Ｖ性爱
 			LOCALS = LV1/
-		ELSEIF TEQUIP:奴隷:振动棒
+		ELSEIF TEQUIP:对象:振动棒
 			LOCALS = LV3/
 			;その他
 		ELSE
@@ -130,52 +131,52 @@ IF TALENT:奴隷:处女 == 1
 		TSTR:1 += LOCALS
 	ENDIF
 	;贞操観念
-	IF TALENT:奴隷:贞操 > 0
-		IF !TALENT:奴隷:恋慕
-			TIMES SOURCE:奴隷:情爱 , 0.60
-			TIMES SOURCE:奴隷:反感 , 10.00
+	IF TALENT:对象:贞操 > 0
+		IF !TALENT:对象:恋慕
+			TIMES SOURCE:对象:情爱 , 0.60
+			TIMES SOURCE:对象:反感 , 10.00
 		ELSEIF !ASSIPLAY
-			TIMES SOURCE:奴隷:情爱 , 1.20
-			TIMES SOURCE:奴隷:反感 , 0.50
+			TIMES SOURCE:对象:情爱 , 1.20
+			TIMES SOURCE:对象:反感 , 0.50
 		ENDIF
 		;贞操無頓着
-	ELSEIF TALENT:奴隷:贞操 < 0
-		TIMES SOURCE:奴隷:情爱 , 0.60
-		TIMES SOURCE:奴隷:反感 , 0.50
+	ELSEIF TALENT:对象:贞操 < 0
+		TIMES SOURCE:对象:情爱 , 0.60
+		TIMES SOURCE:对象:反感 , 0.50
 	ENDIF
 	;陥落素質による処理
-	;MASTERがT奴隷ETの膣に挿入している
-	IF TEQUIP:奴隷:Ｖ性爱 == MASTER
-		;亲爱かつ相手が主人
-		IF TALENT:奴隷:恋慕 > 1
-			PRINTFORML %CALLNAME:奴隷%好像对%CALLNAME:MASTER%是第一次的对象而感到无比的幸福……
-			TCVAR:奴隷:反発刻印取得抑制 = 1
-			TIMES SOURCE:奴隷:情爱 , 2.00
-			TIMES SOURCE:奴隷:反感 , 0.10
-			;恋慕かつ相手が主人
-		ELSEIF TALENT:奴隷:恋慕
-			PRINTFORML %CALLNAME:奴隷%似乎因为对%CALLNAME:MASTER%献上处女而感到幸福……
-			TCVAR:奴隷:反発刻印取得抑制 = 1
-			TIMES SOURCE:奴隷:情爱 , 2.00
-			TIMES SOURCE:奴隷:反感 , 0.30
+	;MASTERがT对象ETの膣に挿入している
+	IF TEQUIP:对象:Ｖ性爱 == MASTER
+		;亲爱かつ对方が主人
+		IF TALENT:对象:恋慕 > 1
+			PRINTFORML %CALLNAME:对象%好像对%CALLNAME:MASTER%是第一次的对象而感到无比的幸福……
+			TCVAR:对象:反発刻印取得抑制 = 1
+			TIMES SOURCE:对象:情爱 , 2.00
+			TIMES SOURCE:对象:反感 , 0.10
+			;恋慕かつ对方が主人
+		ELSEIF TALENT:对象:恋慕
+			PRINTFORML %CALLNAME:对象%似乎因为对%CALLNAME:MASTER%献上处女而感到幸福……
+			TCVAR:对象:反発刻印取得抑制 = 1
+			TIMES SOURCE:对象:情爱 , 2.00
+			TIMES SOURCE:对象:反感 , 0.30
 		ENDIF
 	ENDIF
-	TALENT:奴隷:处女 = 0
+	TALENT:对象:处女 = 0
 ENDIF
 ;-------------------------------------------------
 ;再生处女喪失のチェック
 ;-------------------------------------------------
-IF TALENT:奴隷:处女 == 2 && (EXP_UP(20,奴隷)||EXP_UP(33,奴隷)||EXP_UP(93,奴隷)||EXP_UP(102,奴隷))
-	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:奴隷:当前位置)
-		PRINTFORMW 【%CALLNAME:奴隷%】处女喪失（？）
+IF TALENT:对象:处女 == 2 && (EXP_UP(20,对象)||EXP_UP(33,对象)||EXP_UP(93,对象)||EXP_UP(102,对象))
+	SIF !FLAG:真实模式 || NTR_CHK_VISIBLE(CFLAG:对象:当前位置)
+		PRINTFORMW 【%CALLNAME:对象%】处女……喪失？
 	;处女喪失フラグ(今回のコマンド)
-	TCVAR:奴隷:破瓜 = 2
+	TCVAR:对象:破瓜 = 2
 	;录像摄影なら記録
-	IF TEQUIP:奴隷:录像摄影
+	IF TEQUIP:对象:录像摄影
 		;性交
-		IF TEQUIP:奴隷:Ｖ性爱
+		IF TEQUIP:对象:Ｖ性爱
 			LOCALS = LV1/
-		ELSEIF TEQUIP:奴隷:振动棒
+		ELSEIF TEQUIP:对象:振动棒
 			LOCALS = LV3/
 			;その他
 		ELSE
@@ -183,121 +184,124 @@ IF TALENT:奴隷:处女 == 2 && (EXP_UP(20,奴隷)||EXP_UP(33,奴隷)||EXP_UP(93
 		ENDIF
 		TSTR:1 += LOCALS
 	ENDIF
-	IF TEQUIP:奴隷:振动棒
-		TRYCALL COM417_Lost_Virgin(奴隷,-1)
+	IF TEQUIP:对象:振动棒
+		TRYCALL COM417_Lost_Virgin(对象,-1)
 	ELSE
-		TRYCALL COM417_Lost_Virgin(奴隷,TEQUIP:奴隷:Ｖ性爱)
-		; 訪問者相手にＶ处女喪失時に記録
-		IF 相手 == 人物_訪問者
-			CFLAG:奴隷:NTR处女喪失 = 人物_訪問者
+		TRYCALL COM417_Lost_Virgin(对象,TEQUIP:对象:Ｖ性爱)
+		; 訪問者对方にＶ处女喪失時に記録
+		IF 对方 == 人物_訪問者
+			CFLAG:对象:NTR处女喪失 = 人物_訪問者
 		ELSE
-			CFLAG:奴隷:NTR处女喪失 = 0
+			CFLAG:对象:NTR处女喪失 = 0
 		ENDIF
 	ENDIF
-	TALENT:奴隷:处女 = 0
+	TALENT:对象:处女 = 0
 ENDIF
 
-@LOST_VIRGIN_A(奴隷, 相手)
-#DIM 奴隷
-#DIM 相手
-SIF CFLAG:奴隷:处女丧失日_A
+@LOST_VIRGIN_A(对象, 对方)
+#DIM 对象
+#DIM 对方
+SIF CFLAG:对象:处女丧失日_A
 	RETURN
-CFLAG:奴隷:处女丧失年_A = 日期_年数
-CFLAG:奴隷:处女丧失月_A = 日期_月数
-CFLAG:奴隷:处女丧失日_A = 日期_天数
-CFLAG:奴隷:处女丧失对象_A = 相手
+CFLAG:对象:处女丧失年_A = 日期_年数
+CFLAG:对象:处女丧失月_A = 日期_月数
+CFLAG:对象:处女丧失日_A = 日期_天数
+CFLAG:对象:处女丧失对象_A = 对方
+CALL FirstTimeAttitude(对象, 对方, 2)
 ;菊花处女の記録
-;IF EXP_UP(21,奴隷)||EXP_UP(34,奴隷)||EXP_UP(94,奴隷)||EXP_UP(103,奴隷)
-TRYCALL memorial_a_append(奴隷, 相手)
+;IF EXP_UP(21,对象)||EXP_UP(34,对象)||EXP_UP(94,对象)||EXP_UP(103,对象)
+TRYCALL memorial_a_append(对象, 对方)
 ;ENDIF
 
-@LOST_VIRGIN_M(奴隷, 相手,isPenis)
-#DIM 奴隷
-#DIM 相手
+@LOST_VIRGIN_M(对象, 对方,isPenis)
+#DIM 对象
+#DIM 对方
 #DIM isPenis
 IF isPenis
-	SIF CFLAG:奴隷:处女丧失日_M
+	SIF CFLAG:对象:处女丧失日_M
 		RETURN
-	CFLAG:奴隷:处女丧失年_M = 日期_年数
-	CFLAG:奴隷:处女丧失月_M = 日期_月数
-	CFLAG:奴隷:处女丧失日_M = 日期_天数
-	CFLAG:奴隷:处女丧失对象_M = 相手
+	CFLAG:对象:处女丧失年_M = 日期_年数
+	CFLAG:对象:处女丧失月_M = 日期_月数
+	CFLAG:对象:处女丧失日_M = 日期_天数
+	CFLAG:对象:处女丧失对象_M = 对方
+	CALL FirstTimeAttitude(对象, 对方, 3)
 ELSE
-	SIF CFLAG:奴隷:初吻丧失日
+	SIF CFLAG:对象:初吻丧失日
 		RETURN
-	CFLAG:奴隷:初吻丧失年 = 日期_年数
-	CFLAG:奴隷:初吻丧失月 = 日期_月数
-	CFLAG:奴隷:初吻丧失日 = 日期_天数
-	CFLAG:奴隷:初吻丧失对象 = 相手
+	CFLAG:对象:初吻丧失年 = 日期_年数
+	CFLAG:对象:初吻丧失月 = 日期_月数
+	CFLAG:对象:初吻丧失日 = 日期_天数
+	CFLAG:对象:初吻丧失对象 = 对方
+	CALL FirstTimeAttitude(对象, 对方, 4)
 ENDIF
 ;ファーストキスの記録
-;IF EXP_UP(27,奴隷) || (EXP_UP(25,奴隷)&&是肉棒)
-;奴隷=0,相手=-1の時は相手をTARGETとする。
-IF 奴隷 == 0 && 相手 == -1
-	相手 = TARGET
+;IF EXP_UP(27,对象) || (EXP_UP(25,对象)&&是肉棒)
+;对象=0,对方=-1の時は对方をTARGETとする。
+IF 对象 == 0 && 对方 == -1
+	对方 = TARGET
 ENDIF
 IF isPenis
-	CALL memorial_m_append_isPenis(奴隷,相手)
+	CALL memorial_m_append_isPenis(对象,对方)
 ELSE
-	TRYCALL memorial_m_append(奴隷, 相手)
+	TRYCALL memorial_m_append(对象, 对方)
 ENDIF
 
-@memorial_m_append_isPenis(奴隷, 相手编号)
-#DIM 奴隷
-#DIM 相手编号
+@memorial_m_append_isPenis(对象, 对方编号)
+#DIM 对象
+#DIM 对方编号
 #DIMS 内容
 #DIMS 日時
 #DIMS 場所
-#DIMS 相手 = ""
+#DIMS 对方 = ""
 
-IF 奴隷 == 相手编号
+IF 对象 == 对方编号
 	RETURN
 ENDIF
-IF CSTR:奴隷:M处女丧失记录 == ""
+IF CSTR:对象:M处女丧失记录 == ""
 	日時 = 第{日期_年数}年 %日期_月份名称(日期_月数)%{日期_天数}日 %天候(天候値)%%" "%
-	場所 = %"在"+GetPlaceName(CFLAG:奴隷:当前位置)+"，"%
-	IF CFLAG:奴隷:睡眠
+	場所 = %"在"+GetPlaceName(CFLAG:对象:当前位置)+"，"%
+	IF CFLAG:对象:睡眠
 		場所 += "在睡梦中"
 	ENDIF
-	SELECTCASE 相手编号
+	SELECTCASE 对方编号
 		CASE IS == -1
 			RETURN
 		CASE IS < CHARANUM
-			相手 = %CALLNAME:相手编号+"的肉棒"%
+			对方 = %CALLNAME:对方编号+"的肉棒"%
 		CASE IS == 人物_訪問者
-			相手 = %NTR_NAME(0)+"强壮的肉棒"%
+			对方 = %NTR_NAME(0)+"强壮的肉棒"%
 		CASE IS == 人物_客, 人物_村人
-			相手 = %"不知名的男人的肉棒"%
+			对方 = %"不知名的男人的肉棒"%
 		CASEELSE
-			相手 = %NTR_NAME(0)+"的肉棒"%
+			对方 = %NTR_NAME(0)+"的肉棒"%
 	ENDSELECT
 
 	IF 内容 == ""
-		IF CFLAG:奴隷:睡眠
+		IF CFLAG:对象:睡眠
 			内容 = %"被强迫地吸吮了"%
 		ELSE
-			SELECTCASE TCVAR:奴隷:行為者
+			SELECTCASE TCVAR:对象:行為者
 				CASE IS == 0
 					; 行為者があなた
-					IF TALENT:奴隷:恋慕
+					IF TALENT:对象:恋慕
 						内容 = %"满怀爱意地吸吮了"%
-					ELSEIF TALENT:奴隷:恋人
+					ELSEIF TALENT:对象:恋人
 						内容 = %"吸吮了"%
 					ELSE
 						内容 = %"半推半就地吸吮了"%
 					ENDIF
 				CASE IS == 人物_訪問者
-					IF TALENT:奴隷:NTR || (奴隷 == 人物_玩家 && (FLAG:1840 >= 11 && FLAG:1840 <= 15))
+					IF TALENT:对象:NTR || (对象 == 人物_玩家 && (FLAG:1840 >= 11 && FLAG:1840 <= 15))
 						内容 = %"满怀爱意地吸吮了"%
-					ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前) || (奴隷 == 人物_玩家 && FLAG:1840 == 10)
+					ELSEIF NTR_CHK_FAVORABLY(对象, FAV_寝取られ寸前) || (对象 == 人物_玩家 && FLAG:1840 == 10)
 						内容 = %"满怀爱意地吸吮了"%
-					ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られそう)
+					ELSEIF NTR_CHK_FAVORABLY(对象, FAV_寝取られそう)
 						内容 = %"主动地吸吮了"%
-					ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_主人より高い)
+					ELSEIF NTR_CHK_FAVORABLY(对象, FAV_主人より高い)
 						内容 = %"吸吮了"%
-					ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_うふふする程度) 
+					ELSEIF NTR_CHK_FAVORABLY(对象, FAV_うふふする程度) 
 						内容 = %"半推半就地吸吮了"%
-					ELSEIF TALENT:奴隷:浮気公認
+					ELSEIF TALENT:对象:浮気公認
 						内容 = %"取走的"%
 					ELSE
 						内容 = %"被强迫着吸吮了"%
@@ -307,19 +311,19 @@ IF CSTR:奴隷:M处女丧失记录 == ""
 				CASEELSE
 					; 行為者が住人
 					; 住人からの行動なので「奪われた」は無い。
-					IF 奴隷 ==  TCVAR:奴隷:行為者
+					IF 对象 ==  TCVAR:对象:行為者
 						;奪った側
-						IF 相手编号 == 0
-							;相手があなた
-							IF TALENT:相手编号:恋慕
+						IF 对方编号 == 0
+							;对方があなた
+							IF TALENT:对方编号:恋慕
 								内容 = %"满怀爱意地吸吮了"%
 							ELSE
 								内容 = %"半推半就地吸吮了"%
 							ENDIF
-						ELSEIF 相手编号 == 人物_訪問者
-							IF TALENT:相手编号:NTR
+						ELSEIF 对方编号 == 人物_訪問者
+							IF TALENT:对方编号:NTR
 								内容 = %"满怀爱意地吸吮了"%
-							ELSEIF NTR_CHK_FAVORABLY(相手编号, FAV_寝取られ寸前) 
+							ELSEIF NTR_CHK_FAVORABLY(对方编号, FAV_寝取られ寸前) 
 								内容 = %"满怀爱意地吸吮了"%
 							ELSE
 								内容 = %"半推半就地吸吮了"%
@@ -330,21 +334,21 @@ IF CSTR:奴隷:M处女丧失记录 == ""
 						ENDIF
 					ELSE
 						;奪われた側（たぶんここは死に分岐）
-						IF 相手编号 == 0
-							;相手があなた
-							IF TALENT:奴隷:恋慕
+						IF 对方编号 == 0
+							;对方があなた
+							IF TALENT:对象:恋慕
 								内容 = %"满怀爱意地吸吮了"%
-							ELSEIF TALENT:奴隷:恋人
+							ELSEIF TALENT:对象:恋人
 								内容 = %"吸吮了"%
 							ELSE
 								内容 = %"半推半就地吸吮了"%
 							ENDIF
-						ELSEIF 相手编号 == 人物_訪問者
-							IF TALENT:奴隷:NTR
+						ELSEIF 对方编号 == 人物_訪問者
+							IF TALENT:对象:NTR
 								内容 = %"满怀爱意地吸吮了"%
-							ELSEIF NTR_CHK_FAVORABLY(奴隷, FAV_寝取られ寸前)
+							ELSEIF NTR_CHK_FAVORABLY(对象, FAV_寝取られ寸前)
 								内容 = %"满怀爱意地吸吮了"%
-							ELSEIF TALENT:奴隷:浮気公認
+							ELSEIF TALENT:对象:浮気公認
 								内容 = %"取走的"%
 							ELSE
 								内容 = %"半推半就地吸吮了"%
@@ -357,7 +361,7 @@ IF CSTR:奴隷:M处女丧失记录 == ""
 			ENDSELECT
 		ENDIF
 	ENDIF
-	CSTR:奴隷:M处女丧失记录 = %日時%%場所%%内容%%相手%
+	CSTR:对象:M处女丧失记录 = %日時%%場所%%内容%%对方%
 ENDIF
 
 
@@ -709,40 +713,40 @@ ENDIF
 ;-------------------------------------------------
 ;刻印取得のチェック
 ;-------------------------------------------------
-@MARK_GOT_CHECK(奴隷,調教者)
-#DIM 奴隷
+@MARK_GOT_CHECK(对象,調教者)
+#DIM 对象
 #DIM 調教者
 IF (調教者 < 0)
 	;調教者なしでの刻印取得は許可しない
 	RETURN
 ENDIF
-CALL 苦痛刻印取得チェック(奴隷,調教者)
-CALL 快乐刻印取得チェック(奴隷,調教者)
-CALL 屈服刻印取得チェック(奴隷,調教者)
-CALL 反発刻印取得チェック(奴隷,調教者)
+CALL 苦痛刻印取得チェック(对象,調教者)
+CALL 快乐刻印取得チェック(对象,調教者)
+CALL 屈服刻印取得チェック(对象,調教者)
+CALL 反発刻印取得チェック(对象,調教者)
 
 ;-------------------------------------------------
 ;屈服刻印
-@屈服刻印取得チェック(奴隷,調教者)
-#DIM 奴隷
+@屈服刻印取得チェック(对象,調教者)
+#DIM 对象
 #DIM 調教者
 #DIM 今回屈服刻印
 
 今回屈服刻印 = 0
-今回屈服刻印 = MAX(屈服刻印取得チェック_快楽(奴隷,調教者),今回屈服刻印)
-今回屈服刻印 = MAX(屈服刻印取得チェック_恐怖(奴隷,調教者),今回屈服刻印)
-今回屈服刻印 = MAX(屈服刻印取得チェック_顺从(奴隷,調教者),今回屈服刻印)
+今回屈服刻印 = MAX(屈服刻印取得チェック_快楽(对象,調教者),今回屈服刻印)
+今回屈服刻印 = MAX(屈服刻印取得チェック_恐怖(对象,調教者),今回屈服刻印)
+今回屈服刻印 = MAX(屈服刻印取得チェック_顺从(对象,調教者),今回屈服刻印)
 
 IF 今回屈服刻印
-	IF TALENT:奴隷:缺乏感情
+	IF TALENT:对象:缺乏感情
 		;缺乏感情の場合は屈服刻印による顺从アップはなし
-	ELSEIF ABL:奴隷:顺从 < 今回屈服刻印
-		ABL:奴隷:顺从 = MAX(今回屈服刻印-1,0)
+	ELSEIF ABL:对象:顺从 < 今回屈服刻印
+		ABL:对象:顺从 = MAX(今回屈服刻印-1,0)
 		TFLAG:25 = MAX(今回屈服刻印-1,0)
 	ENDIF
 	;屈服刻印の上昇
-	MARK:奴隷:屈服刻印 = 今回屈服刻印
-	CFLAG:奴隷:屈服刻印主人 = 調教者
+	MARK:对象:屈服刻印 = 今回屈服刻印
+	CFLAG:对象:屈服刻印主人 = 調教者
 ENDIF
 
 RETURN 0
@@ -750,18 +754,18 @@ RETURN 0
 
 ;-------------------------------------------------
 ;快楽による屈服刻印
-@屈服刻印取得チェック_快楽(奴隷,調教者)
+@屈服刻印取得チェック_快楽(对象,調教者)
 #FUNCTION
-#DIM 奴隷
+#DIM 对象
 #DIM 調教者
 #DIM 屈服合計
 #DIM 今回屈服刻印
 
 ;-------------------------------------------------
-屈服合計 = CUP:奴隷:快Ｃ + CUP:奴隷:快Ｖ + CUP:奴隷:快Ａ + CUP:奴隷:快Ｂ
+屈服合計 = CUP:对象:快Ｃ + CUP:对象:快Ｖ + CUP:对象:快Ａ + CUP:对象:快Ｂ
 ;快楽によるLvUPは10番+取得した屈服刻印のレベル
 
-IF MARK:奴隷:快乐刻印 <= MARK:奴隷:屈服刻印
+IF MARK:对象:快乐刻印 <= MARK:对象:屈服刻印
 	;快乐刻印の方が多く付いてないとダメ
 	RETURNF 0
 ENDIF
@@ -777,25 +781,25 @@ SELECTCASE 屈服合計
 		今回屈服刻印 = 3
 ENDSELECT
 
-IF MARK:奴隷:屈服刻印 >= 今回屈服刻印
+IF MARK:对象:屈服刻印 >= 今回屈服刻印
 	RETURNF 0
 ENDIF
 
-TCVAR:奴隷:屈服刻印取得 = 10 + 今回屈服刻印
+TCVAR:对象:屈服刻印取得 = 10 + 今回屈服刻印
 
 RETURNF 今回屈服刻印
 
 
 ;-------------------------------------------------
 ;恐怖による屈服刻印
-@屈服刻印取得チェック_恐怖(奴隷,調教者)
+@屈服刻印取得チェック_恐怖(对象,調教者)
 #FUNCTION
-#DIM 奴隷
+#DIM 对象
 #DIM 調教者
 #DIM 屈服合計
 #DIM 今回屈服刻印
 
-屈服合計 = CUP:奴隷:苦痛 + CUP:奴隷:恐怖
+屈服合計 = CUP:对象:苦痛 + CUP:对象:恐怖
 
 SELECTCASE 屈服合計
 	CASE IS < 1000
@@ -808,24 +812,24 @@ SELECTCASE 屈服合計
 		今回屈服刻印 = 3
 ENDSELECT
 
-IF MARK:奴隷:屈服刻印 >= 今回屈服刻印
+IF MARK:对象:屈服刻印 >= 今回屈服刻印
 	RETURNF 0
 ENDIF
 
-TCVAR:奴隷:屈服刻印取得 = 20 + 今回屈服刻印
+TCVAR:对象:屈服刻印取得 = 20 + 今回屈服刻印
 
 RETURNF 今回屈服刻印
 
 ;-------------------------------------------------
 ;顺从による屈服刻印
-@屈服刻印取得チェック_顺从(奴隷,調教者)
+@屈服刻印取得チェック_顺从(对象,調教者)
 #FUNCTION
-#DIM 奴隷
+#DIM 对象
 #DIM 調教者
 #DIM 屈服合計
 #DIM 今回屈服刻印
 
-屈服合計 = CUP:奴隷:恭顺 + CUP:奴隷:屈服
+屈服合計 = CUP:对象:恭顺 + CUP:对象:屈服
 
 SELECTCASE 屈服合計
 	CASE IS < 1000
@@ -838,56 +842,56 @@ SELECTCASE 屈服合計
 		今回屈服刻印 = 3
 ENDSELECT
 
-IF MARK:奴隷:屈服刻印 >= 今回屈服刻印
+IF MARK:对象:屈服刻印 >= 今回屈服刻印
 	RETURNF 0
 ENDIF
 
-TCVAR:奴隷:屈服刻印取得 = 30 + 今回屈服刻印
+TCVAR:对象:屈服刻印取得 = 30 + 今回屈服刻印
 
 RETURNF 今回屈服刻印
 
 ;-------------------------------------------------
 ;快乐刻印
-@快乐刻印取得チェック(奴隷,調教者)
-#DIM 奴隷
+@快乐刻印取得チェック(对象,調教者)
+#DIM 对象
 #DIM 調教者
 #DIM 今回快乐刻印
 
-今回快乐刻印 = TCVAR:奴隷:快楽強度
+今回快乐刻印 = TCVAR:对象:快楽強度
 
-IF MARK:奴隷:快乐刻印 >= 今回快乐刻印
+IF MARK:对象:快乐刻印 >= 今回快乐刻印
 	RETURN 0
 ENDIF
 
 IF 今回快乐刻印 == 3
 	;快乐刻印3LV取得時の処理
-	IF !ABL:奴隷:顺从 && !TALENT:奴隷:自制心 && !TALENT:奴隷:缺乏感情
+	IF !ABL:对象:顺从 && !TALENT:对象:自制心 && !TALENT:对象:缺乏感情
 		;自制心・缺乏感情の場合は快乐刻印による顺从アップはなし
-		ABL:奴隷:顺从 = 1
+		ABL:对象:顺从 = 1
 		TFLAG:25 = 1
 	ENDIF
 ENDIF
 
-MARK:奴隷:快乐刻印 = 今回快乐刻印
-CFLAG:奴隷:快乐刻印主人 = 調教者
-TCVAR:奴隷:快乐刻印取得 = 今回快乐刻印
+MARK:对象:快乐刻印 = 今回快乐刻印
+CFLAG:对象:快乐刻印主人 = 調教者
+TCVAR:对象:快乐刻印取得 = 今回快乐刻印
 
 RETURN 0
 
 ;-------------------------------------------------
 ;反発刻印
-@反発刻印取得チェック(奴隷,調教者)
-#DIM 奴隷
+@反発刻印取得チェック(对象,調教者)
+#DIM 对象
 #DIM 調教者
 #DIM 反発合計
 #DIM 今回反発刻印
 
-IF TCVAR:奴隷:反発刻印取得抑制
-	TCVAR:奴隷:反発刻印取得抑制 = 0
+IF TCVAR:对象:反発刻印取得抑制
+	TCVAR:对象:反発刻印取得抑制 = 0
 	RETURN 0
 ENDIF
 
-反発合計 = CUP:奴隷:反感 + CUP:奴隷:不快
+反発合計 = CUP:对象:反感 + CUP:对象:不快
 
 SELECTCASE 反発合計
 	CASE IS < (GETBIT(FLAG:簡易調教模式,1) ? 500000 # 500)
@@ -901,25 +905,25 @@ SELECTCASE 反発合計
 		今回反発刻印 = 3
 ENDSELECT
 
-IF MARK:奴隷:反発刻印 >= 今回反発刻印
+IF MARK:对象:反発刻印 >= 今回反発刻印
 	;反発刻印が更新されなかった
 	RETURN 0
 ENDIF
 
 IF 今回反発刻印
 	;反発刻印取得時に不機嫌＆怒意状態
-	CFLAG:奴隷:不機嫌 = MAX(CFLAG:奴隷:不機嫌,今回反発刻印)
-	CFLAG:奴隷:怒意 = 1
+	CFLAG:对象:不機嫌 = MAX(CFLAG:对象:不機嫌,今回反発刻印)
+	CFLAG:对象:怒意 = 1
 
-	IF 今回反発刻印 > MARK:奴隷:4
+	IF 今回反発刻印 > MARK:对象:4
 		;反発刻印最大値を更新した場合顺从が下がる
-		IF TALENT:奴隷:缺乏感情
+		IF TALENT:对象:缺乏感情
 			;缺乏感情の場合は反発刻印による顺从ダウンはなし
-		ELSEIF ABL:奴隷:顺从 < 今回反発刻印
-			ABL:奴隷:顺从 = 0
+		ELSEIF ABL:对象:顺从 < 今回反発刻印
+			ABL:对象:顺从 = 0
 			TFLAG:25 = 1
-		ELSEIF ABL:奴隷:顺从 == 今回反発刻印
-			ABL:奴隷:顺从 = MAX(0,ABL:奴隷:顺从-1)
+		ELSEIF ABL:对象:顺从 == 今回反発刻印
+			ABL:对象:顺从 = MAX(0,ABL:对象:顺从-1)
 			TFLAG:25 = 2
 		ENDIF
 	ENDIF
@@ -927,23 +931,23 @@ IF 今回反発刻印
 ENDIF
 
 ;反発刻印の上昇
-MARK:奴隷:反発刻印 = 今回反発刻印
-CFLAG:奴隷:反発刻印主人 = 調教者
-TCVAR:奴隷:反発刻印取得 = 今回反発刻印
+MARK:对象:反発刻印 = 今回反発刻印
+CFLAG:对象:反発刻印主人 = 調教者
+TCVAR:对象:反発刻印取得 = 今回反発刻印
 ;反発刻印履歴の更新
-MARK:奴隷:4 = MAX(MARK:奴隷:反発刻印,MARK:奴隷:4)
+MARK:对象:4 = MAX(MARK:对象:反発刻印,MARK:对象:4)
 
 RETURN 0
 
 ;-------------------------------------------------
 ;苦痛刻印
-@苦痛刻印取得チェック(奴隷,調教者)
-#DIM 奴隷
+@苦痛刻印取得チェック(对象,調教者)
+#DIM 对象
 #DIM 調教者
 #DIM 苦痛合計
 #DIM 今回苦痛刻印
 
-苦痛合計 = CUP:奴隷:苦痛
+苦痛合計 = CUP:对象:苦痛
 
 SELECTCASE 苦痛合計
 	CASE IS < 2000
@@ -956,15 +960,15 @@ SELECTCASE 苦痛合計
 		今回苦痛刻印 = 3
 ENDSELECT
 
-IF MARK:奴隷:苦痛刻印 >= 今回苦痛刻印
+IF MARK:对象:苦痛刻印 >= 今回苦痛刻印
 	RETURN 0
 ENDIF
 
 IF 今回苦痛刻印
 	;苦痛刻印取得時の処理
-	IF TALENT:奴隷:胆量 > 0 && !TALENT:奴隷:缺乏感情 && !ABL:奴隷:顺从
+	IF TALENT:对象:胆量 > 0 && !TALENT:对象:缺乏感情 && !ABL:对象:顺从
 		;缺乏感情でも気丈でもなく、顺从を持っていない場合は顺从を得る
-		ABL:奴隷:顺从 = 1
+		ABL:对象:顺从 = 1
 		TFLAG:25 = 1
 	ENDIF
 ENDIF
@@ -973,20 +977,20 @@ IF 今回苦痛刻印 == 3
 	;苦痛刻印３LV取得時の処理
 	IF 0 <= 調教者 && 調教者 < CHARANUM
 		IF TALENT:調教者:施虐狂
-			EXP:奴隷:异常经验 += 2
+			EXP:对象:异常经验 += 2
 		ELSEIF TALENT:調教者:擅长用针 && SELECTCOM == 103
-			EXP:奴隷:异常经验 += 2
+			EXP:对象:异常经验 += 2
 		ELSE
-			EXP:奴隷:异常经验 += 1
+			EXP:对象:异常经验 += 1
 		ENDIF
 	ELSE
-		EXP:奴隷:异常经验 += 1
+		EXP:对象:异常经验 += 1
 	ENDIF
 ENDIF
 
-MARK:奴隷:苦痛刻印 = 今回苦痛刻印
-CFLAG:奴隷:苦痛刻印主人 = 調教者
-TCVAR:奴隷:苦痛刻印取得 = 今回苦痛刻印
+MARK:对象:苦痛刻印 = 今回苦痛刻印
+CFLAG:对象:苦痛刻印主人 = 調教者
+TCVAR:对象:苦痛刻印取得 = 今回苦痛刻印
 
 RETURN 1
 

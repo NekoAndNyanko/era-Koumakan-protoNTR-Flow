@@ -1,4 +1,5 @@
-﻿;-------------------------------------------------------------------------------
+﻿;是“経歴拡張”的memorial_base.erb，是记录初体验的。已经改用新的记录方式。
+;-------------------------------------------------------------------------------
 ;Ｖ初体験を記録する
 ;すでに初体験が記録されている場合は無視される
 @memorial_v_append(キャラ番号,相手番号,内容)
@@ -50,25 +51,6 @@ SIF !INRANGE(キャラ番号,0,CHARANUM)
 IF キャラ番号 == 相手番号
 	RETURN 0
 ENDIF
-
-;文字列生成は memorial_create()内で処理
-;TEQUIP:キャラ番号:Ｖ性爱 / Ａ性爱
-;TCVAR:キャラ番号:行為者
-;この２つが違った場合の記録方法に少し悩む
-;IF (TEQUIP:キャラ番号:Ａ性爱 >= 0) && (TEQUIP:キャラ番号:Ａ性爱 != TCVAR:キャラ番号:行為者)
-;	SELECTCASE TEQUIP:キャラ番号:Ａ性爱
-;		CASE IS < CHARANUM
-;			相手 = %CALLNAME:(TEQUIP:キャラ番号:Ａ性爱)+"に"%
-;		CASE IS == 人物_訪問者
-;			相手 = %NTR_NAME(0)+"に"%
-;		CASE IS == 人物_客, 人物_村人, 人物_催眠者
-;			相手 = %NTR_NAME(TALENT:キャラ番号:恋慕+1)+"に"%
-;		CASEELSE
-;			相手 = %NTR_NAME(0)+"に"%
-;	ENDSELECT
-;ELSE
-;	相手 = %""%
-;ENDIF
 IF CSTR:キャラ番号:A处女丧失记录 == ""
 	CSTR:キャラ番号:A处女丧失记录 = %memorial_create(キャラ番号,相手番号,内容)%
 ENDIF
@@ -88,39 +70,6 @@ SIF !INRANGE(キャラ番号,0,CHARANUM)
 IF キャラ番号 == 相手番号
 	RETURN 0
 ENDIF
-
-;文字列生成は memorial_create()内で処理
-;行為者が行為者の唇を奪うことの回避。
-;IF キャラ番号 == TCVAR:キャラ番号:行為者 
-;	IF 相手 == ""
-;		相手 = %CALLNAME:TARGET+"に"%
-;	ENDIF
-;ENDIF
-;IF 内容 == ""
-;	SELECTCASE TCVAR:キャラ番号:行為者
-;		CASE IS == 0
-;			IF TALENT:キャラ番号:恋慕
-;				内容 = %"献给了"%
-;			;ELSEIF GETBIT(CFLAG:キャラ番号:既成事実,0)
-;			ELSEIF TALENT:キャラ番号:恋人
-;				内容 = %"交给了"%
-;			ELSE
-;				内容 = %"奪われた"%
-;			ENDIF
-;		CASE IS == 人物_訪問者
-;			IF TALENT:キャラ番号:NTR
-;				内容 = %"献给了"%
-;			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_接吻程度)
-;				内容 = %"交给了"%
-;			ELSEIF TALENT:キャラ番号:浮気公認
-;				内容 = %"奪ってもらった"%
-;			ELSE
-;				内容 = %"奪われた"%
-;			ENDIF
-;		CASEELSE
-;			内容 = %"奪われた"%
-;	ENDSELECT
-;ENDIF
 IF CSTR:キャラ番号:初吻丧失记录 == ""
 	CSTR:キャラ番号:初吻丧失记录 = %memorial_create(キャラ番号,相手番号,内容)%
 ENDIF
@@ -140,96 +89,6 @@ IF CSTR:キャラ番号:初吻丧失记录 == "" && EXP:キャラ番号:接吻�
 ELSE
 	RETURNF 0
 ENDIF
-
-
-
-
-; 1524,处女丧失时态度_V
-; 1525,处女丧失时态度_A
-; 1526,处女丧失时态度_M
-; 1527,初吻丧失时态度
-; IF 内容 == ""
-; 	SELECTCASE TCVAR:キャラ番号:行為者
-; 		CASE IS == 人物_玩家
-; 			IF TALENT:キャラ番号:恋慕
-; 				态度 = 4
-; 			ELSEIF TALENT:キャラ番号:恋人
-; 				态度 = 3
-; 			ELSE
-; 				态度 = 1
-; 			ENDIF
-; 		CASE IS == 人物_訪問者
-; 			IF TALENT:キャラ番号:NTR || (キャラ番号 == 人物_玩家 && (FLAG:1840 >= 11 && FLAG:1840 <= 15))
-; 				态度 = 6
-; 			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_寝取られ寸前) || (キャラ番号 == 人物_玩家 && FLAG:1840 == 10)
-; 				态度 = 5
-; 			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_寝取られそう)
-; 				态度 = 4
-; 			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_主人より高い)
-; 				态度 = 3
-; 			ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_うふふする程度) 
-; 				态度 = 2
-; 			ELSE
-; 				态度 = 1
-; 			ENDIF
-; 		CASEELSE
-; 			IF キャラ番号 ==  TCVAR:キャラ番号:行為者
-; 				;奪った側
-; 				IF 相手番号 == 0
-; 					;相手があなた
-; 					IF TALENT:相手番号:恋慕
-; 						内容 = %"献给了"%
-; 					ELSE
-; 						内容 = %"交给了"%
-; 					ENDIF
-; 				ELSEIF 相手番号 == 人物_訪問者
-; 					IF TALENT:相手番号:NTR
-; 						内容 = %"献给了"%
-; 					ELSEIF NTR_CHK_FAVORABLY(相手番号, FAV_寝取られ寸前) 
-; 						内容 = %"献给了"%
-; 					ELSE
-; 						内容 = %"交给了"%
-; 					ENDIF
-; 				ELSE
-; 					; 住人同士
-; 					内容 = %"交给了"%
-; 				ENDIF
-; 			ELSE
-; 				;奪われた側（たぶんここは死に分岐）
-; 				IF 相手番号 == 0
-; 					;相手があなた
-; 					IF TALENT:キャラ番号:恋慕
-; 						内容 = %"献给了"%
-; 						; ELSEIF GETBIT(CFLAG:キャラ番号:既成事実,0)
-; 					ELSEIF TALENT:キャラ番号:恋人
-; 						内容 = %"交给了"%
-; 					ELSE
-; 						内容 = %"交给了"%
-; 					ENDIF
-; 				ELSEIF 相手番号 == 人物_訪問者
-; 					IF TALENT:キャラ番号:NTR
-; 						内容 = %"献给了"%
-; 					ELSEIF NTR_CHK_FAVORABLY(キャラ番号, FAV_寝取られ寸前)
-; 						内容 = %"献给了"%
-; 					ELSEIF TALENT:キャラ番号:浮気公認
-; 						内容 = %"奪ってもらった"%
-; 					ELSE
-; 						内容 = %"交给了"%
-; 					ENDIF
-; 				ELSE
-; 					; 住人同士
-; 					内容 = %"交给了"%
-; 				ENDIF
-; 			ENDIF
-; 	ENDSELECT
-; ENDIF
-
-
-
-
-
-
-
 
 ;-------------------------------------------------------------------------------
 ;初体験の文字列を作成する
